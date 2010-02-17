@@ -2,7 +2,7 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
 INCLUDEPATH += ../../src ../../input-context ../stubs
-LIBS += libduiinputcontext.so ../../src/libduiimframework.so \
+LIBS += -L../../input-context -lduiinputcontext ../../src/libduiimframework.so \
 
 # Input
 HEADERS += \
