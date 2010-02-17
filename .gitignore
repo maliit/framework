@@ -1,0 +1,14 @@
+*-stamp
+Makefile
+doxygen.log*
+.moc
+.obj
+*.so
+*.so.*
+*.o
+moc_*
+gen_*
+*.gcov
+*.gcda
+*.gcno
+doc

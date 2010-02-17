@@ -1,0 +1,24 @@
+= How to run in i386 =
+
+0.
+Make sure you have a composite manager running. You're mostly OK if you're running Compiz.
+If you use Metacity make sure the composite management feature is ON:
+
+gconftool-2 -s -t bool /apps/metacity/general/compositing_manager true
+
+1.
+Make sure your dbus session daemon is running. If you're on Scratchbox2,
+make sure your session is using the correct DBUS_SESSION_BUS_ADDRESS environment
+variable.
+
+2.
+If you're not using duicompositor call dui-im-uiserver with -bypass-wm-hint
+You may need to modify the service file as well.
+
+3.
+Run your application
+Make sure there's no error messages complaining about DBUS service/connection
+
+dui-im-uiserver window is not movable, and if you're using dual screen, it's
+always on display 0.0.  You can use Xephyr if you want to move it around.
+

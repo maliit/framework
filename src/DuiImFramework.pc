@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include/qt4/duiimframework
+
+Name: DuiIMFramework
+Description: Direct UI Input Method UI Framework
+Version: 0.1.0
+Cflags: -I${includedir}
+Libs: -L${libdir} -lduiimframework
+

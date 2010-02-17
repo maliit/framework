@@ -1,0 +1,3 @@
+usr/include/dui/duiimframework/*
+usr/share/qt4/mkspecs/features/*
+usr/lib/*.so
