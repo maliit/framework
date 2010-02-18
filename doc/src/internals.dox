@@ -1,0 +1,173 @@
+/*! \page internals Maemo Input Method Framework Internals
+\section Overview Overview
+
+In this document "widget" refers to text entry widget which is used in application.
+
+\subsection Architecture Architecture
+
+Maemo Input Method Framework ("The Framework") uses client server architecture. The server hosts a UI for inputting text and client to receive the inputted text and display it in application. The Framework uses DBus (can be replaced with something else by implementing the communication class) and QInputContext API.
+
+The server runs in a different process with the application, and there is only one instance of the server in the system.
+
+Whenever activated the server "owns" the whole area of the screen. It renders it's part of UI and leave the undrawn area to be in black color background. There is another entity, called DuiCompositor which compose the black area with the application UI and makes them seamlessly blended. In order to make the mouse and keyboard events go directly to the application when they happen on the black area, the input method makes a "hole" of the black area by utilizing XFixes extension.
+
+DuiCompositor also makes sure that the input method window is always on top.
+
+\section Features Features
+This chapter describes the communication conducted between input method and widget when performing a feature.
+
+RPC functions prefixed with im:: are defined in input method side, and in the contrary the functions prefixed with app:: are defined in the widget side.
+
+\subsection Showing/hiding Showing/hiding
+Input method is shown when the DuiInputContext receives QEvent::RequestSoftwareInputPanel and hidden when DuiInputContext receives QEvent::CloseSoftwareInputPanel. These events in practice happen when an editable widget receives or loses a focus. 
+
+Application via DuiInputContext calls these RPC function in input method.
+- im::activateContext
+- im::showOnFocus
+
+NOT YET IMPLEMENTED
+Then input method reports to DuiInputContext whether the input method wants to compose all raw key event from hardware keyboard or not. A common use case would be input method for non-latin languages. Here, input method calls app::setComposingTextInput(bool). This function could be called again if input method needs it, eg. when an input method plugin is changed.
+
+There is another way of hiding the input method temporarily. This happens when the application wants to have visualization priority higher than the input method. A use case of this is long pres DuiTextEdit causes the zooming start and the input method is hidden. When the finger is released, the zoom is removed and the input method is back again.
+
+When application wants this, the widget can return boolean value when queried with Dui::VisualizationPriorityQuery in it's inputMethodQuery method. DuiInputContext does the query in it's setFocusWidget() and update(). And then DuiInputContext will call im::visualizationPriorityChanged RPC function. Then input method decides what to do next.
+
+\subsection KeyEventFiltering Key Event Filtering
+NOT YET IMPLEMENTED
+
+All key events received are filtered in DuiInputContext::filterEvent. This mainly to support features meant for hardware keyboard UI interaction. 
+
+Upon intercepting a key event, DuiInputContext may cancel the event and redirect it back to input method or construct another key event and use the modifier state kept and send it to the widget regardless the actual state of the modifier key in the hardware using QApplication::sendEvent().
+
+\subsubsection KeyEventFilteringModifier Modifier keys
+
+This section only applies in hardware keyboard case. On-screen keyboard with direct key event mode activated should not be applicable here, as the state of modifier key is already kept in the input method side.
+
+In DirectUI, all modifier keys are sticky, meaning that the key state stays the same when it is released. 
+
+There are three states of a modifier key:
+- CLEAR: the modifier is not active
+- LATCHED: the modifier is active until other key is pressed and released
+- LOCKED: the modifier is LATCHED until the same modifier key is pressed and released
+
+Diagram below describes the state change flow of the modifier keys.
+\code
+       +-------------------------------------+
+       |                                     |
+       |                                     ^
+       V                                     |
+     NORMAL +-(pressed)-> LATCHED -(non-modifier key is pressed+released)
+       ^    |                                ^
+       |    |                                |
+       |    |                                |
+       |    |                                |
+       |    +-(pressed+released) -> LATCHED -+
+       |                                     |
+       |                                     V
+       |                                     |
+       |                      (same modifier is pressed+released) 
+       |                                     |
+       |                                     V
+       |                                   LOCKED
+       |                                     |
+       |                                     |
+       |                      (same modifier is pressed+released) 
+       |                                     |
+       |                                     |
+       +-------------------------------------+
+\endcode
+
+In certain widget's content type modifier keys may be activated when the widget receives focus. For example, in number content type, the Fn modifier is LATCHED initially.
+
+DuiInputContext keeps the states of modifier keys (Ctrl, Shift, Sym and Fn) until the widget loses the focus.
+
+\subsubsection KeyEventFilteringDeadKey Dead key composition
+If DuiInputContext receives a dead key composition key (Qt::Key_Dead_*), then it needs to compose it with the next normal key received after that. The composited key will be sent by DuiInputContext instead.
+
+\subsubsection KeyEventFilteringCompose Another composition
+If input method wants to compose text input by itself, all incoming key events are canceled and redirected to input method. Input method then sends the composed text either as pre-edit or commit string, or key event as described in "Typing" section.
+
+\subsection Typing Typing
+There are three modes of typing. They are described below.
+
+\subsubsection Pre_edit_string Pre-edit string
+Pre-edit string is a string which is still being composed as the user types. It is not part of the text entry, even though it is displayed within a text entry. In practice, this string is a word candidate to be entered to a text entry, produced by the error correction engine, which as the user types the string keeps changing.
+
+Input method calls app::updatePreedit RPC function when updating the pre-edit string. Upon receiving this call, DuiInputContext constructs a QInputMethodEvent along with formatting attributes of the pre-edit and sends that to current focusWidget() with QApplication::sendEvent. The widget shall not emits an event telling that the text entry content is changed because at this point nothing is changed. 
+
+\subsubsection Commit_string Commit string
+Commit string is a string which is "committed" to a text entry widget. It is part of the text entry content.
+
+Input method calls app::commitString RPC function when setting a commit string. Upon receiving this call DuiInputContext constructs a QInputMethodEvent and set the commit string to the event. Then the event is sent to current focusWidget() with QApplication::sendEvent. The widget may now emits an event telling that the content is changed.
+
+\subsubsection Key_event Key event
+Input method can send a constructed key event to a widget by calling app::keyEvent RPC function. Upon receiving this call DuiInputContext construct a QKeyEvent and sends that to it's focusWidget() with QCoreApplication::sendEvent().
+
+If current input method mode is Dui::InputMethodModeDirect, then the input method sends key event instead of sending pre-edit or commit string.
+
+\subsection Pre_edit_injection Pre-edit injection
+DuiTextEdit widget requires that if a word is clicked then it needs to be turned into a pre-edit, so it can be changed into another word with error correction feature. When this happens, the clicked word is removed, then the widget construct a DuiPreeditInjection event and sends it to input context. If the event is accepted, e.g. if the error correction is enabled, then the incoming word enclosed in the event then treated as pre-edit. In DuiInputContext side, upon receiving this event, will construct a QInputMethodEvent with the word as a new pre-edit string.
+
+\subsection Copy_and_paste Copy and paste
+
+DuiInputContext connects itself to widget's signal which called "copyAvailable(bool)" if exists. Whenever this signal is emitted, DuiInputContext calls im::setCopyPasteButton RPC function to update the visibility of Copy/Paste button in the input method's toolbar. If system clipboard has text content, the Paste button is shown instead of Copy button.
+
+When the Copy button is clicked, input method calls app::copy RPC function. Upon receiving this call, DuiInputContext calls widget's "copy" function if available, otherwise it just sends ctrl-c combination key event to the widget.
+
+When the Paste button is clicked, input method calls app::paste RPC function. Upon receiving this call, DuiInputContext calls widget's "paste" function if available, otherwise it just sends ctrl-v combination key event to the widget.
+
+\subsection Setting Setting
+\subsubsection Input_mode Input mode
+The framework supports two modes: Dui::InputMethodModeNormal and Dui::InputMethodModeDirect. If the widget wants direct key event instead of getting the text using pre-edit/commit string, it can set the mode to Dui::InputMethodModeDirect, otherwise, the Dui::InputMethodModeNormal which is the default value will be used at all times.
+
+The widget can set the mode by answering the Dui::ImModeQuery query with the value according to the current mode when asked in inputMethodQuery method.
+
+Input method obtains the current widget's mode by calling app::inputMethodMode RPC function.
+
+\subsubsection Autocapitalization Autocapitalization
+Autocapitalization works that the input method shall activate upper case letter when:
+- It starts a sentence
+- A sentence is ended by a punctuation mark ("?!.") and followed by at least a space
+(detailed behaviour is available from the UI specification)
+
+In widget's inputMethodQuery method, the widget returns the status of this feature when asked with Dui::ImAutoCapitalizationEnabledQuery.
+
+Input method can get the widget's autocapitalization state by calling app::autoCapitalizationEnabled RPC function
+
+\subsubsection Error_correction Error correction
+When error correction feature is active, input method always feed the currently typed word to error correction engine. And the suggested word is constructed as pre-edit string. This is done on every update on the input method side, eg. in virtual keyboard case, it happens on every key stroke.
+
+In widget's inputMethodQuery method, the widget returns the status of this feature when asked with Dui::ImCorrectionEnabledQuery.
+
+Input method can get the widget's autocapitalization state by calling app::correctionEnabled RPC function
+
+This feature can be disabled/enabled globally according to setting. The input method can override the state of this feature on the widget side by calling app::setGlobalCorrectionEnabled RPC function.
+
+\subsubsection Word_prediction Word prediction
+This is similar to error correction, but the key/string entered by user will be treated as commit string and the rest of the word predicted by the engine will be treated as pre-edit string. THIS IS NOT (YET) IMPLEMENTED IN INPUT METHOD SIDE.
+
+In widget's inputMethodQuery method, the widget returns the status of this feature when asked with Dui::ImPredictionEnabledQuery.
+
+Input method can get the widget's autocapitalization state by calling app::predictionEnabled RPC function
+
+\subsection Error_correction_candidates Error correction candidates
+If error correction feature is enabled and mouse clicked is happening on a pre-edit word, then a candidate list of the word shall be displayed on the screen. To do this, in it's mouseHandler DuiInputContext asks the widget about the pre-edit rectangle by passing Dui::PreeditRectangleQuery to current focusWidget's inputMethodQuery. DuiInputContext calls im::mouseClickedOnPreedit RPC along with the rectangle. Input method then decide what to do with that.
+
+\subsection Text_entry_types Text entry types
+Widget can determine it's content type and return the type value when asked with Dui::ContentTypeQuery in it's inputMethodQuery method.
+
+\subsection Toolbar Toolbar 
+NOT YET IMPLEMENTED
+
+Text entry widget can ask input method to put a custom widget into a toolbar in input method UI. This widget ("Toolbar widget") is essentially a declarative widget written in XML which compiled into a DuiWidget. The <a href="toolbarxml.html">Toolbar Widget XML specification</a> document describe the details. This widget will appear in the toolbar only when instructed by the text entry widget. One use case is rich text editing. The rich text entry could show Bold, Italic, Underline and other buttons to control the rich text editing in the toolbar.
+
+Input method shows/hides the toolbar widgets upon receiving event as stated in the XML.
+
+When an event takes place on a toolbar widget, input method sends a sequence of action defined in the XML. The list below describes the actions and how it is handled by input method:
+- <b>sendKeySequence</b>: input method constructs key events and process it as described <a href="#Key_event">above</a>
+- <b>sendString</b>: input method sends the word described as commit string
+- <b>copy</b>: input method asks the widget to copy selected text into clipboard
+- <b>paste</b>: input method asks the widget to paste from clipboard
+- <b>sendCommand</b>: input method passes the defined command to app::toolbarWidgetCommand RPC function
+
+*/

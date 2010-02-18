@@ -1,0 +1,70 @@
+/*! \page toolbarxml Toolbar Widget XML Specification
+<b>Version</b>: 0.1
+
+\section Overview
+This document describes the XML specification of the toolbar widget.
+
+\section Tags
+\subsection TOOLBAR
+Root tag, it contains the definition for all buttons in the toolbar.
+
+\subsubsection BUTTON
+This tag will be constructed as DuiButton.
+The NAME attribute should be unique and it is used as a reference in the toolbar system.
+The GROUP attribute defines the group this button belongs to.
+The PRIORITY attribute the defines the priority order of displaying, the smaller the number, the earlier it is put into the toolbar.
+The ORIENTATION attribute, if set, makes the button to be only visible on the mentioned orientation.
+The SHOWON attribute tells when the button is displayed. If the value is "selectedText", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
+Similar rule applies with HIDEON attribute, except that there is no "always" value.
+The button is aligned within the toolbar according to the value of ALIGMENT attribute.
+The ICON attribute holds the icon id. The TEXT attribute holds the text and TEXT_ID holds the logical id of the text.
+
+\subsubsubsection ACTIONS
+This tag holds a sequence of actions defined within.
+
+\subsubsubsubsection SENDKEYSEQUENCE
+The tag's value holds the key sequence to be sent in the format which is understood by QKeySequence.
+
+\subsubsubsubsection SHOWGROUP
+This tag defines that the action is to show the named group of buttons.
+
+\subsubsubsubsection HIDEGROUP
+This tag defines that the action is to hide the named group of buttons.
+
+\subsubsubsubsection COPY
+This tag defines that the action is to copy selected text.
+
+\subsubsubsubsection PASTE
+This tag defines that the action is to paste from clipboard.
+
+\section DTD
+\code
+<!DOCTYPE DUI_IM_TOOLBAR_WIDGET [
+<!ELEMENT toolbar (button*)>
+<!ELEMENT button (actions*)>
+<!ELEMENT actions (sendKeySequence|sendString|sendCommand|copy|paste|showGroup|hideGroup)*>
+<!ELEMENT sendKeySequence (#CDATA)>
+<!ELEMENT showGroup (#CDATA)>
+<!ELEMENT hideGroup (#CDATA)>
+<!ELEMENT copy EMPTY>
+<!ELEMENT paste EMPTY>
+
+<!ATTLIST button name CDATA #REQUIRED>
+<!ATTLIST button group CDATA>
+<!ATTLIST button priority CDATA>
+<!ATTLIST button orientation CDATA>
+<!ATTLIST button showOn (selectedText|always)>
+<!ATTLIST button hideOn (selectedText)>
+<!ATTLIST button alignment (left|right)>
+<!ATTLIST button icon CDATA "">
+<!ATTLIST button text CDATA "">
+<!ATTLIST button text_id CDATA "">
+<!ATTLIST sendKeySequence keysequence CDATA>
+<!ATTLIST sendString string CDATA>
+<!ATTLIST sendCommand command CDATA>
+<!ATTLIST showGroup group CDATA>
+<!ATTLIST hideGroup group CDATA>
+
+]>
+\endcode
+*/

@@ -1,0 +1,70 @@
+/*! \page pluginsystem Plugin System 
+\section Overview Overview
+This document describes the plugin system of Maemo Input Method Framework. The system consists of:
+- Plugin manager [XXX: Currently it is called PluginLoader]
+- Input method connection
+- Passthrough window
+- The plugins
+
+The whole system is running inside the input method server process.
+
+XXX MORE TO PUT HERE
+
+\subsection PluginLoader Plugin Manager
+Plugin Manager is responsible to load the plugins and activate them.
+
+XXX MORE TO PUT HERE
+
+\subsection InputMethodConnection Input Method Connection
+Input Method Connection as the name states, functions as the connector between input method server and the application. The connection handles the protocol and data transport between the two ends.
+
+
+XXX MORE TO PUT HERE
+
+\section management Plugin Management
+\subsection Handlers Handlers 
+
+NOT YET IMPLEMENTED
+
+Handlers are components which handle the input method function. They are essentially plugins and activated by Plugin manager.
+
+There are three types of handlers:
+- On-screen handler, which is used with touchscreen
+- Hardware keyboard handler, which is used with hardware keyboard (perhaps also external keyboard)
+- Accessory handler, which is used with other means (eg. Bluetooth pens)
+
+A single plugin could act as multiple handlers. 
+
+A plugin has to expose it's handling capabilities so it can be listed in DuiSettings. User can set a plugin to be the default
+plugin handling a specific handler by selecting it in DuiSettings.
+
+When a handler is activated, the following will be carried out:
+- Plugin Manager loads the plugin stated in the settings (see below) and passing the handler code
+- Plugin Manager rewired the input method connection to the loaded plugin
+- If plugin does not recognize or incapable to handle the handler code, the loading fails
+- The plugin update it's UI reflecting the handler code
+- Record the plugin name to settings
+
+\subsection Settings Settings
+\subsubsection SettingsHandler Handler 
+Plugin Manager selects the active plugin based on the settings. GConf stores the settings of the plugin names which will be selected whenever the handler or language is changed or run in the first time. The settings hierarchy looks like this:
+
+/code
+/Dui/InputMethods/Plugins/Handler/<HANDLER> : <PLUGIN-NAME>
+/endcode
+
+\subsection PluginMap Plugin Map
+When input method server is started, Plugin Manager reads the available plugins in the system and collects the handler information from the plugins. It then generates an in-memory map to be used whenever the handler is changed. The map is refreshed whenever a new plugin is installed or removed.
+
+Each handler will have a list of plugins in the map.
+
+\subsection PluginChange Plugin Change
+Plugin Manager subscribes to Context Framework events to change handler. E.g. when Plugin Manager receive a signal from context framework that a keyboard is attached or slided out the Hardware keyboard handler is activated.
+
+Plugin Manager then tries to find the plugin from the Settings, and if it fails it tries to find it from the map. If Plugin Manager finds a name from Settings but the plugin is no longer exist it continues to find a new value from the map and clears the Settings for that particular handler.
+
+Plugin change could also happen because of user's manual intervention. There are two places where user can change the plugin for a handler:
+- DuiSettings: user can select a plugin as handler in the UI
+- Swipe gesture in On-screen handler: On-screen handler plugin should change it's writing language when receiving swipe gesture. If there is no more language to switch, it should ask Plugin Manager to be replaced with another handler on the map. If there is none, the writing language switching cycles back.
+
+*/

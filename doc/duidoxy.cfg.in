@@ -1,0 +1,152 @@
+PROJECT_NAME          = DirectUI Input Method Framework
+PROJECT_NUMBER        = 
+OUTPUT_DIRECTORY      = @DUI_SRC_DIR@
+OUTPUT_LANGUAGE       = English
+DISABLE_INDEX         = YES
+EXTRACT_ALL           = YES
+EXTRACT_PRIVATE       = NO
+HIDE_UNDOC_MEMBERS    = NO
+HIDE_UNDOC_CLASSES    = NO
+HIDE_UNDOC_RELATIONS  = YES
+BRIEF_MEMBER_DESC     = YES
+REPEAT_BRIEF          = YES
+ALWAYS_DETAILED_SEC   = NO
+FULL_PATH_NAMES       = NO
+STRIP_FROM_PATH       = 
+INTERNAL_DOCS         = NO
+CLASS_DIAGRAMS        = YES
+SOURCE_BROWSER        = NO
+INLINE_SOURCES        = NO
+STRIP_CODE_COMMENTS   = YES
+CASE_SENSE_NAMES      = NO
+VERBATIM_HEADERS      = YES
+SHOW_INCLUDE_FILES    = YES
+JAVADOC_AUTOBRIEF     = YES
+INHERIT_DOCS          = YES
+INLINE_INFO           = YES
+SORT_MEMBER_DOCS      = YES
+TAB_SIZE              = 8
+ENABLED_SECTIONS      = 
+HIDE_FRIEND_COMPOUNDS = YES
+
+#---------------------------------------------------------------------------
+# configuration options related to warning and progress messages
+#---------------------------------------------------------------------------
+
+QUIET                 = YES
+WARNINGS              = YES
+WARN_IF_UNDOCUMENTED  = YES
+WARN_FORMAT           = "File: $file (row: $line) $text"
+WARN_LOGFILE          = "doxygen.log"
+
+#---------------------------------------------------------------------------
+# configuration options related to the input files
+#---------------------------------------------------------------------------
+
+FILE_VERSION_FILTER   = "cd @DUI_SRC_DIR@ ; git log --pretty=format:%H -n 1 "
+
+INPUT                 = @DUI_SRC_DIR@/../src/ \
+                        @DUI_SRC_DIR@/../doc/src/
+FILE_PATTERNS         = *.cpp *.h *.dox
+RECURSIVE             = YES
+EXCLUDE               = 
+EXCLUDE_PATTERNS      = moc_*.cpp *_p.h *_p.cpp */demo/*
+IMAGE_PATH            = @DUI_SRC_DIR@/images
+INPUT_FILTER          = 
+
+#---------------------------------------------------------------------------
+# configuration options related to the alphabetical class index
+#---------------------------------------------------------------------------
+
+ALPHABETICAL_INDEX    = YES
+COLS_IN_ALPHA_INDEX   = 4
+IGNORE_PREFIX         = Dui
+
+#---------------------------------------------------------------------------
+# configuration options related to the HTML output
+#---------------------------------------------------------------------------
+
+GENERATE_TESTLIST     = YES
+GENERATE_HTML         = YES
+HTML_OUTPUT           = html
+HTML_HEADER           = @DUI_SRC_DIR@/header.html
+HTML_FOOTER           = @DUI_SRC_DIR@/footer.html
+HTML_STYLESHEET       = @DUI_SRC_DIR@/dui.css
+HTML_ALIGN_MEMBERS    = YES
+GENERATE_HTMLHELP     = NO
+
+#---------------------------------------------------------------------------
+# configuration options related to the LaTeX output
+#---------------------------------------------------------------------------
+
+GENERATE_LATEX        = NO
+#LATEX_OUTPUT          = latex
+#COMPACT_LATEX         = NO
+#PAPER_TYPE            = a4wide
+#EXTRA_PACKAGES        = 
+#LATEX_HEADER          = 
+#PDF_HYPERLINKS        = NO
+#LATEX_BATCHMODE       = NO
+
+#---------------------------------------------------------------------------
+# configuration options related to the RTF output
+#---------------------------------------------------------------------------
+
+GENERATE_RTF          = NO
+#RTF_OUTPUT            = rtf
+#COMPACT_RTF           = NO
+#RTF_HYPERLINKS        = NO
+
+#---------------------------------------------------------------------------
+# configuration options related to the man page output
+#---------------------------------------------------------------------------
+
+GENERATE_MAN          = NO
+#MAN_OUTPUT            = man
+#MAN_EXTENSION         = .3
+
+#---------------------------------------------------------------------------
+# Configuration options related to the preprocessor   
+#---------------------------------------------------------------------------
+
+ENABLE_PREPROCESSING  = YES
+MACRO_EXPANSION       = NO
+SEARCH_INCLUDES       = YES
+INCLUDE_PATH          = 
+PREDEFINED            = DOXYGEN_SHOULD_SKIP_THIS
+EXPAND_ONLY_PREDEF    = YES
+
+#---------------------------------------------------------------------------
+# Configuration::addtions related to external references   
+#---------------------------------------------------------------------------
+
+TAGFILES              = @DUI_SRC_DIR@/qt.tag=http://doc.trolltech.com/4.6-snapshot
+# GENERATE_TAGFILE      = YES
+ALLEXTERNALS          = NO
+PERL_PATH             = /scratchbox/tools/bin
+
+#---------------------------------------------------------------------------
+# Configuration options related to the dot tool   
+#---------------------------------------------------------------------------
+
+HAVE_DOT              = YES
+CLASS_GRAPH           = YES
+COLLABORATION_GRAPH   = NO
+INCLUDE_GRAPH         = YES
+GRAPHICAL_HIERARCHY   = YES
+#DOT_PATH              = /scratchbox/devkits/doctools/bin/
+
+#---------------------------------------------------------------------------
+# Configuration::addtions related to the search engine   
+#---------------------------------------------------------------------------
+
+SEARCHENGINE          = NO
+#CGI_NAME              = search.cgi
+#CGI_URL               = 
+#DOC_URL               = 
+#DOC_ABSPATH           = 
+#BIN_ABSPATH           = /usr/local/bin/
+# EXT_DOC_PATHS         = 
+
+EXCLUDE_SYMBOLS += *Private *View *Draft *Daemon*
+
