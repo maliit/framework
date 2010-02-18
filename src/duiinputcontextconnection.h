@@ -52,6 +52,47 @@ public:
     virtual void removeTarget(DuiInputMethodBase *target);
 
     /*!
+     * \brief returns content type for focused widget if output parameter valid is true,
+     * value matches enum Dui::TextContentType
+     */
+    virtual int contentType(bool &valid) = 0;
+
+    /*!
+     * \brief returns input method correction hint if output parameter valid is true.
+     */
+    virtual bool correctionEnabled(bool &valid) = 0;
+
+    /*!
+     * \brief returns input method word prediction hint if output parameter valid is true.
+     */
+    virtual bool predictionEnabled(bool &valid) = 0;
+
+    /*!
+     * \brief returns input method auto-capitalization hint if output parameter valid is true.
+     */
+    virtual bool autoCapitalizationEnabled(bool &valid) = 0;
+
+    /*!
+     * \brief get surrounding text and cursor position information
+     */
+    virtual bool surroundingText(QString &text, int &cursorPosition) = 0;
+
+    /*!
+     * \brief returns true if there is selecting text
+     */
+    virtual bool hasSelection(bool &valid) = 0;
+
+    /*!
+     * \brief get input method mode
+     */
+    virtual int inputMethodMode(bool &valid) = 0;
+
+    /*!
+     * \brief get input method mode
+     */
+    virtual QRect preeditRectangle(bool &valid) = 0;
+
+    /*!
      * \brief Updates pre-edit string in the application widget
      *
      * Implement this method to update the pre-edit string
@@ -80,52 +121,6 @@ public:
     virtual void notifyImInitiatedHiding() = 0;
 
     /*!
-     * \brief returns content type for focused widget if output parameter valid is true,
-     * value matches enum Dui::TextContentType
-     */
-    virtual int contentType(bool &valid) = 0;
-
-    /*!
-     * \brief returns input method correction hint if output parameter valid is true.
-     */
-    virtual bool correctionEnabled(bool &valid) = 0;
-
-    /*!
-     * \brief returns input method word prediction hint if output parameter valid is true.
-     */
-    virtual bool predictionEnabled(bool &valid) = 0;
-
-    /*!
-     * \brief returns input method auto-capitalization hint if output parameter valid is true.
-     */
-    virtual bool autoCapitalizationEnabled(bool &valid) = 0;
-
-    /*!
-     * \brief set global correction option enable/disable
-     */
-    virtual void setGlobalCorrectionEnabled(bool) = 0;
-
-    /*!
-     * \brief get surrounding text and cursor position information
-     */
-    virtual bool surroundingText(QString &text, int &cursorPosition) = 0;
-
-    /*!
-     * \brief returns true if there is selecting text
-     */
-    virtual bool hasSelection(bool &valid) = 0;
-
-    /*!
-     * \brief get input method mode
-     */
-    virtual int inputMethodMode(bool &valid) = 0;
-
-    /*!
-     * \brief get input method mode
-     */
-    virtual QRect preeditRectangle(bool &valid) = 0;
-
-    /*!
     * \brief copy selected text
     */
     virtual void copy() = 0;
@@ -140,6 +135,11 @@ public:
      * from hardware keyboard (via \a processKeyEvent calls).
      */
     virtual void setRedirectKeys(bool enabled) = 0;
+
+    /*!
+     * \brief set global correction option enable/disable
+     */
+    virtual void setGlobalCorrectionEnabled(bool) = 0;
 
 public slots:
 
