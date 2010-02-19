@@ -14,6 +14,7 @@
  * of this file.
  */
 #include "duipassthruwindow.h"
+#include "duiplainwindow.h"
 
 #include <QX11Info>
 #include <X11/Xlib.h>
@@ -26,7 +27,9 @@ DuiPassThruWindow::DuiPassThruWindow(bool bypassWMHint, QWidget *p)
     : QWidget(p)
 {
     setWindowTitle("DuiInputMethod");
+#ifndef DUI_IM_DISABLE_TRANSLUCENCY
     setAttribute(Qt::WA_TranslucentBackground);
+#endif
 
     Display *dpy =  QX11Info::display();
 
@@ -58,19 +61,47 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
 {
     Display *dpy = QX11Info::display();
 
-    qDebug() << __PRETTY_FUNCTION__ << region;
-    const QVector<QRect> regionRects(region.rects());
+    qDebug() << __PRETTY_FUNCTION__ << region
+        << "geometry=" << geometry();
+    QVector<QRect> regionRects(region.rects());
     const int size = regionRects.size();
 
     if (size) {
-        //we should receive correct pointer even if region is empty
-        XRectangle *rects = (XRectangle *) malloc(sizeof(XRectangle) * (size + 1));
+#ifdef DUI_IM_DISABLE_TRANSLUCENCY
+        QPoint newPos(0, 0);
+
+        switch (DuiPlainWindow::instance()->orientationAngle())
+        {
+        case Dui::Angle0:
+            newPos.setY(region.boundingRect().top());
+            break;
+        case Dui::Angle90:
+            newPos.setX(region.boundingRect().width() - width());
+            break;
+        case Dui::Angle180:
+            newPos.setY(region.boundingRect().height() - height());
+            break;
+        case Dui::Angle270:
+            newPos.setX(width() - region.boundingRect().width());
+            break;
+        default:
+            Q_ASSERT(0);
+        }
+        move(newPos);
+        newPos.setX(-newPos.x());
+        newPos.setY(-newPos.y());
+#endif
+
+        XRectangle * const rects = (XRectangle*)malloc(sizeof(XRectangle)*(size));
         if (!rects) {
             return;
         }
 
         XRectangle *rect = rects;
         for (int i = 0; i < size; ++i, ++rect) {
+#ifdef DUI_IM_DISABLE_TRANSLUCENCY
+            regionRects[i].translate(newPos);
+#endif
             rect->x = regionRects.at(i).x();
             rect->y = regionRects.at(i).y();
             rect->width = regionRects.at(i).width();
@@ -85,6 +116,7 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
 
         free(rects);
         XSync(dpy, False);
+
     }
 
     // selective compositing
@@ -94,3 +126,4 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
         show();
     }
 }
+

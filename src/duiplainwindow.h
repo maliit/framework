@@ -20,6 +20,7 @@
 
 class DuiScene;
 class DuiSceneManager;
+class QRegion;
 
 class DuiPlainWindow : public DuiWindow
 {
@@ -29,6 +30,11 @@ public:
     DuiPlainWindow(QWidget *parent = 0);
     virtual ~DuiPlainWindow();
     static DuiPlainWindow *instance();
+
+public slots:
+#ifdef DUI_IM_DISABLE_TRANSLUCENCY
+    void updatePosition(const QRegion &region);
+#endif
 
 private:
     Q_DISABLE_COPY(DuiPlainWindow);

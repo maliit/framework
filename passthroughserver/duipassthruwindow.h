@@ -18,8 +18,7 @@
 
 #include <QWidget>
 #include <QDebug>
-
-#include <X11/Xlib.h>
+#include <QRegion>
 
 /*!
  * \brief DuiPassThruWindow uses XFixes to redirect mouse events to VKB

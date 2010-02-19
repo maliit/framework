@@ -23,7 +23,6 @@ private slots:
 
 private:
     DuiApplication *app;
-    DuiWindow *window;
     DuiPassThruWindow *subject;
 };
 

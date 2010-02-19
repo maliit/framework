@@ -40,18 +40,16 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.depends += $$TARGET
 
-system(dpkg-architecture -ei386):SOFTWARE="-software"
+system(dpkg-architecture -ei386):SOFTWARE="-software -bypass-wm-hint "
 message(Argument added to im server: $$SOFTWARE)
 
 SERVICE_FILE = duiinputmethodserver.service.in
 
 servicefilegenerator.output = duiinputmethodserver.service
 servicefilegenerator.input = SERVICE_FILE
-servicefilegenerator.commands += sed -e "s:DUI_BIN_PATH:$$DUI_INSTALL_BIN:g" -e "s:SOFTWARE:$$SOFTWARE:g" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
+servicefilegenerator.commands += sed -e \"s:DUI_BIN_PATH:$$DUI_INSTALL_BIN:g\" -e \"s:SOFTWARE:$$SOFTWARE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
 servicefilegenerator.CONFIG = target_predeps no_link
 QMAKE_EXTRA_COMPILERS += servicefilegenerator
 
 servicefiles.path = $$system(pkg-config --variable session_bus_services_dir dbus-1)
 servicefiles.files = duiinputmethodserver.service
-
-

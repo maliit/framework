@@ -57,8 +57,10 @@ int main(int argc, char **argv)
     DuiReactionMap reactionMap(&widget);
     DuiPlainWindow *view = new DuiPlainWindow(&widget);
 
+#ifndef DUI_IM_DISABLE_TRANSLUCENCY
     // enable translucent in hardware rendering
     view->setTranslucentBackground(!DuiApplication::softwareRendering());
+#endif
 
     // No auto fill in software rendering
     if (DuiApplication::softwareRendering())
@@ -69,13 +71,19 @@ int main(int argc, char **argv)
     int h = sceneSize.height();
     view->scene()->setSceneRect(0, 0, w, h);
 
-    view->setMinimumSize(w, h);
+    widget.resize(sceneSize);
+
+    view->setMinimumSize(1, 1);
     view->setMaximumSize(w, h);
 
     DuiIMPluginManager *pluginManager = new DuiIMPluginManager();
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      &widget, SLOT(inputPassthrough(const QRegion &)));
+#ifdef DUI_IM_DISABLE_TRANSLUCENCY
+    QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
+                     view, SLOT(updatePosition(const QRegion &)));
+#endif
 
     return app.exec();
 }

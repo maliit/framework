@@ -1,5 +1,6 @@
 #include "ut_passthroughserver.h"
 #include "duipassthruwindow.h"
+#include "duiplainwindow.h"
 
 #include <DuiApplication>
 #include <DuiWindow>
@@ -11,13 +12,12 @@ void Ut_PassthroughServer::initTestCase()
 
     DuiApplication::setLoadDuiInputContext(false);
     app = new DuiApplication(argc, app_name);
-    window = new DuiWindow;
+    new DuiPlainWindow;
 }
 
 void Ut_PassthroughServer::cleanupTestCase()
 {
-    delete window;
-    window = 0;
+    delete DuiPlainWindow::instance();
     delete app;
     app = 0;
 }

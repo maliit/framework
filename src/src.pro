@@ -71,3 +71,18 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.depends += lib$${TARGET}.so.$${VERSION}
 
+contains(DEFINES, DUI_IM_DISABLE_TRANSLUCENCY) {
+    DUI_IM_FRAMEWORK_FEATURE += DUI_IM_DISABLE_TRANSLUCENCY
+} else {
+    DUI_IM_FRAMEWORK_FEATURE -= DUI_IM_DISABLE_TRANSLUCENCY
+}
+
+PRF_FILE = duiimframework.prf.in
+
+prffilegenerator.output = duiimframework.prf
+prffilegenerator.input = PRF_FILE
+prffilegenerator.commands += sed -e \"s:DUI_IM_FRAMEWORK_FEATURE:$$DUI_IM_FRAMEWORK_FEATURE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
+prffilegenerator.CONFIG = target_predeps no_link
+prffilegenerator.depends += Makefile
+QMAKE_EXTRA_COMPILERS += prffilegenerator
+

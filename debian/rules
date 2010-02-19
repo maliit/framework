@@ -32,6 +32,10 @@ ifneq (,$(filter coverage,$(TMP_BUILD_OPTS)))
         QMAKE_OPTIONS += COV_OPTION=on
 endif
 
+ifneq (,$(filter notranslucency,$(TMP_BUILD_OPTS)))
+        QMAKE_OPTIONS += DEFINES+=DUI_IM_DISABLE_TRANSLUCENCY
+endif
+
 # shared library versions, option 1
 version=0.1.0
 major=0
@@ -40,7 +44,7 @@ configure: configure-stamp
 configure-stamp:
 	dh_testdir
 
-	qmake $(QMAKE_OPTIONS)
+	qmake -r $(QMAKE_OPTIONS)
 
 	touch configure-stamp
 
@@ -76,9 +80,10 @@ install: build
     # generate tests.xml
 	cd unit_test && ./gen-tests-xml.sh > tests.xml
 
-	# To workaround the installation of the .service file,
+	# To workaround the installation of the .service and .prf files,
 	# qmake needs to run again to generate the service file installation target in the Makefile
 	cd passthroughserver && qmake $(QMAKE_OPTIONS)
+	cd src && qmake $(QMAKE_OPTIONS)
 
 	# Then proceed to normal installation
 	INSTALL_ROOT=$(CURDIR)/debian/tmp make  $(PARALLEL_MAKEFLAGS) install

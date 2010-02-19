@@ -33,10 +33,54 @@ DuiPlainWindow::DuiPlainWindow(QWidget *parent) :
         qFatal("There can be only one instance of DuiPlainWindow");
 
     m_instance = this;
-    setViewportUpdateMode(DuiWindow::MinimalViewportUpdate);
 }
 
 DuiPlainWindow::~DuiPlainWindow()
 {
     m_instance = 0;
 }
+
+#ifdef DUI_IM_DISABLE_TRANSLUCENCY
+void DuiPlainWindow::updatePosition(const QRegion &region)
+{
+    //update view's parameters to compensate movement of DuiPasstroughWindow
+    //this update allows plugin to use screen coordinates
+    const QRect rect = region.boundingRect();
+    const QSize sceneSize = visibleSceneSize();
+    const int size = region.rects().size();
+
+    if (!size) {
+        setSceneRect(0, 0, sceneSize.width(), sceneSize.height());
+        resize(sceneSize);
+        move(0, 0);
+        return;
+    }
+
+    switch (orientationAngle())
+    {
+    case Dui::Angle0:
+        setSceneRect(0, sceneSize.height() - rect.height(),
+                     sceneSize.width(), rect.height());
+        resize(rect.width(), rect.height());
+        move(0, 0);
+        break;
+    case Dui::Angle90:
+        setSceneRect(0, 0, rect.width(), rect.height());
+        resize(rect.width(), rect.height());
+        move(sceneSize.height() - rect.width(), 0);
+        break;
+    case Dui::Angle180:
+        setSceneRect(0, 0, rect.width(), sceneSize.height());
+        resize(rect.width(), rect.height());
+        move(0, sceneSize.height() - rect.height());
+        break;
+    case Dui::Angle270:
+        setSceneRect(sceneSize.height() - rect.width(), rect.top(),
+                     rect.width(), sceneSize.width());
+        resize(rect.width(), rect.height());
+        move(0, 0);
+        break;
+    }
+}
+#endif
+
