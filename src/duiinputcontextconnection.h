@@ -30,7 +30,6 @@ class DuiInputMethodBase;
 
 
 /*!
- * \class DuiInputContextConnection
  * \brief DuiInputContextConnection is a base class of the input method communication implementation
  * between the input context and the input method server.
  */

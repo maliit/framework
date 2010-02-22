@@ -29,9 +29,8 @@ class DuiInputContextConnection;
 class DuiInputMethodBasePrivate;
 
 /*!
- * \class DuiInputMethodBase
- *
  * \brief DuiInputMethodBase is a base class for input method servers.
+ * 
  * It defines the interface which input context connection classes can use for
  * passing commands received from the applications
  */

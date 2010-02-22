@@ -22,9 +22,7 @@
 #include <X11/Xlib.h>
 
 /*!
- * \class DuiPassThruWindow
  * \brief DuiPassThruWindow uses XFixes to redirect mouse events to VKB
- *
  */
 class DuiPassThruWindow: public QWidget
 {

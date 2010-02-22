@@ -23,7 +23,6 @@
 #include <QTextCharFormat>
 
 /*!
- * \class DuiPreeditStyle
  * \brief This class provides access to style attributes for DuiInputContext
  */
 class DuiPreeditStyle : public DuiStyle

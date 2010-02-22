@@ -30,7 +30,6 @@ class QDBusConnectionInterface;
 
 
 /*!
- * \class DuiInputContext
  * \brief DuiInputContext implements application side input method support for Dui input method server.
  *
  * The base class QInputContext abstracts input method specific composing of input. It acts

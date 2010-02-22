@@ -28,7 +28,6 @@
  */
 
 /*!
- * \class FakeGConfItem
  * \brief Stores one settings item that has name, and optionally
  *        value and children.
  *
@@ -63,7 +62,6 @@ private:
 };
 
 /*!
- * \class FakeGConf
  * \brief Simple in-memory version of gconf settings database.
  */
 class FakeGConf

@@ -33,7 +33,6 @@ class DuiInputContextDBusConnectionPrivate;
 Q_DECLARE_METATYPE(QRect);
 
 /*!
-  \class DuiInputContextDBusConnection
   \brief DuiInputContextDBusConnection handles input context connection for DBus based
   input context
  */
