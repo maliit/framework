@@ -37,7 +37,7 @@ Q_DECLARE_METATYPE(QRect);
   input context
  */
 class DuiInputContextDBusConnection: public DuiInputContextConnection,
-    protected QDBusContext
+                                     protected QDBusContext
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.maemo.duiinputmethodserver1")
