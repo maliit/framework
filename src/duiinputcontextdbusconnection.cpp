@@ -141,7 +141,8 @@ void DuiInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int m
 
 DuiInputContextDBusConnectionPrivate::DuiInputContextDBusConnectionPrivate()
     : activeContext(0),
-      valid(true)
+      valid(true),
+      globalCorrectionEnabled(false)
 {
     // nothing
 }
@@ -268,9 +269,11 @@ bool DuiInputContextDBusConnection::autoCapitalizationEnabled(bool &valid)
 
 void DuiInputContextDBusConnection::setGlobalCorrectionEnabled(bool enabled)
 {
-    if (d->activeContext) {
+    if ((enabled != d->globalCorrectionEnabled) && d->activeContext) {
         d->activeContext->call("setGlobalCorrectionEnabled", enabled);
     }
+
+    d->globalCorrectionEnabled = enabled;
 }
 
 
@@ -386,6 +389,10 @@ void DuiInputContextDBusConnection::activateContext()
     // set active context to interface corresponding caller
     if (d->clients.contains(msg.service())) {
         d->activeContext = d->clients[msg.service()];
+
+        // update the state of the new active context
+        d->activeContext->call("setGlobalCorrectionEnabled", d->globalCorrectionEnabled);
+
     } else {
         qDebug() << __PRETTY_FUNCTION__ << "unable to activate context";
         d->activeContext = 0;

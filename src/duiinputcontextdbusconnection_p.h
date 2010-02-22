@@ -65,6 +65,7 @@ public:
     QDBusInterface *activeContext; // currently active context
     bool valid;
     QMap<QString, QVariant> widgetState;
+    bool globalCorrectionEnabled;
 };
 
 #endif
