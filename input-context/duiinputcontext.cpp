@@ -720,7 +720,6 @@ void DuiInputContext::serviceChangeHandler(const QString &name, const QString &o
                                            const QString &newOwner)
 {
     Q_UNUSED(oldOwner);
-    Q_UNUSED(newOwner);
 
     // if the input method server service owner changes, we need to register our
     // callback object again
