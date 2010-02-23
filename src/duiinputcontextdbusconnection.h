@@ -103,11 +103,11 @@ public slots:
 
     virtual void updateInputMethodArea(const QRegion &region);
 
-    /*! \brief Set copy/paste button state: hide it, show copy or show paste
+    /*! \brief Set copy/paste state for appropriate UI elements in the input method server
      *  \param copyAvailable bool TRUE if text is selected
      *  \param pasteAvailable bool TRUE if clipboard content is not empty
      */
-    virtual void setCopyPasteButton(bool copyAvailable, bool pasteAvailable);
+    virtual void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
 
     /*!
      * \brief Process a key event redirected from hardware keyboard to input method plugin(s).

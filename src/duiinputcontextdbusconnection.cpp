@@ -121,9 +121,9 @@ void DuiInputContextDBusAdaptor::appOrientationChanged(int angle)
     host->appOrientationChanged(angle);
 }
 
-void DuiInputContextDBusAdaptor::setCopyPasteButton(bool copyAvailable, bool pasteAvailable)
+void DuiInputContextDBusAdaptor::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
-    host->setCopyPasteButton(copyAvailable, pasteAvailable);
+    host->setCopyPasteState(copyAvailable, pasteAvailable);
 }
 
 void DuiInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int modifiers,
@@ -529,10 +529,10 @@ void DuiInputContextDBusConnection::updateInputMethodArea(const QRegion &region)
 }
 
 
-void DuiInputContextDBusConnection::setCopyPasteButton(bool copyAvailable, bool pasteAvailable)
+void DuiInputContextDBusConnection::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
     foreach (DuiInputMethodBase *target, targets()) {
-        target->setCopyPasteButton(copyAvailable, pasteAvailable);
+        target->setCopyPasteState(copyAvailable, pasteAvailable);
     }
 }
 

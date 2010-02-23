@@ -84,11 +84,11 @@ public:
      */
     virtual void appOrientationChanged(int angle);
 
-    /*! \brief Set copy/paste button state: hide it, show copy or show paste
+    /*! \brief Set copy/paste state for appropriate UI elements
      *  \param copyAvailable bool TRUE if text is selected
      *  \param pasteAvailable bool TRUE if clipboard content is not empty
      */
-    virtual void setCopyPasteButton(bool copyAvailable, bool pasteAvailable);
+    virtual void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
 
     /*!
      * \brief use a custom toolbar

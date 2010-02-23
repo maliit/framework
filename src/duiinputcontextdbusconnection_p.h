@@ -45,7 +45,7 @@ public slots:
     void setContextObject(QString callbackObject);
     void activateContext();
     void appOrientationChanged(int angle);
-    void setCopyPasteButton(bool copyAvailable, bool pasteAvailable);
+    void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
     void processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text,
                          bool autoRepeat, int count, int nativeScanCode);
 

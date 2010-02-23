@@ -77,7 +77,7 @@ void InputMethodServerDBusStub::resetCallCounts()
 
     keyEventCallCount = 0;
     appOrientationChangedCount = 0;
-    setCopyPasteButtonCallCount = 0;
+    setCopyPasteStateCallCount = 0;
     redirectKeyCallCount = 0;
 }
 
@@ -133,14 +133,14 @@ int InputMethodServerDBusStub::orientationChangedCount()
     return appOrientationChangedCount;
 }
 
-int InputMethodServerDBusStub::setCopyPasteButtonCount()
+int InputMethodServerDBusStub::setCopyPasteStateCount()
 {
-    return setCopyPasteButtonCallCount;
+    return setCopyPasteStateCallCount;
 }
 
-QList<bool>& InputMethodServerDBusStub::setCopyPasteButtonParams()
+QList<bool>& InputMethodServerDBusStub::setCopyPasteStateParams()
 {
-    return setCopyPasteButtonCallParams;
+    return setCopyPasteStateCallParams;
 }
 
 int InputMethodServerDBusStub::redirectKeyCount()
@@ -214,11 +214,11 @@ void InputMethodServerDBusStub::appOrientationChanged(int angle)
     appOrientationChangedCount++;
 }
 
-void InputMethodServerDBusStub::setCopyPasteButton(bool copyAvailable, bool pasteAvailable)
+void InputMethodServerDBusStub::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
-    ++setCopyPasteButtonCallCount;
-    setCopyPasteButtonCallParams.append(copyAvailable);
-    setCopyPasteButtonCallParams.append(pasteAvailable);
+    ++setCopyPasteStateCallCount;
+    setCopyPasteStateCallParams.append(copyAvailable);
+    setCopyPasteStateCallParams.append(pasteAvailable);
 }
 
 void InputMethodServerDBusStub::processKeyEvent(int keyType, int keyCode, int /* modifiers */,
@@ -658,10 +658,10 @@ void Ut_DuiInputContext::testHasSelection()
     gFocusedWidget = 0;
 }
 
-void Ut_DuiInputContext::testCopyPasteButton()
+void Ut_DuiInputContext::testCopyPasteState()
 {
     WidgetStub widget(0);
-    QList<bool> &params = m_stub->setCopyPasteButtonParams();
+    QList<bool> &params = m_stub->setCopyPasteStateParams();
 
     QApplication::clipboard()->clear();
 
@@ -670,7 +670,7 @@ void Ut_DuiInputContext::testCopyPasteButton()
         app->processEvents();
     }
 
-    int count = m_stub->setCopyPasteButtonCount();
+    int count = m_stub->setCopyPasteStateCount();
     params.clear();
     qDebug() << "No focused widget";
     gFocusedWidget = 0;
@@ -680,19 +680,19 @@ void Ut_DuiInputContext::testCopyPasteButton()
         app->processEvents();
     }
     ++count;
-    QCOMPARE(m_stub->setCopyPasteButtonCount(), count);
+    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
 
     qDebug() << "Update button state";
-    m_subject->manageCopyPasteButton(false);
+    m_subject->manageCopyPasteState(false);
     QTest::qWait(500); // just processing pending events is not robust.
     while (app->hasPendingEvents()) {
         app->processEvents();
     }
     ++count;
-    QCOMPARE(m_stub->setCopyPasteButtonCount(), count);
+    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
@@ -705,7 +705,7 @@ void Ut_DuiInputContext::testCopyPasteButton()
         app->processEvents();
     }
     ++count;
-    QCOMPARE(m_stub->setCopyPasteButtonCount(), count);
+    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
@@ -717,7 +717,7 @@ void Ut_DuiInputContext::testCopyPasteButton()
         app->processEvents();
     }
     ++count;
-    QCOMPARE(m_stub->setCopyPasteButtonCount(), count);
+    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
@@ -730,7 +730,7 @@ void Ut_DuiInputContext::testCopyPasteButton()
         app->processEvents();
     }
     ++count;
-    QVERIFY(m_stub->setCopyPasteButtonCount() == count);
+    QVERIFY(m_stub->setCopyPasteStateCount() == count);
     QVERIFY(params.count() == 2);
     QCOMPARE(params.takeFirst(), true);
     QCOMPARE(params.takeFirst(), false);
@@ -743,7 +743,7 @@ void Ut_DuiInputContext::testCopyPasteButton()
         app->processEvents();
     }
     ++count;
-    QVERIFY(m_stub->setCopyPasteButtonCount() == count);
+    QVERIFY(m_stub->setCopyPasteStateCount() == count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);

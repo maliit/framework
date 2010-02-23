@@ -114,7 +114,7 @@ void DuiInputMethodBase::appOrientationChanged(int angle)
     Q_UNUSED(angle);
 }
 
-void DuiInputMethodBase::setCopyPasteButton(bool copyAvailable, bool pasteAvailable)
+void DuiInputMethodBase::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
     // empty default implementation
     Q_UNUSED(copyAvailable);

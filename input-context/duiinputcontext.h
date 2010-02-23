@@ -154,10 +154,10 @@ private slots:
                               const QString &newOwner);
 
     /*!
-     * \brief Shows or hides Copy/Paste button on virtual keyboard
+     * \brief Notifies input method server of copy/paste availability.
      * \param copyAvailable bool Specifies wheter copy is available
      */
-    void manageCopyPasteButton(bool copyAvailable);
+    void manageCopyPasteState(bool copyAvailable);
 
     //! Notify input method plugin about new \a orientation angle of application's active window.
     void notifyOrientationChange(Dui::OrientationAngle orientation);

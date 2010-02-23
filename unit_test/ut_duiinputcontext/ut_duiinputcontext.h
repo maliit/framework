@@ -39,8 +39,8 @@ public:
     int keyEventCount();
     int orientationChangedCount();
 
-    int setCopyPasteButtonCount();
-    QList<bool> &setCopyPasteButtonParams();
+    int setCopyPasteStateCount();
+    QList<bool> &setCopyPasteStateParams();
 
     int redirectKeyCount();
     RedirectedKeyParamsStruct &redirectKeyParams();
@@ -58,7 +58,7 @@ public slots:
 
     void appOrientationChanged(int angle);
 
-    void setCopyPasteButton(bool copyAvailable, bool pasteAvailable);
+    void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
 
     void processKeyEvent(int keyType, int keyCode, int modifiers,
                          const QString &text, bool autoRepeat, int count, int nativeScanCode);
@@ -75,8 +75,8 @@ private:
     int keyEventCallCount;
     int appOrientationChangedCount;
 
-    int setCopyPasteButtonCallCount;
-    QList<bool> setCopyPasteButtonCallParams;
+    int setCopyPasteStateCallCount;
+    QList<bool> setCopyPasteStateCallParams;
     int redirectKeyCallCount;
     RedirectedKeyParamsStruct redirectKeyCallParams;
 };
@@ -154,7 +154,7 @@ private slots:
     // FIXME: test non-input enabled widgets?
 
     //test copy/paste stuff
-    void testCopyPasteButton();
+    void testCopyPasteState();
 
     void testSetRedirectKeys();
 

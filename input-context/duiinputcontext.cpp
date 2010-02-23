@@ -330,7 +330,7 @@ void DuiInputContext::setFocusWidget(QWidget *focused)
     }
 
     // show or hide Copy/Paste button on input method server
-    manageCopyPasteButton(copyAvailable);
+    manageCopyPasteState(copyAvailable);
 
     if (inputPanelState == InputPanelShowPending && focused) {
         iface->call(QDBus::NoBlock, "showOnFocus");
@@ -352,7 +352,7 @@ void DuiInputContext::setFocusWidget(QWidget *focused)
     if (focusedObject && focusedObject->metaObject()
             && focusedObject->metaObject()->indexOfSignal(signalName) != -1) {
         connect(focusedObject, SIGNAL(copyAvailable(bool)),
-                this, SLOT(manageCopyPasteButton(bool)));
+                this, SLOT(manageCopyPasteState(bool)));
         connectedObject = focusedObject;
     }
 }
@@ -705,7 +705,7 @@ void DuiInputContext::paste()
 
     QApplication::clipboard()->clear();
     pasteAvailable = false;
-    manageCopyPasteButton(false); // there is no chance to have selection after paste
+    manageCopyPasteState(false); // there is no chance to have selection after paste
 }
 
 
@@ -745,9 +745,9 @@ void DuiInputContext::serviceChangeHandler(const QString &name, const QString &o
     }
 }
 
-void DuiInputContext::manageCopyPasteButton(bool copyAvailable)
+void DuiInputContext::manageCopyPasteState(bool copyAvailable)
 {
-    iface->call(QDBus::NoBlock, "setCopyPasteButton", copyAvailable && copyAllowed, pasteAvailable);
+    iface->call(QDBus::NoBlock, "setCopyPasteState", copyAvailable && copyAllowed, pasteAvailable);
 }
 
 
