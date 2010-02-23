@@ -142,7 +142,8 @@ void DuiInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int m
 DuiInputContextDBusConnectionPrivate::DuiInputContextDBusConnectionPrivate()
     : activeContext(0),
       valid(true),
-      globalCorrectionEnabled(false)
+      globalCorrectionEnabled(false),
+      redirectionEnabled(false)
 {
     // nothing
 }
@@ -326,9 +327,11 @@ QRect DuiInputContextDBusConnection::preeditRectangle(bool &valid)
 
 void DuiInputContextDBusConnection::setRedirectKeys(bool enabled)
 {
-    if (d->activeContext) {
+    if ((d->redirectionEnabled != enabled) && d->activeContext) {
         d->activeContext->call("setRedirectKeys", enabled);
     }
+
+    d->redirectionEnabled = enabled;
 }
 
 
@@ -392,6 +395,7 @@ void DuiInputContextDBusConnection::activateContext()
 
         // update the state of the new active context
         d->activeContext->call("setGlobalCorrectionEnabled", d->globalCorrectionEnabled);
+        d->activeContext->call("setRedirectKeys", d->redirectionEnabled);
 
     } else {
         qDebug() << __PRETTY_FUNCTION__ << "unable to activate context";
@@ -423,7 +427,7 @@ void DuiInputContextDBusConnection::hideOnLostFocus()
 
 
 void DuiInputContextDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
-        const QRect &preeditRect)
+                                                          const QRect &preeditRect)
 {
     foreach (DuiInputMethodBase *target, targets()) {
         target->mouseClickedOnPreedit(pos, preeditRect);

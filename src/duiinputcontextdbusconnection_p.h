@@ -66,6 +66,7 @@ public:
     bool valid;
     QMap<QString, QVariant> widgetState;
     bool globalCorrectionEnabled;
+    bool redirectionEnabled;
 };
 
 #endif
