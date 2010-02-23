@@ -112,6 +112,10 @@ public:
      */
     virtual void setState(const QList<DuiIMHandlerState> &state);
 
+    /*! \brief This method is called when target client is changed.
+     */
+    virtual void clientChanged();
+
 signals:
     /*!
      * Inform that the screen area covered by the input method has been changed.

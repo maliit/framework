@@ -143,3 +143,8 @@ void DuiInputMethodBase::setState(const QList<DuiIMHandlerState> &state)
     Q_UNUSED(state);
 }
 
+void DuiInputMethodBase::clientChanged()
+{
+    // empty default implementation
+}
+

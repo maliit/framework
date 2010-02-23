@@ -405,6 +405,11 @@ void DuiInputContextDBusConnection::activateContext()
     if ((previousActive != 0) && (previousActive != d->activeContext)) {
         previousActive->call("activationLostEvent");
     }
+
+    // notify plugins
+    foreach (DuiInputMethodBase *target, targets()) {
+        target->clientChanged();
+    }
 }
 
 
