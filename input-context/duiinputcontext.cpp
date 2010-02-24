@@ -305,10 +305,6 @@ void DuiInputContext::setFocusWidget(QWidget *focused)
         QMap<QString, QVariant> stateInformation = getStateInformation();
         iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation);
 
-        if (inputPanelState == InputPanelHidden) {
-            inputPanelState = InputPanelShowPending;
-        }
-
         // check if copyable text is selected
         Qt::InputMethodQuery query = Qt::ImCurrentSelection;
         QVariant queryResult = focused->inputMethodQuery(query);
