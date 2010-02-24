@@ -125,6 +125,11 @@ public:
      */
     virtual bool hasSelection(bool &valid) const;
 
+    /*! get rectangle covering preedit
+     * \param valid validity for the return value
+     */
+    virtual QRect preeditRectangle(bool &valid) const;
+
     /*!
      * \brief Sends copy command to text editor.
      * This method tries to call "copy" slot in the focused widget

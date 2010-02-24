@@ -642,6 +642,16 @@ bool DuiInputContext::hasSelection(bool &valid) const
 }
 
 
+QRect DuiInputContext::preeditRectangle(bool &valid) const
+{
+    Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(Dui::PreeditRectangleQuery);
+    QVariant queryResult = focusWidget()->inputMethodQuery(query);
+
+    valid = queryResult.isValid();
+    return queryResult.toRect();
+}
+
+
 bool DuiInputContext::isInputEnabled(QWidget *widget) const
 {
     bool inputEnabled = false;

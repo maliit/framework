@@ -185,14 +185,7 @@ int DuiInputContextAdaptor::inputMethodMode(bool &valid)
 
 QRect DuiInputContextAdaptor::preeditRectangle(bool &valid)
 {
-    DuiInputContext::WidgetInfo info = owner->getFocusWidgetInfo();
-    valid = info.valid;
-
-    QRect rect;
-    if (valid) {
-        rect = info.preeditRectangle;
-    }
-    return rect;
+    return owner->preeditRectangle(valid);
 }
 
 void DuiInputContextAdaptor::setRedirectKeys(bool enabled)
