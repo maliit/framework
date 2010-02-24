@@ -52,20 +52,6 @@ namespace
 }
 
 
-DuiInputContext::WidgetInfo::WidgetInfo()
-    : valid(false),
-      // assume correction off for plain qt
-      // TODO: create a way for plain qt apps to disable this so we can have it on as default
-      correctionEnabled(false),
-      predictionEnabled(false),
-      autoCapitalizationEnabled(false),
-      contentType(Dui::FreeTextContentType),
-      inputMethodMode(Dui::InputMethodModeNormal),
-      preeditRectangle()
-{
-}
-
-
 // Note: this class can also be used on plain Qt applications.
 // This means that the functionality _can_ _not_ rely on
 // DuiApplication or classes relying on it being initialized.
@@ -525,120 +511,9 @@ void DuiInputContext::updateInputMethodArea(const QList<QVariant> &data)
 }
 
 
-DuiInputContext::WidgetInfo DuiInputContext::getFocusWidgetInfo()
-{
-    WidgetInfo info;
-    QWidget *widget = QApplication::focusWidget();
-    Qt::InputMethodHints hints;
-
-    if ((widget != 0) && isInputEnabled(widget)) {
-        QGraphicsView *graphicsView = qobject_cast<QGraphicsView *>(focusWidget());
-
-        if (graphicsView) {
-            // focusWidget()->inputMethodHints() always return 0
-            // therefore we explicitly call inputMethodHints with focused item
-            QGraphicsScene *scene = graphicsView->scene();
-            QGraphicsItem *focusedObject = scene ? scene->focusItem() : 0;
-            if (focusedObject) {
-                hints = focusedObject->inputMethodHints();
-            }
-        } else {
-            hints = focusWidget()->inputMethodHints();
-        }
-
-        info.valid = true;
-
-        // get content type value
-        info.contentType = contentType(hints);
-
-        // get error correction support
-        Qt::InputMethodQuery query
-            = static_cast<Qt::InputMethodQuery>(Dui::ImCorrectionEnabledQuery);
-        QVariant queryResult = widget->inputMethodQuery(query);
-
-        if (queryResult.isValid()) {
-            info.correctionEnabled = queryResult.toBool();
-        }
-
-        info.predictionEnabled = !(hints & Qt::ImhNoPredictiveText);
-        info.autoCapitalizationEnabled = !(hints & Qt::ImhNoAutoUppercase);
-
-        // get input method mode
-        query = static_cast<Qt::InputMethodQuery>(Dui::ImModeQuery);
-        queryResult = widget->inputMethodQuery(query);
-
-        if (queryResult.isValid()) {
-            info.inputMethodMode = static_cast<Dui::InputMethodMode>(queryResult.toInt());
-        }
-
-        // get preedit rectangle
-        query = static_cast<Qt::InputMethodQuery>(Dui::PreeditRectangleQuery);
-        queryResult = widget->inputMethodQuery(query).toRect();
-
-        if (queryResult.isValid()) {
-            info.preeditRectangle = queryResult.toRect();
-        }
-    }
-
-    return info;
-}
-
-
 void DuiInputContext::setGlobalCorrectionEnabled(bool enabled)
 {
     correctionEnabled = enabled;
-}
-
-
-bool DuiInputContext::surroundingText(QString &text, int &cursorPosition)
-{
-    bool valid = false;
-    text.clear();
-    cursorPosition = 0;
-
-    QWidget *widget = QApplication::focusWidget();
-
-    if ((widget != 0) && isInputEnabled(widget)) {
-        valid = true;
-
-        //get surrounding text
-        Qt::InputMethodQuery query = Qt::ImSurroundingText;
-        QVariant queryResult = widget->inputMethodQuery(query);
-
-        if (queryResult.isValid())
-            text = queryResult.toString();
-
-        //get surrounding text
-        query = Qt::ImCursorPosition;
-        queryResult = widget->inputMethodQuery(query);
-
-        if (queryResult.isValid())
-            cursorPosition = queryResult.toInt();
-    }
-
-    return valid;
-}
-
-
-bool DuiInputContext::hasSelection(bool &valid) const
-{
-    bool val = false;
-    valid = false;
-
-    QWidget *widget = QApplication::focusWidget();
-
-    if ((widget != 0) && isInputEnabled(widget)) {
-        valid = true;
-
-        //get selecting text
-        const Qt::InputMethodQuery query = Qt::ImCurrentSelection;
-        const QVariant queryResult = widget->inputMethodQuery(query);
-
-        if (queryResult.isValid())
-            val = !(queryResult.toString().isEmpty());
-    }
-
-    return val;
 }
 
 
@@ -649,27 +524,6 @@ QRect DuiInputContext::preeditRectangle(bool &valid) const
 
     valid = queryResult.isValid();
     return queryResult.toRect();
-}
-
-
-bool DuiInputContext::isInputEnabled(QWidget *widget) const
-{
-    bool inputEnabled = false;
-
-    if (widget) {
-        // qgraphicsview doesn't have currently proper support for WA_InputMethodEnabled
-        Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(Dui::InputEnabledQuery);
-        QVariant queryResult = widget->inputMethodQuery(query);
-
-        if (queryResult.isValid()) {
-            inputEnabled = queryResult.toBool();
-
-        } else {
-            inputEnabled = widget->testAttribute(Qt::WA_InputMethodEnabled);
-        }
-    }
-
-    return inputEnabled;
 }
 
 

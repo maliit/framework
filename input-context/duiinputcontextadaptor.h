@@ -50,13 +50,6 @@ public slots:
     virtual Q_NOREPLY void setRedirectKeys(bool enabled);
 
     // valid is out parameter for value validity
-    virtual int contentType(bool &valid);
-    virtual bool correctionEnabled(bool &valid);
-    virtual bool predictionEnabled(bool &valid);
-    virtual bool autoCapitalizationEnabled(bool &valid);
-    virtual bool surroundingText(QString &text, int &cursorPosition);
-    virtual bool hasSelection(bool &valid);
-    virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
 
 private:

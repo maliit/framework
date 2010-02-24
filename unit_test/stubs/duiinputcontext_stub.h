@@ -48,8 +48,6 @@ public:
                           bool autoRepeat, int count);
     virtual void updateInputMethodArea(const QList<QVariant> &rectList);
     virtual void setGlobalCorrectionEnabled(bool enable);
-    virtual DuiInputContext::WidgetInfo getFocusWidgetInfo();
-    virtual bool surroundingText(QString &text, int &cursorPosition);
 };
 
 void DuiInputContextStub::duiInputContextConstructor(QObject *)
@@ -151,20 +149,6 @@ void DuiInputContextStub::setGlobalCorrectionEnabled(bool enable)
     stubMethodEntered("setGlobalCorrectionEnabled", params);
 }
 
-DuiInputContext::WidgetInfo DuiInputContextStub::getFocusWidgetInfo()
-{
-    stubMethodEntered("getFocusWidgetInfo");
-    return stubReturnValue<DuiInputContext::WidgetInfo>("getFocusWidgetInfo");
-}
-
-bool DuiInputContextStub::surroundingText(QString &text, int &cursorPosition)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<QString &>(text));
-    params.append(new Parameter<int &>(cursorPosition));
-    stubMethodEntered("surroundingText", params);
-    return stubReturnValue<bool>("surroundingText");
-}
 
 DuiInputContextStub gDefaultDuiInputContextStub;
 
@@ -257,14 +241,5 @@ void DuiInputContext::setGlobalCorrectionEnabled(bool enable)
     gDuiInputContextStub->setGlobalCorrectionEnabled(enable);
 }
 
-DuiInputContext::WidgetInfo DuiInputContext::getFocusWidgetInfo()
-{
-    return gDuiInputContextStub->getFocusWidgetInfo();
-}
-
-bool DuiInputContext::surroundingText(QString &text, int &cursorPosition)
-{
-    return gDuiInputContextStub->surroundingText(text, cursorPosition);
-}
 
 #endif

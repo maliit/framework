@@ -86,62 +86,6 @@ void DuiInputContextAdaptor::updateInputMethodArea(const QList<QVariant>& data)
 }
 
 
-int DuiInputContextAdaptor::contentType(bool &valid)
-{
-    DuiInputContext::WidgetInfo info = owner->getFocusWidgetInfo();
-
-    valid = info.valid;
-
-    if (info.valid) {
-        return info.contentType;
-    }
-
-    return -1;
-}
-
-
-bool DuiInputContextAdaptor::correctionEnabled(bool &valid)
-{
-    DuiInputContext::WidgetInfo info = owner->getFocusWidgetInfo();
-
-    valid = info.valid;
-
-    if (info.valid) {
-        return info.correctionEnabled;
-    }
-
-    return false;
-}
-
-
-bool DuiInputContextAdaptor::predictionEnabled(bool &valid)
-{
-    DuiInputContext::WidgetInfo info = owner->getFocusWidgetInfo();
-
-    valid = info.valid;
-
-    if (info.valid) {
-        return info.predictionEnabled;
-    }
-
-    return false;
-}
-
-
-bool DuiInputContextAdaptor::autoCapitalizationEnabled(bool &valid)
-{
-    DuiInputContext::WidgetInfo info = owner->getFocusWidgetInfo();
-
-    valid = info.valid;
-
-    if (info.valid) {
-        return info.autoCapitalizationEnabled;
-    }
-
-    return false;
-}
-
-
 void DuiInputContextAdaptor::setGlobalCorrectionEnabled(bool enabled)
 {
     owner->setGlobalCorrectionEnabled(enabled);
@@ -157,30 +101,6 @@ void DuiInputContextAdaptor::copy()
 void DuiInputContextAdaptor::paste()
 {
     owner->paste();
-}
-
-
-bool DuiInputContextAdaptor::surroundingText(QString &text, int &cursorPosition)
-{
-    return owner->surroundingText(text, cursorPosition);
-}
-
-bool DuiInputContextAdaptor::hasSelection(bool &valid)
-{
-    return owner->hasSelection(valid);
-}
-
-int DuiInputContextAdaptor::inputMethodMode(bool &valid)
-{
-    DuiInputContext::WidgetInfo info = owner->getFocusWidgetInfo();
-
-    valid = info.valid;
-
-    if (info.valid) {
-        return info.inputMethodMode;
-    }
-
-    return -1;
 }
 
 QRect DuiInputContextAdaptor::preeditRectangle(bool &valid)

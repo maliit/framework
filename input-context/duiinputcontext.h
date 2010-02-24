@@ -44,20 +44,6 @@ class DuiInputContext: public QInputContext
     friend class Ut_DuiInputContext;
 
 public:
-    class WidgetInfo
-    {
-    public:
-        WidgetInfo();
-
-        bool valid;
-        bool correctionEnabled;
-        bool predictionEnabled;
-        bool autoCapitalizationEnabled;
-        Dui::TextContentType contentType;
-        Dui::InputMethodMode inputMethodMode;
-        QRect preeditRectangle;
-    };
-
     //! \brief Constructor
     explicit DuiInputContext(QObject *parent = 0);
 
@@ -108,22 +94,6 @@ public:
      * \brief set global correction option enable/disable
      */
     virtual void setGlobalCorrectionEnabled(bool);
-
-    /*!
-     * \brief get focused widget information
-     */
-    virtual WidgetInfo getFocusWidgetInfo();
-
-    /*!
-     * \brief get surrounding text and cursor position information
-     */
-    virtual bool surroundingText(QString &text, int &cursorPosition);
-
-    /*!
-     * \brief Returns true if there is selection text
-     * \param valid if the query is failed, \a valid will be set to false, otherwise true.
-     */
-    virtual bool hasSelection(bool &valid) const;
 
     /*! get rectangle covering preedit
      * \param valid validity for the return value
@@ -180,9 +150,6 @@ private:
 
     //! registers the application to the input method server
     void registerContextObject();
-
-    // returns true if given widget supports input methods, widget can be null
-    bool isInputEnabled(QWidget *widget) const;
 
     // returns content type corresponding to specified hints
     Dui::TextContentType contentType(Qt::InputMethodHints hints) const;

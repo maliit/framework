@@ -35,7 +35,6 @@ private slots:
     void cleanup();
 
     void testNoReplyPassthroughs();
-    void testReplyMethods();
 
 private:
     DuiInputContextAdaptor *subject;

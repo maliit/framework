@@ -50,13 +50,6 @@ public:
     virtual void setRedirectKeys(bool enabled);
 
     // valid is out parameter for value validity
-    virtual int contentType(bool &valid);
-    virtual bool correctionEnabled(bool &valid);
-    virtual bool predictionEnabled(bool &valid);
-    virtual bool autoCapitalizationEnabled(bool &valid);
-    virtual bool surroundingText(QString &text, int &cursorPosition);
-    virtual bool hasSelection(bool &valid);
-    virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
 };
 
@@ -131,63 +124,6 @@ void DuiInputContextAdaptorStub::setRedirectKeys(bool enabled)
     stubMethodEntered("setRedirectKeys", params);
 }
 
-int DuiInputContextAdaptorStub::contentType(bool &valid)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<bool>(valid));
-    stubMethodEntered("contentType", params);
-    return stubReturnValue<int>("contentType");
-}
-
-bool DuiInputContextAdaptorStub::correctionEnabled(bool &valid)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<bool>(valid));
-    stubMethodEntered("correctionEnabled", params);
-    return stubReturnValue<bool>("correctionEnabled");
-}
-
-bool DuiInputContextAdaptorStub::predictionEnabled(bool &valid)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<bool>(valid));
-    stubMethodEntered("predictionEnabled", params);
-    return stubReturnValue<bool>("predictionEnabled");
-}
-
-bool DuiInputContextAdaptorStub::autoCapitalizationEnabled(bool &valid)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<bool>(valid));
-    stubMethodEntered("autoCapitalizationEnabled", params);
-    return stubReturnValue<bool>("autoCapitalizationEnabled");
-}
-
-bool DuiInputContextAdaptorStub::surroundingText(QString &text, int &cursorPosition)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<QString>(text));
-    params.append(new Parameter<int>(cursorPosition));
-    stubMethodEntered("surroundingText", params);
-    return stubReturnValue<bool>("surroundingText");
-}
-
-bool DuiInputContextAdaptorStub::hasSelection(bool &valid)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<bool>(valid));
-    stubMethodEntered("hasSelection", params);
-    return stubReturnValue<bool>("haselection");
-}
-
-int DuiInputContextAdaptorStub::inputMethodMode(bool &valid)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<bool>(valid));
-    stubMethodEntered("inputMethodMode", params);
-    return stubReturnValue<int>("inputMethodMode");
-}
-
 QRect DuiInputContextAdaptorStub::preeditRectangle(bool &valid)
 {
     QList<ParameterBase *> params;
@@ -257,40 +193,6 @@ void DuiInputContextAdaptor::setGlobalCorrectionEnabled(bool enable)
 void DuiInputContextAdaptor::setRedirectKeys(bool enabled)
 {
     return gDuiInputContextAdaptorStub->setRedirectKeys(enabled);
-}
-
-int DuiInputContextAdaptor::contentType(bool &valid)
-{
-    return gDuiInputContextAdaptorStub->contentType(valid);
-}
-
-bool DuiInputContextAdaptor::correctionEnabled(bool &valid)
-{
-    return gDuiInputContextAdaptorStub->correctionEnabled(valid);
-}
-bool DuiInputContextAdaptor::predictionEnabled(bool &valid)
-{
-    return gDuiInputContextAdaptorStub->predictionEnabled(valid);
-}
-
-bool DuiInputContextAdaptor::autoCapitalizationEnabled(bool &valid)
-{
-    return gDuiInputContextAdaptorStub->autoCapitalizationEnabled(valid);
-}
-
-bool DuiInputContextAdaptor::surroundingText(QString &text, int &cursorPosition)
-{
-    return gDuiInputContextAdaptorStub->surroundingText(text, cursorPosition);
-}
-
-bool DuiInputContextAdaptor::hasSelection(bool &valid)
-{
-    return gDuiInputContextAdaptorStub->hasSelection(valid);
-}
-
-int DuiInputContextAdaptor::inputMethodMode(bool &valid)
-{
-    return gDuiInputContextAdaptorStub->inputMethodMode(valid);
 }
 
 QRect DuiInputContextAdaptor::preeditRectangle(bool &valid)

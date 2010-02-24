@@ -136,9 +136,6 @@ private slots:
     void testReset();
     void testMouseHandler();
     void testKeyEvent();
-    void testFocusWidgetInfo();
-    void testSurroundingText();
-    void testHasSelection();
     //void testSetFocusWidget();
 
     // methods for input method server connection
