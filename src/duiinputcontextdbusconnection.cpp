@@ -126,16 +126,12 @@ void DuiInputContextDBusAdaptor::setCopyPasteButton(bool copyAvailable, bool pas
     host->setCopyPasteButton(copyAvailable, pasteAvailable);
 }
 
-void DuiInputContextDBusAdaptor::composeTextInput(int keyType, int keyCode, int modifier,
-                                                  const QString &text, bool autoRepeat,
-                                                  int count, int nativeScanCode)
+void DuiInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int modifiers,
+                                                 const QString &text, bool autoRepeat,
+                                                 int count, int nativeScanCode)
 {
-    host->composeTextInput(keyType, keyCode, modifier, text, autoRepeat, count, nativeScanCode);
-}
-
-void DuiInputContextDBusAdaptor::redirectKey(int keyType, int keyCode, const QString &text)
-{
-    host->redirectKey(keyType, keyCode, text);
+    host->processKeyEvent(static_cast<QEvent::Type>(keyType), static_cast<Qt::Key>(keyCode),
+                          static_cast<Qt::KeyboardModifiers>(modifiers), text, autoRepeat, count, nativeScanCode);
 }
 
 
@@ -325,43 +321,16 @@ QRect DuiInputContextDBusConnection::preeditRectangle(bool &valid)
     return rect;
 }
 
-
-void DuiInputContextDBusConnection::setComposingTextInput(bool enabled)
+void DuiInputContextDBusConnection::setRedirectKeys(bool enabled)
 {
     if (d->activeContext) {
-        d->activeContext->call("setComposingTextInput", enabled);
-    }
-}
-
-
-void DuiInputContextDBusConnection::addRedirectedKey(int keyCode, bool eatInBetweenKeys,
-                                                     bool eatItself)
-{
-    if (d->activeContext) {
-        d->activeContext->call("addRedirectedKey", keyCode, eatInBetweenKeys, eatItself);
-    }
-}
-
-
-void DuiInputContextDBusConnection::removeRedirectedKey(int keyCode)
-{
-    if (d->activeContext) {
-        d->activeContext->call("removeRedirectedKey", keyCode);
-    }
-}
-
-
-void DuiInputContextDBusConnection::setNextKeyRedirected(bool enabled)
-{
-    if (d->activeContext) {
-        d->activeContext->call("setNextKeyRedirected", enabled);
+        d->activeContext->call("setRedirectKeys", enabled);
     }
 }
 
 
 void DuiInputContextDBusConnection::copy()
 {
-
     if (d->activeContext) {
         d->activeContext->call("copy");
     }
@@ -417,7 +386,6 @@ void DuiInputContextDBusConnection::activateContext()
     // set active context to interface corresponding caller
     if (d->clients.contains(msg.service())) {
         d->activeContext = d->clients[msg.service()];
-
     } else {
         qDebug() << __PRETTY_FUNCTION__ << "unable to activate context";
         d->activeContext = 0;
@@ -553,20 +521,13 @@ void DuiInputContextDBusConnection::setCopyPasteButton(bool copyAvailable, bool 
 }
 
 
-void DuiInputContextDBusConnection::composeTextInput(int keyType, int keyCode, int modifier,
-                                                     const QString &text, bool autoRepeat,
-                                                     int count, int nativeScanCode)
+void DuiInputContextDBusConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                                    Qt::KeyboardModifiers modifiers,
+                                                    const QString &text, bool autoRepeat, int count,
+                                                    int nativeScanCode)
 {
     foreach (DuiInputMethodBase *target, targets()) {
-        target->composeTextInput(keyType, keyCode, modifier, text, autoRepeat, count,
-                                 nativeScanCode);
-    }
-}
-
-void DuiInputContextDBusConnection::redirectKey(const int keyType, const int keyCode,
-        const QString &text)
-{
-    foreach (DuiInputMethodBase *target, targets()) {
-        target->redirectKey(keyType, keyCode, text);
+        target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
+                                nativeScanCode);
     }
 }

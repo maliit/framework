@@ -136,35 +136,10 @@ public:
     virtual void paste() = 0;
 
     /*!
-     * \brief set if the input method wants to compose all raw key event
-     * from hardware keyboard or not.
+     * \brief Set if the input method wants to process all raw key events
+     * from hardware keyboard (via \a processKeyEvent calls).
      */
-    virtual void setComposingTextInput(bool) = 0;
-
-    /*!
-     * \brief Adds a key into a redicted key list.
-     * All keys in the list will be redirected to input method plugins to be handled.
-     *
-     * \param keyCode, a Qt::Key.
-     * \param eatInBetweenKey, indicate whether the later input key which happens in between
-     * the press and release this redirected key will be eaten or not, if it is eaten, then widget
-     * will not receive it.
-     * \param eatItself, indicate whether this redirected key itself will be eaten or not.
-     */
-    virtual void addRedirectedKey(int keyCode, bool eatInBetweenKey, bool eatItself) = 0;
-
-    /*!
-     * \brief Removes a redirected key.
-     * \sa addRedirectedKey().
-     * \param keyCode, the key code of the redirected key.
-     */
-    virtual void removeRedirectedKey(int keyCode) = 0;
-
-    /*!
-     * \brief Sets if the input method wants to redirect the next input key events
-     * from hardware keyboard or not.
-     */
-    virtual void setNextKeyRedirected(bool) = 0;
+    virtual void setRedirectKeys(bool enabled) = 0;
 
 public slots:
 

@@ -60,7 +60,8 @@ public slots:
 
     void setCopyPasteButton(bool copyAvailable, bool pasteAvailable);
 
-    void redirectKey(int keyType, int keyCode, const QString &text);
+    void processKeyEvent(int keyType, int keyCode, int modifiers,
+                         const QString &text, bool autoRepeat, int count, int nativeScanCode);
 
 private:
     int showOnFocusCallCount;
@@ -155,8 +156,7 @@ private slots:
     //test copy/paste stuff
     void testCopyPasteButton();
 
-    void testRedirectKeys();
-    void testsetNextKeyRedirected();
+    void testSetRedirectKeys();
 
 private:
     void waitAndProcessEvents(int waitTime);

@@ -58,17 +58,6 @@ public:
         QRect preeditRectangle;
     };
 
-    class RedirectedKey
-    {
-    public:
-        RedirectedKey(int, bool, bool);
-
-        int keyCode;
-        bool eatInBetweenKeys;
-        bool eatItself;
-        bool isPressed;
-    };
-
     //! \brief Constructor
     explicit DuiInputContext(QObject *parent = 0);
 
@@ -151,35 +140,10 @@ public:
     void paste();
 
     /*!
-     * \brief Sets if the input method wants to compose all raw key events
-     * from hardware keyboard or not.
+     * \brief Set if the input method wants to process all raw key events
+     * from hardware keyboard (via \a processKeyEvent calls).
      */
-    virtual void setComposingTextInput(bool);
-
-    /*!
-     * \brief Adds a key which will be redirected to plugin.
-     * If the key code of the key which comes to input-context from hardware keyboard, matches
-     * the \a keyCode, then it will be redirected to plugin.
-     * \param keyCode, the key code of the redirected key.
-     * \param eatInBetweenKeys, indicate whether the later input key which happens in between
-     * the press and release this redirected key will be eaten or not, if it is eaten, then widget
-     * will not receive it.
-     * \param eatItself, indicate whether this redirected key itself will be eaten or not.
-     */
-    virtual void addRedirectedKey(int keyCode, bool eatInBetweenKeys, bool eatItself);
-
-    /*!
-     * \brief Removes a redirected key.
-     * \sa addRedirectedKey().
-     * \param keyCode, the key code of the redirected key.
-     */
-    virtual void removeRedirectedKey(int keyCode);
-
-    /*!
-     * \brief Sets if the input method wants to redirect the next input key events
-     * from hardware keyboard or not.
-     */
-    virtual void setNextKeyRedirected(bool);
+    virtual void setRedirectKeys(bool enabled);
 
 private slots:
     //! hides input method
@@ -218,15 +182,6 @@ private:
     // returns content type corresponding to specified hints
     Dui::TextContentType contentType(Qt::InputMethodHints hints) const;
 
-    //! Resets the state for redirectedKeys.
-    void resetRedirectedKeys();
-
-    //! Returns true if the key need to be redirected.
-    bool needRedirect(int keyCode) const;
-
-    //! Redirects input \a key, returns true if \a key should be eaten.
-    bool redirectKey(const QKeyEvent *key);
-
     //! returns state for currently focused widget, key is attribute name.
     QMap<QString, QVariant> getStateInformation() const;
 
@@ -251,9 +206,8 @@ private:
     QPointer<QObject> connectedObject;
     bool pasteAvailable;
     bool copyAllowed;
-    bool composingTextInputEnabled;
-    QList<RedirectedKey> redirectedKeys;
-    bool nextKeyRedirectedEnabled;
+    //! redirect all hw key events to the input method or not
+    bool redirectKeys;
 };
 
 #endif

@@ -66,14 +66,6 @@ DuiInputContext::WidgetInfo::WidgetInfo()
 }
 
 
-DuiInputContext::RedirectedKey::RedirectedKey(int key, bool eatKey, bool eatSelf)
-    : keyCode(key),
-      eatInBetweenKeys(eatKey),
-      eatItself(eatSelf),
-      isPressed(false)
-{
-}
-
 // Note: this class can also be used on plain Qt applications.
 // This means that the functionality _can_ _not_ rely on
 // DuiApplication or classes relying on it being initialized.
@@ -90,8 +82,7 @@ DuiInputContext::DuiInputContext(QObject *parent)
       connectedObject(0),
       pasteAvailable(false),
       copyAllowed(true),
-      composingTextInputEnabled(false),
-      nextKeyRedirectedEnabled(false)
+      redirectKeys(false)
 {
     sipHideTimer.setSingleShot(true);
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
@@ -287,10 +278,6 @@ void DuiInputContext::setFocusWidget(QWidget *focused)
     duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__ << focused;
     QInputContext::setFocusWidget(focused);
 
-    nextKeyRedirectedEnabled = false;
-
-    resetRedirectedKeys();
-
     // get detailed focus information from inside qgraphicsview
     QGraphicsView *graphicsView = qobject_cast<QGraphicsView *>(focusWidget());
 
@@ -400,17 +387,13 @@ bool DuiInputContext::filterEvent(const QEvent *event)
 
     } else if ((event->type() == QEvent::KeyPress) || (event->type() == QEvent::KeyRelease)) {
         const QKeyEvent *key = static_cast<const QKeyEvent *>(event);
-
-        if (composingTextInputEnabled) {
-            //call composeTextInput for the self-composing input method (hardware keyboard)
-            iface->call(QDBus::NoBlock, "composeTextInput", static_cast<int>(key->type()),
+        if (redirectKeys) {
+            iface->call(QDBus::NoBlock, "processKeyEvent", static_cast<int>(key->type()),
                         key->key(), static_cast<int>(key->modifiers()), key->text(),
                         key->isAutoRepeat(), key->count(),
                         static_cast<int>(key->nativeScanCode()));
             eaten = true;
 
-        } else if (needRedirect(key->key())) {
-            eaten = redirectKey(key);
         }
     }
 
@@ -743,6 +726,7 @@ void DuiInputContext::serviceChangeHandler(const QString &name, const QString &o
     // callback object again
     if (name == DBusServiceName) {
         active = false;
+        redirectKeys = false;
         inputPanelState = InputPanelHidden;
 
         if (!newOwner.isEmpty()) {
@@ -795,105 +779,10 @@ Dui::TextContentType DuiInputContext::contentType(Qt::InputMethodHints hints) co
     return type;
 }
 
-
-void DuiInputContext::setComposingTextInput(bool enabled)
+void DuiInputContext::setRedirectKeys(bool enabled)
 {
-    composingTextInputEnabled = enabled;
+    redirectKeys = enabled;
 }
-
-
-void DuiInputContext::addRedirectedKey(int keyCode, bool eatInBetweenKeys, bool eatItself)
-{
-    duiDebug("DuiInputContext") << __PRETTY_FUNCTION__;
-    removeRedirectedKey(keyCode);
-    redirectedKeys.append(RedirectedKey(keyCode, eatInBetweenKeys, eatItself));
-}
-
-
-void DuiInputContext::removeRedirectedKey(int keyCode)
-{
-    int index = -1;
-    for (int i = 0; i < redirectedKeys.count(); i++) {
-        if (redirectedKeys[i].keyCode == keyCode) {
-            index = i;
-            break;
-        }
-    }
-    if (index >= 0)
-        redirectedKeys.removeAt(index);
-}
-
-
-void DuiInputContext::setNextKeyRedirected(bool enabled)
-{
-    nextKeyRedirectedEnabled = enabled;
-}
-
-
-void DuiInputContext::resetRedirectedKeys()
-{
-    for (int i = 0; i < redirectedKeys.count(); i++) {
-        redirectedKeys[i].isPressed == false;
-    }
-}
-
-
-bool DuiInputContext::needRedirect(int keyCode) const
-{
-    bool val = nextKeyRedirectedEnabled;
-    if (!val) {
-        foreach (const RedirectedKey &key, redirectedKeys) {
-            if (key.keyCode == keyCode || key.isPressed) {
-                val = true;
-                break;
-            }
-        }
-    }
-    return val;
-}
-
-
-bool DuiInputContext::redirectKey(const QKeyEvent *key)
-{
-    bool eaten = false;
-    nextKeyRedirectedEnabled = false;
-    if (!key)
-        return eaten;
-
-    QEvent::Type keyType = key->type();
-    const int keyCode = key->key();
-    //redirect the key to plugin.
-    iface->call(QDBus::NoBlock, "redirectKey", static_cast<int>(keyType), keyCode, key->text());
-
-    int index = -1;
-    for (int i = 0; i < redirectedKeys.count(); i++) {
-        if (redirectedKeys[i].keyCode == keyCode) {
-            index = i;
-            break;
-        }
-    }
-    if (index >= 0) {
-        //redirectedKey, tag its state, and eat it if necessary.
-        if (keyType == QEvent::KeyPress) {
-            redirectedKeys[index].isPressed = true;
-        } else {
-            redirectedKeys[index].isPressed = false;
-        }
-        if (redirectedKeys[index].eatItself) {
-            eaten = true;
-        }
-    } else {
-        //character key, eat it if neccessary, and reset the state for redirectedKeys
-        for (int i = 0; i < redirectedKeys.count(); i++) {
-            if (redirectedKeys[i].isPressed && redirectedKeys[i].eatInBetweenKeys) {
-                eaten = true;
-            }
-        }
-    }
-
-    return eaten;
-}
-
 
 QMap<QString, QVariant> DuiInputContext::getStateInformation() const
 {

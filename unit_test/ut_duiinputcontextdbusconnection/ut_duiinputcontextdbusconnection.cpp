@@ -287,23 +287,9 @@ void Ut_DuiInputContextDBusConnection::testNoReplyDBusCalls()
     QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("setGlobalCorrectionEnabled"), 1);
     QVERIFY(gDuiInputContextAdaptorStub->stubLastCallTo("setGlobalCorrectionEnabled").parameter<bool>(0));
 
-    int keyCode = 12;
-    m_subject->addRedirectedKey(keyCode, false, false);
+    m_subject->setRedirectKeys(true);
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("addRedirectedKey"), 1);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("addRedirectedKey").parameter<int>(0), keyCode);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("addRedirectedKey").parameter<bool>(1), false);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("addRedirectedKey").parameter<bool>(2), false);
-
-    m_subject->removeRedirectedKey(keyCode);
-    handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("removeRedirectedKey"), 1);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("removeRedirectedKey").parameter<int>(0), keyCode);
-
-    m_subject->setNextKeyRedirected(true);
-    handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("setNextKeyRedirected"), 1);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("setNextKeyRedirected").parameter<bool>(0), true);
+    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("setRedirectKeys"), 1);
 }
 
 

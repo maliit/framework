@@ -127,23 +127,14 @@ void DuiInputMethodBase::useToolbar(const QString &toolbar)
     Q_UNUSED(toolbar);
 }
 
-void DuiInputMethodBase::composeTextInput(int keyType, int keyCode, int modifier,
-        const QString &text, bool autoRepeat, int count,
-        int nativeScanCode)
+void DuiInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                         Qt::KeyboardModifiers modifiers,
+                                         const QString &text, bool autoRepeat, int count,
+                                         int /* nativeScanCode */)
 {
     // default implementation, just sendKeyEvent back
-    Q_UNUSED(nativeScanCode);
-    inputContextConnection()->sendKeyEvent(QKeyEvent(static_cast<QEvent::Type>(keyType), keyCode,
-                                                     static_cast<Qt::KeyboardModifiers>(modifier),
-                                                     text, autoRepeat, count));
-}
-
-void DuiInputMethodBase::redirectKey(int keyType, int keyCode, const QString &text)
-{
-    // empty default implementation
-    Q_UNUSED(keyType);
-    Q_UNUSED(keyCode);
-    Q_UNUSED(text);
+    inputContextConnection()->sendKeyEvent(QKeyEvent(keyType, keyCode, modifiers, text, autoRepeat,
+                                                     count));
 }
 
 void DuiInputMethodBase::setState(const QList<DuiIMHandlerState> &state)

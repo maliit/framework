@@ -47,9 +47,7 @@ public:
                           bool autoRepeat, int count);
     virtual void updateInputMethodArea(const QList<QVariant> &data);
     virtual void setGlobalCorrectionEnabled(bool);
-    virtual void addRedirectedKey(int keyCode, bool eatInBetweenKeys, bool eatItself);
-    virtual void removeRedirectedKey(int keyCode);
-    virtual void setNextKeyRedirected(bool);
+    virtual void setRedirectKeys(bool enabled);
 
     // valid is out parameter for value validity
     virtual int contentType(bool &valid);
@@ -126,28 +124,11 @@ void DuiInputContextAdaptorStub::setGlobalCorrectionEnabled(bool enable)
 }
 
 
-void DuiInputContextAdaptorStub::addRedirectedKey(int keyCode, bool eatInBetweenKeys,
-        bool eatItself)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<int>(keyCode));
-    params.append(new Parameter<bool>(eatInBetweenKeys));
-    params.append(new Parameter<bool>(eatItself));
-    stubMethodEntered("addRedirectedKey", params);
-}
-
-void DuiInputContextAdaptorStub::removeRedirectedKey(int keyCode)
-{
-    QList<ParameterBase *> params;
-    params.append(new Parameter<int>(keyCode));
-    stubMethodEntered("removeRedirectedKey", params);
-}
-
-void DuiInputContextAdaptorStub::setNextKeyRedirected(bool enabled)
+void DuiInputContextAdaptorStub::setRedirectKeys(bool enabled)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<bool>(enabled));
-    stubMethodEntered("setNextKeyRedirected", params);
+    stubMethodEntered("setRedirectKeys", params);
 }
 
 int DuiInputContextAdaptorStub::contentType(bool &valid)
@@ -273,19 +254,9 @@ void DuiInputContextAdaptor::setGlobalCorrectionEnabled(bool enable)
     gDuiInputContextAdaptorStub->setGlobalCorrectionEnabled(enable);
 }
 
-void DuiInputContextAdaptor::addRedirectedKey(int keyCode, bool eatInBetweenKeys, bool eatItself)
+void DuiInputContextAdaptor::setRedirectKeys(bool enabled)
 {
-    return gDuiInputContextAdaptorStub->addRedirectedKey(keyCode, eatInBetweenKeys, eatItself);
-}
-
-void DuiInputContextAdaptor::removeRedirectedKey(int keyCode)
-{
-    return gDuiInputContextAdaptorStub->removeRedirectedKey(keyCode);
-}
-
-void DuiInputContextAdaptor::setNextKeyRedirected(bool enabled)
-{
-    return gDuiInputContextAdaptorStub->setNextKeyRedirected(enabled);
+    return gDuiInputContextAdaptorStub->setRedirectKeys(enabled);
 }
 
 int DuiInputContextAdaptor::contentType(bool &valid)

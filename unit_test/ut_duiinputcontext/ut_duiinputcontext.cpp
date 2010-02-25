@@ -221,7 +221,9 @@ void InputMethodServerDBusStub::setCopyPasteButton(bool copyAvailable, bool past
     setCopyPasteButtonCallParams.append(pasteAvailable);
 }
 
-void InputMethodServerDBusStub::redirectKey(int keyType, int keyCode, const QString &text)
+void InputMethodServerDBusStub::processKeyEvent(int keyType, int keyCode, int /* modifiers */,
+                                                const QString &text, bool /* autoRepeat */,
+                                                int /* count */, int /* nativeScanCode */)
 {
     ++redirectKeyCallCount;
     redirectKeyCallParams.keyType = keyType;
@@ -747,127 +749,31 @@ void Ut_DuiInputContext::testCopyPasteButton()
     QCOMPARE(params.takeFirst(), false);
 }
 
-void Ut_DuiInputContext::testRedirectKeys()
+void Ut_DuiInputContext::testSetRedirectKeys()
 {
-    m_subject->addRedirectedKey(Qt::Key_Shift, false, false);
-    //set fn redirect eat itself and inbetween key
-    m_subject->addRedirectedKey(FnLevelKey, true, true);
-
-    //test redirect shift key
+    // no redirection should happen
     int count = m_stub->redirectKeyCount();
-    InputMethodServerDBusStub::RedirectedKeyParamsStruct &params = m_stub->redirectKeyParams();
-    params.clear();
     QKeyEvent request(QEvent::KeyPress, Qt::Key_Shift, Qt::ShiftModifier, "");
     bool ret = m_subject->filterEvent(&request);
-    //won't eat itself
     QVERIFY(!ret);
-    ++count;
-    QVERIFY(m_stub->redirectKeyCount() == count);
-    QCOMPARE(params.keyType, static_cast<int>(QEvent::KeyPress));
-    QCOMPARE(params.keyCode, static_cast<int>(Qt::Key_Shift));
-    QCOMPARE(params.text, QString(""));
+    QCOMPARE(m_stub->redirectKeyCount(), count);
 
-    //won't eat the inbetween the other key for shift key
-    params.clear();
-    request = QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, "a");
-    ret = m_subject->filterEvent(&request);
-    QVERIFY(!ret);
-    //will redirect the inbetween key
-    ++count;
-    QVERIFY(m_stub->redirectKeyCount() == count);
-    QCOMPARE(params.keyType, static_cast<int>(QEvent::KeyPress));
-    QCOMPARE(params.keyCode, static_cast<int>(Qt::Key_A));
-    QCOMPARE(params.text, QString("a"));
-
-    //shift key release
-    params.clear();
-    request = QKeyEvent(QEvent::KeyRelease, Qt::Key_Shift, Qt::ShiftModifier, "");
-    ret = m_subject->filterEvent(&request);
-    QVERIFY(!ret);
-    ++count;
-    QVERIFY(m_stub->redirectKeyCount() == count);
-    QCOMPARE(params.keyType, static_cast<int>(QEvent::KeyRelease));
-    QCOMPARE(params.keyCode, static_cast<int>(Qt::Key_Shift));
-    QCOMPARE(params.text, QString(""));
-
-    //test redirect fn key
-    params.clear();
-    request = QKeyEvent(QEvent::KeyPress, FnLevelKey, FnLevelModifier, "");
-    ret = m_subject->filterEvent(&request);
-    //eat ifself
-    QVERIFY(ret);
-    ++count;
-    QVERIFY(m_stub->redirectKeyCount() == count);
-    QCOMPARE(params.keyType, static_cast<int>(QEvent::KeyPress));
-    QCOMPARE(params.keyCode, static_cast<int>(FnLevelKey));
-    QCOMPARE(params.text, QString(""));
-
-    //will eat the inbetween the other key for fn key
-    request = QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, "a");
-    ret = m_subject->filterEvent(&request);
-    QVERIFY(ret);
-    //will redirect the inbetween key
-    ++count;
-    QVERIFY(m_stub->redirectKeyCount() == count);
-    QCOMPARE(params.keyType, static_cast<int>(QEvent::KeyPress));
-    QCOMPARE(params.keyCode, static_cast<int>(Qt::Key_A));
-    QCOMPARE(params.text, QString("a"));
-
-    //fn key release
-    params.clear();
-    request = QKeyEvent(QEvent::KeyRelease, FnLevelKey, FnLevelModifier, "");
-    ret = m_subject->filterEvent(&request);
-    //eat ifself
-    QVERIFY(ret);
-    ++count;
-    QVERIFY(m_stub->redirectKeyCount() == count);
-    QCOMPARE(params.keyType, static_cast<int>(QEvent::KeyRelease));
-    QCOMPARE(params.keyCode, static_cast<int>(FnLevelKey));
-    QCOMPARE(params.text, QString(""));
-
-    //won't eat the other keys (no in between)
-    request = QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, "a");
-    ret = m_subject->filterEvent(&request);
-    QVERIFY(!ret);
-    //won't redirect the input key
-    QVERIFY(m_stub->redirectKeyCount() == count);
-}
-
-void Ut_DuiInputContext::testsetNextKeyRedirected()
-{
-    int count = m_stub->redirectKeyCount();
+    // redirection should happen
+    m_subject->setRedirectKeys(true);
     InputMethodServerDBusStub::RedirectedKeyParamsStruct &params = m_stub->redirectKeyParams();
     params.clear();
-
-    //if setNextKeyRedirected(false), won't redirect next input key(not registered redirect key)
-    m_subject->setNextKeyRedirected(false);
-    QKeyEvent request = QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, "a");
-    bool ret = m_subject->filterEvent(&request);
-    //won't eat the other keys (no in between)
-    QVERIFY(!ret);
-    //won't redirect this input key
-    QVERIFY(m_stub->redirectKeyCount() == count);
-
-    //if setNextKeyRedirected(true), will redirect next input key(not registered redirect key)
-    m_subject->setNextKeyRedirected(true);
-    request = QKeyEvent(QEvent::KeyPress, Qt::Key_A, Qt::NoModifier, "a");
     ret = m_subject->filterEvent(&request);
-    //won't eat the other keys (no in between)
-    QVERIFY(!ret);
-    //will redirect this input key
-    ++count;
-    QVERIFY(m_stub->redirectKeyCount() == count);
+    QVERIFY(ret);
+    QCOMPARE(m_stub->redirectKeyCount(), count + 1);
     QCOMPARE(params.keyType, static_cast<int>(QEvent::KeyPress));
-    QCOMPARE(params.keyCode, static_cast<int>(Qt::Key_A));
-    QCOMPARE(params.text, QString("a"));
+    QCOMPARE(params.keyCode, static_cast<int>(Qt::Key_Shift));
+    QCOMPARE(params.text, QString(""));
 
-    //then won't redirect next input key
-    request = QKeyEvent(QEvent::KeyRelease, Qt::Key_A, Qt::NoModifier, "a");
+    // no redirection should happen
+    m_subject->setRedirectKeys(false);
     ret = m_subject->filterEvent(&request);
-    //won't eat the other keys (no in between)
     QVERIFY(!ret);
-    //won't redirect this input key
-    QVERIFY(m_stub->redirectKeyCount() == count);
+    QCOMPARE(m_stub->redirectKeyCount(), count + 1);
 }
 
 void Ut_DuiInputContext::waitAndProcessEvents(int waitTime)

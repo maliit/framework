@@ -20,6 +20,7 @@
 #include <QDBusContext>
 #include <QDBusObjectPath>
 #include <QMap>
+#include <QEvent>
 
 #include "duiinputcontextconnection.h"
 
@@ -64,10 +65,7 @@ public:
     virtual bool hasSelection(bool &valid);
     virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
-    virtual void setComposingTextInput(bool);
-    virtual void addRedirectedKey(int keyCode, bool eatInBetweenKeys, bool eatItself);
-    virtual void removeRedirectedKey(int keyCode);
-    virtual void setNextKeyRedirected(bool);
+    virtual void setRedirectKeys(bool enabled);
     virtual void copy();
     virtual void paste();
     //! \reimp_end
@@ -112,16 +110,12 @@ public slots:
     virtual void setCopyPasteButton(bool copyAvailable, bool pasteAvailable);
 
     /*!
-     * \brief Redirects all key events from hardware keyboard to be composed by input method plugin(s).
+     * \brief Process a key event redirected from hardware keyboard to input method plugin(s).
+     *
+     * This is called only if one has enabled redirection by calling \a setRedirectKeys.
      */
-    void composeTextInput(int keyType, int keyCode, int modifier, const QString &text,
-                          bool autoRepeat, int count, int nativeScanCode);
-
-    /*!
-     * \brief Redirects the input key event to plugin which comes from hardware Keyboard.
-     * \sa addRedirectedKey()
-     */
-    void redirectKey(int keyType, int keyCode, const QString &text);
+    void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers,
+                         const QString &text, bool autoRepeat, int count, int nativeScanCode);
 
 private:
     Q_DISABLE_COPY(DuiInputContextDBusConnection)

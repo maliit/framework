@@ -195,22 +195,7 @@ QRect DuiInputContextAdaptor::preeditRectangle(bool &valid)
     return rect;
 }
 
-void DuiInputContextAdaptor::setComposingTextInput(bool enabled)
+void DuiInputContextAdaptor::setRedirectKeys(bool enabled)
 {
-    owner->setComposingTextInput(enabled);
-}
-
-void DuiInputContextAdaptor::addRedirectedKey(int keyCode, bool eatInBetweenKeys, bool eatItself)
-{
-    owner->addRedirectedKey(keyCode, eatInBetweenKeys, eatItself);
-}
-
-void DuiInputContextAdaptor::removeRedirectedKey(int keyCode)
-{
-    owner->removeRedirectedKey(keyCode);
-}
-
-void DuiInputContextAdaptor::setNextKeyRedirected(bool redirectedEnabled)
-{
-    owner->setNextKeyRedirected(redirectedEnabled);
+    owner->setRedirectKeys(enabled);
 }

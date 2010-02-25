@@ -46,9 +46,8 @@ public slots:
     void activateContext();
     void appOrientationChanged(int angle);
     void setCopyPasteButton(bool copyAvailable, bool pasteAvailable);
-    void composeTextInput(int keyType, int keyCode, int modifier, const QString &text,
-                          bool autoRepeat, int count, int nativeScanCode);
-    void redirectKey(int keyType, int keyCode, const QString &text);
+    void processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text,
+                         bool autoRepeat, int count, int nativeScanCode);
 
 private:
     DuiInputContextDBusConnection *host;

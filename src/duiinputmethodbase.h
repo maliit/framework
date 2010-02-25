@@ -18,6 +18,7 @@
 #define DUIINPUTMETHODBASE_H
 
 #include <QObject>
+#include <QEvent>
 #include <DuiNamespace>
 #include "duiimhandlerstate.h"
 
@@ -95,16 +96,13 @@ public:
     virtual void useToolbar(const QString &);
 
     /*!
-     * \brief compose the input raw key event for Chinese Input which comes from hardware keyboard.
+     * \brief Process a key event redirected from hardware keyboard to input method.
+     *
+     * This is called only if one has enabled redirection by calling
+     * \a DuiInputContextConnection::setRedirectKeys.
      */
-    virtual void composeTextInput(int keyType, int keyCode, int modifier, const QString &text,
-                                  bool autoRepeat, int count, int nativeScanCode);
-
-    /*!
-     * \brief Redirects key events from hardware keyboard of all keys which have been registered
-     * with \sa DuiInputContextConnection::addRedirectedKey().
-     */
-    virtual void redirectKey(int keyType, int keyCode, const QString &text);
+    virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers,
+                                 const QString &text, bool autoRepeat, int count, int nativeScanCode);
 
     /* \brief This method is called when keyboard status is changed:
      * hardware keyboard is opened or closed, BT keyboard is connected

@@ -65,13 +65,7 @@ public:
 
     virtual void paste();
 
-    virtual void setComposingTextInput(bool);
-
-    virtual void addRedirectedKey(int keyCode, bool eatInBetweenKey, bool eatItself);
-
-    virtual void removeRedirectedKey(int keyCode);
-
-    virtual void setNextKeyRedirected(bool);
+    virtual void setRedirectKeys(bool enabled);
 };
 
 

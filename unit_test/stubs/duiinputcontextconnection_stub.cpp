@@ -112,23 +112,6 @@ void DuiInputContextConnectionStub::paste()
 {
 }
 
-void DuiInputContextConnectionStub::setComposingTextInput(bool)
-{
-}
-
-void DuiInputContextConnectionStub::addRedirectedKey(int keyCode, bool eatInBetweenKey,
-        bool eatItself)
-{
-    Q_UNUSED(keyCode);
-    Q_UNUSED(eatInBetweenKey);
-    Q_UNUSED(eatItself);
-}
-
-void DuiInputContextConnectionStub::removeRedirectedKey(int keyCode)
-{
-    Q_UNUSED(keyCode);
-}
-
-void DuiInputContextConnectionStub::setNextKeyRedirected(bool)
+void DuiInputContextConnectionStub::setRedirectKeys(bool /* enabled */)
 {
 }

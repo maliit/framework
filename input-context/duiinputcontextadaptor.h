@@ -47,10 +47,7 @@ public slots:
     virtual Q_NOREPLY void setGlobalCorrectionEnabled(bool);
     virtual Q_NOREPLY void copy();
     virtual Q_NOREPLY void paste();
-    virtual Q_NOREPLY void setComposingTextInput(bool);
-    virtual Q_NOREPLY void addRedirectedKey(int keyCode, bool eatInBetweenKeys, bool eatItself);
-    virtual Q_NOREPLY void removeRedirectedKey(int keyCode);
-    virtual Q_NOREPLY void setNextKeyRedirected(bool);
+    virtual Q_NOREPLY void setRedirectKeys(bool enabled);
 
     // valid is out parameter for value validity
     virtual int contentType(bool &valid);
