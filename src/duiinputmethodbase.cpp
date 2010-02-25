@@ -121,7 +121,7 @@ void DuiInputMethodBase::setCopyPasteState(bool copyAvailable, bool pasteAvailab
     Q_UNUSED(pasteAvailable);
 }
 
-void DuiInputMethodBase::useToolbar(const QString &toolbar)
+void DuiInputMethodBase::setToolbar(const QString &toolbar)
 {
     // empty default implementation
     Q_UNUSED(toolbar);

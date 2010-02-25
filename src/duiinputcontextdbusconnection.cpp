@@ -498,7 +498,7 @@ DuiInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVari
 
     if (oldToolbar != newToolbar) {
         foreach (DuiInputMethodBase *target, targets()) {
-            target->useToolbar(newToolbar);
+            target->setToolbar(newToolbar);
         }
     }
 

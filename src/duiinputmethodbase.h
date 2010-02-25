@@ -93,7 +93,7 @@ public:
     /*!
      * \brief use a custom toolbar
      */
-    virtual void useToolbar(const QString &);
+    virtual void setToolbar(const QString &);
 
     /*!
      * \brief Process a key event redirected from hardware keyboard to input method.
