@@ -1,3 +1,9 @@
+dui-im-framework (0.18.4~1) unstable; urgency=low
+
+  * New release
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Thu, 25 Feb 2010 15:40:15 +0200
+
 dui-im-framework (0.18.3-1) unstable; urgency=low
 
   * Removed key based redirection from framework, renamed compose mode as redirection
