@@ -315,7 +315,7 @@ void DuiInputContext::setFocusWidget(QWidget *focused)
     manageCopyPasteState(copyAvailable);
 
     if (inputPanelState == InputPanelShowPending && focused) {
-        iface->call(QDBus::NoBlock, "showOnFocus");
+        iface->call(QDBus::NoBlock, "showInputMethod");
         inputPanelState = InputPanelShown;
     }
 
@@ -356,7 +356,7 @@ bool DuiInputContext::filterEvent(const QEvent *event)
 
         } else {
             // note: could do this also if panel was hidden
-            iface->call(QDBus::NoBlock, "showOnFocus");
+            iface->call(QDBus::NoBlock, "showInputMethod");
             inputPanelState = InputPanelShown;
         }
 
@@ -385,7 +385,7 @@ bool DuiInputContext::filterEvent(const QEvent *event)
 
 void DuiInputContext::hideOnFocusOut()
 {
-    iface->call(QDBus::NoBlock, "hideOnLostFocus");
+    iface->call(QDBus::NoBlock, "hideInputMethod");
 
     inputPanelState = InputPanelHidden;
 }

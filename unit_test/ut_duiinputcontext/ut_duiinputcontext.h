@@ -28,8 +28,8 @@ public:
     void resetCallCounts();
 
     // returns counter for specific methods
-    int showOnFocusCount();
-    int hideOnLostFocusCount();
+    int showInputMethodCount();
+    int hideInputMethodCount();
     int mouseClickedOnPreeditCount();
     int setPreeditCount();
     int resetCount();
@@ -46,8 +46,8 @@ public:
     RedirectedKeyParamsStruct &redirectKeyParams();
 
 public slots:
-    void showOnFocus();
-    void hideOnLostFocus();
+    void showInputMethod();
+    void hideInputMethod();
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
     void setPreedit(const QString &text);
     void reset();
@@ -64,8 +64,8 @@ public slots:
                          const QString &text, bool autoRepeat, int count, int nativeScanCode);
 
 private:
-    int showOnFocusCallCount;
-    int hideOnLostFocusCallCount;
+    int showInputMethodCallCount;
+    int hideInputMethodCallCount;
     int mouseClickedOnPreeditCallCount;
     int setPreeditCallCount;
     int resetCallCount;

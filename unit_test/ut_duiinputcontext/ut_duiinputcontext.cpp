@@ -66,8 +66,8 @@ InputMethodServerDBusStub::~InputMethodServerDBusStub()
 
 void InputMethodServerDBusStub::resetCallCounts()
 {
-    showOnFocusCallCount = 0;
-    hideOnLostFocusCallCount = 0;
+    showInputMethodCallCount = 0;
+    hideInputMethodCallCount = 0;
     mouseClickedOnPreeditCallCount = 0;
     setPreeditCallCount = 0;
     resetCallCount = 0;
@@ -82,15 +82,15 @@ void InputMethodServerDBusStub::resetCallCounts()
 }
 
 
-int InputMethodServerDBusStub::showOnFocusCount()
+int InputMethodServerDBusStub::showInputMethodCount()
 {
-    return showOnFocusCallCount;
+    return showInputMethodCallCount;
 }
 
 
-int InputMethodServerDBusStub::hideOnLostFocusCount()
+int InputMethodServerDBusStub::hideInputMethodCount()
 {
-    return hideOnLostFocusCallCount;
+    return hideInputMethodCallCount;
 }
 
 
@@ -154,15 +154,15 @@ InputMethodServerDBusStub::RedirectedKeyParamsStruct &InputMethodServerDBusStub:
 }
 
 ///////
-void InputMethodServerDBusStub::showOnFocus()
+void InputMethodServerDBusStub::showInputMethod()
 {
-    showOnFocusCallCount++;
+    showInputMethodCallCount++;
 }
 
 
-void InputMethodServerDBusStub::hideOnLostFocus()
+void InputMethodServerDBusStub::hideInputMethod()
 {
-    hideOnLostFocusCallCount++;
+    hideInputMethodCallCount++;
 }
 
 
@@ -526,7 +526,7 @@ void Ut_DuiInputContext::testAppOrientationChanged()
 void Ut_DuiInputContext::testNonTextEntryWidget()
 {
 
-    int count = m_stub->hideOnLostFocusCount();
+    int count = m_stub->hideInputMethodCount();
     gFocusedWidget = 0;
 
     QEvent close(QEvent::CloseSoftwareInputPanel);
@@ -534,7 +534,7 @@ void Ut_DuiInputContext::testNonTextEntryWidget()
 
     waitAndProcessEvents(1500);
 
-    QCOMPARE(m_stub->hideOnLostFocusCount(), count + 1);
+    QCOMPARE(m_stub->hideInputMethodCount(), count + 1);
 }
 
 void Ut_DuiInputContext::testSendKeyEvent()

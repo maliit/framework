@@ -82,15 +82,15 @@ void DuiInputContextDBusAdaptor::activateContext()
 }
 
 
-void DuiInputContextDBusAdaptor::showOnFocus()
+void DuiInputContextDBusAdaptor::showInputMethod()
 {
-    host->showOnFocus();
+    host->showInputMethod();
 }
 
 
-void DuiInputContextDBusAdaptor::hideOnLostFocus()
+void DuiInputContextDBusAdaptor::hideInputMethod()
 {
-    host->hideOnLostFocus();
+    host->hideInputMethod();
 }
 
 
@@ -413,9 +413,7 @@ void DuiInputContextDBusConnection::activateContext()
 }
 
 
-// FIXME: change names of these?
-
-void DuiInputContextDBusConnection::showOnFocus()
+void DuiInputContextDBusConnection::showInputMethod()
 {
     foreach (DuiInputMethodBase *target, targets()) {
         target->show();
@@ -423,7 +421,7 @@ void DuiInputContextDBusConnection::showOnFocus()
 }
 
 
-void DuiInputContextDBusConnection::hideOnLostFocus()
+void DuiInputContextDBusConnection::hideInputMethod()
 {
     foreach (DuiInputMethodBase *target, targets()) {
         target->hide();

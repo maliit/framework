@@ -35,8 +35,8 @@ public:
     virtual ~DuiInputContextDBusAdaptor();
 
 public slots:
-    void showOnFocus(); // rename -> showInputMethod or inputEntryGainedFocus()
-    void hideOnLostFocus();
+    void showInputMethod();
+    void hideInputMethod();
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
     void setPreedit(const QString &text);
     void updateWidgetInformation(const QMap<QString, QVariant> &stateInformation);

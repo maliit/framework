@@ -80,10 +80,10 @@ public slots:
     void activateContext();
 
     //! ipc method provided to the application, shows input method
-    void showOnFocus(); // rename -> showInputMethod or inputEntryGainedFocus()
+    void showInputMethod();
 
     //! ipc method provided to the application, hides input method
-    void hideOnLostFocus();
+    void hideInputMethod();
 
     //! ipc method provided to the application, signals mouse click on preedit
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);

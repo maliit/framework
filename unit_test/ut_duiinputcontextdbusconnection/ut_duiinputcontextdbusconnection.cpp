@@ -295,7 +295,7 @@ void Ut_DuiInputContextDBusConnection::testNoReplyDBusCalls()
 
 void Ut_DuiInputContextDBusConnection::testShowOnFocus()
 {
-    m_clientInterface->call(QDBus::NoBlock, "showOnFocus");
+    m_clientInterface->call(QDBus::NoBlock, "showInputMethod");
 
     handleMessages();
 
@@ -305,7 +305,7 @@ void Ut_DuiInputContextDBusConnection::testShowOnFocus()
 
 void Ut_DuiInputContextDBusConnection::testHideOnLostFocus()
 {
-    m_clientInterface->call(QDBus::NoBlock, "hideOnLostFocus");
+    m_clientInterface->call(QDBus::NoBlock, "hideInputMethod");
 
     handleMessages();
 
