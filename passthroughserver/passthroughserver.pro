@@ -29,8 +29,10 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 
 QMAKE_CLEAN += *.gcno *.gcda
 
+# note: not installing the service file, the input method server
+# is started by other means than by the d-bus.
 INSTALLS += target \
-         servicefiles
+
 
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml
