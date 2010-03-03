@@ -18,6 +18,7 @@
 #include "duiimpluginmanager_p.h"
 
 #include <DuiGConfItem>
+#include <DuiKeyboardStateTracker>
 
 #include "duiinputmethodplugin.h"
 #include "duiinputcontextdbusconnection.h"
@@ -48,13 +49,14 @@ DuiIMPluginManager::DuiIMPluginManager()
     d->loadPlugins();
 
     d->handlerToPluginConf = new DuiGConfItem(DuiImHandlerToPlugin, this);
-    d->actualHandlerConf = new DuiGConfItem(DuiImActualHandler, this);
-
     connect(d->handlerToPluginConf, SIGNAL(valueChanged()), this, SLOT(reloadHandlerMap()));
-    connect(d->actualHandlerConf, SIGNAL(valueChanged()), this, SLOT(activateHandler()));
 
     reloadHandlerMap();
-    activateHandler();
+
+    if (DuiKeyboardStateTracker::instance()->isPresent()) {
+        connect(DuiKeyboardStateTracker::instance(), SIGNAL(stateChanged()), this, SLOT(updateInputSource()));
+    }
+    updateInputSource();
 
     connect(&d->deleteImTimer, SIGNAL(timeout()), this, SLOT(deleteInactiveIM()));
 }
@@ -76,20 +78,6 @@ void DuiIMPluginManager::reloadHandlerMap()
         QStringList path = handlerName.split("/");
         QString pluginName = DuiGConfItem(handlerName).value().toString();
         d->addHandlerMap((DuiIMHandlerState)path.last().toInt(), pluginName);
-    }
-}
-
-
-void DuiIMPluginManager::activateHandler()
-{
-    QStringList values = d->actualHandlerConf->value().toStringList();
-    QSet<DuiIMHandlerState> handlers;
-
-    d->convertAndFilterHandlers(values, &handlers);
-
-    if (!handlers.isEmpty()) {
-        d->setActiveHandlers(handlers);
-        d->deleteImTimer.start();
     }
 }
 
@@ -123,3 +111,21 @@ void DuiIMPluginManager::setDeleteIMTimeout(int timeout)
     d->deleteImTimer.setInterval(timeout);
 }
 
+void DuiIMPluginManager::updateInputSource()
+{
+    QSet<DuiIMHandlerState> handlers = d->activeHandlers();
+    if (DuiKeyboardStateTracker::instance()->isOpen()) {
+        // hw keyboard is on
+        handlers.remove(OnScreen);
+        handlers.insert(Hardware);
+    } else {
+        // hw keyboard is off
+        handlers.remove(Hardware);
+        handlers.insert(OnScreen);
+    }
+
+    if (!handlers.isEmpty()) {
+        d->setActiveHandlers(handlers);
+        d->deleteImTimer.start();
+    }
+}

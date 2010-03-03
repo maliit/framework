@@ -137,6 +137,9 @@ private slots:
     //! Notify input method plugin about new \a orientation angle of application's active window.
     void notifyOrientationChange(Dui::OrientationAngle orientation);
 
+    //! update hardware keyboard state.
+    void updateHardwareKeyboardState();
+
 private:
     Q_DISABLE_COPY(DuiInputContext)
 

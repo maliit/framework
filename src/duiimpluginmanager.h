@@ -62,11 +62,11 @@ private slots:
     //! This method reloads map from keyboard handler to plugin
     void reloadHandlerMap();
 
-    //! This method activates suitable plugin(s) when keyboard handler is changed
-    void activateHandler();
-
     //! This method deletes all inactive input method objects
     void deleteInactiveIM();
+
+    //! Update and activate input source.
+    void updateInputSource();
 
 private:
     Q_DISABLE_COPY(DuiIMPluginManager)

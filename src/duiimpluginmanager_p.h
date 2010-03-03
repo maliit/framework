@@ -44,6 +44,7 @@ public:
     void loadPlugins();
     void addHandlerMap(DuiIMHandlerState state, const QString &pluginName);
     void setActiveHandlers(const QSet<DuiIMHandlerState> &states);
+    QSet<DuiIMHandlerState> activeHandlers() const;
     void deleteInactiveIM();
     void deactivatePlugin(DuiInputMethodPlugin *plugin);
     void convertAndFilterHandlers(const QStringList &handlerNames, QSet<DuiIMHandlerState> *handlers);
@@ -68,7 +69,6 @@ public:
     HandlerMap handlerToPlugin;
 
     DuiGConfItem *handlerToPluginConf;
-    DuiGConfItem *actualHandlerConf;
 
     QTimer deleteImTimer;
 };

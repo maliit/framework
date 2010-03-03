@@ -36,8 +36,7 @@ DuiIMPluginManagerPrivate::DuiIMPluginManagerPrivate(DuiInputContextConnection *
                                                      DuiIMPluginManager *p)
     : parent(p),
       duiICConnection(connection),
-      handlerToPluginConf(0),
-      actualHandlerConf(0)
+      handlerToPluginConf(0)
 {
     deleteImTimer.setSingleShot(true);
     deleteImTimer.setInterval(DeleteInputMethodTimeout);
@@ -188,6 +187,16 @@ void DuiIMPluginManagerPrivate::setActiveHandlers(const QSet<DuiIMHandlerState> 
             deactivatePlugin(plugin);  //activePlugins is modified here
         }
     }
+}
+
+
+QSet<DuiIMHandlerState> DuiIMPluginManagerPrivate::activeHandlers() const
+{
+    QSet<DuiIMHandlerState> handlers;
+    foreach (DuiInputMethodPlugin *plugin, activePlugins) {
+        handlers << handlerToPlugin.key(plugin);
+    }
+    return handlers;
 }
 
 
