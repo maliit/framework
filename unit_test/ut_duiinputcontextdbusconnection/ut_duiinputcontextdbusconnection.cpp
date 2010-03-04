@@ -83,12 +83,19 @@ void TargetStub::appOrientationChanged(int angle)
     m_appOrientationChangedCallCount++;
 }
 
-void TargetStub::redirectKey(int keyType, int keyCode, const QString &text)
+void TargetStub::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                 Qt::KeyboardModifiers modifiers, const QString &text,
+                                 bool autoRepeat, int count, int nativeScanCode)
 {
     Q_UNUSED(keyType);
     Q_UNUSED(keyCode);
+    Q_UNUSED(modifiers);
     Q_UNUSED(text);
-    m_redirectKeyCallCount++;
+    Q_UNUSED(autoRepeat);
+    Q_UNUSED(count);
+    Q_UNUSED(nativeScanCode);
+
+    m_processKeyEventCallCount++;
 }
 
 void TargetStub::resetCallCounts()
@@ -101,7 +108,7 @@ void TargetStub::resetCallCounts()
     m_updateCallCount = 0;
     m_visualizationPriorityChangedCallCount = 0;
     m_appOrientationChangedCallCount = 0;
-    m_redirectKeyCallCount = 0;
+    m_processKeyEventCallCount = 0;
 }
 
 int TargetStub::showCallCount()
@@ -144,9 +151,9 @@ int TargetStub::appOrientationChangedCallCount()
     return m_appOrientationChangedCallCount;
 }
 
-int TargetStub::redirectKeyCallCount()
+int TargetStub::processKeyEventCallCount()
 {
-    return m_redirectKeyCallCount;
+    return m_processKeyEventCallCount;
 }
 
 //////////////
@@ -354,13 +361,13 @@ void Ut_DuiInputContextDBusConnection::testAppOrientationChanged()
     QCOMPARE(m_inputMethod->appOrientationChangedCallCount(), 1);
 }
 
-void Ut_DuiInputContextDBusConnection::testRedirectKey()
+void Ut_DuiInputContextDBusConnection::testProcessKeyEvent()
 {
-    m_clientInterface->call(QDBus::NoBlock, "redirectKey", 0, 0, "");
+    m_clientInterface->call(QDBus::NoBlock, "processKeyEvent", 0, 0, 0, "", false, 0, 0);
 
     handleMessages();
 
-    QCOMPARE(m_inputMethod->redirectKeyCallCount(), 1);
+    QCOMPARE(m_inputMethod->processKeyEventCallCount(), 1);
 }
 
 void Ut_DuiInputContextDBusConnection::handleMessages()

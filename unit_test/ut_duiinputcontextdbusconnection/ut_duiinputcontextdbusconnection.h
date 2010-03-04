@@ -29,7 +29,9 @@ public:
     virtual void update();
     virtual void visualizationPriorityChanged(bool enabled);
     virtual void appOrientationChanged(int angle);
-    virtual void redirectKey(int keyType, int keyCode, const QString &text);
+    virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                 Qt::KeyboardModifiers modifiers, const QString &text,
+                                 bool autoRepeat, int count, int nativeScanCode);
 
     void resetCallCounts();
     int showCallCount();
@@ -40,7 +42,7 @@ public:
     int updateCallCount();
     int visualizationPriorityChangedCallCount();
     int appOrientationChangedCallCount();
-    int redirectKeyCallCount();
+    int processKeyEventCallCount();
 
 private:
     int m_showCallCount;
@@ -51,7 +53,7 @@ private:
     int m_updateCallCount;
     int m_visualizationPriorityChangedCallCount;
     int m_appOrientationChangedCallCount;
-    int m_redirectKeyCallCount;
+    int m_processKeyEventCallCount;
 };
 
 // test class
@@ -76,7 +78,7 @@ private slots:
     void testSetPreedit();
     void testReset();
     void testAppOrientationChanged();
-    void testRedirectKey();
+    void testProcessKeyEvent();
 
 private:
     void handleMessages();
