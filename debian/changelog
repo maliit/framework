@@ -1,8 +1,12 @@
-dui-im-framework (0.18.4~1) unstable; urgency=low
+dui-im-framework (0.18.4-1) unstable; urgency=low
 
-  * New release
+  * DuiInputContextDBusConnection to cache values set by input method plugins
+  * added notification on input method plugins for changed client
+  * renamed some DBus methods
+  * removed obsolete DBus methods
+  * removed DBus .service file for autostarting, handled by other means now
 
- -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Thu, 25 Feb 2010 15:40:15 +0200
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Thu, 04 Mar 2010 16:43:09 +0200
 
 dui-im-framework (0.18.3-1) unstable; urgency=low
 
