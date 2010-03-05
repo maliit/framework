@@ -46,6 +46,8 @@ WARN_LOGFILE          = "doxygen.log"
 FILE_VERSION_FILTER   = "cd @DUI_SRC_DIR@ ; git log --pretty=format:%H -n 1 "
 
 INPUT                 = @DUI_SRC_DIR@/../src/ \
+                        @DUI_SRC_DIR@/../passthroughserver/ \
+                        @DUI_SRC_DIR@/../input-context/ \
                         @DUI_SRC_DIR@/../doc/src/
 FILE_PATTERNS         = *.cpp *.h *.dox
 RECURSIVE             = YES
