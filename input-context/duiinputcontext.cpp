@@ -724,6 +724,7 @@ QMap<QString, QVariant> DuiInputContext::getStateInformation() const
     if (queryResult.isValid()) {
         inputMethodMode = static_cast<Dui::InputMethodMode>(queryResult.toInt());
     }
+    stateInformation["inputMethodMode"] = inputMethodMode;
 
     // is text selected
     query = Qt::ImCurrentSelection;
