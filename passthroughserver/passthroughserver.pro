@@ -31,7 +31,9 @@ QMAKE_CLEAN += *.gcno *.gcda
 
 # note: not installing the service file, the input method server
 # is started by other means than by the d-bus.
+# it is still required in scratchbox and N900
 INSTALLS += target \
+            servicefiles \
 
 
 QMAKE_EXTRA_TARGETS += check-xml
@@ -43,13 +45,13 @@ check.target = check
 check.depends += $$TARGET
 
 system(dpkg-architecture -ei386):SOFTWARE="-software -bypass-wm-hint "
-message(Argument added to im server: $$SOFTWARE)
+message(Argument added to im server: $$SOFTWARE $$TARGETDEVICE)
 
 SERVICE_FILE = duiinputmethodserver.service.in
 
 servicefilegenerator.output = duiinputmethodserver.service
 servicefilegenerator.input = SERVICE_FILE
-servicefilegenerator.commands += sed -e \"s:DUI_BIN_PATH:$$DUI_INSTALL_BIN:g\" -e \"s:SOFTWARE:$$SOFTWARE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
+servicefilegenerator.commands += sed -e \"s:DUI_BIN_PATH:$$DUI_INSTALL_BIN:g\" -e \"s:SOFTWARE:$$SOFTWARE:g\" -e \"s:TARGET:$$TARGETDEVICE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
 servicefilegenerator.CONFIG = target_predeps no_link
 QMAKE_EXTRA_COMPILERS += servicefilegenerator
 

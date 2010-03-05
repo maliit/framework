@@ -2,12 +2,12 @@ Source: dui-im-framework
 Section: libs
 Priority: extra
 Maintainer: Mohammad Anwari <Mohammad.Anwari@nokia.com> 
-Build-Depends: debhelper (>= 5), libqt4-dev, libdui-dev (>= 0.18.0~1), doxygen, libqt4-opengl-dev, libgles2-sgx-img-dev [arm armel] | libgles2-dev [arm armel], opengles-sgx-img-common-dev [arm armel], libgl-dev [i386], libgl1 [i386], libxcomposite-dev, libxfixes-dev, libxext-dev, libduireactionmap-dev (>= 0.10.0-5), dbus-1-utils, pkg-config, dpkg-dev (>= 1.15)
+Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.6) | libqt4-maemo5-dev (>= 4.6), doxygen, libqt4-opengl-dev | libqt4-maemo5-dev, libgles2-sgx-img-dev [arm armel] | libgles2-dev [arm armel], opengles-sgx-img-common-dev [arm armel], libgl-dev [i386], libgl1 [i386], libxcomposite-dev, libxfixes-dev, libxext-dev, libduireactionmap-dev (>= 0.10.0-5) | no-reactionmap, dbus-1-utils, pkg-config, dpkg-dev
 Standards-Version: 3.7.2
 
 Package: dui-im-uiserver
 Architecture: any
-Depends:  ${misc:Depends}, ${shlibs:Depends}, dui-im-context, duicompositor
+Depends:  ${misc:Depends}, ${shlibs:Depends}, dui-im-context, duicompositor | hildon-desktop | xcompmgr
 Recommends: dui-im-virtualkeyboard
 Description: DirectUI Input Method UI Server
  DirectUI Input Method UI Server 
@@ -21,7 +21,7 @@ Description: DirectUI Input Method UI Framework library
 Package: libduiimframework-dev
 Section: libdevel
 Architecture: all
-Depends: libduiimframework0 (>= ${source:Version}), libqt4-dev
+Depends: libduiimframework0 (>= ${source:Version}), libqt4-dev (>= 4.6) | libqt4-maemo5-dev (>= 4.6)
 Description: libduiimmuiframework development files
  Development files for DirectUI Input Method UI Framework.
 
