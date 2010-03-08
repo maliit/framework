@@ -33,7 +33,7 @@ class DuiInputContextAdaptor: public QDBusAbstractAdaptor
     // FIXME: introspection
 
 public:
-    DuiInputContextAdaptor(DuiInputContext *parent);
+    explicit DuiInputContextAdaptor(DuiInputContext *parent);
     virtual ~DuiInputContextAdaptor();
 
 public slots:
