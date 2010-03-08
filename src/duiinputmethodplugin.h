@@ -18,6 +18,7 @@
 #define DUIINPUTMETHODPLUGIN_H
 
 #include <QStringList>
+#include <QtPlugin>
 
 #include "duiinputmethodbase.h"
 
