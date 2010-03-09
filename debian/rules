@@ -37,7 +37,6 @@ ifneq (,$(filter notranslucency,$(TMP_BUILD_OPTS)))
 endif
 
 ifneq (,$(filter n900,$(TMP_BUILD_OPTS)))
-        QMAKE_OPTIONS += DEFINES+=DISABLE_REACTION_MAPS
         QMAKE_OPTIONS += TARGETDEVICE="-target N900 -bypass-wm-hint"
         DBUS_SERVICE_FILE:=usr/share/dbus-1/
 endif

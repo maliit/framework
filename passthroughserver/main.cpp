@@ -22,9 +22,7 @@
 #include <QGLWidget>
 #include <QPalette>
 
-#ifndef DISABLE_REACTION_MAPS
 #include <duireactionmap.h>
-#endif // DISABLE_REACTION_MAPS
 
 #include <DuiApplication>
 #include <DuiScene>
@@ -55,10 +53,8 @@ int main(int argc, char **argv)
     DuiPassThruWindow widget(bypassWMHint);
     widget.setFocusPolicy(Qt::NoFocus);
 
-#ifndef DISABLE_REACTION_MAPS
     // Must be declared after creation of top level window.
     DuiReactionMap reactionMap(&widget);
-#endif // DISABLE_REACTION_MAPS
     DuiPlainWindow *view = new DuiPlainWindow(&widget);
 
 #ifndef DUI_IM_DISABLE_TRANSLUCENCY
