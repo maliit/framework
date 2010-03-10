@@ -4,6 +4,9 @@ VERSION = 0.1.0
 TEMPLATE = lib
 TARGET=duiimframework
 
+INCLUDEPATH += . /usr/local/include/dui/
+
+QMAKE_LIBDIR += /usr/local/lib/
 # Input
 HEADERSINSTALL = \
     duiinputmethodplugin.h \

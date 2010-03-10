@@ -17,7 +17,7 @@
 #ifndef DUIIMHANDLERSTATE_H
 #define DUIIMHANDLERSTATE_H
 
-enum DuiIMHandlerState { OnScreen, Hardware, Accessories };
+enum DuiIMHandlerState { OnScreen, Hardware, Accessory };
 
 #endif
 

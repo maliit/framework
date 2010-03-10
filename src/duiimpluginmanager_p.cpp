@@ -36,7 +36,8 @@ DuiIMPluginManagerPrivate::DuiIMPluginManagerPrivate(DuiInputContextConnection *
                                                      DuiIMPluginManager *p)
     : parent(p),
       duiICConnection(connection),
-      handlerToPluginConf(0)
+      handlerToPluginConf(0),
+      imAccessoryEnabledConf(0)
 {
     deleteImTimer.setSingleShot(true);
     deleteImTimer.setInterval(DeleteInputMethodTimeout);
@@ -239,7 +240,7 @@ void DuiIMPluginManagerPrivate::convertAndFilterHandlers(const QStringList &hand
 
     foreach (const QString &name, handlerNames) {
         int handlerNumber = (DuiIMHandlerState)name.toInt(&ok);
-        if (ok && handlerNumber >= OnScreen && handlerNumber <= Accessories) {
+        if (ok && handlerNumber >= OnScreen && handlerNumber <= Accessory) {
             if (!disableOnscreenKbd) {
                 disableOnscreenKbd = handlerNumber != OnScreen;
             }

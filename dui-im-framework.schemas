@@ -25,5 +25,17 @@
       </locale>
     </schema>
 
+    <schema>
+      <key>/schemas/Dui/InputMethods/AccessoryEnabled</key>
+      <applyto>/Dui/InputMethods/AccessoryEnabled</applyto>
+      <owner>dui</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Whether input hardware accessory (eg. Bluetooth pen) is enabled.</short>
+        <long>Whether input hardware accessory (eg. Bluetooth pen) is enabled.</long>
+      </locale>
+    </schema>
+
   </schemalist>
 </gconfschemafile>

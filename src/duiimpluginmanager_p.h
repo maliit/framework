@@ -69,6 +69,7 @@ public:
     HandlerMap handlerToPlugin;
 
     DuiGConfItem *handlerToPluginConf;
+    DuiGConfItem *imAccessoryEnabledConf;
 
     QTimer deleteImTimer;
 };

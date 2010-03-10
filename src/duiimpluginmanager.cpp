@@ -34,7 +34,7 @@ namespace
 
     const QString PluginRoot          = "/Dui/InputMethods/Plugins/";
     const QString DuiImHandlerToPlugin  = PluginRoot + "Handler";
-    const QString DuiImActualHandler    = PluginRoot + "ActualHandler";
+    const QString DuiImAccesoryEnabled  = "/Dui/InputMethods/AccessoryEnabled";
 }
 
 
@@ -56,6 +56,10 @@ DuiIMPluginManager::DuiIMPluginManager()
     if (DuiKeyboardStateTracker::instance()->isPresent()) {
         connect(DuiKeyboardStateTracker::instance(), SIGNAL(stateChanged()), this, SLOT(updateInputSource()));
     }
+
+    d->imAccessoryEnabledConf = new DuiGConfItem(DuiImAccesoryEnabled, this);
+    connect(d->imAccessoryEnabledConf, SIGNAL(valueChanged()), this, SLOT(updateInputSource()));
+
     updateInputSource();
 
     connect(&d->deleteImTimer, SIGNAL(timeout()), this, SLOT(deleteInactiveIM()));
@@ -122,6 +126,11 @@ void DuiIMPluginManager::updateInputSource()
         // hw keyboard is off
         handlers.remove(Hardware);
         handlers.insert(OnScreen);
+    }
+
+    if (d->imAccessoryEnabledConf->value().toBool()) {
+        handlers.remove(OnScreen);
+        handlers.insert(Accessory);
     }
 
     if (!handlers.isEmpty()) {

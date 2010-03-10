@@ -158,7 +158,7 @@ void Ut_DuiIMPluginManager::testAddHandlerMap()
 
     subject->addHandlerMap(OnScreen, pluginName);
     subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessories, pluginName3);
+    subject->addHandlerMap(Accessory, pluginName3);
 
     plugin = subject->handlerToPlugin[OnScreen];
     QVERIFY(plugin != 0);
@@ -168,7 +168,7 @@ void Ut_DuiIMPluginManager::testAddHandlerMap()
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
 
-    plugin = subject->handlerToPlugin[Accessories];
+    plugin = subject->handlerToPlugin[Accessory];
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName3);
 }
@@ -179,7 +179,7 @@ void Ut_DuiIMPluginManager::testConvertAndFilterHandlers_data()
     QTest::addColumn<QStringList>("names");
     QTest::addColumn<HandlerStates>("expectedStates");
 
-    for (int n = 0; n <= Accessories; ++n) {
+    for (int n = 0; n <= Accessory; ++n) {
         QTest::newRow("single state")
                 << (QStringList() << QString::number(n))
                 << (HandlerStates() << DuiIMHandlerState(n));
@@ -191,7 +191,7 @@ void Ut_DuiIMPluginManager::testConvertAndFilterHandlers_data()
 
     QTest::newRow("1 2")
             << (QStringList() << "1" << "2")
-            << (HandlerStates() << Accessories << Hardware);
+            << (HandlerStates() << Accessory << Hardware);
 
     QTest::newRow("1 1")
             << (QStringList() << "1" << "1")
@@ -223,7 +223,7 @@ void Ut_DuiIMPluginManager::testSwitchPlugin()
 
     subject->addHandlerMap(OnScreen, pluginName);
     subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessories, pluginName3);
+    subject->addHandlerMap(Accessory, pluginName3);
 
     actualState << OnScreen;
     QVERIFY(subject->activePlugins.size() == 1);
@@ -258,7 +258,7 @@ void Ut_DuiIMPluginManager::testSwitchPlugin()
     QCOMPARE(inputMethod->setStateParam.first(), Hardware);
 
     actualState.clear();
-    actualState << Accessories;
+    actualState << Accessory;
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 1);
     plugin3 = dynamic_cast<DummyImPlugin3 *>(*subject->activePlugins.begin());
@@ -271,7 +271,7 @@ void Ut_DuiIMPluginManager::testSwitchPlugin()
     QCOMPARE(inputMethod3->setStateCount, 1);
     inputMethod3->setStateCount = 0;
     QCOMPARE(inputMethod3->setStateParam.size(), 1);
-    QCOMPARE(inputMethod3->setStateParam.first(), Accessories);
+    QCOMPARE(inputMethod3->setStateParam.first(), Accessory);
 }
 
 
@@ -288,9 +288,9 @@ void Ut_DuiIMPluginManager::testMultilePlugins()
 
     subject->addHandlerMap(OnScreen, pluginName);
     subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessories, pluginName3);
+    subject->addHandlerMap(Accessory, pluginName3);
 
-    actualState << Accessories << Hardware;
+    actualState << Accessory << Hardware;
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 2);
     foreach(DuiInputMethodPlugin * p, subject->activePlugins) {
@@ -305,7 +305,7 @@ void Ut_DuiIMPluginManager::testMultilePlugins()
             QCOMPARE(inputMethod3->setStateCount, 1);
             inputMethod3->setStateCount = 0;
             QCOMPARE(inputMethod3->setStateParam.size(), 1);
-            QCOMPARE(inputMethod3->setStateParam.first(), Accessories);
+            QCOMPARE(inputMethod3->setStateParam.first(), Accessory);
         }
         plugin = dynamic_cast<DummyImPlugin *>(p);
         if (plugin != 0) {
@@ -332,12 +332,12 @@ void Ut_DuiIMPluginManager::testFreeInputMethod()
 
     subject->addHandlerMap(OnScreen, pluginName);
     subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessories, pluginName3);
+    subject->addHandlerMap(Accessory, pluginName3);
 
     actualState << OnScreen;
     subject->setActiveHandlers(actualState);
     actualState.clear();
-    actualState << Accessories;
+    actualState << Accessory;
     subject->setActiveHandlers(actualState);
 
     subject->deleteInactiveIM();
