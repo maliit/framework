@@ -66,7 +66,7 @@ int main(int argc, char **argv)
     if (DuiApplication::softwareRendering())
         view->viewport()->setAutoFillBackground(false);
 
-    QSize sceneSize = view->visibleSceneSize();
+    QSize sceneSize = view->visibleSceneSize(Dui::Landscape);
     int w = sceneSize.width();
     int h = sceneSize.height();
     view->scene()->setSceneRect(0, 0, w, h);
