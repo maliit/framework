@@ -22,7 +22,7 @@ private slots:
 
     void testLoadPlugins();
     void testSwitchPlugin();
-    void testMultilePlugins();
+    void testMultiplePlugins();
     void testFreeInputMethod();
 
 private:

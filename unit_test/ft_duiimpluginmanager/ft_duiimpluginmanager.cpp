@@ -1,5 +1,6 @@
 #include "ft_duiimpluginmanager.h"
 #include "duigconfitem_stub.h"
+#include "duikeyboardstatetracker_stub.h"
 #include "duiinputcontextconnection_stub.h"
 
 #include <QProcess>
@@ -24,7 +25,7 @@ namespace
 
     const QString PluginRoot          = "/Dui/InputMethods/Plugins/";
     const QString DuiImStateToPlugin  = PluginRoot + "Handler";
-    const QString DuiImActualState    = PluginRoot + "ActualHandler";
+    const QString DuiImAccesoryEnabled  = "/Dui/InputMethods/AccessoryEnabled";
 }
 
 
@@ -70,7 +71,8 @@ void Ft_DuiIMPluginManager::init()
     DuiGConfItem(DuiImStateToPlugin + "/1").set(pluginName);
     DuiGConfItem(DuiImStateToPlugin + "/2").set(pluginName3);
 
-    DuiGConfItem(DuiImActualState).set(QStringList("0"));
+    gDuiKeyboardStateTrackerStub->setOpenState(false);
+    DuiGConfItem(DuiImAccesoryEnabled).set(QVariant(false));
 
     subject = new DuiIMPluginManager();
 }
@@ -101,7 +103,7 @@ void Ft_DuiIMPluginManager::testLoadPlugins()
 
 void Ft_DuiIMPluginManager::testSwitchPlugin()
 {
-    DuiGConfItem(DuiImActualState).set(QStringList("2"));
+    DuiGConfItem(DuiImAccesoryEnabled).set(QVariant(true));
 
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
@@ -114,11 +116,10 @@ void Ft_DuiIMPluginManager::testSwitchPlugin()
 }
 
 
-void Ft_DuiIMPluginManager::testMultilePlugins()
+void Ft_DuiIMPluginManager::testMultiplePlugins()
 {
-    QStringList states;
-    states << "1" << "2";
-    DuiGConfItem(DuiImActualState).set(states);
+    gDuiKeyboardStateTrackerStub->setOpenState(true);
+    DuiGConfItem(DuiImAccesoryEnabled).set(QVariant(true));
 
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
@@ -135,7 +136,7 @@ void Ft_DuiIMPluginManager::testFreeInputMethod()
 {
     subject->setDeleteIMTimeout(300);
 
-    DuiGConfItem(DuiImActualState).set(QStringList("2"));
+    DuiGConfItem(DuiImAccesoryEnabled).set(QVariant(true));
 
     QStringList activeInputMethods = subject->activeInputMethodsNames();
     QCOMPARE(activeInputMethods.count(), 2);

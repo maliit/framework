@@ -12,11 +12,14 @@ HEADERS += \
     ft_duiimpluginmanager.h \
     ../stubs/duigconfitem_stub.h \
     ../stubs/fakegconf.h \
+    ../stubs/fakeproperty.h \
+    ../stubs/duikeyboardstatetracker_stub.h \
     ../stubs/duiinputcontextconnection_stub.h \
 
 SOURCES += \
     ft_duiimpluginmanager.cpp \
     ../stubs/fakegconf.cpp \
+    ../stubs/fakeproperty.cpp \
     ../stubs/duiinputcontextconnection_stub.cpp \
 
 
