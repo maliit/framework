@@ -1,4 +1,4 @@
-dui-im-framework (0.18.6~1) unstable; urgency=low
+dui-im-framework (0.18.6-1) unstable; urgency=low
 
   * Implemented: SWP#TINME-776
   * Fixed: NB#159938
