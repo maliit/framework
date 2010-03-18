@@ -51,6 +51,14 @@ DuiPassThruWindow::DuiPassThruWindow(bool bypassWMHint, QWidget *p)
     Atom input = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_INPUT", False);
     XChangeProperty(dpy, winId(), XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False), XA_ATOM, 32,
                     PropModeReplace, (unsigned char *) &input, 1);
+    //TODO: below _DUI_STATUSBAR_OVERLAY could be removed when libdui does not make statusbar
+    //to be separate.
+    Atom atomDuiStatusBarOverlay = XInternAtom(dpy, "_DUI_STATUSBAR_OVERLAY", False);
+    long propertyData = 1;
+    XChangeProperty(dpy, winId(),
+                    atomDuiStatusBarOverlay, XA_CARDINAL /* type */,
+                    32 /* format, in bits */, PropModeReplace,
+                    (unsigned char *) &propertyData, 1 /* number of elements */);
 }
 
 DuiPassThruWindow::~DuiPassThruWindow()
