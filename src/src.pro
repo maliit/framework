@@ -25,7 +25,6 @@ SOURCES += duiimpluginmanager.cpp \
         duiinputcontextconnection.cpp \
         duiinputcontextdbusconnection.cpp \
         duiplainwindow.cpp \
-        duiimpluginmanager_p.cpp \
 
 CONFIG += debug qdbus dui
 QT = core gui network

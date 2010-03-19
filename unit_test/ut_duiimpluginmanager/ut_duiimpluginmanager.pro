@@ -23,7 +23,6 @@ SOURCES += \
     ut_duiimpluginmanager.cpp \
     ../stubs/fakegconf.cpp \
     ../stubs/duiinputcontextconnection_stub.cpp \
-    $$SRC_DIR/duiimpluginmanager_p.cpp \
     $$SRC_DIR/duiinputcontextconnection.cpp \
 
 
