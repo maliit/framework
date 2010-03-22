@@ -6,7 +6,7 @@
       <applyto>/Dui/InputMethods/Plugins/Handler/0</applyto>
       <owner>dui</owner>
       <type>string</type>
-      <default>DuiVirtualKeyboard</default>
+      <default>DuiKeyboard</default>
       <locale name="C">
         <short>Plugin name for onscreen keyboard</short>
         <long>Plugin name for onscreen keyboard</long>
@@ -18,7 +18,7 @@
       <applyto>/Dui/InputMethods/Plugins/Handler/1</applyto>
       <owner>dui</owner>
       <type>string</type>
-      <default>DuiVirtualKeyboard</default>
+      <default>DuiKeyboard</default>
       <locale name="C">
         <short>Plugin name for hardware keyboard</short>
         <long>Plugin name for hardware keyboard</long>
