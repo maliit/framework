@@ -12,19 +12,18 @@ HEADERSINSTALL = \
     duiinputcontextconnection.h \
     duiplainwindow.h \
     duipreeditface.h \
-    duiimhandlerstate.h \
+    duiimhandlerstate.h
 
 HEADERS += $$HEADERSINSTALL \
         duiimpluginmanager_p.h \
         duiinputcontextdbusconnection.h \
-        duiinputcontextdbusconnection_p.h \
-
+        duiinputcontextdbusconnection_p.h
 
 SOURCES += duiimpluginmanager.cpp \
         duiinputmethodbase.cpp \
         duiinputcontextconnection.cpp \
         duiinputcontextdbusconnection.cpp \
-        duiplainwindow.cpp \
+        duiplainwindow.cpp
 
 CONFIG += debug qdbus dui
 QT = core gui network
@@ -47,20 +46,16 @@ MOC_DIR = .moc
 headers.path += $$DUI_INSTALL_HEADERS/duiimframework
 headers.files += $$HEADERSINSTALL
 
-install_headers.path = $$DUI_INSTALL_HEADERS/duiimframework 
-install_headers.files = include/*
-
 install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
-install_pkgconfig.files = DuiImUiServer.pc
+install_pkgconfig.files = DuiImFramework.pc
 
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = duiimframework.prf
 
 INSTALLS += target \
     headers \
-    install_headers \
-    install_pkgconfig \
     install_prf \
+    install_pkgconfig
 
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml
