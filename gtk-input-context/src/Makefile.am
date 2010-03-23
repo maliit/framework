@@ -7,14 +7,15 @@ moduledir = @GTK_IM_MODULEDIR@
 
 module_LTLIBRARIES = im-dui.la
 
-im_dui_la_SOURCES = 
+im_dui_la_SOURCES = gtk-imcontext-plugin.c \
+			dui-imcontext.c \
+			dui-imcontext.h 
 
-im_dui_la_CFLAGS  =@DUI_IM_GTKIC_CFLAGS@
+im_dui_la_CFLAGS  = @DUI_IM_GTKIC_CFLAGS@ -Wall -Werror
 
 im_dui_la_LDFLAGS = -rpath $(moduledir) \
 		     -avoid-version -no-undefined \
 		     -module \
 		     @DUI_IM_GTKIC_LIBS@
-
 
 MAINTAINERCLEANFILES 	= Makefile.in
