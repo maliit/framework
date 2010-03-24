@@ -9,7 +9,9 @@ module_LTLIBRARIES = im-dui.la
 
 im_dui_la_SOURCES = gtk-imcontext-plugin.c \
 			dui-imcontext.c \
-			dui-imcontext.h 
+			dui-imcontext.h \
+			dui-im-proxy.c \
+			dui-im-proxy.h
 
 im_dui_la_CFLAGS  = @DUI_IM_GTKIC_CFLAGS@ -Wall -Werror
 
