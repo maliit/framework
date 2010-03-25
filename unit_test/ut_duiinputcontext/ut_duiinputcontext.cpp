@@ -254,8 +254,6 @@ QVariant WidgetStub::inputMethodQuery(Qt::InputMethodQuery query) const
 
     if (static_cast<int>(query) == Dui::VisualizationPriorityQuery) {
         return QVariant(visualizationPriority);
-    } else if (static_cast<int>(query) == Dui::InputEnabledQuery) {
-        return QVariant(true);
     } else if (query == Qt::ImSurroundingText) {
         return QVariant(WidgetStubSurroundingText);
     } else if (query == Qt::ImCursorPosition) {
