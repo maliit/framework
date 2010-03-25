@@ -390,6 +390,8 @@ void DuiIMPluginManager::setDeleteIMTimeout(int timeout)
 
 void DuiIMPluginManager::updateInputSource()
 {
+    // Hardware and Accessory can work together.
+    // OnScreen is mutually exclusive to Hardware and Accessory.
     QSet<DuiIMHandlerState> handlers = d->activeHandlers();
     if (DuiKeyboardStateTracker::instance()->isOpen()) {
         // hw keyboard is on
@@ -404,6 +406,8 @@ void DuiIMPluginManager::updateInputSource()
     if (d->imAccessoryEnabledConf->value().toBool()) {
         handlers.remove(OnScreen);
         handlers.insert(Accessory);
+    } else {
+        handlers.remove(Accessory);
     }
 
     if (!handlers.isEmpty()) {
