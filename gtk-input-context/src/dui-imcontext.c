@@ -39,6 +39,12 @@ static void dui_imcontext_set_client_window (GtkIMContext *context, GdkWindow *w
 static void dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area);
 
 
+GType dui_imcontext_get_type ()
+{
+    return _dui_imcontext_type;
+}
+
+
 void
 dui_imcontext_register_type (GTypeModule *type_module)
 {
