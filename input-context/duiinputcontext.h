@@ -151,11 +151,15 @@ private:
     //! registers the application to the input method server
     void registerContextObject();
 
-    // returns content type corresponding to specified hints
+    //! returns content type corresponding to specified hints
     Dui::TextContentType contentType(Qt::InputMethodHints hints) const;
+
+    //! returns the D-Bus object path for this instance
+    QString dbusObjectPath() const;
 
     //! returns state for currently focused widget, key is attribute name.
     QMap<QString, QVariant> getStateInformation() const;
+
 
     bool active; // is connection active
     InputPanelState inputPanelState; // state for the input method server's software input panel
@@ -180,6 +184,8 @@ private:
     bool copyAllowed;
     //! redirect all hw key events to the input method or not
     bool redirectKeys;
+    const QString objectPath; //!< D-Bus object path for this instance.
+    static int connectionCount; //!< Counter to allow multiple IC objects being registered via D-Bus
 };
 
 #endif

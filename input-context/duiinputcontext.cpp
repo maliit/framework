@@ -51,6 +51,7 @@ namespace
     const QString DBusCallbackPath("/org/maemo/duiinputcontext");
 }
 
+int DuiInputContext::connectionCount = -1;
 
 // Note: this class can also be used on plain Qt applications.
 // This means that the functionality _can_ _not_ rely on
@@ -68,7 +69,8 @@ DuiInputContext::DuiInputContext(QObject *parent)
       connectedObject(0),
       pasteAvailable(false),
       copyAllowed(true),
-      redirectKeys(false)
+      redirectKeys(false),
+      objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount))
 {
     sipHideTimer.setSingleShot(true);
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
@@ -124,12 +126,12 @@ void DuiInputContext::connectToDBus()
 
     // connect methods we are offering to DBus
     new DuiInputContextAdaptor(this);
-    QString contextObjectName(DBusCallbackPath);
 
-    bool success = connection.registerObject(contextObjectName, this);
+    bool success = connection.registerObject(dbusObjectPath(), this);
 
-    if (success == false) {
-        duiDebug("DuiInputContext") << "DuiInputContext failed to register D-Bus callback object";
+    if (!success) {
+        qFatal("DuiInputContext failed to register object via D-Bus: %s",
+               dbusObjectPath().toAscii().data());
     }
 
     // start to follow server changes
@@ -140,15 +142,15 @@ void DuiInputContext::connectToDBus()
     //due to bug in Qt
     iface = new QDBusInterface(DBusServiceName, DBusPath, DBusInterface, connection, 0);
 
-    if (iface->isValid() == false) {
-        duiDebug("DuiInputContext") << "DuiInputContext unable to connect to input method server:"
+    // The input method server might not be running when DuiInputContext is created.
+    // The iface validity is rechecked at serviceChangeHandler().
+    if (!iface->isValid()) {
+        duiDebug("DuiInputContext") << "DuiInputContext was unable to connect to input method server: "
                                     << connection.lastError().message();
-
     } else {
         registerContextObject();
     }
 }
-
 
 bool DuiInputContext::event(QEvent *event)
 {
@@ -202,6 +204,10 @@ QString DuiInputContext::language()
     return "EN"; // FIXME
 }
 
+QString DuiInputContext::dbusObjectPath() const
+{
+    return objectPath;
+}
 
 void DuiInputContext::reset()
 {
@@ -571,8 +577,7 @@ void DuiInputContext::paste()
 
 void DuiInputContext::registerContextObject()
 {
-    QString contextObjectName(DBusCallbackPath);
-    iface->call(QDBus::NoBlock, "setContextObject", contextObjectName);
+    iface->call(QDBus::NoBlock, "setContextObject", dbusObjectPath());
 }
 
 
