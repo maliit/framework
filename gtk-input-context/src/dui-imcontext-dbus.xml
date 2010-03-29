@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<node>
+  <interface name="org.maemo.duiinputcontext1">
+    <method name="activationLostEvent">
+    </method>
+    <method name="imInitiatedHide">
+    </method>
+    <method name="commitString">
+      <arg name="string" type="s" direction="in"/>
+    </method>
+    <method name="updatePreedit">
+      <arg name="string" type="s" direction="in"/>
+      <arg name="preeditFace" type="i" direction="in"/>
+    </method>
+    <method name="keyEvent">
+      <arg name="type" type="i" direction="in"/>
+      <arg name="key" type="i" direction="in"/>
+      <arg name="modifiers" type="i" direction="in"/>
+      <arg name="text" type="s" direction="in"/>
+      <arg name="autoRepeat" type="b" direction="in"/>
+      <arg name="count" type="i" direction="in"/>
+    </method>
+    <method name="updateInputMethodArea">
+      <arg name="data" type="av" direction="in"/>
+    </method>
+    <method name="setGlobalCorrectionEnabled">
+      <arg type="b" direction="in"/>
+    </method>
+    <method name="copy">
+    </method>
+    <method name="paste">
+    </method>
+    <method name="setRedirectKeys">
+      <arg name="enabled" type="b" direction="in"/>
+    </method>
+    <method name="preeditRectangle">
+      <arg type="(iiii)" direction="out"/>
+      <arg name="valid" type="b" direction="out"/>
+    </method>
+  </interface>
+</node>
+
