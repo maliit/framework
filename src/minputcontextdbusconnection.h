@@ -118,7 +118,29 @@ public slots:
                          const QString &text, bool autoRepeat, int count, quint32 nativeScanCode,
                          quint32 nativeModifiers);
 
+    /*!
+     * \brief Register an input method toolbar which is defined in \a fileName with the unique identifier \a id.
+     *  The \a id should be unique, and the \a fileName is the absolute file name of the custom toolbar.
+     */
+    void registerToolbar(int id, const QString &fileName);
+
+    /*!
+     * \brief Unregister an input method \a toolbar which unique identifier is \a id.
+     */
+    void unregisterToolbar(int id);
+
+    /*!
+     * \brief Sets the \a attribute for the \a item in the custom toolbar to \a value.
+     */
+    void setToolbarItemAttribute(int id, const QString &item, const QString &attribute, const QVariant &value);
+
 private:
+    /*!
+     * \brief Maps the input toolbar identifier from local \a id to global \a globalId.
+     * \return false if request is not from a valid client.
+     */
+    bool toGlobal(int id, qlonglong &globalId);
+
     Q_DISABLE_COPY(MInputContextDBusConnection)
 
     MInputContextDBusConnectionPrivate *d;

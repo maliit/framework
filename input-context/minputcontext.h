@@ -137,6 +137,15 @@ private slots:
     //! Notify input method plugin about new \a orientation angle of application's active window.
     void notifyOrientationChange(M::OrientationAngle orientation);
 
+    //! Notify input method plugin about a new toolbar which is defined in \a fileName and with the unique \a id to be registered.
+    void notifyToolbarRegistered(int id, const QString &fileName);
+
+    //! Notify input method plugin about a \a toolbar which has a unique identifier \a id to be unregistered.
+    void notifyToolbarUnregistered(int id);
+
+    //! Notify input method plugin about the \attribute of the \a item in the custom toolbar which has the unique \a id is changed to \a value.
+    void notifyToolbarItemAttributeChanged(int id, const QString &item, const QString &attribute, const QVariant& value);
+
 private:
     Q_DISABLE_COPY(MInputContext)
 

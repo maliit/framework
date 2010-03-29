@@ -120,10 +120,33 @@ void MInputMethodBase::setCopyPasteState(bool copyAvailable, bool pasteAvailable
     Q_UNUSED(pasteAvailable);
 }
 
-void MInputMethodBase::setToolbar(const QString &toolbar)
+void MInputMethodBase::registerToolbar(qlonglong id, const QString &fileName)
 {
     // empty default implementation
-    Q_UNUSED(toolbar);
+    Q_UNUSED(id);
+    Q_UNUSED(fileName);
+}
+
+void MInputMethodBase::unregisterToolbar(qlonglong id)
+{
+    // empty default implementation
+    Q_UNUSED(id);
+}
+
+void MInputMethodBase::setToolbar(qlonglong id)
+{
+    // empty default implementation
+    Q_UNUSED(id);
+}
+
+void MInputMethodBase::setToolbarItemAttribute(qlonglong id, const QString &item,
+                                               const QString &attribute, const QVariant &value)
+{
+    // empty default implementation
+    Q_UNUSED(id);
+    Q_UNUSED(item);
+    Q_UNUSED(attribute);
+    Q_UNUSED(value);
 }
 
 void MInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,

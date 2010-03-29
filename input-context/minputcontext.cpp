@@ -100,6 +100,18 @@ MInputContext::MInputContext(QObject *parent)
     connect(MInputMethodState::instance(),
             SIGNAL(activeWindowOrientationAngleChanged(M::OrientationAngle)),
             this, SLOT(notifyOrientationChange(M::OrientationAngle)));
+
+    connect(MInputMethodState::instance(),
+            SIGNAL(toolbarRegistered(int, QString)),
+            this, SLOT(notifyToolbarRegistered(int, QString)));
+
+    connect(MInputMethodState::instance(),
+            SIGNAL(toolbarUnregistered(int)),
+            this, SLOT(notifyToolbarUnregistered(int)));
+
+    connect(MInputMethodState::instance(),
+            SIGNAL(toolbarItemAttributeChanged(int, QString, QString, QVariant)),
+            this, SLOT(notifyToolbarItemAttributeChanged(int, QString, QString, QVariant)));
 }
 
 
@@ -627,6 +639,25 @@ void MInputContext::notifyOrientationChange(M::OrientationAngle orientation)
 }
 
 
+void MInputContext::notifyToolbarRegistered(int id, const QString &fileName)
+{
+    iface->call(QDBus::NoBlock, "registerToolbar", id, fileName);
+}
+
+void MInputContext::notifyToolbarUnregistered(int id)
+{
+    iface->call(QDBus::NoBlock, "unregisterToolbar", id);
+}
+
+void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &item,
+                                                        const QString &attribute, const QVariant& value)
+{
+    QVariantList values;
+    values << value;
+    iface->call(QDBus::NoBlock, "setToolbarItemAttribute", id, item,
+                attribute, values);
+}
+
 M::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
 {
     M::TextContentType type = M::FreeTextContentType;
@@ -672,7 +703,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarQuery));
 
     if (queryResult.isValid()) {
-        stateInformation["toolbar"] = queryResult.toString();
+        stateInformation["toolbar"] = queryResult.toInt();
     }
 
     // surrounding text

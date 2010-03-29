@@ -137,6 +137,22 @@ void MInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int mod
                           static_cast<quint32>(nativeModifiers));
 }
 
+void MInputContextDBusAdaptor::registerToolbar(int id, const QString &toolbar)
+{
+    host->registerToolbar(id, toolbar);
+}
+
+void MInputContextDBusAdaptor::unregisterToolbar(int id)
+{
+    host->unregisterToolbar(id);
+}
+
+void MInputContextDBusAdaptor::setToolbarItemAttribute(int id, const QString &item,
+                                                         const QString &attribute, const QVariantList &values)
+{
+    if (values.size())
+        host->setToolbarItemAttribute(id, item, attribute, values.at(0));
+}
 
 ////////////////
 // private class
@@ -370,6 +386,7 @@ void MInputContextDBusConnection::setContextObject(QString callbackObject)
     // delete existing dbus interface object in case this method gets called multiple times
     if (d->clients.contains(msg.service())) {
         delete d->clients[msg.service()];
+        d->clientIds.remove(msg.service());
     }
 
     // creates interface object for the caller
@@ -382,6 +399,10 @@ void MInputContextDBusConnection::setContextObject(QString callbackObject)
     }
 
     d->clients[msg.service()] = clientConnection;
+    static int clientIdCounter = 1;
+    int newClentId = clientIdCounter;
+    clientIdCounter++;
+    d->clientIds[msg.service()] = newClentId;
 }
 
 
@@ -476,17 +497,18 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
     }
 
     // toolbar change
-    QString oldToolbar;
-    QString newToolbar;
+    qlonglong oldToolbarId;
+    qlonglong newToolbarId;
     variant = d->widgetState[ToolbarAttribute];
 
     if (variant.isValid()) {
-        oldToolbar = variant.toString();
+        oldToolbarId = variant.toLongLong();
     }
 
     variant = stateInfo[ToolbarAttribute];
     if (variant.isValid()) {
-        newToolbar = variant.toString();
+        // map toolbar id from local to global
+        toGlobal(variant.toInt(), newToolbarId);
     }
 
     // update state
@@ -499,10 +521,13 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
         }
     }
 
-    if (oldToolbar != newToolbar) {
+    // compare the toolbar id (global)
+    if (oldToolbarId != newToolbarId) {
         foreach (MInputMethodBase *target, targets()) {
-            target->setToolbar(newToolbar);
+            target->setToolbar(newToolbarId);
         }
+        // store the new used toolbar id(global).
+        d->widgetState[ToolbarAttribute] = newToolbarId;
     }
 
     // general notification last
@@ -547,4 +572,47 @@ void MInputContextDBusConnection::processKeyEvent(QEvent::Type keyType, Qt::Key 
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
                                 nativeScanCode, nativeModifiers);
     }
+}
+
+void MInputContextDBusConnection::registerToolbar(int id, const QString &toolbar)
+{
+    qlonglong globalId;
+    if (toGlobal(id, globalId)) {
+        foreach (MInputMethodBase *target, targets()) {
+            target->registerToolbar(globalId, toolbar);
+        }
+    }
+}
+
+void MInputContextDBusConnection::unregisterToolbar(int id)
+{
+    qlonglong globalId;
+    if (toGlobal(id, globalId)) {
+        foreach (MInputMethodBase *target, targets()) {
+            target->unregisterToolbar(globalId);
+        }
+    }
+}
+
+void MInputContextDBusConnection::setToolbarItemAttribute(int id, const QString &item,
+                                                            const QString &attribute, const QVariant &value)
+{
+    qlonglong globalId;
+    if (toGlobal(id, globalId)) {
+        foreach (MInputMethodBase *target, targets()) {
+            target->setToolbarItemAttribute(globalId, item, attribute, value);
+        }
+    }
+}
+
+bool MInputContextDBusConnection::toGlobal(int id, qlonglong &globalId)
+{
+    bool val = false;
+    globalId = -1;
+    const QDBusMessage &msg = message();
+    if (d->clients.contains(msg.service())) {
+        val = true;
+        globalId = (static_cast<qlonglong>(d->clientIds[msg.service()]))<<32 + id;
+    }
+    return val;
 }

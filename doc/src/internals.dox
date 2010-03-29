@@ -161,9 +161,10 @@ When an event takes place on a toolbar widget, the input method sends a sequence
 - <b>paste</b>: input method asks the widget to paste from clipboard
 - <b>sendCommand</b>: input method passes the defined command to app::toolbarWidgetCommand RPC function
 
-[NOT YET IMPLEMENTED]
+[IMPLEMENTED]
 The widget can change the attributes of an item in toolbar. Except the NAME attribute, all others attributes can be changed by the widget in runtime. To change an attribute, a widget call im::setToolbarItemAttribute() RPC function.
 
+[NOT YET IMPLEMENTED]
 The widget can also get the attribute on an item in toolbar by calling im::toolbarItemAttribute() RPC function.
 
 */
