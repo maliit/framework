@@ -20,6 +20,7 @@
  */
 
 #include "dui-imcontext.h"
+#include "debug.h"
 
 static GType _dui_imcontext_type = 0;
 static GtkIMContextClass *parent_class = NULL;
@@ -27,6 +28,15 @@ static GtkIMContextClass *parent_class = NULL;
 static void dui_imcontext_finalize(GObject *object);
 static void dui_imcontext_class_init (DuiIMContextClass *klass);
 static void dui_imcontext_init (DuiIMContext *dui_imcontext);
+
+static void dui_imcontext_focus_in (GtkIMContext *context);
+static void dui_imcontext_focus_out (GtkIMContext *context);
+static gboolean dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event);
+static void dui_imcontext_reset (GtkIMContext *context);
+static void dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrList **attrs, gint *cursor_pos);
+static void dui_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled);
+static void dui_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window);
+static void dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area);
 
 
 void
@@ -87,18 +97,92 @@ static void
 dui_imcontext_class_init (DuiIMContextClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
-
 	parent_class = (GtkIMContextClass *)g_type_class_peek_parent(klass);
+	GtkIMContextClass *imclass = GTK_IM_CONTEXT_CLASS (klass);
 
 	gobject_class->finalize = dui_imcontext_finalize;
+
+	imclass->focus_in = dui_imcontext_focus_in;
+	imclass->focus_out = dui_imcontext_focus_out;
+	imclass->filter_keypress = dui_imcontext_filter_key_event;
+	imclass->reset = dui_imcontext_reset;
+	imclass->set_client_window = dui_imcontext_set_client_window;
+	imclass->get_preedit_string = dui_imcontext_get_preedit_string;
+	imclass->set_cursor_location = dui_imcontext_set_cursor_location;
+	imclass->set_use_preedit = dui_imcontext_set_preedit_enabled;
 
 }
 
 
 static void
-dui_imcontext_init (DuiIMContext *dui_imcontext)
+dui_imcontext_init (DuiIMContext *self)
 {
+	self->proxy = dui_im_proxy_get_singleton();
+}
 
 
+static void
+dui_imcontext_focus_in (GtkIMContext *context)
+{
+	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	DBG("imcontext = %p", imcontext);
+
+}
+
+
+static void
+dui_imcontext_focus_out (GtkIMContext *context)
+{
+	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	DBG("imcontext = %p", imcontext);
+}
+
+
+static gboolean
+dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
+{
+	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	DBG("imcontext = %p", imcontext);
+	return TRUE;
+}
+
+
+static void
+dui_imcontext_reset (GtkIMContext *context)
+{
+	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	DBG("imcontext = %p", imcontext);
+}
+
+
+static void
+dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrList **attrs, gint *cursor_pos)
+{
+	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	DBG("imcontext = %p", imcontext);
+}
+
+
+static void
+dui_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled)
+{
+	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	DBG("imcontext = %p", imcontext);
+}
+
+
+static void
+dui_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window)
+{
+	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	DBG("imcontext = %p", imcontext);
+}
+
+
+static void
+dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
+{
+	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	DBG("imcontext = %p", imcontext);
 }
 

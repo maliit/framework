@@ -22,6 +22,7 @@
 #define _DUI_IMCONTEXT_H
 
 #include <gtk/gtk.h>
+#include "dui-im-proxy.h"
 
 G_BEGIN_DECLS
 
@@ -38,6 +39,8 @@ typedef struct _DuiIMContextClass DuiIMContextClass;
 
 struct _DuiIMContext {
 	GtkIMContext parent;
+
+	DuiIMProxy *proxy;
 };
 
 struct _DuiIMContextClass {

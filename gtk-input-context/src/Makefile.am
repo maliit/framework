@@ -12,7 +12,8 @@ dui-im-proxy-glue.h: dui-im-client.xml
 
 BUILT_SOURCES = dui-im-proxy-glue.h
 
-im_dui_la_SOURCES = gtk-imcontext-plugin.c \
+im_dui_la_SOURCES = debug.h \
+			gtk-imcontext-plugin.c \
 			dui-imcontext.c \
 			dui-imcontext.h \
 			dui-im-proxy.c \
