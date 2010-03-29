@@ -222,7 +222,7 @@ void DuiInputContext::update()
 {
     duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
 
-    QWidget *focused = focusWidget();
+    const QWidget *const focused = focusWidget();
 
     if (focused == 0) {
         return;
@@ -653,77 +653,70 @@ QMap<QString, QVariant> DuiInputContext::getStateInformation() const
     QMap<QString, QVariant> stateInformation;
     const QWidget *focused = focusWidget();
 
-    if (focused == 0) {
+    if (!focused) {
         return stateInformation;
     }
 
     // visualization priority
-    Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(Dui::VisualizationPriorityQuery);
-    QVariant queryResult = focused->inputMethodQuery(query);
+    QVariant queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(Dui::VisualizationPriorityQuery));
 
     if (queryResult.isValid()) {
         stateInformation["visualizationPriority"] = queryResult.toBool();
     }
 
     // toolbar
-    query = static_cast<Qt::InputMethodQuery>(Dui::InputMethodToolbarQuery);
-    queryResult = focused->inputMethodQuery(query);
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(Dui::InputMethodToolbarQuery));
 
     if (queryResult.isValid()) {
         stateInformation["toolbar"] = queryResult.toString();
     }
 
     // surrounding text
-    query = Qt::ImSurroundingText;
-    queryResult = focused->inputMethodQuery(query);
+    queryResult = focused->inputMethodQuery(Qt::ImSurroundingText);
 
     if (queryResult.isValid()) {
         stateInformation["surroundingText"] = queryResult.toString();
     }
 
     // cursor pos
-    query = Qt::ImCursorPosition;
-    queryResult = focused->inputMethodQuery(query);
+    queryResult = focused->inputMethodQuery(Qt::ImCursorPosition);
 
     if (queryResult.isValid()) {
         stateInformation["cursorPosition"] = queryResult.toInt();
     }
 
-    Qt::InputMethodHints hints;
-    const QGraphicsView *graphicsView = qobject_cast<const QGraphicsView *>(focused);
+    Qt::InputMethodHints hints = focused->inputMethodHints();
+    const QGraphicsView *const graphicsView = qobject_cast<const QGraphicsView *>(focused);
 
     if (graphicsView) {
         // focused->inputMethodHints() always returns 0
         // therefore we explicitly call inputMethodHints with focused item
-        QGraphicsScene *scene = graphicsView->scene();
-        QGraphicsItem *focusedObject = scene ? scene->focusItem() : 0;
+        const QGraphicsScene *const scene = graphicsView->scene();
+        const QGraphicsItem *const focusedObject = scene ? scene->focusItem() : 0;
         if (focusedObject) {
             hints = focusedObject->inputMethodHints();
         }
-    } else {
-        hints = focused->inputMethodHints();
     }
 
     // content type value
     stateInformation["contentType"] = contentType(hints);
 
     // error correction support
-    query = static_cast<Qt::InputMethodQuery>(Dui::ImCorrectionEnabledQuery);
-    queryResult = focused->inputMethodQuery(query);
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(Dui::ImCorrectionEnabledQuery));
 
     if (queryResult.isValid()) {
         stateInformation["correctionEnabled"] = queryResult.toBool();
     }
 
-    const bool predictionEnabled = !(hints & Qt::ImhNoPredictiveText);
-    stateInformation["predictionEnabled"] = predictionEnabled;
-
-    const bool autoCapitalizationEnabled = !(hints & Qt::ImhNoAutoUppercase);
-    stateInformation["autocapitalizationEnabled"] = autoCapitalizationEnabled;
+    stateInformation["predictionEnabled"] = !(hints & Qt::ImhNoPredictiveText);
+    stateInformation["autocapitalizationEnabled"] = !(hints & Qt::ImhNoAutoUppercase);
 
     // input method mode
-    query = static_cast<Qt::InputMethodQuery>(Dui::ImModeQuery);
-    queryResult = focused->inputMethodQuery(query);
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(Dui::ImModeQuery));
 
     Dui::InputMethodMode inputMethodMode = Dui::InputMethodModeNormal;
     if (queryResult.isValid()) {
@@ -732,8 +725,7 @@ QMap<QString, QVariant> DuiInputContext::getStateInformation() const
     stateInformation["inputMethodMode"] = inputMethodMode;
 
     // is text selected
-    query = Qt::ImCurrentSelection;
-    queryResult = focused->inputMethodQuery(query);
+    queryResult = focused->inputMethodQuery(Qt::ImCurrentSelection);
 
     if (queryResult.isValid())
         stateInformation["hasSelection"] = !(queryResult.toString().isEmpty());
