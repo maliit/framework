@@ -27,6 +27,7 @@
 #include <DuiApplication>
 #include <DuiScene>
 #include <duiplainwindow.h>
+#include <QCommonStyle>
 
 #include "duiimpluginmanager.h"
 #include "duipassthruwindow.h"
@@ -49,6 +50,9 @@ int main(int argc, char **argv)
     DuiApplication::setLoadDuiInputContext(false);
 
     DuiApplication app(argc, argv);
+
+    // TODO: Check if hardwiring the QStyle can be removed at a later state.
+    app.setStyle(new QCommonStyle);
 
     DuiPassThruWindow widget(bypassWMHint);
     widget.setFocusPolicy(Qt::NoFocus);
