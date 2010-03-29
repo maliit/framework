@@ -29,5 +29,5 @@ im_dui_la_LDFLAGS = -rpath $(moduledir) \
 
 EXTRA_DIST = dui-im-client.xml
 
-CLEANFILES = $(BUITSOURCES)
+CLEANFILES = $(BUILT_SOURCES)
 MAINTAINERCLEANFILES 	= Makefile.in
