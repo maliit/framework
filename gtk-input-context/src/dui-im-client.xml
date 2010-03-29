@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<node>
+  <interface name="org.maemo.duiinputmethodserver1">
+    <method name="showInputMethod">
+    </method>
+    <method name="hideInputMethod">
+    </method>
+    <method name="mouseClickedOnPreedit">
+      <arg name="pos" type="(ii)" direction="in"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QPoint"/>
+      <arg name="preeditRect" type="(iiii)" direction="in"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="QRect"/>
+    </method>
+    <method name="setPreedit">
+      <arg name="text" type="s" direction="in"/>
+    </method>
+    <method name="updateWidgetInformation">
+      <arg name="stateInformation" type="a{sv}" direction="in"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
+    </method>
+    <method name="reset">
+    </method>
+    <method name="setContextObject">
+      <arg name="callbackObject" type="s" direction="in"/>
+    </method>
+    <method name="activateContext">
+    </method>
+    <method name="appOrientationChanged">
+      <arg name="angle" type="i" direction="in"/>
+    </method>
+    <method name="setCopyPasteState">
+      <arg name="copyAvailable" type="b" direction="in"/>
+      <arg name="pasteAvailable" type="b" direction="in"/>
+    </method>
+    <method name="processKeyEvent">
+      <arg name="keyType" type="i" direction="in"/>
+      <arg name="keyCode" type="i" direction="in"/>
+      <arg name="modifiers" type="i" direction="in"/>
+      <arg name="text" type="s" direction="in"/>
+      <arg name="autoRepeat" type="b" direction="in"/>
+      <arg name="count" type="i" direction="in"/>
+      <arg name="nativeScanCode" type="i" direction="in"/>
+    </method>
+  </interface>
+</node>
+

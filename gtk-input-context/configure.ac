@@ -34,6 +34,9 @@ PKG_CHECK_MODULES(DUI_IM_GTKIC, glib-2.0
 AC_SUBST(DUI_IM_GTKIC_CFLAGS)
 AC_SUBST(DUI_IM_GTKIC_LIBS)
 
+DBUS_BINDING_TOOL="dbus-binding-tool"
+AC_SUBST(DBUS_BINDING_TOOL)
+
 gtk_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
 GTK_IM_MODULEDIR="$libdir"/gtk-2.0/$gtk_binary_version/immodules
 AC_SUBST(GTK_IM_MODULEDIR)
