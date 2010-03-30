@@ -23,6 +23,7 @@
 
 #include <gtk/gtk.h>
 #include "dui-im-proxy.h"
+#include "dui-imcontext-dbus.h"
 
 G_BEGIN_DECLS
 
@@ -41,6 +42,7 @@ struct _DuiIMContext {
 	GtkIMContext parent;
 
 	DuiIMProxy *proxy;
+	DuiIMContextDbusObj *dbusobj;
 };
 
 struct _DuiIMContextClass {

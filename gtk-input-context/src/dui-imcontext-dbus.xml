@@ -25,7 +25,7 @@
       <arg name="data" type="av" direction="in"/>
     </method>
     <method name="setGlobalCorrectionEnabled">
-      <arg type="b" direction="in"/>
+      <arg name="enabled" type="b" direction="in"/>
     </method>
     <method name="copy">
     </method>
@@ -35,7 +35,7 @@
       <arg name="enabled" type="b" direction="in"/>
     </method>
     <method name="preeditRectangle">
-      <arg type="(iiii)" direction="out"/>
+      <arg name="rect" type="(iiii)" direction="out"/>
       <arg name="valid" type="b" direction="out"/>
     </method>
   </interface>

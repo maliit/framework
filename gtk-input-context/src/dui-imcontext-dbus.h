@@ -46,7 +46,7 @@ GType dui_imcontext_dbusobj_get_type(void);
         (G_TYPE_INSTANCE_GET_CLASS((obj), DUI_IMCONTEXT_TYPE_DBUSOBJ, DuiIMContextDbusObjClass))
 
 
-DuiIMContextDbusObj *dui_imcontext_dbus_init(void);
+DuiIMContextDbusObj *dui_imcontext_dbusobj_get_singleton (void);
 
 
 #endif /* DUI_IMCONTEXT_DBUS_H */

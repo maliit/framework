@@ -66,7 +66,7 @@ dui_imcontext_dbusobj_class_init(DuiIMContextDbusObjClass* klass)
 
 
 DuiIMContextDbusObj *
-dui_imcontext_dbus_daemon_init(void)
+dui_imcontext_dbus_register(void)
 {
 	DBusGConnection* bus = NULL;
 	DBusGProxy* busProxy = NULL;
@@ -89,6 +89,7 @@ dui_imcontext_dbus_daemon_init(void)
 
 	if (busProxy == NULL) {
 		DBG("Failed to get a proxy for D-Bus\n");
+		return NULL;
 	}
 
 	/* Attempt to register the well-known name.*/
@@ -108,17 +109,116 @@ dui_imcontext_dbus_daemon_init(void)
 
 	if (result != 1) {
 		g_warning("Failed to get the primary well-known name.\n");
+		return NULL;
 	}
 
 	dbusobj = g_object_new(DUI_IMCONTEXT_TYPE_DBUSOBJ, NULL);
 
 	if (dbusobj == NULL) {
 		g_warning("Failed to create dbus_obj.\n");
+		return NULL;
 	}
 
 	dbus_g_connection_register_g_object(bus, DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
 						G_OBJECT(dbusobj));
 
 	return dbusobj;
+}
+
+
+DuiIMContextDbusObj *
+dui_imcontext_dbusobj_get_singleton (void)
+{
+	static DuiIMContextDbusObj *dbusobj = NULL;
+
+	if (!dbusobj)
+		dbusobj = dui_imcontext_dbus_register();
+	return dbusobj;
+}
+
+
+gboolean
+dui_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+gboolean
+dui_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+gboolean
+dui_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+gboolean
+dui_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+				gboolean auto_repeat, int count, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error)
+{
+	STEP();
+	return TRUE;
 }
 

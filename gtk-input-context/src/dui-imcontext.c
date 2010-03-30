@@ -124,6 +124,7 @@ static void
 dui_imcontext_init (DuiIMContext *self)
 {
 	self->proxy = dui_im_proxy_get_singleton();
+	self->dbusobj = dui_imcontext_dbusobj_get_singleton();
 }
 
 
@@ -166,6 +167,8 @@ dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrL
 {
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
 	DBG("imcontext = %p", imcontext);
+	if (str)
+		*str = g_strdup ("");
 }
 
 
