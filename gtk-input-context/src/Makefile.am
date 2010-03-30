@@ -26,7 +26,7 @@ im_dui_la_SOURCES = debug.h \
 			dui-im-proxy.h \
 			$(BUILT_SOURCES)
 
-im_dui_la_CFLAGS  = @DUI_IM_GTKIC_CFLAGS@ -Wall -Werror
+im_dui_la_CFLAGS  = @DUI_IM_GTKIC_CFLAGS@ -Wall -Werror -g
 
 im_dui_la_LDFLAGS = -rpath $(moduledir) \
 		     -avoid-version -no-undefined \

@@ -28,6 +28,7 @@
 #include <gtk/gtkimmodule.h>
 
 #include "dui-imcontext.h"
+#include "debug.h"
 
 static const GtkIMContextInfo dui_im_info =
 {
@@ -54,13 +55,17 @@ GtkIMContext *im_module_create (const gchar *context_id);
 void
 im_module_init (GTypeModule *type_module)
 {
+	STEP();
+	g_type_module_use(type_module);
 	dui_imcontext_register_type(type_module);
+	STEP();
 }
 
 
 void
 im_module_exit ()
 {
+	STEP();
 }
 
 
@@ -75,7 +80,7 @@ im_module_list (const GtkIMContextInfo ***contexts, int *context_number)
 GtkIMContext *
 im_module_create (const gchar *context_id)
 {
-	if (strcmp(context_id, "dui-im") == 0) {
+	if (g_strcmp0(context_id, "dui-im") == 0) {
 		return dui_imcontext_new();
 	} else {
 		return NULL;

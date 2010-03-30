@@ -23,9 +23,7 @@
 #include "debug.h"
 
 static GType _dui_imcontext_type = 0;
-static GtkIMContextClass *parent_class = NULL;
 
-static void dui_imcontext_finalize(GObject *object);
 static void dui_imcontext_class_init (DuiIMContextClass *klass);
 static void dui_imcontext_init (DuiIMContext *dui_imcontext);
 
@@ -91,22 +89,9 @@ dui_imcontext_new (void)
 
 
 static void
-dui_imcontext_finalize(GObject *object)
-{
-	//DuiIMContext *imcontext = DUI_IMCONTEXT(object);
-
-	G_OBJECT_CLASS(parent_class)->finalize(object);
-}
-
-
-static void
 dui_imcontext_class_init (DuiIMContextClass *klass)
 {
-	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
-	parent_class = (GtkIMContextClass *)g_type_class_peek_parent(klass);
 	GtkIMContextClass *imclass = GTK_IM_CONTEXT_CLASS (klass);
-
-	gobject_class->finalize = dui_imcontext_finalize;
 
 	imclass->focus_in = dui_imcontext_focus_in;
 	imclass->focus_out = dui_imcontext_focus_out;
@@ -169,6 +154,10 @@ dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrL
 	DBG("imcontext = %p", imcontext);
 	if (str)
 		*str = g_strdup ("");
+	if (attrs)
+		*attrs = pango_attr_list_new();
+	if (cursor_pos)
+		*cursor_pos = 0;
 }
 
 
