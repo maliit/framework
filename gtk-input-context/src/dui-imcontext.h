@@ -43,6 +43,9 @@ struct _DuiIMContext {
 
 	DuiIMProxy *proxy;
 	DuiIMContextDbusObj *dbusobj;
+
+	GdkWindow *client_window;
+	GdkRectangle cursor_location;
 };
 
 struct _DuiIMContextClass {

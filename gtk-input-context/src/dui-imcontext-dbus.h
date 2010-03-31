@@ -47,6 +47,7 @@ GType dui_imcontext_dbusobj_get_type(void);
 
 
 DuiIMContextDbusObj *dui_imcontext_dbusobj_get_singleton (void);
+gchar *dui_imcontext_dbusobj_get_path(DuiIMContextDbusObj *obj);
 
 
 #endif /* DUI_IMCONTEXT_DBUS_H */

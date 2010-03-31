@@ -222,3 +222,10 @@ dui_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rec
 	return TRUE;
 }
 
+
+gchar *
+dui_imcontext_dbusobj_get_path(DuiIMContextDbusObj *obj)
+{
+	return DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH;
+}
+

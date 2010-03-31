@@ -52,6 +52,8 @@ GType dui_im_proxy_get_type (void);
 
 DuiIMProxy *dui_im_proxy_get_singleton (void);
 
+gboolean dui_im_proxy_set_context_object (DuiIMProxy *proxy, const char *object_name);
+
 G_END_DECLS
 
 #endif //_DUI_IM_PROXY_H
