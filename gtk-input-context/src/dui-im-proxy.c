@@ -21,6 +21,7 @@
 
 #include "dui-im-proxy.h"
 #include "dui-im-proxy-glue.h"
+#include "debug.h"
 
 G_DEFINE_TYPE (DuiIMProxy, dui_im_proxy, G_TYPE_OBJECT);
 
@@ -93,6 +94,7 @@ dui_im_proxy_activate_context (DuiIMProxy *proxy)
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
@@ -112,6 +114,7 @@ dui_im_proxy_app_orientation_changed (DuiIMProxy *proxy, const gint angle)
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
@@ -131,6 +134,7 @@ dui_im_proxy_hide_input_method (DuiIMProxy *proxy)
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
@@ -199,6 +203,7 @@ dui_im_proxy_process_key_event (DuiIMProxy *proxy, const gint type, const gint c
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
@@ -220,6 +225,7 @@ dui_im_proxy_reset (DuiIMProxy *proxy)
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
@@ -239,6 +245,7 @@ dui_im_proxy_set_context_object (DuiIMProxy *proxy, const char *object_name)
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
@@ -259,6 +266,7 @@ dui_im_proxy_set_copy_paste_state (DuiIMProxy *proxy, const gboolean copy_availa
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
@@ -279,6 +287,7 @@ dui_im_proxy_set_preeidt (DuiIMProxy *proxy, const char *text)
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
@@ -298,6 +307,7 @@ dui_im_proxy_show_input_method (DuiIMProxy *proxy)
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 

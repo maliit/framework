@@ -152,12 +152,14 @@ dui_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error)
 	return TRUE;
 }
 
+
 gboolean
 dui_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError **error)
 {
-	STEP();
-	return TRUE;
+	DBG("string is:%s", string);
+	return dui_imcontext_client_commit_string(obj, string);
 }
+
 
 gboolean
 dui_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face, GError **error)
@@ -165,6 +167,7 @@ dui_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int p
 	STEP();
 	return TRUE;
 }
+
 
 gboolean
 dui_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
@@ -228,4 +231,5 @@ dui_imcontext_dbusobj_get_path(DuiIMContextDbusObj *obj)
 {
 	return DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH;
 }
+
 

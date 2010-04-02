@@ -50,4 +50,21 @@ DuiIMContextDbusObj *dui_imcontext_dbusobj_get_singleton (void);
 gchar *dui_imcontext_dbusobj_get_path(DuiIMContextDbusObj *obj);
 
 
+
+// Call back functions for dbus obj, need to be implemented in imcontext client side
+
+gboolean dui_imcontext_client_activation_lost_event (DuiIMContextDbusObj *obj);
+gboolean dui_imcontext_client_im_initiated_hide (DuiIMContextDbusObj *obj);
+gboolean dui_imcontext_client_commit_string (DuiIMContextDbusObj *obj, char *string);
+gboolean dui_imcontext_client_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face);
+gboolean dui_imcontext_client_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+				gboolean auto_repeat, int count);
+gboolean dui_imcontext_client_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data);
+gboolean dui_imcontext_client_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction);
+gboolean dui_imcontext_client_copy (DuiIMContextDbusObj *obj);
+gboolean dui_imcontext_client_paste (DuiIMContextDbusObj *obj);
+gboolean dui_imcontext_client_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled);
+gboolean dui_imcontext_client_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid);
+
+
 #endif /* DUI_IMCONTEXT_DBUS_H */

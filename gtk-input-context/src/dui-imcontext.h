@@ -57,6 +57,7 @@ GType dui_imcontext_get_type (void);
 void dui_imcontext_register_type (GTypeModule *type_module);
 GtkIMContext *dui_imcontext_new (void);
 
+
 G_END_DECLS
 
 #endif //_DUI_IMCONTEXT_H

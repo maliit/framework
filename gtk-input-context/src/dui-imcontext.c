@@ -162,13 +162,19 @@ static void
 dui_imcontext_focus_in (GtkIMContext *context)
 {
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	gboolean ret = TRUE;
+
 	DBG("imcontext = %p", imcontext);
 
 	if (focused_imcontext && focused_imcontext != imcontext)
 		dui_imcontext_focus_out(GTK_IM_CONTEXT(focused_imcontext));
 	focused_imcontext = imcontext;
 
-	// TODO: should call "activateContext" and "showInputMethod" ?
+	ret = dui_im_proxy_activate_context(imcontext->proxy);
+	if (ret)
+		dui_im_proxy_show_input_method(imcontext->proxy);
+
+	// TODO: anything else than call "activateContext" and "showInputMethod" ?
 
 }
 
@@ -179,7 +185,9 @@ dui_imcontext_focus_out (GtkIMContext *context)
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
 	DBG("imcontext = %p", imcontext);
 
-	// TODO: should call "hideInputMethod" ?
+	dui_im_proxy_hide_input_method(imcontext->proxy);
+
+	// TODO: anything else than call "hideInputMethod" ?
 
 	focused_imcontext = NULL;
 	focused_widget = NULL;
@@ -206,6 +214,8 @@ dui_imcontext_reset (GtkIMContext *context)
 {
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
 	DBG("imcontext = %p", imcontext);
+
+	dui_im_proxy_reset(imcontext->proxy);
 }
 
 
@@ -213,6 +223,9 @@ static void
 dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrList **attrs, gint *cursor_pos)
 {
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+
+	// TODO: get preedit string from somewhere....
+
 	DBG("imcontext = %p", imcontext);
 	if (str)
 		*str = g_strdup ("");
@@ -228,6 +241,8 @@ dui_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled)
 {
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
 	DBG("imcontext = %p", imcontext);
+
+	// TODO: Seems QT/DUI don't need it, it will always showing preedit.
 }
 
 
@@ -261,5 +276,100 @@ dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 	// TODO: call updateWidgetInformation?
 	//The cursor location from GTK widget is simillar to ImMicroFocus info of a QWidget
 	//Thus we might need to update Qt::ImMicroFocus info according to this. 
+	//But DUI IM seems not using this info at all
+}
+
+
+// Call back functions for dbus obj
+
+gboolean
+dui_imcontext_client_activation_lost_event (DuiIMContextDbusObj *obj)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_im_initiated_hide (DuiIMContextDbusObj *obj)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_commit_string (DuiIMContextDbusObj *obj, char *string)
+{
+	DBG("string is:%s", string);
+	if (focused_imcontext)
+		g_signal_emit_by_name(focused_imcontext, "commit", string);
+
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+				gboolean auto_repeat, int count)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_copy (DuiIMContextDbusObj *obj)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_paste (DuiIMContextDbusObj *obj)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled)
+{
+	STEP();
+	return TRUE;
+}
+
+
+gboolean
+dui_imcontext_client_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid)
+{
+	STEP();
+	return TRUE;
 }
 

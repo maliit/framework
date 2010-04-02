@@ -52,7 +52,27 @@ GType dui_im_proxy_get_type (void);
 
 DuiIMProxy *dui_im_proxy_get_singleton (void);
 
+gboolean dui_im_proxy_activate_context (DuiIMProxy *proxy);
+gboolean dui_im_proxy_app_orientation_changed (DuiIMProxy *proxy, const gint angle);
+gboolean dui_im_proxy_hide_input_method (DuiIMProxy *proxy);
+#if 0
+// Not yet really implemented
+gboolean dui_im_proxy_mouse_clicked_on_preedit (DuiIMProxy *proxy, const GValueArray* pos,
+					const GValueArray* preedit_rect);
+gboolean dui_im_proxy_update_widget_info (DuiIMProxy *proxy, const GHashTable *state_information);
+#endif
+
+gboolean dui_im_proxy_process_key_event (DuiIMProxy *proxy, const gint type, const gint code,
+					const gint modifiers, const char * text,
+					const gboolean auto_repeat, const gint count,
+					const gint native_scan_code);
+
+gboolean dui_im_proxy_reset (DuiIMProxy *proxy);
 gboolean dui_im_proxy_set_context_object (DuiIMProxy *proxy, const char *object_name);
+gboolean dui_im_proxy_set_copy_paste_state (DuiIMProxy *proxy, const gboolean copy_available,
+					const gboolean paste_available);
+gboolean dui_im_proxy_set_preeidt (DuiIMProxy *proxy, const char *text);
+gboolean dui_im_proxy_show_input_method (DuiIMProxy *proxy);
 
 G_END_DECLS
 
