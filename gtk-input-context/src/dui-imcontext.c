@@ -20,7 +20,9 @@
  */
 
 #include "dui-imcontext.h"
+#include "qt-gtk-translate.h"
 #include "debug.h"
+
 
 static GType _dui_imcontext_type = 0;
 static GtkIMContextClass *parent_class = NULL;
@@ -322,6 +324,7 @@ dui_imcontext_client_key_event (DuiIMContextDbusObj *obj, int type, int key, int
 				gboolean auto_repeat, int count)
 {
 	STEP();
+	qt_key_event_to_gdk(type, key, modifiers);
 	return TRUE;
 }
 

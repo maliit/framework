@@ -24,14 +24,18 @@ im_dui_la_SOURCES = debug.h \
 			dui-imcontext-dbus.h \
 			dui-im-proxy.c \
 			dui-im-proxy.h \
+			qt-gtk-translate.cpp \
+			qt-gtk-translate.h \
 			$(BUILT_SOURCES)
 
-im_dui_la_CFLAGS  = @DUI_IM_GTKIC_CFLAGS@ -Wall -Werror -g
+
+im_dui_la_CFLAGS  = @DUI_IM_GTKIC_CFLAGS@ -Wall -Werror
+im_dui_la_CXXFLAGS  = @DUI_IM_GTKIC_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
 
 im_dui_la_LDFLAGS = -rpath $(moduledir) \
 		     -avoid-version -no-undefined \
 		     -module \
-		     @DUI_IM_GTKIC_LIBS@
+		     @DUI_IM_GTKIC_LIBS@ @QT_LIBS@
 
 EXTRA_DIST = dui-im-client.xml \
 		dui-imcontext-dbus.xml
