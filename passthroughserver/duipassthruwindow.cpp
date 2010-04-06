@@ -20,8 +20,11 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
+
+#ifndef DUI_IM_DISABLE_TRANSLUCENCY
 #include <X11/extensions/Xfixes.h>
 #include <X11/extensions/shape.h>
+#endif
 
 DuiPassThruWindow::DuiPassThruWindow(bool bypassWMHint, QWidget *p)
     : QWidget(p)
@@ -67,7 +70,9 @@ DuiPassThruWindow::~DuiPassThruWindow()
 
 void DuiPassThruWindow::inputPassthrough(const QRegion &region)
 {
+#ifndef DUI_IM_DISABLE_TRANSLUCENCY
     Display *dpy = QX11Info::display();
+#endif
 
     qDebug() << __PRETTY_FUNCTION__ << region
         << "geometry=" << geometry();
@@ -98,7 +103,7 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
         move(newPos);
         newPos.setX(-newPos.x());
         newPos.setY(-newPos.y());
-#endif
+#else
 
         XRectangle * const rects = (XRectangle*)malloc(sizeof(XRectangle)*(size));
         if (!rects) {
@@ -107,9 +112,6 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
 
         XRectangle *rect = rects;
         for (int i = 0; i < size; ++i, ++rect) {
-#ifdef DUI_IM_DISABLE_TRANSLUCENCY
-            regionRects[i].translate(newPos);
-#endif
             rect->x = regionRects.at(i).x();
             rect->y = regionRects.at(i).y();
             rect->width = regionRects.at(i).width();
@@ -124,7 +126,7 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
 
         free(rects);
         XSync(dpy, False);
-
+#endif
     }
 
     // selective compositing
