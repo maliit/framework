@@ -21,11 +21,11 @@
 #ifndef _QT_GTK_TRANSLATE_H
 #define _QT_GTK_TRANSLATE_H
 
-#include <gtk/gtk.h>
+#include <gdk/gdk.h>
 
 G_BEGIN_DECLS
 
-GdkEventKey *qt_key_event_to_gdk(int type, int key, int modifiers);
+GdkEventKey *qt_key_event_to_gdk(int type, int key, int modifiers, char *text, GdkWindow *window);
 
 G_END_DECLS
 

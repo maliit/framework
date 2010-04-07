@@ -27,6 +27,12 @@
 
 G_BEGIN_DECLS
 
+// Be careful not to override the existing flag of GDK
+// Currently bit 15-25 unused, so we pick a middle one.
+typedef enum {
+	IM_FORWARD_MASK = 1 << 20
+} IMModifierType;
+
 typedef struct _DuiIMContext DuiIMContext;
 typedef struct _DuiIMContextClass DuiIMContextClass;
 

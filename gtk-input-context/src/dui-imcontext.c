@@ -203,8 +203,12 @@ dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 	DBG("imcontext = %p", imcontext);
 
 	focused_widget = gtk_get_event_widget((GdkEvent*)event);
+	if (event->state & IM_FORWARD_MASK)
+		return FALSE;
 
 	// TODO: call "processKeyEvent" and anything else?
+	DBG("event type=%x, state=%x, keyval=%x, keycode=%x, group=%d",
+		event->type, event->state, event->keyval, event->hardware_keycode, event->group);
 
 
 	return TRUE;
@@ -323,8 +327,21 @@ gboolean
 dui_imcontext_client_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count)
 {
+	GdkEventKey *event = NULL;
+	GdkWindow *window = NULL;
+
 	STEP();
-	qt_key_event_to_gdk(type, key, modifiers);
+	if (focused_imcontext)
+		window = focused_imcontext->client_window;
+
+	event = qt_key_event_to_gdk(type, key, modifiers, text, window);
+	if (!event)
+		return TRUE;
+	event->send_event = TRUE;
+	event->state |= IM_FORWARD_MASK;
+
+	gdk_event_put((GdkEvent *)event);
+	gdk_event_free((GdkEvent *)event);
 	return TRUE;
 }
 

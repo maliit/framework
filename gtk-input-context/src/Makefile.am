@@ -26,6 +26,8 @@ im_dui_la_SOURCES = debug.h \
 			dui-im-proxy.h \
 			qt-gtk-translate.cpp \
 			qt-gtk-translate.h \
+			qt-keysym-map.h \
+			qt-keysym-map.cpp \
 			$(BUILT_SOURCES)
 
 
