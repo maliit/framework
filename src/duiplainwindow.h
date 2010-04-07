@@ -32,7 +32,7 @@ public:
     static DuiPlainWindow *instance();
 
 public slots:
-#ifdef DUI_IM_DISABLE_TRANSLUCENCY
+#if defined(DUI_IM_DISABLE_TRANSLUCENCY) && !defined(DUI_IM_USE_SHAPE_WINDOW)
     void updatePosition(const QRegion &region);
 #endif
 

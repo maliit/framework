@@ -47,6 +47,18 @@ void Ut_PassthroughServer::testHideShow()
     QVERIFY(!subject->isVisible());
 }
 
+#if defined(DUI_IM_DISABLE_TRANSLUCENCY) && defined(DUI_IM_USE_SHAPE_WINDOW)
+void Ut_PassthroughServer::testWindowShape()
+{
+    const QRegion region(0, 10, 100, 200);
+
+    QCOMPARE(QRegion(), subject->mask());
+
+    subject->inputPassthrough(region);
+    QCOMPARE(region, subject->mask());
+}
+#endif
+
 
 QTEST_APPLESS_MAIN(Ut_PassthroughServer);
 

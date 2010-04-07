@@ -40,7 +40,7 @@ DuiPlainWindow::~DuiPlainWindow()
     m_instance = 0;
 }
 
-#ifdef DUI_IM_DISABLE_TRANSLUCENCY
+#if defined(DUI_IM_DISABLE_TRANSLUCENCY) && !defined(DUI_IM_USE_SHAPE_WINDOW)
 void DuiPlainWindow::updatePosition(const QRegion &region)
 {
     //update view's parameters to compensate movement of DuiPasstroughWindow

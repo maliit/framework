@@ -84,7 +84,7 @@ int main(int argc, char **argv)
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      &widget, SLOT(inputPassthrough(const QRegion &)));
-#ifdef DUI_IM_DISABLE_TRANSLUCENCY
+#if defined(DUI_IM_DISABLE_TRANSLUCENCY) && !defined(DUI_IM_USE_SHAPE_WINDOW)
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      view, SLOT(updatePosition(const QRegion &)));
 #endif

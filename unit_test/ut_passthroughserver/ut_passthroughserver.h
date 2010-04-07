@@ -21,6 +21,11 @@ private slots:
     //! Test hiding and showing of the window based on region signals
     void testHideShow();
 
+#if defined(DUI_IM_DISABLE_TRANSLUCENCY) && defined(DUI_IM_USE_SHAPE_WINDOW)
+    //! Tests window shape based on region signals
+    void testWindowShape();
+#endif
+
 private:
     DuiApplication *app;
     DuiPassThruWindow *subject;

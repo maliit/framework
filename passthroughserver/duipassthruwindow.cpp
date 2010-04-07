@@ -81,6 +81,9 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
 
     if (size) {
 #ifdef DUI_IM_DISABLE_TRANSLUCENCY
+#ifdef DUI_IM_USE_SHAPE_WINDOW
+        setMask(region);
+#else
         QPoint newPos(0, 0);
 
         switch (DuiPlainWindow::instance()->orientationAngle())
@@ -103,6 +106,7 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
         move(newPos);
         newPos.setX(-newPos.x());
         newPos.setY(-newPos.y());
+#endif
 #else
 
         XRectangle * const rects = (XRectangle*)malloc(sizeof(XRectangle)*(size));

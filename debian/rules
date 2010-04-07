@@ -18,7 +18,7 @@ else
 endif
 
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-    INSTALL_PROGRAM += -s
+	INSTALL_PROGRAM += -s
 endif
 
 TMP_BUILD_OPTS = $(subst $(comma),$(space),$(DEB_BUILD_OPTIONS))
@@ -34,6 +34,10 @@ endif
 
 ifneq (,$(filter notranslucency,$(TMP_BUILD_OPTS)))
         QMAKE_OPTIONS += DEFINES+=DUI_IM_DISABLE_TRANSLUCENCY
+
+        ifneq (,$(filter shapewindow,$(TMP_BUILD_OPTS)))
+            QMAKE_OPTIONS += DEFINES+=DUI_IM_USE_SHAPE_WINDOW
+        endif
 endif
 
 ifneq (,$(filter n900,$(TMP_BUILD_OPTS)))
@@ -53,15 +57,15 @@ configure-stamp:
 	dh_testdir
 
 	qmake -r $(QMAKE_OPTIONS)
-	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libduiimframework-dev.install < debian/libduiimframework-dev.install.in 
-	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/dui-im-context.install < debian/dui-im-context.install.in 
-	sed -e 's|DBUS_SERVICE_FILE|${DBUS_SERVICE_FILE}|' > debian/dui-im-uiserver.install < debian/dui-im-uiserver.install.in 
+	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libduiimframework-dev.install < debian/libduiimframework-dev.install.in
+	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/dui-im-context.install < debian/dui-im-context.install.in
+	sed -e 's|DBUS_SERVICE_FILE|${DBUS_SERVICE_FILE}|' > debian/dui-im-uiserver.install < debian/dui-im-uiserver.install.in
 
 	touch configure-stamp
 
 
 build: build-stamp
-build-stamp: configure-stamp 
+build-stamp: configure-stamp
 	dh_testdir
 
 	make  $(PARALLEL_MAKEFLAGS)
@@ -76,19 +80,19 @@ clean:
 
 	make  $(PARALLEL_MAKEFLAGS) clean || true
 	rm -f lib/*
-	rm -rf .obj	
+	rm -rf .obj
 
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k 
+	dh_clean -k
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp
 
-    # generate tests.xml
+	# generate tests.xml
 	cd unit_test && ./gen-tests-xml.sh > tests.xml
 
 	# To workaround the installation of the .service and .prf files,
@@ -112,14 +116,14 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_installchangelogs 
+	dh_installchangelogs
 	dh_installdocs
-	dh_install --sourcedir=debian/tmp -v 
+	dh_install --sourcedir=debian/tmp -v
 	dh_gconf
 #	dh_installexamples
 #	dh_install
 #	dh_installmenu
-#	dh_installdebconf	
+#	dh_installdebconf
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
