@@ -3,6 +3,7 @@
 #include <qstring.h>
 
 #include "qt-keysym-map.h"
+#include "debug.h"
 
 typedef struct {
 	int QtKey;
@@ -143,6 +144,7 @@ XKeySymToQTKey(uint keySym)
 	int i;
 	int count = sizeof(QtKeyXSymMaps)/sizeof(KeySymMap);
 
+	STEP();
 	if ((keySym < 0x1000)) {
 		if (keySym >= 'a' && keySym <= 'z')
 			return QChar(keySym).toUpper().toAscii();

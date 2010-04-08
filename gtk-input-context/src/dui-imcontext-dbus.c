@@ -216,6 +216,7 @@ gboolean
 dui_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled, GError **error)
 {
 	STEP();
+	dui_imcontext_client_set_redirect_keys(obj, enabled);
 	return TRUE;
 }
 

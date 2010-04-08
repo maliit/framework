@@ -29,6 +29,7 @@ static GtkIMContextClass *parent_class = NULL;
 
 static DuiIMContext *focused_imcontext = NULL;
 static GtkWidget *focused_widget = NULL;
+gboolean redirect_keys = FALSE;
 
 static void dui_imcontext_finalize(GObject *object);
 
@@ -200,16 +201,32 @@ static gboolean
 dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 {
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
-	DBG("imcontext = %p", imcontext);
+	int qevent_type = 0, qt_keycode = 0, qt_modifier = 0;
+	gchar *text = "";
+
+	STEP();
 
 	focused_widget = gtk_get_event_widget((GdkEvent*)event);
 	if (event->state & IM_FORWARD_MASK)
 		return FALSE;
 
 	// TODO: call "processKeyEvent" and anything else?
-	DBG("event type=%x, state=%x, keyval=%x, keycode=%x, group=%d",
+	DBG("event type=0x%x, state=0x%x, keyval=0x%x, keycode=0x%x, group=%d",
 		event->type, event->state, event->keyval, event->hardware_keycode, event->group);
 
+	if (focused_imcontext != imcontext)
+		dui_imcontext_focus_in(context);
+
+	if (!redirect_keys)
+		return FALSE;
+
+	if (!gdk_key_event_to_qt(event, &qevent_type, &qt_keycode, &qt_modifier))
+		return FALSE;
+
+	STEP();
+
+	dui_im_proxy_process_key_event(imcontext->proxy, qevent_type, qt_keycode, qt_modifier,
+		text, 0, 1, event->hardware_keycode);
 
 	return TRUE;
 }
@@ -381,7 +398,8 @@ dui_imcontext_client_paste (DuiIMContextDbusObj *obj)
 gboolean
 dui_imcontext_client_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled)
 {
-	STEP();
+	DBG("enabled = %d", enabled);
+	redirect_keys = enabled;
 	return TRUE;
 }
 

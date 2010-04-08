@@ -26,6 +26,7 @@
 G_BEGIN_DECLS
 
 GdkEventKey *qt_key_event_to_gdk(int type, int key, int modifiers, char *text, GdkWindow *window);
+gboolean gdk_key_event_to_qt(GdkEventKey *event, int *type, int *key, int *modifier);
 
 G_END_DECLS
 

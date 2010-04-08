@@ -74,9 +74,43 @@ qt_key_event_to_gdk(int type, int key, int modifiers, char *text, GdkWindow *win
 		}
 	}
 
-	DBG("event type=%x, state=%x, keyval=%x, keycode=%x, group=%d",
+	DBG("event type=0x%x, state=0x%x, keyval=0x%x, keycode=0x%x, group=%d",
 		event->type, event->state, event->keyval, event->hardware_keycode, event->group);
 
 	return event;
 }
 
+
+gboolean
+gdk_key_event_to_qt(GdkEventKey *event, int *type, int *key, int *modifier)
+{
+
+	switch (event->type) {
+	case GDK_KEY_PRESS:
+		*type = QEvent::KeyPress;
+		break;
+	case GDK_KEY_RELEASE:
+		*type = QEvent::KeyRelease;
+		break;
+	default:
+		return FALSE;
+	}
+
+	*key = XKeySymToQTKey(event->keyval);
+	if (*key == Qt::Key_unknown)
+		return FALSE;
+
+	*modifier = Qt::NoModifier;
+	if (event->state & GDK_SHIFT_MASK)
+		*modifier |= Qt::ShiftModifier;
+	if (event->state & GDK_CONTROL_MASK)
+		*modifier |= Qt::ControlModifier;
+	if (event->state & GDK_MOD1_MASK)
+		*modifier |= Qt::AltModifier;
+	if (event->state & GDK_META_MASK)
+		*modifier |= Qt::MetaModifier;
+
+	DBG("qtkey type =%d, qtkey=0x%x, modifier=0x%x", *type, *key, *modifier);
+
+	return TRUE;
+}
