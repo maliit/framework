@@ -21,20 +21,18 @@ The button is aligned within the toolbar according to the value of ALIGMENT attr
 The ICON attribute holds the icon id. 
 The TEXT attribute holds the text and TEXT_ID holds the logical id of the text.
 The TOGGLE attribute defines the type of the button whether it is a toggle button or not, by default the value is false.
+If the TOGGLE attribute is true, the PRESSED attribute holds the button state whether the button is pressed or not.
 
 \subsubsection LABEL
 This tag will be constructed as DuiLabel.
 The NAME attribute should be unique and it is used as a reference in the toolbar system.
-The GROUP attribute defines the group this button belongs to.
+The GROUP attribute defines the group this label belongs to.
 The PRIORITY attribute the defines the priority order of displaying, the smaller the number, the earlier it is put into the toolbar.
-The ORIENTATION attribute, if set, makes the button to be only visible on the mentioned orientation.
-The SHOWON attribute tells when the button is displayed. If the value is "selectedText", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
+The ORIENTATION attribute, if set, makes the label to be only visible on the mentioned orientation.
+The SHOWON attribute tells when the label is displayed. If the value is "selectedText", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
-The button is aligned within the toolbar according to the value of ALIGMENT attribute.
+The label is aligned within the toolbar according to the value of ALIGMENT attribute.
 The TEXT attribute holds the text and TEXT_ID holds the logical id of the text.
-The TOGGLE attribute defines the type of the button whether it is a toggle button or not, by default the value is false.
-If the TOGGLE attribute is true, the PRESSED attribute holds the button state whether the button is pressed or not.
-
 
 \subsubsubsection ACTIONS
 This tag holds a sequence of actions defined within.
