@@ -3,17 +3,17 @@ AC_PREREQ(2.61)
 # package version number (not shared library version)
 # odd micro numbers indicate in-progress development
 # even micro numbers indicate released versions
-m4_define(dui_im_gtkic_version_major, 0)
-m4_define(dui_im_gtkic_version_minor, 1)
-m4_define(dui_im_gtkic_version_micro, 0)
+m4_define(dui_im_client_version_major, 0)
+m4_define(dui_im_client_version_minor, 1)
+m4_define(dui_im_client_version_micro, 0)
 
-m4_define([dui_im_gtkic_version],
-          [dui_im_gtkic_version_major.dui_im_gtkic_version_minor.dui_im_gtkic_version_micro])
-m4_define([dui_im_gtkic_api_version],
-          [dui_im_gtkic_version_major.dui_im_gtkic_version_minor])
+m4_define([dui_im_client_version],
+          [dui_im_client_version_major.dui_im_client_version_minor.dui_im_client_version_micro])
+m4_define([dui_im_client_api_version],
+          [dui_im_client_version_major.dui_im_client_version_minor])
 
-AC_INIT(dui-im-gtkic, dui_im_gtkic_version)
-AM_INIT_AUTOMAKE(dui-im-gtkic, dui_im_gtkic_version)
+AC_INIT(dui-im-client, dui_im_client_version)
+AM_INIT_AUTOMAKE(dui-im-client, dui_im_client_version)
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -64,7 +64,7 @@ fi
 
 
 # i18n
-#GETTEXT_PACKAGE="dui-im-gtkic"
+#GETTEXT_PACKAGE="dui-im-client"
 #AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
 #AC_SUBST(GETTEXT_PACKAGE)
 #AS_ALL_LINGUAS
@@ -78,7 +78,7 @@ src/Makefile
 
 AC_MSG_RESULT([
 Build options:
-  Version                  dui_im_gtkic_version
+  Version                  dui_im_client_version
   Install prefix           $prefix
   Enable debug             $enable_debug
 ])
