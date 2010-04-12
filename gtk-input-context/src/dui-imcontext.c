@@ -29,6 +29,7 @@ static GtkIMContextClass *parent_class = NULL;
 
 static DuiIMContext *focused_imcontext = NULL;
 static GtkWidget *focused_widget = NULL;
+
 gboolean redirect_keys = FALSE;
 
 static void dui_imcontext_finalize(GObject *object);
@@ -44,6 +45,8 @@ static void dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str
 static void dui_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled);
 static void dui_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window);
 static void dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area);
+
+static GtkIMContext *dui_imcontext_get_slave_imcontext (void);
 
 
 GType dui_imcontext_get_type ()
@@ -108,6 +111,63 @@ dui_imcontext_init_dbus (DuiIMContext *self)
 }
 
 
+// staff for fallback slave GTK simple imcontext
+static void
+slave_commit (GtkIMContext *slave, const char *text, gpointer data)
+{
+	STEP();
+	if (focused_imcontext && text) {
+		g_signal_emit_by_name(focused_imcontext, "commit", text);
+	}
+}
+
+
+static void
+slave_preedit_changed (GtkIMContext *slave, gpointer data)
+{
+	gchar *str = NULL;
+	gint cursor_pos = 0;
+	PangoAttrList *attrs = NULL;
+
+	STEP();
+	if (!focused_imcontext || !slave)
+		return;
+
+	gtk_im_context_get_preedit_string(slave, &str, &attrs, &cursor_pos);
+
+	if (str != NULL) {
+		g_free(focused_imcontext->preedit_str);
+		focused_imcontext->preedit_str = str;
+	}
+
+	focused_imcontext->preedit_cursor_pos = cursor_pos;
+
+	if (focused_imcontext->preedit_attrs != NULL)
+		pango_attr_list_unref(focused_imcontext->preedit_attrs);
+
+	focused_imcontext->preedit_attrs = attrs;
+
+	g_signal_emit_by_name(focused_imcontext, "preedit-changed");
+}
+
+
+static GtkIMContext *
+dui_imcontext_get_slave_imcontext (void)
+{
+	static GtkIMContext *slave_ic = NULL;
+
+	if (!slave_ic) {
+		slave_ic = gtk_im_context_simple_new ();
+		//g_signal_connect(G_OBJECT(slave_ic), "preedit-start", G_CALLBACK(slave_preedit_start), NULL);
+		//g_signal_connect(G_OBJECT(slave_ic), "preedit-end", G_CALLBACK(slave_preedit_end), NULL);
+		g_signal_connect(G_OBJECT(slave_ic), "preedit-changed", G_CALLBACK(slave_preedit_changed), NULL);
+		g_signal_connect(G_OBJECT(slave_ic), "commit", G_CALLBACK(slave_commit), NULL);
+	}
+
+	return slave_ic;
+}
+
+
 GtkIMContext *
 dui_imcontext_new (void)
 {
@@ -156,6 +216,10 @@ dui_imcontext_init (DuiIMContext *self)
 	self->cursor_location.y = -1;
 	self->cursor_location.width = 0;
 	self->cursor_location.height = 0;
+
+	self->preedit_str = NULL;
+	self->preedit_attrs = NULL;
+	self->preedit_cursor_pos = 0;
 
 	dui_imcontext_init_dbus(self);
 }
@@ -207,8 +271,6 @@ dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 	STEP();
 
 	focused_widget = gtk_get_event_widget((GdkEvent*)event);
-	if (event->state & IM_FORWARD_MASK)
-		return FALSE;
 
 	// TODO: call "processKeyEvent" and anything else?
 	DBG("event type=0x%x, state=0x%x, keyval=0x%x, keycode=0x%x, group=%d",
@@ -217,8 +279,10 @@ dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 	if (focused_imcontext != imcontext)
 		dui_imcontext_focus_in(context);
 
-	if (!redirect_keys)
-		return FALSE;
+	if ((event->state & IM_FORWARD_MASK) || !redirect_keys) {
+		GtkIMContext *slave = dui_imcontext_get_slave_imcontext();
+		return gtk_im_context_filter_keypress(slave, event);
+	}
 
 	if (!gdk_key_event_to_qt(event, &qevent_type, &qt_keycode, &qt_modifier))
 		return FALSE;

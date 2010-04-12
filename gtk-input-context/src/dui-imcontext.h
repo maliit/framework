@@ -52,6 +52,10 @@ struct _DuiIMContext {
 
 	GdkWindow *client_window;
 	GdkRectangle cursor_location;
+
+	gchar *preedit_str;
+	PangoAttrList *preedit_attrs;
+	gint preedit_cursor_pos;
 };
 
 struct _DuiIMContextClass {
