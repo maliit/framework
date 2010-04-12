@@ -311,25 +311,34 @@ dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrL
 {
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
 
-	// TODO: get preedit string from somewhere....
-
 	DBG("imcontext = %p", imcontext);
-	if (str)
-		*str = g_strdup ("");
-	if (attrs)
-		*attrs = pango_attr_list_new();
+
+	if (str) {
+		if (imcontext->preedit_str)
+			*str = g_strdup(imcontext->preedit_str);
+		else
+			*str = g_strdup ("");
+	}
+
+	if (attrs) {
+		if (imcontext->preedit_attrs) {
+			*attrs = imcontext->preedit_attrs;
+			pango_attr_list_ref(imcontext->preedit_attrs);
+		} else {
+			*attrs = pango_attr_list_new();
+		}
+	}
+
 	if (cursor_pos)
-		*cursor_pos = 0;
+		*cursor_pos = imcontext->preedit_cursor_pos;
 }
 
 
 static void
 dui_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
-	DBG("imcontext = %p", imcontext);
-
 	// TODO: Seems QT/DUI don't need it, it will always showing preedit.
+	return;
 }
 
 
