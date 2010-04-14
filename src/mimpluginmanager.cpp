@@ -34,15 +34,14 @@ namespace
 
     const QString DefaultPluginLocation("/usr/lib/m-im-plugins/");
 
-    // FIXME: still using Dui gconf names as more changes might happen to meegotouch gconf names
-    const QString ConfigRoot          = "/Dui/InputMethods/";
-    const QString MImPluginPaths    = ConfigRoot + "Paths";
-    const QString MImPluginActive   = ConfigRoot + "ActivePlugins";
-    const QString MImPluginDisabled = ConfigRoot + "DisabledPluginFiles";
+    const QString ConfigRoot          = "/meegotouch/inputmethods/";
+    const QString MImPluginPaths    = ConfigRoot + "paths";
+    const QString MImPluginActive   = ConfigRoot + "activeplugins";
+    const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
-    const QString PluginRoot          = "/Dui/InputMethods/Plugins/";
-    const QString MImHandlerToPlugin  = PluginRoot + "Handler";
-    const QString MImAccesoryEnabled  = "/Dui/InputMethods/AccessoryEnabled";
+    const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
+    const QString MImHandlerToPlugin  = PluginRoot + "handler";
+    const QString MImAccesoryEnabled  = "/meegotouch/inputmethods/accessoryenabled";
 }
 
 

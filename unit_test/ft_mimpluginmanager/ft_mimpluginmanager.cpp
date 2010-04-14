@@ -18,14 +18,14 @@ namespace
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName3 = "DummyImPlugin3";
 
-    const QString ConfigRoot          = "/Dui/InputMethods/";
-    const QString MImPluginPaths    = ConfigRoot + "Paths";
-    const QString MImPluginActive   = ConfigRoot + "ActivePlugins";
-    const QString MImPluginDisabled = ConfigRoot + "DisabledPluginFiles";
+    const QString ConfigRoot        = "/meegotouch/inputmethods/";
+    const QString MImPluginPaths    = ConfigRoot + "paths";
+    const QString MImPluginActive   = ConfigRoot + "activeplugins";
+    const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
-    const QString PluginRoot          = "/Dui/InputMethods/Plugins/";
-    const QString MImStateToPlugin  = PluginRoot + "Handler";
-    const QString MImAccesoryEnabled  = "/Dui/InputMethods/AccessoryEnabled";
+    const QString PluginRoot         = "/meegotouch/inputmethods/plugins/";
+    const QString MImStateToPlugin   = PluginRoot + "handler";
+    const QString MImAccesoryEnabled = "/meegotouch/inputmethods/accessoryenabled";
 }
 
 
