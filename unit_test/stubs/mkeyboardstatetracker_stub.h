@@ -49,7 +49,7 @@ MKeyboardStateTrackerStub::MKeyboardStateTrackerStub()
 void MKeyboardStateTrackerStub::mKeyboardStateTrackerConstructor(const MKeyboardStateTracker *instance)
 {
     openProperty.setValue(QVariant(false));
-    QObject::connect(&openProperty, SIGNAL(stateChanged()), instance, SIGNAL(valueChanged()));
+    QObject::connect(&openProperty, SIGNAL(valueChanged()), instance, SIGNAL(stateChanged()));
 }
 
 bool MKeyboardStateTrackerStub::isPresent()
