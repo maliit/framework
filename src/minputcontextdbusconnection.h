@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,38 +14,38 @@
  * of this file.
  */
 
-#ifndef DUIINPUTCONTEXTDBUSCONNECTION_H
-#define DUIINPUTCONTEXTDBUSCONNECTION_H
+#ifndef MINPUTCONTEXTDBUSCONNECTION_H
+#define MINPUTCONTEXTDBUSCONNECTION_H
 
 #include <QDBusContext>
 #include <QDBusObjectPath>
 #include <QMap>
 #include <QEvent>
 
-#include "duiinputcontextconnection.h"
+#include "minputcontextconnection.h"
 
 class QPoint;
 class QString;
 class QRegion;
 class QVariant;
 
-class DuiInputContextDBusConnectionPrivate;
+class MInputContextDBusConnectionPrivate;
 
 Q_DECLARE_METATYPE(QRect);
 
 /*!
-  \brief DuiInputContextDBusConnection handles input context connection for DBus based
+  \brief MInputContextDBusConnection handles input context connection for DBus based
   input context
  */
-class DuiInputContextDBusConnection: public DuiInputContextConnection,
-                                     protected QDBusContext
+class MInputContextDBusConnection: public MInputContextConnection, protected QDBusContext
 {
     Q_OBJECT
+    // FIXME: dui prefix
     Q_CLASSINFO("D-Bus Interface", "org.maemo.duiinputmethodserver1")
 
 public:
-    DuiInputContextDBusConnection();
-    virtual ~DuiInputContextDBusConnection();
+    MInputContextDBusConnection();
+    virtual ~MInputContextDBusConnection();
 
     //! Returns true if the connection to D-Bus is valid and the object is properly usable
     bool isValid();
@@ -71,7 +71,7 @@ public:
     //! \reimp_end
 
 public slots:
-    // communication w/ duiinputcontext
+    // communication w/ minputcontext
 
     //void setContextObject(QDBusObjectPath callbackObject);
     void setContextObject(QString callbackObject);
@@ -118,9 +118,9 @@ public slots:
                          const QString &text, bool autoRepeat, int count, int nativeScanCode);
 
 private:
-    Q_DISABLE_COPY(DuiInputContextDBusConnection)
+    Q_DISABLE_COPY(MInputContextDBusConnection)
 
-    DuiInputContextDBusConnectionPrivate *d;
+    MInputContextDBusConnectionPrivate *d;
 };
 
 

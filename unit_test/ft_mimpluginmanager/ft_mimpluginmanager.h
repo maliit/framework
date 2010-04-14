@@ -1,15 +1,15 @@
-#ifndef FT_DUIIMPLUGINLOADER_H
-#define FT_DUIIMPLUGINLOADER_H
+#ifndef FT_MIMPLUGINLOADER_H
+#define FT_MIMPLUGINLOADER_H
 
 #include <QtTest/QtTest>
 #include <QObject>
 
 
 class QApplication;
-class DuiIMPluginManager;
+class MIMPluginManager;
 class QGraphicsScene;
 
-class Ft_DuiIMPluginManager : public QObject
+class Ft_MIMPluginManager : public QObject
 {
     Q_OBJECT
 
@@ -28,7 +28,7 @@ private slots:
 private:
     QApplication *app;
     QString pluginPath;
-    DuiIMPluginManager *subject;
+    MIMPluginManager *subject;
 };
 
 #endif

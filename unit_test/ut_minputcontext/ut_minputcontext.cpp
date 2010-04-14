@@ -1,4 +1,4 @@
-#include "ut_duiinputcontext.h"
+#include "ut_minputcontext.h"
 #include "qdbus_stub.h"
 
 #include <QProcess>
@@ -10,14 +10,14 @@
 #include <QPointer>
 #include <QClipboard>
 
-#include <DuiApplication>
-#include <DuiTheme>
-#include <DuiSceneManager>
-#include <DuiSceneWindow>
-#include <DuiScene>
-#include <DuiNavigationBar>
-#include <DuiComponentData>
-#include "duipreeditinjectionevent.h"
+#include <MApplication>
+#include <MTheme>
+#include <MSceneManager>
+#include <MSceneWindow>
+#include <MScene>
+#include <MNavigationBar>
+#include <MComponentData>
+#include "mpreeditinjectionevent.h"
 
 
 namespace
@@ -252,7 +252,7 @@ QVariant WidgetStub::inputMethodQuery(Qt::InputMethodQuery query) const
 {
     m_inputMethodQueryCount++;
 
-    if (static_cast<int>(query) == Dui::VisualizationPriorityQuery) {
+    if (static_cast<int>(query) == M::VisualizationPriorityQuery) {
         return QVariant(visualizationPriority);
     } else if (query == Qt::ImSurroundingText) {
         return QVariant(WidgetStubSurroundingText);
@@ -329,30 +329,30 @@ void WidgetStub::sendCopyAvailable(bool yes)
 // actual test
 
 
-void Ut_DuiInputContext::initTestCase()
+void Ut_MInputContext::initTestCase()
 {
     // make sure we don't delete random crap on error situations
     m_subject = 0;
     m_stub = 0;
     app = 0;
 
-    static char *argv[1] = { (char *) "ut_duiinputcontext" };
+    static char *argv[1] = { (char *) "ut_minputcontext" };
     static int argc = 1;
 
     QCoreApplication::setLibraryPaths(QStringList("./inputmethods"));
-    DuiApplication::setLoadDuiInputContext(false);
-    app = new DuiApplication(argc, argv);
+    MApplication::setLoadMInputContext(false);
+    app = new MApplication(argc, argv);
 
     m_stub = new InputMethodServerDBusStub(this);
 
     qDBusInterfaceStub->target = m_stub;
 
-    m_subject = new DuiInputContext;
+    m_subject = new MInputContext;
     QVERIFY(m_subject != 0);
 }
 
 
-void Ut_DuiInputContext::cleanupTestCase()
+void Ut_MInputContext::cleanupTestCase()
 {
     delete m_subject;
     delete m_stub;
@@ -360,16 +360,16 @@ void Ut_DuiInputContext::cleanupTestCase()
 }
 
 
-void Ut_DuiInputContext::init()
+void Ut_MInputContext::init()
 {
     m_stub->resetCallCounts();
 }
 
-void Ut_DuiInputContext::cleanup()
+void Ut_MInputContext::cleanup()
 {
 }
 
-void Ut_DuiInputContext::testAddCoverage()
+void Ut_MInputContext::testAddCoverage()
 {
     // Visit the less useful API here
     qDebug() << m_subject->identifierName();
@@ -378,21 +378,21 @@ void Ut_DuiInputContext::testAddCoverage()
     m_subject->updateInputMethodArea(QList<QVariant>());
 }
 
-void Ut_DuiInputContext::testEvent()
+void Ut_MInputContext::testEvent()
 {
     WidgetStub widget(0);
 
     gFocusedWidget = &widget;
     // test that input context accepts
     m_subject->setGlobalCorrectionEnabled(true);
-    DuiPreeditInjectionEvent *injectionEvent = new DuiPreeditInjectionEvent("preedit");
+    MPreeditInjectionEvent *injectionEvent = new MPreeditInjectionEvent("preedit");
     bool accepted = QCoreApplication::sendEvent(m_subject, injectionEvent);
     QVERIFY(accepted == true);
 
     waitAndProcessEvents(500);
 
     // This event claims to be pre-edit injection event but it's not.
-    QEvent fakeInjectionEvent((QEvent::Type)DuiPreeditInjectionEvent::eventNumber());
+    QEvent fakeInjectionEvent((QEvent::Type)MPreeditInjectionEvent::eventNumber());
     accepted = QCoreApplication::sendEvent(m_subject, &fakeInjectionEvent);
     QVERIFY(accepted == false);
 
@@ -416,7 +416,7 @@ void Ut_DuiInputContext::testEvent()
 }
 
 
-void Ut_DuiInputContext::testReset()
+void Ut_MInputContext::testReset()
 {
     m_subject->reset();
 
@@ -426,7 +426,7 @@ void Ut_DuiInputContext::testReset()
 }
 
 
-void Ut_DuiInputContext::testMouseHandler()
+void Ut_MInputContext::testMouseHandler()
 {
     // TODO: test mouse button press and maybe double click
 
@@ -449,13 +449,13 @@ void Ut_DuiInputContext::testMouseHandler()
 }
 
 
-void Ut_DuiInputContext::testInputMethodHidden()
+void Ut_MInputContext::testInputMethodHidden()
 {
     // nothing yet
 }
 
 
-void Ut_DuiInputContext::testCommitString()
+void Ut_MInputContext::testCommitString()
 {
     WidgetStub widget(0);
     QString commitString("committed string");
@@ -474,7 +474,7 @@ void Ut_DuiInputContext::testCommitString()
 }
 
 
-void Ut_DuiInputContext::testUpdatePreedit()
+void Ut_MInputContext::testUpdatePreedit()
 {
     WidgetStub widget(0);
     QList<QInputMethodEvent::Attribute> attributes;
@@ -484,7 +484,7 @@ void Ut_DuiInputContext::testUpdatePreedit()
     //test preedit with traditional style
     m_subject->setFocusWidget(&widget);
     gFocusedWidget = &widget;
-    m_subject->updatePreedit(updateString, Dui::PreeditDefault);
+    m_subject->updatePreedit(updateString, M::PreeditDefault);
 
     waitAndProcessEvents(0);
 
@@ -496,7 +496,7 @@ void Ut_DuiInputContext::testUpdatePreedit()
     QVERIFY(attributes.count() > 0);
 
     //test preedit with alternate style
-    m_subject->updatePreedit(updateString, Dui::PreeditNoCandidates);
+    m_subject->updatePreedit(updateString, M::PreeditNoCandidates);
 
     waitAndProcessEvents(50);
 
@@ -510,9 +510,9 @@ void Ut_DuiInputContext::testUpdatePreedit()
     gFocusedWidget = 0;
 }
 
-void Ut_DuiInputContext::testAppOrientationChanged()
+void Ut_MInputContext::testAppOrientationChanged()
 {
-    m_subject->notifyOrientationChange(Dui::Angle90);
+    m_subject->notifyOrientationChange(M::Angle90);
 
     // Make sure DBus call gets through
     waitAndProcessEvents(300);
@@ -521,7 +521,7 @@ void Ut_DuiInputContext::testAppOrientationChanged()
     QCOMPARE(m_stub->orientationChangedCount(), 1);
 }
 
-void Ut_DuiInputContext::testNonTextEntryWidget()
+void Ut_MInputContext::testNonTextEntryWidget()
 {
 
     int count = m_stub->hideInputMethodCount();
@@ -535,7 +535,7 @@ void Ut_DuiInputContext::testNonTextEntryWidget()
     QCOMPARE(m_stub->hideInputMethodCount(), count + 1);
 }
 
-void Ut_DuiInputContext::testSendKeyEvent()
+void Ut_MInputContext::testSendKeyEvent()
 {
     QKeyEvent keyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
     m_stub->sendKeyEvent(keyEvent);
@@ -548,7 +548,7 @@ void Ut_DuiInputContext::testSendKeyEvent()
 
 }
 
-void Ut_DuiInputContext::testKeyEvent()
+void Ut_MInputContext::testKeyEvent()
 {
     QEvent::Type eventType = QEvent::KeyPress;
     int eventKey = Qt::Key_A;
@@ -577,7 +577,7 @@ void Ut_DuiInputContext::testKeyEvent()
     gFocusedWidget = 0;
 }
 
-void Ut_DuiInputContext::testCopyPasteState()
+void Ut_MInputContext::testCopyPasteState()
 {
     WidgetStub widget(0);
     QList<bool> &params = m_stub->setCopyPasteStateParams();
@@ -668,7 +668,7 @@ void Ut_DuiInputContext::testCopyPasteState()
     QCOMPARE(params.takeFirst(), false);
 }
 
-void Ut_DuiInputContext::testSetRedirectKeys()
+void Ut_MInputContext::testSetRedirectKeys()
 {
     // no redirection should happen
     int count = m_stub->redirectKeyCount();
@@ -695,7 +695,7 @@ void Ut_DuiInputContext::testSetRedirectKeys()
     QCOMPARE(m_stub->redirectKeyCount(), count + 1);
 }
 
-void Ut_DuiInputContext::waitAndProcessEvents(int waitTime)
+void Ut_MInputContext::waitAndProcessEvents(int waitTime)
 {
     QTest::qWait(waitTime);
     while (app->hasPendingEvents()) {
@@ -703,5 +703,5 @@ void Ut_DuiInputContext::waitAndProcessEvents(int waitTime)
     }
 }
 
-QTEST_APPLESS_MAIN(Ut_DuiInputContext)
+QTEST_APPLESS_MAIN(Ut_MInputContext)
 

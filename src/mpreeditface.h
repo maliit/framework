@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#ifndef DUIPREEDITFACE_H
-#define DUIPREEDITFACE_H
+#ifndef MPREEDITFACE_H
+#define MPREEDITFACE_H
 
 enum PreeditFace { PreeditDefault, PreeditNoCandidates };
 

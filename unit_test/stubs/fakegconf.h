@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -22,7 +22,7 @@
 
 /**
  * This file defines FakeGConf class that can be used to store settings
- * in treelike structure, like DuiGConfItem does. All settings are
+ * in treelike structure, like MGConfItem does. All settings are
  * stored in-memory only and are valid during the lifetime of FakeGConf
  * instance.
  */

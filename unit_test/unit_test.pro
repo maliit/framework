@@ -3,20 +3,20 @@ CONFIG += ordered
 TEMPLATE = subdirs
 
 SUBDIRS = \
-          ut_duiinputcontextplugin \
-          ut_duiinputcontext \
-          ut_duiinputcontextadaptor \
+          ut_minputcontextplugin \
+          ut_minputcontext \
+          ut_minputcontextadaptor \
           dummyimplugin \
           dummyimplugin2 \
           dummyimplugin3 \
           dummyplugin \
-          ut_duiimpluginmanager \
-          ut_duiinputcontextdbusconnection \
+          ut_mimpluginmanager \
+          ut_minputcontextdbusconnection \
           ut_passthroughserver \
-          ft_duiimpluginmanager \
+          ft_mimpluginmanager \
 
 target.commands += $$system(touch tests.xml)
-target.path = /usr/share/dui-im-framework-tests
+target.path = /usr/share/m-im-framework-tests
 target.files += qtestlib2junitxml.xsl runtests.sh tests.xml
 INSTALLS += target
 

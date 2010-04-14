@@ -19,8 +19,8 @@ QStringList DummyImPlugin3::languages() const
     return QStringList("EN");
 }
 
-DuiInputMethodBase *
-DummyImPlugin3::createInputMethod(DuiInputContextConnection *icConnection)
+MInputMethodBase *
+DummyImPlugin3::createInputMethod(MInputContextConnection *icConnection)
 {
     return new DummyInputMethod3(icConnection);
 }

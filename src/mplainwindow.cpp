@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,36 +14,36 @@
  * of this file.
  */
 
-#include "duiplainwindow.h"
+#include "mplainwindow.h"
 
-#include <DuiSceneManager>
+#include <MSceneManager>
 #include <QDebug>
 
-DuiPlainWindow *DuiPlainWindow::m_instance = 0;
+MPlainWindow *MPlainWindow::m_instance = 0;
 
-DuiPlainWindow *DuiPlainWindow::instance()
+MPlainWindow *MPlainWindow::instance()
 {
     return m_instance;
 }
 
-DuiPlainWindow::DuiPlainWindow(QWidget *parent) :
-    DuiWindow(new DuiSceneManager, parent)
+MPlainWindow::MPlainWindow(QWidget *parent) :
+    MWindow(new MSceneManager, parent)
 {
     if (m_instance)
-        qFatal("There can be only one instance of DuiPlainWindow");
+        qFatal("There can be only one instance of MPlainWindow");
 
     m_instance = this;
 }
 
-DuiPlainWindow::~DuiPlainWindow()
+MPlainWindow::~MPlainWindow()
 {
     m_instance = 0;
 }
 
-#if defined(DUI_IM_DISABLE_TRANSLUCENCY) && !defined(DUI_IM_USE_SHAPE_WINDOW)
-void DuiPlainWindow::updatePosition(const QRegion &region)
+#if defined(M_IM_DISABLE_TRANSLUCENCY) && !defined(M_IM_USE_SHAPE_WINDOW)
+void MPlainWindow::updatePosition(const QRegion &region)
 {
-    //update view's parameters to compensate movement of DuiPasstroughWindow
+    //update view's parameters to compensate movement of MPasstroughWindow
     //this update allows plugin to use screen coordinates
     const QRect rect = region.boundingRect();
     const QSize sceneSize = visibleSceneSize();
@@ -58,23 +58,23 @@ void DuiPlainWindow::updatePosition(const QRegion &region)
 
     switch (orientationAngle())
     {
-    case Dui::Angle0:
+    case M::Angle0:
         setSceneRect(0, sceneSize.height() - rect.height(),
                      sceneSize.width(), rect.height());
         resize(rect.width(), rect.height());
         move(0, 0);
         break;
-    case Dui::Angle90:
+    case M::Angle90:
         setSceneRect(0, 0, rect.width(), rect.height());
         resize(rect.width(), rect.height());
         move(sceneSize.height() - rect.width(), 0);
         break;
-    case Dui::Angle180:
+    case M::Angle180:
         setSceneRect(0, 0, rect.width(), sceneSize.height());
         resize(rect.width(), rect.height());
         move(0, sceneSize.height() - rect.height());
         break;
-    case Dui::Angle270:
+    case M::Angle270:
         setSceneRect(sceneSize.height() - rect.width(), rect.top(),
                      rect.width(), sceneSize.width());
         resize(rect.width(), rect.height());

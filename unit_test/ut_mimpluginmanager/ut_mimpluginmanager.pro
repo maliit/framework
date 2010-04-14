@@ -11,26 +11,26 @@ SRC_DIR = ../../src
 
 # Input
 HEADERS += \
-    ut_duiimpluginmanager.h \
-    ../stubs/duigconfitem_stub.h \
+    ut_mimpluginmanager.h \
+    ../stubs/mgconfitem_stub.h \
     ../stubs/fakegconf.h \
-    ../stubs/duiinputcontextconnection_stub.h \
-    $$SRC_DIR/duiimpluginmanager_p.h \
-    $$SRC_DIR/duiinputmethodplugin.h \
-    $$SRC_DIR/duiinputcontextconnection.h \
+    ../stubs/minputcontextconnection_stub.h \
+    $$SRC_DIR/mimpluginmanager_p.h \
+    $$SRC_DIR/minputmethodplugin.h \
+    $$SRC_DIR/minputcontextconnection.h \
 
 SOURCES += \
-    ut_duiimpluginmanager.cpp \
+    ut_mimpluginmanager.cpp \
     ../stubs/fakegconf.cpp \
-    ../stubs/duiinputcontextconnection_stub.cpp \
-    $$SRC_DIR/duiinputcontextconnection.cpp \
+    ../stubs/minputcontextconnection_stub.cpp \
+    $$SRC_DIR/minputcontextconnection.cpp \
 
 
-CONFIG +=  debug plugin dui qdbus
+CONFIG += debug plugin meegotouch qdbus
 QT += testlib
 
 LIBS += \
-    ../../src/libduiimframework.so.0 \
+    ../../src/libmimframework.so.0 \
     -L ../plugins/ \
     -ldummyimplugin \
     -ldummyimplugin3 \

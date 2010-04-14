@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,18 +14,18 @@
  * of this file.
  */
 
-#ifndef DUIINPUTCONTEXTPLUGIN_H
-#define DUIINPUTCONTEXTPLUGIN_H
+#ifndef MINPUTCONTEXTPLUGIN_H
+#define MINPUTCONTEXTPLUGIN_H
 
 #include <QInputContextPlugin>
 
-class DuiInputContextPlugin: public QInputContextPlugin
+class MInputContextPlugin: public QInputContextPlugin
 {
     Q_OBJECT
 
 public:
-    DuiInputContextPlugin(QObject *parent = 0);
-    virtual ~DuiInputContextPlugin();
+    MInputContextPlugin(QObject *parent = 0);
+    virtual ~MInputContextPlugin();
 
     //! \reimp
     QInputContext *create(const QString &key);

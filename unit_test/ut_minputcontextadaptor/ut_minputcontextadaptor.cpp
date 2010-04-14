@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,9 +14,9 @@
  * of this file.
  */
 
-#include "ut_duiinputcontextadaptor.h"
-#include "duiinputcontextadaptor.h"
-#include "duiinputcontext_stub.h"
+#include "ut_minputcontextadaptor.h"
+#include "minputcontextadaptor.h"
+#include "minputcontext_stub.h"
 
 #include <QApplication>
 
@@ -27,7 +27,7 @@ namespace
 
 
 
-void Ut_DuiInputContextAdaptor::initTestCase()
+void Ut_MInputContextAdaptor::initTestCase()
 {
     // This is a hack to prevent Qt from loading the plugin from
     // /usr/lib/qt4/plugins/inputmethods/ when we are testing in a
@@ -53,51 +53,51 @@ void Ut_DuiInputContextAdaptor::initTestCase()
 
 
     int argc = 1;
-    static char *argv[] = { (char *)"ut_duiinputcontextadaptor" };
+    static char *argv[] = { (char *)"ut_minputcontextadaptor" };
     app = new QApplication(argc, argv);
 }
 
-void Ut_DuiInputContextAdaptor::cleanupTestCase()
+void Ut_MInputContextAdaptor::cleanupTestCase()
 {
     delete app;
 }
 
-void Ut_DuiInputContextAdaptor::init()
+void Ut_MInputContextAdaptor::init()
 {
-    inputContext = new DuiInputContext();
-    subject = new DuiInputContextAdaptor(inputContext);
+    inputContext = new MInputContext();
+    subject = new MInputContextAdaptor(inputContext);
     QVERIFY(subject);
 
-    gDuiInputContextStub->stubReset();
+    gMInputContextStub->stubReset();
 }
 
-void Ut_DuiInputContextAdaptor::cleanup()
+void Ut_MInputContextAdaptor::cleanup()
 {
     delete subject;
     delete inputContext;
 }
 
-void Ut_DuiInputContextAdaptor::testNoReplyPassthroughs()
+void Ut_MInputContextAdaptor::testNoReplyPassthroughs()
 {
     QString someString("hello");
 
     subject->imInitiatedHide();
-    QCOMPARE(1, gDuiInputContextStub->stubCallCount("imInitiatedHide"));
+    QCOMPARE(1, gMInputContextStub->stubCallCount("imInitiatedHide"));
 
     subject->commitString(someString);
-    QCOMPARE(1, gDuiInputContextStub->stubCallCount("commitString"));
+    QCOMPARE(1, gMInputContextStub->stubCallCount("commitString"));
 
     subject->updatePreedit(someString, 0);
-    QCOMPARE(1, gDuiInputContextStub->stubCallCount("updatePreedit"));
+    QCOMPARE(1, gMInputContextStub->stubCallCount("updatePreedit"));
 
     subject->keyEvent(0, 0, 0, someString, false, 0);
-    QCOMPARE(1, gDuiInputContextStub->stubCallCount("keyEvent"));
+    QCOMPARE(1, gMInputContextStub->stubCallCount("keyEvent"));
 
     subject->updateInputMethodArea(QList<QVariant>());
-    QCOMPARE(1, gDuiInputContextStub->stubCallCount("updateInputMethodArea"));
+    QCOMPARE(1, gMInputContextStub->stubCallCount("updateInputMethodArea"));
 
     subject->setGlobalCorrectionEnabled(true);
-    QCOMPARE(1, gDuiInputContextStub->stubCallCount("setGlobalCorrectionEnabled"));
+    QCOMPARE(1, gMInputContextStub->stubCallCount("setGlobalCorrectionEnabled"));
 }
 
-QTEST_APPLESS_MAIN(Ut_DuiInputContextAdaptor)
+QTEST_APPLESS_MAIN(Ut_MInputContextAdaptor)

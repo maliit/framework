@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,30 +14,30 @@
  * of this file.
  */
 
-#ifndef DUIINPUTCONTEXTADAPTOR_STUB_H
-#define DUIINPUTCONTEXTADAPTOR_STUB_H
+#ifndef MINPUTCONTEXTADAPTOR_STUB_H
+#define MINPUTCONTEXTADAPTOR_STUB_H
 
-#include "duiinputcontext.h"
-#include "duiinputcontextadaptor.h"
+#include "minputcontext.h"
+#include "minputcontextadaptor.h"
 #include "stubbase.h"
 
 #include <QDebug>
 
 
 /**
- * DuiInputContextAdaptor stub class.
- * To fake DuiInputContextAdaptor operations, derive from this class
+ * MInputContextAdaptor stub class.
+ * To fake MInputContextAdaptor operations, derive from this class
  * and implement the methods you want to fake. Instantiate your
- * derived stub class and assign it to gDuiInputContextAdaptorStub
+ * derived stub class and assign it to gMInputContextAdaptorStub
  * global variable.
  */
-class DuiInputContextAdaptorStub : public StubBase
+class MInputContextAdaptorStub : public StubBase
 {
 public:
-    DuiInputContextAdaptorStub();
-    virtual ~DuiInputContextAdaptorStub();
+    MInputContextAdaptorStub();
+    virtual ~MInputContextAdaptorStub();
 
-    virtual void constructor(DuiInputContext *inputContext);
+    virtual void constructor(MInputContext *inputContext);
     virtual void destructor();
 
     virtual void imInitiatedHide();
@@ -53,35 +53,35 @@ public:
     virtual QRect preeditRectangle(bool &valid);
 };
 
-DuiInputContextAdaptorStub::DuiInputContextAdaptorStub()
+MInputContextAdaptorStub::MInputContextAdaptorStub()
 {
 }
 
-DuiInputContextAdaptorStub::~DuiInputContextAdaptorStub()
+MInputContextAdaptorStub::~MInputContextAdaptorStub()
 {
 }
 
-void DuiInputContextAdaptorStub::constructor(DuiInputContext *)
+void MInputContextAdaptorStub::constructor(MInputContext *)
 {
 }
 
-void DuiInputContextAdaptorStub::destructor()
+void MInputContextAdaptorStub::destructor()
 {
 }
 
-void DuiInputContextAdaptorStub::imInitiatedHide()
+void MInputContextAdaptorStub::imInitiatedHide()
 {
     stubMethodEntered("imInitiatedHide");
 }
 
-void DuiInputContextAdaptorStub::commitString(const QString &string)
+void MInputContextAdaptorStub::commitString(const QString &string)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<QString>(string));
     stubMethodEntered("commitString", params);
 }
 
-void DuiInputContextAdaptorStub::updatePreedit(const QString &string, int preeditFace)
+void MInputContextAdaptorStub::updatePreedit(const QString &string, int preeditFace)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<QString>(string));
@@ -89,7 +89,7 @@ void DuiInputContextAdaptorStub::updatePreedit(const QString &string, int preedi
     stubMethodEntered("updatePreedit", params);
 }
 
-void DuiInputContextAdaptorStub::keyEvent(int type, int key, int modifiers,
+void MInputContextAdaptorStub::keyEvent(int type, int key, int modifiers,
         const QString &text, bool autoRepeat, int count)
 {
     QList<ParameterBase *> params;
@@ -102,14 +102,14 @@ void DuiInputContextAdaptorStub::keyEvent(int type, int key, int modifiers,
     stubMethodEntered("keyEvent", params);
 }
 
-void DuiInputContextAdaptorStub::updateInputMethodArea(const QList<QVariant> &data)
+void MInputContextAdaptorStub::updateInputMethodArea(const QList<QVariant> &data)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter< QList<QVariant> >(data));
     stubMethodEntered("updateInputMethodArea", params);
 }
 
-void DuiInputContextAdaptorStub::setGlobalCorrectionEnabled(bool enable)
+void MInputContextAdaptorStub::setGlobalCorrectionEnabled(bool enable)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<bool>(enable));
@@ -117,14 +117,14 @@ void DuiInputContextAdaptorStub::setGlobalCorrectionEnabled(bool enable)
 }
 
 
-void DuiInputContextAdaptorStub::setRedirectKeys(bool enabled)
+void MInputContextAdaptorStub::setRedirectKeys(bool enabled)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<bool>(enabled));
     stubMethodEntered("setRedirectKeys", params);
 }
 
-QRect DuiInputContextAdaptorStub::preeditRectangle(bool &valid)
+QRect MInputContextAdaptorStub::preeditRectangle(bool &valid)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<bool>(valid));
@@ -133,71 +133,71 @@ QRect DuiInputContextAdaptorStub::preeditRectangle(bool &valid)
 }
 
 
-DuiInputContextAdaptorStub gDefaultDuiInputContextAdaptorStub;
+MInputContextAdaptorStub gDefaultMInputContextAdaptorStub;
 
 /**
  * This is the stub class instance used by the system. If you want to alter behaviour,
- * derive your stub class from DuiInputContextAdaptorStub, implement the methods you want to
+ * derive your stub class from MInputContextAdaptorStub, implement the methods you want to
  * fake, create an instance of your stub class and assign the instance into this global variable.
  */
-DuiInputContextAdaptorStub *gDuiInputContextAdaptorStub = &gDefaultDuiInputContextAdaptorStub;
+MInputContextAdaptorStub *gMInputContextAdaptorStub = &gDefaultMInputContextAdaptorStub;
 
 /**
- * These are the proxy method implementations of DuiInputContextAdaptor. They will
- * call the stub object methods of the gDuiInputContextAdaptorStub.
+ * These are the proxy method implementations of MInputContextAdaptor. They will
+ * call the stub object methods of the gMInputContextAdaptorStub.
  */
 
-DuiInputContextAdaptor::DuiInputContextAdaptor(DuiInputContext *inputContext)
+MInputContextAdaptor::MInputContextAdaptor(MInputContext *inputContext)
     : QDBusAbstractAdaptor(inputContext)
 {
-    gDuiInputContextAdaptorStub->constructor(inputContext);
+    gMInputContextAdaptorStub->constructor(inputContext);
 }
 
-DuiInputContextAdaptor::~DuiInputContextAdaptor()
+MInputContextAdaptor::~MInputContextAdaptor()
 {
-    gDuiInputContextAdaptorStub->destructor();
+    gMInputContextAdaptorStub->destructor();
 }
 
-void DuiInputContextAdaptor::imInitiatedHide()
+void MInputContextAdaptor::imInitiatedHide()
 {
-    gDuiInputContextAdaptorStub->imInitiatedHide();
+    gMInputContextAdaptorStub->imInitiatedHide();
 }
 
 
-void DuiInputContextAdaptor::commitString(const QString &string)
+void MInputContextAdaptor::commitString(const QString &string)
 {
-    gDuiInputContextAdaptorStub->commitString(string);
+    gMInputContextAdaptorStub->commitString(string);
 }
 
-void DuiInputContextAdaptor::updatePreedit(const QString &string, int preeditFace)
+void MInputContextAdaptor::updatePreedit(const QString &string, int preeditFace)
 {
-    gDuiInputContextAdaptorStub->updatePreedit(string, preeditFace);
+    gMInputContextAdaptorStub->updatePreedit(string, preeditFace);
 }
 
-void DuiInputContextAdaptor::keyEvent(int type, int key, int modifiers, const QString &text,
+void MInputContextAdaptor::keyEvent(int type, int key, int modifiers, const QString &text,
                                       bool autoRepeat, int count)
 {
-    gDuiInputContextAdaptorStub->keyEvent(type, key, modifiers, text, autoRepeat, count);
+    gMInputContextAdaptorStub->keyEvent(type, key, modifiers, text, autoRepeat, count);
 }
 
-void DuiInputContextAdaptor::updateInputMethodArea(const QList<QVariant> &data)
+void MInputContextAdaptor::updateInputMethodArea(const QList<QVariant> &data)
 {
-    gDuiInputContextAdaptorStub->updateInputMethodArea(data);
+    gMInputContextAdaptorStub->updateInputMethodArea(data);
 }
 
-void DuiInputContextAdaptor::setGlobalCorrectionEnabled(bool enable)
+void MInputContextAdaptor::setGlobalCorrectionEnabled(bool enable)
 {
-    gDuiInputContextAdaptorStub->setGlobalCorrectionEnabled(enable);
+    gMInputContextAdaptorStub->setGlobalCorrectionEnabled(enable);
 }
 
-void DuiInputContextAdaptor::setRedirectKeys(bool enabled)
+void MInputContextAdaptor::setRedirectKeys(bool enabled)
 {
-    return gDuiInputContextAdaptorStub->setRedirectKeys(enabled);
+    return gMInputContextAdaptorStub->setRedirectKeys(enabled);
 }
 
-QRect DuiInputContextAdaptor::preeditRectangle(bool &valid)
+QRect MInputContextAdaptor::preeditRectangle(bool &valid)
 {
-    return gDuiInputContextAdaptorStub->preeditRectangle(valid);
+    return gMInputContextAdaptorStub->preeditRectangle(valid);
 }
 
 #endif

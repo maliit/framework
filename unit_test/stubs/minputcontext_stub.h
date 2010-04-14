@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -13,27 +13,27 @@
  * and appearing in the file LICENSE.LGPL included in the packaging
  * of this file.
  */
-#ifndef DUIINPUTCONTEXT_STUB_H
-#define DUIINPUTCONTEXT_STUB_H
+#ifndef MINPUTCONTEXT_STUB_H
+#define MINPUTCONTEXT_STUB_H
 
-#include "duiinputcontext.h"
+#include "minputcontext.h"
 #include "stubbase.h"
 
 #include <QDebug>
 
 
 /**
- * DuiInputContext stub class.
- * To fake DuiInputContext operations, derive from this class
+ * MInputContext stub class.
+ * To fake MInputContext operations, derive from this class
  * and implement the methods you want to fake. Instantiate your
- * derived stub class and assign it to gDuiInputContextStub
+ * derived stub class and assign it to gMInputContextStub
  * global variable.
  */
-class DuiInputContextStub : public StubBase
+class MInputContextStub : public StubBase
 {
 public:
-    virtual void duiInputContextConstructor(QObject *parent);
-    virtual void duiInputContextDestructor();
+    virtual void mInputContextConstructor(QObject *parent);
+    virtual void mInputContextDestructor();
     virtual bool event(QEvent *event);
     virtual QString identifierName();
     virtual bool isComposing();
@@ -43,22 +43,22 @@ public:
     virtual void mouseHandler(int x, QMouseEvent *event);
     virtual void imInitiatedHide();
     virtual void commitString(const QString &string);
-    virtual void updatePreedit(const QString &string, Dui::PreeditFace preeditFace);
+    virtual void updatePreedit(const QString &string, M::PreeditFace preeditFace);
     virtual void keyEvent(int type, int key, int modifiers, const QString &text,
                           bool autoRepeat, int count);
     virtual void updateInputMethodArea(const QList<QVariant> &rectList);
     virtual void setGlobalCorrectionEnabled(bool enable);
 };
 
-void DuiInputContextStub::duiInputContextConstructor(QObject *)
+void MInputContextStub::mInputContextConstructor(QObject *)
 {
 }
 
-void DuiInputContextStub::duiInputContextDestructor()
+void MInputContextStub::mInputContextDestructor()
 {
 }
 
-bool DuiInputContextStub::event(QEvent *event)
+bool MInputContextStub::event(QEvent *event)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<QEvent *>(event));
@@ -66,35 +66,35 @@ bool DuiInputContextStub::event(QEvent *event)
     return stubReturnValue<bool>("event");
 }
 
-QString DuiInputContextStub::identifierName()
+QString MInputContextStub::identifierName()
 {
     stubMethodEntered("identifierName");
     return stubReturnValue<QString>("identifierName");
 }
 
-bool DuiInputContextStub::isComposing()
+bool MInputContextStub::isComposing()
 {
     stubMethodEntered("isComposing");
     return stubReturnValue<bool>("isComposing");
 }
 
-QString DuiInputContextStub::language()
+QString MInputContextStub::language()
 {
     stubMethodEntered("language");
     return stubReturnValue<QString>("language");
 }
 
-void DuiInputContextStub::reset()
+void MInputContextStub::reset()
 {
     stubMethodEntered("reset");
 }
 
-void DuiInputContextStub::update()
+void MInputContextStub::update()
 {
     stubMethodEntered("update");
 }
 
-void DuiInputContextStub::mouseHandler(int x, QMouseEvent *event)
+void MInputContextStub::mouseHandler(int x, QMouseEvent *event)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<int>(x));
@@ -102,27 +102,27 @@ void DuiInputContextStub::mouseHandler(int x, QMouseEvent *event)
     stubMethodEntered("mouseHandler", params);
 }
 
-void DuiInputContextStub::imInitiatedHide()
+void MInputContextStub::imInitiatedHide()
 {
     stubMethodEntered("imInitiatedHide");
 }
 
-void DuiInputContextStub::commitString(const QString &string)
+void MInputContextStub::commitString(const QString &string)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<QString>(string));
     stubMethodEntered("commitString", params);
 }
 
-void DuiInputContextStub::updatePreedit(const QString &string, Dui::PreeditFace preeditFace)
+void MInputContextStub::updatePreedit(const QString &string, M::PreeditFace preeditFace)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<QString>(string));
-    params.append(new Parameter<Dui::PreeditFace>(preeditFace));
+    params.append(new Parameter<M::PreeditFace>(preeditFace));
     stubMethodEntered("updatePreedit", params);
 }
 
-void DuiInputContextStub::keyEvent(int type, int key, int modifiers, const QString &text,
+void MInputContextStub::keyEvent(int type, int key, int modifiers, const QString &text,
                                    bool autoRepeat, int count)
 {
     QList<ParameterBase *> params;
@@ -135,14 +135,14 @@ void DuiInputContextStub::keyEvent(int type, int key, int modifiers, const QStri
     stubMethodEntered("keyEvent", params);
 }
 
-void DuiInputContextStub::updateInputMethodArea(const QList<QVariant> &rectList)
+void MInputContextStub::updateInputMethodArea(const QList<QVariant> &rectList)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<const QList<QVariant> >(rectList));
     stubMethodEntered("updateInputMethodArea", params);
 }
 
-void DuiInputContextStub::setGlobalCorrectionEnabled(bool enable)
+void MInputContextStub::setGlobalCorrectionEnabled(bool enable)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<bool>(enable));
@@ -150,95 +150,95 @@ void DuiInputContextStub::setGlobalCorrectionEnabled(bool enable)
 }
 
 
-DuiInputContextStub gDefaultDuiInputContextStub;
+MInputContextStub gDefaultMInputContextStub;
 
 /**
  * This is the stub class instance used by the system. If you want to alter behaviour,
- * derive your stub class from DuiInputContextStub, implement the methods you want to
+ * derive your stub class from MInputContextStub, implement the methods you want to
  * fake, create an instance of your stub class and assign the instance into this global variable.
  */
-DuiInputContextStub *gDuiInputContextStub = &gDefaultDuiInputContextStub;
+MInputContextStub *gMInputContextStub = &gDefaultMInputContextStub;
 
 /**
- * These are the proxy method implementations of DuiInputContext. They will
- * call the stub object methods of the gDuiInputContextStub.
+ * These are the proxy method implementations of MInputContext. They will
+ * call the stub object methods of the gMInputContextStub.
  */
 
-DuiInputContext::DuiInputContext(QObject *parent)
+MInputContext::MInputContext(QObject *parent)
     : QInputContext(parent)
 {
-    gDuiInputContextStub->duiInputContextConstructor(parent);
+    gMInputContextStub->mInputContextConstructor(parent);
 }
 
-DuiInputContext::~DuiInputContext()
+MInputContext::~MInputContext()
 {
-    gDuiInputContextStub->duiInputContextDestructor();
+    gMInputContextStub->mInputContextDestructor();
 }
 
-bool DuiInputContext::event(QEvent *event)
+bool MInputContext::event(QEvent *event)
 {
-    return gDuiInputContextStub->event(event);
+    return gMInputContextStub->event(event);
 }
 
-QString DuiInputContext::identifierName()
+QString MInputContext::identifierName()
 {
-    return gDuiInputContextStub->identifierName();
+    return gMInputContextStub->identifierName();
 }
 
-bool DuiInputContext::isComposing() const
+bool MInputContext::isComposing() const
 {
-    return gDuiInputContextStub->isComposing();
+    return gMInputContextStub->isComposing();
 }
 
-QString DuiInputContext::language()
+QString MInputContext::language()
 {
-    return gDuiInputContextStub->language();
+    return gMInputContextStub->language();
 }
 
-void DuiInputContext::reset()
+void MInputContext::reset()
 {
-    gDuiInputContextStub->reset();
+    gMInputContextStub->reset();
 }
 
-void DuiInputContext::update()
+void MInputContext::update()
 {
-    gDuiInputContextStub->update();
+    gMInputContextStub->update();
 }
 
-void DuiInputContext::mouseHandler(int x, QMouseEvent *event)
+void MInputContext::mouseHandler(int x, QMouseEvent *event)
 {
-    gDuiInputContextStub->mouseHandler(x, event);
+    gMInputContextStub->mouseHandler(x, event);
 }
 
-void DuiInputContext::imInitiatedHide()
+void MInputContext::imInitiatedHide()
 {
-    gDuiInputContextStub->imInitiatedHide();
+    gMInputContextStub->imInitiatedHide();
 }
 
-void DuiInputContext::commitString(const QString &string)
+void MInputContext::commitString(const QString &string)
 {
-    gDuiInputContextStub->commitString(string);
+    gMInputContextStub->commitString(string);
 }
 
-void DuiInputContext::updatePreedit(const QString &string, Dui::PreeditFace preeditFace)
+void MInputContext::updatePreedit(const QString &string, M::PreeditFace preeditFace)
 {
-    gDuiInputContextStub->updatePreedit(string, preeditFace);
+    gMInputContextStub->updatePreedit(string, preeditFace);
 }
 
-void DuiInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
+void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
                                bool autoRepeat, int count)
 {
-    gDuiInputContextStub->keyEvent(type, key, modifiers, text, autoRepeat, count);
+    gMInputContextStub->keyEvent(type, key, modifiers, text, autoRepeat, count);
 }
 
-void DuiInputContext::updateInputMethodArea(const QList<QVariant> &rectList)
+void MInputContext::updateInputMethodArea(const QList<QVariant> &rectList)
 {
-    gDuiInputContextStub->updateInputMethodArea(rectList);
+    gMInputContextStub->updateInputMethodArea(rectList);
 }
 
-void DuiInputContext::setGlobalCorrectionEnabled(bool enable)
+void MInputContext::setGlobalCorrectionEnabled(bool enable)
 {
-    gDuiInputContextStub->setGlobalCorrectionEnabled(enable);
+    gMInputContextStub->setGlobalCorrectionEnabled(enable);
 }
 
 

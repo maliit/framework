@@ -4,9 +4,9 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-class DuiWindow;
-class DuiApplication;
-class DuiPassThruWindow;
+class MWindow;
+class MApplication;
+class MPassThruWindow;
 
 class Ut_PassthroughServer : public QObject
 {
@@ -21,14 +21,14 @@ private slots:
     //! Test hiding and showing of the window based on region signals
     void testHideShow();
 
-#if defined(DUI_IM_DISABLE_TRANSLUCENCY) && defined(DUI_IM_USE_SHAPE_WINDOW)
+#if defined(M_IM_DISABLE_TRANSLUCENCY) && defined(M_IM_USE_SHAPE_WINDOW)
     //! Tests window shape based on region signals
     void testWindowShape();
 #endif
 
 private:
-    DuiApplication *app;
-    DuiPassThruWindow *subject;
+    MApplication *app;
+    MPassThruWindow *subject;
 };
 
 #endif

@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,28 +14,28 @@
  * of this file.
  */
 
-#include "duiinputcontextconnection.h"
+#include "minputcontextconnection.h"
 
-#include "duiinputmethodbase.h"
+#include "minputmethodbase.h"
 #include <QSet>
 
-class DuiInputContextConnectionPrivate
+class MInputContextConnectionPrivate
 {
 public:
-    DuiInputContextConnectionPrivate();
-    ~DuiInputContextConnectionPrivate();
+    MInputContextConnectionPrivate();
+    ~MInputContextConnectionPrivate();
 
-    QSet<DuiInputMethodBase *> targets; // not owned by us
+    QSet<MInputMethodBase *> targets; // not owned by us
 };
 
 
-DuiInputContextConnectionPrivate::DuiInputContextConnectionPrivate()
+MInputContextConnectionPrivate::MInputContextConnectionPrivate()
 {
     // nothing
 }
 
 
-DuiInputContextConnectionPrivate::~DuiInputContextConnectionPrivate()
+MInputContextConnectionPrivate::~MInputContextConnectionPrivate()
 {
     // nothing
 }
@@ -44,34 +44,34 @@ DuiInputContextConnectionPrivate::~DuiInputContextConnectionPrivate()
 ////////////////////////
 // actual class
 
-DuiInputContextConnection::DuiInputContextConnection()
-    : d(new DuiInputContextConnectionPrivate)
+MInputContextConnection::MInputContextConnection()
+    : d(new MInputContextConnectionPrivate)
 {
     // nothing
 }
 
 
-DuiInputContextConnection::~DuiInputContextConnection()
+MInputContextConnection::~MInputContextConnection()
 {
     delete d;
 }
 
-void DuiInputContextConnection::addTarget(DuiInputMethodBase *target)
+void MInputContextConnection::addTarget(MInputMethodBase *target)
 {
     d->targets.insert(target);
 }
 
-void DuiInputContextConnection::removeTarget(DuiInputMethodBase *target)
+void MInputContextConnection::removeTarget(MInputMethodBase *target)
 {
     d->targets.remove(target);
 }
 
-void DuiInputContextConnection::updateInputMethodArea(const QRegion &region)
+void MInputContextConnection::updateInputMethodArea(const QRegion &region)
 {
     Q_UNUSED(region);
 }
 
-QSet<DuiInputMethodBase *> DuiInputContextConnection::targets()
+QSet<MInputMethodBase *> MInputContextConnection::targets()
 {
     return d->targets;
 }

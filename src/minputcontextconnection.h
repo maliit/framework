@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,10 +14,10 @@
  * of this file.
  */
 
-#ifndef DUIINPUTCONTEXTCONNECTION_H
-#define DUIINPUTCONTEXTCONNECTION_H
+#ifndef MINPUTCONTEXTCONNECTION_H
+#define MINPUTCONTEXTCONNECTION_H
 
-#include "duipreeditface.h"
+#include "mpreeditface.h"
 #include <QRect>
 #include <QObject>
 
@@ -25,35 +25,35 @@ class QString;
 class QRegion;
 class QKeyEvent;
 
-class DuiInputContextConnectionPrivate;
-class DuiInputMethodBase;
+class MInputContextConnectionPrivate;
+class MInputMethodBase;
 
 
 /*!
- * \brief DuiInputContextConnection is a base class of the input method communication implementation
+ * \brief MInputContextConnection is a base class of the input method communication implementation
  * between the input context and the input method server.
  */
-class DuiInputContextConnection: public QObject
+class MInputContextConnection: public QObject
 {
     Q_OBJECT
 
 public:
-    DuiInputContextConnection();
-    virtual ~DuiInputContextConnection();
+    MInputContextConnection();
+    virtual ~MInputContextConnection();
 
     /*!
      * \brief Adds the target which get called on incoming requests
      */
-    virtual void addTarget(DuiInputMethodBase *target);
+    virtual void addTarget(MInputMethodBase *target);
 
     /*!
      * \brief Removes the handler of the connection
      */
-    virtual void removeTarget(DuiInputMethodBase *target);
+    virtual void removeTarget(MInputMethodBase *target);
 
     /*!
      * \brief returns content type for focused widget if output parameter valid is true,
-     * value matches enum Dui::TextContentType
+     * value matches enum M::TextContentType
      */
     virtual int contentType(bool &valid) = 0;
 
@@ -147,10 +147,10 @@ public slots:
     virtual void updateInputMethodArea(const QRegion &region);
 
 protected:
-    QSet<DuiInputMethodBase *> targets();
+    QSet<MInputMethodBase *> targets();
 
 private:
-    DuiInputContextConnectionPrivate *d;
+    MInputContextConnectionPrivate *d;
 };
 
 

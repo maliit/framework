@@ -1,37 +1,37 @@
-#include "ft_duiimpluginmanager.h"
-#include "duigconfitem_stub.h"
-#include "duikeyboardstatetracker_stub.h"
-#include "duiinputcontextconnection_stub.h"
+#include "ft_mimpluginmanager.h"
+#include "mgconfitem_stub.h"
+#include "mkeyboardstatetracker_stub.h"
+#include "minputcontextconnection_stub.h"
 
 #include <QProcess>
 #include <QGraphicsScene>
 #include <QRegExp>
 #include <QApplication>
-#include <duiimpluginmanager.h>
-#include <duiimpluginmanager_p.h>
+#include <mimpluginmanager.h>
+#include <mimpluginmanager_p.h>
 
 namespace
 {
-    const QString GlobalTestPluginPath("/usr/lib/dui-im-framework-tests/plugins");
+    const QString GlobalTestPluginPath("/usr/lib/m-im-framework-tests/plugins");
     const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
 
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName3 = "DummyImPlugin3";
 
     const QString ConfigRoot          = "/Dui/InputMethods/";
-    const QString DuiImPluginPaths    = ConfigRoot + "Paths";
-    const QString DuiImPluginActive   = ConfigRoot + "ActivePlugins";
-    const QString DuiImPluginDisabled = ConfigRoot + "DisabledPluginFiles";
+    const QString MImPluginPaths    = ConfigRoot + "Paths";
+    const QString MImPluginActive   = ConfigRoot + "ActivePlugins";
+    const QString MImPluginDisabled = ConfigRoot + "DisabledPluginFiles";
 
     const QString PluginRoot          = "/Dui/InputMethods/Plugins/";
-    const QString DuiImStateToPlugin  = PluginRoot + "Handler";
-    const QString DuiImAccesoryEnabled  = "/Dui/InputMethods/AccessoryEnabled";
+    const QString MImStateToPlugin  = PluginRoot + "Handler";
+    const QString MImAccesoryEnabled  = "/Dui/InputMethods/AccessoryEnabled";
 }
 
 
-void Ft_DuiIMPluginManager::initTestCase()
+void Ft_MIMPluginManager::initTestCase()
 {
-    static char *argv[1] = { (char *) "ut_duiimpluginmanager" };
+    static char *argv[1] = { (char *) "ut_mimpluginmanager" };
     static int argc = 1;
 
     app = new QApplication(argc, argv);
@@ -56,28 +56,28 @@ void Ft_DuiIMPluginManager::initTestCase()
     QVERIFY2(QDir(pluginPath).exists(), "Test plugin directory does not exist.");
 }
 
-void Ft_DuiIMPluginManager::cleanupTestCase()
+void Ft_MIMPluginManager::cleanupTestCase()
 {
     delete app;
 }
 
-void Ft_DuiIMPluginManager::init()
+void Ft_MIMPluginManager::init()
 {
-    DuiGConfItem(DuiImPluginPaths).set(pluginPath);
-    DuiGConfItem(DuiImPluginDisabled).set(QStringList("libdummyimplugin2.so"));
-    DuiGConfItem(DuiImPluginActive).set(QStringList("DummyImPlugin"));
+    MGConfItem(MImPluginPaths).set(pluginPath);
+    MGConfItem(MImPluginDisabled).set(QStringList("libdummyimplugin2.so"));
+    MGConfItem(MImPluginActive).set(QStringList("DummyImPlugin"));
 
-    DuiGConfItem(DuiImStateToPlugin + "/0").set(pluginName);
-    DuiGConfItem(DuiImStateToPlugin + "/1").set(pluginName);
-    DuiGConfItem(DuiImStateToPlugin + "/2").set(pluginName3);
+    MGConfItem(MImStateToPlugin + "/0").set(pluginName);
+    MGConfItem(MImStateToPlugin + "/1").set(pluginName);
+    MGConfItem(MImStateToPlugin + "/2").set(pluginName3);
 
-    gDuiKeyboardStateTrackerStub->setOpenState(false);
-    DuiGConfItem(DuiImAccesoryEnabled).set(QVariant(false));
+    gMKeyboardStateTrackerStub->setOpenState(false);
+    MGConfItem(MImAccesoryEnabled).set(QVariant(false));
 
-    subject = new DuiIMPluginManager();
+    subject = new MIMPluginManager();
 }
 
-void Ft_DuiIMPluginManager::cleanup()
+void Ft_MIMPluginManager::cleanup()
 {
     delete subject;
 }
@@ -85,7 +85,7 @@ void Ft_DuiIMPluginManager::cleanup()
 
 // Test methods..............................................................
 
-void Ft_DuiIMPluginManager::testLoadPlugins()
+void Ft_MIMPluginManager::testLoadPlugins()
 {
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
@@ -101,9 +101,9 @@ void Ft_DuiIMPluginManager::testLoadPlugins()
 }
 
 
-void Ft_DuiIMPluginManager::testSwitchPlugin()
+void Ft_MIMPluginManager::testSwitchPlugin()
 {
-    DuiGConfItem(DuiImAccesoryEnabled).set(QVariant(true));
+    MGConfItem(MImAccesoryEnabled).set(QVariant(true));
 
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
@@ -116,10 +116,10 @@ void Ft_DuiIMPluginManager::testSwitchPlugin()
 }
 
 
-void Ft_DuiIMPluginManager::testMultiplePlugins()
+void Ft_MIMPluginManager::testMultiplePlugins()
 {
-    gDuiKeyboardStateTrackerStub->setOpenState(true);
-    DuiGConfItem(DuiImAccesoryEnabled).set(QVariant(true));
+    gMKeyboardStateTrackerStub->setOpenState(true);
+    MGConfItem(MImAccesoryEnabled).set(QVariant(true));
 
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
@@ -132,11 +132,11 @@ void Ft_DuiIMPluginManager::testMultiplePlugins()
     QVERIFY(activePlugins.contains(pluginName3));
 }
 
-void Ft_DuiIMPluginManager::testFreeInputMethod()
+void Ft_MIMPluginManager::testFreeInputMethod()
 {
     subject->setDeleteIMTimeout(300);
 
-    DuiGConfItem(DuiImAccesoryEnabled).set(QVariant(true));
+    MGConfItem(MImAccesoryEnabled).set(QVariant(true));
 
     QStringList activeInputMethods = subject->activeInputMethodsNames();
     QCOMPARE(activeInputMethods.count(), 2);
@@ -148,5 +148,5 @@ void Ft_DuiIMPluginManager::testFreeInputMethod()
     QCOMPARE(activeInputMethods.first(), pluginName3);
 }
 
-QTEST_APPLESS_MAIN(Ft_DuiIMPluginManager)
+QTEST_APPLESS_MAIN(Ft_MIMPluginManager)
 

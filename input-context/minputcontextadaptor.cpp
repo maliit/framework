@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,66 +14,66 @@
  * of this file.
  */
 
-#include "duiinputcontext.h"
-#include "duiinputcontextadaptor.h"
+#include "minputcontext.h"
+#include "minputcontextadaptor.h"
 
 #include <QDBusArgument>
 
 
-DuiInputContextAdaptor::DuiInputContextAdaptor(DuiInputContext *parent)
+MInputContextAdaptor::MInputContextAdaptor(MInputContext *parent)
     : QDBusAbstractAdaptor(parent),
       owner(parent)
 {
     if (!parent) {
-        qFatal("Creating DuiInputContextAdaptor without a parent");
+        qFatal("Creating MInputContextAdaptor without a parent");
     }
 }
 
 
-DuiInputContextAdaptor::~DuiInputContextAdaptor()
+MInputContextAdaptor::~MInputContextAdaptor()
 {
     // nothing
 }
 
 
-void DuiInputContextAdaptor::activationLostEvent()
+void MInputContextAdaptor::activationLostEvent()
 {
     owner->activationLostEvent();
 }
 
 
-void DuiInputContextAdaptor::imInitiatedHide()
+void MInputContextAdaptor::imInitiatedHide()
 {
     owner->imInitiatedHide();
 }
 
 
-void DuiInputContextAdaptor::commitString(const QString &string)
+void MInputContextAdaptor::commitString(const QString &string)
 {
     owner->commitString(string);
 }
 
 
-void DuiInputContextAdaptor::updatePreedit(const QString &string, int preeditFace)
+void MInputContextAdaptor::updatePreedit(const QString &string, int preeditFace)
 {
-    Dui::PreeditFace face = Dui::PreeditDefault;
+    M::PreeditFace face = M::PreeditDefault;
 
-    if (preeditFace >= Dui::PreeditDefault
-            && preeditFace <= Dui::PreeditNoCandidates)
-        face = Dui::PreeditFace(preeditFace);
+    if (preeditFace >= M::PreeditDefault
+            && preeditFace <= M::PreeditNoCandidates)
+        face = M::PreeditFace(preeditFace);
 
     owner->updatePreedit(string, face);
 }
 
 
-void DuiInputContextAdaptor::keyEvent(int type, int key, int modifiers, const QString &text,
-                                      bool autoRepeat, int count)
+void MInputContextAdaptor::keyEvent(int type, int key, int modifiers, const QString &text,
+                                    bool autoRepeat, int count)
 {
     owner->keyEvent(type, key, modifiers, text, autoRepeat, count);
 }
 
 
-void DuiInputContextAdaptor::updateInputMethodArea(const QList<QVariant>& data)
+void MInputContextAdaptor::updateInputMethodArea(const QList<QVariant>& data)
 {
     QList<QVariant> newData;
     const int dataSize = data.size();
@@ -86,29 +86,29 @@ void DuiInputContextAdaptor::updateInputMethodArea(const QList<QVariant>& data)
 }
 
 
-void DuiInputContextAdaptor::setGlobalCorrectionEnabled(bool enabled)
+void MInputContextAdaptor::setGlobalCorrectionEnabled(bool enabled)
 {
     owner->setGlobalCorrectionEnabled(enabled);
 }
 
 
-void DuiInputContextAdaptor::copy()
+void MInputContextAdaptor::copy()
 {
     owner->copy();
 }
 
 
-void DuiInputContextAdaptor::paste()
+void MInputContextAdaptor::paste()
 {
     owner->paste();
 }
 
-QRect DuiInputContextAdaptor::preeditRectangle(bool &valid)
+QRect MInputContextAdaptor::preeditRectangle(bool &valid)
 {
     return owner->preeditRectangle(valid);
 }
 
-void DuiInputContextAdaptor::setRedirectKeys(bool enabled)
+void MInputContextAdaptor::setRedirectKeys(bool enabled)
 {
     owner->setRedirectKeys(enabled);
 }

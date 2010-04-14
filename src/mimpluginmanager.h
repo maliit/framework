@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,28 +14,28 @@
  * of this file.
  */
 
-#ifndef DUIIMPLUGINMANAGER_H
-#define DUIIMPLUGINMANAGER_H
+#ifndef MIMPLUGINMANAGER_H
+#define MIMPLUGINMANAGER_H
 
 #include <QObject>
 
 class QRegion;
-class DuiIMPluginManagerPrivate;
+class MIMPluginManagerPrivate;
 
 
-class DuiIMPluginManager: public QObject
+class MIMPluginManager: public QObject
 {
     Q_OBJECT
 
 public:
     /*!
-     * \Brief Constructs object DuiIMPluginManager
+     * \Brief Constructs object MIMPluginManager
      * \param deleteIMtimeout int timeout for deletion of inactive input method objects.
      * Use default value to set default timeout.
      */
-    DuiIMPluginManager();
+    MIMPluginManager();
 
-    virtual ~DuiIMPluginManager();
+    virtual ~MIMPluginManager();
 
     //!Returns names of loaded plugins
     QStringList loadedPluginsNames() const;
@@ -69,11 +69,11 @@ private slots:
     void updateInputSource();
 
 private:
-    Q_DISABLE_COPY(DuiIMPluginManager)
+    Q_DISABLE_COPY(MIMPluginManager)
 
-    DuiIMPluginManagerPrivate *d;
+    MIMPluginManagerPrivate *d;
 
-    friend class Ut_DuiIMPluginManager;
+    friend class Ut_MIMPluginManager;
 };
 
 #endif

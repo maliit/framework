@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -13,39 +13,39 @@
  * and appearing in the file LICENSE.LGPL included in the packaging
  * of this file.
  */
-#ifndef __DUIGCONFITEM_STUB_H__
-#define __DUIGCONFITEM_STUB_H__
+#ifndef __MGCONFITEM_STUB_H__
+#define __MGCONFITEM_STUB_H__
 
-#include <DuiGConfItem>
+#include <MGConfItem>
 #include <QDebug>
 
 #include "fakegconf.h"
 
 /**
- * DuiGConfItem stub class.
- * To fake DuiGConfItem operations, derive from this class
+ * MGConfItem stub class.
+ * To fake MGConfItem operations, derive from this class
  * and implement the methods you want to fake. Instantiate your
- * derived stub class and assign it to gDuiGConfItemStub
+ * derived stub class and assign it to gMGConfItemStub
  * global variable.
  */
-class DuiGConfItemStub
+class MGConfItemStub
 {
 public:
-    virtual void duiGConfItemConstructor(const DuiGConfItem *instance, const QString &key, QObject *parent = 0);
-    virtual void duiGConfItemDestructor(const DuiGConfItem *instance);
-    virtual QString key(const DuiGConfItem *instance);
-    virtual QVariant value(const DuiGConfItem *instance);
-    virtual QVariant value(const DuiGConfItem *instance, const QVariant &def);
-    virtual void set(const DuiGConfItem *instance, const QVariant &val);
-    virtual QList<QString> listDirs(const DuiGConfItem *instance);
-    virtual QList<QString> listEntries(const DuiGConfItem *instance);
+    virtual void mGConfItemConstructor(const MGConfItem *instance, const QString &key, QObject *parent = 0);
+    virtual void mGConfItemDestructor(const MGConfItem *instance);
+    virtual QString key(const MGConfItem *instance);
+    virtual QVariant value(const MGConfItem *instance);
+    virtual QVariant value(const MGConfItem *instance, const QVariant &def);
+    virtual void set(const MGConfItem *instance, const QVariant &val);
+    virtual QList<QString> listDirs(const MGConfItem *instance);
+    virtual QList<QString> listEntries(const MGConfItem *instance);
 
 protected:
-    QMap<const DuiGConfItem *, QString> instanceKeys; // This map links DuiGConfItem instance to its present key.
+    QMap<const MGConfItem *, QString> instanceKeys; // This map links MGConfItem instance to its present key.
     FakeGConf fakeGConf; // This is the in-memory storage for settings.
 };
 
-void DuiGConfItemStub::duiGConfItemConstructor(const DuiGConfItem *instance, const QString &key, QObject *)
+void MGConfItemStub::mGConfItemConstructor(const MGConfItem *instance, const QString &key, QObject *)
 {
     if (!key.isEmpty()) {
         FakeGConfItem *fakeItem = fakeGConf.initKey(key);
@@ -55,22 +55,22 @@ void DuiGConfItemStub::duiGConfItemConstructor(const DuiGConfItem *instance, con
     }
 }
 
-void DuiGConfItemStub::duiGConfItemDestructor(const DuiGConfItem *instance)
+void MGConfItemStub::mGConfItemDestructor(const MGConfItem *instance)
 {
     instanceKeys.remove(instance);
 }
 
-QString DuiGConfItemStub::key(const DuiGConfItem *instance)
+QString MGConfItemStub::key(const MGConfItem *instance)
 {
     return instanceKeys[instance];
 }
 
-QVariant DuiGConfItemStub::value(const DuiGConfItem *instance)
+QVariant MGConfItemStub::value(const MGConfItem *instance)
 {
     return fakeGConf.value(instanceKeys[instance]);
 }
 
-QVariant DuiGConfItemStub::value(const DuiGConfItem *instance, const QVariant &def)
+QVariant MGConfItemStub::value(const MGConfItem *instance, const QVariant &def)
 {
     QVariant val = fakeGConf.value(instanceKeys[instance]);
     if (val.isNull())
@@ -78,73 +78,73 @@ QVariant DuiGConfItemStub::value(const DuiGConfItem *instance, const QVariant &d
     return val;
 }
 
-void DuiGConfItemStub::set(const DuiGConfItem *instance, const QVariant &value)
+void MGConfItemStub::set(const MGConfItem *instance, const QVariant &value)
 {
     fakeGConf.setValue(instanceKeys[instance], value);
 }
 
-QList<QString> DuiGConfItemStub::listDirs(const DuiGConfItem *instance)
+QList<QString> MGConfItemStub::listDirs(const MGConfItem *instance)
 {
     return fakeGConf.listDirs(instanceKeys[instance]);
 }
 
-QList<QString> DuiGConfItemStub::listEntries(const DuiGConfItem *instance)
+QList<QString> MGConfItemStub::listEntries(const MGConfItem *instance)
 {
     return fakeGConf.listEntries(instanceKeys[instance]);
 }
 
-DuiGConfItemStub gDefaultDuiGConfItemStub;
+MGConfItemStub gDefaultMGConfItemStub;
 
 /**
  * This is the stub class instance used by the system. If you want to alter behaviour,
- * derive your stub class from DuiGConfItemStub, implement the methods you want to
+ * derive your stub class from MGConfItemStub, implement the methods you want to
  * fake, create an instance of your stub class and assign the instance into this global variable.
  */
-DuiGConfItemStub *gDuiGConfItemStub = &gDefaultDuiGConfItemStub;
+MGConfItemStub *gMGConfItemStub = &gDefaultMGConfItemStub;
 
 /**
- * These are the proxy method implementations of DuiGConfItem. They will
- * call the stub object methods of the gDuiGConfItemStub.
+ * These are the proxy method implementations of MGConfItem. They will
+ * call the stub object methods of the gMGConfItemStub.
  */
 
-DuiGConfItem::DuiGConfItem(const QString &key, QObject *parent)
+MGConfItem::MGConfItem(const QString &key, QObject *parent)
 {
-    gDuiGConfItemStub->duiGConfItemConstructor(this, key, parent);
+    gMGConfItemStub->mGConfItemConstructor(this, key, parent);
 }
 
-DuiGConfItem::~DuiGConfItem()
+MGConfItem::~MGConfItem()
 {
-    gDuiGConfItemStub->duiGConfItemDestructor(this);
+    gMGConfItemStub->mGConfItemDestructor(this);
 }
 
-QString DuiGConfItem::key() const
+QString MGConfItem::key() const
 {
-    return gDuiGConfItemStub->key(this);
+    return gMGConfItemStub->key(this);
 }
 
-QVariant DuiGConfItem::value() const
+QVariant MGConfItem::value() const
 {
-    return gDuiGConfItemStub->value(this);
+    return gMGConfItemStub->value(this);
 }
 
-QVariant DuiGConfItem::value(const QVariant &def) const
+QVariant MGConfItem::value(const QVariant &def) const
 {
-    return gDuiGConfItemStub->value(this, def);
+    return gMGConfItemStub->value(this, def);
 }
 
-void DuiGConfItem::set(const QVariant &val)
+void MGConfItem::set(const QVariant &val)
 {
-    gDuiGConfItemStub->set(this, val);
+    gMGConfItemStub->set(this, val);
 }
 
-QList<QString> DuiGConfItem::listDirs() const
+QList<QString> MGConfItem::listDirs() const
 {
-    return gDuiGConfItemStub->listDirs(this);
+    return gMGConfItemStub->listDirs(this);
 }
 
-QList<QString> DuiGConfItem::listEntries() const
+QList<QString> MGConfItem::listEntries() const
 {
-    return gDuiGConfItemStub->listEntries(this);
+    return gMGConfItemStub->listEntries(this);
 }
 
-#endif //__DUIGCONFITEM_STUB_H__
+#endif //__MGCONFITEM_STUB_H__

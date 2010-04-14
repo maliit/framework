@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,10 +14,10 @@
  * of this file.
  */
 
-#ifndef DUIIMHANDLERSTATE_H
-#define DUIIMHANDLERSTATE_H
+#ifndef MIMHANDLERSTATE_H
+#define MIMHANDLERSTATE_H
 
-enum DuiIMHandlerState { OnScreen, Hardware, Accessory };
+enum MIMHandlerState { OnScreen, Hardware, Accessory };
 
 #endif
 

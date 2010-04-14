@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,11 +14,11 @@
  * of this file.
  */
 
-#ifndef DUIINPUTCONTEXTCONNECTIONSTUB_H
-#define DUIINPUTCONTEXTCONNECTIONSTUB_H
+#ifndef MINPUTCONTEXTCONNECTIONSTUB_H
+#define MINPUTCONTEXTCONNECTIONSTUB_H
 
-#include "duipreeditface.h"
-#include "duiinputcontextconnection.h"
+#include "mpreeditface.h"
+#include "minputcontextconnection.h"
 #include <QRect>
 #include <QObject>
 
@@ -26,13 +26,13 @@ class QString;
 class QRegion;
 class QKeyEvent;
 
-class DuiInputContextConnectionStub: public DuiInputContextConnection
+class MInputContextConnectionStub: public MInputContextConnection
 {
     Q_OBJECT
 
 public:
-    DuiInputContextConnectionStub();
-    virtual ~DuiInputContextConnectionStub();
+    MInputContextConnectionStub();
+    virtual ~MInputContextConnectionStub();
 
     virtual void sendPreeditString(const QString &string,
                                    PreeditFace preeditFace = PreeditDefault);

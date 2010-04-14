@@ -2,15 +2,15 @@
 #define DUMMYIMPLUGIN_H
 
 #include <QObject>
-#include "duiinputmethodplugin.h"
+#include "minputmethodplugin.h"
 
 
-//! Dummy input method plugin for ut_duiimpluginloader
+//! Dummy input method plugin for ut_mimpluginloader
 class DummyImPlugin: public QObject,
-    public DuiInputMethodPlugin
+    public MInputMethodPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(DuiInputMethodPlugin)
+    Q_INTERFACES(MInputMethodPlugin)
 
 public:
     DummyImPlugin();
@@ -20,7 +20,7 @@ public:
 
     virtual QStringList languages() const;
 
-    virtual DuiInputMethodBase *createInputMethod(DuiInputContextConnection *icConnection);
+    virtual MInputMethodBase *createInputMethod(MInputContextConnection *icConnection);
     //! \reimp_end
 };
 

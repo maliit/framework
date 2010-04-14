@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -24,13 +24,13 @@
 
 #include <duireactionmap.h>
 
-#include <DuiApplication>
-#include <DuiScene>
-#include <duiplainwindow.h>
+#include <MApplication>
+#include <MScene>
+#include <mplainwindow.h>
 #include <QCommonStyle>
 
-#include "duiimpluginmanager.h"
-#include "duipassthruwindow.h"
+#include "mimpluginmanager.h"
+#include "mpassthruwindow.h"
 
 
 int main(int argc, char **argv)
@@ -44,33 +44,33 @@ int main(int argc, char **argv)
         }
     }
 
-    // prevent loading of duiinputcontext because we don't need it and starting
+    // prevent loading of minputcontext because we don't need it and starting
     // it might trigger starting of this service by the d-bus. not nice if that is
     // already happening :)
-    DuiApplication::setLoadDuiInputContext(false);
+    MApplication::setLoadMInputContext(false);
 
-    DuiApplication app(argc, argv);
+    MApplication app(argc, argv);
 
     // TODO: Check if hardwiring the QStyle can be removed at a later state.
     app.setStyle(new QCommonStyle);
 
-    DuiPassThruWindow widget(bypassWMHint);
+    MPassThruWindow widget(bypassWMHint);
     widget.setFocusPolicy(Qt::NoFocus);
 
     // Must be declared after creation of top level window.
     DuiReactionMap reactionMap(&widget);
-    DuiPlainWindow *view = new DuiPlainWindow(&widget);
+    MPlainWindow *view = new MPlainWindow(&widget);
 
-#ifndef DUI_IM_DISABLE_TRANSLUCENCY
+#ifndef M_IM_DISABLE_TRANSLUCENCY
     // enable translucent in hardware rendering
-    view->setTranslucentBackground(!DuiApplication::softwareRendering());
+    view->setTranslucentBackground(!MApplication::softwareRendering());
 #endif
 
     // No auto fill in software rendering
-    if (DuiApplication::softwareRendering())
+    if (MApplication::softwareRendering())
         view->viewport()->setAutoFillBackground(false);
 
-    QSize sceneSize = view->visibleSceneSize(Dui::Landscape);
+    QSize sceneSize = view->visibleSceneSize(M::Landscape);
     int w = sceneSize.width();
     int h = sceneSize.height();
     view->scene()->setSceneRect(0, 0, w, h);
@@ -80,11 +80,11 @@ int main(int argc, char **argv)
     view->setMinimumSize(1, 1);
     view->setMaximumSize(w, h);
 
-    DuiIMPluginManager *pluginManager = new DuiIMPluginManager();
+    MIMPluginManager *pluginManager = new MIMPluginManager();
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      &widget, SLOT(inputPassthrough(const QRegion &)));
-#if defined(DUI_IM_DISABLE_TRANSLUCENCY) && !defined(DUI_IM_USE_SHAPE_WINDOW)
+#if defined(M_IM_DISABLE_TRANSLUCENCY) && !defined(M_IM_USE_SHAPE_WINDOW)
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      view, SLOT(updatePosition(const QRegion &)));
 #endif

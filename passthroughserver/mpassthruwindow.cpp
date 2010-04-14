@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -13,24 +13,24 @@
  * and appearing in the file LICENSE.LGPL included in the packaging
  * of this file.
  */
-#include "duipassthruwindow.h"
-#include "duiplainwindow.h"
+#include "mpassthruwindow.h"
+#include "mplainwindow.h"
 
 #include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 
-#ifndef DUI_IM_DISABLE_TRANSLUCENCY
+#ifndef M_IM_DISABLE_TRANSLUCENCY
 #include <X11/extensions/Xfixes.h>
 #include <X11/extensions/shape.h>
 #endif
 
-DuiPassThruWindow::DuiPassThruWindow(bool bypassWMHint, QWidget *p)
+MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
     : QWidget(p)
 {
-    setWindowTitle("DuiInputMethod");
-#ifndef DUI_IM_DISABLE_TRANSLUCENCY
+    setWindowTitle("MInputMethod");
+#ifndef M_IM_DISABLE_TRANSLUCENCY
     setAttribute(Qt::WA_TranslucentBackground);
 #endif
 
@@ -54,23 +54,24 @@ DuiPassThruWindow::DuiPassThruWindow(bool bypassWMHint, QWidget *p)
     Atom input = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_INPUT", False);
     XChangeProperty(dpy, winId(), XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False), XA_ATOM, 32,
                     PropModeReplace, (unsigned char *) &input, 1);
-    //TODO: below _DUI_STATUSBAR_OVERLAY could be removed when libdui does not make statusbar
+    //TODO: below _M_STATUSBAR_OVERLAY could be removed when libdui does not make statusbar
     //to be separate.
-    Atom atomDuiStatusBarOverlay = XInternAtom(dpy, "_DUI_STATUSBAR_OVERLAY", False);
+    // FIXME: is there coming a rename for this?
+    Atom atomMStatusBarOverlay = XInternAtom(dpy, "_DUI_STATUSBAR_OVERLAY", False);
     long propertyData = 1;
     XChangeProperty(dpy, winId(),
-                    atomDuiStatusBarOverlay, XA_CARDINAL /* type */,
+                    atomMStatusBarOverlay, XA_CARDINAL /* type */,
                     32 /* format, in bits */, PropModeReplace,
                     (unsigned char *) &propertyData, 1 /* number of elements */);
 }
 
-DuiPassThruWindow::~DuiPassThruWindow()
+MPassThruWindow::~MPassThruWindow()
 {
 }
 
-void DuiPassThruWindow::inputPassthrough(const QRegion &region)
+void MPassThruWindow::inputPassthrough(const QRegion &region)
 {
-#ifndef DUI_IM_DISABLE_TRANSLUCENCY
+#ifndef M_IM_DISABLE_TRANSLUCENCY
     Display *dpy = QX11Info::display();
 #endif
 
@@ -80,24 +81,24 @@ void DuiPassThruWindow::inputPassthrough(const QRegion &region)
     const int size = regionRects.size();
 
     if (size) {
-#ifdef DUI_IM_DISABLE_TRANSLUCENCY
-#ifdef DUI_IM_USE_SHAPE_WINDOW
+#ifdef M_IM_DISABLE_TRANSLUCENCY
+#ifdef M_IM_USE_SHAPE_WINDOW
         setMask(region);
 #else
         QPoint newPos(0, 0);
 
-        switch (DuiPlainWindow::instance()->orientationAngle())
+        switch (MPlainWindow::instance()->orientationAngle())
         {
-        case Dui::Angle0:
+        case M::Angle0:
             newPos.setY(region.boundingRect().top());
             break;
-        case Dui::Angle90:
+        case M::Angle90:
             newPos.setX(region.boundingRect().width() - width());
             break;
-        case Dui::Angle180:
+        case M::Angle180:
             newPos.setY(region.boundingRect().height() - height());
             break;
-        case Dui::Angle270:
+        case M::Angle270:
             newPos.setX(width() - region.boundingRect().width());
             break;
         default:

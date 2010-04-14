@@ -1,23 +1,23 @@
-include(../duiconfig.pri)
+include(../mconfig.pri)
 
 TEMPLATE = app
-TARGET = dui-im-uiserver
-target.path = $$DUI_INSTALL_BIN
+TARGET = m-im-uiserver
+target.path = $$M_INSTALL_BIN
 DEPENDPATH += .
 INCLUDEPATH += . ../src
 CONFIG += duireactionmap
 
-LIBS += ../src/libduiimframework.so -lXfixes
+LIBS += ../src/libmimframework.so -lXfixes
 
 SOURCES += \
            main.cpp \
-           duipassthruwindow.cpp \
+           mpassthruwindow.cpp \
 
 HEADERS += \
-           duipassthruwindow.h \
+           mpassthruwindow.h \
 
 QT += opengl core gui
-CONFIG += debug dui
+CONFIG += debug meegotouch
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
@@ -47,13 +47,13 @@ check.depends += $$TARGET
 system(dpkg-architecture -ei386):SOFTWARE="-software -bypass-wm-hint "
 message(Argument added to im server: $$SOFTWARE $$TARGETDEVICE)
 
-SERVICE_FILE = duiinputmethodserver.service.in
+SERVICE_FILE = minputmethodserver.service.in
 
-servicefilegenerator.output = duiinputmethodserver.service
+servicefilegenerator.output = minputmethodserver.service
 servicefilegenerator.input = SERVICE_FILE
-servicefilegenerator.commands += sed -e \"s:DUI_BIN_PATH:$$DUI_INSTALL_BIN:g\" -e \"s:SOFTWARE:$$SOFTWARE:g\" -e \"s:TARGET:$$TARGETDEVICE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
+servicefilegenerator.commands += sed -e \"s:M_BIN_PATH:$$M_INSTALL_BIN:g\" -e \"s:SOFTWARE:$$SOFTWARE:g\" -e \"s:TARGET:$$TARGETDEVICE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
 servicefilegenerator.CONFIG = target_predeps no_link
 QMAKE_EXTRA_COMPILERS += servicefilegenerator
 
 servicefiles.path = $$system(pkg-config --variable session_bus_services_dir dbus-1)
-servicefiles.files = duiinputmethodserver.service
+servicefiles.files = minputmethodserver.service

@@ -9,24 +9,24 @@ SRC_DIR = ../../src
 
 # Input
 HEADERS += \
-    ft_duiimpluginmanager.h \
-    ../stubs/duigconfitem_stub.h \
+    ft_mimpluginmanager.h \
+    ../stubs/mgconfitem_stub.h \
     ../stubs/fakegconf.h \
     ../stubs/fakeproperty.h \
-    ../stubs/duikeyboardstatetracker_stub.h \
-    ../stubs/duiinputcontextconnection_stub.h \
+    ../stubs/mkeyboardstatetracker_stub.h \
+    ../stubs/minputcontextconnection_stub.h \
 
 SOURCES += \
-    ft_duiimpluginmanager.cpp \
+    ft_mimpluginmanager.cpp \
     ../stubs/fakegconf.cpp \
     ../stubs/fakeproperty.cpp \
-    ../stubs/duiinputcontextconnection_stub.cpp \
+    ../stubs/minputcontextconnection_stub.cpp \
 
 
-CONFIG +=  debug plugin dui qdbus
+CONFIG += debug plugin meegotouch qdbus
 QT += testlib
 
 LIBS += \
-    ../../src/libduiimframework.so \
+    ../../src/libmimframework.so \
 
 include(../common_check.pri)

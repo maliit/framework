@@ -2,19 +2,19 @@ TEMPLATE = lib
 TARGET = ../plugins/$$qtLibraryTarget(dummyimplugin2)
 DEPENDPATH += .
 INCLUDEPATH += . ../../src
-LIBS += -L../../src -lduiimframework
+LIBS += -L../../src -lmimframework
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
 QMAKE_CXXFLAGS += -Werror
 
-CONFIG += plugin dui
+CONFIG += plugin meegotouch
 
 HEADERS += dummyimplugin2.h
 SOURCES += dummyimplugin2.cpp
 
-target.path += /usr/lib/dui-im-framework-tests/plugins
+target.path += /usr/lib/m-im-framework-tests/plugins
 
 INSTALLS += target
 

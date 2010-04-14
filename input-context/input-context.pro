@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = duiinputcontext
+TARGET = minputcontext
 DEPENDPATH += .
 INCLUDEPATH += . ../src
 
@@ -7,14 +7,14 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
 STYLE_HEADERS += \
-    duipreeditstyle.h \
+    mpreeditstyle.h \
 
 # Input
-HEADERS += duiinputcontext.h duiinputcontextplugin.h duiinputcontextadaptor.h $$STYLE_HEADERS
-SOURCES += duiinputcontext.cpp duiinputcontextplugin.cpp duiinputcontextadaptor.cpp
+HEADERS += minputcontext.h minputcontextplugin.h minputcontextadaptor.h $$STYLE_HEADERS
+SOURCES += minputcontext.cpp minputcontextplugin.cpp minputcontextadaptor.cpp
 
 QT = core gui
-CONFIG += plugin debug qdbus dui
+CONFIG += plugin debug qdbus meegotouch
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){

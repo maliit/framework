@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,14 +14,14 @@
  * of this file.
  */
 
-#include "duiimpluginmanager.h"
-#include "duiimpluginmanager_p.h"
+#include "mimpluginmanager.h"
+#include "mimpluginmanager_p.h"
 
-#include <DuiGConfItem>
-#include <DuiKeyboardStateTracker>
+#include <MGConfItem>
+#include <MKeyboardStateTracker>
 
-#include "duiinputmethodplugin.h"
-#include "duiinputcontextdbusconnection.h"
+#include "minputmethodplugin.h"
+#include "minputcontextdbusconnection.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -32,24 +32,25 @@ namespace
 {
     const int DeleteInputMethodTimeout = 60000;
 
-    const QString DefaultPluginLocation("/usr/lib/dui-im-plugins/");
+    const QString DefaultPluginLocation("/usr/lib/m-im-plugins/");
 
+    // FIXME: still using Dui gconf names as more changes might happen to meegotouch gconf names
     const QString ConfigRoot          = "/Dui/InputMethods/";
-    const QString DuiImPluginPaths    = ConfigRoot + "Paths";
-    const QString DuiImPluginActive   = ConfigRoot + "ActivePlugins";
-    const QString DuiImPluginDisabled = ConfigRoot + "DisabledPluginFiles";
+    const QString MImPluginPaths    = ConfigRoot + "Paths";
+    const QString MImPluginActive   = ConfigRoot + "ActivePlugins";
+    const QString MImPluginDisabled = ConfigRoot + "DisabledPluginFiles";
 
     const QString PluginRoot          = "/Dui/InputMethods/Plugins/";
-    const QString DuiImHandlerToPlugin  = PluginRoot + "Handler";
-    const QString DuiImAccesoryEnabled  = "/Dui/InputMethods/AccessoryEnabled";
+    const QString MImHandlerToPlugin  = PluginRoot + "Handler";
+    const QString MImAccesoryEnabled  = "/Dui/InputMethods/AccessoryEnabled";
 }
 
 
 
-DuiIMPluginManagerPrivate::DuiIMPluginManagerPrivate(DuiInputContextConnection *connection,
-                                                     DuiIMPluginManager *p)
+MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
+                                                     MIMPluginManager *p)
     : parent(p),
-      duiICConnection(connection),
+      mICConnection(connection),
       handlerToPluginConf(0),
       imAccessoryEnabledConf(0)
 {
@@ -58,13 +59,13 @@ DuiIMPluginManagerPrivate::DuiIMPluginManagerPrivate(DuiInputContextConnection *
 }
 
 
-DuiIMPluginManagerPrivate::~DuiIMPluginManagerPrivate()
+MIMPluginManagerPrivate::~MIMPluginManagerPrivate()
 {
-    delete duiICConnection;
+    delete mICConnection;
 }
 
 
-void DuiIMPluginManagerPrivate::loadPlugins()
+void MIMPluginManagerPrivate::loadPlugins()
 {
     foreach (QString path, paths) {
         QDir pluginsDir(path);
@@ -84,7 +85,7 @@ void DuiIMPluginManagerPrivate::loadPlugins()
                 continue;
             }
 
-            DuiInputMethodPlugin *plugin = qobject_cast<DuiInputMethodPlugin *>(pluginInstance);
+            MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
 
             if (plugin) {
                 plugins[plugin] = 0;
@@ -93,21 +94,21 @@ void DuiIMPluginManagerPrivate::loadPlugins()
                 }
             } else
                 qWarning() << __PRETTY_FUNCTION__
-                           << "Plugin is not DuiInputMethodPlugin: " << fileName;
+                           << "Plugin is not MInputMethodPlugin: " << fileName;
         } // end foreach file in path
     } // end foreach path in paths
 }
 
 
-bool DuiIMPluginManagerPrivate::activatePlugin(const QString &name)
+bool MIMPluginManagerPrivate::activatePlugin(const QString &name)
 {
-    foreach (DuiInputMethodPlugin *plugin, activePlugins) {
+    foreach (MInputMethodPlugin *plugin, activePlugins) {
         if (plugin->name() == name) {
             return true;
         }
     }
 
-    foreach (DuiInputMethodPlugin *plugin, plugins.keys()) {
+    foreach (MInputMethodPlugin *plugin, plugins.keys()) {
         if (plugin->name() == name) {
             activatePlugin(plugin);
             return true;
@@ -116,17 +117,17 @@ bool DuiIMPluginManagerPrivate::activatePlugin(const QString &name)
     return false;
 }
 
-void DuiIMPluginManagerPrivate::activatePlugin(DuiInputMethodPlugin *plugin)
+void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
 {
     if (!plugin || activePlugins.contains(plugin)) {
         return;
     }
 
-    DuiInputMethodBase *inputMethod = 0;
+    MInputMethodBase *inputMethod = 0;
 
     activePlugins.insert(plugin);
     if (!plugins[plugin]) {
-        inputMethod = plugin->createInputMethod(duiICConnection);
+        inputMethod = plugin->createInputMethod(mICConnection);
         bool connected = false;
 
         plugins[plugin] = inputMethod;
@@ -136,7 +137,7 @@ void DuiIMPluginManagerPrivate::activatePlugin(DuiInputMethodPlugin *plugin)
 
             connected = QObject::connect(inputMethod,
                                          SIGNAL(inputMethodAreaUpdated(const QRegion &)),
-                                         duiICConnection,
+                                         mICConnection,
                                          SLOT(updateInputMethodArea(const QRegion &)))
                         && connected;
         }
@@ -148,15 +149,15 @@ void DuiIMPluginManagerPrivate::activatePlugin(DuiInputMethodPlugin *plugin)
         inputMethod = plugins[plugin];
     }
 
-    duiICConnection->addTarget(inputMethod); // redirect incoming requests
+    mICConnection->addTarget(inputMethod); // redirect incoming requests
 
     return;
 }
 
 
-void DuiIMPluginManagerPrivate::addHandlerMap(DuiIMHandlerState state, const QString &pluginName)
+void MIMPluginManagerPrivate::addHandlerMap(MIMHandlerState state, const QString &pluginName)
 {
-    foreach (DuiInputMethodPlugin *plugin, plugins.keys()) {
+    foreach (MInputMethodPlugin *plugin, plugins.keys()) {
         if (plugin->name() == pluginName) {
             handlerToPlugin[state] = plugin;
             break;
@@ -165,17 +166,17 @@ void DuiIMPluginManagerPrivate::addHandlerMap(DuiIMHandlerState state, const QSt
 }
 
 
-void DuiIMPluginManagerPrivate::setActiveHandlers(const QSet<DuiIMHandlerState> &states)
+void MIMPluginManagerPrivate::setActiveHandlers(const QSet<MIMHandlerState> &states)
 {
-    QSet<DuiInputMethodPlugin *> activatedPlugins;
-    typedef QMap<DuiInputMethodBase *, QList<DuiIMHandlerState> > NewStates;
+    QSet<MInputMethodPlugin *> activatedPlugins;
+    typedef QMap<MInputMethodBase *, QList<MIMHandlerState> > NewStates;
     NewStates newStates;
-    DuiInputMethodBase *inputMethod = 0;
+    MInputMethodBase *inputMethod = 0;
 
     //activate new plugins
-    foreach (DuiIMHandlerState state, states) {
+    foreach (MIMHandlerState state, states) {
         HandlerMap::const_iterator iterator = handlerToPlugin.find(state);
-        DuiInputMethodPlugin *plugin = 0;
+        MInputMethodPlugin *plugin = 0;
 
         if (iterator != handlerToPlugin.end()) {
             plugin = iterator.value();
@@ -198,8 +199,8 @@ void DuiIMPluginManagerPrivate::setActiveHandlers(const QSet<DuiIMHandlerState> 
     }
 
     // deactivate unnecessary plugins
-    QSet<DuiInputMethodPlugin *> previousActive = activePlugins;
-    foreach (DuiInputMethodPlugin *plugin, previousActive) {
+    QSet<MInputMethodPlugin *> previousActive = activePlugins;
+    foreach (MInputMethodPlugin *plugin, previousActive) {
         if (!activatedPlugins.contains(plugin)) {
             deactivatePlugin(plugin);  //activePlugins is modified here
         }
@@ -207,19 +208,19 @@ void DuiIMPluginManagerPrivate::setActiveHandlers(const QSet<DuiIMHandlerState> 
 }
 
 
-QSet<DuiIMHandlerState> DuiIMPluginManagerPrivate::activeHandlers() const
+QSet<MIMHandlerState> MIMPluginManagerPrivate::activeHandlers() const
 {
-    QSet<DuiIMHandlerState> handlers;
-    foreach (DuiInputMethodPlugin *plugin, activePlugins) {
+    QSet<MIMHandlerState> handlers;
+    foreach (MInputMethodPlugin *plugin, activePlugins) {
         handlers << handlerToPlugin.key(plugin);
     }
     return handlers;
 }
 
 
-void DuiIMPluginManagerPrivate::deleteInactiveIM()
+void MIMPluginManagerPrivate::deleteInactiveIM()
 {
-    QMap<DuiInputMethodPlugin *, DuiInputMethodBase *>::iterator iterator;
+    QMap<MInputMethodPlugin *, MInputMethodBase *>::iterator iterator;
 
     for (iterator = plugins.begin(); iterator != plugins.end(); ++iterator) {
         if (!activePlugins.contains(iterator.key())) {
@@ -230,37 +231,37 @@ void DuiIMPluginManagerPrivate::deleteInactiveIM()
 }
 
 
-void DuiIMPluginManagerPrivate::deactivatePlugin(DuiInputMethodPlugin *plugin)
+void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
 {
     if (!activePlugins.contains(plugin))
         return;
 
     activePlugins.remove(plugin);
 
-    DuiInputMethodBase *inputMethod = plugins[plugin];
+    MInputMethodBase *inputMethod = plugins[plugin];
 
     if (!inputMethod)
         return;
 
     inputMethod->hide();
     inputMethod->reset();
-    duiICConnection->removeTarget(inputMethod);
+    mICConnection->removeTarget(inputMethod);
 }
 
 
-void DuiIMPluginManagerPrivate::convertAndFilterHandlers(const QStringList &handlerNames,
-                                                         QSet<DuiIMHandlerState> *handlers)
+void MIMPluginManagerPrivate::convertAndFilterHandlers(const QStringList &handlerNames,
+                                                         QSet<MIMHandlerState> *handlers)
 {
     bool ok = false;
     bool disableOnscreenKbd = false;
 
     foreach (const QString &name, handlerNames) {
-        int handlerNumber = (DuiIMHandlerState)name.toInt(&ok);
+        int handlerNumber = (MIMHandlerState)name.toInt(&ok);
         if (ok && handlerNumber >= OnScreen && handlerNumber <= Accessory) {
             if (!disableOnscreenKbd) {
                 disableOnscreenKbd = handlerNumber != OnScreen;
             }
-            handlers->insert((DuiIMHandlerState)handlerNumber);
+            handlers->insert((MIMHandlerState)handlerNumber);
         }
     }
 
@@ -269,11 +270,11 @@ void DuiIMPluginManagerPrivate::convertAndFilterHandlers(const QStringList &hand
     }
 }
 
-QStringList DuiIMPluginManagerPrivate::loadedPluginsNames() const
+QStringList MIMPluginManagerPrivate::loadedPluginsNames() const
 {
     QStringList result;
 
-    foreach (DuiInputMethodPlugin *plugin, plugins.keys()) {
+    foreach (MInputMethodPlugin *plugin, plugins.keys()) {
         result.append(plugin->name());
     }
 
@@ -281,11 +282,11 @@ QStringList DuiIMPluginManagerPrivate::loadedPluginsNames() const
 }
 
 
-QStringList DuiIMPluginManagerPrivate::activePluginsNames() const
+QStringList MIMPluginManagerPrivate::activePluginsNames() const
 {
     QStringList result;
 
-    foreach (DuiInputMethodPlugin *plugin, activePlugins) {
+    foreach (MInputMethodPlugin *plugin, activePlugins) {
         result.append(plugin->name());
     }
 
@@ -293,7 +294,7 @@ QStringList DuiIMPluginManagerPrivate::activePluginsNames() const
 }
 
 
-QStringList DuiIMPluginManagerPrivate::activeInputMethodsNames() const
+QStringList MIMPluginManagerPrivate::activeInputMethodsNames() const
 {
     QStringList result;
 
@@ -311,26 +312,26 @@ QStringList DuiIMPluginManagerPrivate::activeInputMethodsNames() const
 ///////////////
 // actual class
 
-DuiIMPluginManager::DuiIMPluginManager()
+MIMPluginManager::MIMPluginManager()
     : QObject(),
-      d(new DuiIMPluginManagerPrivate(new DuiInputContextDBusConnection, this))
+      d(new MIMPluginManagerPrivate(new MInputContextDBusConnection, this))
 {
-    d->paths     = DuiGConfItem(DuiImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
-    d->blacklist = DuiGConfItem(DuiImPluginDisabled).value().toStringList();
-    d->active    = DuiGConfItem(DuiImPluginActive).value().toStringList();
+    d->paths     = MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
+    d->blacklist = MGConfItem(MImPluginDisabled).value().toStringList();
+    d->active    = MGConfItem(MImPluginActive).value().toStringList();
 
     d->loadPlugins();
 
-    d->handlerToPluginConf = new DuiGConfItem(DuiImHandlerToPlugin, this);
+    d->handlerToPluginConf = new MGConfItem(MImHandlerToPlugin, this);
     connect(d->handlerToPluginConf, SIGNAL(valueChanged()), this, SLOT(reloadHandlerMap()));
 
     reloadHandlerMap();
 
-    if (DuiKeyboardStateTracker::instance()->isPresent()) {
-        connect(DuiKeyboardStateTracker::instance(), SIGNAL(stateChanged()), this, SLOT(updateInputSource()));
+    if (MKeyboardStateTracker::instance()->isPresent()) {
+        connect(MKeyboardStateTracker::instance(), SIGNAL(stateChanged()), this, SLOT(updateInputSource()));
     }
 
-    d->imAccessoryEnabledConf = new DuiGConfItem(DuiImAccesoryEnabled, this);
+    d->imAccessoryEnabledConf = new MGConfItem(MImAccesoryEnabled, this);
     connect(d->imAccessoryEnabledConf, SIGNAL(valueChanged()), this, SLOT(updateInputSource()));
 
     updateInputSource();
@@ -339,61 +340,61 @@ DuiIMPluginManager::DuiIMPluginManager()
 }
 
 
-DuiIMPluginManager::~DuiIMPluginManager()
+MIMPluginManager::~MIMPluginManager()
 {
     delete d;
     d = 0;
 }
 
 
-void DuiIMPluginManager::reloadHandlerMap()
+void MIMPluginManager::reloadHandlerMap()
 {
     QList<QString> handlers = d->handlerToPluginConf->listEntries();
     const QString key = d->handlerToPluginConf->key() + "/";
 
     foreach (const QString &handlerName, handlers) {
         QStringList path = handlerName.split("/");
-        QString pluginName = DuiGConfItem(handlerName).value().toString();
-        d->addHandlerMap((DuiIMHandlerState)path.last().toInt(), pluginName);
+        QString pluginName = MGConfItem(handlerName).value().toString();
+        d->addHandlerMap((MIMHandlerState)path.last().toInt(), pluginName);
     }
 }
 
 
-void DuiIMPluginManager::deleteInactiveIM()
+void MIMPluginManager::deleteInactiveIM()
 {
     d->deleteInactiveIM();
 }
 
 
-QStringList DuiIMPluginManager::loadedPluginsNames() const
+QStringList MIMPluginManager::loadedPluginsNames() const
 {
     return d->loadedPluginsNames();
 }
 
 
-QStringList DuiIMPluginManager::activePluginsNames() const
+QStringList MIMPluginManager::activePluginsNames() const
 {
     return d->activePluginsNames();
 }
 
 
-QStringList DuiIMPluginManager::activeInputMethodsNames() const
+QStringList MIMPluginManager::activeInputMethodsNames() const
 {
     return d->activeInputMethodsNames();
 }
 
 
-void DuiIMPluginManager::setDeleteIMTimeout(int timeout)
+void MIMPluginManager::setDeleteIMTimeout(int timeout)
 {
     d->deleteImTimer.setInterval(timeout);
 }
 
-void DuiIMPluginManager::updateInputSource()
+void MIMPluginManager::updateInputSource()
 {
     // Hardware and Accessory can work together.
     // OnScreen is mutually exclusive to Hardware and Accessory.
-    QSet<DuiIMHandlerState> handlers = d->activeHandlers();
-    if (DuiKeyboardStateTracker::instance()->isOpen()) {
+    QSet<MIMHandlerState> handlers = d->activeHandlers();
+    if (MKeyboardStateTracker::instance()->isOpen()) {
         // hw keyboard is on
         handlers.remove(OnScreen);
         handlers.insert(Hardware);

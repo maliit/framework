@@ -1,24 +1,24 @@
-#ifndef UT_DUIINPUTCONTEXTDBUSCONNECTION_H
-#define UT_DUIINPUTCONTEXTDBUSCONNECTION_H
+#ifndef UT_MINPUTCONTEXTDBUSCONNECTION_H
+#define UT_MINPUTCONTEXTDBUSCONNECTION_H
 
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QDBusAbstractAdaptor>
 #include <QDBusInterface>
 
-#include "duiinputcontextdbusconnection.h"
-#include "duiinputmethodbase.h"
+#include "minputcontextdbusconnection.h"
+#include "minputmethodbase.h"
 
 
-class DuiApplication;
+class MApplication;
 class QGraphicsScene;
-class DuiInputContext;
+class MInputContext;
 
 // input method base stub that dbus connection calls
-class TargetStub: public DuiInputMethodBase
+class TargetStub: public MInputMethodBase
 {
 public:
-    TargetStub(DuiInputContextConnection *icConnection, QObject *parent = 0);
+    TargetStub(MInputContextConnection *icConnection, QObject *parent = 0);
     virtual ~TargetStub();
 
     virtual void show();
@@ -57,7 +57,7 @@ private:
 };
 
 // test class
-class Ut_DuiInputContextDBusConnection : public QObject
+class Ut_MInputContextDBusConnection : public QObject
 {
     Q_OBJECT
 
@@ -84,12 +84,12 @@ private:
     void handleMessages();
 
 private:
-    DuiApplication *app;
-    DuiInputContextDBusConnection *m_subject;
+    MApplication *app;
+    MInputContextDBusConnection *m_subject;
     TargetStub *m_inputMethod;
     QGraphicsScene *m_scene;
     QDBusInterface *m_clientInterface;
-    DuiInputContext *m_inputContext;
+    MInputContext *m_inputContext;
 };
 
 

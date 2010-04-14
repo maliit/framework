@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,71 +14,71 @@
  * of this file.
  */
 
-#include "duiinputcontextconnection_stub.h"
+#include "minputcontextconnection_stub.h"
 
-#include "duiinputmethodbase.h"
+#include "minputmethodbase.h"
 
 
-DuiInputContextConnectionStub::DuiInputContextConnectionStub()
+MInputContextConnectionStub::MInputContextConnectionStub()
 {
     // nothing
 }
 
 
-DuiInputContextConnectionStub::~DuiInputContextConnectionStub()
+MInputContextConnectionStub::~MInputContextConnectionStub()
 {
 }
 
-void DuiInputContextConnectionStub::sendPreeditString(const QString &string,
+void MInputContextConnectionStub::sendPreeditString(const QString &string,
         PreeditFace preeditFace)
 {
     Q_UNUSED(string);
     Q_UNUSED(preeditFace);
 }
 
-void DuiInputContextConnectionStub::sendCommitString(const QString &string)
+void MInputContextConnectionStub::sendCommitString(const QString &string)
 {
     Q_UNUSED(string);
 }
 
-void DuiInputContextConnectionStub::sendKeyEvent(const QKeyEvent &keyEvent)
+void MInputContextConnectionStub::sendKeyEvent(const QKeyEvent &keyEvent)
 {
     Q_UNUSED(keyEvent);
 }
 
-void DuiInputContextConnectionStub::notifyImInitiatedHiding()
+void MInputContextConnectionStub::notifyImInitiatedHiding()
 {
 }
 
-int DuiInputContextConnectionStub::contentType(bool &valid)
+int MInputContextConnectionStub::contentType(bool &valid)
 {
     valid = false;
     return 0;
 }
 
-bool DuiInputContextConnectionStub::correctionEnabled(bool &valid)
+bool MInputContextConnectionStub::correctionEnabled(bool &valid)
 {
     valid = false;
     return false;
 }
 
-bool DuiInputContextConnectionStub::predictionEnabled(bool &valid)
+bool MInputContextConnectionStub::predictionEnabled(bool &valid)
 {
     valid = false;
     return false;
 }
 
-bool DuiInputContextConnectionStub::autoCapitalizationEnabled(bool &valid)
+bool MInputContextConnectionStub::autoCapitalizationEnabled(bool &valid)
 {
     valid = false;
     return false;
 }
 
-void DuiInputContextConnectionStub::setGlobalCorrectionEnabled(bool)
+void MInputContextConnectionStub::setGlobalCorrectionEnabled(bool)
 {
 }
 
-bool DuiInputContextConnectionStub::surroundingText(QString &text, int &cursorPosition)
+bool MInputContextConnectionStub::surroundingText(QString &text, int &cursorPosition)
 {
     Q_UNUSED(text);
     Q_UNUSED(cursorPosition);
@@ -86,32 +86,32 @@ bool DuiInputContextConnectionStub::surroundingText(QString &text, int &cursorPo
     return false;
 }
 
-bool DuiInputContextConnectionStub::hasSelection(bool &valid)
+bool MInputContextConnectionStub::hasSelection(bool &valid)
 {
     valid = false;
     return false;
 }
 
-int DuiInputContextConnectionStub::inputMethodMode(bool &valid)
+int MInputContextConnectionStub::inputMethodMode(bool &valid)
 {
     valid = false;
     return false;
 }
 
-QRect DuiInputContextConnectionStub::preeditRectangle(bool &valid)
+QRect MInputContextConnectionStub::preeditRectangle(bool &valid)
 {
     valid = false;
     return QRect();
 }
 
-void DuiInputContextConnectionStub::copy()
+void MInputContextConnectionStub::copy()
 {
 }
 
-void DuiInputContextConnectionStub::paste()
+void MInputContextConnectionStub::paste()
 {
 }
 
-void DuiInputContextConnectionStub::setRedirectKeys(bool /* enabled */)
+void MInputContextConnectionStub::setRedirectKeys(bool /* enabled */)
 {
 }

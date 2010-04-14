@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#ifndef DUIIMPLUGINMANAGER_P_H
-#define DUIIMPLUGINMANAGER_P_H
+#ifndef MIMPLUGINMANAGER_P_H
+#define MIMPLUGINMANAGER_P_H
 
 #include <QList>
 #include <QStringList>
@@ -23,53 +23,53 @@
 #include <QTimer>
 #include <QSet>
 
-#include "duiimhandlerstate.h"
+#include "mimhandlerstate.h"
 
-class DuiInputMethodPlugin;
-class DuiInputContextConnection;
-class DuiIMPluginManager;
-class DuiGConfItem;
-class DuiInputMethodBase;
+class MInputMethodPlugin;
+class MInputContextConnection;
+class MIMPluginManager;
+class MGConfItem;
+class MInputMethodBase;
 
 /* Internal class only! Interfaces here change, internal developers only*/
-class DuiIMPluginManagerPrivate
+class MIMPluginManagerPrivate
 {
 
 public:
-    DuiIMPluginManagerPrivate(DuiInputContextConnection *connection, DuiIMPluginManager *p);
-    virtual ~DuiIMPluginManagerPrivate();
+    MIMPluginManagerPrivate(MInputContextConnection *connection, MIMPluginManager *p);
+    virtual ~MIMPluginManagerPrivate();
 
     bool activatePlugin(const QString &name);
-    void activatePlugin(DuiInputMethodPlugin *plugin);
+    void activatePlugin(MInputMethodPlugin *plugin);
     void loadPlugins();
-    void addHandlerMap(DuiIMHandlerState state, const QString &pluginName);
-    void setActiveHandlers(const QSet<DuiIMHandlerState> &states);
-    QSet<DuiIMHandlerState> activeHandlers() const;
+    void addHandlerMap(MIMHandlerState state, const QString &pluginName);
+    void setActiveHandlers(const QSet<MIMHandlerState> &states);
+    QSet<MIMHandlerState> activeHandlers() const;
     void deleteInactiveIM();
-    void deactivatePlugin(DuiInputMethodPlugin *plugin);
-    void convertAndFilterHandlers(const QStringList &handlerNames, QSet<DuiIMHandlerState> *handlers);
+    void deactivatePlugin(MInputMethodPlugin *plugin);
+    void convertAndFilterHandlers(const QStringList &handlerNames, QSet<MIMHandlerState> *handlers);
 
     QStringList loadedPluginsNames() const;
     QStringList activePluginsNames() const;
     QStringList activeInputMethodsNames() const;
 
 public:
-    DuiIMPluginManager *parent;
-    DuiInputContextConnection *duiICConnection;
+    MIMPluginManager *parent;
+    MInputContextConnection *mICConnection;
 
-    typedef QMap<DuiInputMethodPlugin *, DuiInputMethodBase *> Plugins;
+    typedef QMap<MInputMethodPlugin *, MInputMethodBase *> Plugins;
     Plugins plugins;
-    typedef QSet<DuiInputMethodPlugin *> ActivePlugins;
+    typedef QSet<MInputMethodPlugin *> ActivePlugins;
     ActivePlugins activePlugins;
 
     QStringList paths;
     QStringList blacklist;
     QStringList active;
-    typedef QMap<DuiIMHandlerState, DuiInputMethodPlugin *> HandlerMap;
+    typedef QMap<MIMHandlerState, MInputMethodPlugin *> HandlerMap;
     HandlerMap handlerToPlugin;
 
-    DuiGConfItem *handlerToPluginConf;
-    DuiGConfItem *imAccessoryEnabledConf;
+    MGConfItem *handlerToPluginConf;
+    MGConfItem *imAccessoryEnabledConf;
 
     QTimer deleteImTimer;
 };

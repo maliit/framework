@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -13,17 +13,17 @@
  * and appearing in the file LICENSE.LGPL included in the packaging
  * of this file.
  */
-#ifndef DUIPASSTHRUWINDOW_H
-#define DUIPASSTHRUWINDOW_H
+#ifndef MPASSTHRUWINDOW_H
+#define MPASSTHRUWINDOW_H
 
 #include <QWidget>
 #include <QDebug>
 #include <QRegion>
 
 /*!
- * \brief DuiPassThruWindow uses XFixes to redirect mouse events to VKB
+ * \brief MPassThruWindow uses XFixes to redirect mouse events to VKB
  */
-class DuiPassThruWindow: public QWidget
+class MPassThruWindow: public QWidget
 {
     Q_OBJECT
 
@@ -32,17 +32,17 @@ public:
      * \brief Constructor
      * \param p QWidget* parent widget
      */
-    explicit DuiPassThruWindow(bool bypassWMHint = false, QWidget *p = 0);
+    explicit MPassThruWindow(bool bypassWMHint = false, QWidget *p = 0);
 
     //! Destructor
-    ~DuiPassThruWindow();
+    ~MPassThruWindow();
 
 public slots:
     //! Set window ID for given region
     void inputPassthrough(const QRegion &region);
 
 private:
-    Q_DISABLE_COPY(DuiPassThruWindow);
+    Q_DISABLE_COPY(MPassThruWindow);
 
     int displayWidth;
     int displayHeight;

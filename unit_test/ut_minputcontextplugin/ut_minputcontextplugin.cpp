@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,11 +14,11 @@
  * of this file.
  */
 
-#include "ut_duiinputcontextplugin.h"
-#include "duiinputcontextplugin.h"
+#include "ut_minputcontextplugin.h"
+#include "minputcontextplugin.h"
 
 #include <QInputContext>
-#include <DuiApplication>
+#include <MApplication>
 
 namespace
 {
@@ -27,7 +27,7 @@ namespace
 
 
 
-void Ut_DuiInputContextPlugin::initTestCase()
+void Ut_MInputContextPlugin::initTestCase()
 {
     // This is a hack to prevent Qt from loading the plugin from
     // /usr/lib/qt4/plugins/inputmethods/ when we are testing in a
@@ -53,27 +53,27 @@ void Ut_DuiInputContextPlugin::initTestCase()
 
 
     static int argc = 1;
-    static char *argv[1] = { (char *) "ut_duiinputcontextplugin" };
-    app = new DuiApplication(argc, argv);
+    static char *argv[1] = { (char *) "ut_minputcontextplugin" };
+    app = new MApplication(argc, argv);
 }
 
-void Ut_DuiInputContextPlugin::cleanupTestCase()
+void Ut_MInputContextPlugin::cleanupTestCase()
 {
     delete app;
 }
 
-void Ut_DuiInputContextPlugin::init()
+void Ut_MInputContextPlugin::init()
 {
-    subject = new DuiInputContextPlugin(0);
+    subject = new MInputContextPlugin(0);
     QVERIFY(subject);
 }
 
-void Ut_DuiInputContextPlugin::cleanup()
+void Ut_MInputContextPlugin::cleanup()
 {
     delete subject;
 }
 
-void Ut_DuiInputContextPlugin::testCreate()
+void Ut_MInputContextPlugin::testCreate()
 {
     QStringList keys = subject->keys();
     QInputContext *ctx = NULL;
@@ -91,7 +91,7 @@ void Ut_DuiInputContextPlugin::testCreate()
     QVERIFY(!ctx);
 }
 
-void Ut_DuiInputContextPlugin::testOther()
+void Ut_MInputContextPlugin::testOther()
 {
     // This is a dont-crash test for simple API functions.
 
@@ -108,4 +108,4 @@ void Ut_DuiInputContextPlugin::testOther()
     }
 }
 
-QTEST_APPLESS_MAIN(Ut_DuiInputContextPlugin)
+QTEST_APPLESS_MAIN(Ut_MInputContextPlugin)

@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#ifndef DUIINPUTCONTEXTDBUSCONNECTION_P_H
-#define DUIINPUTCONTEXTDBUSCONNECTION_P_H
+#ifndef MINPUTCONTEXTDBUSCONNECTION_P_H
+#define MINPUTCONTEXTDBUSCONNECTION_P_H
 
 #include <QDBusAbstractAdaptor>
 #include <QMap>
@@ -23,16 +23,16 @@
 #include <QString>
 #include <QVariant>
 
-class DuiInputContextDBusConnection;
+class MInputContextDBusConnection;
 
-class DuiInputContextDBusAdaptor: public QDBusAbstractAdaptor
+class MInputContextDBusAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.maemo.duiinputmethodserver1")
 
 public:
-    DuiInputContextDBusAdaptor(DuiInputContextDBusConnection *host);
-    virtual ~DuiInputContextDBusAdaptor();
+    MInputContextDBusAdaptor(MInputContextDBusConnection *host);
+    virtual ~MInputContextDBusAdaptor();
 
 public slots:
     void showInputMethod();
@@ -50,16 +50,16 @@ public slots:
                          bool autoRepeat, int count, int nativeScanCode);
 
 private:
-    DuiInputContextDBusConnection *host;
+    MInputContextDBusConnection *host;
 };
 
 
 
-class DuiInputContextDBusConnectionPrivate
+class MInputContextDBusConnectionPrivate
 {
 public:
-    DuiInputContextDBusConnectionPrivate();
-    ~DuiInputContextDBusConnectionPrivate();
+    MInputContextDBusConnectionPrivate();
+    ~MInputContextDBusConnectionPrivate();
 
     QMap<QString, QDBusInterface *> clients; // map of service/interface object
     QDBusInterface *activeContext; // currently active context

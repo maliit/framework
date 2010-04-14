@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,68 +14,68 @@
  * of this file.
  */
 
-#include "duiinputcontextplugin.h"
+#include "minputcontextplugin.h"
 
-#include <duiinputcontext.h>
+#include <minputcontext.h>
 #include <QString>
 #include <QStringList>
 #include <QDebug>
 
 
 
-DuiInputContextPlugin::DuiInputContextPlugin(QObject *parent)
+MInputContextPlugin::MInputContextPlugin(QObject *parent)
     : QInputContextPlugin(parent)
 {
     // nothing
 }
 
 
-DuiInputContextPlugin::~DuiInputContextPlugin()
+MInputContextPlugin::~MInputContextPlugin()
 {
     // nothing
 }
 
 
-QInputContext *DuiInputContextPlugin::create(const QString &key)
+QInputContext *MInputContextPlugin::create(const QString &key)
 {
     QInputContext *ctx = NULL;
 
     if (!key.isEmpty()) {
         // currently there is only one type of inputcontext
-        ctx = new DuiInputContext(this);
+        ctx = new MInputContext(this);
     }
     return ctx;
 }
 
 
-QString DuiInputContextPlugin::description(const QString &s)
+QString MInputContextPlugin::description(const QString &s)
 {
     Q_UNUSED(s);
 
-    return "DuiInputContext plugin";
+    return "MInputContext plugin";
 }
 
 
-QString DuiInputContextPlugin::displayName(const QString &s)
+QString MInputContextPlugin::displayName(const QString &s)
 {
     Q_UNUSED(s);
 
     // TODO: want this translated?
-    return "input context for dui vkb";
+    return "input context for meegotouch input method";
 }
 
 
-QStringList DuiInputContextPlugin::keys() const
+QStringList MInputContextPlugin::keys() const
 {
-    return QStringList("DuiInputContext");
+    return QStringList("MInputContext");
 }
 
 
-QStringList DuiInputContextPlugin::languages(const QString &)
+QStringList MInputContextPlugin::languages(const QString &)
 {
     return QStringList("EN"); // FIXME
 }
 
 
-Q_EXPORT_PLUGIN2(duiinputcontext, DuiInputContextPlugin)
+Q_EXPORT_PLUGIN2(minputcontext, MInputContextPlugin)
 

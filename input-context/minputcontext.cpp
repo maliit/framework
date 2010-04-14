@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,7 +14,7 @@
  * of this file.
  */
 
-#include "duiinputcontext.h"
+#include "minputcontext.h"
 
 #include <QInputContext>
 #include <QCoreApplication>
@@ -27,23 +27,24 @@
 #include <QApplication>
 #include <QClipboard>
 
-#include <DuiPreeditInjectionEvent>
-#include <DuiTheme>
-#include <DuiComponentData>
-#include <DuiDebug>
-#include <DuiLibrary>
-#include <DuiInputMethodState>
+#include <MPreeditInjectionEvent>
+#include <MTheme>
+#include <MComponentData>
+#include <MDebug>
+#include <MLibrary>
+#include <MInputMethodState>
 
-#include "duiinputcontextadaptor.h"
-#include "duipreeditstyle.h"
-#include "duitimestamp.h"
+#include "minputcontextadaptor.h"
+#include "mpreeditstyle.h"
+#include "mtimestamp.h"
 
-DUI_LIBRARY
+M_LIBRARY
 
 namespace
 {
     const int SoftwareInputPanelHideTimer = 500;
 
+    // FIXME: rename these to new prefix
     const QString DBusServiceName("org.maemo.duiinputmethodserver1");
     const QString DBusPath("/org/maemo/duiinputmethodserver1");
     const QString DBusInterface("org.maemo.duiinputmethodserver1");
@@ -51,19 +52,19 @@ namespace
     const QString DBusCallbackPath("/org/maemo/duiinputcontext");
 }
 
-int DuiInputContext::connectionCount = -1;
+int MInputContext::connectionCount = -1;
 
 // Note: this class can also be used on plain Qt applications.
 // This means that the functionality _can_ _not_ rely on
-// DuiApplication or classes relying on it being initialized.
+// MApplication or classes relying on it being initialized.
 
 
-DuiInputContext::DuiInputContext(QObject *parent)
+MInputContext::MInputContext(QObject *parent)
     : QInputContext(parent),
       active(false),
       inputPanelState(InputPanelHidden),
       iface(0),
-      ownsDuiComponentData(false),
+      ownsMComponentData(false),
       correctionEnabled(false),
       styleContainer(0),
       connectedObject(0),
@@ -76,9 +77,9 @@ DuiInputContext::DuiInputContext(QObject *parent)
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
     connect(&sipHideTimer, SIGNAL(timeout()), SLOT(hideOnFocusOut()));
 
-    // ensure DuiComponentData is initialized, normally it should be.
-    // NOTE: this can be removed if/when DuiTheme is better separated from DuiComponentData
-    if (DuiComponentData::instance() == 0) {
+    // ensure MComponentData is initialized, normally it should be.
+    // NOTE: this can be removed if/when MTheme is better separated from MComponentData
+    if (MComponentData::instance() == 0) {
         QStringList args = qApp->arguments();
         int argc = 1;
         QString appName = args[0];
@@ -86,51 +87,51 @@ DuiInputContext::DuiInputContext(QObject *parent)
         QByteArray appNameArray = appName.toLocal8Bit();
         argv[0] = appNameArray.data();
 
-        DuiComponentData::setLoadDuiInputContext(false);
-        new DuiComponentData(argc, argv);
-        ownsDuiComponentData = true;
+        MComponentData::setLoadMInputContext(false);
+        new MComponentData(argc, argv);
+        ownsMComponentData = true;
     }
 
     connectToDBus();
 
-    styleContainer = new DuiPreeditStyleContainer;
-    styleContainer->initialize("DefaultStyle", "DuiPreeditStyle", 0);
+    styleContainer = new MPreeditStyleContainer;
+    styleContainer->initialize("DefaultStyle", "MPreeditStyle", 0);
 
-    connect(DuiInputMethodState::instance(),
-            SIGNAL(activeWindowOrientationAngleChanged(Dui::OrientationAngle)),
-            this, SLOT(notifyOrientationChange(Dui::OrientationAngle)));
+    connect(MInputMethodState::instance(),
+            SIGNAL(activeWindowOrientationAngleChanged(M::OrientationAngle)),
+            this, SLOT(notifyOrientationChange(M::OrientationAngle)));
 }
 
 
-DuiInputContext::~DuiInputContext()
+MInputContext::~MInputContext()
 {
     delete iface;
 
     delete styleContainer;
 
-    if (ownsDuiComponentData) {
-        delete DuiComponentData::instance();
+    if (ownsMComponentData) {
+        delete MComponentData::instance();
     }
 }
 
 
-void DuiInputContext::connectToDBus()
+void MInputContext::connectToDBus()
 {
     QDBusConnection connection = QDBusConnection::sessionBus();
 
     if (connection.isConnected() == false) {
-        duiDebug("DuiInputContext") << "Cannot connect to the DBus session bus";
+        mDebug("MInputContext") << "Cannot connect to the DBus session bus";
     }
 
     QDBusConnectionInterface *connectionInterface = connection.interface();
 
     // connect methods we are offering to DBus
-    new DuiInputContextAdaptor(this);
+    new MInputContextAdaptor(this);
 
     bool success = connection.registerObject(dbusObjectPath(), this);
 
     if (!success) {
-        qFatal("DuiInputContext failed to register object via D-Bus: %s",
+        qFatal("MInputContext failed to register object via D-Bus: %s",
                dbusObjectPath().toAscii().data());
     }
 
@@ -142,40 +143,40 @@ void DuiInputContext::connectToDBus()
     //due to bug in Qt
     iface = new QDBusInterface(DBusServiceName, DBusPath, DBusInterface, connection, 0);
 
-    // The input method server might not be running when DuiInputContext is created.
+    // The input method server might not be running when MInputContext is created.
     // The iface validity is rechecked at serviceChangeHandler().
     if (!iface->isValid()) {
-        duiDebug("DuiInputContext") << "DuiInputContext was unable to connect to input method server: "
-                                    << connection.lastError().message();
+        mDebug("MInputContext") << "MInputContext was unable to connect to input method server: "
+                                << connection.lastError().message();
     } else {
         registerContextObject();
     }
 }
 
-bool DuiInputContext::event(QEvent *event)
+bool MInputContext::event(QEvent *event)
 {
-    if (event->type() == DuiPreeditInjectionEvent::eventNumber()) {
+    if (event->type() == MPreeditInjectionEvent::eventNumber()) {
         if (correctionEnabled) {
-            DuiPreeditInjectionEvent *injectionEvent
-                = dynamic_cast<DuiPreeditInjectionEvent *>(event);
+            MPreeditInjectionEvent *injectionEvent
+                = dynamic_cast<MPreeditInjectionEvent *>(event);
 
             if (injectionEvent == 0) {
                 return false;
             }
 
-            duiDebug("DuiInputContext") << "DuiInputContext got preedit injection:"
-                                        << injectionEvent->preedit();
+            mDebug("MInputContext") << "MInputContext got preedit injection:"
+                                    << injectionEvent->preedit();
             // send the injected preedit to input method server and back to the widget with proper
             // styling
             iface->call(QDBus::NoBlock, "setPreedit", injectionEvent->preedit());
-            updatePreedit(injectionEvent->preedit(), Dui::PreeditDefault);
+            updatePreedit(injectionEvent->preedit(), M::PreeditDefault);
 
             event->accept();
             return true;
 
         } else {
-            duiDebug("DuiInputContext")
-                    << "DuiInputContext ignored preedit injection because correction is disabled";
+            mDebug("MInputContext")
+                << "MInputContext ignored preedit injection because correction is disabled";
             return false;
         }
     }
@@ -184,43 +185,43 @@ bool DuiInputContext::event(QEvent *event)
 }
 
 
-QString DuiInputContext::identifierName()
+QString MInputContext::identifierName()
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
-    return "DuiInputContext";
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
+    return "MInputContext";
 }
 
 
-bool DuiInputContext::isComposing() const
+bool MInputContext::isComposing() const
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
     return true; // FIXME
 }
 
 
-QString DuiInputContext::language()
+QString MInputContext::language()
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
     return "EN"; // FIXME
 }
 
-QString DuiInputContext::dbusObjectPath() const
+QString MInputContext::dbusObjectPath() const
 {
     return objectPath;
 }
 
-void DuiInputContext::reset()
+void MInputContext::reset()
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
 
     // reset input method server
     iface->call(QDBus::NoBlock, "reset");
 }
 
 
-void DuiInputContext::update()
+void MInputContext::update()
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
 
     const QWidget *const focused = focusWidget();
 
@@ -235,12 +236,12 @@ void DuiInputContext::update()
 }
 
 
-void DuiInputContext::mouseHandler(int x, QMouseEvent *event)
+void MInputContext::mouseHandler(int x, QMouseEvent *event)
 {
     Q_UNUSED(x);
 
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
-    duiDebug("DuiInputContext") << " event pos: " << event->globalPos() << " cursor pos:" << x;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
+    mDebug("MInputContext") << " event pos: " << event->globalPos() << " cursor pos:" << x;
 
     // input method server needs to be informed about clicks
     if (event->type() == QEvent::MouseButtonRelease) {
@@ -252,7 +253,7 @@ void DuiInputContext::mouseHandler(int x, QMouseEvent *event)
 
         if (focused) {
             Qt::InputMethodQuery query
-                = static_cast<Qt::InputMethodQuery>(Dui::PreeditRectangleQuery);
+                = static_cast<Qt::InputMethodQuery>(M::PreeditRectangleQuery);
             preeditRect = focused->inputMethodQuery(query).toRect();
         }
 
@@ -261,13 +262,13 @@ void DuiInputContext::mouseHandler(int x, QMouseEvent *event)
 }
 
 
-void DuiInputContext::setFocusWidget(QWidget *focused)
+void MInputContext::setFocusWidget(QWidget *focused)
 {
     QObject *focusedObject = focused;
     QGraphicsItem *focusItem = 0;
     bool copyAvailable = false;
 
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__ << focused;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << focused;
     QInputContext::setFocusWidget(focused);
 
     // get detailed focus information from inside qgraphicsview
@@ -289,8 +290,8 @@ void DuiInputContext::setFocusWidget(QWidget *focused)
             active = true;
 
             // Notify whatever application's orientation is currently.
-            Dui::OrientationAngle angle
-                = DuiInputMethodState::instance()->activeWindowOrientationAngle();
+            M::OrientationAngle angle
+                = MInputMethodState::instance()->activeWindowOrientationAngle();
             notifyOrientationChange(angle);
         }
 
@@ -333,8 +334,8 @@ void DuiInputContext::setFocusWidget(QWidget *focused)
     const char *signalName = "copyAvailable(bool)";
 
     if (focusedObject) {
-        duiDebug("DuiInputContext") << __PRETTY_FUNCTION__ << "signal index" << focusedObject
-                                    << focusedObject->metaObject()->indexOfSignal(signalName);
+        mDebug("MInputContext") << __PRETTY_FUNCTION__ << "signal index" << focusedObject
+                                << focusedObject->metaObject()->indexOfSignal(signalName);
     }
 
     if (focusedObject && focusedObject->metaObject()
@@ -346,12 +347,12 @@ void DuiInputContext::setFocusWidget(QWidget *focused)
 }
 
 
-bool DuiInputContext::filterEvent(const QEvent *event)
+bool MInputContext::filterEvent(const QEvent *event)
 {
     bool eaten = false;
 
     if (event->type() == QEvent::RequestSoftwareInputPanel) {
-        duiDebug("DuiInputContext") << "got event" << event->type();
+        mDebug("MInputContext") << "got event" << event->type();
         sipHideTimer.stop();
 
         if (!active || focusWidget() == 0) {
@@ -369,7 +370,7 @@ bool DuiInputContext::filterEvent(const QEvent *event)
         eaten = true;
 
     } else if (event->type() == QEvent::CloseSoftwareInputPanel) {
-        duiDebug("DuiInputContext") << "got event" << event->type();
+        mDebug("MInputContext") << "got event" << event->type();
         sipHideTimer.start();
         eaten = true;
 
@@ -389,7 +390,7 @@ bool DuiInputContext::filterEvent(const QEvent *event)
 }
 
 
-void DuiInputContext::hideOnFocusOut()
+void MInputContext::hideOnFocusOut()
 {
     iface->call(QDBus::NoBlock, "hideInputMethod");
 
@@ -397,16 +398,16 @@ void DuiInputContext::hideOnFocusOut()
 }
 
 
-void DuiInputContext::activationLostEvent()
+void MInputContext::activationLostEvent()
 {
     active = false;
     inputPanelState = InputPanelHidden;
 }
 
 
-void DuiInputContext::imInitiatedHide()
+void MInputContext::imInitiatedHide()
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
     inputPanelState = InputPanelHidden;
 
     // need to remove focus from the current text entry
@@ -428,10 +429,10 @@ void DuiInputContext::imInitiatedHide()
 }
 
 
-void DuiInputContext::commitString(const QString &string)
+void MInputContext::commitString(const QString &string)
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
-    duiTimestamp("DuiInputContext", string);
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
+    mTimestamp("MInputContext", string);
     QInputMethodEvent event;
     event.setCommitString(string);
 
@@ -443,18 +444,18 @@ void DuiInputContext::commitString(const QString &string)
 }
 
 
-void DuiInputContext::updatePreedit(const QString &string, Dui::PreeditFace preeditFace)
+void MInputContext::updatePreedit(const QString &string, M::PreeditFace preeditFace)
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string;
-    duiTimestamp("DuiInputContext", string);
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string;
+    mTimestamp("MInputContext", string);
 
     // update style mode
     switch (preeditFace) {
-    case Dui::PreeditNoCandidates:
+    case M::PreeditNoCandidates:
         styleContainer->setModeNoCandidates();
         break;
 
-    case Dui::PreeditDefault:
+    case M::PreeditDefault:
     default:
         styleContainer->setModeDefault();
     }
@@ -489,10 +490,10 @@ void DuiInputContext::updatePreedit(const QString &string, Dui::PreeditFace pree
 }
 
 
-void DuiInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
+void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
                                bool autoRepeat, int count)
 {
-    duiDebug("DuiInputContext") << "in" << __PRETTY_FUNCTION__;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
 
     if (focusWidget() == 0) {
         return;
@@ -507,25 +508,25 @@ void DuiInputContext::keyEvent(int type, int key, int modifiers, const QString &
 }
 
 
-void DuiInputContext::updateInputMethodArea(const QList<QVariant> &data)
+void MInputContext::updateInputMethodArea(const QList<QVariant> &data)
 {
     QRect rect;
     if (!data.isEmpty())
         rect = data.at(0).toRect();
 
-    DuiInputMethodState::instance()->setInputMethodArea(rect);
+    MInputMethodState::instance()->setInputMethodArea(rect);
 }
 
 
-void DuiInputContext::setGlobalCorrectionEnabled(bool enabled)
+void MInputContext::setGlobalCorrectionEnabled(bool enabled)
 {
     correctionEnabled = enabled;
 }
 
 
-QRect DuiInputContext::preeditRectangle(bool &valid) const
+QRect MInputContext::preeditRectangle(bool &valid) const
 {
-    Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(Dui::PreeditRectangleQuery);
+    Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(M::PreeditRectangleQuery);
     QVariant queryResult = focusWidget()->inputMethodQuery(query);
 
     valid = queryResult.isValid();
@@ -533,7 +534,7 @@ QRect DuiInputContext::preeditRectangle(bool &valid) const
 }
 
 
-void DuiInputContext::copy()
+void MInputContext::copy()
 {
     bool ok = false;
 
@@ -541,7 +542,7 @@ void DuiInputContext::copy()
         ok = QMetaObject::invokeMethod(connectedObject, "copy", Qt::DirectConnection);
     }
 
-    duiDebug("DuiInputContext") << __PRETTY_FUNCTION__ << "result=" << ok;
+    mDebug("MInputContext") << __PRETTY_FUNCTION__ << "result=" << ok;
 
     if (!ok) {
         // send Ctrl-Ckey event because suitable slot was not found
@@ -553,7 +554,7 @@ void DuiInputContext::copy()
 }
 
 
-void DuiInputContext::paste()
+void MInputContext::paste()
 {
     bool ok = false;
 
@@ -561,7 +562,7 @@ void DuiInputContext::paste()
         ok = QMetaObject::invokeMethod(connectedObject, "paste", Qt::DirectConnection);
     }
 
-    duiDebug("DuiInputContext") << __PRETTY_FUNCTION__ << "result=" << ok;
+    mDebug("MInputContext") << __PRETTY_FUNCTION__ << "result=" << ok;
 
     if (!ok) {
         // send Ctrl-V key event because suitable slot was not found
@@ -575,13 +576,13 @@ void DuiInputContext::paste()
 }
 
 
-void DuiInputContext::registerContextObject()
+void MInputContext::registerContextObject()
 {
     iface->call(QDBus::NoBlock, "setContextObject", dbusObjectPath());
 }
 
 
-void DuiInputContext::serviceChangeHandler(const QString &name, const QString &oldOwner,
+void MInputContext::serviceChangeHandler(const QString &name, const QString &oldOwner,
                                            const QString &newOwner)
 {
     Q_UNUSED(oldOwner);
@@ -597,26 +598,26 @@ void DuiInputContext::serviceChangeHandler(const QString &name, const QString &o
             if (!iface->isValid()) {
                 // dbus interface don't seem to become valid if on construction the server
                 // wasn't found. workaround this by creating the interface again
-                duiDebug("DuiInputContext") << "recreating dbus interface";
+                mDebug("MInputContext") << "recreating dbus interface";
                 delete iface;
                 QDBusConnection connection = QDBusConnection::sessionBus();
                 iface = new QDBusInterface(DBusServiceName, DBusPath, DBusInterface, connection, 0);
             }
 
-            duiDebug("DuiInputContext")
+            mDebug("MInputContext")
                 << "InputContext: service owner changed. Registering callback again";
             registerContextObject();
         }
     }
 }
 
-void DuiInputContext::manageCopyPasteState(bool copyAvailable)
+void MInputContext::manageCopyPasteState(bool copyAvailable)
 {
     iface->call(QDBus::NoBlock, "setCopyPasteState", copyAvailable && copyAllowed, pasteAvailable);
 }
 
 
-void DuiInputContext::notifyOrientationChange(Dui::OrientationAngle orientation)
+void MInputContext::notifyOrientationChange(M::OrientationAngle orientation)
 {
     // can get called from signal so cannot be sure we are really currently active
     if (active) {
@@ -625,30 +626,30 @@ void DuiInputContext::notifyOrientationChange(Dui::OrientationAngle orientation)
 }
 
 
-Dui::TextContentType DuiInputContext::contentType(Qt::InputMethodHints hints) const
+M::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
 {
-    Dui::TextContentType type = Dui::FreeTextContentType;
+    M::TextContentType type = M::FreeTextContentType;
 
     hints &= Qt::ImhExclusiveInputMask;
     if (hints == Qt::ImhFormattedNumbersOnly) {
-        type = Dui::NumberContentType;
+        type = M::NumberContentType;
     } else if (hints == Qt::ImhDialableCharactersOnly) {
-        type = Dui::PhoneNumberContentType;
+        type = M::PhoneNumberContentType;
     } else if (hints == Qt::ImhEmailCharactersOnly) {
-        type = Dui::EmailContentType;
+        type = M::EmailContentType;
     } else if (hints == Qt::ImhUrlCharactersOnly) {
-        type = Dui::UrlContentType;
+        type = M::UrlContentType;
     }
 
     return type;
 }
 
-void DuiInputContext::setRedirectKeys(bool enabled)
+void MInputContext::setRedirectKeys(bool enabled)
 {
     redirectKeys = enabled;
 }
 
-QMap<QString, QVariant> DuiInputContext::getStateInformation() const
+QMap<QString, QVariant> MInputContext::getStateInformation() const
 {
     QMap<QString, QVariant> stateInformation;
     const QWidget *focused = focusWidget();
@@ -659,7 +660,7 @@ QMap<QString, QVariant> DuiInputContext::getStateInformation() const
 
     // visualization priority
     QVariant queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(Dui::VisualizationPriorityQuery));
+        static_cast<Qt::InputMethodQuery>(M::VisualizationPriorityQuery));
 
     if (queryResult.isValid()) {
         stateInformation["visualizationPriority"] = queryResult.toBool();
@@ -667,7 +668,7 @@ QMap<QString, QVariant> DuiInputContext::getStateInformation() const
 
     // toolbar
     queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(Dui::InputMethodToolbarQuery));
+        static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarQuery));
 
     if (queryResult.isValid()) {
         stateInformation["toolbar"] = queryResult.toString();
@@ -705,7 +706,7 @@ QMap<QString, QVariant> DuiInputContext::getStateInformation() const
 
     // error correction support
     queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(Dui::ImCorrectionEnabledQuery));
+        static_cast<Qt::InputMethodQuery>(M::ImCorrectionEnabledQuery));
 
     if (queryResult.isValid()) {
         stateInformation["correctionEnabled"] = queryResult.toBool();
@@ -716,11 +717,11 @@ QMap<QString, QVariant> DuiInputContext::getStateInformation() const
 
     // input method mode
     queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(Dui::ImModeQuery));
+        static_cast<Qt::InputMethodQuery>(M::ImModeQuery));
 
-    Dui::InputMethodMode inputMethodMode = Dui::InputMethodModeNormal;
+    M::InputMethodMode inputMethodMode = M::InputMethodModeNormal;
     if (queryResult.isValid()) {
-        inputMethodMode = static_cast<Dui::InputMethodMode>(queryResult.toInt());
+        inputMethodMode = static_cast<M::InputMethodMode>(queryResult.toInt());
     }
     stateInformation["inputMethodMode"] = inputMethodMode;
 

@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,17 +14,17 @@
  * of this file.
  */
 
-#ifndef UT_DUIINPUTCONTEXTPLUGIN_H
-#define UT_DUIINPUTCONTEXTPLUGIN_H
+#ifndef UT_MINPUTCONTEXTPLUGIN_H
+#define UT_MINPUTCONTEXTPLUGIN_H
 
 #include <QtTest/QtTest>
 #include <QObject>
 
-class DuiInputContextAdaptor;
-class DuiInputContext;
+class MInputContextAdaptor;
+class MInputContext;
 class QApplication;
 
-class Ut_DuiInputContextAdaptor : public QObject
+class Ut_MInputContextAdaptor : public QObject
 {
     Q_OBJECT
 private slots:
@@ -37,8 +37,8 @@ private slots:
     void testNoReplyPassthroughs();
 
 private:
-    DuiInputContextAdaptor *subject;
-    DuiInputContext *inputContext;
+    MInputContextAdaptor *subject;
+    MInputContext *inputContext;
     QApplication *app;
 };
 

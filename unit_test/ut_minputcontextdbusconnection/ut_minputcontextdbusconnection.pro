@@ -2,20 +2,20 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
 INCLUDEPATH += ../../src ../../input-context ../stubs
-LIBS += -L../../input-context/ -lduiinputcontext ../../src/libduiimframework.so \
+LIBS += -L../../input-context/ -lminputcontext ../../src/libmimframework.so \
 
 # Input
 HEADERS += \
-    ut_duiinputcontextdbusconnection.h \
+    ut_minputcontextdbusconnection.h \
     ../stubs/stubbase.h \
-    ../stubs/duiinputcontextadaptor_stub.h
+    ../stubs/minputcontextadaptor_stub.h
 
 SOURCES += \
-    ut_duiinputcontextdbusconnection.cpp \
+    ut_minputcontextdbusconnection.cpp \
     ../stubs/stubbase.cpp
 
 
-CONFIG +=  debug plugin dui qdbus
+CONFIG += debug plugin meegotouch qdbus
 QT += testlib
 
 include(../common_check.pri)

@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -13,16 +13,16 @@
  * and appearing in the file LICENSE.LGPL included in the packaging
  * of this file.
  */
-#ifndef __UT_DUIINPUTCONTEXTPLUGIN_H__
-#define __UT_DUIINPUTCONTEXTPLUGIN_H__
+#ifndef __UT_MINPUTCONTEXTPLUGIN_H__
+#define __UT_MINPUTCONTEXTPLUGIN_H__
 
 #include <QtTest/QtTest>
 #include <QObject>
 
-class DuiInputContextPlugin;
+class MInputContextPlugin;
 class QApplication;
 
-class Ut_DuiInputContextPlugin : public QObject
+class Ut_MInputContextPlugin : public QObject
 {
     Q_OBJECT
 private slots:
@@ -36,8 +36,8 @@ private slots:
     void testOther();
 
 private:
-    DuiInputContextPlugin *subject;
+    MInputContextPlugin *subject;
     QApplication *app;
 };
 
-#endif // __UT_DUIINPUTCONTEXTPLUGIN_H__
+#endif // __UT_MINPUTCONTEXTPLUGIN_H__

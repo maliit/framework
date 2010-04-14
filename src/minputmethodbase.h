@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,28 +14,28 @@
  * of this file.
  */
 
-#ifndef DUIINPUTMETHODBASE_H
-#define DUIINPUTMETHODBASE_H
+#ifndef MINPUTMETHODBASE_H
+#define MINPUTMETHODBASE_H
 
 #include <QObject>
 #include <QEvent>
-#include <DuiNamespace>
-#include "duiimhandlerstate.h"
+#include <MNamespace>
+#include "mimhandlerstate.h"
 
 class QRegion;
 class QPoint;
 class QRect;
 class QGraphicsScene;
-class DuiInputContextConnection;
-class DuiInputMethodBasePrivate;
+class MInputContextConnection;
+class MInputMethodBasePrivate;
 
 /*!
- * \brief DuiInputMethodBase is a base class for input method servers.
+ * \brief MInputMethodBase is a base class for input method servers.
  * 
  * It defines the interface which input context connection classes can use for
  * passing commands received from the applications
  */
-class DuiInputMethodBase: public QObject
+class MInputMethodBase: public QObject
 {
     Q_OBJECT
 
@@ -43,13 +43,13 @@ public:
     /*! Constructor for input method base
      * \param icConnection input context connection class, not owned by input method base
      */
-    DuiInputMethodBase(DuiInputContextConnection *icConnection, QObject *parent = 0);
+    MInputMethodBase(MInputContextConnection *icConnection, QObject *parent = 0);
 
-    ~DuiInputMethodBase();
+    ~MInputMethodBase();
 
     /*! \brief Returns input context connection associated with this input method base
      */
-    DuiInputContextConnection *inputContextConnection() const;
+    MInputContextConnection *inputContextConnection() const;
 
     /*! \brief Shows the input method.
      */
@@ -99,7 +99,7 @@ public:
      * \brief Process a key event redirected from hardware keyboard to input method.
      *
      * This is called only if one has enabled redirection by calling
-     * \a DuiInputContextConnection::setRedirectKeys.
+     * \a MInputContextConnection::setRedirectKeys.
      */
     virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers,
                                  const QString &text, bool autoRepeat, int count, int nativeScanCode);
@@ -107,10 +107,10 @@ public:
     /* \brief This method is called when keyboard status is changed:
      * hardware keyboard is opened or closed, BT keyboard is connected
      * or disconnected
-     * \param state const QList<DuiIMHandlerState>& list of current states
+     * \param state const QList<MIMHandlerState>& list of current states
      * for this plugin
      */
-    virtual void setState(const QList<DuiIMHandlerState> &state);
+    virtual void setState(const QList<MIMHandlerState> &state);
 
     /*! \brief This method is called when target client is changed.
      */
@@ -137,9 +137,9 @@ signals:
     void inputMethodAreaUpdated(const QRegion &region);
 
 private:
-    Q_DISABLE_COPY(DuiInputMethodBase)
+    Q_DISABLE_COPY(MInputMethodBase)
 
-    DuiInputMethodBasePrivate *d;
+    MInputMethodBasePrivate *d;
 };
 
 #endif

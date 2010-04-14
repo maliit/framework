@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#include "duiinputcontextdbusconnection.h"
-#include "duiinputcontextdbusconnection_p.h"
+#include "minputcontextdbusconnection.h"
+#include "minputcontextdbusconnection_p.h"
 
 #include <QObject>
 #include <QDebug>
@@ -30,10 +30,11 @@
 #include <QString>
 #include <QVariant>
 
-#include "duiinputmethodbase.h"
+#include "minputmethodbase.h"
 
 namespace
 {
+    // FIXME: using dui prefix
     const char * const DBusServiceName = "org.maemo.duiinputmethodserver1";
     const char * const DBusPath = "/org/maemo/duiinputmethodserver1";
     // FIXME: unused, directly in header
@@ -56,7 +57,7 @@ namespace
 
 
 
-DuiInputContextDBusAdaptor::DuiInputContextDBusAdaptor(DuiInputContextDBusConnection *host)
+MInputContextDBusAdaptor::MInputContextDBusAdaptor(MInputContextDBusConnection *host)
     : QDBusAbstractAdaptor(host),
       host(host)
 {
@@ -64,71 +65,71 @@ DuiInputContextDBusAdaptor::DuiInputContextDBusAdaptor(DuiInputContextDBusConnec
 }
 
 
-DuiInputContextDBusAdaptor::~DuiInputContextDBusAdaptor()
+MInputContextDBusAdaptor::~MInputContextDBusAdaptor()
 {
     // nothing
 }
 
 
-void DuiInputContextDBusAdaptor::setContextObject(QString callbackObject)
+void MInputContextDBusAdaptor::setContextObject(QString callbackObject)
 {
     host->setContextObject(callbackObject);
 }
 
 
-void DuiInputContextDBusAdaptor::activateContext()
+void MInputContextDBusAdaptor::activateContext()
 {
     host->activateContext();
 }
 
 
-void DuiInputContextDBusAdaptor::showInputMethod()
+void MInputContextDBusAdaptor::showInputMethod()
 {
     host->showInputMethod();
 }
 
 
-void DuiInputContextDBusAdaptor::hideInputMethod()
+void MInputContextDBusAdaptor::hideInputMethod()
 {
     host->hideInputMethod();
 }
 
 
-void DuiInputContextDBusAdaptor::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
+void MInputContextDBusAdaptor::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
 {
     host->mouseClickedOnPreedit(pos, preeditRect);
 }
 
 
-void DuiInputContextDBusAdaptor::setPreedit(const QString &text)
+void MInputContextDBusAdaptor::setPreedit(const QString &text)
 {
     host->setPreedit(text);
 }
 
-void DuiInputContextDBusAdaptor::updateWidgetInformation(const QMap<QString, QVariant> &stateInfo)
+void MInputContextDBusAdaptor::updateWidgetInformation(const QMap<QString, QVariant> &stateInfo)
 {
     host->updateWidgetInformation(stateInfo);
 }
 
 
-void DuiInputContextDBusAdaptor::reset()
+void MInputContextDBusAdaptor::reset()
 {
     host->reset();
 }
 
-void DuiInputContextDBusAdaptor::appOrientationChanged(int angle)
+void MInputContextDBusAdaptor::appOrientationChanged(int angle)
 {
     host->appOrientationChanged(angle);
 }
 
-void DuiInputContextDBusAdaptor::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
+void MInputContextDBusAdaptor::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
     host->setCopyPasteState(copyAvailable, pasteAvailable);
 }
 
-void DuiInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int modifiers,
-                                                 const QString &text, bool autoRepeat,
-                                                 int count, int nativeScanCode)
+void MInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int modifiers,
+                                               const QString &text, bool autoRepeat,
+                                               int count, int nativeScanCode)
 {
     host->processKeyEvent(static_cast<QEvent::Type>(keyType), static_cast<Qt::Key>(keyCode),
                           static_cast<Qt::KeyboardModifiers>(modifiers), text, autoRepeat, count, nativeScanCode);
@@ -139,7 +140,7 @@ void DuiInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int m
 // private class
 
 
-DuiInputContextDBusConnectionPrivate::DuiInputContextDBusConnectionPrivate()
+MInputContextDBusConnectionPrivate::MInputContextDBusConnectionPrivate()
     : activeContext(0),
       valid(true),
       globalCorrectionEnabled(false),
@@ -149,7 +150,7 @@ DuiInputContextDBusConnectionPrivate::DuiInputContextDBusConnectionPrivate()
 }
 
 
-DuiInputContextDBusConnectionPrivate::~DuiInputContextDBusConnectionPrivate()
+MInputContextDBusConnectionPrivate::~MInputContextDBusConnectionPrivate()
 {
     QMapIterator<QString, QDBusInterface *> it(clients);
 
@@ -165,20 +166,20 @@ DuiInputContextDBusConnectionPrivate::~DuiInputContextDBusConnectionPrivate()
 // actual class
 
 
-DuiInputContextDBusConnection::DuiInputContextDBusConnection()
-    : d(new DuiInputContextDBusConnectionPrivate)
+MInputContextDBusConnection::MInputContextDBusConnection()
+    : d(new MInputContextDBusConnectionPrivate)
 {
-    new DuiInputContextDBusAdaptor(this);
+    new MInputContextDBusAdaptor(this);
     bool success = QDBusConnection::sessionBus().registerObject(DBusPath, this);
 
     if (!success) {
         d->valid = false;
-        qDebug() << "DuiInputContextDBusConnection failed to register D-Bus object";
+        qDebug() << "MInputContextDBusConnection failed to register D-Bus object";
     }
 
     if (!QDBusConnection::sessionBus().registerService(DBusServiceName)) {
         d->valid = false;
-        qDebug() << "DuiInputContextDBusConnection failed to register D-Bus service";
+        qDebug() << "MInputContextDBusConnection failed to register D-Bus service";
         qDebug() << QDBusConnection::sessionBus().lastError().message();
     }
 
@@ -187,19 +188,19 @@ DuiInputContextDBusConnection::DuiInputContextDBusConnection()
 }
 
 
-DuiInputContextDBusConnection::~DuiInputContextDBusConnection()
+MInputContextDBusConnection::~MInputContextDBusConnection()
 {
     delete d;
 }
 
 
-bool DuiInputContextDBusConnection::isValid()
+bool MInputContextDBusConnection::isValid()
 {
     return d->valid;
 }
 
 
-void DuiInputContextDBusConnection::sendPreeditString(const QString &string,
+void MInputContextDBusConnection::sendPreeditString(const QString &string,
         PreeditFace preeditFace)
 {
     if (d->activeContext) {
@@ -208,7 +209,7 @@ void DuiInputContextDBusConnection::sendPreeditString(const QString &string,
 }
 
 
-void DuiInputContextDBusConnection::sendCommitString(const QString &string)
+void MInputContextDBusConnection::sendCommitString(const QString &string)
 {
     if (d->activeContext) {
         d->activeContext->call("commitString", string);
@@ -216,7 +217,7 @@ void DuiInputContextDBusConnection::sendCommitString(const QString &string)
 }
 
 
-void DuiInputContextDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent)
+void MInputContextDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent)
 {
     if (d->activeContext) {
         int type = static_cast<int>(keyEvent.type());
@@ -229,7 +230,7 @@ void DuiInputContextDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent)
 }
 
 
-void DuiInputContextDBusConnection::notifyImInitiatedHiding()
+void MInputContextDBusConnection::notifyImInitiatedHiding()
 {
     if (d->activeContext) {
         d->activeContext->call("imInitiatedHide");
@@ -237,14 +238,14 @@ void DuiInputContextDBusConnection::notifyImInitiatedHiding()
 }
 
 
-int DuiInputContextDBusConnection::contentType(bool &valid)
+int MInputContextDBusConnection::contentType(bool &valid)
 {
     QVariant contentTypeVariant = d->widgetState[ContentTypeAttribute];
     return contentTypeVariant.toInt(&valid);
 }
 
 
-bool DuiInputContextDBusConnection::correctionEnabled(bool &valid)
+bool MInputContextDBusConnection::correctionEnabled(bool &valid)
 {
     QVariant correctionVariant = d->widgetState[CorrectionAttribute];
     valid = correctionVariant.isValid();
@@ -252,7 +253,7 @@ bool DuiInputContextDBusConnection::correctionEnabled(bool &valid)
 }
 
 
-bool DuiInputContextDBusConnection::predictionEnabled(bool &valid)
+bool MInputContextDBusConnection::predictionEnabled(bool &valid)
 {
     QVariant predictionVariant = d->widgetState[PredictionAttribute];
     valid = predictionVariant.isValid();
@@ -260,7 +261,7 @@ bool DuiInputContextDBusConnection::predictionEnabled(bool &valid)
 }
 
 
-bool DuiInputContextDBusConnection::autoCapitalizationEnabled(bool &valid)
+bool MInputContextDBusConnection::autoCapitalizationEnabled(bool &valid)
 {
     QVariant capitalizationVariant = d->widgetState[AutoCapitalizationAttribute];
     valid = capitalizationVariant.isValid();
@@ -268,7 +269,7 @@ bool DuiInputContextDBusConnection::autoCapitalizationEnabled(bool &valid)
 }
 
 
-void DuiInputContextDBusConnection::setGlobalCorrectionEnabled(bool enabled)
+void MInputContextDBusConnection::setGlobalCorrectionEnabled(bool enabled)
 {
     if ((enabled != d->globalCorrectionEnabled) && d->activeContext) {
         d->activeContext->call("setGlobalCorrectionEnabled", enabled);
@@ -278,7 +279,7 @@ void DuiInputContextDBusConnection::setGlobalCorrectionEnabled(bool enabled)
 }
 
 
-bool DuiInputContextDBusConnection::surroundingText(QString &text, int &cursorPosition)
+bool MInputContextDBusConnection::surroundingText(QString &text, int &cursorPosition)
 {
     QVariant textVariant = d->widgetState[SurroundingTextAttribute];
     QVariant posVariant = d->widgetState[CursorPositionAttribute];
@@ -293,7 +294,7 @@ bool DuiInputContextDBusConnection::surroundingText(QString &text, int &cursorPo
 }
 
 
-bool DuiInputContextDBusConnection::hasSelection(bool &valid)
+bool MInputContextDBusConnection::hasSelection(bool &valid)
 {
     QVariant selectionVariant = d->widgetState[HasSelectionAttribute];
     valid = selectionVariant.isValid();
@@ -301,14 +302,14 @@ bool DuiInputContextDBusConnection::hasSelection(bool &valid)
 }
 
 
-int DuiInputContextDBusConnection::inputMethodMode(bool &valid)
+int MInputContextDBusConnection::inputMethodMode(bool &valid)
 {
     QVariant modeVariant = d->widgetState[InputMethodModeAttribute];
     return modeVariant.toInt(&valid);
 }
 
 
-QRect DuiInputContextDBusConnection::preeditRectangle(bool &valid)
+QRect MInputContextDBusConnection::preeditRectangle(bool &valid)
 {
     QRect rect;
     valid = false;
@@ -325,7 +326,7 @@ QRect DuiInputContextDBusConnection::preeditRectangle(bool &valid)
     return rect;
 }
 
-void DuiInputContextDBusConnection::setRedirectKeys(bool enabled)
+void MInputContextDBusConnection::setRedirectKeys(bool enabled)
 {
     if ((d->redirectionEnabled != enabled) && d->activeContext) {
         d->activeContext->call("setRedirectKeys", enabled);
@@ -335,7 +336,7 @@ void DuiInputContextDBusConnection::setRedirectKeys(bool enabled)
 }
 
 
-void DuiInputContextDBusConnection::copy()
+void MInputContextDBusConnection::copy()
 {
     if (d->activeContext) {
         d->activeContext->call("copy");
@@ -343,7 +344,7 @@ void DuiInputContextDBusConnection::copy()
 }
 
 
-void DuiInputContextDBusConnection::paste()
+void MInputContextDBusConnection::paste()
 {
     if (d->activeContext) {
         d->activeContext->call("paste");
@@ -352,8 +353,8 @@ void DuiInputContextDBusConnection::paste()
 
 
 
-//void DuiInputContextDBusConnection::setContextObject(QDBusObjectPath callbackObject)
-void DuiInputContextDBusConnection::setContextObject(QString callbackObject)
+//void MInputContextDBusConnection::setContextObject(QDBusObjectPath callbackObject)
+void MInputContextDBusConnection::setContextObject(QString callbackObject)
 {
     qDebug() << "in" << __PRETTY_FUNCTION__;
 
@@ -382,7 +383,7 @@ void DuiInputContextDBusConnection::setContextObject(QString callbackObject)
 }
 
 
-void DuiInputContextDBusConnection::activateContext()
+void MInputContextDBusConnection::activateContext()
 {
     qDebug() << "in" << __PRETTY_FUNCTION__;
 
@@ -407,55 +408,55 @@ void DuiInputContextDBusConnection::activateContext()
     }
 
     // notify plugins
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->clientChanged();
     }
 }
 
 
-void DuiInputContextDBusConnection::showInputMethod()
+void MInputContextDBusConnection::showInputMethod()
 {
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->show();
     }
 }
 
 
-void DuiInputContextDBusConnection::hideInputMethod()
+void MInputContextDBusConnection::hideInputMethod()
 {
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->hide();
     }
 }
 
 
-void DuiInputContextDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
-                                                          const QRect &preeditRect)
+void MInputContextDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
+                                                        const QRect &preeditRect)
 {
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->mouseClickedOnPreedit(pos, preeditRect);
     }
 }
 
 
-void DuiInputContextDBusConnection::setPreedit(const QString &text)
+void MInputContextDBusConnection::setPreedit(const QString &text)
 {
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->setPreedit(text);
     }
 }
 
 
-void DuiInputContextDBusConnection::reset()
+void MInputContextDBusConnection::reset()
 {
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->reset();
     }
 }
 
 
 void
-DuiInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVariant> &stateInfo)
+MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVariant> &stateInfo)
 {
     // check visualization change
     bool oldVisualization = false;
@@ -491,33 +492,33 @@ DuiInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVari
 
     // call notification methods if needed
     if (oldVisualization != newVisualization) {
-        foreach (DuiInputMethodBase *target, targets()) {
+        foreach (MInputMethodBase *target, targets()) {
             target->visualizationPriorityChanged(newVisualization);
         }
     }
 
     if (oldToolbar != newToolbar) {
-        foreach (DuiInputMethodBase *target, targets()) {
+        foreach (MInputMethodBase *target, targets()) {
             target->setToolbar(newToolbar);
         }
     }
 
     // general notification last
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->update();
     }
 }
 
 
-void DuiInputContextDBusConnection::appOrientationChanged(int angle)
+void MInputContextDBusConnection::appOrientationChanged(int angle)
 {
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->appOrientationChanged(angle);
     }
 }
 
 
-void DuiInputContextDBusConnection::updateInputMethodArea(const QRegion &region)
+void MInputContextDBusConnection::updateInputMethodArea(const QRegion &region)
 {
     if (d->activeContext) {
         QList<QVariant> data;
@@ -527,20 +528,20 @@ void DuiInputContextDBusConnection::updateInputMethodArea(const QRegion &region)
 }
 
 
-void DuiInputContextDBusConnection::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
+void MInputContextDBusConnection::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->setCopyPasteState(copyAvailable, pasteAvailable);
     }
 }
 
 
-void DuiInputContextDBusConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
-                                                    Qt::KeyboardModifiers modifiers,
-                                                    const QString &text, bool autoRepeat, int count,
-                                                    int nativeScanCode)
+void MInputContextDBusConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                                  Qt::KeyboardModifiers modifiers,
+                                                  const QString &text, bool autoRepeat, int count,
+                                                  int nativeScanCode)
 {
-    foreach (DuiInputMethodBase *target, targets()) {
+    foreach (MInputMethodBase *target, targets()) {
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
                                 nativeScanCode);
     }

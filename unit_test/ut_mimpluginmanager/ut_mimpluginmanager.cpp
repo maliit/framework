@@ -1,6 +1,6 @@
-#include "ut_duiimpluginmanager.h"
-#include "duigconfitem_stub.h"
-#include "duiinputcontextconnection_stub.h"
+#include "ut_mimpluginmanager.h"
+#include "mgconfitem_stub.h"
+#include "minputcontextconnection_stub.h"
 #include "dummyimplugin.h"
 #include "dummyimplugin3.h"
 #include "dummyinputmethod.h"
@@ -10,16 +10,16 @@
 #include <QGraphicsScene>
 #include <QRegExp>
 #include <QCoreApplication>
-#include <duiimpluginmanager.h>
-#include <duiimpluginmanager_p.h>
-#include <duiinputmethodplugin.h>
+#include <mimpluginmanager.h>
+#include <mimpluginmanager_p.h>
+#include <minputmethodplugin.h>
 
-typedef QSet<DuiIMHandlerState> HandlerStates;
+typedef QSet<MIMHandlerState> HandlerStates;
 Q_DECLARE_METATYPE(HandlerStates);
 
 namespace
 {
-    const QString GlobalTestPluginPath("/usr/lib/dui-im-framework-tests/plugins");
+    const QString GlobalTestPluginPath("/usr/lib/m-im-framework-tests/plugins");
     const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
 
     const QString pluginName  = "DummyImPlugin";
@@ -27,9 +27,9 @@ namespace
 }
 
 
-void Ut_DuiIMPluginManager::initTestCase()
+void Ut_MIMPluginManager::initTestCase()
 {
-    char *argv[1] = { (char *) "ut_duiimpluginloader" };
+    char *argv[1] = { (char *) "ut_mimpluginloader" };
     int argc = 1;
 
     app = new QCoreApplication(argc, argv);
@@ -54,14 +54,14 @@ void Ut_DuiIMPluginManager::initTestCase()
     QVERIFY2(QDir(pluginPath).exists(), "Test plugin directory does not exist.");
 }
 
-void Ut_DuiIMPluginManager::cleanupTestCase()
+void Ut_MIMPluginManager::cleanupTestCase()
 {
     delete app;
 }
 
-void Ut_DuiIMPluginManager::init()
+void Ut_MIMPluginManager::init()
 {
-    subject = new DuiIMPluginManagerPrivate(new DuiInputContextConnectionStub, 0);
+    subject = new MIMPluginManagerPrivate(new MInputContextConnectionStub, 0);
 
     subject->paths     << pluginPath;
     subject->blacklist << "libdummyimplugin2.so";
@@ -70,7 +70,7 @@ void Ut_DuiIMPluginManager::init()
     subject->loadPlugins();
 }
 
-void Ut_DuiIMPluginManager::cleanup()
+void Ut_MIMPluginManager::cleanup()
 {
     delete subject;
 }
@@ -78,10 +78,10 @@ void Ut_DuiIMPluginManager::cleanup()
 
 // Test methods..............................................................
 
-void Ut_DuiIMPluginManager::testLoadPlugins()
+void Ut_MIMPluginManager::testLoadPlugins()
 {
-    DuiInputMethodPlugin *plugin = 0;
-    DuiInputMethodPlugin *plugin3 = 0;
+    MInputMethodPlugin *plugin = 0;
+    MInputMethodPlugin *plugin3 = 0;
 
     // Initial load based on settings -> DummyImPlugin loaded and activated,
     // DummyImPlugin3 loaded, DummyPlugin2 not loaded (skipped).  Also,
@@ -90,7 +90,7 @@ void Ut_DuiIMPluginManager::testLoadPlugins()
     // libinvalidplugin not loaded.  The only "test" for these two is that the
     // test does not crash.  (One may also observe the warning/debug messages
     // concerning loading of those two plugins.)
-    foreach(DuiInputMethodPlugin * plugin, subject->plugins.keys()) {
+    foreach(MInputMethodPlugin * plugin, subject->plugins.keys()) {
         qDebug() << plugin->name();
     }
     QCOMPARE(subject->plugins.size(), 2);
@@ -99,7 +99,7 @@ void Ut_DuiIMPluginManager::testLoadPlugins()
     QCOMPARE(plugin->name(), pluginName);
     bool dummyImPluginFound = false;
     bool dummyImPlugin3Found = false;
-    foreach(DuiInputMethodPlugin * plugin, subject->plugins.keys()) {
+    foreach(MInputMethodPlugin * plugin, subject->plugins.keys()) {
         if (plugin->name() == "DummyImPlugin") {
             dummyImPluginFound = true;
         } else if (plugin->name() == "DummyImPlugin3") {
@@ -151,9 +151,9 @@ void Ut_DuiIMPluginManager::testLoadPlugins()
 }
 
 
-void Ut_DuiIMPluginManager::testAddHandlerMap()
+void Ut_MIMPluginManager::testAddHandlerMap()
 {
-    DuiInputMethodPlugin *plugin = 0;
+    MInputMethodPlugin *plugin = 0;
     subject->activatePlugin(pluginName3);
 
     subject->addHandlerMap(OnScreen, pluginName);
@@ -174,7 +174,7 @@ void Ut_DuiIMPluginManager::testAddHandlerMap()
 }
 
 
-void Ut_DuiIMPluginManager::testConvertAndFilterHandlers_data()
+void Ut_MIMPluginManager::testConvertAndFilterHandlers_data()
 {
     QTest::addColumn<QStringList>("names");
     QTest::addColumn<HandlerStates>("expectedStates");
@@ -182,7 +182,7 @@ void Ut_DuiIMPluginManager::testConvertAndFilterHandlers_data()
     for (int n = 0; n <= Accessory; ++n) {
         QTest::newRow("single state")
                 << (QStringList() << QString::number(n))
-                << (HandlerStates() << DuiIMHandlerState(n));
+                << (HandlerStates() << MIMHandlerState(n));
     }
 
     QTest::newRow("0 1")
@@ -199,7 +199,7 @@ void Ut_DuiIMPluginManager::testConvertAndFilterHandlers_data()
 }
 
 
-void Ut_DuiIMPluginManager::testConvertAndFilterHandlers()
+void Ut_MIMPluginManager::testConvertAndFilterHandlers()
 {
     QFETCH(QStringList, names);
     QFETCH(HandlerStates, expectedStates);
@@ -212,12 +212,12 @@ void Ut_DuiIMPluginManager::testConvertAndFilterHandlers()
 }
 
 
-void Ut_DuiIMPluginManager::testSwitchPlugin()
+void Ut_MIMPluginManager::testSwitchPlugin()
 {
-    QSet<DuiIMHandlerState> actualState;
+    QSet<MIMHandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
-    DuiInputMethodBase *inputMethodBase = 0;
+    MInputMethodBase *inputMethodBase = 0;
     DummyInputMethod  *inputMethod  = 0;
     DummyInputMethod3 *inputMethod3 = 0;
 
@@ -275,14 +275,14 @@ void Ut_DuiIMPluginManager::testSwitchPlugin()
 }
 
 
-void Ut_DuiIMPluginManager::testMultilePlugins()
+void Ut_MIMPluginManager::testMultilePlugins()
 {
-    QSet<DuiIMHandlerState> actualState;
+    QSet<MIMHandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
     int pluginCount = 0;
     int plugin3Count = 0;
-    DuiInputMethodBase *inputMethodBase = 0;
+    MInputMethodBase *inputMethodBase = 0;
     DummyInputMethod  *inputMethod  = 0;
     DummyInputMethod3 *inputMethod3 = 0;
 
@@ -293,7 +293,7 @@ void Ut_DuiIMPluginManager::testMultilePlugins()
     actualState << Accessory << Hardware;
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 2);
-    foreach(DuiInputMethodPlugin * p, subject->activePlugins) {
+    foreach(MInputMethodPlugin * p, subject->activePlugins) {
         plugin3 = dynamic_cast<DummyImPlugin3 *>(p);
         if (plugin3 != 0) {
             ++plugin3Count;
@@ -325,10 +325,10 @@ void Ut_DuiIMPluginManager::testMultilePlugins()
     QCOMPARE(plugin3Count, 1);
 }
 
-void Ut_DuiIMPluginManager::testFreeInputMethod()
+void Ut_MIMPluginManager::testFreeInputMethod()
 {
-    QMap<DuiInputMethodPlugin *, DuiInputMethodBase *>::iterator iterator;
-    QSet<DuiIMHandlerState> actualState;
+    QMap<MInputMethodPlugin *, MInputMethodBase *>::iterator iterator;
+    QSet<MIMHandlerState> actualState;
 
     subject->addHandlerMap(OnScreen, pluginName);
     subject->addHandlerMap(Hardware, pluginName);
@@ -351,4 +351,4 @@ void Ut_DuiIMPluginManager::testFreeInputMethod()
     }
 }
 
-QTEST_APPLESS_MAIN(Ut_DuiIMPluginManager)
+QTEST_APPLESS_MAIN(Ut_MIMPluginManager)

@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,33 +14,33 @@
  * of this file.
  */
 
-#include "duiinputmethodbase.h"
-#include "duiinputcontextconnection.h"
+#include "minputmethodbase.h"
+#include "minputcontextconnection.h"
 
 #include <QGraphicsView>
 #include <QDebug>
 #include <QKeyEvent>
 
 
-class DuiInputMethodBasePrivate
+class MInputMethodBasePrivate
 {
 public:
-    DuiInputMethodBasePrivate(DuiInputContextConnection *icConnection);
-    ~DuiInputMethodBasePrivate();
+    MInputMethodBasePrivate(MInputContextConnection *icConnection);
+    ~MInputMethodBasePrivate();
 
-    DuiInputContextConnection *icConnection;
+    MInputContextConnection *icConnection;
 };
 
 
 
-DuiInputMethodBasePrivate::DuiInputMethodBasePrivate(DuiInputContextConnection *icConnection)
+MInputMethodBasePrivate::MInputMethodBasePrivate(MInputContextConnection *icConnection)
     : icConnection(icConnection)
 {
     // nothing
 }
 
 
-DuiInputMethodBasePrivate::~DuiInputMethodBasePrivate()
+MInputMethodBasePrivate::~MInputMethodBasePrivate()
 {
     // nothing
 }
@@ -49,101 +49,100 @@ DuiInputMethodBasePrivate::~DuiInputMethodBasePrivate()
 
 ///////////////
 
-DuiInputMethodBase::DuiInputMethodBase(DuiInputContextConnection *icConnection,
-                                       QObject *parent)
+MInputMethodBase::MInputMethodBase(MInputContextConnection *icConnection, QObject *parent)
     : QObject(parent),
-      d(new DuiInputMethodBasePrivate(icConnection))
+      d(new MInputMethodBasePrivate(icConnection))
 {
     // nothing
 }
 
 
-DuiInputMethodBase::~DuiInputMethodBase()
+MInputMethodBase::~MInputMethodBase()
 {
     delete d;
 }
 
 
-DuiInputContextConnection *
-DuiInputMethodBase::inputContextConnection() const
+MInputContextConnection *
+MInputMethodBase::inputContextConnection() const
 {
     return d->icConnection;
 }
 
-void DuiInputMethodBase::show()
+void MInputMethodBase::show()
 {
     // empty default implementation
 }
 
-void DuiInputMethodBase::hide()
+void MInputMethodBase::hide()
 {
     // empty default implementation
 }
 
-void DuiInputMethodBase::setPreedit(const QString &)
+void MInputMethodBase::setPreedit(const QString &)
 {
     // empty default implementation
 }
 
-void DuiInputMethodBase::update()
+void MInputMethodBase::update()
 {
     // empty default implementation
 }
 
-void DuiInputMethodBase::reset()
+void MInputMethodBase::reset()
 {
     // empty default implementation
 }
 
-void DuiInputMethodBase::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
+void MInputMethodBase::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
 {
     // empty default implementation
     Q_UNUSED(pos);
     Q_UNUSED(preeditRect);
 }
 
-void DuiInputMethodBase::visualizationPriorityChanged(bool priority)
+void MInputMethodBase::visualizationPriorityChanged(bool priority)
 {
     // empty default implementation
     Q_UNUSED(priority);
 }
 
-void DuiInputMethodBase::appOrientationChanged(int angle)
+void MInputMethodBase::appOrientationChanged(int angle)
 {
     // empty default implementation
     Q_UNUSED(angle);
 }
 
-void DuiInputMethodBase::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
+void MInputMethodBase::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
     // empty default implementation
     Q_UNUSED(copyAvailable);
     Q_UNUSED(pasteAvailable);
 }
 
-void DuiInputMethodBase::setToolbar(const QString &toolbar)
+void MInputMethodBase::setToolbar(const QString &toolbar)
 {
     // empty default implementation
     Q_UNUSED(toolbar);
 }
 
-void DuiInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
-                                         Qt::KeyboardModifiers modifiers,
-                                         const QString &text, bool autoRepeat, int count,
-                                         int /* nativeScanCode */)
+void MInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                       Qt::KeyboardModifiers modifiers,
+                                       const QString &text, bool autoRepeat, int count,
+                                       int /* nativeScanCode */)
 {
     // default implementation, just sendKeyEvent back
     inputContextConnection()->sendKeyEvent(QKeyEvent(keyType, keyCode, modifiers, text, autoRepeat,
                                                      count));
 }
 
-void DuiInputMethodBase::setState(const QList<DuiIMHandlerState> &state)
+void MInputMethodBase::setState(const QList<MIMHandlerState> &state)
 {
     // empty default implementation
     Q_UNUSED(state);
 }
 
-void DuiInputMethodBase::clientChanged()
+void MInputMethodBase::clientChanged()
 {
     // empty default implementation
 }

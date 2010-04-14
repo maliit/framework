@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,41 +14,41 @@
  * of this file.
  */
 
-#ifndef DUIINPUTCONTEXT_H
-#define DUIINPUTCONTEXT_H
+#ifndef MINPUTCONTEXT_H
+#define MINPUTCONTEXT_H
 
 #include <QObject>
 #include <QInputContext>
 #include <QTimer>
 #include <QPointer>
 
-#include <duinamespace.h>
+#include <mnamespace.h>
 
-class DuiPreeditStyleContainer;
+class MPreeditStyleContainer;
 class QDBusInterface;
 class QDBusConnectionInterface;
 
 
 /*!
- * \brief DuiInputContext implements application side input method support for Dui input method server.
+ * \brief MInputContext implements application side input method support for M input method server.
  *
  * The base class QInputContext abstracts input method specific composing of input. It acts
- * in between the input method and the widget receiving the composed input. DuiInputContext
- * extends this functionality by connecting to Dui input method server and accepting input it
- * creates. This input is forwarded to currently focused widget. DuiInputContext also notifies
- * Dui input method server about the current state of input widgets in the application side.
+ * in between the input method and the widget receiving the composed input. MInputContext
+ * extends this functionality by connecting to M input method server and accepting input it
+ * creates. This input is forwarded to currently focused widget. MInputContext also notifies
+ * M input method server about the current state of input widgets in the application side.
  */
-class DuiInputContext: public QInputContext
+class MInputContext: public QInputContext
 {
     Q_OBJECT
-    friend class Ut_DuiInputContext;
+    friend class Ut_MInputContext;
 
 public:
     //! \brief Constructor
-    explicit DuiInputContext(QObject *parent = 0);
+    explicit MInputContext(QObject *parent = 0);
 
     //! \brief Destructor
-    virtual ~DuiInputContext();
+    virtual ~MInputContext();
 
     //! \reimp
     virtual bool event(QEvent *event);
@@ -79,7 +79,7 @@ public:
     // \brief Updates preedit string of the current focus widget
     // \param string    The new string
     // \param preeditFace Selects style for preedit string
-    virtual void updatePreedit(const QString &string, Dui::PreeditFace preeditFace);
+    virtual void updatePreedit(const QString &string, M::PreeditFace preeditFace);
 
     //! \brief Sends a non-printable key event. Parameters as in QKeyEvent constructor
     virtual void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
@@ -135,10 +135,10 @@ private slots:
     void manageCopyPasteState(bool copyAvailable);
 
     //! Notify input method plugin about new \a orientation angle of application's active window.
-    void notifyOrientationChange(Dui::OrientationAngle orientation);
+    void notifyOrientationChange(M::OrientationAngle orientation);
 
 private:
-    Q_DISABLE_COPY(DuiInputContext)
+    Q_DISABLE_COPY(MInputContext)
 
     enum InputPanelState {
         InputPanelShowPending,   // input panel showing requested, but activation pending
@@ -152,7 +152,7 @@ private:
     void registerContextObject();
 
     //! returns content type corresponding to specified hints
-    Dui::TextContentType contentType(Qt::InputMethodHints hints) const;
+    M::TextContentType contentType(Qt::InputMethodHints hints) const;
 
     //! returns the D-Bus object path for this instance
     QString dbusObjectPath() const;
@@ -173,11 +173,11 @@ private:
     QTimer sipHideTimer;
 
     QDBusInterface *iface;
-    bool ownsDuiComponentData;
+    bool ownsMComponentData;
 
     bool correctionEnabled;
 
-    DuiPreeditStyleContainer *styleContainer;
+    MPreeditStyleContainer *styleContainer;
 
     QPointer<QObject> connectedObject;
     bool pasteAvailable;

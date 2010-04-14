@@ -1,11 +1,11 @@
-#include "ut_duiinputcontextdbusconnection.h"
+#include "ut_minputcontextdbusconnection.h"
 
-#include <DuiApplication>
+#include <MApplication>
 #include <QDebug>
 #include <QDBusArgument>
 
-#include "duiinputcontextadaptor_stub.h"
-#include "duipreeditinjectionevent.h"
+#include "minputcontextadaptor_stub.h"
+#include "mpreeditinjectionevent.h"
 
 
 namespace
@@ -14,7 +14,7 @@ namespace
     const char *const DBusPath = "/org/maemo/duiinputmethodserver1";
     const char *const DBusInterface = "org.maemo.duiinputmethodserver1";
 
-    // note: avoid path specified in DuiInputContext to avoid problems if it is instantiated
+    // note: avoid path specified in MInputContext to avoid problems if it is instantiated
     const char *const DBusCallbackPath = "/org/maemo/duiinputcontextTEST";
 
     int DBusWaitTime = 500;
@@ -26,8 +26,8 @@ namespace
 //////////////////////////////////////
 // Target for input context connection
 
-TargetStub::TargetStub(DuiInputContextConnection *icConnection, QObject *parent)
-    : DuiInputMethodBase(icConnection, parent)
+TargetStub::TargetStub(MInputContextConnection *icConnection, QObject *parent)
+    : MInputMethodBase(icConnection, parent)
 {
     resetCallCounts();
 }
@@ -159,7 +159,7 @@ int TargetStub::processKeyEventCallCount()
 //////////////
 // actual test
 
-void Ut_DuiInputContextDBusConnection::initTestCase()
+void Ut_MInputContextDBusConnection::initTestCase()
 {
     // This is a hack to prevent Qt from loading the plugin from
     // /usr/lib/qt4/plugins/inputmethods/ when we are testing in a
@@ -183,19 +183,19 @@ void Ut_DuiInputContextDBusConnection::initTestCase()
     if (testingInSandbox)
         QCoreApplication::setLibraryPaths(QStringList("/tmp"));
 
-    static char *argv[1] = { (char *) "ut_duiinputcontextdbusconnection" };
+    static char *argv[1] = { (char *) "ut_minputcontextdbusconnection" };
     static int argc = 1;
 
-    DuiApplication::setLoadDuiInputContext(false);
-    app = new DuiApplication(argc, argv);
+    MApplication::setLoadMInputContext(false);
+    app = new MApplication(argc, argv);
 
-    m_subject = new DuiInputContextDBusConnection;
+    m_subject = new MInputContextDBusConnection;
     m_inputMethod = new TargetStub(m_subject);
-    m_inputContext = new DuiInputContext(0);
+    m_inputContext = new MInputContext(0);
     m_clientInterface = 0;
 
     if (!m_subject->isValid()) {
-        QSKIP("DuiInputContextDBusConnection object not valid. Possibly other program using it running.",
+        QSKIP("MInputContextDBusConnection object not valid. Possibly other program using it running.",
               SkipAll);
     }
 
@@ -215,7 +215,7 @@ void Ut_DuiInputContextDBusConnection::initTestCase()
 
     // connect methods we offer via DBus
     QString contextObjectName(DBusCallbackPath);
-    new DuiInputContextAdaptor(m_inputContext);
+    new MInputContextAdaptor(m_inputContext);
     connection.registerObject(contextObjectName, m_inputContext);
 
     m_clientInterface->call(QDBus::NoBlock, "setContextObject", contextObjectName);
@@ -226,7 +226,7 @@ void Ut_DuiInputContextDBusConnection::initTestCase()
 }
 
 
-void Ut_DuiInputContextDBusConnection::cleanupTestCase()
+void Ut_MInputContextDBusConnection::cleanupTestCase()
 {
     delete m_inputMethod;
     delete m_subject;
@@ -236,14 +236,14 @@ void Ut_DuiInputContextDBusConnection::cleanupTestCase()
 }
 
 
-void Ut_DuiInputContextDBusConnection::init()
+void Ut_MInputContextDBusConnection::init()
 {
     m_inputMethod->resetCallCounts();
-    gDuiInputContextAdaptorStub->stubReset();
+    gMInputContextAdaptorStub->stubReset();
 }
 
 
-void Ut_DuiInputContextDBusConnection::cleanup()
+void Ut_MInputContextDBusConnection::cleanup()
 {
 }
 
@@ -252,55 +252,55 @@ void Ut_DuiInputContextDBusConnection::cleanup()
 // test methods:
 
 // tests that calls get through dbus
-void Ut_DuiInputContextDBusConnection::testNoReplyDBusCalls()
+void Ut_MInputContextDBusConnection::testNoReplyDBusCalls()
 {
     QString preedit("preedit string");
     m_subject->sendPreeditString(preedit, PreeditDefault);
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("updatePreedit"), 1);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<QString>(0), preedit);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<int>(1), (int)PreeditDefault);
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("updatePreedit"), 1);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<QString>(0), preedit);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<int>(1), (int)PreeditDefault);
 
     m_subject->sendPreeditString(preedit, PreeditNoCandidates);
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("updatePreedit"), 2);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<QString>(0), preedit);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<int>(1), (int)PreeditNoCandidates);
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("updatePreedit"), 2);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<QString>(0), preedit);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<int>(1), (int)PreeditNoCandidates);
 
     QString commit("commit string");
     m_subject->sendCommitString(commit);
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("commitString"), 1);
-    QCOMPARE(gDuiInputContextAdaptorStub->stubLastCallTo("commitString").parameter<QString>(0), commit);
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("commitString"), 1);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("commitString").parameter<QString>(0), commit);
 
     m_subject->sendKeyEvent(QKeyEvent(QEvent::KeyPress, 0, 0, QString(), false, 0));
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("keyEvent"), 1);
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("keyEvent"), 1);
 
     m_subject->notifyImInitiatedHiding();
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("imInitiatedHide"), 1);
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("imInitiatedHide"), 1);
 
     QRegion region(0, 0, 10, 10);
     m_subject->updateInputMethodArea(region);
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("updateInputMethodArea"), 1);
-    QList<QVariant> rectList = gDuiInputContextAdaptorStub->stubLastCallTo("updateInputMethodArea").parameter< QList<QVariant> >(0);
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("updateInputMethodArea"), 1);
+    QList<QVariant> rectList = gMInputContextAdaptorStub->stubLastCallTo("updateInputMethodArea").parameter< QList<QVariant> >(0);
     QCOMPARE(rectList.length(), 1);
     QCOMPARE(region.rects().at(0), qdbus_cast<QRect>(rectList.at(0)));
 
     m_subject->setGlobalCorrectionEnabled(true);
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("setGlobalCorrectionEnabled"), 1);
-    QVERIFY(gDuiInputContextAdaptorStub->stubLastCallTo("setGlobalCorrectionEnabled").parameter<bool>(0));
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("setGlobalCorrectionEnabled"), 1);
+    QVERIFY(gMInputContextAdaptorStub->stubLastCallTo("setGlobalCorrectionEnabled").parameter<bool>(0));
 
     m_subject->setRedirectKeys(true);
     handleMessages();
-    QCOMPARE(gDuiInputContextAdaptorStub->stubCallCount("setRedirectKeys"), 1);
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("setRedirectKeys"), 1);
 }
 
 
-void Ut_DuiInputContextDBusConnection::testShowOnFocus()
+void Ut_MInputContextDBusConnection::testShowOnFocus()
 {
     m_clientInterface->call(QDBus::NoBlock, "showInputMethod");
 
@@ -310,7 +310,7 @@ void Ut_DuiInputContextDBusConnection::testShowOnFocus()
 }
 
 
-void Ut_DuiInputContextDBusConnection::testHideOnLostFocus()
+void Ut_MInputContextDBusConnection::testHideOnLostFocus()
 {
     m_clientInterface->call(QDBus::NoBlock, "hideInputMethod");
 
@@ -320,7 +320,7 @@ void Ut_DuiInputContextDBusConnection::testHideOnLostFocus()
 }
 
 
-void Ut_DuiInputContextDBusConnection::testMouseClickedOnPreedit()
+void Ut_MInputContextDBusConnection::testMouseClickedOnPreedit()
 {
     QPoint pos(1, 1);
     QRect rect;
@@ -332,7 +332,7 @@ void Ut_DuiInputContextDBusConnection::testMouseClickedOnPreedit()
 }
 
 
-void Ut_DuiInputContextDBusConnection::testSetPreedit()
+void Ut_MInputContextDBusConnection::testSetPreedit()
 {
     QString preedit("preedit string");
     m_clientInterface->call(QDBus::NoBlock, "setPreedit", preedit);
@@ -343,7 +343,7 @@ void Ut_DuiInputContextDBusConnection::testSetPreedit()
 }
 
 
-void Ut_DuiInputContextDBusConnection::testReset()
+void Ut_MInputContextDBusConnection::testReset()
 {
     m_clientInterface->call(QDBus::NoBlock, "reset");
 
@@ -352,7 +352,7 @@ void Ut_DuiInputContextDBusConnection::testReset()
     QCOMPARE(m_inputMethod->resetCallCount(), 1);
 }
 
-void Ut_DuiInputContextDBusConnection::testAppOrientationChanged()
+void Ut_MInputContextDBusConnection::testAppOrientationChanged()
 {
     m_clientInterface->call(QDBus::NoBlock, "appOrientationChanged", 90);
 
@@ -361,7 +361,7 @@ void Ut_DuiInputContextDBusConnection::testAppOrientationChanged()
     QCOMPARE(m_inputMethod->appOrientationChangedCallCount(), 1);
 }
 
-void Ut_DuiInputContextDBusConnection::testProcessKeyEvent()
+void Ut_MInputContextDBusConnection::testProcessKeyEvent()
 {
     m_clientInterface->call(QDBus::NoBlock, "processKeyEvent", 0, 0, 0, "", false, 0, 0);
 
@@ -370,7 +370,7 @@ void Ut_DuiInputContextDBusConnection::testProcessKeyEvent()
     QCOMPARE(m_inputMethod->processKeyEventCallCount(), 1);
 }
 
-void Ut_DuiInputContextDBusConnection::handleMessages()
+void Ut_MInputContextDBusConnection::handleMessages()
 {
     QTest::qWait(DBusWaitTime);
     while (app->hasPendingEvents()) {
@@ -380,4 +380,4 @@ void Ut_DuiInputContextDBusConnection::handleMessages()
 
 
 
-QTEST_APPLESS_MAIN(Ut_DuiInputContextDBusConnection)
+QTEST_APPLESS_MAIN(Ut_MInputContextDBusConnection)

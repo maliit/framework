@@ -1,24 +1,24 @@
 #ifndef DUMMYINPUTMETHOD3_H
 #define DUMMYINPUTMETHOD3_H
 
-#include <duiinputmethodbase.h>
+#include <minputmethodbase.h>
 #include <QList>
 
-class DummyInputMethod3 : public DuiInputMethodBase
+class DummyInputMethod3 : public MInputMethodBase
 {
     Q_OBJECT
 
 public:
 
-    DummyInputMethod3(DuiInputContextConnection *connection);
+    DummyInputMethod3(MInputContextConnection *connection);
 
     //! \reimp
-    virtual void setState(const QList<DuiIMHandlerState> &state);
+    virtual void setState(const QList<MIMHandlerState> &state);
     //! \reimp_end
 
 public:
     int setStateCount;
-    QList<DuiIMHandlerState> setStateParam;
+    QList<MIMHandlerState> setStateParam;
 };
 
 #endif

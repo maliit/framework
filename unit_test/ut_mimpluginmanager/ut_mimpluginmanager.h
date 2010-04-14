@@ -1,14 +1,14 @@
-#ifndef UT_DUIIMPLUGINLOADER_H
-#define UT_DUIIMPLUGINLOADER_H
+#ifndef UT_MIMPLUGINLOADER_H
+#define UT_MIMPLUGINLOADER_H
 
 #include <QtTest/QtTest>
 #include <QObject>
 
 
-class DuiIMPluginManagerPrivate;
+class MIMPluginManagerPrivate;
 class QCoreApplication;
 
-class Ut_DuiIMPluginManager : public QObject
+class Ut_MIMPluginManager : public QObject
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ private slots:
 private:
     QCoreApplication *app;
     QString pluginPath;
-    DuiIMPluginManagerPrivate *subject;
+    MIMPluginManagerPrivate *subject;
 };
 
 #endif

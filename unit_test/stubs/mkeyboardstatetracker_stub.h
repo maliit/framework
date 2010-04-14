@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -13,26 +13,26 @@
  * and appearing in the file LICENSE.LGPL included in the packaging
  * of this file.
  */
-#ifndef DUIKEYBOARDSTATETRACKER_STUB_H
-#define DUIKEYBOARDSTATETRACKER_STUB_H
+#ifndef MKEYBOARDSTATETRACKER_STUB_H
+#define MKEYBOARDSTATETRACKER_STUB_H
 
-#include <DuiKeyboardStateTracker>
+#include <MKeyboardStateTracker>
 #include <QDebug>
 
 #include "fakeproperty.h"
 
 /**
- * DuiKeyboardStateTracker stub class.
- * To fake DuiKeyboardStateTracker operations, derive from this class
+ * MKeyboardStateTracker stub class.
+ * To fake MKeyboardStateTracker operations, derive from this class
  * and implement the methods you want to fake. Instantiate your
- * derived stub class and assign it to gDuiKeyboardStateTracker
+ * derived stub class and assign it to gMKeyboardStateTracker
  * global variable.
  */
-class DuiKeyboardStateTrackerStub
+class MKeyboardStateTrackerStub
 {
 public:
-    DuiKeyboardStateTrackerStub();
-    virtual void duiKeyboardStateTrackerConstructor(const DuiKeyboardStateTracker *instance);
+    MKeyboardStateTrackerStub();
+    virtual void mKeyboardStateTrackerConstructor(const MKeyboardStateTracker *instance);
     virtual bool isPresent();
     virtual bool isOpen();
     virtual void setOpenState(bool state);
@@ -41,60 +41,60 @@ protected:
     FakeProperty openProperty;
 };
 
-DuiKeyboardStateTrackerStub::DuiKeyboardStateTrackerStub()
+MKeyboardStateTrackerStub::MKeyboardStateTrackerStub()
     : openProperty("/maemo/InternalKeyboard/Open")
 {
 }
 
-void DuiKeyboardStateTrackerStub::duiKeyboardStateTrackerConstructor(const DuiKeyboardStateTracker *instance)
+void MKeyboardStateTrackerStub::mKeyboardStateTrackerConstructor(const MKeyboardStateTracker *instance)
 {
     openProperty.setValue(QVariant(false));
     QObject::connect(&openProperty, SIGNAL(stateChanged()), instance, SIGNAL(valueChanged()));
 }
 
-bool DuiKeyboardStateTrackerStub::isPresent()
+bool MKeyboardStateTrackerStub::isPresent()
 {
     return true;
 }
 
-bool DuiKeyboardStateTrackerStub::isOpen()
+bool MKeyboardStateTrackerStub::isOpen()
 {
     return openProperty.value().toBool();
 }
 
-void DuiKeyboardStateTrackerStub::setOpenState(bool state)
+void MKeyboardStateTrackerStub::setOpenState(bool state)
 {
     openProperty.setValue(QVariant(state));
 }
 
-DuiKeyboardStateTrackerStub gDefaultDuiKeyboardStateTrackerStub;
+MKeyboardStateTrackerStub gDefaultMKeyboardStateTrackerStub;
 
 /**
  * This is the stub class instance used by the system. If you want to alter behaviour,
- * derive your stub class from DuiKeyboardStateTrackerStub, implement the methods you want to
+ * derive your stub class from MKeyboardStateTrackerStub, implement the methods you want to
  * fake, create an instance of your stub class and assign the instance into this global variable.
  */
-DuiKeyboardStateTrackerStub *gDuiKeyboardStateTrackerStub = &gDefaultDuiKeyboardStateTrackerStub;
+MKeyboardStateTrackerStub *gMKeyboardStateTrackerStub = &gDefaultMKeyboardStateTrackerStub;
 
 /**
- * These are the proxy method implementations of DuiKeyboardStateTracker. They will
- * call the stub object methods of the gDuiKeyboardStateTracker.
+ * These are the proxy method implementations of MKeyboardStateTracker. They will
+ * call the stub object methods of the gMKeyboardStateTracker.
  */
 
-DuiKeyboardStateTracker::DuiKeyboardStateTracker()
+MKeyboardStateTracker::MKeyboardStateTracker()
     : d_ptr(0)
 {
-    gDuiKeyboardStateTrackerStub->duiKeyboardStateTrackerConstructor(this);
+    gMKeyboardStateTrackerStub->mKeyboardStateTrackerConstructor(this);
 }
 
-bool DuiKeyboardStateTracker::isPresent() const
+bool MKeyboardStateTracker::isPresent() const
 {
-    return gDuiKeyboardStateTrackerStub->isPresent();
+    return gMKeyboardStateTrackerStub->isPresent();
 }
 
-bool DuiKeyboardStateTracker::isOpen() const
+bool MKeyboardStateTracker::isOpen() const
 {
-    return gDuiKeyboardStateTrackerStub->isOpen();
+    return gMKeyboardStateTrackerStub->isOpen();
 }
 
 #endif

@@ -1,13 +1,13 @@
-#ifndef UT_DUIINPUTCONTEXT_H
-#define UT_DUIINPUTCONTEXT_H
+#ifndef UT_MINPUTCONTEXT_H
+#define UT_MINPUTCONTEXT_H
 
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QDBusAbstractAdaptor>
 
-#include <duiinputcontext.h>
+#include <minputcontext.h>
 
-class DuiApplication;
+class MApplication;
 
 class InputMethodServerDBusStub: public QObject
 {
@@ -119,7 +119,7 @@ private:
 
 
 
-class Ut_DuiInputContext : public QObject
+class Ut_MInputContext : public QObject
 {
     Q_OBJECT
 
@@ -159,8 +159,8 @@ private:
     void waitAndProcessEvents(int waitTime);
 
 private:
-    DuiApplication *app;
-    DuiInputContext *m_subject;
+    MApplication *app;
+    MInputContext *m_subject;
     InputMethodServerDBusStub *m_stub;
 };
 

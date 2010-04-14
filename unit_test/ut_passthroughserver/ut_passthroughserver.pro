@@ -4,20 +4,20 @@ MOC_DIR = .moc
 SRC_PATH = ../../passthroughserver
 INCLUDEPATH += $$SRC_PATH
 
-LIBS += ../../src/libduiimframework.so -lXfixes
+LIBS += ../../src/libmimframework.so -lXfixes
 
 
 # Input
 HEADERS += \
     ut_passthroughserver.h \
-    $$SRC_PATH/duipassthruwindow.h \
+    $$SRC_PATH/mpassthruwindow.h \
 
 SOURCES += \
     ut_passthroughserver.cpp \
-    $$SRC_PATH/duipassthruwindow.cpp \
+    $$SRC_PATH/mpassthruwindow.cpp \
 
 
-CONFIG += debug dui
+CONFIG += debug meegotouch
 QT += testlib
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on

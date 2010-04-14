@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,26 +14,26 @@
  * of this file.
  */
 
-#ifndef DUIINPUTMETHODPLUGIN_H
-#define DUIINPUTMETHODPLUGIN_H
+#ifndef MINPUTMETHODPLUGIN_H
+#define MINPUTMETHODPLUGIN_H
 
 #include <QStringList>
 #include <QtPlugin>
 
-#include "duiinputmethodbase.h"
+#include "minputmethodbase.h"
 
-class DuiInputContextConnection;
-class DuiInputMethodBase;
+class MInputContextConnection;
+class MInputMethodBase;
 
 
 /*!
- * \brief DuiInputMethodPlugin is an interface class for all input method plugins.
+ * \brief MInputMethodPlugin is an interface class for all input method plugins.
  *
  * To create a virtual keyboard / input method plugin, re-implement the virtual functions and
  * instantiate the input method implementation in the createInputMethod() method.
- * Make sure your plugin links against the dui im framework library as well.
+ * Make sure your plugin links against the m im framework library as well.
  */
-class DuiInputMethodPlugin
+class MInputMethodPlugin
 {
 public:
     /*! \brief Implement this function to return the identifier for this input method.
@@ -44,15 +44,15 @@ public:
      */
     virtual QStringList languages() const = 0;
 
-    /*! \brief Creates and returns the DuiInputMethodBase object for
+    /*! \brief Creates and returns the MInputMethodBase object for
      * this plugin. This function will be only called once and the allocated
      * resources will be owned by the input method server.
      */
-    virtual DuiInputMethodBase *createInputMethod(DuiInputContextConnection *icConnection) = 0;
+    virtual MInputMethodBase *createInputMethod(MInputContextConnection *icConnection) = 0;
 };
 
 
-Q_DECLARE_INTERFACE(DuiInputMethodPlugin,
-                    "com.nokia.maemo.DuiInputMethodPlugin/1.0")
+Q_DECLARE_INTERFACE(MInputMethodPlugin,
+                    "com.nokia.maemo.MInputMethodPlugin/1.0")
 
 #endif

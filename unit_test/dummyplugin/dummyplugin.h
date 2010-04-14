@@ -13,7 +13,7 @@ Q_DECLARE_INTERFACE(DummyPluginInterface,
                     "DummyPluginInterface/1.0")
 
 
-//! Dummy plugin class for ut_duiimpluginloader
+//! Dummy plugin class for ut_mimpluginloader
 class DummyPlugin: public QObject,
     public DummyPluginInterface
 {

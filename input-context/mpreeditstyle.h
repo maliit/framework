@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,33 +14,33 @@
  * of this file.
  */
 
-#ifndef DUIPREEDITSTYLE_H
-#define DUIPREEDITSTYLE_H
+#ifndef MPREEDITSTYLE_H
+#define MPREEDITSTYLE_H
 
-#include <DuiStyle>
+#include <MStyle>
 #include <QColor>
 #include <QString>
 #include <QTextCharFormat>
 
 /*!
- * \brief This class provides access to style attributes for DuiInputContext
+ * \brief This class provides access to style attributes for MInputContext
  */
-class DuiPreeditStyle : public DuiStyle
+class MPreeditStyle : public MStyle
 {
     Q_OBJECT
 
-    DUI_STYLE(DuiPreeditStyle)
+    M_STYLE(MPreeditStyle)
 
 public:
-    DUI_STYLE_ATTRIBUTE(QTextCharFormat::UnderlineStyle, underline, Underline)
-    DUI_STYLE_ATTRIBUTE(QColor, fontColor, FontColor)
-    DUI_STYLE_ATTRIBUTE(QColor, backgroundColor, BackgroundColor)
+    M_STYLE_ATTRIBUTE(QTextCharFormat::UnderlineStyle, underline, Underline)
+    M_STYLE_ATTRIBUTE(QColor, fontColor, FontColor)
+    M_STYLE_ATTRIBUTE(QColor, backgroundColor, BackgroundColor)
 };
 
-class DuiPreeditStyleContainer : public DuiStyleContainer
+class MPreeditStyleContainer : public MStyleContainer
 {
-    DUI_STYLE_CONTAINER(DuiPreeditStyle)
-    DUI_STYLE_MODE(NoCandidates)
+    M_STYLE_CONTAINER(MPreeditStyle)
+    M_STYLE_MODE(NoCandidates)
 };
 
 #endif

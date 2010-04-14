@@ -13,8 +13,8 @@ QStringList DummyImPlugin2::languages() const
     return QStringList("EN");
 }
 
-DuiInputMethodBase *
-DummyImPlugin2::createInputMethod(DuiInputContextConnection * /* icConnection */)
+MInputMethodBase *
+DummyImPlugin2::createInputMethod(MInputContextConnection * /* icConnection */)
 {
     return NULL;
 }

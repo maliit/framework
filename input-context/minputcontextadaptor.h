@@ -1,4 +1,4 @@
-/* * This file is part of dui-im-framework *
+/* * This file is part of m-im-framework *
  *
  * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#ifndef DUIINPUTCONTEXTADAPTOR_H
-#define DUIINPUTCONTEXTADAPTOR_H
+#ifndef MINPUTCONTEXTADAPTOR_H
+#define MINPUTCONTEXTADAPTOR_H
 
 #include <QString>
 #include <QDBusAbstractAdaptor>
@@ -23,18 +23,20 @@
 #include <QMap>
 #include <QRect>
 
-class DuiInputContext;
+class MInputContext;
 
 
-class DuiInputContextAdaptor: public QDBusAbstractAdaptor
+class MInputContextAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
+    // FIXME: rename to new prefix
     Q_CLASSINFO("D-Bus Interface", "org.maemo.duiinputcontext1")
+
     // FIXME: introspection
 
 public:
-    explicit DuiInputContextAdaptor(DuiInputContext *parent);
-    virtual ~DuiInputContextAdaptor();
+    explicit MInputContextAdaptor(MInputContext *parent);
+    virtual ~MInputContextAdaptor();
 
 public slots:
     virtual Q_NOREPLY void activationLostEvent();
@@ -53,7 +55,7 @@ public slots:
     virtual QRect preeditRectangle(bool &valid);
 
 private:
-    DuiInputContext *owner;
+    MInputContext *owner;
 };
 
 
