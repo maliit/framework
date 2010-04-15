@@ -42,4 +42,4 @@ This signal informs that the active window orientation angle is changed. This in
 This signal informs that the current area occupied by input method has been changed. Widgets or applications can connect to this signal to do further action. At MeeGo Touch library uses this information to move the pannable area upwards whenever the text input is obscured by input method.
 
 When there is no input method visible, the area will be updated to an empty rectangle.
-
+*/

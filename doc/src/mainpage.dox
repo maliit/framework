@@ -2,6 +2,7 @@
 
 \section general General documentation
 - <a href="architecture.html">Architecture</a>
+- <a href="extensions.html">Extensions to Qt</a>
 - <a href="pluginsystem.html">Plugin System</a>
 - <a href="internals.html">Feature Internals</a>
 - <a href="toolbarxml.html">Toolbar Widget XML Specification</a>
