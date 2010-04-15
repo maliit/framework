@@ -1,0 +1,35 @@
+/*! \page architecture Architecture 
+\section Overview Overview
+
+MeeGo Input Method Framework ("The Framework") uses a client server architecture. The server hosts a UI for text input. The client receives the text input and displays it in application. The Framework uses D-Bus for IPC (can be replaced with something else by re-implementing the communication class) and Qt's QInputContext API.
+
+The server runs in a different process than the application, and there is only one such server instance in the system.
+
+\dot
+digraph {
+ "Input Method Server" -> "Input Method Plugins" [label="{loads}"];
+ "Input Method Plugins" -> "Input Method Engine Plugins" [label="{loads}"];
+ "MeeGo Applications" -> "MeeGo Input Context" [label="{loads}"];
+ "Input Method Server" -> "MeeGo Input Context" [style=dotted,label="{calls}"];
+ "MeeGo Input Context" -> "Input Method Server" [style=dotted,label="{calls}"];
+ "MeeGo Compositor";
+}
+\enddot
+
+Whenever the server handles a client request (eg. when text entry is tapped), the server "owns" the whole area of the screen. It renders its part of the UI and sets the rest with translucent background color. 
+
+The window compositor - composes the translucent background area with the rendering output of the application UI. Using XFixes extension, the server forwards all mouse  and keyboard events to the window below in the stack.
+
+However, there are a couple of alternative implementations which uses shape window (requires the XShape extension) and the other one just move the window around according to the input method window size (controlled via compilation options). These versions does not need a compositor.
+
+Window manager guarantees that the input method window rendered by the server stays on stop.
+
+In MeeGoTouch, MeeGoCompositor doubles as both compositor and window manager.
+
+The Framework provides interfaces which are implemented by the plugins. The plugins provides UI to the input method. An example of a plugin is virtual keyboard plugin. This is the place which user has interaction with. The plugin handles text composition and whenever the text is ready it sends to the application via the server.
+
+The input context is created by the application process and acts a messenger between server and the applications. Every text typed in the input method will be forwarded to the applications by input context. Currently The Framework supports Qt based applications by providing Meego Input Context. Non-Qt input contexts need to implement the D-Bus interface to be able to use The Framework.
+
+MeeGo Input Method Engine Plugins implement the MeeGo Input Method Engine interfaces provided by MeeGo Input Method Engine Framework which is not in scope of this framework.
+
+*/

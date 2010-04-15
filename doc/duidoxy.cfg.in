@@ -134,8 +134,8 @@ PERL_PATH             = /scratchbox/tools/bin
 HAVE_DOT              = YES
 CLASS_GRAPH           = YES
 COLLABORATION_GRAPH   = NO
-INCLUDE_GRAPH         = YES
-GRAPHICAL_HIERARCHY   = YES
+INCLUDE_GRAPH         = NO
+GRAPHICAL_HIERARCHY   = NO
 #DOT_PATH              = /scratchbox/devkits/doctools/bin/
 
 #---------------------------------------------------------------------------

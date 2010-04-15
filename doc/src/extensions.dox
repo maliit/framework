@@ -1,0 +1,45 @@
+/*! \page extensions MeeGo Input Method Extensions to Qt 
+\section Overview Overview
+
+To support MeeGo Touch features, we often find they are not supported out of the box by Qt. Hence, we did some extensions to Qt to overcome this problem. The main goal would be still to push these extensions back to Qt upstream.
+
+\section IMQuery Qt::inputMethodQuery extensions
+
+In libmeegotouch we provided several extensions to Qt::inputMethodQuery. The query will be performed in QWidget::inputMethodQuery() and QGraphicsItem::inputMethodQuery(). The purpose is for input method to query the widget about a set of properties to support some input method operations. To make use of these queries the widget needs to reimplement the inputMethodQuery() function.
+
+\subsection VisualizationPriority M::VisualizationPriorityQuery
+This boolean query is answered by the widget if it wants to have higher visualization priority than the input method window. By answering this query to true, then the input method window will be hidden (or something else, depending on the implementation). Answering again to false will bring back the input method to the screen.
+
+\subsection PreeditRectangleQuery M::PreeditRectangleQuery
+This query returns a QRect of the area occupied by currently shown pre edit text.
+
+\subsection ImCorrectionEnabledQuery M::ImCorrectionEnabledQuery
+This query returns a boolean whether the widget wants to use the input method's error correction feature or not. If it is true then the text input is not using pre-edit mechanism, instead it will just commit the text to the text entry.
+
+\subsection ImModeQuery M::ImModeQuery
+This query returns M::InputMethodMode enum of the requested mode of text input. Here the widget can ask input method to use whether to use normal mode with pre-edit and/or committed text or a direct mode which uses a fake key event injection mode. 
+
+In normal mode input method sends the inputted text using a standard pre-edit and/or the committed text. In Qt applications this mean sending text using QInputMethodEvent. 
+
+In direct mode input method crafts a fake QKeyEvent and sends it to the input context. There, if the input method does not want to compose the event, it is forwarded to the application.
+
+\subsection InputMethodToolbarQuery M::InputMethodToolbarQuery
+This query returns a QString of input method toolbar name to be shown. Input method loads the named toolbar and displays that in it's UI.
+
+\section IMState MInputMethodState
+This class provides additional information which QInputContext does not provide. The widget which needs these information can connect to the available signal and slots. The more accurate description will be maintained in the MInputMethodState class documentation. However here is a short version.
+
+\subsection orientationAngle MInputMethodState::setActiveWindowOrientationAngle
+This slot sets the active window orientation angle to the named angle. This is used internally by MeeGoTouch library to tell input method that the current orientation of the current active window is changed.
+
+\subsection imArea MInputMethodState::setInputMethodArea
+This slot sets a rectangle of area occupied by input method on the screen. This is used by MInputContext to set the area upon receiving such information from input method side.
+
+\subsection activeWindowOrientationAngleChanged MInputMetodState::activeWindowOrientationAngleChanged
+This signal informs that the active window orientation angle is changed. This information is needed by input method to rotate according to the current orientation of the active window.
+
+\subsection orientationAngleSignal MInputMetodState::inputMethodAreaChanged
+This signal informs that the current area occupied by input method has been changed. Widgets or applications can connect to this signal to do further action. At MeeGo Touch library uses this information to move the pannable area upwards whenever the text input is obscured by input method.
+
+When there is no input method visible, the area will be updated to an empty rectangle.
+

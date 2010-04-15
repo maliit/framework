@@ -1,7 +1,7 @@
 /*! \page pluginsystem Plugin System 
 \section Overview Overview
 This document describes the plugin system of Maemo Input Method Framework. The system consists of:
-- Plugin manager [XXX: Currently it is called PluginLoader]
+- Plugin manager
 - Input method connection
 - Passthrough window
 - The plugins
@@ -10,7 +10,7 @@ The whole system is running inside the input method server process.
 
 XXX MORE TO PUT HERE
 
-\subsection PluginLoader Plugin Manager
+\subsection PluginManager Plugin Manager
 Plugin Manager is responsible to load the plugins and activate them.
 
 XXX MORE TO PUT HERE
@@ -31,7 +31,7 @@ Handlers are components which handle the input method function. They are essenti
 There are three types of handlers:
 - On-screen handler, which is used with touchscreen
 - Hardware keyboard handler, which is used with hardware keyboard (perhaps also external keyboard)
-- Accessory handler, which is used with other means (eg. Bluetooth pens)
+- Accessory handler, which is used with other means of input (eg. Bluetooth pens)
 
 A single plugin could act as multiple handlers. 
 

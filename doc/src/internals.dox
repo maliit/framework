@@ -1,18 +1,9 @@
-/*! \page internals Maemo Input Method Framework Internals
+/*! \page internals MeeGo Input Method Framework Internals
 \section Overview Overview
 
 In this document "widget" refers to text entry widget which is used in application.
 
 \subsection Architecture Architecture
-
-Maemo Input Method Framework ("The Framework") uses a client server architecture. The server hosts a UI for text input. The client receives the text input and displays it in application. The Framework uses D-Bus for IPC (can be replaced with something else by re-implementing the communication class) and Qt's QInputContext API.
-
-The server runs in a different process than the application, and there is only one such server instance in the system.
-
-Whenever the server handles a client request, the server "owns" the whole area of the screen. It renders its part of the UI and fills the unused part black.
-The compositor - DuiCompositor (not part of this framework) - composes the black-colored masked area with the rendering output of the application UI. Some mouse and keyboard events will target the masked area. In that case, the input method puts a "hole" into the masked area with the help of the XFixes extension.
-
-DuiCompositor also guarantees that the input method window rendered by the server stays on stop.
 
 \section Features Features
 This chapter describes the communication conducted between input method and widget when performing a feature.
