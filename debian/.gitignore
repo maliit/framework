@@ -11,5 +11,5 @@ tmp
 meego-im-context.install
 meego-im-uiserver.install
 libmeegoimframework-dev.install
-*.debhelper
+*.debhelper*
 *.substvars
