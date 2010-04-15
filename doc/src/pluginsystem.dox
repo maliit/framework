@@ -1,6 +1,6 @@
 /*! \page pluginsystem Plugin System 
 \section Overview Overview
-This document describes the plugin system of Maemo Input Method Framework. The system consists of:
+This document describes the plugin system of MeeGo Input Method Framework. The system consists of:
 - Plugin manager
 - Input method connection
 - Passthrough window
@@ -35,8 +35,8 @@ There are three types of handlers:
 
 A single plugin could act as multiple handlers. 
 
-A plugin has to expose it's handling capabilities so it can be listed in DuiSettings. User can set a plugin to be the default
-plugin handling a specific handler by selecting it in DuiSettings.
+A plugin has to expose it's handling capabilities so it can be listed in MSettings. User can set a plugin to be the default
+plugin handling a specific handler by selecting it in MSettings.
 
 When a handler is activated, the following will be carried out:
 - Plugin Manager loads the plugin stated in the settings (see below) and passing the handler code
@@ -50,7 +50,7 @@ When a handler is activated, the following will be carried out:
 Plugin Manager selects the active plugin based on the settings. GConf stores the settings of the plugin names which will be selected whenever the handler or language is changed or run in the first time. The settings hierarchy looks like this:
 
 /code
-/Dui/InputMethods/Plugins/Handler/<HANDLER> : <PLUGIN-NAME>
+/M/InputMethods/Plugins/Handler/<HANDLER> : <PLUGIN-NAME>
 /endcode
 
 \subsection PluginMap Plugin Map
@@ -64,7 +64,7 @@ Plugin Manager subscribes to Context Framework events to change handler. E.g. wh
 Plugin Manager then tries to find the plugin from the Settings, and if it fails it tries to find it from the map. If Plugin Manager finds a name from Settings but the plugin is no longer exist it continues to find a new value from the map and clears the Settings for that particular handler.
 
 Plugin change could also happen because of user's manual intervention. There are two places where user can change the plugin for a handler:
-- DuiSettings: user can select a plugin as handler in the UI
+- MSettings: user can select a plugin as handler in the UI
 - Swipe gesture in On-screen handler: On-screen handler plugin should change it's writing language when receiving swipe gesture. If there is no more language to switch, it should ask Plugin Manager to be replaced with another handler on the map. If there is none, the writing language switching cycles back.
 
 */
