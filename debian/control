@@ -1,60 +1,60 @@
-Source: dui-im-framework
+Source: m-im-framework
 Section: libs
 Priority: extra
 Maintainer: Mohammad Anwari <Mohammad.Anwari@nokia.com> 
-Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.6) | libqt4-maemo5-dev (>= 4.6), doxygen, libqt4-opengl-dev | libqt4-maemo5-dev, libgles2-sgx-img-dev [arm armel] | libgles2-dev [arm armel], opengles-sgx-img-common-dev [arm armel], libgl-dev [i386], libgl1 [i386], libxcomposite-dev, libxfixes-dev, libxext-dev, libduireactionmap-dev (>= 0.10.0-5), dbus-1-utils, pkg-config, dpkg-dev, libdui-dev (>= 0.19.8-1)
+Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.6) | libqt4-maemo5-dev (>= 4.6), doxygen, libqt4-opengl-dev | libqt4-maemo5-dev, libgles2-sgx-img-dev [arm armel] | libgles2-dev [arm armel], opengles-sgx-img-common-dev [arm armel], libgl-dev [i386], libgl1 [i386], libxcomposite-dev, libxfixes-dev, libxext-dev, libduireactionmap-dev (>= 0.10.0-5), dbus-1-utils, pkg-config, dpkg-dev, libmeegotouch-dev (>= 0.20)
 Standards-Version: 3.7.2
 
-Package: dui-im-uiserver
+Package: m-im-uiserver
 Architecture: any
-Depends:  ${misc:Depends}, ${shlibs:Depends}, dui-im-context, duicompositor | hildon-desktop | xcompmgr
-Recommends: dui-im-virtualkeyboard
-Description: DirectUI Input Method UI Server
- DirectUI Input Method UI Server 
+Depends:  ${misc:Depends}, ${shlibs:Depends}, m-im-context, duicompositor | hildon-desktop | xcompmgr
+Recommends: m-im-virtualkeyboard
+Description: MeegoTouch Input Method UI Server
+ MeegoTouch Input Method UI Server 
 
-Package: libduiimframework0
+Package: libmimframework0
 Architecture: any
-Depends:  ${misc:Depends}, ${shlibs:Depends}, dui-im-context
-Description: DirectUI Input Method UI Framework library
- libduiimuiframework framework library
+Depends:  ${misc:Depends}, ${shlibs:Depends}, m-im-context
+Description: MeegoTouch Input Method UI Framework library
+ libmimuiframework framework library
 
-Package: libduiimframework-dev
+Package: libmimframework-dev
 Section: libdevel
 Architecture: all
-Depends: libduiimframework0 (>= ${source:Version}), libqt4-dev (>= 4.6) | libqt4-maemo5-dev (>= 4.6)
-Description: libduiimmuiframework development files
- Development files for DirectUI Input Method UI Framework.
+Depends: libmimframework0 (>= ${source:Version}), libqt4-dev (>= 4.6) | libqt4-maemo5-dev (>= 4.6)
+Description: libmimmuiframework development files
+ Development files for MeegoTouch Input Method UI Framework.
 
-Package: libduiimframework0-dbg
+Package: libmimframework0-dbg
 Section: devel
 Architecture: any
-Depends: libduiimframework0 (= ${binary:Version})
-Description: libduiimmuiframework debug files
- Debug files for DirectUI Input Method UI Framework.
+Depends: libmimframework0 (= ${binary:Version})
+Description: libmimmuiframework debug files
+ Debug files for MeegoTouch Input Method UI Framework.
 
-Package: libduiimframework-doc
+Package: libmimframework-doc
 Section: doc
 Architecture: all
-Description: Technical documentation of DirectUI Input Method Framework 
- Technical documentation of DirectUI Input Method Framework. 
+Description: Technical documentation of MeegoTouch Input Method Framework 
+ Technical documentation of MeegoTouch Input Method Framework. 
  Includes API reference and internal documentations.
 
-Package: dui-im-framework-tests
+Package: m-im-framework-tests
 Architecture: any
-Depends:  testrunner, ci-testing, dui-im-uiserver (= ${binary:Version}), libduiimframework0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
-XB-Maemo-CI-Packages: libduiimframework0, dui-im-uiserver
+Depends:  testrunner, ci-testing, m-im-uiserver (= ${binary:Version}), libmimframework0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+XB-Maemo-CI-Packages: libmimframework0, m-im-uiserver
 XB-Maemo-CI-Stage: fast, staging
-Description: DirectUI Input Method Framework Unit Test Suite 
- DirectUI Input Method Framework unit test suite. 
+Description: MeegoTouch Input Method Framework Unit Test Suite 
+ MeegoTouch Input Method Framework unit test suite. 
 
-Package: dui-im-context
+Package: m-im-context
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
-Description: Qt input method context for DirectUI Framework
+Description: Qt input method context for MeegoTouch Framework
 
-Package: dui-im-context-dbg
+Package: m-im-context-dbg
 Section: libs
 Architecture: any
-Depends: dui-im-context (= ${Source-Version})
-Description: Debugging version of Qt input method context for DirectUI Framework
+Depends: m-im-context (= ${Source-Version})
+Description: Debugging version of Qt input method context for MeegoTouch Framework

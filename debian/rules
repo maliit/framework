@@ -33,10 +33,10 @@ ifneq (,$(filter coverage,$(TMP_BUILD_OPTS)))
 endif
 
 ifneq (,$(filter notranslucency,$(TMP_BUILD_OPTS)))
-        QMAKE_OPTIONS += DEFINES+=DUI_IM_DISABLE_TRANSLUCENCY
+        QMAKE_OPTIONS += DEFINES+=M_IM_DISABLE_TRANSLUCENCY
 
         ifneq (,$(filter shapewindow,$(TMP_BUILD_OPTS)))
-            QMAKE_OPTIONS += DEFINES+=DUI_IM_USE_SHAPE_WINDOW
+            QMAKE_OPTIONS += DEFINES+=M_IM_USE_SHAPE_WINDOW
         endif
 endif
 
@@ -57,9 +57,9 @@ configure-stamp:
 	dh_testdir
 
 	qmake -r $(QMAKE_OPTIONS)
-	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libduiimframework-dev.install < debian/libduiimframework-dev.install.in
-	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/dui-im-context.install < debian/dui-im-context.install.in
-	sed -e 's|DBUS_SERVICE_FILE|${DBUS_SERVICE_FILE}|' > debian/dui-im-uiserver.install < debian/dui-im-uiserver.install.in
+	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libmimframework-dev.install < debian/libmimframework-dev.install.in
+	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/m-im-context.install < debian/m-im-context.install.in
+	sed -e 's|DBUS_SERVICE_FILE|${DBUS_SERVICE_FILE}|' > debian/m-im-uiserver.install < debian/m-im-uiserver.install.in
 
 	touch configure-stamp
 
@@ -133,7 +133,7 @@ binary-arch: build install
 #	dh_installinfo
 #	dh_installman
 	dh_link
-	dh_strip --dbg-package=libduiimframework0 --dbg-package=dui-im-context
+	dh_strip --dbg-package=libmimframework0 --dbg-package=m-im-context
 	dh_compress
 	dh_fixperms
 #	dh_perl
