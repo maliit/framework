@@ -10,7 +10,7 @@ check-xml.depends += $$TARGET
 
 QMAKE_CLEAN += *.log *.xml *~
 
-target.path = /usr/lib/m-im-framework-tests/$$TARGET
+target.path = /usr/lib/meego-im-framework-tests/$$TARGET
 INSTALLS += target
 
 INCLUDEPATH += . ../../src

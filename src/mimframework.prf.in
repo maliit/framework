@@ -1,6 +1,6 @@
 M_IM_FRAMEWORK_PREFIX=/usr
-M_IM_FRAMEWORK_INSTALL_HEADERS=$${M_IM_FRAMEWORK_PREFIX}/include/meegotouch/mimframework
+M_IM_FRAMEWORK_INSTALL_HEADERS=$${M_IM_FRAMEWORK_PREFIX}/include/meegotouch/meegoimframework
 LIBS += -L$${M_IM_FRAMEWORK_PREFIX}/lib
 INCLUDEPATH += $${M_IM_FRAMEWORK_INSTALL_HEADERS}
-qtAddLibrary(mimframework)
+qtAddLibrary(meegoimframework)
 DEFINES += M_IM_FRAMEWORK_FEATURE

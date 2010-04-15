@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET = ../plugins/$$qtLibraryTarget(dummyimplugin)
 DEPENDPATH += .
 INCLUDEPATH += . ../../src
-LIBS += -L../../src -lmimframework
+LIBS += -L../../src -lmeegoimframework
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
@@ -19,10 +19,10 @@ SOURCES += \
     dummyimplugin.cpp \
     dummyinputmethod.cpp \
 
-target.path += /usr/lib/m-im-framework-tests/plugins
+target.path += /usr/lib/meego-im-framework-tests/plugins
 
 INVALIDPLUGINS = ../plugins/libinvalidplugin.so
-invalidplugins.path = /usr/lib/m-im-framework-tests/plugins
+invalidplugins.path = /usr/lib/meego-im-framework-tests/plugins
 invalidplugins.files = $$INVALIDPLUGINS
 
 INSTALLS += target invalidplugins

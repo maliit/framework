@@ -7,7 +7,7 @@ DEPENDPATH += .
 INCLUDEPATH += . ../src
 CONFIG += duireactionmap
 
-LIBS += ../src/libmimframework.so -lXfixes
+LIBS += ../src/libmeegoimframework.so -lXfixes
 
 SOURCES += \
            main.cpp \

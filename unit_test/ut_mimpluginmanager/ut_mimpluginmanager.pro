@@ -30,7 +30,7 @@ CONFIG += debug plugin meegotouch qdbus
 QT += testlib
 
 LIBS += \
-    ../../src/libmimframework.so.0 \
+    ../../src/libmeegoimframework.so.0 \
     -L ../plugins/ \
     -ldummyimplugin \
     -ldummyimplugin3 \

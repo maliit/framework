@@ -16,7 +16,7 @@ SUBDIRS = \
           ft_mimpluginmanager \
 
 target.commands += $$system(touch tests.xml)
-target.path = /usr/share/m-im-framework-tests
+target.path = /usr/share/meego-im-framework-tests
 target.files += qtestlib2junitxml.xsl runtests.sh tests.xml
 INSTALLS += target
 

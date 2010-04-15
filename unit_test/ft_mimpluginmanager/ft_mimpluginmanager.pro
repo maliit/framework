@@ -27,6 +27,6 @@ CONFIG += debug plugin meegotouch qdbus
 QT += testlib
 
 LIBS += \
-    ../../src/libmimframework.so \
+    ../../src/libmeegoimframework.so \
 
 include(../common_check.pri)

@@ -19,7 +19,7 @@ Q_DECLARE_METATYPE(HandlerStates);
 
 namespace
 {
-    const QString GlobalTestPluginPath("/usr/lib/m-im-framework-tests/plugins");
+    const QString GlobalTestPluginPath("/usr/lib/meego-im-framework-tests/plugins");
     const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
 
     const QString pluginName  = "DummyImPlugin";

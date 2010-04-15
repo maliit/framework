@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET = ../plugins/$$qtLibraryTarget(dummyimplugin2)
 DEPENDPATH += .
 INCLUDEPATH += . ../../src
-LIBS += -L../../src -lmimframework
+LIBS += -L../../src -lmeegoimframework
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
@@ -14,7 +14,7 @@ CONFIG += plugin meegotouch
 HEADERS += dummyimplugin2.h
 SOURCES += dummyimplugin2.cpp
 
-target.path += /usr/lib/m-im-framework-tests/plugins
+target.path += /usr/lib/meego-im-framework-tests/plugins
 
 INSTALLS += target
 

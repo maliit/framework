@@ -4,7 +4,7 @@ MOC_DIR = .moc
 SRC_PATH = ../../passthroughserver
 INCLUDEPATH += $$SRC_PATH
 
-LIBS += ../../src/libmimframework.so -lXfixes
+LIBS += ../../src/libmeegoimframework.so -lXfixes
 
 
 # Input
