@@ -1,11 +1,11 @@
 prefix=/usr
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
-includedir=${prefix}/include/qt4/mimframework
+includedir=${prefix}/include/meegotouch/meegoimframework
 
-Name: MIMFramework
+Name: MeegoIMFramework
 Description: MeegoTouch Input Method UI Framework
 Version: 0.1.0
 Cflags: -I${includedir}
-Libs: -L${libdir} -lmimframework
+Libs: -L${libdir} -lmeegoimframework
 

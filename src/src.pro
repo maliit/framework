@@ -47,10 +47,10 @@ headers.path += $$M_INSTALL_HEADERS/meegoimframework
 headers.files += $$HEADERSINSTALL
 
 install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
-install_pkgconfig.files = MImFramework.pc
+install_pkgconfig.files = MeegoImFramework.pc
 
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
-install_prf.files = mimframework.prf
+install_prf.files = meegoimframework.prf
 
 INSTALLS += target \
     headers \
@@ -71,9 +71,9 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
     M_IM_FRAMEWORK_FEATURE -= M_IM_DISABLE_TRANSLUCENCY
 }
 
-PRF_FILE = mimframework.prf.in
+PRF_FILE = meegoimframework.prf.in
 
-prffilegenerator.output = mimframework.prf
+prffilegenerator.output = meegoimframework.prf
 prffilegenerator.input = PRF_FILE
 prffilegenerator.commands += sed -e \"s:M_IM_FRAMEWORK_FEATURE:$$M_IM_FRAMEWORK_FEATURE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
 prffilegenerator.CONFIG = target_predeps no_link
