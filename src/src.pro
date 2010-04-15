@@ -2,7 +2,7 @@ include(../mconfig.pri)
 
 VERSION = 0.1.0
 TEMPLATE = lib
-TARGET = mimframework
+TARGET = meegoimframework
 
 # Input
 HEADERSINSTALL = \
@@ -43,7 +43,7 @@ target.path += $$M_INSTALL_LIBS
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-headers.path += $$M_INSTALL_HEADERS/mimframework
+headers.path += $$M_INSTALL_HEADERS/meegoimframework
 headers.files += $$HEADERSINSTALL
 
 install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
