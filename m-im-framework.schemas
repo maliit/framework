@@ -14,7 +14,7 @@
     </schema>
 
     <schema>
-      <key>/schemas/dui/inputmethods/plugins/handler/1</key>
+      <key>/schemas/meegotouch/inputmethods/plugins/handler/1</key>
       <applyto>/meegotouch/inputmethods/plugins/handler/1</applyto>
       <owner>meegotouch</owner>
       <type>string</type>
