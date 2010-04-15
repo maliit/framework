@@ -19,7 +19,7 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.CONFIG = recursive
 
-GCONF_DATA = m-im-framework.schemas
+GCONF_DATA = meego-im-framework.schemas
 gconf_data.path = /usr/share/gconf/schemas
 gconf_data.files = $$GCONF_DATA
 
