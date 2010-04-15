@@ -32,7 +32,7 @@ namespace
 {
     const int DeleteInputMethodTimeout = 60000;
 
-    const QString DefaultPluginLocation("/usr/lib/m-im-plugins/");
+    const QString DefaultPluginLocation("/usr/lib/meego-im-plugins/");
 
     const QString ConfigRoot          = "/meegotouch/inputmethods/";
     const QString MImPluginPaths    = ConfigRoot + "paths";
