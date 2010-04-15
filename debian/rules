@@ -57,9 +57,9 @@ configure-stamp:
 	dh_testdir
 
 	qmake -r $(QMAKE_OPTIONS)
-	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libmimframework-dev.install < debian/libmimframework-dev.install.in
-	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/m-im-context.install < debian/m-im-context.install.in
-	sed -e 's|DBUS_SERVICE_FILE|${DBUS_SERVICE_FILE}|' > debian/m-im-uiserver.install < debian/m-im-uiserver.install.in
+	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libmeegoimframework-dev.install < debian/libmeegoimframework-dev.install.in
+	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/meego-im-context.install < debian/meego-im-context.install.in
+	sed -e 's|DBUS_SERVICE_FILE|${DBUS_SERVICE_FILE}|' > debian/meego-im-uiserver.install < debian/meego-im-uiserver.install.in
 
 	touch configure-stamp
 
@@ -133,7 +133,7 @@ binary-arch: build install
 #	dh_installinfo
 #	dh_installman
 	dh_link
-	dh_strip --dbg-package=libmimframework0 --dbg-package=m-im-context
+	dh_strip --dbg-package=libmeegoimframework0 --dbg-package=meego-im-context
 	dh_compress
 	dh_fixperms
 #	dh_perl
