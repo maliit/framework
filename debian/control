@@ -9,6 +9,8 @@ Package: meego-im-uiserver
 Architecture: any
 Depends:  ${misc:Depends}, ${shlibs:Depends}, meego-im-context, duicompositor | hildon-desktop | xcompmgr
 Recommends: meego-im-virtualkeyboard
+Replaces: dui-im-uiserver
+Conflict: dui-im-uiserver
 Description: MeegoTouch Input Method UI Server
  MeegoTouch Input Method UI Server 
 
