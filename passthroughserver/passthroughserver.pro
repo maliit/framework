@@ -1,7 +1,7 @@
 include(../mconfig.pri)
 
 TEMPLATE = app
-TARGET = m-im-uiserver
+TARGET = meego-im-uiserver
 target.path = $$M_INSTALL_BIN
 DEPENDPATH += .
 INCLUDEPATH += . ../src

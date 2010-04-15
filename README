@@ -12,13 +12,13 @@ make sure your session is using the correct DBUS_SESSION_BUS_ADDRESS environment
 variable.
 
 2.
-If you're not using duicompositor call m-im-uiserver with -bypass-wm-hint
+If you're not using duicompositor call meego-im-uiserver with -bypass-wm-hint
 You may need to modify the service file as well.
 
 3.
 Run your application
 Make sure there's no error messages complaining about DBUS service/connection
 
-m-im-uiserver window is not movable, and if you're using dual screen, it's
+meego-im-uiserver window is not movable, and if you're using dual screen, it's
 always on display 0.0.  You can use Xephyr if you want to move it around.
 

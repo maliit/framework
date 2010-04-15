@@ -1,4 +1,4 @@
 [D-BUS Service]
 Interface=org.maemo.duiinputmethodserver1
 Name=org.maemo.duiinputmethodserver1
-Exec=M_BIN_PATH/m-im-uiserver -remote-theme SOFTWARE TARGET
+Exec=M_BIN_PATH/meego-im-uiserver -remote-theme SOFTWARE TARGET

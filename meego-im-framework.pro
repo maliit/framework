@@ -1,5 +1,5 @@
 CONFIG += ordered
-TARGET = m-im-uiserver
+TARGET = meego-im-uiserver
 TEMPLATE = subdirs
 SUBDIRS = src passthroughserver input-context unit_test
 
