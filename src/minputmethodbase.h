@@ -102,8 +102,10 @@ public:
      * This is called only if one has enabled redirection by calling
      * \a MInputContextConnection::setRedirectKeys.
      */
-    virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers,
-                                 const QString &text, bool autoRepeat, int count, int nativeScanCode);
+    virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                 Qt::KeyboardModifiers modifiers, const QString &text,
+                                 bool autoRepeat, int count, quint32 nativeScanCode,
+                                 quint32 nativeModifiers);
 
     /* \brief This method is called when keyboard status is changed:
      * hardware keyboard is opened or closed, BT keyboard is connected

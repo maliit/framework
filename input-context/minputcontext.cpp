@@ -380,7 +380,8 @@ bool MInputContext::filterEvent(const QEvent *event)
             iface->call(QDBus::NoBlock, "processKeyEvent", static_cast<int>(key->type()),
                         key->key(), static_cast<int>(key->modifiers()), key->text(),
                         key->isAutoRepeat(), key->count(),
-                        static_cast<int>(key->nativeScanCode()));
+                        static_cast<int>(key->nativeScanCode()),
+                        static_cast<int>(key->nativeModifiers()));
             eaten = true;
 
         }

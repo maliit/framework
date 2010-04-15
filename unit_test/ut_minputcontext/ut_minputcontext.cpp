@@ -223,7 +223,8 @@ void InputMethodServerDBusStub::setCopyPasteState(bool copyAvailable, bool paste
 
 void InputMethodServerDBusStub::processKeyEvent(int keyType, int keyCode, int /* modifiers */,
                                                 const QString &text, bool /* autoRepeat */,
-                                                int /* count */, int /* nativeScanCode */)
+                                                int /* count */, int /* nativeScanCode */,
+                                                int /* nativeModifiers */)
 {
     ++redirectKeyCallCount;
     redirectKeyCallParams.keyType = keyType;

@@ -115,7 +115,8 @@ public slots:
      * This is called only if one has enabled redirection by calling \a setRedirectKeys.
      */
     void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers,
-                         const QString &text, bool autoRepeat, int count, int nativeScanCode);
+                         const QString &text, bool autoRepeat, int count, quint32 nativeScanCode,
+                         quint32 nativeModifiers);
 
 private:
     Q_DISABLE_COPY(MInputContextDBusConnection)

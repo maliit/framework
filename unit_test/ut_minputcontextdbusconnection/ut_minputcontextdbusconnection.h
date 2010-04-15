@@ -31,7 +31,8 @@ public:
     virtual void appOrientationChanged(int angle);
     virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                  Qt::KeyboardModifiers modifiers, const QString &text,
-                                 bool autoRepeat, int count, int nativeScanCode);
+                                 bool autoRepeat, int count, quint32 nativeScanCode,
+                                 quint32 nativeModifiers);
 
     void resetCallCounts();
     int showCallCount();

@@ -85,7 +85,8 @@ void TargetStub::appOrientationChanged(int angle)
 
 void TargetStub::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                  Qt::KeyboardModifiers modifiers, const QString &text,
-                                 bool autoRepeat, int count, int nativeScanCode)
+                                 bool autoRepeat, int count, quint32 nativeScanCode,
+                                 quint32 nativeModifiers)
 {
     Q_UNUSED(keyType);
     Q_UNUSED(keyCode);
@@ -94,6 +95,7 @@ void TargetStub::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
     Q_UNUSED(autoRepeat);
     Q_UNUSED(count);
     Q_UNUSED(nativeScanCode);
+    Q_UNUSED(nativeModifiers);
 
     m_processKeyEventCallCount++;
 }
@@ -363,7 +365,7 @@ void Ut_MInputContextDBusConnection::testAppOrientationChanged()
 
 void Ut_MInputContextDBusConnection::testProcessKeyEvent()
 {
-    m_clientInterface->call(QDBus::NoBlock, "processKeyEvent", 0, 0, 0, "", false, 0, 0);
+    m_clientInterface->call(QDBus::NoBlock, "processKeyEvent", 0, 0, 0, "", false, 0, 0, 0);
 
     handleMessages();
 

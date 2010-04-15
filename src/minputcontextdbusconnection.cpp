@@ -129,10 +129,12 @@ void MInputContextDBusAdaptor::setCopyPasteState(bool copyAvailable, bool pasteA
 
 void MInputContextDBusAdaptor::processKeyEvent(int keyType, int keyCode, int modifiers,
                                                const QString &text, bool autoRepeat,
-                                               int count, int nativeScanCode)
+                                               int count, int nativeScanCode, int nativeModifiers)
 {
     host->processKeyEvent(static_cast<QEvent::Type>(keyType), static_cast<Qt::Key>(keyCode),
-                          static_cast<Qt::KeyboardModifiers>(modifiers), text, autoRepeat, count, nativeScanCode);
+                          static_cast<Qt::KeyboardModifiers>(modifiers), text, autoRepeat, count,
+                          static_cast<quint32>(nativeScanCode),
+                          static_cast<quint32>(nativeModifiers));
 }
 
 
@@ -539,10 +541,10 @@ void MInputContextDBusConnection::setCopyPasteState(bool copyAvailable, bool pas
 void MInputContextDBusConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                                   Qt::KeyboardModifiers modifiers,
                                                   const QString &text, bool autoRepeat, int count,
-                                                  int nativeScanCode)
+                                                  quint32 nativeScanCode, quint32 nativeModifiers)
 {
     foreach (MInputMethodBase *target, targets()) {
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
-                                nativeScanCode);
+                                nativeScanCode, nativeModifiers);
     }
 }

@@ -129,7 +129,7 @@ void MInputMethodBase::setToolbar(const QString &toolbar)
 void MInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                        Qt::KeyboardModifiers modifiers,
                                        const QString &text, bool autoRepeat, int count,
-                                       int /* nativeScanCode */)
+                                       quint32 /* nativeScanCode */, quint32 /* nativeModifiers */)
 {
     // default implementation, just sendKeyEvent back
     inputContextConnection()->sendKeyEvent(QKeyEvent(keyType, keyCode, modifiers, text, autoRepeat,

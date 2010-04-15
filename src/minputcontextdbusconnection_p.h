@@ -47,7 +47,7 @@ public slots:
     void appOrientationChanged(int angle);
     void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
     void processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text,
-                         bool autoRepeat, int count, int nativeScanCode);
+                         bool autoRepeat, int count, int nativeScanCode, int nativeModifiers);
 
 private:
     MInputContextDBusConnection *host;
