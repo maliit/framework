@@ -20,13 +20,14 @@
  */
 
 #include <stdlib.h>
+#include <glib.h>
 #include <dbus/dbus-glib.h>
 
 #include "dui-imcontext-dbus.h"
 #include "debug.h"
 
-#define DUI_IMCONTEXT_DBUSOBJ_SERVICE_NAME "org.meego.gtk.duiimcontext"
-#define DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/org/meego/gtk/duiimcontext"
+#define DUI_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX "org.meego.duiimcontext."
+#define DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/org/meego/duiimcontext"
 
 
 G_DEFINE_TYPE( DuiIMContextDbusObj, dui_imcontext_dbusobj, G_TYPE_OBJECT);
@@ -46,6 +47,17 @@ gboolean dui_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueAr
 
 
 #include "dui-imcontext-dbus-glue.h"
+
+static gchar *
+_generate_dbus_service_name(void)
+{
+	gchar *name = NULL;
+
+	name = g_strconcat(DUI_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX, g_get_prgname(), NULL);
+
+	return name;
+}
+
 
 static void
 dui_imcontext_dbusobj_init(DuiIMContextDbusObj* obj)
@@ -68,19 +80,18 @@ dui_imcontext_dbusobj_class_init(DuiIMContextDbusObjClass* klass)
 DuiIMContextDbusObj *
 dui_imcontext_dbus_register(void)
 {
-	DBusGConnection* bus = NULL;
-	DBusGProxy* busProxy = NULL;
-	DuiIMContextDbusObj* dbusobj = NULL;
+	DBusGConnection *bus = NULL;
+	DBusGProxy *busProxy = NULL;
+	DuiIMContextDbusObj *dbusobj = NULL;
 	guint result;
-	GError* error = NULL;
+	GError *error = NULL;
+	gchar *servicename = NULL;
 
 	bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 	if (error != NULL) {
 		g_warning("Couldn't connect to session bus\n");
 		return NULL;
 	}
-
-	DBG("Registering the well-known name (%s)\n", DUI_IMCONTEXT_DBUSOBJ_SERVICE_NAME);
 
 	busProxy = dbus_g_proxy_new_for_name(bus,
 					DBUS_SERVICE_DBUS,
@@ -92,12 +103,15 @@ dui_imcontext_dbus_register(void)
 		return NULL;
 	}
 
+	servicename = _generate_dbus_service_name();
+	DBG("Registering the well-known name (%s)\n", servicename);
+
 	/* Attempt to register the well-known name.*/
 	if (!dbus_g_proxy_call(busProxy,
 				"RequestName",
 				&error,
 				G_TYPE_STRING,
-				DUI_IMCONTEXT_DBUSOBJ_SERVICE_NAME,
+				servicename,
 				G_TYPE_UINT,
 				0,
 				G_TYPE_INVALID,
@@ -109,19 +123,21 @@ dui_imcontext_dbus_register(void)
 
 	if (result != 1) {
 		g_warning("Failed to get the primary well-known name.\n");
-		return NULL;
+		goto done;
 	}
 
 	dbusobj = g_object_new(DUI_IMCONTEXT_TYPE_DBUSOBJ, NULL);
 
 	if (dbusobj == NULL) {
 		g_warning("Failed to create dbus_obj.\n");
-		return NULL;
+		goto done;
 	}
 
 	dbus_g_connection_register_g_object(bus, DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
 						G_OBJECT(dbusobj));
 
+done:
+	g_free(servicename);
 	return dbusobj;
 }
 
