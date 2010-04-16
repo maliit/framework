@@ -27,7 +27,6 @@ PKG_PROG_PKG_CONFIG
 
 # all libraries listed are associated with "DUI_IM_GTKIC" tag
 PKG_CHECK_MODULES(DUI_IM_GTKIC, glib-2.0
-			DuiImFramework
 			gtk+-2.0 >= 2.14
 			gthread-2.0
 			dbus-glib-1)
