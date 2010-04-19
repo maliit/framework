@@ -203,7 +203,8 @@ dui_im_proxy_process_key_event (DuiIMProxy *proxy, const gint type, const gint c
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
-	STEP();
+	DBG("QT key event type=0x%x, code=0x%x, modifiers=0x%x, text=%s",
+		type, code, modifiers, text);
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 

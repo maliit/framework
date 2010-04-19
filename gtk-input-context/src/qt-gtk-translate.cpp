@@ -56,6 +56,12 @@ qt_key_event_to_gdk(int type, int key, int modifiers, char *text, GdkWindow *win
 
 	event->keyval = QtKeyToXKeySym(key);
 
+	//if (type == QEvent::KeyPress) {
+	//	if (key == Qt::Key_Shift) {
+	//		event->state &= ~GDK_SHIFT_MASK;
+	//	}
+	//}
+
 	event->window = window;
 
 	if (event->window) {
@@ -97,8 +103,10 @@ gdk_key_event_to_qt(GdkEventKey *event, int *type, int *key, int *modifier)
 	}
 
 	*key = XKeySymToQTKey(event->keyval);
-	if (*key == Qt::Key_unknown)
+	if (*key == Qt::Key_unknown) {
+		qWarning("Unkonwn key");
 		return FALSE;
+	}
 
 	*modifier = Qt::NoModifier;
 	if (event->state & GDK_SHIFT_MASK)

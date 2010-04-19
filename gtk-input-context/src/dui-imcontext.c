@@ -115,7 +115,7 @@ dui_imcontext_init_dbus (DuiIMContext *self)
 static void
 slave_commit (GtkIMContext *slave, const char *text, gpointer data)
 {
-	STEP();
+	DBG("text = %s", text);
 	if (focused_imcontext && text) {
 		g_signal_emit_by_name(focused_imcontext, "commit", text);
 	}
@@ -268,11 +268,8 @@ dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 	int qevent_type = 0, qt_keycode = 0, qt_modifier = 0;
 	gchar *text = "";
 
-	STEP();
-
 	focused_widget = gtk_get_event_widget((GdkEvent*)event);
 
-	// TODO: call "processKeyEvent" and anything else?
 	DBG("event type=0x%x, state=0x%x, keyval=0x%x, keycode=0x%x, group=%d",
 		event->type, event->state, event->keyval, event->hardware_keycode, event->group);
 
@@ -286,8 +283,6 @@ dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 
 	if (!gdk_key_event_to_qt(event, &qevent_type, &qt_keycode, &qt_modifier))
 		return FALSE;
-
-	STEP();
 
 	dui_im_proxy_process_key_event(imcontext->proxy, qevent_type, qt_keycode, qt_modifier,
 		text, 0, 1, event->hardware_keycode);
@@ -364,8 +359,8 @@ static void
 dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 {
 	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
-	DBG("imcontext = %p, x=%d, y=%d, w=%d, h=%d", imcontext,
-		area->x, area->y, area->width, area->height);
+	//DBG("imcontext = %p, x=%d, y=%d, w=%d, h=%d", imcontext,
+	//	area->x, area->y, area->width, area->height);
 
 	imcontext->cursor_location = *area;
 

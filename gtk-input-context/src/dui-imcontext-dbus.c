@@ -189,9 +189,8 @@ gboolean
 dui_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count, GError **error)
 {
-	STEP();
-	DBG("type=%d, key=%d, modifiers=%d, text = %c, auto_repeat=%d, count=%d",
-		type, key, modifiers, *text, auto_repeat, count);
+	DBG("type=0x%x, key=0x%x, modifiers=0x%x, text = %s, auto_repeat=%d, count=%d",
+		type, key, modifiers, text, auto_repeat, count);
 	return dui_imcontext_client_key_event(obj, type, key, modifiers, text, auto_repeat, count);
 }
 
