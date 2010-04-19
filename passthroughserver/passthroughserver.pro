@@ -33,7 +33,7 @@ QMAKE_CLEAN += *.gcno *.gcda
 # pointing to old binary name
 dui-im-uiserver.path = . 
 dui-im-uiserver.files = "" 
-dui-im-uiserver.extra = ln -s $$M_INSTALL_BIN/meego-im-uiserver $(INSTALL_ROOT)/$$M_INSTALL_BIN/dui-im-uiserver
+dui-im-uiserver.extra = ln -s -f $$M_INSTALL_BIN/meego-im-uiserver $(INSTALL_ROOT)/$$M_INSTALL_BIN/dui-im-uiserver
 
 # note: not installing the service file, the input method server
 # is started by other means than by the d-bus.
