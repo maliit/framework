@@ -40,7 +40,7 @@ dui-im-uiserver.extra = ln -s -f $$M_INSTALL_BIN/meego-im-uiserver $(INSTALL_ROO
 # it is still required in scratchbox and N900
 INSTALLS += target \
             servicefiles \
-            dui-im-uiserver 
+            #dui-im-uiserver 
 
 
 QMAKE_EXTRA_TARGETS += check-xml
