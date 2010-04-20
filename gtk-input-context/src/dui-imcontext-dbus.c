@@ -215,6 +215,7 @@ gboolean
 dui_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error)
 {
 	STEP();
+	return dui_imcontext_client_copy(obj);
 	return TRUE;
 }
 
@@ -223,6 +224,7 @@ gboolean
 dui_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error)
 {
 	STEP();
+	return dui_imcontext_client_paste(obj);
 	return TRUE;
 }
 

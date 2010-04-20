@@ -19,6 +19,9 @@
  * 02110-1301 USA
  */
 
+
+#include <X11/keysym.h>
+
 #include "dui-imcontext.h"
 #include "qt-gtk-translate.h"
 #include "debug.h"
@@ -450,7 +453,30 @@ dui_imcontext_client_set_global_correction_enabled (DuiIMContextDbusObj *obj, gb
 gboolean
 dui_imcontext_client_copy (DuiIMContextDbusObj *obj)
 {
+	GdkWindow *window = NULL;
+	GdkEventKey *event = NULL;
+
 	STEP();
+
+	if (focused_imcontext)
+		window = focused_imcontext->client_window;
+
+	event = compose_gdk_keyevent(GDK_KEY_PRESS, XK_C, GDK_CONTROL_MASK, window);
+	if (event) {
+		event->send_event = TRUE;
+		event->state |= IM_FORWARD_MASK;
+		gdk_event_put((GdkEvent *)event);
+		gdk_event_free((GdkEvent *)event);
+	}
+
+	event = compose_gdk_keyevent(GDK_KEY_RELEASE, XK_C, GDK_CONTROL_MASK, window);
+	if (event) {
+		event->send_event = TRUE;
+		event->state |= IM_FORWARD_MASK;
+		gdk_event_put((GdkEvent *)event);
+		gdk_event_free((GdkEvent *)event);
+	}
+
 	return TRUE;
 }
 
@@ -458,7 +484,31 @@ dui_imcontext_client_copy (DuiIMContextDbusObj *obj)
 gboolean
 dui_imcontext_client_paste (DuiIMContextDbusObj *obj)
 {
+	GdkWindow *window = NULL;
+	GdkEventKey *event = NULL;
+
 	STEP();
+
+	if (focused_imcontext)
+		window = focused_imcontext->client_window;
+
+	event = compose_gdk_keyevent(GDK_KEY_PRESS, XK_V, GDK_CONTROL_MASK, window);
+	if (event) {
+		event->send_event = TRUE;
+		event->state |= IM_FORWARD_MASK;
+		gdk_event_put((GdkEvent *)event);
+		gdk_event_free((GdkEvent *)event);
+	}
+
+	event = compose_gdk_keyevent(GDK_KEY_RELEASE, XK_V, GDK_CONTROL_MASK, window);
+	if (event) {
+		event->send_event = TRUE;
+		event->state |= IM_FORWARD_MASK;
+		gdk_event_put((GdkEvent *)event);
+		gdk_event_free((GdkEvent *)event);
+	}
+
+
 	return TRUE;
 }
 

@@ -26,42 +26,24 @@
 #include "qt-keysym-map.h"
 #include "qt-gtk-translate.h"
 
+
 GdkEventKey *
-qt_key_event_to_gdk(int type, int key, int modifiers, char *text, GdkWindow *window)
+compose_gdk_keyevent(GdkEventType type, guint keyval, guint state, GdkWindow *window)
 {
 	GdkEventKey *event = NULL;
 
-	STEP();
-	if ((type != QEvent::KeyPress) && (type != QEvent::KeyRelease))
+	if ((type != GDK_KEY_PRESS) && (type != GDK_KEY_RELEASE))
 		return NULL;
 
-	if (type == QEvent::KeyPress) {
-		event = (GdkEventKey *)(gdk_event_new(GDK_KEY_PRESS));
-	} else {
-		event = (GdkEventKey *)(gdk_event_new(GDK_KEY_RELEASE));
-		event->state = GDK_RELEASE_MASK;
-	}
-
+	event = (GdkEventKey *)(gdk_event_new(type));
 	event->length = 0;
 	event->string = 0;
 	event->is_modifier = 0;
 	event->time = GDK_CURRENT_TIME;
-
-	if (modifiers & Qt::ShiftModifier)
-		event->state |= GDK_SHIFT_MASK;
-	if (modifiers & Qt::ControlModifier)
-		event->state |= GDK_CONTROL_MASK;
-	if (modifiers & Qt::AltModifier)
-		event->state |= GDK_MOD1_MASK;
-
-	event->keyval = QtKeyToXKeySym(key);
-
-	//if (type == QEvent::KeyPress) {
-	//	if (key == Qt::Key_Shift) {
-	//		event->state &= ~GDK_SHIFT_MASK;
-	//	}
-	//}
-
+	event->state = state;
+	if (type == GDK_KEY_RELEASE)
+		event->state |= GDK_RELEASE_MASK;
+	event->keyval = keyval;
 	event->window = window;
 
 	if (event->window) {
@@ -84,6 +66,35 @@ qt_key_event_to_gdk(int type, int key, int modifiers, char *text, GdkWindow *win
 		event->type, event->state, event->keyval, event->hardware_keycode, event->group);
 
 	return event;
+}
+
+
+
+GdkEventKey *
+qt_key_event_to_gdk(int type, int key, int modifiers, char *text, GdkWindow *window)
+{
+	guint state = 0;
+	guint keyval;
+
+	STEP();
+	if ((type != QEvent::KeyPress) && (type != QEvent::KeyRelease))
+		return NULL;
+
+	if (modifiers & Qt::ShiftModifier)
+		state |= GDK_SHIFT_MASK;
+	if (modifiers & Qt::ControlModifier)
+		state |= GDK_CONTROL_MASK;
+	if (modifiers & Qt::AltModifier)
+		state |= GDK_MOD1_MASK;
+
+	keyval = QtKeyToXKeySym(key);
+
+	if (type == QEvent::KeyPress) {
+		return compose_gdk_keyevent(GDK_KEY_PRESS, keyval, state, window);
+	} else {
+		return compose_gdk_keyevent(GDK_KEY_RELEASE, keyval, state, window);
+	}
+	
 }
 
 
