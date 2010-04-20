@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: meego-im-uiserver
 Architecture: any
-Depends:  ${misc:Depends}, ${shlibs:Depends}, meego-im-context, duicompositor | hildon-desktop | xcompmgr
+Depends: ${misc:Depends}, ${shlibs:Depends}, meego-im-context
 Recommends: meego-im-virtualkeyboard
 Replaces: dui-im-uiserver
 Description: MeegoTouch Input Method UI Server
