@@ -1,7 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = autogen.sh
-SUBDIRS = src
+SUBDIRS = src client-gtk
 
 DISTCHECK_CONFIGURE_FLAGS=
 

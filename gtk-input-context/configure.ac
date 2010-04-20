@@ -26,13 +26,18 @@ AC_PROG_INSTALL
 PKG_PROG_PKG_CONFIG
 
 # all libraries listed are associated with "DUI_IM_GTKIC" tag
-PKG_CHECK_MODULES(DUI_IM_GTKIC, glib-2.0
-			gtk+-2.0 >= 2.14
+PKG_CHECK_MODULES(DUI_IM_CLIENT, glib-2.0
 			gthread-2.0
 			dbus-glib-1)
 
-AC_SUBST(DUI_IM_GTKIC_CFLAGS)
-AC_SUBST(DUI_IM_GTKIC_LIBS)
+AC_SUBST(DUI_IM_CLIENT_CFLAGS)
+AC_SUBST(DUI_IM_CLIENT_LIBS)
+
+PKG_CHECK_MODULES(DUI_IM_GTK,
+			gtk+-2.0 >= 2.14)
+
+AC_SUBST(DUI_IM_GTK_CFLAGS)
+AC_SUBST(DUI_IM_GTK_LIBS)
 
 
 PKG_CHECK_MODULES(QT, QtCore
@@ -74,6 +79,7 @@ fi
 # Output files
 AC_OUTPUT([Makefile
 src/Makefile
+client-gtk/Makefile
 ])
 
 AC_MSG_RESULT([
