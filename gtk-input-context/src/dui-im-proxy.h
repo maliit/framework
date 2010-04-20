@@ -71,7 +71,7 @@ gboolean dui_im_proxy_reset (DuiIMProxy *proxy);
 gboolean dui_im_proxy_set_context_object (DuiIMProxy *proxy, const char *object_name);
 gboolean dui_im_proxy_set_copy_paste_state (DuiIMProxy *proxy, const gboolean copy_available,
 					const gboolean paste_available);
-gboolean dui_im_proxy_set_preeidt (DuiIMProxy *proxy, const char *text);
+gboolean dui_im_proxy_set_preedit (DuiIMProxy *proxy, const char *text);
 gboolean dui_im_proxy_show_input_method (DuiIMProxy *proxy);
 
 G_END_DECLS

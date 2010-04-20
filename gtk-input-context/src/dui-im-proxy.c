@@ -283,7 +283,7 @@ dui_im_proxy_set_copy_paste_state (DuiIMProxy *proxy, const gboolean copy_availa
 
 
 gboolean
-dui_im_proxy_set_preeidt (DuiIMProxy *proxy, const char *text)
+dui_im_proxy_set_preedit (DuiIMProxy *proxy, const char *text)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
