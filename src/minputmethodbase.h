@@ -21,6 +21,7 @@
 #include <QEvent>
 #include <MNamespace>
 #include "mimhandlerstate.h"
+#include "mimdirection.h"
 
 class QRegion;
 class QPoint;
@@ -110,11 +111,19 @@ public:
      * \param state const QList<MIMHandlerState>& list of current states
      * for this plugin
      */
-    virtual void setState(const QList<MIMHandlerState> &state);
+    virtual void setState(const QSet<MIMHandlerState> &state);
 
     /*! \brief This method is called when target client is changed.
      */
     virtual void clientChanged();
+
+    /*!
+     * \brief Switch context to given direction
+     * \param direction Switching direction
+     * \param enableAnimation Contains true if swipe should be animated
+     */
+    virtual void switchContext(M::InputMethodSwitchDirection direction, bool enableAnimation);
+
 
 signals:
     /*!
@@ -135,6 +144,11 @@ signals:
      * \param region the new region
      */
     void inputMethodAreaUpdated(const QRegion &region);
+
+    /*!
+     * Inform that plugin should be switched in according to \a direction.
+     */
+    void pluginSwitchRequired(M::InputMethodSwitchDirection direction);
 
 private:
     Q_DISABLE_COPY(MInputMethodBase)

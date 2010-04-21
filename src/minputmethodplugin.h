@@ -19,6 +19,7 @@
 
 #include <QStringList>
 #include <QtPlugin>
+#include <QSet>
 
 #include "minputmethodbase.h"
 
@@ -49,6 +50,14 @@ public:
      * resources will be owned by the input method server.
      */
     virtual MInputMethodBase *createInputMethod(MInputContextConnection *icConnection) = 0;
+
+    /*!
+     * \brief Returns set of states which could be handled by this plugin.
+     *
+     * WARNING: If result is empty then this plugin will not be loaded
+     * during startup.
+     */
+    virtual QSet<MIMHandlerState> supportedStates() const = 0;
 };
 
 

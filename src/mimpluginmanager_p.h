@@ -24,6 +24,7 @@
 #include <QSet>
 
 #include "mimhandlerstate.h"
+#include "mimdirection.h"
 
 class MInputMethodPlugin;
 class MInputContextConnection;
@@ -36,6 +37,16 @@ class MIMPluginManagerPrivate
 {
 
 public:
+    typedef QSet<MIMHandlerState> PluginState;
+    struct PluginDescription {
+        MInputMethodBase *inputMethod;
+        PluginState state;
+        M::InputMethodSwitchDirection lastSwitchDirection;
+    };
+    typedef QMap<MInputMethodPlugin *, PluginDescription> Plugins;
+    typedef QSet<MInputMethodPlugin *> ActivePlugins;
+    typedef QMap<MIMHandlerState, MInputMethodPlugin *> HandlerMap;
+
     MIMPluginManagerPrivate(MInputContextConnection *connection, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
@@ -48,6 +59,12 @@ public:
     void deleteInactiveIM();
     void deactivatePlugin(MInputMethodPlugin *plugin);
     void convertAndFilterHandlers(const QStringList &handlerNames, QSet<MIMHandlerState> *handlers);
+    void replacePlugin(M::InputMethodSwitchDirection direction, Plugins::iterator initiator,
+                       Plugins::iterator replacement);
+    bool switchPlugin(M::InputMethodSwitchDirection direction, MInputMethodBase *initiator);
+    void changeHandlerMap(MInputMethodPlugin *origin,
+                          MInputMethodPlugin *replacement,
+                          QSet<MIMHandlerState> states);
 
     QStringList loadedPluginsNames() const;
     QStringList activePluginsNames() const;
@@ -57,15 +74,12 @@ public:
     MIMPluginManager *parent;
     MInputContextConnection *mICConnection;
 
-    typedef QMap<MInputMethodPlugin *, MInputMethodBase *> Plugins;
     Plugins plugins;
-    typedef QSet<MInputMethodPlugin *> ActivePlugins;
     ActivePlugins activePlugins;
 
     QStringList paths;
     QStringList blacklist;
     QStringList active;
-    typedef QMap<MIMHandlerState, MInputMethodPlugin *> HandlerMap;
     HandlerMap handlerToPlugin;
 
     MGConfItem *handlerToPluginConf;

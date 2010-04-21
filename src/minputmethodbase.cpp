@@ -136,7 +136,7 @@ void MInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                                      count));
 }
 
-void MInputMethodBase::setState(const QList<MIMHandlerState> &state)
+void MInputMethodBase::setState(const QSet<MIMHandlerState> &state)
 {
     // empty default implementation
     Q_UNUSED(state);
@@ -145,5 +145,12 @@ void MInputMethodBase::setState(const QList<MIMHandlerState> &state)
 void MInputMethodBase::clientChanged()
 {
     // empty default implementation
+}
+
+void MInputMethodBase::switchContext(M::InputMethodSwitchDirection direction, bool enableAnimation)
+{
+    // empty default implementation
+    Q_UNUSED(direction);
+    Q_UNUSED(enableAnimation);
 }
 

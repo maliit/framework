@@ -12,7 +12,8 @@ HEADERSINSTALL = \
     minputcontextconnection.h \
     mplainwindow.h \
     mpreeditface.h \
-    mimhandlerstate.h
+    mimhandlerstate.h \
+    mimdirection.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \

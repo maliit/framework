@@ -87,9 +87,15 @@ void MIMPluginManagerPrivate::loadPlugins()
             MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
 
             if (plugin) {
-                plugins[plugin] = 0;
-                if (active.contains(plugin->name())) {
-                    activatePlugin(plugin);
+                if (!plugin->supportedStates().isEmpty()) {
+                    PluginDescription desc = { 0, PluginState(), M::SwitchUndefined };
+                    plugins[plugin] = desc;
+                    if (active.contains(plugin->name())) {
+                        activatePlugin(plugin);
+                    }
+                } else {
+                    qWarning() << __PRETTY_FUNCTION__
+                               << "Plugin does not support any state: " << fileName;
                 }
             } else
                 qWarning() << __PRETTY_FUNCTION__
@@ -125,11 +131,11 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
     MInputMethodBase *inputMethod = 0;
 
     activePlugins.insert(plugin);
-    if (!plugins[plugin]) {
+    if (!plugins[plugin].inputMethod) {
         inputMethod = plugin->createInputMethod(mICConnection);
         bool connected = false;
 
-        plugins[plugin] = inputMethod;
+        plugins[plugin].inputMethod = inputMethod;
         if (inputMethod) {
             connected = QObject::connect(inputMethod, SIGNAL(regionUpdated(const QRegion &)),
                                          parent, SIGNAL(regionUpdated(const QRegion &)));
@@ -139,13 +145,19 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
                                          mICConnection,
                                          SLOT(updateInputMethodArea(const QRegion &)))
                         && connected;
+
+            connected = QObject::connect(inputMethod,
+                                         SIGNAL(pluginSwitchRequired(M::InputMethodSwitchDirection)),
+                                         parent,
+                                         SLOT(switchPlugin(M::InputMethodSwitchDirection)))
+                        && connected;
         }
         if (!connected) {
             qWarning() << __PRETTY_FUNCTION__ << "Plugin" << plugin->name()
                        << "Unable to connect plugin's signals with IC connection's slots";
         }
     } else {
-        inputMethod = plugins[plugin];
+        inputMethod = plugins[plugin].inputMethod;
     }
 
     mICConnection->addTarget(inputMethod); // redirect incoming requests
@@ -168,9 +180,14 @@ void MIMPluginManagerPrivate::addHandlerMap(MIMHandlerState state, const QString
 void MIMPluginManagerPrivate::setActiveHandlers(const QSet<MIMHandlerState> &states)
 {
     QSet<MInputMethodPlugin *> activatedPlugins;
-    typedef QMap<MInputMethodBase *, QList<MIMHandlerState> > NewStates;
-    NewStates newStates;
     MInputMethodBase *inputMethod = 0;
+
+    //clear all cached states before activating new one
+    for (Plugins::iterator iterator = plugins.begin();
+         iterator != plugins.end();
+         ++iterator) {
+        iterator->state.clear();
+    }
 
     //activate new plugins
     foreach (MIMHandlerState state, states) {
@@ -182,19 +199,17 @@ void MIMPluginManagerPrivate::setActiveHandlers(const QSet<MIMHandlerState> &sta
             if (!activePlugins.contains(plugin)) {
                 activatePlugin(plugin);
             }
-            inputMethod = plugins[plugin];
+            inputMethod = plugins[plugin].inputMethod;
             if (inputMethod) {
-                newStates[inputMethod].append(state);
+                plugins[plugin].state << state;
                 activatedPlugins.insert(plugin);
             }
         }
     }
 
     // notify plugins about new states
-    for (NewStates::iterator iterator = newStates.begin();
-         iterator != newStates.end();
-         ++iterator) {
-        iterator.key()->setState(iterator.value());
+    foreach (MInputMethodPlugin *plugin, activatedPlugins) {
+        plugins[plugin].inputMethod->setState(plugins[plugin].state);
     }
 
     // deactivate unnecessary plugins
@@ -219,12 +234,12 @@ QSet<MIMHandlerState> MIMPluginManagerPrivate::activeHandlers() const
 
 void MIMPluginManagerPrivate::deleteInactiveIM()
 {
-    QMap<MInputMethodPlugin *, MInputMethodBase *>::iterator iterator;
+    Plugins::iterator iterator;
 
     for (iterator = plugins.begin(); iterator != plugins.end(); ++iterator) {
         if (!activePlugins.contains(iterator.key())) {
-            delete *iterator;
-            *iterator = 0;
+            delete iterator->inputMethod;
+            iterator->inputMethod = 0;
         }
     }
 }
@@ -236,12 +251,12 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
         return;
 
     activePlugins.remove(plugin);
-
-    MInputMethodBase *inputMethod = plugins[plugin];
+    MInputMethodBase *inputMethod = plugins[plugin].inputMethod;
 
     if (!inputMethod)
         return;
 
+    plugins[plugin].state = PluginState();
     inputMethod->hide();
     inputMethod->reset();
     mICConnection->removeTarget(inputMethod);
@@ -266,6 +281,95 @@ void MIMPluginManagerPrivate::convertAndFilterHandlers(const QStringList &handle
 
     if (disableOnscreenKbd) {
         handlers->remove(OnScreen);
+    }
+}
+
+
+void MIMPluginManagerPrivate::replacePlugin(M::InputMethodSwitchDirection direction,
+                                            Plugins::iterator initiator,
+                                            Plugins::iterator replacement)
+{
+    PluginState state = initiator->state;
+    MInputMethodBase *switchedTo = 0;
+
+    deactivatePlugin(initiator.key());
+    activatePlugin(replacement.key());
+    switchedTo = replacement->inputMethod;;
+    replacement->state = state;
+    switchedTo->setState(state);
+    if (replacement->lastSwitchDirection == direction) {
+        switchedTo->switchContext(direction, false);
+    }
+    initiator->lastSwitchDirection = direction;
+    switchedTo->show();
+}
+
+
+bool MIMPluginManagerPrivate::switchPlugin(M::InputMethodSwitchDirection direction,
+                                           MInputMethodBase *initiator)
+{
+    if (direction == M::SwitchUndefined) {
+        return true; //do nothing for this direction
+    }
+
+    //Find plugin initiated this switch
+    Plugins::iterator iterator(plugins.begin());
+
+    for (; iterator != plugins.end(); ++iterator) {
+        if (iterator->inputMethod == initiator) {
+            break;
+        }
+    }
+
+    if (iterator == plugins.end()) {
+        return false;
+    }
+
+    Plugins::iterator source = iterator;
+
+    //find next inactive plugin and activate it
+    for (int n = 0; n < plugins.size() - 1; ++n) {
+        if (direction == M::SwitchForward) {
+            ++iterator;
+            if (iterator == plugins.end()) {
+                iterator = plugins.begin();
+            }
+        } else { // Backward
+            if (iterator == plugins.begin()) {
+                iterator = plugins.end();
+            }
+            --iterator;
+        }
+
+        if (!activePlugins.contains(iterator.key())) {
+            const QSet<MIMHandlerState> intersect(iterator.key()->supportedStates()
+                                            & source->state);
+            // switch to other plugin if it could handle any state
+            // handled by current plugin just now
+            if (intersect == source->state) {
+                changeHandlerMap(source.key(), iterator.key(), iterator.key()->supportedStates());
+                replacePlugin(direction, source, iterator);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+void MIMPluginManagerPrivate::changeHandlerMap(MInputMethodPlugin *origin,
+                                               MInputMethodPlugin *replacement,
+                                               QSet<MIMHandlerState> states)
+{
+    QList<QString> handlers = handlerToPluginConf->listEntries();
+
+    foreach (MIMHandlerState state, states) {
+        HandlerMap::iterator iterator = handlerToPlugin.find(state);
+        if (iterator != handlerToPlugin.end() && *iterator == origin) {
+            MGConfItem gconf(MImHandlerToPlugin + QString("/%1").arg(int(state)));
+            gconf.set(replacement->name());
+            *iterator = replacement; //for unit tests
+        }
     }
 }
 
@@ -299,7 +403,7 @@ QStringList MIMPluginManagerPrivate::activeInputMethodsNames() const
 
     for (Plugins::const_iterator iterator = plugins.begin();
             iterator != plugins.end(); ++iterator) {
-        if (iterator.value()) {
+        if (iterator->inputMethod) {
             result.append(iterator.key()->name());
         }
     }
@@ -349,7 +453,6 @@ MIMPluginManager::~MIMPluginManager()
 void MIMPluginManager::reloadHandlerMap()
 {
     QList<QString> handlers = d->handlerToPluginConf->listEntries();
-    const QString key = d->handlerToPluginConf->key() + "/";
 
     foreach (const QString &handlerName, handlers) {
         QStringList path = handlerName.split("/");
@@ -415,3 +518,17 @@ void MIMPluginManager::updateInputSource()
         d->deleteImTimer.start();
     }
 }
+
+void MIMPluginManager::switchPlugin(M::InputMethodSwitchDirection direction)
+{
+    MInputMethodBase *initiator = qobject_cast<MInputMethodBase*>(sender());
+
+    if (initiator) {
+        if (d->switchPlugin(direction, initiator)) {
+            d->deleteImTimer.start();
+        } else {
+            initiator->switchContext(direction, true);
+        }
+    }
+}
+

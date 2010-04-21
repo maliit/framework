@@ -18,6 +18,7 @@
 #define MIMPLUGINMANAGER_H
 
 #include <QObject>
+#include "mimdirection.h"
 
 class QRegion;
 class MIMPluginManagerPrivate;
@@ -68,12 +69,16 @@ private slots:
     //! Update and activate input source.
     void updateInputSource();
 
+    //! Swithces plugin in according to given \a direction
+    void switchPlugin(M::InputMethodSwitchDirection direction);
+
 private:
     Q_DISABLE_COPY(MIMPluginManager)
 
     MIMPluginManagerPrivate *d;
 
     friend class Ut_MIMPluginManager;
+    friend class Ft_MIMPluginManager;
 };
 
 #endif
