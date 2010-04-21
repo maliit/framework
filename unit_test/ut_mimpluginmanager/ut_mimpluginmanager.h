@@ -23,14 +23,19 @@ private slots:
     void testAddHandlerMap();
     void testConvertAndFilterHandlers_data();
     void testConvertAndFilterHandlers();
-    void testSwitchPlugin();
+    void testSwitchPluginState();
     void testMultilePlugins();
     void testFreeInputMethod();
+
+    void testPluginSwitcher_data();
+    void testPluginSwitcher();
 
 private:
     QCoreApplication *app;
     QString pluginPath;
     MIMPluginManagerPrivate *subject;
+
+    void checkHandlerMap(int handler, const QString &name);
 };
 
 #endif

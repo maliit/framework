@@ -19,6 +19,8 @@ public:
     virtual QStringList languages() const;
 
     virtual MInputMethodBase *createInputMethod(MInputContextConnection *icConnection);
+
+    virtual QSet<MIMHandlerState> supportedStates() const;
     //! \reimp_end
 };
 

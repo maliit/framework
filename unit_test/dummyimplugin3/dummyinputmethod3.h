@@ -2,7 +2,7 @@
 #define DUMMYINPUTMETHOD3_H
 
 #include <minputmethodbase.h>
-#include <QList>
+#include <QSet>
 
 class DummyInputMethod3 : public MInputMethodBase
 {
@@ -13,12 +13,17 @@ public:
     DummyInputMethod3(MInputContextConnection *connection);
 
     //! \reimp
-    virtual void setState(const QList<MIMHandlerState> &state);
+    virtual void setState(const QSet<MIMHandlerState> &state);
+    virtual void switchContext(M::InputMethodSwitchDirection direction, bool enableAnimation);
     //! \reimp_end
 
 public:
     int setStateCount;
-    QList<MIMHandlerState> setStateParam;
+    QSet<MIMHandlerState> setStateParam;
+
+    int switchContextCallCount;
+    M::InputMethodSwitchDirection directionParam;
+    bool enableAnimationParam;
 };
 
 #endif

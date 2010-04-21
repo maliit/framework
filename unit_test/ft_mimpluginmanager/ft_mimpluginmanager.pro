@@ -3,6 +3,7 @@ MOC_DIR = .moc
 
 INCLUDEPATH += ../../src \
                ../stubs \
+               ../dummyimplugin \
 
 SRC_DIR = ../../src
 
@@ -28,5 +29,7 @@ QT += testlib
 
 LIBS += \
     ../../src/libmeegoimframework.so \
+    -L ../plugins/ \
+    -ldummyimplugin \
 
 include(../common_check.pri)

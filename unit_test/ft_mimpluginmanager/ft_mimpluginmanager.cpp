@@ -2,11 +2,14 @@
 #include "mgconfitem_stub.h"
 #include "mkeyboardstatetracker_stub.h"
 #include "minputcontextconnection_stub.h"
+#include "dummyimplugin.h"
+#include "dummyinputmethod.h"
 
 #include <QProcess>
 #include <QGraphicsScene>
 #include <QRegExp>
 #include <QApplication>
+#include <QPointer>
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
 
@@ -101,7 +104,7 @@ void Ft_MIMPluginManager::testLoadPlugins()
 }
 
 
-void Ft_MIMPluginManager::testSwitchPlugin()
+void Ft_MIMPluginManager::testSwitchPluginState()
 {
     MGConfItem(MImAccesoryEnabled).set(QVariant(true));
 
@@ -144,6 +147,33 @@ void Ft_MIMPluginManager::testFreeInputMethod()
     QTest::qWait(500); //wait intil timer expiration
 
     activeInputMethods = subject->activeInputMethodsNames();
+    QCOMPARE(activeInputMethods.count(), 1);
+    QCOMPARE(activeInputMethods.first(), pluginName3);
+}
+
+void Ft_MIMPluginManager::testSwitchPluginBySignal()
+{
+    DummyImPlugin *plugin = 0;
+    QPointer<DummyInputMethod> inputMethod = 0;
+
+    subject->setDeleteIMTimeout(300);
+
+    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d->plugins.begin());
+            iterator != subject->d->plugins.end();
+            ++iterator) {
+        if (pluginName == iterator.key()->name()) {
+            plugin = dynamic_cast<DummyImPlugin *>(iterator.key());
+        }
+    }
+
+    QVERIFY(plugin != 0);
+    inputMethod = dynamic_cast<DummyInputMethod *>(subject->d->plugins[plugin].inputMethod);
+    QVERIFY(inputMethod != 0);
+
+    inputMethod->switchMe(); //emit signal to switch plugin
+    QTest::qWait(500); //wait intil timer expiration
+
+    QStringList activeInputMethods = subject->activeInputMethodsNames();
     QCOMPARE(activeInputMethods.count(), 1);
     QCOMPARE(activeInputMethods.first(), pluginName3);
 }

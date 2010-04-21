@@ -19,4 +19,12 @@ DummyImPlugin2::createInputMethod(MInputContextConnection * /* icConnection */)
     return NULL;
 }
 
+QSet<MIMHandlerState> DummyImPlugin2::supportedStates() const
+{
+    QSet<MIMHandlerState> result;
+
+    result << OnScreen << Hardware << Accessory;
+    return result;
+}
+
 Q_EXPORT_PLUGIN2(dummyimplugin2, DummyImPlugin2)

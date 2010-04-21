@@ -21,9 +21,10 @@ private slots:
     void cleanup();
 
     void testLoadPlugins();
-    void testSwitchPlugin();
+    void testSwitchPluginState();
     void testMultiplePlugins();
     void testFreeInputMethod();
+    void testSwitchPluginBySignal();
 
 private:
     QApplication *app;
