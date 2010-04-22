@@ -30,6 +30,8 @@ private slots:
     void testPluginSwitcher_data();
     void testPluginSwitcher();
 
+    void testSwitchToSpecifiedPlugin();
+
 private:
     QCoreApplication *app;
     QString pluginPath;

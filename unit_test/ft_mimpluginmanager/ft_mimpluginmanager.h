@@ -25,6 +25,7 @@ private slots:
     void testMultiplePlugins();
     void testFreeInputMethod();
     void testSwitchPluginBySignal();
+    void testSwitchToSpecifiedPlugin();
 
 private:
     QApplication *app;

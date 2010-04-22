@@ -488,4 +488,72 @@ void Ut_MIMPluginManager::checkHandlerMap(int handler, const QString &name)
     QCOMPARE(gconf.value().toString(), name);
 }
 
+void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
+{
+    const MIMHandlerState state = OnScreen;
+    QSet<MIMHandlerState> actualState;
+    DummyImPlugin  *plugin  = 0;
+    DummyImPlugin3 *plugin3 = 0;
+    MInputMethodBase *inputMethodBase = 0;
+    QPointer<DummyInputMethod > inputMethod  = 0;
+    QPointer<DummyInputMethod3> inputMethod3 = 0;
+
+    subject->addHandlerMap(OnScreen, pluginName);
+    subject->addHandlerMap(Hardware, pluginName);
+    subject->addHandlerMap(Accessory, pluginName);
+
+    // find for loaded plugins
+    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->plugins.begin());
+         iterator != subject->plugins.end();
+         ++iterator) {
+        if (pluginName == iterator.key()->name()) {
+            plugin  = dynamic_cast<DummyImPlugin  *>(iterator.key());
+        } else if (pluginName3 == iterator.key()->name()) {
+            plugin3 = dynamic_cast<DummyImPlugin3 *>(iterator.key());
+        }
+    }
+
+    QVERIFY(plugin  != 0);
+    QVERIFY(plugin3 != 0);
+    inputMethod  = dynamic_cast<DummyInputMethod  *>(subject->plugins[plugin].inputMethod);
+
+    actualState << state;
+    QVERIFY(subject->activePlugins.size() == 1);
+    subject->setActiveHandlers(actualState);
+
+    // nothing should be changed
+    subject->switchPlugin(pluginName, inputMethod);
+    subject->deleteInactiveIM();
+    QVERIFY(inputMethod != 0);
+    QCOMPARE(inputMethod->switchContextCallCount, 0);
+    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchUndefined);
+    QCOMPARE(subject->activePlugins.count(), 1);
+    QVERIFY(plugin == *subject->activePlugins.begin());
+    foreach (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
+        QVERIFY(handler == plugin);
+    }
+
+    // switch to another plugin
+    subject->switchPlugin(pluginName3, inputMethod);
+    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchUndefined);
+    subject->deleteInactiveIM();
+    QVERIFY(inputMethod == 0);
+
+    QCOMPARE(subject->activePlugins.count(), 1);
+    QVERIFY(plugin3 == *subject->activePlugins.begin());
+    inputMethodBase = subject->plugins[plugin3].inputMethod;
+    QVERIFY(inputMethodBase != 0);
+    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(inputMethodBase);
+    QVERIFY(inputMethod3 != 0);
+    QCOMPARE(inputMethod3->switchContextCallCount, 1);
+    QCOMPARE(inputMethod3->directionParam, M::SwitchUndefined);
+    QCOMPARE(inputMethod3->setStateCount, 1);
+    inputMethod3->setStateCount = 0;
+    QCOMPARE(inputMethod3->setStateParam.size(), 1);
+    QCOMPARE(*inputMethod3->setStateParam.begin(), state);
+    foreach (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
+        QVERIFY(handler == plugin3);
+    }
+}
+
 QTEST_APPLESS_MAIN(Ut_MIMPluginManager)

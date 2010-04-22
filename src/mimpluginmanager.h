@@ -69,8 +69,11 @@ private slots:
     //! Update and activate input source.
     void updateInputSource();
 
-    //! Swithces plugin in according to given \a direction
+    //! Switches plugin in according to given \a direction
     void switchPlugin(M::InputMethodSwitchDirection direction);
+
+    //! Switches active plugin to inactive plugin with given \a name
+    void switchPlugin(const QString &name);
 
 private:
     Q_DISABLE_COPY(MIMPluginManager)

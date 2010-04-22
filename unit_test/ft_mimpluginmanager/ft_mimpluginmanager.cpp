@@ -178,5 +178,32 @@ void Ft_MIMPluginManager::testSwitchPluginBySignal()
     QCOMPARE(activeInputMethods.first(), pluginName3);
 }
 
+void Ft_MIMPluginManager::testSwitchToSpecifiedPlugin()
+{
+    DummyImPlugin *plugin = 0;
+    QPointer<DummyInputMethod> inputMethod = 0;
+
+    subject->setDeleteIMTimeout(300);
+
+    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d->plugins.begin());
+            iterator != subject->d->plugins.end();
+            ++iterator) {
+        if (pluginName == iterator.key()->name()) {
+            plugin = dynamic_cast<DummyImPlugin *>(iterator.key());
+        }
+    }
+
+    QVERIFY(plugin != 0);
+    inputMethod = dynamic_cast<DummyInputMethod *>(subject->d->plugins[plugin].inputMethod);
+    QVERIFY(inputMethod != 0);
+
+    inputMethod->switchMe(pluginName3); //emit signal to switch plugin
+    QTest::qWait(500); //wait intil timer expiration
+
+    QStringList activeInputMethods = subject->activeInputMethodsNames();
+    QCOMPARE(activeInputMethods.count(), 1);
+    QCOMPARE(activeInputMethods.first(), pluginName3);
+}
+
 QTEST_APPLESS_MAIN(Ft_MIMPluginManager)
 

@@ -150,6 +150,12 @@ signals:
      */
     void pluginSwitchRequired(M::InputMethodSwitchDirection direction);
 
+    /*!
+     * Inform that active plugin should be replaced with specified one.
+     * \param pluginName Name orf plugin which will be activated
+     */
+    void pluginSwitchRequired(const QString &pluginName);
+
 private:
     Q_DISABLE_COPY(MInputMethodBase)
 

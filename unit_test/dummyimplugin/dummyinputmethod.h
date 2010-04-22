@@ -27,6 +27,7 @@ public:
 
 public slots:
     void switchMe();
+    void switchMe(const QString &name);
 };
 
 #endif

@@ -26,6 +26,12 @@ void DummyInputMethod::switchMe()
     emit pluginSwitchRequired(M::SwitchForward);
 }
 
+void DummyInputMethod::switchMe(const QString &name)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    emit pluginSwitchRequired(name);
+}
+
 void DummyInputMethod::switchContext(M::InputMethodSwitchDirection direction,
         bool enableAnimation)
 {

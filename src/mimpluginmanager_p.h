@@ -59,9 +59,14 @@ public:
     void deleteInactiveIM();
     void deactivatePlugin(MInputMethodPlugin *plugin);
     void convertAndFilterHandlers(const QStringList &handlerNames, QSet<MIMHandlerState> *handlers);
+
     void replacePlugin(M::InputMethodSwitchDirection direction, Plugins::iterator initiator,
                        Plugins::iterator replacement);
     bool switchPlugin(M::InputMethodSwitchDirection direction, MInputMethodBase *initiator);
+    bool switchPlugin(const QString &name, MInputMethodBase *initiator);
+    bool doSwitchPlugin(M::InputMethodSwitchDirection direction,
+                        Plugins::iterator source,
+                        Plugins::iterator replacement);
     void changeHandlerMap(MInputMethodPlugin *origin,
                           MInputMethodPlugin *replacement,
                           QSet<MIMHandlerState> states);
