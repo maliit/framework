@@ -156,6 +156,12 @@ signals:
      */
     void pluginSwitchRequired(const QString &pluginName);
 
+    /*!
+     * Inform that active plugin should be replaced with another one
+     * specified by settings.
+     */
+    void pluginSwitchRequired();
+
 private:
     Q_DISABLE_COPY(MInputMethodBase)
 
