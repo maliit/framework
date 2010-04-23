@@ -33,7 +33,7 @@
 static const GtkIMContextInfo meego_im_info =
 {
 	"meego-im",
-	"DUI Input Method",
+	"MEEGO Input Method",
 	"meego-im",
 	"",
 	"ja:ko:zh:*"
@@ -57,7 +57,7 @@ im_module_init (GTypeModule *type_module)
 {
 	STEP();
 	g_type_module_use(type_module);
-	dui_imcontext_register_type(type_module);
+	meego_imcontext_register_type(type_module);
 	STEP();
 }
 
@@ -81,7 +81,7 @@ GtkIMContext *
 im_module_create (const gchar *context_id)
 {
 	if (g_strcmp0(context_id, "meego-im") == 0) {
-		return dui_imcontext_new();
+		return meego_imcontext_new();
 	} else {
 		return NULL;
 	}

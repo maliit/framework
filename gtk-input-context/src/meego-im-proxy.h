@@ -27,52 +27,52 @@
 
 G_BEGIN_DECLS
 
-typedef struct _DuiIMProxy DuiIMProxy;
-typedef struct _DuiIMProxyClass DuiIMProxyClass;
+typedef struct _MeegoIMProxy MeegoIMProxy;
+typedef struct _MeegoIMProxyClass MeegoIMProxyClass;
 
-#define DUI_TYPE_IM_PROXY		(dui_im_proxy_get_type())
-#define DUI_IM_PROXY(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj), DUI_TYPE_IM_PROXY, DuiIMProxy))
-#define DUI_IM_PROXY_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass), DUI_TYPE_IM_PROXY, DuiIMProxyClass))
-#define DUI_IS_IM_PROXY(obj)		(G_TYPE_CHECK_INSTANCE_TYPE((obj), DUI_TYPE_IM_PROXY))
-#define DUI_IS_IM_PROXY_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), DUI_TYPE_IM_PROXY))
-#define DUI_IM_PROXY_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS((obj), DUI_TYPE_IM_PROXY, DuiIMProxyClass))
+#define MEEGO_TYPE_IM_PROXY		(meego_im_proxy_get_type())
+#define MEEGO_IM_PROXY(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj), MEEGO_TYPE_IM_PROXY, MeegoIMProxy))
+#define MEEGO_IM_PROXY_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass), MEEGO_TYPE_IM_PROXY, MeegoIMProxyClass))
+#define MEEGO_IS_IM_PROXY(obj)		(G_TYPE_CHECK_INSTANCE_TYPE((obj), MEEGO_TYPE_IM_PROXY))
+#define MEEGO_IS_IM_PROXY_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), MEEGO_TYPE_IM_PROXY))
+#define MEEGO_IM_PROXY_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS((obj), MEEGO_TYPE_IM_PROXY, MeegoIMProxyClass))
 
 
-struct _DuiIMProxy {
+struct _MeegoIMProxy {
 	GObject parent;
 
 	DBusGProxy *dbusproxy;
 };
 
-struct _DuiIMProxyClass {
+struct _MeegoIMProxyClass {
 	GObjectClass parent;
 };
 
-GType dui_im_proxy_get_type (void);
+GType meego_im_proxy_get_type (void);
 
-DuiIMProxy *dui_im_proxy_get_singleton (void);
+MeegoIMProxy *meego_im_proxy_get_singleton (void);
 
-gboolean dui_im_proxy_activate_context (DuiIMProxy *proxy);
-gboolean dui_im_proxy_app_orientation_changed (DuiIMProxy *proxy, const gint angle);
-gboolean dui_im_proxy_hide_input_method (DuiIMProxy *proxy);
+gboolean meego_im_proxy_activate_context (MeegoIMProxy *proxy);
+gboolean meego_im_proxy_app_orientation_changed (MeegoIMProxy *proxy, const gint angle);
+gboolean meego_im_proxy_hide_input_method (MeegoIMProxy *proxy);
 #if 0
 // Not yet really implemented
-gboolean dui_im_proxy_mouse_clicked_on_preedit (DuiIMProxy *proxy, const GValueArray* pos,
+gboolean meego_im_proxy_mouse_clicked_on_preedit (MeegoIMProxy *proxy, const GValueArray* pos,
 					const GValueArray* preedit_rect);
-gboolean dui_im_proxy_update_widget_info (DuiIMProxy *proxy, const GHashTable *state_information);
+gboolean meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTable *state_information);
 #endif
 
-gboolean dui_im_proxy_process_key_event (DuiIMProxy *proxy, const gint type, const gint code,
+gboolean meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gint code,
 					const gint modifiers, const char * text,
 					const gboolean auto_repeat, const gint count,
 					const gint native_scan_code);
 
-gboolean dui_im_proxy_reset (DuiIMProxy *proxy);
-gboolean dui_im_proxy_set_context_object (DuiIMProxy *proxy, const char *object_name);
-gboolean dui_im_proxy_set_copy_paste_state (DuiIMProxy *proxy, const gboolean copy_available,
+gboolean meego_im_proxy_reset (MeegoIMProxy *proxy);
+gboolean meego_im_proxy_set_context_object (MeegoIMProxy *proxy, const char *object_name);
+gboolean meego_im_proxy_set_copy_paste_state (MeegoIMProxy *proxy, const gboolean copy_available,
 					const gboolean paste_available);
-gboolean dui_im_proxy_set_preedit (DuiIMProxy *proxy, const char *text);
-gboolean dui_im_proxy_show_input_method (DuiIMProxy *proxy);
+gboolean meego_im_proxy_set_preedit (MeegoIMProxy *proxy, const char *text);
+gboolean meego_im_proxy_show_input_method (MeegoIMProxy *proxy);
 
 G_END_DECLS
 

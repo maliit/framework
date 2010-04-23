@@ -27,86 +27,86 @@
 #include "debug.h"
 
 
-static GType _dui_imcontext_type = 0;
+static GType _meego_imcontext_type = 0;
 static GtkIMContextClass *parent_class = NULL;
 
-static DuiIMContext *focused_imcontext = NULL;
+static MeegoIMContext *focused_imcontext = NULL;
 static GtkWidget *focused_widget = NULL;
 
 gboolean redirect_keys = FALSE;
 
-static void dui_imcontext_finalize(GObject *object);
+static void meego_imcontext_finalize(GObject *object);
 
-static void dui_imcontext_class_init (DuiIMContextClass *klass);
-static void dui_imcontext_init (DuiIMContext *dui_imcontext);
+static void meego_imcontext_class_init (MeegoIMContextClass *klass);
+static void meego_imcontext_init (MeegoIMContext *meego_imcontext);
 
-static void dui_imcontext_focus_in (GtkIMContext *context);
-static void dui_imcontext_focus_out (GtkIMContext *context);
-static gboolean dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event);
-static void dui_imcontext_reset (GtkIMContext *context);
-static void dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrList **attrs, gint *cursor_pos);
-static void dui_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled);
-static void dui_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window);
-static void dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area);
+static void meego_imcontext_focus_in (GtkIMContext *context);
+static void meego_imcontext_focus_out (GtkIMContext *context);
+static gboolean meego_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event);
+static void meego_imcontext_reset (GtkIMContext *context);
+static void meego_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrList **attrs, gint *cursor_pos);
+static void meego_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled);
+static void meego_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window);
+static void meego_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area);
 
-static GtkIMContext *dui_imcontext_get_slave_imcontext (void);
+static GtkIMContext *meego_imcontext_get_slave_imcontext (void);
 
 
-GType dui_imcontext_get_type ()
+GType meego_imcontext_get_type ()
 {
-    return _dui_imcontext_type;
+    return _meego_imcontext_type;
 }
 
 
 void
-dui_imcontext_register_type (GTypeModule *type_module)
+meego_imcontext_register_type (GTypeModule *type_module)
 {
-	static const GTypeInfo dui_imcontext_info = {
-		sizeof (DuiIMContextClass),
+	static const GTypeInfo meego_imcontext_info = {
+		sizeof (MeegoIMContextClass),
 		(GBaseInitFunc) NULL,
 		(GBaseFinalizeFunc) NULL,
-		(GClassInitFunc) dui_imcontext_class_init,
+		(GClassInitFunc) meego_imcontext_class_init,
 		NULL,
 		NULL,
-		sizeof (DuiIMContext),
+		sizeof (MeegoIMContext),
 		0,
-		(GInstanceInitFunc) dui_imcontext_init,
+		(GInstanceInitFunc) meego_imcontext_init,
 	};
 
-	if (_dui_imcontext_type)
+	if (_meego_imcontext_type)
 		return;
 
         if (type_module) {
-		_dui_imcontext_type = 
+		_meego_imcontext_type = 
 			g_type_module_register_type(
 				type_module,
 				GTK_TYPE_IM_CONTEXT,
-				"DuiIMContext",
-				&dui_imcontext_info,
+				"MeegoIMContext",
+				&meego_imcontext_info,
 				(GTypeFlags)0);
         } else {
-		_dui_imcontext_type =
+		_meego_imcontext_type =
 			g_type_register_static(
 				GTK_TYPE_IM_CONTEXT,
-				"DuiIMContext",
-				&dui_imcontext_info,
+				"MeegoIMContext",
+				&meego_imcontext_info,
 				(GTypeFlags)0);
         }
 }
 
 
 static gboolean
-dui_imcontext_init_dbus (DuiIMContext *self)
+meego_imcontext_init_dbus (MeegoIMContext *self)
 {
 	static gboolean first_time = TRUE;
 	gboolean ret = TRUE;
 
-	self->proxy = dui_im_proxy_get_singleton();
-	self->dbusobj = dui_imcontext_dbusobj_get_singleton();
+	self->proxy = meego_im_proxy_get_singleton();
+	self->dbusobj = meego_imcontext_dbusobj_get_singleton();
 
 	if (first_time) {
-		ret = dui_im_proxy_set_context_object(self->proxy,
-				dui_imcontext_dbusobj_get_path(self->dbusobj));
+		ret = meego_im_proxy_set_context_object(self->proxy,
+				meego_imcontext_dbusobj_get_path(self->dbusobj));
 		first_time = FALSE;
 	}
 
@@ -155,7 +155,7 @@ slave_preedit_changed (GtkIMContext *slave, gpointer data)
 
 
 static GtkIMContext *
-dui_imcontext_get_slave_imcontext (void)
+meego_imcontext_get_slave_imcontext (void)
 {
 	static GtkIMContext *slave_ic = NULL;
 
@@ -172,17 +172,17 @@ dui_imcontext_get_slave_imcontext (void)
 
 
 GtkIMContext *
-dui_imcontext_new (void)
+meego_imcontext_new (void)
 {
-	DuiIMContext *ic = DUI_IMCONTEXT(g_object_new(DUI_TYPE_IMCONTEXT, NULL));
+	MeegoIMContext *ic = MEEGO_IMCONTEXT(g_object_new(MEEGO_TYPE_IMCONTEXT, NULL));
 	return GTK_IM_CONTEXT(ic);
 }
 
 
 static void
-dui_imcontext_finalize (GObject *object)
+meego_imcontext_finalize (GObject *object)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(object);
+	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(object);
 	G_OBJECT_CLASS(parent_class)->finalize(object);
 
 	if (imcontext->client_window)
@@ -191,27 +191,27 @@ dui_imcontext_finalize (GObject *object)
 
 
 static void
-dui_imcontext_class_init (DuiIMContextClass *klass)
+meego_imcontext_class_init (MeegoIMContextClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 	parent_class = (GtkIMContextClass *)g_type_class_peek_parent(klass);
 	GtkIMContextClass *imclass = GTK_IM_CONTEXT_CLASS(klass);
 
-	gobject_class->finalize = dui_imcontext_finalize;
+	gobject_class->finalize = meego_imcontext_finalize;
 
-	imclass->focus_in = dui_imcontext_focus_in;
-	imclass->focus_out = dui_imcontext_focus_out;
-	imclass->filter_keypress = dui_imcontext_filter_key_event;
-	imclass->reset = dui_imcontext_reset;
-	imclass->set_client_window = dui_imcontext_set_client_window;
-	imclass->get_preedit_string = dui_imcontext_get_preedit_string;
-	imclass->set_cursor_location = dui_imcontext_set_cursor_location;
-	imclass->set_use_preedit = dui_imcontext_set_preedit_enabled;
+	imclass->focus_in = meego_imcontext_focus_in;
+	imclass->focus_out = meego_imcontext_focus_out;
+	imclass->filter_keypress = meego_imcontext_filter_key_event;
+	imclass->reset = meego_imcontext_reset;
+	imclass->set_client_window = meego_imcontext_set_client_window;
+	imclass->get_preedit_string = meego_imcontext_get_preedit_string;
+	imclass->set_cursor_location = meego_imcontext_set_cursor_location;
+	imclass->set_use_preedit = meego_imcontext_set_preedit_enabled;
 }
 
 
 static void
-dui_imcontext_init (DuiIMContext *self)
+meego_imcontext_init (MeegoIMContext *self)
 {
 	self->client_window = NULL;
 
@@ -224,25 +224,25 @@ dui_imcontext_init (DuiIMContext *self)
 	self->preedit_attrs = NULL;
 	self->preedit_cursor_pos = 0;
 
-	dui_imcontext_init_dbus(self);
+	meego_imcontext_init_dbus(self);
 }
 
 
 static void
-dui_imcontext_focus_in (GtkIMContext *context)
+meego_imcontext_focus_in (GtkIMContext *context)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
 	gboolean ret = TRUE;
 
 	DBG("imcontext = %p", imcontext);
 
 	if (focused_imcontext && focused_imcontext != imcontext)
-		dui_imcontext_focus_out(GTK_IM_CONTEXT(focused_imcontext));
+		meego_imcontext_focus_out(GTK_IM_CONTEXT(focused_imcontext));
 	focused_imcontext = imcontext;
 
-	ret = dui_im_proxy_activate_context(imcontext->proxy);
+	ret = meego_im_proxy_activate_context(imcontext->proxy);
 	if (ret)
-		dui_im_proxy_show_input_method(imcontext->proxy);
+		meego_im_proxy_show_input_method(imcontext->proxy);
 
 	// TODO: anything else than call "activateContext" and "showInputMethod" ?
 
@@ -250,12 +250,12 @@ dui_imcontext_focus_in (GtkIMContext *context)
 
 
 static void
-dui_imcontext_focus_out (GtkIMContext *context)
+meego_imcontext_focus_out (GtkIMContext *context)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
 	DBG("imcontext = %p", imcontext);
 
-	dui_im_proxy_hide_input_method(imcontext->proxy);
+	meego_im_proxy_hide_input_method(imcontext->proxy);
 
 	// TODO: anything else than call "hideInputMethod" ?
 
@@ -265,9 +265,9 @@ dui_imcontext_focus_out (GtkIMContext *context)
 
 
 static gboolean
-dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
+meego_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
 	int qevent_type = 0, qt_keycode = 0, qt_modifier = 0;
 	gchar *text = "";
 
@@ -277,17 +277,17 @@ dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 		event->type, event->state, event->keyval, event->hardware_keycode, event->group);
 
 	if (focused_imcontext != imcontext)
-		dui_imcontext_focus_in(context);
+		meego_imcontext_focus_in(context);
 
 	if ((event->state & IM_FORWARD_MASK) || !redirect_keys) {
-		GtkIMContext *slave = dui_imcontext_get_slave_imcontext();
+		GtkIMContext *slave = meego_imcontext_get_slave_imcontext();
 		return gtk_im_context_filter_keypress(slave, event);
 	}
 
 	if (!gdk_key_event_to_qt(event, &qevent_type, &qt_keycode, &qt_modifier))
 		return FALSE;
 
-	dui_im_proxy_process_key_event(imcontext->proxy, qevent_type, qt_keycode, qt_modifier,
+	meego_im_proxy_process_key_event(imcontext->proxy, qevent_type, qt_keycode, qt_modifier,
 		text, 0, 1, event->hardware_keycode);
 
 	return TRUE;
@@ -295,19 +295,19 @@ dui_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 
 
 static void
-dui_imcontext_reset (GtkIMContext *context)
+meego_imcontext_reset (GtkIMContext *context)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
 	DBG("imcontext = %p", imcontext);
 
-	dui_im_proxy_reset(imcontext->proxy);
+	meego_im_proxy_reset(imcontext->proxy);
 }
 
 
 static void
-dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrList **attrs, gint *cursor_pos)
+meego_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrList **attrs, gint *cursor_pos)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
 
 	DBG("imcontext = %p", imcontext);
 
@@ -333,17 +333,17 @@ dui_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAttrL
 
 
 static void
-dui_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled)
+meego_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled)
 {
-	// TODO: Seems QT/DUI don't need it, it will always showing preedit.
+	// TODO: Seems QT/MEEGO don't need it, it will always showing preedit.
 	return;
 }
 
 
 static void
-dui_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window)
+meego_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
 	STEP();
 
 	if (imcontext->client_window)
@@ -359,9 +359,9 @@ dui_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window)
 
 
 static void
-dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
+meego_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 {
-	DuiIMContext *imcontext = DUI_IMCONTEXT(context);
+	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
 	//DBG("imcontext = %p, x=%d, y=%d, w=%d, h=%d", imcontext,
 	//	area->x, area->y, area->width, area->height);
 
@@ -370,14 +370,14 @@ dui_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 	// TODO: call updateWidgetInformation?
 	//The cursor location from GTK widget is simillar to ImMicroFocus info of a QWidget
 	//Thus we might need to update Qt::ImMicroFocus info according to this. 
-	//But DUI IM seems not using this info at all
+	//But MEEGO IM seems not using this info at all
 }
 
 
 // Call back functions for dbus obj
 
 gboolean
-dui_imcontext_client_activation_lost_event (DuiIMContextDbusObj *obj)
+meego_imcontext_client_activation_lost_event (MeegoIMContextDbusObj *obj)
 {
 	STEP();
 	return TRUE;
@@ -385,7 +385,7 @@ dui_imcontext_client_activation_lost_event (DuiIMContextDbusObj *obj)
 
 
 gboolean
-dui_imcontext_client_im_initiated_hide (DuiIMContextDbusObj *obj)
+meego_imcontext_client_im_initiated_hide (MeegoIMContextDbusObj *obj)
 {
 	STEP();
 	return TRUE;
@@ -393,7 +393,7 @@ dui_imcontext_client_im_initiated_hide (DuiIMContextDbusObj *obj)
 
 
 gboolean
-dui_imcontext_client_commit_string (DuiIMContextDbusObj *obj, char *string)
+meego_imcontext_client_commit_string (MeegoIMContextDbusObj *obj, char *string)
 {
 	DBG("string is:%s", string);
 	if (focused_imcontext)
@@ -404,7 +404,7 @@ dui_imcontext_client_commit_string (DuiIMContextDbusObj *obj, char *string)
 
 
 gboolean
-dui_imcontext_client_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face)
+meego_imcontext_client_update_preedit (MeegoIMContextDbusObj *obj, char *string, int preedit_face)
 {
 	STEP();
 	return TRUE;
@@ -412,7 +412,7 @@ dui_imcontext_client_update_preedit (DuiIMContextDbusObj *obj, char *string, int
 
 
 gboolean
-dui_imcontext_client_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+meego_imcontext_client_key_event (MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count)
 {
 	GdkEventKey *event = NULL;
@@ -435,7 +435,7 @@ dui_imcontext_client_key_event (DuiIMContextDbusObj *obj, int type, int key, int
 
 
 gboolean
-dui_imcontext_client_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data)
+meego_imcontext_client_update_input_method_area (MeegoIMContextDbusObj *obj, GPtrArray *data)
 {
 	STEP();
 	return TRUE;
@@ -443,7 +443,7 @@ dui_imcontext_client_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArr
 
 
 gboolean
-dui_imcontext_client_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction)
+meego_imcontext_client_set_global_correction_enabled (MeegoIMContextDbusObj *obj, gboolean correction)
 {
 	STEP();
 	return TRUE;
@@ -451,7 +451,7 @@ dui_imcontext_client_set_global_correction_enabled (DuiIMContextDbusObj *obj, gb
 
 
 gboolean
-dui_imcontext_client_copy (DuiIMContextDbusObj *obj)
+meego_imcontext_client_copy (MeegoIMContextDbusObj *obj)
 {
 	GdkWindow *window = NULL;
 	GdkEventKey *event = NULL;
@@ -482,7 +482,7 @@ dui_imcontext_client_copy (DuiIMContextDbusObj *obj)
 
 
 gboolean
-dui_imcontext_client_paste (DuiIMContextDbusObj *obj)
+meego_imcontext_client_paste (MeegoIMContextDbusObj *obj)
 {
 	GdkWindow *window = NULL;
 	GdkEventKey *event = NULL;
@@ -514,7 +514,7 @@ dui_imcontext_client_paste (DuiIMContextDbusObj *obj)
 
 
 gboolean
-dui_imcontext_client_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled)
+meego_imcontext_client_set_redirect_keys (MeegoIMContextDbusObj *obj, gboolean enabled)
 {
 	DBG("enabled = %d", enabled);
 	redirect_keys = enabled;
@@ -523,7 +523,7 @@ dui_imcontext_client_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabl
 
 
 gboolean
-dui_imcontext_client_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid)
+meego_imcontext_client_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray** rect, gboolean *valid)
 {
 	STEP();
 	return TRUE;

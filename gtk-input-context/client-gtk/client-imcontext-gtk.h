@@ -33,22 +33,22 @@ typedef enum {
 	IM_FORWARD_MASK = 1 << 20
 } IMModifierType;
 
-typedef struct _DuiIMContext DuiIMContext;
-typedef struct _DuiIMContextClass DuiIMContextClass;
+typedef struct _MeegoIMContext MeegoIMContext;
+typedef struct _MeegoIMContextClass MeegoIMContextClass;
 
-#define DUI_TYPE_IMCONTEXT		(dui_imcontext_get_type())
-#define DUI_IMCONTEXT(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj), DUI_TYPE_IMCONTEXT, DuiIMContext))
-#define DUI_IMCONTEXT_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass), DUI_TYPE_IMCONTEXT, DuiIMContextClass))
-#define DUI_IS_IMCONTEXT(obj)		(G_TYPE_CHECK_INSTANCE_TYPE((obj), DUI_TYPE_IMCONTEXT))
-#define DUI_IS_IMCONTEXT_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), DUI_TYPE_IMCONTEXT))
-#define DUI_IMCONTEXT_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS((obj), DUI_TYPE_IMCONTEXT, DuiIMContextClass))
+#define MEEGO_TYPE_IMCONTEXT		(meego_imcontext_get_type())
+#define MEEGO_IMCONTEXT(obj)		(G_TYPE_CHECK_INSTANCE_CAST((obj), MEEGO_TYPE_IMCONTEXT, MeegoIMContext))
+#define MEEGO_IMCONTEXT_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST((klass), MEEGO_TYPE_IMCONTEXT, MeegoIMContextClass))
+#define MEEGO_IS_IMCONTEXT(obj)		(G_TYPE_CHECK_INSTANCE_TYPE((obj), MEEGO_TYPE_IMCONTEXT))
+#define MEEGO_IS_IMCONTEXT_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE((klass), MEEGO_TYPE_IMCONTEXT))
+#define MEEGO_IMCONTEXT_GET_CLASS(obj)	(G_TYPE_INSTANCE_GET_CLASS((obj), MEEGO_TYPE_IMCONTEXT, MeegoIMContextClass))
 
 
-struct _DuiIMContext {
+struct _MeegoIMContext {
 	GtkIMContext parent;
 
-	DuiIMProxy *proxy;
-	DuiIMContextDbusObj *dbusobj;
+	MeegoIMProxy *proxy;
+	MeegoIMContextDbusObj *dbusobj;
 
 	GdkWindow *client_window;
 	GdkRectangle cursor_location;
@@ -58,14 +58,14 @@ struct _DuiIMContext {
 	gint preedit_cursor_pos;
 };
 
-struct _DuiIMContextClass {
+struct _MeegoIMContextClass {
 	GtkIMContextClass parent;
 };
 
-GType dui_imcontext_get_type (void);
+GType meego_imcontext_get_type (void);
 
-void dui_imcontext_register_type (GTypeModule *type_module);
-GtkIMContext *dui_imcontext_new (void);
+void meego_imcontext_register_type (GTypeModule *type_module);
+GtkIMContext *meego_imcontext_new (void);
 
 
 G_END_DECLS

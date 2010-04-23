@@ -24,47 +24,47 @@
 
 typedef struct {
 	GObject parent;
-} DuiIMContextDbusObj;
+} MeegoIMContextDbusObj;
 
 typedef struct {
 	GObjectClass parent;
-} DuiIMContextDbusObjClass;
+} MeegoIMContextDbusObjClass;
 
-GType dui_imcontext_dbusobj_get_type(void);
-
-
-#define DUI_IMCONTEXT_TYPE_DBUSOBJ (dui_imcontext_dbusobj_get_type())
-#define DUI_IMCONTEXT_DBUSOBJ(obj) \
-        (G_TYPE_CHECK_INSTANCE_CAST((obj), DUI_IMCONTEXT_TYPE_DBUSOBJ, DuiIMContextDbusObj))
-#define DUI_IMCONTEXT_DBUSOBJ_CLASS(klass) \
-        (G_TYPE_CHECK_CLASS_CAST((klass), DUI_IMCONTEXT_TYPE_DBUSOBJ, DuiIMContextDbusObjClass))
-#define DUI_IMCONTEXT_IS_DBUSOBJ(obj) \
-        (G_TYPE_CHECK_INSTANCE_TYPE((obj), DUI_IMCONTEXT_TYPE_DBUSOBJ))
-#define DUI_IMCONTEXT_IS_DBUSOBJ_CLASS(klass) \
-        (G_TYPE_CHECK_CLASS_TYPE((klass), DUI_IMCONTEXT_TYPE_DBUSOBJ))
-#define DUI_IMCONTEXT_DBUSOBJ_GET_CLASS(obj) \
-        (G_TYPE_INSTANCE_GET_CLASS((obj), DUI_IMCONTEXT_TYPE_DBUSOBJ, DuiIMContextDbusObjClass))
+GType meego_imcontext_dbusobj_get_type(void);
 
 
-DuiIMContextDbusObj *dui_imcontext_dbusobj_get_singleton (void);
-gchar *dui_imcontext_dbusobj_get_path(DuiIMContextDbusObj *obj);
+#define MEEGO_IMCONTEXT_TYPE_DBUSOBJ (meego_imcontext_dbusobj_get_type())
+#define MEEGO_IMCONTEXT_DBUSOBJ(obj) \
+        (G_TYPE_CHECK_INSTANCE_CAST((obj), MEEGO_IMCONTEXT_TYPE_DBUSOBJ, MeegoIMContextDbusObj))
+#define MEEGO_IMCONTEXT_DBUSOBJ_CLASS(klass) \
+        (G_TYPE_CHECK_CLASS_CAST((klass), MEEGO_IMCONTEXT_TYPE_DBUSOBJ, MeegoIMContextDbusObjClass))
+#define MEEGO_IMCONTEXT_IS_DBUSOBJ(obj) \
+        (G_TYPE_CHECK_INSTANCE_TYPE((obj), MEEGO_IMCONTEXT_TYPE_DBUSOBJ))
+#define MEEGO_IMCONTEXT_IS_DBUSOBJ_CLASS(klass) \
+        (G_TYPE_CHECK_CLASS_TYPE((klass), MEEGO_IMCONTEXT_TYPE_DBUSOBJ))
+#define MEEGO_IMCONTEXT_DBUSOBJ_GET_CLASS(obj) \
+        (G_TYPE_INSTANCE_GET_CLASS((obj), MEEGO_IMCONTEXT_TYPE_DBUSOBJ, MeegoIMContextDbusObjClass))
+
+
+MeegoIMContextDbusObj *meego_imcontext_dbusobj_get_singleton (void);
+gchar *meego_imcontext_dbusobj_get_path(MeegoIMContextDbusObj *obj);
 
 
 
 // Call back functions for dbus obj, need to be implemented in imcontext client side
 
-gboolean dui_imcontext_client_activation_lost_event (DuiIMContextDbusObj *obj);
-gboolean dui_imcontext_client_im_initiated_hide (DuiIMContextDbusObj *obj);
-gboolean dui_imcontext_client_commit_string (DuiIMContextDbusObj *obj, char *string);
-gboolean dui_imcontext_client_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face);
-gboolean dui_imcontext_client_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+gboolean meego_imcontext_client_activation_lost_event (MeegoIMContextDbusObj *obj);
+gboolean meego_imcontext_client_im_initiated_hide (MeegoIMContextDbusObj *obj);
+gboolean meego_imcontext_client_commit_string (MeegoIMContextDbusObj *obj, char *string);
+gboolean meego_imcontext_client_update_preedit (MeegoIMContextDbusObj *obj, char *string, int preedit_face);
+gboolean meego_imcontext_client_key_event (MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count);
-gboolean dui_imcontext_client_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data);
-gboolean dui_imcontext_client_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction);
-gboolean dui_imcontext_client_copy (DuiIMContextDbusObj *obj);
-gboolean dui_imcontext_client_paste (DuiIMContextDbusObj *obj);
-gboolean dui_imcontext_client_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled);
-gboolean dui_imcontext_client_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid);
+gboolean meego_imcontext_client_update_input_method_area (MeegoIMContextDbusObj *obj, GPtrArray *data);
+gboolean meego_imcontext_client_set_global_correction_enabled (MeegoIMContextDbusObj *obj, gboolean correction);
+gboolean meego_imcontext_client_copy (MeegoIMContextDbusObj *obj);
+gboolean meego_imcontext_client_paste (MeegoIMContextDbusObj *obj);
+gboolean meego_imcontext_client_set_redirect_keys (MeegoIMContextDbusObj *obj, gboolean enabled);
+gboolean meego_imcontext_client_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray** rect, gboolean *valid);
 
 
 #endif /* _MEEGO_IMCONTEXT_DBUS_H */

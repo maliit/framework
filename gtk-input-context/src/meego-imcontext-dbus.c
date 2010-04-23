@@ -26,24 +26,24 @@
 #include "meego-imcontext-dbus.h"
 #include "debug.h"
 
-#define DUI_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX "org.meego.duiimcontext."
-#define DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/org/meego/duiimcontext"
+#define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX "org.meego.meegoimcontext."
+#define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/org/meego/meegoimcontext"
 
 
-G_DEFINE_TYPE( DuiIMContextDbusObj, dui_imcontext_dbusobj, G_TYPE_OBJECT);
+G_DEFINE_TYPE( MeegoIMContextDbusObj, meego_imcontext_dbusobj, G_TYPE_OBJECT);
 
-gboolean meego_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError **error);
-gboolean meego_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face, GError **error);
-gboolean meego_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+gboolean meego_imcontext_dbus_activation_lost_event (MeegoIMContextDbusObj *obj, GError **error);
+gboolean meego_imcontext_dbus_im_initiated_hide (MeegoIMContextDbusObj *obj, GError **error);
+gboolean meego_imcontext_dbus_commit_string (MeegoIMContextDbusObj *obj, char *string, GError **error);
+gboolean meego_imcontext_dbus_update_preedit (MeegoIMContextDbusObj *obj, char *string, int preedit_face, GError **error);
+gboolean meego_imcontext_dbus_key_event (MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count, GError **error);
-gboolean meego_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data, GError **error);
-gboolean meego_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction, GError **error);
-gboolean meego_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled, GError **error);
-gboolean meego_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error);
+gboolean meego_imcontext_dbus_update_input_method_area (MeegoIMContextDbusObj *obj, GPtrArray *data, GError **error);
+gboolean meego_imcontext_dbus_set_global_correction_enabled (MeegoIMContextDbusObj *obj, gboolean correction, GError **error);
+gboolean meego_imcontext_dbus_copy (MeegoIMContextDbusObj *obj, GError **error);
+gboolean meego_imcontext_dbus_paste (MeegoIMContextDbusObj *obj, GError **error);
+gboolean meego_imcontext_dbus_set_redirect_keys (MeegoIMContextDbusObj *obj, gboolean enabled, GError **error);
+gboolean meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error);
 
 
 #include "meego-imcontext-dbus-glue.h"
@@ -53,14 +53,14 @@ _generate_dbus_service_name(void)
 {
 	gchar *name = NULL;
 
-	name = g_strconcat(DUI_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX, g_get_prgname(), NULL);
+	name = g_strconcat(MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX, g_get_prgname(), NULL);
 
 	return name;
 }
 
 
 static void
-dui_imcontext_dbusobj_init(DuiIMContextDbusObj* obj)
+meego_imcontext_dbusobj_init(MeegoIMContextDbusObj* obj)
 {
 	STEP();
 	g_assert(obj != NULL);
@@ -68,21 +68,21 @@ dui_imcontext_dbusobj_init(DuiIMContextDbusObj* obj)
 
 
 static void
-dui_imcontext_dbusobj_class_init(DuiIMContextDbusObjClass* klass) 
+meego_imcontext_dbusobj_class_init(MeegoIMContextDbusObjClass* klass) 
 {
 	g_assert(klass != NULL);
 
-	dbus_g_object_type_install_info(DUI_IMCONTEXT_TYPE_DBUSOBJ,
+	dbus_g_object_type_install_info(MEEGO_IMCONTEXT_TYPE_DBUSOBJ,
 					&dbus_glib_meego_imcontext_dbus_object_info);
 }
 
 
-DuiIMContextDbusObj *
-dui_imcontext_dbus_register(void)
+MeegoIMContextDbusObj *
+meego_imcontext_dbus_register(void)
 {
 	DBusGConnection *bus = NULL;
 	DBusGProxy *busProxy = NULL;
-	DuiIMContextDbusObj *dbusobj = NULL;
+	MeegoIMContextDbusObj *dbusobj = NULL;
 	guint result;
 	GError *error = NULL;
 	gchar *servicename = NULL;
@@ -126,14 +126,14 @@ dui_imcontext_dbus_register(void)
 		goto done;
 	}
 
-	dbusobj = g_object_new(DUI_IMCONTEXT_TYPE_DBUSOBJ, NULL);
+	dbusobj = g_object_new(MEEGO_IMCONTEXT_TYPE_DBUSOBJ, NULL);
 
 	if (dbusobj == NULL) {
 		g_warning("Failed to create dbus_obj.\n");
 		goto done;
 	}
 
-	dbus_g_connection_register_g_object(bus, DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
+	dbus_g_connection_register_g_object(bus, MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
 						G_OBJECT(dbusobj));
 
 done:
@@ -142,19 +142,19 @@ done:
 }
 
 
-DuiIMContextDbusObj *
-dui_imcontext_dbusobj_get_singleton (void)
+MeegoIMContextDbusObj *
+meego_imcontext_dbusobj_get_singleton (void)
 {
-	static DuiIMContextDbusObj *dbusobj = NULL;
+	static MeegoIMContextDbusObj *dbusobj = NULL;
 
 	if (!dbusobj)
-		dbusobj = dui_imcontext_dbus_register();
+		dbusobj = meego_imcontext_dbus_register();
 	return dbusobj;
 }
 
 
 gboolean
-meego_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **error)
+meego_imcontext_dbus_activation_lost_event (MeegoIMContextDbusObj *obj, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -162,7 +162,7 @@ meego_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **e
 
 
 gboolean
-meego_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error)
+meego_imcontext_dbus_im_initiated_hide (MeegoIMContextDbusObj *obj, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -170,15 +170,15 @@ meego_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error
 
 
 gboolean
-meego_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError **error)
+meego_imcontext_dbus_commit_string (MeegoIMContextDbusObj *obj, char *string, GError **error)
 {
 	DBG("string is:%s", string);
-	return dui_imcontext_client_commit_string(obj, string);
+	return meego_imcontext_client_commit_string(obj, string);
 }
 
 
 gboolean
-meego_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face, GError **error)
+meego_imcontext_dbus_update_preedit (MeegoIMContextDbusObj *obj, char *string, int preedit_face, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -186,17 +186,17 @@ meego_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int
 
 
 gboolean
-meego_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+meego_imcontext_dbus_key_event (MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count, GError **error)
 {
 	DBG("type=0x%x, key=0x%x, modifiers=0x%x, text = %s, auto_repeat=%d, count=%d",
 		type, key, modifiers, text, auto_repeat, count);
-	return dui_imcontext_client_key_event(obj, type, key, modifiers, text, auto_repeat, count);
+	return meego_imcontext_client_key_event(obj, type, key, modifiers, text, auto_repeat, count);
 }
 
 
 gboolean
-meego_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data, GError **error)
+meego_imcontext_dbus_update_input_method_area (MeegoIMContextDbusObj *obj, GPtrArray *data, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -204,7 +204,7 @@ meego_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArr
 
 
 gboolean
-meego_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction, GError **error)
+meego_imcontext_dbus_set_global_correction_enabled (MeegoIMContextDbusObj *obj, gboolean correction, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -212,34 +212,34 @@ meego_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gb
 
 
 gboolean
-meego_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error)
+meego_imcontext_dbus_copy (MeegoIMContextDbusObj *obj, GError **error)
 {
 	STEP();
-	return dui_imcontext_client_copy(obj);
+	return meego_imcontext_client_copy(obj);
 	return TRUE;
 }
 
 
 gboolean
-meego_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error)
+meego_imcontext_dbus_paste (MeegoIMContextDbusObj *obj, GError **error)
 {
 	STEP();
-	return dui_imcontext_client_paste(obj);
+	return meego_imcontext_client_paste(obj);
 	return TRUE;
 }
 
 
 gboolean
-meego_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled, GError **error)
+meego_imcontext_dbus_set_redirect_keys (MeegoIMContextDbusObj *obj, gboolean enabled, GError **error)
 {
 	STEP();
-	dui_imcontext_client_set_redirect_keys(obj, enabled);
+	meego_imcontext_client_set_redirect_keys(obj, enabled);
 	return TRUE;
 }
 
 
 gboolean
-meego_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error)
+meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -247,9 +247,9 @@ meego_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** r
 
 
 gchar *
-dui_imcontext_dbusobj_get_path(DuiIMContextDbusObj *obj)
+meego_imcontext_dbusobj_get_path(MeegoIMContextDbusObj *obj)
 {
-	return DUI_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH;
+	return MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH;
 }
 
 

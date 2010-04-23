@@ -23,47 +23,47 @@
 #include "meego-im-proxy-glue.h"
 #include "debug.h"
 
-G_DEFINE_TYPE (DuiIMProxy, dui_im_proxy, G_TYPE_OBJECT);
+G_DEFINE_TYPE (MeegoIMProxy, meego_im_proxy, G_TYPE_OBJECT);
 
-#define DUI_IM_SERVICE_NAME "org.maemo.duiinputmethodserver1"
-#define DUI_IM_OBJECT_PATH "/org/maemo/duiinputmethodserver1"
-#define DUI_IM_SERVICE_INTERFACE "org.maemo.duiinputmethodserver1"
+#define MEEGO_IM_SERVICE_NAME "org.maemo.duiinputmethodserver1"
+#define MEEGO_IM_OBJECT_PATH "/org/maemo/duiinputmethodserver1"
+#define MEEGO_IM_SERVICE_INTERFACE "org.maemo.duiinputmethodserver1"
 
-static void dui_im_proxy_finalize(GObject *object);
-static void dui_im_proxy_class_init (DuiIMProxyClass *klass);
-static void dui_im_proxy_init (DuiIMProxy *dui_im_proxy);
+static void meego_im_proxy_finalize(GObject *object);
+static void meego_im_proxy_class_init (MeegoIMProxyClass *klass);
+static void meego_im_proxy_init (MeegoIMProxy *meego_im_proxy);
 
 
-DuiIMProxy *
-dui_im_proxy_get_singleton (void)
+MeegoIMProxy *
+meego_im_proxy_get_singleton (void)
 {
-	static DuiIMProxy *proxy = NULL;
+	static MeegoIMProxy *proxy = NULL;
 	if (!proxy)
-		proxy = g_object_new(DUI_TYPE_IM_PROXY, NULL);
+		proxy = g_object_new(MEEGO_TYPE_IM_PROXY, NULL);
 	return proxy;
 }
 
 
 static void
-dui_im_proxy_finalize (GObject *object)
+meego_im_proxy_finalize (GObject *object)
 {
-	//DuiIMProxy *im_proxy = DUI_IM_PROXY(object);
+	//MeegoIMProxy *im_proxy = MEEGO_IM_PROXY(object);
 
-	G_OBJECT_CLASS(dui_im_proxy_parent_class)->finalize(object);
+	G_OBJECT_CLASS(meego_im_proxy_parent_class)->finalize(object);
 }
 
 
 static void
-dui_im_proxy_class_init (DuiIMProxyClass *klass)
+meego_im_proxy_class_init (MeegoIMProxyClass *klass)
 {
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 
-	gobject_class->finalize = dui_im_proxy_finalize;
+	gobject_class->finalize = meego_im_proxy_finalize;
 }
 
 
 static void
-dui_im_proxy_init (DuiIMProxy *self)
+meego_im_proxy_init (MeegoIMProxy *self)
 {
 	DBusGConnection* bus;
 	DBusGProxy* dbusproxy;
@@ -76,12 +76,12 @@ dui_im_proxy_init (DuiIMProxy *self)
 	}
 
 	dbusproxy = dbus_g_proxy_new_for_name(bus,
-			DUI_IM_SERVICE_NAME, /* name */
-			DUI_IM_OBJECT_PATH, /* obj path */
-			DUI_IM_SERVICE_INTERFACE /* interface */);
+			MEEGO_IM_SERVICE_NAME, /* name */
+			MEEGO_IM_OBJECT_PATH, /* obj path */
+			MEEGO_IM_SERVICE_INTERFACE /* interface */);
 
 	if (dbusproxy == NULL) {
-		g_warning("could not create dbus_proxy for %s \n", DUI_IM_SERVICE_NAME);
+		g_warning("could not create dbus_proxy for %s \n", MEEGO_IM_SERVICE_NAME);
 	}
 
 	self->dbusproxy = dbusproxy;
@@ -89,7 +89,7 @@ dui_im_proxy_init (DuiIMProxy *self)
 
 
 gboolean
-dui_im_proxy_activate_context (DuiIMProxy *proxy)
+meego_im_proxy_activate_context (MeegoIMProxy *proxy)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -109,7 +109,7 @@ dui_im_proxy_activate_context (DuiIMProxy *proxy)
 
 
 gboolean
-dui_im_proxy_app_orientation_changed (DuiIMProxy *proxy, const gint angle)
+meego_im_proxy_app_orientation_changed (MeegoIMProxy *proxy, const gint angle)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -129,7 +129,7 @@ dui_im_proxy_app_orientation_changed (DuiIMProxy *proxy, const gint angle)
 
 
 gboolean
-dui_im_proxy_hide_input_method (DuiIMProxy *proxy)
+meego_im_proxy_hide_input_method (MeegoIMProxy *proxy)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -152,7 +152,7 @@ dui_im_proxy_hide_input_method (DuiIMProxy *proxy)
 // Not yet really implemented
 
 gboolean
-dui_im_proxy_mouse_clicked_on_preedit (DuiIMProxy *proxy, const GValueArray* pos,
+meego_im_proxy_mouse_clicked_on_preedit (MeegoIMProxy *proxy, const GValueArray* pos,
 					const GValueArray* preedit_rect)
 {
 	GError *error = NULL;
@@ -173,7 +173,7 @@ dui_im_proxy_mouse_clicked_on_preedit (DuiIMProxy *proxy, const GValueArray* pos
 
 
 gboolean
-dui_im_proxy_update_widget_info (DuiIMProxy *proxy, const GHashTable *state_information)
+meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTable *state_information)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -195,7 +195,7 @@ dui_im_proxy_update_widget_info (DuiIMProxy *proxy, const GHashTable *state_info
 
 
 gboolean
-dui_im_proxy_process_key_event (DuiIMProxy *proxy, const gint type, const gint code,
+meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gint code,
 					const gint modifiers, const char * text,
 					const gboolean auto_repeat, const gint count,
 					const gint native_scan_code)
@@ -221,7 +221,7 @@ dui_im_proxy_process_key_event (DuiIMProxy *proxy, const gint type, const gint c
 
 
 gboolean
-dui_im_proxy_reset (DuiIMProxy *proxy)
+meego_im_proxy_reset (MeegoIMProxy *proxy)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -241,7 +241,7 @@ dui_im_proxy_reset (DuiIMProxy *proxy)
 
 
 gboolean
-dui_im_proxy_set_context_object (DuiIMProxy *proxy, const char *object_name)
+meego_im_proxy_set_context_object (MeegoIMProxy *proxy, const char *object_name)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -261,7 +261,7 @@ dui_im_proxy_set_context_object (DuiIMProxy *proxy, const char *object_name)
 
 
 gboolean
-dui_im_proxy_set_copy_paste_state (DuiIMProxy *proxy, const gboolean copy_available,
+meego_im_proxy_set_copy_paste_state (MeegoIMProxy *proxy, const gboolean copy_available,
 					const gboolean paste_available)
 {
 	GError *error = NULL;
@@ -283,7 +283,7 @@ dui_im_proxy_set_copy_paste_state (DuiIMProxy *proxy, const gboolean copy_availa
 
 
 gboolean
-dui_im_proxy_set_preedit (DuiIMProxy *proxy, const char *text)
+meego_im_proxy_set_preedit (MeegoIMProxy *proxy, const char *text)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -303,7 +303,7 @@ dui_im_proxy_set_preedit (DuiIMProxy *proxy, const char *text)
 
 
 gboolean
-dui_im_proxy_show_input_method (DuiIMProxy *proxy)
+meego_im_proxy_show_input_method (MeegoIMProxy *proxy)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
