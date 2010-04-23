@@ -22,7 +22,7 @@
 #include <QGLWidget>
 #include <QPalette>
 
-#include <duireactionmap.h>
+#include <mreactionmap.h>
 
 #include <MApplication>
 #include <MScene>
@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     widget.setFocusPolicy(Qt::NoFocus);
 
     // Must be declared after creation of top level window.
-    DuiReactionMap reactionMap(&widget);
+    MReactionMap reactionMap(&widget);
     MPlainWindow *view = new MPlainWindow(&widget);
 
 #ifndef M_IM_DISABLE_TRANSLUCENCY

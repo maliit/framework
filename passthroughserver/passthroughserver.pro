@@ -5,7 +5,7 @@ TARGET = meego-im-uiserver
 target.path = $$M_INSTALL_BIN
 DEPENDPATH += .
 INCLUDEPATH += . ../src
-CONFIG += duireactionmap
+CONFIG += meegoreactionmap
 
 LIBS += ../src/libmeegoimframework.so -lXfixes
 
