@@ -22,7 +22,7 @@
 
 #include <X11/keysym.h>
 
-#include "dui-imcontext.h"
+#include "client-imcontext-gtk.h"
 #include "qt-gtk-translate.h"
 #include "debug.h"
 

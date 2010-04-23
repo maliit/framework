@@ -23,7 +23,7 @@
 #include <glib.h>
 #include <dbus/dbus-glib.h>
 
-#include "dui-imcontext-dbus.h"
+#include "meego-imcontext-dbus.h"
 #include "debug.h"
 
 #define DUI_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX "org.meego.duiimcontext."
@@ -32,21 +32,21 @@
 
 G_DEFINE_TYPE( DuiIMContextDbusObj, dui_imcontext_dbusobj, G_TYPE_OBJECT);
 
-gboolean dui_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **error);
-gboolean dui_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error);
-gboolean dui_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError **error);
-gboolean dui_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face, GError **error);
-gboolean dui_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+gboolean meego_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **error);
+gboolean meego_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error);
+gboolean meego_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError **error);
+gboolean meego_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face, GError **error);
+gboolean meego_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count, GError **error);
-gboolean dui_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data, GError **error);
-gboolean dui_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction, GError **error);
-gboolean dui_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error);
-gboolean dui_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error);
-gboolean dui_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled, GError **error);
-gboolean dui_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error);
+gboolean meego_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data, GError **error);
+gboolean meego_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction, GError **error);
+gboolean meego_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error);
+gboolean meego_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error);
+gboolean meego_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled, GError **error);
+gboolean meego_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error);
 
 
-#include "dui-imcontext-dbus-glue.h"
+#include "meego-imcontext-dbus-glue.h"
 
 static gchar *
 _generate_dbus_service_name(void)
@@ -73,7 +73,7 @@ dui_imcontext_dbusobj_class_init(DuiIMContextDbusObjClass* klass)
 	g_assert(klass != NULL);
 
 	dbus_g_object_type_install_info(DUI_IMCONTEXT_TYPE_DBUSOBJ,
-					&dbus_glib_dui_imcontext_dbus_object_info);
+					&dbus_glib_meego_imcontext_dbus_object_info);
 }
 
 
@@ -154,7 +154,7 @@ dui_imcontext_dbusobj_get_singleton (void)
 
 
 gboolean
-dui_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **error)
+meego_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -162,7 +162,7 @@ dui_imcontext_dbus_activation_lost_event (DuiIMContextDbusObj *obj, GError **err
 
 
 gboolean
-dui_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error)
+meego_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -170,7 +170,7 @@ dui_imcontext_dbus_im_initiated_hide (DuiIMContextDbusObj *obj, GError **error)
 
 
 gboolean
-dui_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError **error)
+meego_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError **error)
 {
 	DBG("string is:%s", string);
 	return dui_imcontext_client_commit_string(obj, string);
@@ -178,7 +178,7 @@ dui_imcontext_dbus_commit_string (DuiIMContextDbusObj *obj, char *string, GError
 
 
 gboolean
-dui_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face, GError **error)
+meego_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int preedit_face, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -186,7 +186,7 @@ dui_imcontext_dbus_update_preedit (DuiIMContextDbusObj *obj, char *string, int p
 
 
 gboolean
-dui_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+meego_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count, GError **error)
 {
 	DBG("type=0x%x, key=0x%x, modifiers=0x%x, text = %s, auto_repeat=%d, count=%d",
@@ -196,7 +196,7 @@ dui_imcontext_dbus_key_event (DuiIMContextDbusObj *obj, int type, int key, int m
 
 
 gboolean
-dui_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data, GError **error)
+meego_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray *data, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -204,7 +204,7 @@ dui_imcontext_dbus_update_input_method_area (DuiIMContextDbusObj *obj, GPtrArray
 
 
 gboolean
-dui_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction, GError **error)
+meego_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboolean correction, GError **error)
 {
 	STEP();
 	return TRUE;
@@ -212,7 +212,7 @@ dui_imcontext_dbus_set_global_correction_enabled (DuiIMContextDbusObj *obj, gboo
 
 
 gboolean
-dui_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error)
+meego_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error)
 {
 	STEP();
 	return dui_imcontext_client_copy(obj);
@@ -221,7 +221,7 @@ dui_imcontext_dbus_copy (DuiIMContextDbusObj *obj, GError **error)
 
 
 gboolean
-dui_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error)
+meego_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error)
 {
 	STEP();
 	return dui_imcontext_client_paste(obj);
@@ -230,7 +230,7 @@ dui_imcontext_dbus_paste (DuiIMContextDbusObj *obj, GError **error)
 
 
 gboolean
-dui_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled, GError **error)
+meego_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled, GError **error)
 {
 	STEP();
 	dui_imcontext_client_set_redirect_keys(obj, enabled);
@@ -239,7 +239,7 @@ dui_imcontext_dbus_set_redirect_keys (DuiIMContextDbusObj *obj, gboolean enabled
 
 
 gboolean
-dui_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error)
+meego_imcontext_dbus_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid, GError **error)
 {
 	STEP();
 	return TRUE;

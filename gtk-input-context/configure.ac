@@ -4,7 +4,7 @@ AC_PREREQ(2.61)
 # odd micro numbers indicate in-progress development
 # even micro numbers indicate released versions
 m4_define(dui_im_client_version_major, 0)
-m4_define(dui_im_client_version_minor, 1)
+m4_define(dui_im_client_version_minor, 2)
 m4_define(dui_im_client_version_micro, 0)
 
 m4_define([dui_im_client_version],
@@ -25,7 +25,6 @@ AC_PROG_INSTALL
 # enable pkg-config
 PKG_PROG_PKG_CONFIG
 
-# all libraries listed are associated with "DUI_IM_GTKIC" tag
 PKG_CHECK_MODULES(DUI_IM_CLIENT, glib-2.0
 			gthread-2.0
 			dbus-glib-1)

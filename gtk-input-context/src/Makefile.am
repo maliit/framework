@@ -1,36 +1,36 @@
 INCLUDES		= -I$(top_builddir) \
 	    		  -I$(top_srcdir)
 
-noinst_LTLIBRARIES = libimduicommon.la
+noinst_LTLIBRARIES = libmeegoimcommon.la
 
-dui-im-proxy-glue.h: dui-im-client.xml
-	$(DBUS_BINDING_TOOL) --prefix=dui_im_proxy --mode=glib-client --output=$@ $<
+meego-im-proxy-glue.h: meego-im-client.xml
+	$(DBUS_BINDING_TOOL) --prefix=meego_im_proxy --mode=glib-client --output=$@ $<
 
-dui-imcontext-dbus-glue.h: dui-imcontext-dbus.xml
-	$(DBUS_BINDING_TOOL) --prefix=dui_imcontext_dbus --mode=glib-server --output=$@ $<
+meego-imcontext-dbus-glue.h: meego-imcontext-dbus.xml
+	$(DBUS_BINDING_TOOL) --prefix=meego_imcontext_dbus --mode=glib-server --output=$@ $<
 
-BUILT_SOURCES = dui-im-proxy-glue.h \
-		dui-imcontext-dbus-glue.h
+BUILT_SOURCES = meego-im-proxy-glue.h \
+		meego-imcontext-dbus-glue.h
 
-libimduicommon_la_SOURCES = debug.h \
-			dui-imcontext-dbus.c \
-			dui-imcontext-dbus.h \
-			dui-im-proxy.c \
-			dui-im-proxy.h \
+libmeegoimcommon_la_SOURCES = debug.h \
+			meego-imcontext-dbus.c \
+			meego-imcontext-dbus.h \
+			meego-im-proxy.c \
+			meego-im-proxy.h \
 			qt-keysym-map.h \
 			qt-keysym-map.cpp \
 			$(BUILT_SOURCES)
 
 
-libimduicommon_la_CFLAGS  = @DUI_IM_CLIENT_CFLAGS@ -Wall -Werror
-libimduicommon_la_CXXFLAGS  = @DUI_IM_CLIENT_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
+libmeegoimcommon_la_CFLAGS  = @DUI_IM_CLIENT_CFLAGS@ -Wall -Werror
+libmeegoimcommon_la_CXXFLAGS  = @DUI_IM_CLIENT_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
 
-libimduicommon_la_LDFLAGS = \
+libmeegoimcommon_la_LDFLAGS = \
 		     -avoid-version -no-undefined \
 		     @DUI_IM_CLIENT_LIBS@ @QT_LIBS@
 
-EXTRA_DIST = dui-im-client.xml \
-		dui-imcontext-dbus.xml
+EXTRA_DIST = meego-im-client.xml \
+		meego-imcontext-dbus.xml
 
 CLEANFILES = $(BUILT_SOURCES)
 MAINTAINERCLEANFILES 	= Makefile.in

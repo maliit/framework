@@ -19,8 +19,8 @@
  * 02110-1301 USA
  */
 
-#include "dui-im-proxy.h"
-#include "dui-im-proxy-glue.h"
+#include "meego-im-proxy.h"
+#include "meego-im-proxy-glue.h"
 #include "debug.h"
 
 G_DEFINE_TYPE (DuiIMProxy, dui_im_proxy, G_TYPE_OBJECT);

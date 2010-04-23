@@ -27,14 +27,14 @@
 #include <gtk/gtk.h>
 #include <gtk/gtkimmodule.h>
 
-#include "dui-imcontext.h"
+#include "client-imcontext-gtk.h"
 #include "debug.h"
 
-static const GtkIMContextInfo dui_im_info =
+static const GtkIMContextInfo meego_im_info =
 {
-	"dui-im",
+	"meego-im",
 	"DUI Input Method",
-	"dui-im",
+	"meego-im",
 	"",
 	"ja:ko:zh:*"
 };
@@ -42,7 +42,7 @@ static const GtkIMContextInfo dui_im_info =
 
 static const GtkIMContextInfo *info_list[] =
 {
-	&dui_im_info
+	&meego_im_info
 };
 
 
@@ -80,7 +80,7 @@ im_module_list (const GtkIMContextInfo ***contexts, int *context_number)
 GtkIMContext *
 im_module_create (const gchar *context_id)
 {
-	if (g_strcmp0(context_id, "dui-im") == 0) {
+	if (g_strcmp0(context_id, "meego-im") == 0) {
 		return dui_imcontext_new();
 	} else {
 		return NULL;

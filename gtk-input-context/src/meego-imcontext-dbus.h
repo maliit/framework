@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef DUI_IMCONTEXT_DBUS_H
-#define DUI_IMCONTEXT_DBUS_H
+#ifndef _MEEGO_IMCONTEXT_DBUS_H
+#define _MEEGO_IMCONTEXT_DBUS_H
 
 typedef struct {
 	GObject parent;
@@ -67,4 +67,4 @@ gboolean dui_imcontext_client_set_redirect_keys (DuiIMContextDbusObj *obj, gbool
 gboolean dui_imcontext_client_preedit_rectangle(DuiIMContextDbusObj *obj, GValueArray** rect, gboolean *valid);
 
 
-#endif /* DUI_IMCONTEXT_DBUS_H */
+#endif /* _MEEGO_IMCONTEXT_DBUS_H */

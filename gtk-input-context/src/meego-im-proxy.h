@@ -18,8 +18,8 @@
  * 02110-1301 USA
  */
 
-#ifndef _DUI_IM_PROXY_H
-#define _DUI_IM_PROXY_H
+#ifndef _MEEGO_IM_PROXY_H
+#define _MEEGO_IM_PROXY_H
 
 #include <glib.h>
 #include <glib-object.h>
@@ -76,4 +76,4 @@ gboolean dui_im_proxy_show_input_method (DuiIMProxy *proxy);
 
 G_END_DECLS
 
-#endif //_DUI_IM_PROXY_H
+#endif //_MEEGO_IM_PROXY_H

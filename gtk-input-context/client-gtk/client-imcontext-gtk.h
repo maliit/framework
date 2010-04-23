@@ -18,12 +18,12 @@
  * 02110-1301 USA
  */
 
-#ifndef _DUI_IMCONTEXT_H
-#define _DUI_IMCONTEXT_H
+#ifndef _CLIENT_IMCONTEXT_GTK_H
+#define _CLIENT_IMCONTEXT_GTK_H
 
 #include <gtk/gtk.h>
-#include "dui-im-proxy.h"
-#include "dui-imcontext-dbus.h"
+#include "meego-im-proxy.h"
+#include "meego-imcontext-dbus.h"
 
 G_BEGIN_DECLS
 
@@ -70,4 +70,4 @@ GtkIMContext *dui_imcontext_new (void);
 
 G_END_DECLS
 
-#endif //_DUI_IMCONTEXT_H
+#endif //_CLIENT_IMCONTEXT_GTK_H
