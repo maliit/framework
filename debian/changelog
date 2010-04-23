@@ -1,3 +1,10 @@
+meego-im-framework (0.19.1~1) unstable; urgency=low
+
+  * Unreleased version
+  * Implemented plugin switching request from plugin
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Fri, 23 Apr 2010 12:26:59 +0300
+
 meego-im-framework (0.19.0-5) unstable; urgency=low
 
   * Remove explicit compositor dependency.
