@@ -498,7 +498,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
 
     // toolbar change
     qlonglong oldToolbarId;
-    qlonglong newToolbarId;
+    qlonglong newToolbarId = -1;
     variant = d->widgetState[ToolbarAttribute];
 
     if (variant.isValid()) {
@@ -610,7 +610,7 @@ bool MInputContextDBusConnection::toGlobal(int id, qlonglong &globalId)
     bool val = false;
     globalId = -1;
     const QDBusMessage &msg = message();
-    if (d->clients.contains(msg.service())) {
+    if (d->clients.contains(msg.service()) && id >= 0) {
         val = true;
         globalId = (static_cast<qlonglong>(d->clientIds[msg.service()]))<<32 + id;
     }
