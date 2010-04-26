@@ -497,7 +497,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
     }
 
     // toolbar change
-    qlonglong oldToolbarId;
+    qlonglong oldToolbarId = -1;
     qlonglong newToolbarId = -1;
     variant = d->widgetState[ToolbarAttribute];
 
