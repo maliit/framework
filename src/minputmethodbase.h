@@ -42,6 +42,34 @@ class MInputMethodBase: public QObject
     Q_OBJECT
 
 public:
+     /*!
+      * This enum contains possible values for all the modes that are shown in the
+      * Input mode indicator.
+      *
+      * \sa sendInputModeIndicator().
+      */
+    enum InputModeIndicator {
+        LatinLower,     //!< Latin lower case mode
+        LatinUpper,     //!< Latin upper case mode
+        LatinLocked,    //!< Latin caps locked mode
+        CyrillicLower,  //!< Cyrillic lower case mode
+        CyrillicUpper,  //!< Cyrillic upper case mode
+        CyrillicLocked, //!< Cyrillic caps locked mode
+        Arabic,         //!< Arabic mode
+        Pinyin,         //!< Pinyin mode
+        Zhuyin,         //!< Zhuyin mode
+        Cangjie,        //!< Cangjie mode
+        NumAndSymLatched,   //!< Number and Symbol latched mode
+        NumAndSymLocked,//!< Number and Symbol locked mode
+        DeadKeyAcute,   //!< Dead key acute mode
+        DeadKeyCaron,   //!< Dead key caron mode
+        DeadKeyCircumflex,  //!< Dead key circumflex mode
+        DeadKeyDiaeresis,   //!< Dead key diaeresis mode
+        DeadKeyGrave,   //!< Dead key grave mode
+        DeadKeyTilde    //!< Dead key tilde mode
+    };
+
+
     /*! Constructor for input method base
      * \param icConnection input context connection class, not owned by input method base
      */
@@ -145,6 +173,13 @@ public:
      */
     virtual void switchContext(M::InputMethodSwitchDirection direction, bool enableAnimation);
 
+    /*!
+     * \brief Sends input mode indicate state.
+     * Default implementation is sending the input mode indicate state \a mode to application framework.
+     * \param mode Input mode indicator state.
+     * \sa InputModeIndicator.
+     */
+    void sendInputModeIndicator(InputModeIndicator mode);
 
 signals:
     /*!

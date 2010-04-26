@@ -20,7 +20,13 @@
 #include <QGraphicsView>
 #include <QDebug>
 #include <QKeyEvent>
+#include <QDBusInterface>
 
+namespace {
+    const char * const DBusIndicatorServiceName = "com.meego.core.MInputMethodStatusIndicator";
+    const char * const DBusIndicatorPath = "/inputmethodstatusindicator";
+    const char * const DBusIndicatorInterface = "com.meego.core.MInputMethodStatusIndicator";
+};
 
 class MInputMethodBasePrivate
 {
@@ -28,24 +34,71 @@ public:
     MInputMethodBasePrivate(MInputContextConnection *icConnection);
     ~MInputMethodBasePrivate();
 
+    void connectToIndicatorDBus();
+    //! map the InputModeIndicator to icon id
+    QString indicatorIconID(MInputMethodBase::InputModeIndicator mode);
+
     MInputContextConnection *icConnection;
+    QDBusInterface *indicatorIface; // indicator server interface
+    QMap<MInputMethodBase::InputModeIndicator, QString> indicatorMap;
 };
 
 
 
 MInputMethodBasePrivate::MInputMethodBasePrivate(MInputContextConnection *icConnection)
-    : icConnection(icConnection)
+    : icConnection(icConnection),
+      indicatorIface(0)
 {
-    // nothing
+    connectToIndicatorDBus();
+    indicatorMap.insert(MInputMethodBase::LatinLower, "icon-s-status-latin-lowercase");
+    indicatorMap.insert(MInputMethodBase::LatinUpper, "icon-s-status-latin-uppercase");
+    indicatorMap.insert(MInputMethodBase::LatinLocked, "icon-s-status-latin-caps");
+    indicatorMap.insert(MInputMethodBase::CyrillicLower, "icon-s-status-cyrillic-lowercase");
+    indicatorMap.insert(MInputMethodBase::CyrillicUpper, "icon-s-status-cyrillic-uppercase");
+    indicatorMap.insert(MInputMethodBase::CyrillicLocked, "icon-s-status-cyrillic-caps");
+    indicatorMap.insert(MInputMethodBase::Arabic, "icon-s-status-arabic");
+    indicatorMap.insert(MInputMethodBase::Pinyin, "icon-s-status-pinyin");
+    indicatorMap.insert(MInputMethodBase::Zhuyin, "icon-s-status-zhuyin");
+    indicatorMap.insert(MInputMethodBase::Cangjie, "icon-s-status-cangjie");
+    indicatorMap.insert(MInputMethodBase::NumAndSymLatched, "icon-s-status-number");
+    indicatorMap.insert(MInputMethodBase::NumAndSymLocked, "icon-s-status-number-locked");
+    indicatorMap.insert(MInputMethodBase::DeadKeyAcute, "icon-s-status-acute");
+    indicatorMap.insert(MInputMethodBase::DeadKeyCaron, "icon-s-status-caron");
+    indicatorMap.insert(MInputMethodBase::DeadKeyCircumflex, "icon-s-status-circumflex");
+    indicatorMap.insert(MInputMethodBase::DeadKeyDiaeresis, "icon-s-status-diaeresis");
+    indicatorMap.insert(MInputMethodBase::DeadKeyGrave, "icon-s-status-grave");
+    indicatorMap.insert(MInputMethodBase::DeadKeyTilde, "icon-s-status-tilde");
 }
 
 
 MInputMethodBasePrivate::~MInputMethodBasePrivate()
 {
-    // nothing
+    delete indicatorIface;
 }
 
+void MInputMethodBasePrivate::connectToIndicatorDBus()
+{
+    QDBusConnection connection = QDBusConnection::sessionBus();
 
+    if (!connection.isConnected()) {
+        qWarning() << "Cannot connect to the DBus session bus";
+        return;
+    }
+    indicatorIface = new QDBusInterface(DBusIndicatorServiceName, DBusIndicatorPath,
+                                        DBusIndicatorInterface, connection);
+
+    if (!indicatorIface->isValid()) {
+        qWarning() << "MInputContextDBusConnection was unable to connect to indicator server: "
+                   << connection.lastError().message();
+        delete indicatorIface;
+        indicatorIface = 0;
+    }
+}
+
+QString MInputMethodBasePrivate::indicatorIconID(MInputMethodBase::InputModeIndicator mode)
+{
+    return indicatorMap.value(mode);
+}
 
 ///////////////
 
@@ -177,3 +230,9 @@ void MInputMethodBase::switchContext(M::InputMethodSwitchDirection direction, bo
     Q_UNUSED(enableAnimation);
 }
 
+void MInputMethodBase::sendInputModeIndicator(MInputMethodBase::InputModeIndicator mode)
+{
+    if (d->indicatorIface) {
+        d->indicatorIface->call(QDBus::NoBlock, "setIconID", d->indicatorIconID(mode));
+    }
+}
