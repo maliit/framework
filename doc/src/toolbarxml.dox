@@ -60,7 +60,7 @@ This tag defines that the action is to paste from clipboard.
 
 \section DTD
 \code
-<!DOCTYPE DUI_IM_TOOLBAR_WIDGET [
+<!DOCTYPE MEEGO_IM_TOOLBAR_WIDGET [
 <!ELEMENT toolbar ((button|label)*)>
 <!ELEMENT button (actions*)>
 <!ELEMENT actions (sendkeysequence|sendstring|sendcommand|copy|paste|showgroup|hidegroup)*>
