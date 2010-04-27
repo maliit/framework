@@ -3,17 +3,17 @@ AC_PREREQ(2.61)
 # package version number (not shared library version)
 # odd micro numbers indicate in-progress development
 # even micro numbers indicate released versions
-m4_define(dui_im_client_version_major, 0)
-m4_define(dui_im_client_version_minor, 2)
-m4_define(dui_im_client_version_micro, 0)
+m4_define(meego_im_client_version_major, 0)
+m4_define(meego_im_client_version_minor, 2)
+m4_define(meego_im_client_version_micro, 0)
 
-m4_define([dui_im_client_version],
-          [dui_im_client_version_major.dui_im_client_version_minor.dui_im_client_version_micro])
-m4_define([dui_im_client_api_version],
-          [dui_im_client_version_major.dui_im_client_version_minor])
+m4_define([meego_im_client_version],
+          [meego_im_client_version_major.meego_im_client_version_minor.meego_im_client_version_micro])
+m4_define([meego_im_client_api_version],
+          [meego_im_client_version_major.meego_im_client_version_minor])
 
-AC_INIT(dui-im-client, dui_im_client_version)
-AM_INIT_AUTOMAKE(dui-im-client, dui_im_client_version)
+AC_INIT(meego-im-client, meego_im_client_version)
+AM_INIT_AUTOMAKE(meego-im-client, meego_im_client_version)
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -25,18 +25,18 @@ AC_PROG_INSTALL
 # enable pkg-config
 PKG_PROG_PKG_CONFIG
 
-PKG_CHECK_MODULES(DUI_IM_CLIENT, glib-2.0
+PKG_CHECK_MODULES(MEEGO_IM_CLIENT, glib-2.0
 			gthread-2.0
 			dbus-glib-1)
 
-AC_SUBST(DUI_IM_CLIENT_CFLAGS)
-AC_SUBST(DUI_IM_CLIENT_LIBS)
+AC_SUBST(MEEGO_IM_CLIENT_CFLAGS)
+AC_SUBST(MEEGO_IM_CLIENT_LIBS)
 
-PKG_CHECK_MODULES(DUI_IM_GTK,
+PKG_CHECK_MODULES(MEEGO_IM_GTK,
 			gtk+-2.0 >= 2.14)
 
-AC_SUBST(DUI_IM_GTK_CFLAGS)
-AC_SUBST(DUI_IM_GTK_LIBS)
+AC_SUBST(MEEGO_IM_GTK_CFLAGS)
+AC_SUBST(MEEGO_IM_GTK_LIBS)
 
 
 PKG_CHECK_MODULES(QT, QtCore
@@ -68,7 +68,7 @@ fi
 
 
 # i18n
-#GETTEXT_PACKAGE="dui-im-client"
+#GETTEXT_PACKAGE="meego-im-client"
 #AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
 #AC_SUBST(GETTEXT_PACKAGE)
 #AS_ALL_LINGUAS
@@ -83,7 +83,7 @@ client-gtk/Makefile
 
 AC_MSG_RESULT([
 Build options:
-  Version                  dui_im_client_version
+  Version                  meego_im_client_version
   Install prefix           $prefix
   Enable debug             $enable_debug
 ])

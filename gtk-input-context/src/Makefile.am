@@ -22,12 +22,12 @@ libmeegoimcommon_la_SOURCES = debug.h \
 			$(BUILT_SOURCES)
 
 
-libmeegoimcommon_la_CFLAGS  = @DUI_IM_CLIENT_CFLAGS@ -Wall -Werror
-libmeegoimcommon_la_CXXFLAGS  = @DUI_IM_CLIENT_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
+libmeegoimcommon_la_CFLAGS  = @MEEGO_IM_CLIENT_CFLAGS@ -Wall -Werror
+libmeegoimcommon_la_CXXFLAGS  = @MEEGO_IM_CLIENT_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
 
 libmeegoimcommon_la_LDFLAGS = \
 		     -avoid-version -no-undefined \
-		     @DUI_IM_CLIENT_LIBS@ @QT_LIBS@
+		     @MEEGO_IM_CLIENT_LIBS@ @QT_LIBS@
 
 EXTRA_DIST = meego-im-client.xml \
 		meego-imcontext-dbus.xml
