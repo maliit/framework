@@ -16,7 +16,7 @@ SOURCES += \
 HEADERS += \
            mpassthruwindow.h \
 
-QT += opengl core gui
+QT += core gui
 CONFIG += debug meegotouch
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on

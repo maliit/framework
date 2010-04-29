@@ -19,7 +19,6 @@
 
 #include <QtDebug>
 #include <QWidget>
-#include <QGLWidget>
 #include <QPalette>
 
 #include <mreactionmap.h>
