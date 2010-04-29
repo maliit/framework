@@ -1,3 +1,9 @@
+meego-im-framework (0.19.1-2) unstable; urgency=low
+
+  * Moved library files to appropriate packages and removed use of unnecessary features
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Wed, 28 Apr 2010 12:57:17 +0300
+
 meego-im-framework (0.19.1-1) unstable; urgency=low
 
   * Implemented plugin switching request from plugin
