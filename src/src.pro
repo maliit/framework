@@ -27,7 +27,7 @@ SOURCES += mimpluginmanager.cpp \
         mplainwindow.cpp
 
 CONFIG += debug qdbus meegotouch
-QT = core gui network
+QT = core gui
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
