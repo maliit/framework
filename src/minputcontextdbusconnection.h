@@ -91,7 +91,7 @@ public slots:
     //! ipc method provided to the application, sets preedit
     void setPreedit(const QString &text);
 
-    void updateWidgetInformation(const QMap<QString, QVariant> &stateInformation);
+    void updateWidgetInformation(const QMap<QString, QVariant> &stateInformation, bool focusChanged);
 
     //! ipc method provided to the application, resets the input method
     void reset();

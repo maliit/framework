@@ -244,7 +244,7 @@ void MInputContext::update()
     // get the state information of currently focused widget, and pass it to input method server
     QMap<QString, QVariant> stateInformation = getStateInformation();
 
-    iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation);
+    iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation, false);
 }
 
 
@@ -295,6 +295,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
         }
     }
 
+    const QMap<QString, QVariant> stateInformation = getStateInformation();
     if (focused) {
         // for non-null focus widgets, we'll have this context activated
         if (!active) {
@@ -307,8 +308,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
             notifyOrientationChange(angle);
         }
 
-        QMap<QString, QVariant> stateInformation = getStateInformation();
-        iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation);
+        iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation, true);
 
         // check if copyable text is selected
         Qt::InputMethodQuery query = Qt::ImCurrentSelection;
@@ -328,6 +328,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
 
     } else {
         copyAllowed = false;
+        iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation, true);
     }
 
     // show or hide Copy/Paste button on input method server
@@ -687,6 +688,8 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 {
     QMap<QString, QVariant> stateInformation;
     const QWidget *focused = focusWidget();
+
+    stateInformation["focusState"] = focused != NULL;
 
     if (!focused) {
         return stateInformation;

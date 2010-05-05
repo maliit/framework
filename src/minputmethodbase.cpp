@@ -154,6 +154,11 @@ void MInputMethodBase::mouseClickedOnPreedit(const QPoint &pos, const QRect &pre
     Q_UNUSED(preeditRect);
 }
 
+void MInputMethodBase::focusChanged(bool /* focusIn */)
+{
+    // empty default implementation
+}
+
 void MInputMethodBase::visualizationPriorityChanged(bool priority)
 {
     // empty default implementation

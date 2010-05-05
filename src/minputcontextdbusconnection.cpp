@@ -43,6 +43,7 @@ namespace
     const char * const DBusClientInterface = "org.maemo.duiinputcontext1";
 
     // attribute names for updateWidgetInformation() map
+    const char * const FocusStateAttribute = "focusState";
     const char * const ContentTypeAttribute = "contentType";
     const char * const CorrectionAttribute = "correctionEnabled";
     const char * const PredictionAttribute = "predictionEnabled";
@@ -106,9 +107,10 @@ void MInputContextDBusAdaptor::setPreedit(const QString &text)
     host->setPreedit(text);
 }
 
-void MInputContextDBusAdaptor::updateWidgetInformation(const QMap<QString, QVariant> &stateInfo)
+void MInputContextDBusAdaptor::updateWidgetInformation(const QMap<QString, QVariant> &stateInfo,
+                                                       bool focusChanged)
 {
-    host->updateWidgetInformation(stateInfo);
+    host->updateWidgetInformation(stateInfo, focusChanged);
 }
 
 
@@ -479,7 +481,8 @@ void MInputContextDBusConnection::reset()
 
 
 void
-MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVariant> &stateInfo)
+MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVariant> &stateInfo,
+                                                     bool focusChanged)
 {
     // check visualization change
     bool oldVisualization = false;
@@ -513,6 +516,12 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
 
     // update state
     d->widgetState = stateInfo;
+
+    if (focusChanged) {
+        foreach (MInputMethodBase *target, targets()) {
+            target->focusChanged(stateInfo[FocusStateAttribute].toBool());
+        }
+    }
 
     // call notification methods if needed
     if (oldVisualization != newVisualization) {

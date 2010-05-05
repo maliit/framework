@@ -105,6 +105,11 @@ public:
      */
     virtual void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
 
+    /*! \brief Notifies input method server about changed focus
+     *  \param focusIn true - focus has entered a widget, false - focus has left a widget
+     */
+    virtual void focusChanged(bool focusIn);
+
     /*! \brief Notifies that the focus widget in application changed visualization priority
      */
     virtual void visualizationPriorityChanged(bool priority);

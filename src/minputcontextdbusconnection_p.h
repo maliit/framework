@@ -39,7 +39,7 @@ public slots:
     void hideInputMethod();
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
     void setPreedit(const QString &text);
-    void updateWidgetInformation(const QMap<QString, QVariant> &stateInformation);
+    void updateWidgetInformation(const QMap<QString, QVariant> &stateInformation, bool focusChanged);
     void reset();
 
     void setContextObject(QString callbackObject);
