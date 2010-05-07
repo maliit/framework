@@ -504,7 +504,7 @@ void MInputContext::updatePreedit(const QString &string, M::PreeditFace preeditF
 
 
 void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
-                               bool autoRepeat, int count)
+                             bool autoRepeat, int count)
 {
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
 
@@ -596,7 +596,7 @@ void MInputContext::registerContextObject()
 
 
 void MInputContext::serviceChangeHandler(const QString &name, const QString &oldOwner,
-                                           const QString &newOwner)
+                                         const QString &newOwner)
 {
     Q_UNUSED(oldOwner);
 
@@ -606,6 +606,7 @@ void MInputContext::serviceChangeHandler(const QString &name, const QString &old
         active = false;
         redirectKeys = false;
         inputPanelState = InputPanelHidden;
+        MInputMethodState::instance()->setInputMethodArea(QRect());
 
         if (!newOwner.isEmpty()) {
             if (!iface->isValid()) {
@@ -650,7 +651,8 @@ void MInputContext::notifyToolbarUnregistered(int id)
 }
 
 void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &item,
-                                                        const QString &attribute, const QVariant& value)
+                                                      const QString &attribute,
+                                                      const QVariant& value)
 {
     QVariantList values;
     values << value;
