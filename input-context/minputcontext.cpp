@@ -450,11 +450,7 @@ void MInputContext::commitString(const QString &string)
     QInputMethodEvent event;
     event.setCommitString(string);
 
-    //FIXME: quick hack to use Qt4.6
-    QWidget *focused = QApplication::focusWidget();
-    if (focused) {
-        QApplication::sendEvent(focused, &event);
-    }
+    sendEvent(event);
 }
 
 
@@ -496,11 +492,7 @@ void MInputContext::updatePreedit(const QString &string, M::PreeditFace preeditF
 
     QInputMethodEvent event(string, attributes);
 
-    //FIXME: quick hack to use Qt4.6
-    QWidget *focused = QApplication::focusWidget();
-    if (focused) {
-        QApplication::sendEvent(focused, &event);
-    }
+    sendEvent(event);
 }
 
 
