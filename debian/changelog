@@ -1,3 +1,9 @@
+meego-im-framework (0.19.2~1) unstable; urgency=low
+
+  * Implemented focus widget change notification
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Mon, 10 May 2010 14:24:07 +0300
+
 meego-im-framework (0.19.1-2) unstable; urgency=low
 
   * Moved library files to appropriate packages and removed use of unnecessary features
