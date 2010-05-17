@@ -143,8 +143,8 @@ void MInputContext::connectToDBus()
     bool success = connection.registerObject(dbusObjectPath(), this);
 
     if (!success) {
-        qFatal("MInputContext failed to register object via D-Bus: %s",
-               dbusObjectPath().toAscii().data());
+        qCritical("MInputContext failed to register object via D-Bus: %s",
+                  dbusObjectPath().toAscii().data());
     }
 
     // start to follow server changes
