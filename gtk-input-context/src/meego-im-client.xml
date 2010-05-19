@@ -50,6 +50,7 @@
       <arg name="autoRepeat" type="b" direction="in"/>
       <arg name="count" type="i" direction="in"/>
       <arg name="nativeScanCode" type="i" direction="in"/>
+      <arg name="nativeModifiers" type="i" direction="in"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
   </interface>

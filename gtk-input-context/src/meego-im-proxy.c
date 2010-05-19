@@ -198,7 +198,8 @@ gboolean
 meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gint code,
 					const gint modifiers, const char * text,
 					const gboolean auto_repeat, const gint count,
-					const gint native_scan_code)
+					const gint native_scan_code,
+					const gint native_modifiers)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -210,7 +211,7 @@ meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gi
 
 	ret = org_maemo_duiinputmethodserver1_process_key_event(proxy->dbusproxy,
 					type, code, modifiers, text, auto_repeat,
-					count, native_scan_code, &error);
+					count, native_scan_code, native_modifiers, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);

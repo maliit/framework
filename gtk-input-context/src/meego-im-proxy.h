@@ -65,7 +65,8 @@ gboolean meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTabl
 gboolean meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gint code,
 					const gint modifiers, const char * text,
 					const gboolean auto_repeat, const gint count,
-					const gint native_scan_code);
+					const gint native_scan_code,
+					const gint native_modifiers);
 
 gboolean meego_im_proxy_reset (MeegoIMProxy *proxy);
 gboolean meego_im_proxy_set_context_object (MeegoIMProxy *proxy, const char *object_name);
