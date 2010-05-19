@@ -37,5 +37,17 @@
       </locale>
     </schema>
 
+    <schema>
+     <key>/schemas/meegotouch/inputmethods/multitouch/enabled</key>
+     <applyto>/meegotouch/inputmethods/multitouch/enabled</applyto>
+     <owner>meegotouch</owner>
+     <type>bool</type>
+     <default>ENABLE_MULTITOUCH</default>
+     <locale name="C">
+      <short>Whether multitouch is enabled</short>
+      <long>Whether multitouch is enabled</long>
+     </locale>
+    </schema>
+
   </schemalist>
 </gconfschemafile>

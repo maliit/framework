@@ -40,9 +40,23 @@ ifneq (,$(filter notranslucency,$(TMP_BUILD_OPTS)))
         endif
 endif
 
+ENABLE_MULTITOUCH = false
+
+ifneq (,$(filter multitouch,$(TMP_BUILD_OPTS)))
+        ENABLE_MULTITOUCH = true
+endif
+
+ARCHITECTURE := $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+ifneq (armel, ${ARCHITECTURE})
+        #multi-touch could be used for ARM only
+        ENABLE_MULTITOUCH = false
+endif
+
 ifneq (,$(filter n900,$(TMP_BUILD_OPTS)))
         QMAKE_OPTIONS += TARGETDEVICE="-target N900 -bypass-wm-hint"
         DBUS_SERVICE_FILE:=usr/share/dbus-1/
+        #multi-touch is not available for N900
+        ENABLE_MULTITOUCH = false
 endif
 
 # shared library versions, option 1
@@ -55,7 +69,7 @@ QT_INSTALL_PLUGINS:=$(shell qmake -query QT_INSTALL_PLUGINS)
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-
+	sed -e 's|ENABLE_MULTITOUCH|${ENABLE_MULTITOUCH}|' > meego-im-framework.schemas < meego-im-framework.schemas.in
 	qmake -r $(QMAKE_OPTIONS)
 	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libmeegoimframework-dev.install < debian/libmeegoimframework-dev.install.in
 	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/meego-im-context.install < debian/meego-im-context.install.in

@@ -17,7 +17,14 @@
 #include "mplainwindow.h"
 
 #include <MSceneManager>
+#include <MGConfItem>
 #include <QDebug>
+
+namespace
+{
+    // This GConf item defines whether multitouch is enabled or disabled
+    const char * const MultitouchSettings = "/meegotouch/inputmethods/multitouch/enabled";
+}
 
 MPlainWindow *MPlainWindow::m_instance = 0;
 
@@ -33,6 +40,10 @@ MPlainWindow::MPlainWindow(QWidget *parent) :
         qFatal("There can be only one instance of MPlainWindow");
 
     m_instance = this;
+
+    if (MGConfItem(MultitouchSettings).value().toBool()) {
+        setAttribute(Qt::WA_AcceptTouchEvents);
+    }
 }
 
 MPlainWindow::~MPlainWindow()
