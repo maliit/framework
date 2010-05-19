@@ -36,7 +36,7 @@ static const GtkIMContextInfo meego_im_info =
 	"MEEGO Input Method",
 	"meego-im",
 	"",
-	"ja:ko:zh:*"
+	"en:ja:ko:zh:*"
 };
 
 
