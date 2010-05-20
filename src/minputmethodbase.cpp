@@ -50,6 +50,7 @@ MInputMethodBasePrivate::MInputMethodBasePrivate(MInputContextConnection *icConn
       indicatorIface(0)
 {
     connectToIndicatorDBus();
+    indicatorMap.insert(MInputMethodBase::NoIndicator, "");
     indicatorMap.insert(MInputMethodBase::LatinLower, "icon-s-status-latin-lowercase");
     indicatorMap.insert(MInputMethodBase::LatinUpper, "icon-s-status-latin-uppercase");
     indicatorMap.insert(MInputMethodBase::LatinLocked, "icon-s-status-latin-caps");

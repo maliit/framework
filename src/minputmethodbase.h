@@ -49,6 +49,7 @@ public:
       * \sa sendInputModeIndicator().
       */
     enum InputModeIndicator {
+        NoIndicator,    //!< No indicator should be shown
         LatinLower,     //!< Latin lower case mode
         LatinUpper,     //!< Latin upper case mode
         LatinLocked,    //!< Latin caps locked mode
