@@ -6,14 +6,27 @@ This document describes the XML specification of the toolbar widget.
 
 \section Tags
 \subsection TOOLBAR
-Root tag, it contains the definition for all buttons in the toolbar.
+Root tag, it contains the definition for all items in the toolbar.
+The LOCKED attribute enables or disables user interactions for toolbar.
+If user interactions are disabled then user can not hide visible toolbar or show hidden toolbar.
+
+\subsection Layout
+
+Layout describes the actual toolbar layout for a given screen orientation.  If the layout doesn't have a portrait variant, the software shall use the landscape variant when the device is in portrait orientation. Each layout contains one or more rows.
+
+\subsection Row
+
+This tag defines one row in toolbar.
+It is not recommended to create more than one row for landscape orientation.
+Row may not be empty.
 
 \subsubsection BUTTON
 This tag will be constructed as MButton.
 The NAME attribute should be unique and it is used as a reference in the toolbar system.
+All buttons with the same NAME share their state. If two buttons have the same name then their state is defined by first one and then overriden (completely or partially) by second one. This feature allows to have cosistent button state with different device orientation.
+Warning: it is not recommended to create two buttons with the same name inside one layout.
 The GROUP attribute defines the group this button belongs to.
 The PRIORITY attribute the defines the priority order of displaying, the smaller the number, the earlier it is put into the toolbar.
-The ORIENTATION attribute, if set, makes the button to be only visible on the mentioned orientation.
 The SHOWON attribute tells when the button is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
 The button is aligned within the toolbar according to the value of ALIGMENT attribute.
@@ -28,7 +41,6 @@ This tag will be constructed as MLabel.
 The NAME attribute should be unique and it is used as a reference in the toolbar system.
 The GROUP attribute defines the group this label belongs to.
 The PRIORITY attribute the defines the priority order of displaying, the smaller the number, the earlier it is put into the toolbar.
-The ORIENTATION attribute, if set, makes the button to be only visible on the mentioned orientation.
 The SHOWON attribute tells when the label is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
 The label is aligned within the toolbar according to the value of ALIGMENT attribute.
@@ -61,7 +73,9 @@ This tag defines that the action is to paste from clipboard.
 \section DTD
 \code
 <!DOCTYPE MEEGO_IM_TOOLBAR_WIDGET [
-<!ELEMENT toolbar ((button|label)*)>
+<!ELEMENT toolbar (layout+)>
+<!ELEMENT layout (row+)>
+<!ELEMENT row ((button|label)+)>
 <!ELEMENT button (actions*)>
 <!ELEMENT actions (sendkeysequence|sendstring|sendcommand|copy|paste|showgroup|hidegroup)*>
 <!ELEMENT sendkeysequence (#CDATA)>
@@ -70,10 +84,13 @@ This tag defines that the action is to paste from clipboard.
 <!ELEMENT copy EMPTY>
 <!ELEMENT paste EMPTY>
 
+<!ATTLIST toolbar locked (true|false) "false">
+
+<!ATTLIST layout orientation (landscape|portrait) "landscape">
+
 <!ATTLIST button name CDATA #REQUIRED>
 <!ATTLIST button group CDATA>
 <!ATTLIST button priority CDATA>
-<!ATTLIST button orientation (portrait|landscape)>
 <!ATTLIST button showon (selectedtext|always)>
 <!ATTLIST button hideon (selectedtext)>
 <!ATTLIST button alignment (left|right)>
@@ -87,7 +104,6 @@ This tag defines that the action is to paste from clipboard.
 <!ATTLIST label name CDATA #REQUIRED>
 <!ATTLIST label group CDATA>
 <!ATTLIST label priority CDATA>
-<!ATTLIST label orientation (portrait|landscape)>
 <!ATTLIST label showOn (selectedtext|always)>
 <!ATTLIST label hideOn (selectedtext)>
 <!ATTLIST label alignment (left|right)>
