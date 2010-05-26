@@ -22,6 +22,8 @@ public:
 
     virtual MInputMethodBase *createInputMethod(MInputContextConnection *icConnection);
 
+    virtual MInputMethodSettingsBase *createInputMethodSettings();
+
     virtual QSet<MIMHandlerState> supportedStates() const;
     //! \reimp_end
 

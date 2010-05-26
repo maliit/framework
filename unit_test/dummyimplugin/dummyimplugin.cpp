@@ -25,6 +25,11 @@ DummyImPlugin::createInputMethod(MInputContextConnection *icConnection)
     return new DummyInputMethod(icConnection);
 }
 
+MInputMethodSettingsBase *DummyImPlugin::createInputMethodSettings()
+{
+    return 0;
+}
+
 QSet<MIMHandlerState> DummyImPlugin::supportedStates() const
 {
     return allowedStates;

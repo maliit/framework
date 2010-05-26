@@ -16,9 +16,17 @@
 
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
+#include "mplainwindow.h"
 
 #include <MGConfItem>
 #include <MKeyboardStateTracker>
+#include <MWidget>
+#include <MDialog>
+#include <MContainer>
+#include <MContentItem>
+#include <MSceneManager>
+#include <MLocale>
+#include <MPopupList>
 
 #include "minputmethodplugin.h"
 #include "minputcontextdbusconnection.h"
@@ -27,6 +35,8 @@
 #include <QDir>
 #include <QPluginLoader>
 #include <QSignalMapper>
+#include <QGraphicsLinearLayout>
+#include <QStandardItemModel>
 #include <QDebug>
 
 
@@ -38,21 +48,38 @@ namespace
 
     const QString ConfigRoot          = "/meegotouch/inputmethods/";
     const QString MImPluginPaths    = ConfigRoot + "paths";
-    const QString MImPluginActive   = ConfigRoot + "activeplugins";
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
     const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
     const QString MImHandlerToPlugin  = PluginRoot + "handler";
     const QString MImAccesoryEnabled  = "/meegotouch/inputmethods/accessoryenabled";
+
 }
 
+MIMSettingDialog::MIMSettingDialog(const QString &title, M::StandardButtons buttons)
+    : MDialog(title, buttons)
+{
+}
 
+void MIMSettingDialog::retranslateUi()
+{
+    emit languageChanged();
+    MDialog::retranslateUi();
+}
+
+void MIMSettingDialog::orientationChangeEvent(MOrientationChangeEvent *event)
+{
+    //hack way to avoid dialog does not set size restriction for its central widget
+    MDialog::orientationChangeEvent(event);
+    centralWidget()->setPreferredWidth(preferredWidth());
+}
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
                                                      MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
-      imAccessoryEnabledConf(0)
+      imAccessoryEnabledConf(0),
+      settingsDialog(0)
 {
     deleteImTimer.setSingleShot(true);
     deleteImTimer.setInterval(DeleteInputMethodTimeout);
@@ -61,8 +88,10 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
 
 MIMPluginManagerPrivate::~MIMPluginManagerPrivate()
 {
+    qDeleteAll(settingsContainerMap.keys());
     qDeleteAll(handlerToPluginConfs);
     delete mICConnection;
+    delete settingsDialog;
 }
 
 
@@ -76,36 +105,38 @@ void MIMPluginManagerPrivate::loadPlugins()
                 qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
                 continue;
             }
-
-            QPluginLoader load(pluginsDir.absoluteFilePath(fileName));
-            QObject *pluginInstance = load.instance();
-
-            if (!pluginInstance) {
-                qWarning() << __PRETTY_FUNCTION__ << "Error loading plugin from "
-                           << path << fileName << load.errorString();
-                continue;
-            }
-
-            MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
-
-            if (plugin) {
-                if (!plugin->supportedStates().isEmpty()) {
-                    PluginDescription desc = { 0, PluginState(), M::SwitchUndefined };
-                    plugins[plugin] = desc;
-                    if (active.contains(plugin->name())) {
-                        activatePlugin(plugin);
-                    }
-                } else {
-                    qWarning() << __PRETTY_FUNCTION__
-                               << "Plugin does not support any state: " << fileName;
-                }
-            } else
-                qWarning() << __PRETTY_FUNCTION__
-                           << "Plugin is not MInputMethodPlugin: " << fileName;
+            loadPlugin(pluginsDir.absoluteFilePath(fileName));
         } // end foreach file in path
     } // end foreach path in paths
 }
 
+bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
+{
+    bool val = false;
+    QPluginLoader load(fileName);
+    QObject *pluginInstance = load.instance();
+
+    if (!pluginInstance) {
+        qWarning() << __PRETTY_FUNCTION__ << "Error loading plugin from "
+                   << fileName << load.errorString();
+    } else {
+        MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
+        if (plugin) {
+            if (!plugin->supportedStates().isEmpty()) {
+                PluginDescription desc = { load.fileName(), 0, PluginState(), M::SwitchUndefined };
+                plugins[plugin] = desc;
+                val = true;
+            } else {
+                qWarning() << __PRETTY_FUNCTION__
+                           << "Plugin does not support any state: " << fileName;
+            }
+        } else {
+            qWarning() << __PRETTY_FUNCTION__
+                       << "Plugin is not MInputMethodPlugin: " << fileName;
+        }
+    }
+    return val;
+}
 
 bool MIMPluginManagerPrivate::activatePlugin(const QString &name)
 {
@@ -140,7 +171,7 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
         plugins[plugin].inputMethod = inputMethod;
         if (inputMethod) {
             connected = QObject::connect(inputMethod, SIGNAL(regionUpdated(const QRegion &)),
-                                         parent, SIGNAL(regionUpdated(const QRegion &)));
+                                         parent, SLOT(updateRegion(const QRegion &)));
 
             connected = QObject::connect(inputMethod,
                                          SIGNAL(inputMethodAreaUpdated(const QRegion &)),
@@ -159,6 +190,13 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
                                          parent,
                                          SLOT(switchPlugin(const QString&)))
                         && connected;
+
+            connected = QObject::connect(inputMethod,
+                                         SIGNAL(settingsRequested()),
+                                         parent,
+                                         SLOT(showInputMethodSettings()))
+                        && connected;
+
         }
         if (!connected) {
             qWarning() << __PRETTY_FUNCTION__ << "Plugin" << plugin->name()
@@ -267,12 +305,13 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
     plugins[plugin].state = PluginState();
     inputMethod->hide();
     inputMethod->reset();
+    disconnect(inputMethod, 0, this, 0),
     mICConnection->removeTarget(inputMethod);
 }
 
 
 void MIMPluginManagerPrivate::convertAndFilterHandlers(const QStringList &handlerNames,
-                                                         QSet<MIMHandlerState> *handlers)
+                                                       QSet<MIMHandlerState> *handlers)
 {
     bool ok = false;
     bool disableOnscreenKbd = false;
@@ -393,8 +432,8 @@ bool MIMPluginManagerPrivate::switchPlugin(const QString &name, MInputMethodBase
 }
 
 bool MIMPluginManagerPrivate::doSwitchPlugin(M::InputMethodSwitchDirection direction,
-                                           Plugins::iterator source,
-                                           Plugins::iterator replacement)
+                                             Plugins::iterator source,
+                                             Plugins::iterator replacement)
 {
     if (!activePlugins.contains(replacement.key())) {
         const QSet<MIMHandlerState> intersect(replacement.key()->supportedStates()
@@ -508,6 +547,60 @@ void MIMPluginManagerPrivate::syncHandlerMap(int state)
     }
 }
 
+MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MIMHandlerState state) const
+{
+    MInputMethodPlugin *plugin = 0;
+    HandlerMap::const_iterator iterator = handlerToPlugin.find(state);
+    if (iterator != handlerToPlugin.constEnd()) {
+        plugin = iterator.value();
+    }
+    return plugin;
+}
+
+void MIMPluginManagerPrivate::loadInputMethodSettings()
+{
+    if (!settingsDialog) {
+        settingsDialog = new MIMSettingDialog("", M::NoStandardButton);
+        MWidget *settingsWidget = new MWidget(settingsDialog);
+        QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical, settingsWidget);
+        
+        foreach (MInputMethodPlugin *plugin, plugins.keys()) {
+            if (blacklist.contains(plugins[plugin].fileName))
+                continue;
+            MInputMethodSettingsBase *settings = plugin->createInputMethodSettings();
+            if (settings) {
+                QGraphicsWidget *contentWidget = settings->createContentWidget(settingsWidget);
+                if (contentWidget) {
+                    MContainer *container = new MContainer(settings->title(), settingsWidget);
+                    container->setCentralWidget(contentWidget);
+                    //TODO: icon for the setting.
+                    layout->addItem(container);
+                    settingsContainerMap.insert(settings, container);
+                }
+            }
+        }
+        settingsWidget->setLayout(layout);
+        //hack way to avoid dialog does not set size restriction for its central widget
+        settingsWidget->setPreferredWidth(settingsDialog->preferredWidth());
+
+        settingsDialog->setCentralWidget(settingsWidget);
+        connect(settingsDialog, SIGNAL(languageChanged()), this, SLOT(retranslateSettingsUi()));
+        retranslateSettingsUi();
+    }
+}
+
+void MIMPluginManagerPrivate::retranslateSettingsUi()
+{
+    if (settingsDialog) {
+        //% "Text Input"
+        settingsDialog->setTitle(qtTrId("qtn_txts_text_input"));
+    }
+
+    foreach (MContainer *container, settingsContainerMap.values()) {
+        container->setTitle(settingsContainerMap.key(container)->title());
+    }
+}
+
 ///////////////
 // actual class
 
@@ -519,7 +612,6 @@ MIMPluginManager::MIMPluginManager()
 
     d->paths     = MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist = MGConfItem(MImPluginDisabled).value().toStringList();
-    d->active    = MGConfItem(MImPluginActive).value().toStringList();
 
     d->loadPlugins();
 
@@ -568,7 +660,6 @@ QStringList MIMPluginManager::activeInputMethodsNames() const
 {
     return d->activeInputMethodsNames();
 }
-
 
 void MIMPluginManager::setDeleteIMTimeout(int timeout)
 {
@@ -626,3 +717,27 @@ void MIMPluginManager::switchPlugin(const QString &name)
         }
     }
 }
+
+void MIMPluginManager::showInputMethodSettings()
+{
+    // require the whole screen area as the keyboard area for setting
+    const QSize visibleSceneSize = MPlainWindow::instance()->visibleSceneSize(M::Landscape);
+    emit regionUpdated(QRegion(0, 0, visibleSceneSize.width(), visibleSceneSize.height()));
+    d->loadInputMethodSettings();
+    MPlainWindow::instance()->sceneManager()->execDialog(d->settingsDialog);
+    // restore the region
+    emit regionUpdated(d->activeImRegion);
+}
+
+
+void MIMPluginManager::updateRegion(const QRegion &region)
+{
+    // record input method object's region.
+    if (d->activeImRegion != region)
+        d->activeImRegion = region;
+    if (!d->settingsDialog || !d->settingsDialog->isVisible()) {
+        //if settings dialog is visible, don't update region.
+        emit regionUpdated(region);
+    }
+}
+

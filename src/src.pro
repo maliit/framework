@@ -17,6 +17,7 @@ HEADERSINSTALL = \
         mtoolbaritem.h \
         mtoolbardata.h \
         minputmethodnamespace.h \
+        minputmethodsettingsbase.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \

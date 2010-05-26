@@ -209,6 +209,12 @@ signals:
      */
     void pluginSwitchRequired();
 
+    /*!
+     * Inform that input method settings should be shown.
+     * Emitted when the plugin requires input method settings.
+     */
+    void settingsRequested();
+
 private:
     Q_DISABLE_COPY(MInputMethodBase)
 

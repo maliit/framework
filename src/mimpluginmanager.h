@@ -72,6 +72,12 @@ private slots:
     //! Switches active plugin to inactive plugin with given \a name
     void switchPlugin(const QString &name);
 
+    //! Shows settings for all loaded inputmethod plugins.
+    void showInputMethodSettings();
+
+    //! Updates the whole painting area for input method objects.
+    void updateRegion(const QRegion &region);
+
 private:
     Q_DISABLE_COPY(MIMPluginManager)
 

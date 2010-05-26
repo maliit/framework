@@ -22,6 +22,7 @@
 #include <QSet>
 
 #include "minputmethodbase.h"
+#include "minputmethodsettingsbase.h"
 
 class MInputContextConnection;
 class MInputMethodBase;
@@ -50,6 +51,12 @@ public:
      * resources will be owned by the input method server.
      */
     virtual MInputMethodBase *createInputMethod(MInputContextConnection *icConnection) = 0;
+
+    /*! \brief Creates and returns the MInputMethodSettingsBase object for
+     * this plugin. This function will be only called once and the allocated
+     * resources will be owned by the input method server.
+     */
+    virtual MInputMethodSettingsBase *createInputMethodSettings() = 0;
 
     /*!
      * \brief Returns set of states which could be handled by this plugin.
