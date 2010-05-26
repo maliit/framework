@@ -148,7 +148,8 @@ MInputContextAdaptorStub *gMInputContextAdaptorStub = &gDefaultMInputContextAdap
  */
 
 MInputContextAdaptor::MInputContextAdaptor(MInputContext *inputContext)
-    : QDBusAbstractAdaptor(inputContext)
+    : QDBusAbstractAdaptor(inputContext),
+      owner(inputContext)
 {
     gMInputContextAdaptorStub->constructor(inputContext);
 }

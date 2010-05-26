@@ -267,7 +267,7 @@ void Ut_MIMPluginManager::testSwitchPluginState()
     plugin3 = dynamic_cast<DummyImPlugin3 *>(*subject->activePlugins.begin());
     QVERIFY(plugin3 != 0);
     QCOMPARE(plugin3->name(), pluginName3);
-    inputMethodBase = subject->plugins[*subject->activePlugins.begin()].inputMethod;
+    inputMethodBase = subject->plugins[plugin3].inputMethod;
     QVERIFY(inputMethodBase != 0);
     inputMethod3 = dynamic_cast<DummyInputMethod3 *>(inputMethodBase);
     QVERIFY(inputMethod3 != 0);
@@ -381,6 +381,9 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->plugins.begin());
          iterator != subject->plugins.end();
          ++iterator) {
+        if (iterator.key() == 0) {
+            continue;
+        }
         if (pluginName == iterator.key()->name()) {
             plugin  = dynamic_cast<DummyImPlugin  *>(iterator.key());
         } else if (pluginName3 == iterator.key()->name()) {
@@ -390,7 +393,8 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
     QVERIFY(plugin  != 0);
     QVERIFY(plugin3 != 0);
-    inputMethod  = dynamic_cast<DummyInputMethod  *>(subject->plugins[plugin].inputMethod);
+    QVERIFY(subject->plugins.contains(plugin));
+    inputMethod  = dynamic_cast<DummyInputMethod *>(subject->plugins[plugin].inputMethod);
 
     actualState << state;
     QVERIFY(subject->activePlugins.size() == 1);

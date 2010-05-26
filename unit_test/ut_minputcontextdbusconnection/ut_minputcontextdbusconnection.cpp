@@ -260,20 +260,20 @@ void Ut_MInputContextDBusConnection::testNoReplyDBusCalls()
     m_subject->sendPreeditString(preedit, PreeditDefault);
     handleMessages();
     QCOMPARE(gMInputContextAdaptorStub->stubCallCount("updatePreedit"), 1);
-    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<QString>(0), preedit);
-    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<int>(1), (int)PreeditDefault);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<QString>(0, ""), preedit);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<int>(1, -1), (int)PreeditDefault);
 
     m_subject->sendPreeditString(preedit, PreeditNoCandidates);
     handleMessages();
     QCOMPARE(gMInputContextAdaptorStub->stubCallCount("updatePreedit"), 2);
-    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<QString>(0), preedit);
-    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<int>(1), (int)PreeditNoCandidates);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<QString>(0, ""), preedit);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("updatePreedit").parameter<int>(1, -1), (int)PreeditNoCandidates);
 
     QString commit("commit string");
     m_subject->sendCommitString(commit);
     handleMessages();
     QCOMPARE(gMInputContextAdaptorStub->stubCallCount("commitString"), 1);
-    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("commitString").parameter<QString>(0), commit);
+    QCOMPARE(gMInputContextAdaptorStub->stubLastCallTo("commitString").parameter<QString>(0, ""), commit);
 
     m_subject->sendKeyEvent(QKeyEvent(QEvent::KeyPress, 0, 0, QString(), false, 0));
     handleMessages();
@@ -287,14 +287,14 @@ void Ut_MInputContextDBusConnection::testNoReplyDBusCalls()
     m_subject->updateInputMethodArea(region);
     handleMessages();
     QCOMPARE(gMInputContextAdaptorStub->stubCallCount("updateInputMethodArea"), 1);
-    QList<QVariant> rectList = gMInputContextAdaptorStub->stubLastCallTo("updateInputMethodArea").parameter< QList<QVariant> >(0);
+    QList<QVariant> rectList = gMInputContextAdaptorStub->stubLastCallTo("updateInputMethodArea").parameter< QList<QVariant> >(0, QList<QVariant>());
     QCOMPARE(rectList.length(), 1);
     QCOMPARE(region.rects().at(0), qdbus_cast<QRect>(rectList.at(0)));
 
     m_subject->setGlobalCorrectionEnabled(true);
     handleMessages();
     QCOMPARE(gMInputContextAdaptorStub->stubCallCount("setGlobalCorrectionEnabled"), 1);
-    QVERIFY(gMInputContextAdaptorStub->stubLastCallTo("setGlobalCorrectionEnabled").parameter<bool>(0));
+    QVERIFY(gMInputContextAdaptorStub->stubLastCallTo("setGlobalCorrectionEnabled").parameter<bool>(0, false));
 
     m_subject->setRedirectKeys(true);
     handleMessages();

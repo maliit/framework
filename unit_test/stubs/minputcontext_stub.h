@@ -165,7 +165,19 @@ MInputContextStub *gMInputContextStub = &gDefaultMInputContextStub;
  */
 
 MInputContext::MInputContext(QObject *parent)
-    : QInputContext(parent)
+    : QInputContext(parent),
+      active(false),
+      inputPanelState(InputPanelHidden),
+      sipHideTimer(0),
+      iface(0),
+      ownsMComponentData(false),
+      correctionEnabled(false),
+      styleContainer(0),
+      connectedObject(0),
+      pasteAvailable(false),
+      copyAllowed(false),
+      redirectKeys(false),
+      objectPath("")
 {
     gMInputContextStub->mInputContextConstructor(parent);
 }

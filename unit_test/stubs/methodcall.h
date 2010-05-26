@@ -25,7 +25,7 @@ public:
     }
 
     template <typename T>
-    T parameter(int number) {
+    T parameter(int number, const T &defaultValue) {
         if (number >= _params.count()) {
             qDebug() << "MethodCall::" << __func__ << ": method " << _name << " does not have parameter #" << number
                      << ". Check your test code.";
@@ -33,18 +33,22 @@ public:
         Parameter<T>* param = dynamic_cast<Parameter<T>* >(_params[number]);
         if (!param) {
             qDebug() << "MethodCall::" << __func__ << ": failed dynamic_cast, check that parameter type matches parameter number";
+            return defaultValue;
+        } else {
+            return param->data;
         }
-        return param->data;
     }
 
     template <typename T>
-    T returnValue() {
+    T returnValue(const T &defaultValue) {
         Parameter<T>* value = dynamic_cast<Parameter<T>*>(_returnValue);
 
         if (!value) {
             qDebug() << "MethodCall::" << __func__ << ": failed dynamic_cast, check that type matches return value";
+            return defaultValue;
+        } else {
+            return value->data;
         }
-        return value->data;
     }
 
     bool returnValueExists() {
