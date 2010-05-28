@@ -26,6 +26,7 @@
 
 #include <QDir>
 #include <QPluginLoader>
+#include <QSignalMapper>
 #include <QDebug>
 
 
@@ -51,7 +52,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
                                                      MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
-      handlerToPluginConf(0),
       imAccessoryEnabledConf(0)
 {
     deleteImTimer.setSingleShot(true);
@@ -61,6 +61,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
 
 MIMPluginManagerPrivate::~MIMPluginManagerPrivate()
 {
+    qDeleteAll(handlerToPluginConfs);
     delete mICConnection;
 }
 
@@ -414,14 +415,15 @@ void MIMPluginManagerPrivate::changeHandlerMap(MInputMethodPlugin *origin,
                                                MInputMethodPlugin *replacement,
                                                QSet<MIMHandlerState> states)
 {
-    QList<QString> handlers = handlerToPluginConf->listEntries();
-
     foreach (MIMHandlerState state, states) {
         HandlerMap::iterator iterator = handlerToPlugin.find(state);
         if (iterator != handlerToPlugin.end() && *iterator == origin) {
+            *iterator = replacement; //for unit tests
+            // Update gconfitem to record new plugin for handler map.
+            // This should be done after real changing the handler map,
+            // to prevent _q_syncHandlerMap also being called to change handler map.
             MGConfItem gconf(MImHandlerToPlugin + QString("/%1").arg(int(state)));
             gconf.set(replacement->name());
-            *iterator = replacement; //for unit tests
         }
     }
 }
@@ -464,6 +466,47 @@ QStringList MIMPluginManagerPrivate::activeInputMethodsNames() const
     return result;
 }
 
+void MIMPluginManagerPrivate::loadHandlerMap()
+{
+    QSignalMapper *signalMapper = new QSignalMapper(this);
+    MGConfItem handlerToPluginConf(MImHandlerToPlugin);
+    QList<QString> handlers = handlerToPluginConf.listEntries();
+    foreach (const QString &handler, handlers) {
+        QStringList path = handler.split("/");
+        MGConfItem *handlerItem = new MGConfItem(handler);
+        handlerToPluginConfs.append(handlerItem);
+        QString pluginName = handlerItem->value().toString();
+        addHandlerMap((MIMHandlerState)path.last().toInt(), pluginName);
+        connect(handlerItem, SIGNAL(valueChanged()), signalMapper, SLOT(map()));
+        signalMapper->setMapping(handlerItem, (MIMHandlerState)path.last().toInt());
+    }
+    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(syncHandlerMap(int)));
+}
+
+
+void MIMPluginManagerPrivate::syncHandlerMap(int state)
+{
+    HandlerMap::iterator iterator = handlerToPlugin.find(static_cast<MIMHandlerState>(state));
+    MGConfItem gconf(MImHandlerToPlugin + QString("/%1").arg(state));
+    QString pluginName = gconf.value().toString();
+    MInputMethodPlugin *replacement = 0;
+    foreach (MInputMethodPlugin *plugin, plugins.keys()) {
+        if (plugin->name() == pluginName) {
+            replacement = plugin;
+            break;
+        }
+    }
+    if (replacement
+        && iterator != handlerToPlugin.end()
+        && iterator.value()->name() != pluginName) {
+        // switch plugin if handler gconf is changed.
+        MInputMethodBase *inputMethod = plugins[iterator.value()].inputMethod;
+        addHandlerMap(static_cast<MIMHandlerState>(state), pluginName);
+        if (!switchPlugin(pluginName, inputMethod)) {
+            deleteImTimer.start();
+        }
+    }
+}
 
 ///////////////
 // actual class
@@ -480,10 +523,7 @@ MIMPluginManager::MIMPluginManager()
 
     d->loadPlugins();
 
-    d->handlerToPluginConf = new MGConfItem(MImHandlerToPlugin, this);
-    connect(d->handlerToPluginConf, SIGNAL(valueChanged()), this, SLOT(reloadHandlerMap()));
-
-    reloadHandlerMap();
+    d->loadHandlerMap();
 
     if (MKeyboardStateTracker::instance()->isPresent()) {
         connect(MKeyboardStateTracker::instance(), SIGNAL(stateChanged()), this, SLOT(updateInputSource()));
@@ -505,19 +545,6 @@ MIMPluginManager::~MIMPluginManager()
 
     MToolbarManager::destroyInstance();
 }
-
-
-void MIMPluginManager::reloadHandlerMap()
-{
-    QList<QString> handlers = d->handlerToPluginConf->listEntries();
-
-    foreach (const QString &handlerName, handlers) {
-        QStringList path = handlerName.split("/");
-        QString pluginName = MGConfItem(handlerName).value().toString();
-        d->addHandlerMap((MIMHandlerState)path.last().toInt(), pluginName);
-    }
-}
-
 
 void MIMPluginManager::deleteInactiveIM()
 {

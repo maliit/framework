@@ -60,9 +60,6 @@ signals:
     void regionUpdated(const QRegion &region);
 
 private slots:
-    //! This method reloads map from keyboard handler to plugin
-    void reloadHandlerMap();
-
     //! This method deletes all inactive input method objects
     void deleteInactiveIM();
 

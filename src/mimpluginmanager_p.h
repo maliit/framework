@@ -17,6 +17,7 @@
 #ifndef MIMPLUGINMANAGER_P_H
 #define MIMPLUGINMANAGER_P_H
 
+#include <QObject>
 #include <QList>
 #include <QStringList>
 #include <QMap>
@@ -33,9 +34,10 @@ class MGConfItem;
 class MInputMethodBase;
 
 /* Internal class only! Interfaces here change, internal developers only*/
-class MIMPluginManagerPrivate
+class MIMPluginManagerPrivate : public QObject
 {
 
+    Q_OBJECT
 public:
     typedef QSet<MIMHandlerState> PluginState;
     struct PluginDescription {
@@ -74,6 +76,10 @@ public:
     QStringList loadedPluginsNames() const;
     QStringList activePluginsNames() const;
     QStringList activeInputMethodsNames() const;
+    void loadHandlerMap();
+
+public slots:
+    void syncHandlerMap(int);
 
 public:
     MIMPluginManager *parent;
@@ -87,7 +93,7 @@ public:
     QStringList active;
     HandlerMap handlerToPlugin;
 
-    MGConfItem *handlerToPluginConf;
+    QList<MGConfItem *> handlerToPluginConfs;
     MGConfItem *imAccessoryEnabledConf;
 
     QTimer deleteImTimer;
