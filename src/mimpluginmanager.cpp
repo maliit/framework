@@ -22,6 +22,7 @@
 
 #include "minputmethodplugin.h"
 #include "minputcontextdbusconnection.h"
+#include "mtoolbarmanager.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -471,6 +472,8 @@ MIMPluginManager::MIMPluginManager()
     : QObject(),
       d(new MIMPluginManagerPrivate(new MInputContextDBusConnection, this))
 {
+    MToolbarManager::createInstance();
+
     d->paths     = MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist = MGConfItem(MImPluginDisabled).value().toStringList();
     d->active    = MGConfItem(MImPluginActive).value().toStringList();
@@ -499,6 +502,8 @@ MIMPluginManager::~MIMPluginManager()
 {
     delete d;
     d = 0;
+
+    MToolbarManager::destroyInstance();
 }
 
 

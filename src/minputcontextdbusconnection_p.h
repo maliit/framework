@@ -17,11 +17,14 @@
 #ifndef MINPUTCONTEXTDBUSCONNECTION_P_H
 #define MINPUTCONTEXTDBUSCONNECTION_P_H
 
+#include "mtoolbarid.h"
+
 #include <QDBusAbstractAdaptor>
 #include <QMap>
 #include <QDBusInterface>
 #include <QString>
 #include <QVariant>
+#include <QSet>
 
 class MInputContextDBusConnection;
 
@@ -57,7 +60,6 @@ private:
 };
 
 
-
 class MInputContextDBusConnectionPrivate
 {
 public:
@@ -71,6 +73,8 @@ public:
     QMap<QString, QVariant> widgetState;
     bool globalCorrectionEnabled;
     bool redirectionEnabled;
+    MToolbarId toolbarId; //current toolbar id
+    QSet<MToolbarId> toolbarIds; //all toolbar ids
 };
 
 #endif

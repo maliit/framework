@@ -25,6 +25,8 @@ HEADERS += $$HEADERSINSTALL \
         mimapplication.h \
         mtoolbardata_p.h \
         mtoolbaritem_p.h \
+        mtoolbarmanager.h \
+        mtoolbarid.h \
 
 SOURCES += mimpluginmanager.cpp \
         minputmethodbase.cpp \
@@ -34,6 +36,8 @@ SOURCES += mimpluginmanager.cpp \
         mimapplication.cpp \
         mtoolbaritem.cpp \
         mtoolbardata.cpp \
+        mtoolbarmanager.cpp \
+        mtoolbarid.cpp \
 
 CONFIG += debug qdbus meegotouch
 QT = core gui xml

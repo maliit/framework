@@ -23,6 +23,7 @@
 #include <MNamespace>
 #include "mimhandlerstate.h"
 #include "mimdirection.h"
+#include "minputmethodnamespace.h"
 
 class QRegion;
 class QPoint;
@@ -30,6 +31,7 @@ class QRect;
 class QGraphicsScene;
 class MInputContextConnection;
 class MInputMethodBasePrivate;
+class MToolbarData;
 
 /*!
  * \brief MInputMethodBase is a base class for input method servers.
@@ -127,27 +129,10 @@ public:
     virtual void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
 
     /*!
-     * \brief Register an input method toolbar which is defined in \a fileName with the unique identifier \a id.
-     *  The \a id should be unique, and the \a fileName is the absolute file name of the custom toolbar.
+     * \brief Uses a custom toolbar which is defined by given parameter.
+     * \param toolbar Pointer to toolbar definition.
      */
-    virtual void registerToolbar(qlonglong id, const QString &fileName);
-
-    /*!
-     * \brief Unregister an input method \a toolbar which unique identifier is \a id.
-     */
-    virtual void unregisterToolbar(qlonglong id);
-
-    /*!
-     * \brief Uses a custom toolbar which is registered with the unique \a id.
-     * \sa registerToolbar
-     */
-    virtual void setToolbar(qlonglong id);
-
-    /*!
-     * \brief Sets the \a attribute for the \a item in the custom toolbar which has the unique \a id to \a value.
-     */
-    virtual void setToolbarItemAttribute(qlonglong id, const QString &item,
-                                         const QString &attribute, const QVariant &value);
+    virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
 
     /*!
      * \brief Process a key event redirected from hardware keyboard to input method.

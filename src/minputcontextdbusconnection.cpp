@@ -16,6 +16,8 @@
 
 #include "minputcontextdbusconnection.h"
 #include "minputcontextdbusconnection_p.h"
+#include "mtoolbarmanager.h"
+#include "mtoolbarid.h"
 
 #include <QObject>
 #include <QDebug>
@@ -181,7 +183,6 @@ MInputContextDBusConnectionPrivate::~MInputContextDBusConnectionPrivate()
         delete it.value();
     }
 }
-
 
 
 ///////////////
@@ -508,18 +509,14 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
     }
 
     // toolbar change
-    qlonglong oldToolbarId = -1;
-    qlonglong newToolbarId = -1;
-    variant = d->widgetState[ToolbarAttribute];
-
-    if (variant.isValid()) {
-        oldToolbarId = variant.toLongLong();
-    }
+    MToolbarId oldToolbarId;
+    MToolbarId newToolbarId;
+    oldToolbarId = d->toolbarId;
 
     variant = stateInfo[ToolbarAttribute];
     if (variant.isValid()) {
         // map toolbar id from local to global
-        toGlobal(variant.toInt(), newToolbarId);
+        newToolbarId = MToolbarId(variant.toInt(), message().service());
     }
 
     // update state
@@ -542,11 +539,14 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
 
     // compare the toolbar id (global)
     if (oldToolbarId != newToolbarId) {
+        QSharedPointer<const MToolbarData> toolbar =
+            MToolbarManager::instance().toolbarData(newToolbarId);
+
         foreach (MInputMethodBase *target, targets()) {
-            target->setToolbar(newToolbarId);
+            target->setToolbar(toolbar);
         }
         // store the new used toolbar id(global).
-        d->widgetState[ToolbarAttribute] = newToolbarId;
+        d->toolbarId = newToolbarId;
     }
 
     // general notification last
@@ -595,45 +595,29 @@ void MInputContextDBusConnection::processKeyEvent(QEvent::Type keyType, Qt::Key 
 
 void MInputContextDBusConnection::registerToolbar(int id, const QString &toolbar)
 {
-    qlonglong globalId;
-    if (toGlobal(id, globalId)) {
-        foreach (MInputMethodBase *target, targets()) {
-            target->registerToolbar(globalId, toolbar);
-        }
+    MToolbarId globalId(id, message().service());
+    if (globalId.isValid() && !d->toolbarIds.contains(globalId)) {
+        MToolbarManager::instance().registerToolbar(globalId, toolbar);
+        d->toolbarIds.insert(globalId);
     }
 }
 
 void MInputContextDBusConnection::unregisterToolbar(int id)
 {
-    qlonglong globalId;
-    if (toGlobal(id, globalId)) {
-        foreach (MInputMethodBase *target, targets()) {
-            target->unregisterToolbar(globalId);
-        }
+    MToolbarId globalId(id, message().service());
+    if (globalId.isValid() && d->toolbarIds.contains(globalId)) {
+        MToolbarManager::instance().unregisterToolbar(globalId);
+        d->toolbarIds.remove(globalId);
     }
 }
 
 void MInputContextDBusConnection::setToolbarItemAttribute(int id, const QString &item,
-                                                            const QString &attribute, const QVariant &value)
+                                                          const QString &attribute, const QVariant &value)
 {
-    qlonglong globalId;
-    if (toGlobal(id, globalId)) {
-        foreach (MInputMethodBase *target, targets()) {
-            target->setToolbarItemAttribute(globalId, item, attribute, value);
-        }
+    MToolbarId globalId(id, message().service());
+    if (globalId.isValid() && d->toolbarIds.contains(globalId)) {
+        MToolbarManager::instance().setToolbarItemAttribute(globalId, item, attribute, value);
     }
-}
-
-bool MInputContextDBusConnection::toGlobal(int id, qlonglong &globalId)
-{
-    bool val = false;
-    globalId = -1;
-    const QDBusMessage &msg = message();
-    if (d->clients.contains(msg.service()) && id >= 0) {
-        val = true;
-        globalId = (static_cast<qlonglong>(d->clientIds[msg.service()]))<<32 + id;
-    }
-    return val;
 }
 
 void MInputContextDBusConnection::updateTransientHint()
