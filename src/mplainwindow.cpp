@@ -41,6 +41,17 @@ MPlainWindow::MPlainWindow(QWidget *parent) :
 
     m_instance = this;
 
+    // This *does not* prevent plugins from activating multitouch through
+    // QGraphicsItem::setAcceptTouchEvents, as the first (enabling) call to
+    // that method *will* set the WA_AcceptTouchEvents attribute on all
+    // attached viewports (this was probably done in Qt to add some
+    // convenience for sloppy programmers).
+    //
+    // Setting this attribute explicitely here is supposed to guard against
+    // changes in above mentioned (undocumented!) "convenience", as this is
+    // what the documentation suggests [1].
+    //
+    // [1] http://doc.trolltech.com/4.6/qtouchevent.html#enabling-touch-events
     if (MGConfItem(MultitouchSettings).value().toBool()) {
         setAttribute(Qt::WA_AcceptTouchEvents);
     }
