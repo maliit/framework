@@ -14,6 +14,7 @@ SUBDIRS = \
           ut_minputcontextdbusconnection \
           ut_passthroughserver \
           ft_mimpluginmanager \
+          ut_mtoolbardata \
 
 target.commands += $$system(touch tests.xml)
 target.path = /usr/share/meego-im-framework-tests
