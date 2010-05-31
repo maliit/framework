@@ -6,30 +6,37 @@ TARGET = meegoimframework
 
 # Input
 HEADERSINSTALL = \
-    minputmethodplugin.h \
-    minputmethodbase.h \
-    mimpluginmanager.h \
-    minputcontextconnection.h \
-    mplainwindow.h \
-    mpreeditface.h \
-    mimhandlerstate.h \
-    mimdirection.h
+        minputmethodplugin.h \
+        minputmethodbase.h \
+        mimpluginmanager.h \
+        minputcontextconnection.h \
+        mplainwindow.h \
+        mpreeditface.h \
+        mimhandlerstate.h \
+        mimdirection.h \
+        mtoolbaritem.h \
+        mtoolbardata.h \
+        minputmethodnamespace.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
         minputcontextdbusconnection.h \
         minputcontextdbusconnection_p.h \
-        mimapplication.h
+        mimapplication.h \
+        mtoolbardata_p.h \
+        mtoolbaritem_p.h \
 
 SOURCES += mimpluginmanager.cpp \
         minputmethodbase.cpp \
         minputcontextconnection.cpp \
         minputcontextdbusconnection.cpp \
         mplainwindow.cpp \
-        mimapplication.cpp
+        mimapplication.cpp \
+        mtoolbaritem.cpp \
+        mtoolbardata.cpp \
 
 CONFIG += debug qdbus meegotouch
-QT = core gui
+QT = core gui xml
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
