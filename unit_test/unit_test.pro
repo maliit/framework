@@ -16,6 +16,7 @@ SUBDIRS = \
           ft_mimpluginmanager \
           ut_mtoolbardata \
           ut_mtoolbaritem \
+          ut_mtoolbarmanager \
 
 target.commands += $$system(touch tests.xml)
 target.path = /usr/share/meego-im-framework-tests

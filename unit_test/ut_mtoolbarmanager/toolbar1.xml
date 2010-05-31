@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE DUI_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
+<toolbar locked="true">
+    <layout orientation="landscape">
+        <row>
+            <button name="test1" group="group1" priority="0" showon="always" alignment="right" icon="icon1" text="text1" text_id="id1">
+                <actions>
+                    <sendstring string="sendstring1"> </sendstring>
+                </actions>
+            </button>
+            <button name="test2" group="group2" priority="10" showon="selectedtext" alignment="left" icon="icon2" text="text2" text_id="id2" toggle="true">
+                <actions>
+                    <copy />
+                </actions>
+            </button>
+            <button name="test3" group="group3" priority="1" showon="always" alignment="left" icon="icon3" text="text3" text_id="id3">
+                <actions>
+                    <paste />
+                </actions>
+            </button>
+            <label name="test4" text="text4">
+            </label>
+            <button name="test5" text="test5">
+                <actions>
+                    <paste />
+                </actions>
+            </button>
+        </row>
+    </layout>
+    <layout orientation="portrait">
+        <row>
+            <button name="test1">
+            </button>
+        </row>
+        <row>
+            <button name="test2">
+                <actions>
+                    <copy />
+                </actions>
+            </button>
+            <button name="test3" group="group4" priority="2" hideon="selectedtext" alignment="left" icon="icon4" text="text4" text_id="id4">
+                <actions>
+                    <sendcommand command="command4" />
+                </actions>
+            </button>
+            <button name="test4" />
+            <label name="test5" />
+        </row>
+    </layout>
+</toolbar>
+
