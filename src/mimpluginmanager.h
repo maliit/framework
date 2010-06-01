@@ -20,9 +20,8 @@
 #include <QObject>
 #include "mimdirection.h"
 
-class QRegion;
 class MIMPluginManagerPrivate;
-
+class QRegion;
 
 class MIMPluginManager: public QObject
 {
@@ -78,10 +77,14 @@ private slots:
     //! Updates the whole painting area for input method objects.
     void updateRegion(const QRegion &region);
 
+protected:
+    MIMPluginManagerPrivate *const d_ptr;
+
 private:
     Q_DISABLE_COPY(MIMPluginManager)
-
-    MIMPluginManagerPrivate *d;
+    Q_DECLARE_PRIVATE(MIMPluginManager)
+    Q_PRIVATE_SLOT(d_func(), void _q_syncHandlerMap(int));
+    Q_PRIVATE_SLOT(d_func(), void _q_retranslateSettingsUi());
 
     friend class Ut_MIMPluginManager;
     friend class Ft_MIMPluginManager;

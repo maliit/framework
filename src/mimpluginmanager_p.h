@@ -55,10 +55,9 @@ protected:
     //! reimp_end
 };
 
-class MIMPluginManagerPrivate : public QObject
+class MIMPluginManagerPrivate
 {
-
-    Q_OBJECT
+    Q_DECLARE_PUBLIC(MIMPluginManager)
 public:
     typedef QSet<MIMHandlerState> PluginState;
     struct PluginDescription {
@@ -103,11 +102,8 @@ public:
     MInputMethodPlugin *activePlugin(MIMHandlerState state) const;
     void loadInputMethodSettings();
 
-public slots:
-    void syncHandlerMap(int);
-
-private slots:
-    void retranslateSettingsUi();
+    void _q_syncHandlerMap(int);
+    void _q_retranslateSettingsUi();
 
 public:
     MIMPluginManager *parent;
@@ -128,6 +124,8 @@ public:
 
     MIMSettingDialog *settingsDialog;
     QMap<MInputMethodSettingsBase *, MContainer *> settingsContainerMap;
+
+    MIMPluginManager *q_ptr;
 };
 
 #endif

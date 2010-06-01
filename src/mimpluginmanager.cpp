@@ -157,6 +157,7 @@ bool MIMPluginManagerPrivate::activatePlugin(const QString &name)
 
 void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
 {
+    Q_Q(MIMPluginManager);
     if (!plugin || activePlugins.contains(plugin)) {
         return;
     }
@@ -171,7 +172,7 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
         plugins[plugin].inputMethod = inputMethod;
         if (inputMethod) {
             connected = QObject::connect(inputMethod, SIGNAL(regionUpdated(const QRegion &)),
-                                         parent, SLOT(updateRegion(const QRegion &)));
+                                         q, SLOT(updateRegion(const QRegion &)));
 
             connected = QObject::connect(inputMethod,
                                          SIGNAL(inputMethodAreaUpdated(const QRegion &)),
@@ -181,19 +182,19 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
 
             connected = QObject::connect(inputMethod,
                                          SIGNAL(pluginSwitchRequired(M::InputMethodSwitchDirection)),
-                                         parent,
+                                         q,
                                          SLOT(switchPlugin(M::InputMethodSwitchDirection)))
                         && connected;
 
             connected = QObject::connect(inputMethod,
                                          SIGNAL(pluginSwitchRequired(const QString&)),
-                                         parent,
+                                         q,
                                          SLOT(switchPlugin(const QString&)))
                         && connected;
 
             connected = QObject::connect(inputMethod,
                                          SIGNAL(settingsRequested()),
-                                         parent,
+                                         q,
                                          SLOT(showInputMethodSettings()))
                         && connected;
 
@@ -293,6 +294,7 @@ void MIMPluginManagerPrivate::deleteInactiveIM()
 
 void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
 {
+    Q_Q(MIMPluginManager);
     if (!activePlugins.contains(plugin))
         return;
 
@@ -305,7 +307,7 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
     plugins[plugin].state = PluginState();
     inputMethod->hide();
     inputMethod->reset();
-    disconnect(inputMethod, 0, this, 0),
+    QObject::disconnect(inputMethod, 0, q, 0),
     mICConnection->removeTarget(inputMethod);
 }
 
@@ -507,7 +509,8 @@ QStringList MIMPluginManagerPrivate::activeInputMethodsNames() const
 
 void MIMPluginManagerPrivate::loadHandlerMap()
 {
-    QSignalMapper *signalMapper = new QSignalMapper(this);
+    Q_Q(MIMPluginManager);
+    QSignalMapper *signalMapper = new QSignalMapper(q);
     MGConfItem handlerToPluginConf(MImHandlerToPlugin);
     QList<QString> handlers = handlerToPluginConf.listEntries();
     foreach (const QString &handler, handlers) {
@@ -516,14 +519,14 @@ void MIMPluginManagerPrivate::loadHandlerMap()
         handlerToPluginConfs.append(handlerItem);
         QString pluginName = handlerItem->value().toString();
         addHandlerMap((MIMHandlerState)path.last().toInt(), pluginName);
-        connect(handlerItem, SIGNAL(valueChanged()), signalMapper, SLOT(map()));
+        QObject::connect(handlerItem, SIGNAL(valueChanged()), signalMapper, SLOT(map()));
         signalMapper->setMapping(handlerItem, (MIMHandlerState)path.last().toInt());
     }
-    connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(syncHandlerMap(int)));
+    QObject::connect(signalMapper, SIGNAL(mapped(int)), q, SLOT(_q_syncHandlerMap(int)));
 }
 
 
-void MIMPluginManagerPrivate::syncHandlerMap(int state)
+void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
 {
     HandlerMap::iterator iterator = handlerToPlugin.find(static_cast<MIMHandlerState>(state));
     MGConfItem gconf(MImHandlerToPlugin + QString("/%1").arg(state));
@@ -559,11 +562,11 @@ MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MIMHandlerState state)
 
 void MIMPluginManagerPrivate::loadInputMethodSettings()
 {
+    Q_Q(MIMPluginManager);
     if (!settingsDialog) {
         settingsDialog = new MIMSettingDialog("", M::NoStandardButton);
         MWidget *settingsWidget = new MWidget(settingsDialog);
         QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical, settingsWidget);
-        
         foreach (MInputMethodPlugin *plugin, plugins.keys()) {
             if (blacklist.contains(plugins[plugin].fileName))
                 continue;
@@ -584,12 +587,12 @@ void MIMPluginManagerPrivate::loadInputMethodSettings()
         settingsWidget->setPreferredWidth(settingsDialog->preferredWidth());
 
         settingsDialog->setCentralWidget(settingsWidget);
-        connect(settingsDialog, SIGNAL(languageChanged()), this, SLOT(retranslateSettingsUi()));
-        retranslateSettingsUi();
+        QObject::connect(settingsDialog, SIGNAL(languageChanged()), q, SLOT(_q_retranslateSettingsUi()));
+        _q_retranslateSettingsUi();
     }
 }
 
-void MIMPluginManagerPrivate::retranslateSettingsUi()
+void MIMPluginManagerPrivate::_q_retranslateSettingsUi()
 {
     if (settingsDialog) {
         //% "Text Input"
@@ -606,8 +609,11 @@ void MIMPluginManagerPrivate::retranslateSettingsUi()
 
 MIMPluginManager::MIMPluginManager()
     : QObject(),
-      d(new MIMPluginManagerPrivate(new MInputContextDBusConnection, this))
+      d_ptr(new MIMPluginManagerPrivate(new MInputContextDBusConnection, this))
 {
+    Q_D(MIMPluginManager);
+    d->q_ptr = this;
+
     MToolbarManager::createInstance();
 
     d->paths     = MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
@@ -632,42 +638,47 @@ MIMPluginManager::MIMPluginManager()
 
 MIMPluginManager::~MIMPluginManager()
 {
-    delete d;
-    d = 0;
-
+    Q_D(MIMPluginManager);
     MToolbarManager::destroyInstance();
+    delete d;
 }
 
 void MIMPluginManager::deleteInactiveIM()
 {
+    Q_D(MIMPluginManager);
     d->deleteInactiveIM();
 }
 
 
 QStringList MIMPluginManager::loadedPluginsNames() const
 {
+    Q_D(const MIMPluginManager);
     return d->loadedPluginsNames();
 }
 
 
 QStringList MIMPluginManager::activePluginsNames() const
 {
+    Q_D(const MIMPluginManager);
     return d->activePluginsNames();
 }
 
 
 QStringList MIMPluginManager::activeInputMethodsNames() const
 {
+    Q_D(const MIMPluginManager);
     return d->activeInputMethodsNames();
 }
 
 void MIMPluginManager::setDeleteIMTimeout(int timeout)
 {
+    Q_D(MIMPluginManager);
     d->deleteImTimer.setInterval(timeout);
 }
 
 void MIMPluginManager::updateInputSource()
 {
+    Q_D(MIMPluginManager);
     // Hardware and Accessory can work together.
     // OnScreen is mutually exclusive to Hardware and Accessory.
     QSet<MIMHandlerState> handlers = d->activeHandlers();
@@ -696,6 +707,7 @@ void MIMPluginManager::updateInputSource()
 
 void MIMPluginManager::switchPlugin(M::InputMethodSwitchDirection direction)
 {
+    Q_D(MIMPluginManager);
     MInputMethodBase *initiator = qobject_cast<MInputMethodBase*>(sender());
 
     if (initiator) {
@@ -709,6 +721,7 @@ void MIMPluginManager::switchPlugin(M::InputMethodSwitchDirection direction)
 
 void MIMPluginManager::switchPlugin(const QString &name)
 {
+    Q_D(MIMPluginManager);
     MInputMethodBase *initiator = qobject_cast<MInputMethodBase*>(sender());
 
     if (initiator) {
@@ -720,6 +733,7 @@ void MIMPluginManager::switchPlugin(const QString &name)
 
 void MIMPluginManager::showInputMethodSettings()
 {
+    Q_D(MIMPluginManager);
     // require the whole screen area as the keyboard area for setting
     const QSize visibleSceneSize = MPlainWindow::instance()->visibleSceneSize(M::Landscape);
     emit regionUpdated(QRegion(0, 0, visibleSceneSize.width(), visibleSceneSize.height()));
@@ -732,6 +746,7 @@ void MIMPluginManager::showInputMethodSettings()
 
 void MIMPluginManager::updateRegion(const QRegion &region)
 {
+    Q_D(MIMPluginManager);
     // record input method object's region.
     if (d->activeImRegion != region)
         d->activeImRegion = region;
@@ -741,3 +756,4 @@ void MIMPluginManager::updateRegion(const QRegion &region)
     }
 }
 
+#include "moc_mimpluginmanager.cpp"
