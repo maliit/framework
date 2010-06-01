@@ -75,7 +75,7 @@ void MIMSettingDialog::orientationChangeEvent(MOrientationChangeEvent *event)
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
-                                                     MIMPluginManager *p)
+                                                 MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
       imAccessoryEnabledConf(0),
@@ -463,7 +463,7 @@ void MIMPluginManagerPrivate::changeHandlerMap(MInputMethodPlugin *origin,
             // Update gconfitem to record new plugin for handler map.
             // This should be done after real changing the handler map,
             // to prevent _q_syncHandlerMap also being called to change handler map.
-            MGConfItem gconf(MImHandlerToPlugin + QString("/%1").arg(int(state)));
+            MGConfItem gconf(QString(MImHandlerToPlugin + QString("/%1").arg(static_cast<int>(state))));
             gconf.set(replacement->name());
         }
     }
@@ -513,6 +513,8 @@ void MIMPluginManagerPrivate::loadHandlerMap()
     QSignalMapper *signalMapper = new QSignalMapper(q);
     MGConfItem handlerToPluginConf(MImHandlerToPlugin);
     QList<QString> handlers = handlerToPluginConf.listEntries();
+    // Queries all children under MImHandlerToPlugin,
+    // each is a gconf for one state of the handler map.
     foreach (const QString &handler, handlers) {
         QStringList path = handler.split("/");
         MGConfItem *handlerItem = new MGConfItem(handler);
@@ -528,8 +530,10 @@ void MIMPluginManagerPrivate::loadHandlerMap()
 
 void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
 {
+     //  This method is called when one of the gconf about handler map is changed.
+     //  \a state (can be cast to MIMHandlerState) indicates which state of the handler map is changed.
     HandlerMap::iterator iterator = handlerToPlugin.find(static_cast<MIMHandlerState>(state));
-    MGConfItem gconf(MImHandlerToPlugin + QString("/%1").arg(state));
+    MGConfItem gconf(QString(MImHandlerToPlugin + QString("/%1").arg(state)));
     QString pluginName = gconf.value().toString();
     MInputMethodPlugin *replacement = 0;
     foreach (MInputMethodPlugin *plugin, plugins.keys()) {
