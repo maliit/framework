@@ -5,6 +5,7 @@
 #include "dummyimplugin3.h"
 #include "dummyinputmethod.h"
 #include "dummyinputmethod3.h"
+#include "fakegconf.h"
 
 #include <QProcess>
 #include <QGraphicsScene>
@@ -23,6 +24,13 @@ namespace
 {
     const QString GlobalTestPluginPath("/usr/lib/meego-im-framework-tests/plugins");
     const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
+
+    const QString ConfigRoot          = "/meegotouch/inputmethods/";
+    const QString MImPluginPaths    = ConfigRoot + "paths";
+    const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
+
+    const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
+    const QString MImHandlerToPlugin  = PluginRoot + "handler";
 
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName2 = "DummyImPlugin2";
@@ -55,6 +63,7 @@ void Ut_MIMPluginManager::initTestCase()
         }
     }
     QVERIFY2(QDir(pluginPath).exists(), "Test plugin directory does not exist.");
+
 }
 
 void Ut_MIMPluginManager::cleanupTestCase()
@@ -64,18 +73,39 @@ void Ut_MIMPluginManager::cleanupTestCase()
 
 void Ut_MIMPluginManager::init()
 {
-    subject = new MIMPluginManagerPrivate(new MInputContextConnectionStub, 0);
+    MGConfItem pathConf(MImPluginPaths);
+    pathConf.set(pluginPath);
+    MGConfItem blackListConf(MImPluginDisabled);
 
-    subject->paths     << pluginPath;
-    subject->blacklist << "libdummyimplugin2.so";
-    subject->active    << "DummyImPlugin";
+    QStringList blackList;
+    blackList << "libdummyimplugin2.so";
+    //ignore the meego-keyboard
+    blackList << "libmeego-keyboard.so";
+    blackListConf.set(blackList);
+    MGConfItem handlerItem(QString("%1/%2").arg(MImHandlerToPlugin).arg(OnScreen));
+    handlerItem.set(pluginName);
 
-    subject->loadPlugins();
+    manager = new MIMPluginManager();
+    subject = manager->d_ptr;
+
+    QVERIFY(subject->activePlugins.size() == 1);
+    MInputMethodPlugin *plugin = 0;
+    plugin = *subject->activePlugins.begin();
+    QVERIFY(plugin != 0);
+    QCOMPARE(plugin->name(), pluginName);
+    DummyInputMethod  *inputMethod  = 0;
+    MInputMethodBase *inputMethodBase = 0;
+    inputMethodBase = subject->plugins[plugin].inputMethod;
+    QVERIFY(inputMethodBase != 0);
+    inputMethod = dynamic_cast<DummyInputMethod *>(inputMethodBase);
+    QVERIFY(inputMethod != 0);
+    inputMethod->setStateCount = 0;
 }
 
 void Ut_MIMPluginManager::cleanup()
 {
-    delete subject;
+    delete manager;
+    subject = 0;
 }
 
 

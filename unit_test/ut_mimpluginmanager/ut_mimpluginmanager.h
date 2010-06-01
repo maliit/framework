@@ -5,6 +5,7 @@
 #include <QObject>
 
 
+class MIMPluginManager;
 class MIMPluginManagerPrivate;
 class QCoreApplication;
 
@@ -35,6 +36,7 @@ private slots:
 private:
     QCoreApplication *app;
     QString pluginPath;
+    MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;
 
     void checkHandlerMap(int handler, const QString &name);

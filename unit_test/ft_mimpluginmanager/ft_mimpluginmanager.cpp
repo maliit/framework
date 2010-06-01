@@ -158,8 +158,8 @@ void Ft_MIMPluginManager::testSwitchPluginBySignal()
 
     subject->setDeleteIMTimeout(300);
 
-    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d->plugins.begin());
-            iterator != subject->d->plugins.end();
+    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d_ptr->plugins.begin());
+            iterator != subject->d_ptr->plugins.end();
             ++iterator) {
         if (pluginName == iterator.key()->name()) {
             plugin = dynamic_cast<DummyImPlugin *>(iterator.key());
@@ -167,7 +167,7 @@ void Ft_MIMPluginManager::testSwitchPluginBySignal()
     }
 
     QVERIFY(plugin != 0);
-    inputMethod = dynamic_cast<DummyInputMethod *>(subject->d->plugins[plugin].inputMethod);
+    inputMethod = dynamic_cast<DummyInputMethod *>(subject->d_ptr->plugins[plugin].inputMethod);
     QVERIFY(inputMethod != 0);
 
     inputMethod->switchMe(); //emit signal to switch plugin
@@ -185,8 +185,8 @@ void Ft_MIMPluginManager::testSwitchToSpecifiedPlugin()
 
     subject->setDeleteIMTimeout(300);
 
-    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d->plugins.begin());
-            iterator != subject->d->plugins.end();
+    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d_ptr->plugins.begin());
+            iterator != subject->d_ptr->plugins.end();
             ++iterator) {
         if (pluginName == iterator.key()->name()) {
             plugin = dynamic_cast<DummyImPlugin *>(iterator.key());
@@ -194,7 +194,7 @@ void Ft_MIMPluginManager::testSwitchToSpecifiedPlugin()
     }
 
     QVERIFY(plugin != 0);
-    inputMethod = dynamic_cast<DummyInputMethod *>(subject->d->plugins[plugin].inputMethod);
+    inputMethod = dynamic_cast<DummyInputMethod *>(subject->d_ptr->plugins[plugin].inputMethod);
     QVERIFY(inputMethod != 0);
 
     inputMethod->switchMe(pluginName3); //emit signal to switch plugin
