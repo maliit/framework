@@ -30,13 +30,16 @@ class QDBusConnectionInterface;
 
 
 /*!
- * \brief MInputContext implements application side input method support for M input method server.
+ * \brief On the application side, MInputContext implements input method
+ *        support for the Meegotouch input method server.
  *
- * The base class QInputContext abstracts input method specific composing of input. It acts
- * in between the input method and the widget receiving the composed input. MInputContext
- * extends this functionality by connecting to M input method server and accepting input it
- * creates. This input is forwarded to currently focused widget. MInputContext also notifies
- * M input method server about the current state of input widgets in the application side.
+ * The base class QInputContext abstracts input method specific composing of
+ * input. It acts in between the input method and the widget receiving the
+ * composed input. MInputContext extends this functionality by connecting to
+ * Meegotouch input method server and accepting input it creates. This input
+ * is forwarded to the currently focused widget. MInputContext also notifies
+ * the Meegotouch input method server about the current state of input widgets
+ * on the application side.
  */
 class MInputContext: public QInputContext
 {
