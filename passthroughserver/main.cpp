@@ -30,7 +30,7 @@
 
 #include "mimpluginmanager.h"
 #include "mpassthruwindow.h"
-
+#include "mimapplication.h"
 
 int main(int argc, char **argv)
 {
@@ -48,13 +48,14 @@ int main(int argc, char **argv)
     // already happening :)
     MApplication::setLoadMInputContext(false);
 
-    MApplication app(argc, argv);
+    MIMApplication app(argc, argv);
 
     // TODO: Check if hardwiring the QStyle can be removed at a later state.
     app.setStyle(new QCommonStyle);
 
     MPassThruWindow widget(bypassWMHint);
     widget.setFocusPolicy(Qt::NoFocus);
+    app.setPassThruWindow(&widget);
 
     // Must be declared after creation of top level window.
     MReactionMap reactionMap(&widget);

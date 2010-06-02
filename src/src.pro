@@ -13,18 +13,20 @@ HEADERSINSTALL = \
     mplainwindow.h \
     mpreeditface.h \
     mimhandlerstate.h \
-    mimdirection.h \
+    mimdirection.h
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
         minputcontextdbusconnection.h \
-        minputcontextdbusconnection_p.h
+        minputcontextdbusconnection_p.h \
+        mimapplication.h
 
 SOURCES += mimpluginmanager.cpp \
         minputmethodbase.cpp \
         minputcontextconnection.cpp \
         minputcontextdbusconnection.cpp \
-        mplainwindow.cpp
+        mplainwindow.cpp \
+        mimapplication.cpp
 
 CONFIG += debug qdbus meegotouch
 QT = core gui

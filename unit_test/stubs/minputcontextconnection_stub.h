@@ -57,6 +57,8 @@ public:
 
     virtual bool hasSelection(bool &valid);
 
+    virtual int winId(bool &valid);
+
     virtual int inputMethodMode(bool &valid);
 
     virtual QRect preeditRectangle(bool &valid);

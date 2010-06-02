@@ -760,6 +760,9 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     if (queryResult.isValid())
         stateInformation["hasSelection"] = !(queryResult.toString().isEmpty());
 
+    // window id for transient VKB - it is enough to just query the focused widget here:
+    stateInformation["winId"] = static_cast<int>(focused->winId());
+
     return stateInformation;
 }
 

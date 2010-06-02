@@ -31,6 +31,7 @@
 #include <QVariant>
 
 #include "minputmethodbase.h"
+#include "mimapplication.h"
 
 namespace
 {
@@ -54,6 +55,7 @@ namespace
     const char * const InputMethodModeAttribute = "inputMethodMode";
     const char * const VisualizationAttribute = "visualizationPriority";
     const char * const ToolbarAttribute = "toolbar";
+    const char * const WinId = "winId";
 }
 
 
@@ -328,6 +330,12 @@ int MInputContextDBusConnection::inputMethodMode(bool &valid)
     return modeVariant.toInt(&valid);
 }
 
+int MInputContextDBusConnection::winId(bool &valid)
+{
+    QVariant winIdVariant = d->widgetState[WinId];
+    return winIdVariant.toInt(&valid);
+}
+
 
 QRect MInputContextDBusConnection::preeditRectangle(bool &valid)
 {
@@ -521,6 +529,8 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
         foreach (MInputMethodBase *target, targets()) {
             target->focusChanged(stateInfo[FocusStateAttribute].toBool());
         }
+
+        updateTransientHint();
     }
 
     // call notification methods if needed
@@ -624,4 +634,18 @@ bool MInputContextDBusConnection::toGlobal(int id, qlonglong &globalId)
         globalId = (static_cast<qlonglong>(d->clientIds[msg.service()]))<<32 + id;
     }
     return val;
+}
+
+void MInputContextDBusConnection::updateTransientHint()
+{
+    bool ok = false;
+    const int appWinId = winId(ok);
+
+    if (ok) {
+        MIMApplication *app = MIMApplication::instance();
+
+        if (app) {
+            app->setTransientHint(appWinId);
+        }
+    }
 }

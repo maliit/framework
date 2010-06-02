@@ -134,12 +134,22 @@ public slots:
      */
     void setToolbarItemAttribute(int id, const QString &item, const QString &attribute, const QVariant &value);
 
+    /*!
+     * \brief get the X window id of the active app window
+     */
+    int winId(bool &valid);
+
 private:
     /*!
      * \brief Maps the input toolbar identifier from local \a id to global \a globalId.
      * \return false if request is not from a valid client.
      */
     bool toGlobal(int id, qlonglong &globalId);
+
+    //! Updates the transient hint on the framework side to point to the
+    //! current application's window id.
+    void updateTransientHint();
+
 
     Q_DISABLE_COPY(MInputContextDBusConnection)
 

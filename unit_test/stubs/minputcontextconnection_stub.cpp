@@ -92,6 +92,12 @@ bool MInputContextConnectionStub::hasSelection(bool &valid)
     return false;
 }
 
+int MInputContextConnectionStub::winId(bool &valid)
+{
+    valid = false;
+    return 0;
+}
+
 int MInputContextConnectionStub::inputMethodMode(bool &valid)
 {
     valid = false;
