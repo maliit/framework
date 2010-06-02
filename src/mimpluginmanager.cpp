@@ -544,6 +544,10 @@ MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MIMHandlerState state)
 void MIMPluginManagerPrivate::loadInputMethodSettings()
 {
     if (!settingsDialog) {
+        MLocale locale;
+        // add text-input-settings catalog for the settings translation.
+        locale.installTrCatalog("text-input-settings");
+        MLocale::setDefault(locale);
         settingsDialog = new MIMSettingsDialog(this, "", M::NoStandardButton);
     }
 }

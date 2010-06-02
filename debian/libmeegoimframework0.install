@@ -1,2 +1,3 @@
 usr/lib/lib*.so*
 usr/share/gconf
+usr/share/l10n/meegotouch/text-input-settings.qm
