@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=DUIApplet
+Name=Meegotouch textinput settings
+X-logical-id=qtn_txts_text_input
+X-translation-catalog=text-input-settings
+
+Icon=
+Exec=
+
+[DUI]
+X-DUIApplet-Applet=libmimsettingsapplet.so
+
+[DCP]
+Category= Regional settings
+Order=4
+WidgetType= DcpLabel2
+

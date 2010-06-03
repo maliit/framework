@@ -1,7 +1,7 @@
 CONFIG += ordered
 TARGET = meego-im-uiserver
 TEMPLATE = subdirs
-SUBDIRS = src passthroughserver input-context unit_test translations
+SUBDIRS = src passthroughserver input-context unit_test translations settings-applet
 
 isEqual( IN_PWD, $${OUT_PWD} ) {
     IS_OUT_OF_SOURCE = 0
