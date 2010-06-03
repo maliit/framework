@@ -1,3 +1,10 @@
+meego-im-framework (0.19.3-1) unstable; urgency=low
+
+  * [UNRELEASED]
+  * Implemented: SWP#TINME-929
+
+ -- Michael Hasselmann <michaelh@openismus.com>  Thu, 03 Jun 2010 13:06:26 +0300
+
 meego-im-framework (0.19.2-1) unstable; urgency=low
 
   * Implemented focus widget change notification
