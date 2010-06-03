@@ -34,27 +34,9 @@ class MInputContextConnection;
 class MIMPluginManager;
 class MGConfItem;
 class MInputMethodBase;
-class MContentItem;
-class MContainer;
-class MInputMethodSettingsBase;
+class MIMSettingsDialog;
 
 /* Internal class only! Interfaces here change, internal developers only*/
-class MIMSettingDialog : public MDialog
-{
-    Q_OBJECT
-public:
-    MIMSettingDialog(const QString &title, M::StandardButtons buttons);
-
-Q_SIGNALS:
-    void languageChanged();
-
-protected:
-    //! reimp
-    virtual void retranslateUi();
-    virtual void orientationChangeEvent(MOrientationChangeEvent *event);
-    //! reimp_end
-};
-
 class MIMPluginManagerPrivate
 {
     Q_DECLARE_PUBLIC(MIMPluginManager)
@@ -103,7 +85,6 @@ public:
     void loadInputMethodSettings();
 
     void _q_syncHandlerMap(int);
-    void _q_retranslateSettingsUi();
 
 public:
     MIMPluginManager *parent;
@@ -122,8 +103,7 @@ public:
     QTimer deleteImTimer;
     QRegion activeImRegion;
 
-    MIMSettingDialog *settingsDialog;
-    QMap<MInputMethodSettingsBase *, MContainer *> settingsContainerMap;
+    MIMSettingsDialog *settingsDialog;
 
     MIMPluginManager *q_ptr;
 };

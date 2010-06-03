@@ -20,17 +20,13 @@
 
 #include <MGConfItem>
 #include <MKeyboardStateTracker>
-#include <MWidget>
-#include <MDialog>
-#include <MContainer>
-#include <MContentItem>
 #include <MSceneManager>
 #include <MLocale>
-#include <MPopupList>
 
 #include "minputmethodplugin.h"
 #include "minputcontextdbusconnection.h"
 #include "mtoolbarmanager.h"
+#include "mimsettingsdialog.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -56,24 +52,6 @@ namespace
 
 }
 
-MIMSettingDialog::MIMSettingDialog(const QString &title, M::StandardButtons buttons)
-    : MDialog(title, buttons)
-{
-}
-
-void MIMSettingDialog::retranslateUi()
-{
-    emit languageChanged();
-    MDialog::retranslateUi();
-}
-
-void MIMSettingDialog::orientationChangeEvent(MOrientationChangeEvent *event)
-{
-    //hack way to avoid dialog does not set size restriction for its central widget
-    MDialog::orientationChangeEvent(event);
-    centralWidget()->setPreferredWidth(preferredWidth());
-}
-
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
                                                  MIMPluginManager *p)
     : parent(p),
@@ -88,7 +66,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
 
 MIMPluginManagerPrivate::~MIMPluginManagerPrivate()
 {
-    qDeleteAll(settingsContainerMap.keys());
     qDeleteAll(handlerToPluginConfs);
     delete mICConnection;
     delete settingsDialog;
@@ -566,47 +543,11 @@ MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MIMHandlerState state)
 
 void MIMPluginManagerPrivate::loadInputMethodSettings()
 {
-    Q_Q(MIMPluginManager);
     if (!settingsDialog) {
-        settingsDialog = new MIMSettingDialog("", M::NoStandardButton);
-        MWidget *settingsWidget = new MWidget(settingsDialog);
-        QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical, settingsWidget);
-        foreach (MInputMethodPlugin *plugin, plugins.keys()) {
-            if (blacklist.contains(plugins[plugin].fileName))
-                continue;
-            MInputMethodSettingsBase *settings = plugin->createInputMethodSettings();
-            if (settings) {
-                QGraphicsWidget *contentWidget = settings->createContentWidget(settingsWidget);
-                if (contentWidget) {
-                    MContainer *container = new MContainer(settings->title(), settingsWidget);
-                    container->setCentralWidget(contentWidget);
-                    //TODO: icon for the setting.
-                    layout->addItem(container);
-                    settingsContainerMap.insert(settings, container);
-                }
-            }
-        }
-        settingsWidget->setLayout(layout);
-        //hack way to avoid dialog does not set size restriction for its central widget
-        settingsWidget->setPreferredWidth(settingsDialog->preferredWidth());
-
-        settingsDialog->setCentralWidget(settingsWidget);
-        QObject::connect(settingsDialog, SIGNAL(languageChanged()), q, SLOT(_q_retranslateSettingsUi()));
-        _q_retranslateSettingsUi();
+        settingsDialog = new MIMSettingsDialog(this, "", M::NoStandardButton);
     }
 }
 
-void MIMPluginManagerPrivate::_q_retranslateSettingsUi()
-{
-    if (settingsDialog) {
-        //% "Text Input"
-        settingsDialog->setTitle(qtTrId("qtn_txts_text_input"));
-    }
-
-    foreach (MContainer *container, settingsContainerMap.values()) {
-        container->setTitle(settingsContainerMap.key(container)->title());
-    }
-}
 
 ///////////////
 // actual class
