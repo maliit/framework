@@ -66,6 +66,8 @@ namespace
     const QString ImTagOrientationLandscape  = QString::fromLatin1("landscape");
     const QString ImTagOrientationDefValue   = ImTagOrientationLandscape;
     const QString ImTagOrientationPortrait   = QString::fromLatin1("portrait");
+    const QString ImTagVersion               = QString::fromLatin1("version");
+    const QString ImTagVersionDefValue       = QString::fromLatin1("0");
 
     bool lessThanItem(const QSharedPointer<const MToolbarItem> &left,
                       const QSharedPointer<const MToolbarItem> &right)
@@ -90,6 +92,9 @@ struct MTBParseParameters {
 
     QString fileName;
 
+    //! Contains version number of XML structure specification.
+    int version;
+
     QSharedPointer<MToolbarLayout> currentLayout;
     QSharedPointer<MToolbarRow>    currentRow;
     QSharedPointer<MToolbarItem>   currentItem;
@@ -104,7 +109,7 @@ struct MTBParseStructure {
 
 MTBParseParameters::MTBParseParameters()
     : validTag(true),
-      currentItem(0)
+      version(0)
 {
 }
 
@@ -431,10 +436,31 @@ void MToolbarData::parseTagToolbar(const QDomElement &element, MTBParseParameter
     Q_D(MToolbarData);
 
     d->locked = (element.attribute(ImTagLocked, ImTagLockedDefValue) == "true") ? true : false;
+    params.version = element.attribute(ImTagVersion, ImTagVersionDefValue).toInt();
 
-    const MTBParseStructure parser(ImTagLayout, &MToolbarData::parseTagLayout);
+    if (params.version == 1) {
+        const MTBParseStructure parser(ImTagLayout, &MToolbarData::parseTagLayout);
+        parseChildren(element, params, &parser);
+    } else if (params.version == 0) {
+        QSharedPointer<MToolbarLayout> layout(new MToolbarLayout());
+        QSharedPointer<MToolbarRow> row(new MToolbarRow);
 
-    parseChildren(element, params, &parser);
+        d->layoutLandscape = layout;
+        params.currentLayout = layout;
+
+        params.currentLayout->append(row);
+        params.currentRow = row;
+
+        const MTBParseStructure parsers[2] = {
+            MTBParseStructure(ImTagButton, &MToolbarData::parseTagButton),
+            MTBParseStructure(ImTagLabel,  &MToolbarData::parseTagLabel),
+        };
+
+        parseChildren(element, params, parsers, 2);
+    } else {
+        qWarning() << __PRETTY_FUNCTION__ << "Invalid version number" << params.version;
+        params.validTag = false;
+    }
 }
 
 void MToolbarData::parseTagLayout(const QDomElement &element, MTBParseParameters &params)

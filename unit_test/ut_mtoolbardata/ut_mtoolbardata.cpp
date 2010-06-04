@@ -7,8 +7,9 @@
 #include <QDebug>
 
 namespace {
-    QString Toolbar1 = "/toolbar1.xml";
-    QString Toolbar2 = "/toolbar2.xml";
+    const QString Toolbar1 = QDir::currentPath() + "/toolbar1.xml";
+    const QString Toolbar2 = QDir::currentPath() + "/toolbar2.xml";
+    const QString Toolbar3 = QDir::currentPath() + "/toolbar2.xml";
 }
 
 void Ut_MToolbarData::initTestCase()
@@ -17,9 +18,6 @@ void Ut_MToolbarData::initTestCase()
     int argc = 1;
 
     app = new QCoreApplication(argc, argv);
-
-    Toolbar1 = QDir::currentPath() + Toolbar1;
-    Toolbar2 = QDir::currentPath() + Toolbar2;
 }
 
 void Ut_MToolbarData::cleanupTestCase()
@@ -172,6 +170,24 @@ void Ut_MToolbarData::testLandspaceOnly()
     QCOMPARE(row->items().at(2)->type(), MInputMethod::ItemButton);
     QCOMPARE(row->items().at(3)->type(), MInputMethod::ItemLabel);
     QCOMPARE(row->items().at(4)->type(), MInputMethod::ItemButton);
+
+    QVERIFY(subject->layout(M::Landscape) == subject->layout(M::Portrait));
+}
+
+void Ut_MToolbarData::testLoadOldXML()
+{
+    QVERIFY2(QFile(Toolbar3).exists(), "toolbar3.xml does not exist");
+    bool ok;
+
+    ok = subject->loadNokiaToolbarXml(Toolbar3);
+    QVERIFY2(ok, "toolbar3.xml was not loaded correctly");
+
+    //test lanscape part
+    QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
+    QVERIFY(!landscape.isNull());
+    QCOMPARE(landscape->rows().count(), 1);
+    QSharedPointer<const MToolbarRow> row = landscape->rows().at(0);
+    QCOMPARE(row->items().count(), 5);
 
     QVERIFY(subject->layout(M::Landscape) == subject->layout(M::Portrait));
 }

@@ -9,6 +9,8 @@ This document describes the XML specification of the toolbar widget.
 Root tag, it contains the definition for all items in the toolbar.
 The LOCKED attribute enables or disables user interactions for toolbar.
 If user interactions are disabled then user can not hide visible toolbar or show hidden toolbar.
+The VERSION attribute defines version of this specification. Current version is 1.
+Warning: you need to specify version number explicitly, otherwise parser may assume wrong version number and then parsing will fail.
 
 \subsection Layout
 
@@ -87,6 +89,7 @@ This tag defines that the action is to paste from clipboard.
 <!ATTLIST toolbar locked (true|false) "false">
 
 <!ATTLIST layout orientation (landscape|portrait) "landscape">
+<!ATTLIST toolbar version (0|1) "0">
 
 <!ATTLIST button name CDATA #REQUIRED>
 <!ATTLIST button group CDATA>

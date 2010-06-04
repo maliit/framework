@@ -21,6 +21,8 @@ private slots:
     void testLoadXML();
     void testLandspaceOnly();
 
+    void testLoadOldXML();
+
 private:
     QCoreApplication *app;
     MToolbarData *subject;

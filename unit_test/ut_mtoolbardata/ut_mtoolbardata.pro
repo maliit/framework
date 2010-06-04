@@ -31,7 +31,9 @@ LIBS += \
     ../../src/libmeegoimframework.so.0 \
 
 target.files += \
+    $$TARGET \
     toolbar1.xml \
     toolbar2.xml \
+    toolbar3.xml \
 
 include(../common_check.pri)
