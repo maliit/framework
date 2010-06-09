@@ -1,3 +1,9 @@
+meego-im-framework (0.19.4~1) unstable; urgency=low
+
+  * [Unreleased version]
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Wed, 09 Jun 2010 11:15:36 +0300
+
 meego-im-framework (0.19.3-1) unstable; urgency=low
 
   * Implemented: SWP#TINME-929
