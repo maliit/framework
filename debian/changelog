@@ -1,9 +1,9 @@
 meego-im-framework (0.19.3-1) unstable; urgency=low
 
-  * [UNRELEASED]
   * Implemented: SWP#TINME-929
+  * Added gconf value for enabling multitouch (still disabled as default)
 
- -- Michael Hasselmann <michaelh@openismus.com>  Thu, 03 Jun 2010 13:06:26 +0300
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Tue, 01 Jun 2010 16:02:27 +0300
 
 meego-im-framework (0.19.2-1) unstable; urgency=low
 
