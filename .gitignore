@@ -13,3 +13,4 @@ gen_*
 *.gcda
 *.gcno
 doc
+/meego-im-framework.schemas
