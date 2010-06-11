@@ -219,3 +219,23 @@ void MInputMethodBase::sendInputModeIndicator(MInputMethodBase::InputModeIndicat
         d->indicatorIface->call(QDBus::NoBlock, "setIconID", d->indicatorIconID(mode));
     }
 }
+
+QList<MInputMethodBase::MInputMethodSubView> MInputMethodBase::subViews(MIMHandlerState state) const
+{
+    Q_UNUSED(state);
+    QList<MInputMethodSubView> sVs;
+    return sVs;
+}
+
+void MInputMethodBase::setActiveSubView(const QString &subViewId, MIMHandlerState state)
+{
+    // empty default implementation
+    Q_UNUSED(subViewId);
+    Q_UNUSED(state);
+}
+
+QString MInputMethodBase::activeSubView(MIMHandlerState state) const
+{
+    Q_UNUSED(state);
+    return QString();
+}

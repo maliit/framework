@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QEvent>
 #include <QVariant>
+#include <QMap>
 #include <MNamespace>
 #include "mimhandlerstate.h"
 #include "mimdirection.h"
@@ -72,6 +73,18 @@ public:
         DeadKeyTilde    //!< Dead key tilde mode
     };
 
+     /*!
+     * MInputMethodSubView defines an input method subview with an identifier \a subViewId
+     * and a title \a subViewTitle.
+     *
+     * The subview is a view which provided by this input method. The view could be a view of one
+     * language, or one keyboard, it depends on the input method. Each subview has an identifier
+     * and title.
+     */
+    struct MInputMethodSubView {
+        QString subViewId;
+        QString subViewTitle;
+    };
 
     /*! Constructor for input method base
      * \param icConnection input context connection class, not owned by input method base
@@ -172,6 +185,32 @@ public:
      */
     void sendInputModeIndicator(InputModeIndicator mode);
 
+    /*! \brief Returns all subviews (IDs and titles) which are supported for \a state.
+     *
+     * Implement this function to return the subviews which are supported by this input
+     * method for the specified state. The subview titles will be shown in the input method settings.
+     */
+    virtual QList<MInputMethodSubView> subViews(MIMHandlerState state = OnScreen) const;
+
+    /*!
+     * \brief Sets \a subViewId as the active subview for \a state.
+     * \param subViewId the identifier of subview.
+     * \param state the state which \a subViewId belongs to.
+     *
+     *  Implement this method to set the active subview. Input method plugins manager will call
+     *  this method when active subview for specified state is changed from the input method
+     *  settings.
+     */
+    virtual void setActiveSubView(const QString &subViewId, MIMHandlerState state = OnScreen);
+
+    /*!
+     * \brief Returns current active subview ID for \a state.
+     *
+     *  Implement this method to inform input method plugins manager about current active subview
+     *  for specified state.
+     */
+    virtual QString activeSubView(MIMHandlerState state = OnScreen) const;
+
 signals:
     /*!
      * Inform that the screen area covered by the input method has been changed.
@@ -214,6 +253,14 @@ signals:
      * Emitted when the plugin requires input method settings.
      */
     void settingsRequested();
+
+    /*!
+     * Inform that active subview is changed to \a subViewId for \a state.
+     * \param subViewId the identifier of the new subview.
+     * \param state the state which \a subViewId belongs to.
+     * Emitted when plugin changes the active subview for specified state.
+     */
+    void activeSubViewChanged(const QString &subViewId, MIMHandlerState state = OnScreen);
 
 private:
     Q_DISABLE_COPY(MInputMethodBase)
