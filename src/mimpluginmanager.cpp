@@ -33,6 +33,11 @@
 #include <QSignalMapper>
 #include <QGraphicsLinearLayout>
 #include <QStandardItemModel>
+
+#include <QDBusAbstractAdaptor>
+#include <QDBusInterface>
+#include <QDBusMetaType>
+
 #include <QDebug>
 
 
@@ -50,6 +55,8 @@ namespace
     const QString MImHandlerToPlugin  = PluginRoot + "handler";
     const QString MImAccesoryEnabled  = "/meegotouch/inputmethods/accessoryenabled";
 
+    const char * const DBusServiceName = "com.maemo.inputmethodpluginmanager1";
+    const char * const DBusPath = "/com/maemo/inputmethodpluginmanager1";
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
@@ -57,7 +64,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
     : parent(p),
       mICConnection(connection),
       imAccessoryEnabledConf(0),
-      settingsDialog(0)
+      settingsDialog(0),
+      adaptor(0)
 {
 }
 
@@ -441,12 +449,38 @@ QStringList MIMPluginManagerPrivate::loadedPluginsNames() const
 }
 
 
+QStringList MIMPluginManagerPrivate::loadedPluginsNames(MIMHandlerState state) const
+{
+    QStringList result;
+
+    foreach (MInputMethodPlugin *plugin, plugins.keys()) {
+        if (plugin->supportedStates().contains(state))
+            result.append(plugin->name());
+    }
+
+    return result;
+}
+
+
 QStringList MIMPluginManagerPrivate::activePluginsNames() const
 {
     QStringList result;
 
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         result.append(plugin->name());
+    }
+
+    return result;
+}
+
+
+QString MIMPluginManagerPrivate::activePluginsName(MIMHandlerState state) const
+{
+    QString result;
+
+    MInputMethodPlugin *plugin = activePlugin(state);
+    if (plugin) {
+        result = plugin->name();
     }
 
     return result;
@@ -530,6 +564,7 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId, MIMH
                 if (inputMethod->activeSubView(OnScreen) != activeSubViewIdOnScreen) {
                     inputMethod->setActiveSubView(activeSubViewIdOnScreen, OnScreen);
                 }
+                emit adaptor->activeSubViewChanged(OnScreen);
                 break;
             }
         }
@@ -574,6 +609,122 @@ void MIMPluginManagerPrivate::hideActivePlugins()
     }
 }
 
+QMap<QString, QString> MIMPluginManagerPrivate::availableSubViews(const QString &plugin, MIMHandlerState state) const
+{
+    QMap<QString, QString> subViews;
+    Plugins::iterator iterator(plugins.begin());
+
+    for (; iterator != plugins.end(); ++iterator) {
+        if (iterator.key()->name() == plugin) {
+            if (iterator->inputMethod) {
+                foreach (const MInputMethodBase::MInputMethodSubView &subView,
+                         iterator->inputMethod->subViews(state)) {
+                    subViews.insert(subView.subViewId, subView.subViewTitle);
+                }
+            }
+            break;
+        }
+    }
+    return subViews;
+}
+
+QString MIMPluginManagerPrivate::activeSubView(MIMHandlerState state) const
+{
+    QString subView;
+    MInputMethodPlugin *currentPlugin = activePlugin(state);
+    if (currentPlugin) {
+        subView = plugins[currentPlugin].inputMethod->activeSubView(state);
+    }
+    return subView;
+}
+
+void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginName, MIMHandlerState state)
+{
+    MGConfItem currentPluginConf(QString(MImHandlerToPlugin
+                                 + QString("/%1").arg(static_cast<MIMHandlerState>(state))));
+    if (!pluginName.isEmpty() && currentPluginConf.value().toString() != pluginName) {
+        // check whether the pluginName is valid
+        foreach (MInputMethodPlugin *plugin, plugins.keys()) {
+            if (plugin->name() == pluginName) {
+                currentPluginConf.set(pluginName);
+                break;
+            }
+        }
+    }
+}
+
+
+MIMPluginManagerAdaptor::MIMPluginManagerAdaptor(MIMPluginManager *parent)
+    : QDBusAbstractAdaptor(parent),
+      owner(parent)
+{
+    if (!parent) {
+        qFatal("Creating MIMPluginManagerAdaptor without a parent");
+    }
+}
+
+
+MIMPluginManagerAdaptor::~MIMPluginManagerAdaptor()
+{
+    // nothing
+}
+
+QStringList MIMPluginManagerAdaptor::queryAvailablePlugins()
+{
+    Q_ASSERT(owner);
+    return owner->loadedPluginsNames();
+}
+
+QStringList MIMPluginManagerAdaptor::queryAvailablePlugins(int state)
+{
+    Q_ASSERT(owner);
+    return owner->loadedPluginsNames(static_cast<MIMHandlerState>(state));
+}
+
+QString MIMPluginManagerAdaptor::queryActivePlugin(int state)
+{
+    Q_ASSERT(owner);
+    return owner->activePluginsName(static_cast<MIMHandlerState>(state));
+}
+
+QMap<QString, QVariant> MIMPluginManagerAdaptor::queryAvailableSubViews(const QString &plugin, int state)
+{
+    Q_ASSERT(owner);
+    QMap<QString, QVariant> vSubViews;
+
+    QMap<QString, QString> subViews = owner->availableSubViews(plugin, static_cast<MIMHandlerState>(state));
+    QMapIterator<QString, QString> subView(subViews);
+    while (subView.hasNext()) {
+        subView.next();
+        vSubViews.insert(subView.key(), subView.value());
+    }
+    return vSubViews;
+}
+
+QMap<QString, QVariant> MIMPluginManagerAdaptor::queryActiveSubView(int state)
+{
+    Q_ASSERT(owner);
+    QMap<QString, QVariant> activeSubbView;
+    activeSubbView.insert(owner->activeSubView(static_cast<MIMHandlerState>(state)),
+                          owner->activePluginsName(static_cast<MIMHandlerState>(state)));
+    return activeSubbView;
+}
+
+void MIMPluginManagerAdaptor::setActivePlugin(const QString &pluginName, int state, const QString &subViewId)
+{
+    Q_ASSERT(owner);
+    owner->setActivePlugin(pluginName, static_cast<MIMHandlerState>(state));
+    if (!subViewId.isEmpty()) {
+        owner->setActiveSubView(subViewId, static_cast<MIMHandlerState>(state));
+    }
+}
+
+void MIMPluginManagerAdaptor::setActiveSubView(const QString &subViewId, int state)
+{
+    Q_ASSERT(owner);
+    owner->setActiveSubView(subViewId, static_cast<MIMHandlerState>(state));
+}
+
 ///////////////
 // actual class
 
@@ -603,6 +754,21 @@ MIMPluginManager::MIMPluginManager()
     updateInputSource();
 
     d->initActiveSubView();
+
+    d->adaptor = new MIMPluginManagerAdaptor(this);
+    bool success = QDBusConnection::sessionBus().registerObject(DBusPath, this);
+
+    if (!success) {
+        qDebug() << __PRETTY_FUNCTION__ << " failed to register D-Bus object";
+    }
+
+    if (!QDBusConnection::sessionBus().registerService(DBusServiceName)) {
+        qDebug() << __PRETTY_FUNCTION__ << " failed to register D-Bus service";
+        qDebug() << QDBusConnection::sessionBus().lastError().message();
+    }
+
+    qDBusRegisterMetaType<QStringList>();
+    qDBusRegisterMetaType<QMap<QString, QVariant> >();
 }
 
 
@@ -621,12 +787,25 @@ QStringList MIMPluginManager::loadedPluginsNames() const
 }
 
 
+QStringList MIMPluginManager::loadedPluginsNames(MIMHandlerState state) const
+{
+    Q_D(const MIMPluginManager);
+    return d->loadedPluginsNames(state);
+}
+
+
 QStringList MIMPluginManager::activePluginsNames() const
 {
     Q_D(const MIMPluginManager);
     return d->activePluginsNames();
 }
 
+
+QString MIMPluginManager::activePluginsName(MIMHandlerState state) const
+{
+    Q_D(const MIMPluginManager);
+    return d->activePluginsName(state);
+}
 
 void MIMPluginManager::updateInputSource()
 {
@@ -711,6 +890,30 @@ void MIMPluginManager::hideActivePlugins()
 {
     Q_D(MIMPluginManager);
     d->hideActivePlugins();
+}
+
+QMap<QString, QString> MIMPluginManager::availableSubViews(const QString &plugin, MIMHandlerState state) const
+{
+    Q_D(const MIMPluginManager);
+    return d->availableSubViews(plugin, state);
+}
+
+QString MIMPluginManager::activeSubView(MIMHandlerState state) const
+{
+    Q_D(const MIMPluginManager);
+    return d->activeSubView(state);
+}
+
+void MIMPluginManager::setActivePlugin(const QString &pluginName, MIMHandlerState state)
+{
+    Q_D(MIMPluginManager);
+    d->setActivePlugin(pluginName, state);
+}
+
+void MIMPluginManager::setActiveSubView(const QString &subViewId, MIMHandlerState state)
+{
+    Q_D(MIMPluginManager);
+    d->_q_setActiveSubView(subViewId, state);
 }
 
 #include "moc_mimpluginmanager.cpp"

@@ -23,6 +23,7 @@
 #include <QMap>
 #include <QSet>
 #include <QRegion>
+#include <QDBusAbstractAdaptor>
 #include <MDialog>
 
 #include "mimhandlerstate.h"
@@ -34,6 +35,7 @@ class MIMPluginManager;
 class MGConfItem;
 class MInputMethodBase;
 class MIMSettingsDialog;
+class MIMPluginManagerAdaptor;
 
 /* Internal class only! Interfaces here change, internal developers only*/
 class MIMPluginManagerPrivate
@@ -76,7 +78,9 @@ public:
                           QSet<MIMHandlerState> states);
 
     QStringList loadedPluginsNames() const;
+    QStringList loadedPluginsNames(MIMHandlerState state) const;
     QStringList activePluginsNames() const;
+    QString activePluginsName(MIMHandlerState state) const;
     void loadHandlerMap();
     MInputMethodPlugin *activePlugin(MIMHandlerState state) const;
     void loadInputMethodSettings();
@@ -85,6 +89,10 @@ public:
 
     void _q_syncHandlerMap(int);
     void _q_setActiveSubView(const QString &, MIMHandlerState);
+
+    QMap<QString, QString> availableSubViews(const QString &plugin, MIMHandlerState state = OnScreen) const;
+    QString activeSubView(MIMHandlerState state) const;
+    void setActivePlugin(const QString &pluginName, MIMHandlerState state);
 
 public:
     MIMPluginManager *parent;
@@ -104,8 +112,38 @@ public:
     QRegion activeImRegion;
 
     MIMSettingsDialog *settingsDialog;
+    MIMPluginManagerAdaptor *adaptor;
 
     MIMPluginManager *q_ptr;
+};
+
+class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor
+{
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "com.maemo.inputmethodpluginmanager1")
+public:
+    explicit MIMPluginManagerAdaptor(MIMPluginManager *parent);
+    virtual ~MIMPluginManagerAdaptor();
+
+public slots:
+    QStringList queryAvailablePlugins();
+    QStringList queryAvailablePlugins(int state);
+    QString queryActivePlugin(int state);
+    //! Returns all available subviews (IDs and titles).
+    QMap<QString, QVariant> queryAvailableSubViews(const QString &pluginName, int state);
+    //! Returns the active subview ID and the plugin which it belongs.
+    QMap<QString, QVariant> queryActiveSubView(int state);
+    Q_NOREPLY void setActivePlugin(const QString &pluginname, int state, const QString &subviewId = "");
+    Q_NOREPLY void setActiveSubView(const QString &subViewId, int state);
+
+signals:
+    //! This signal is emitted when the active subview of \a state is changed.
+    void activeSubViewChanged(int state);
+
+private:
+    MIMPluginManager *owner;
+    friend class MIMPluginManager;
+    friend class MIMPluginManagerPrivate;
 };
 
 #endif

@@ -18,7 +18,9 @@
 #define MIMPLUGINMANAGER_H
 
 #include <QObject>
+#include <QMap>
 #include "mimdirection.h"
+#include "mimhandlerstate.h"
 
 class MIMPluginManagerPrivate;
 class QRegion;
@@ -26,6 +28,7 @@ class QRegion;
 class MIMPluginManager: public QObject
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "com.maemo.inputmethodpluginmanager1")
 
 public:
     /*!
@@ -37,11 +40,29 @@ public:
 
     virtual ~MIMPluginManager();
 
-    //!Returns names of loaded plugins
+    //! Returns names of loaded plugins
     QStringList loadedPluginsNames() const;
 
-    //!Returns names of activated plugins
+    //! Returns names of loaded plugins which support \a state
+    QStringList loadedPluginsNames(MIMHandlerState state) const;
+
+    //! Returns names of activated plugins
     QStringList activePluginsNames() const;
+
+    //! Returns names of activated plugin for \a state
+    QString activePluginsName(MIMHandlerState state) const;
+
+    //! Returns all subviews (IDs and titles) of loaded plugins which support \a state.
+    QMap<QString, QString> availableSubViews(const QString &plugin, MIMHandlerState state = OnScreen) const;
+
+    //! Returns the ID of active subview of the activated plugin for \a state.
+    QString activeSubView(MIMHandlerState state) const;
+
+    //! Sets \a pluginName as the activated plugin for \a state.
+    void setActivePlugin(const QString &pluginName, MIMHandlerState state);
+
+    //! Sets \a subViewId as the active subview of the activated plugin for \a state.
+    void setActiveSubView(const QString &subViewId, MIMHandlerState state);
 
 signals:
     //!
