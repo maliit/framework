@@ -23,7 +23,6 @@ private slots:
     void testLoadPlugins();
     void testSwitchPluginState();
     void testMultiplePlugins();
-    void testFreeInputMethod();
     void testSwitchPluginBySignal();
     void testSwitchToSpecifiedPlugin();
 

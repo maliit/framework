@@ -21,7 +21,6 @@
 #include <QList>
 #include <QStringList>
 #include <QMap>
-#include <QTimer>
 #include <QSet>
 #include <QRegion>
 #include <MDialog>
@@ -62,7 +61,6 @@ public:
     void addHandlerMap(MIMHandlerState state, const QString &pluginName);
     void setActiveHandlers(const QSet<MIMHandlerState> &states);
     QSet<MIMHandlerState> activeHandlers() const;
-    void deleteInactiveIM();
     void deactivatePlugin(MInputMethodPlugin *plugin);
     void convertAndFilterHandlers(const QStringList &handlerNames, QSet<MIMHandlerState> *handlers);
 
@@ -79,7 +77,6 @@ public:
 
     QStringList loadedPluginsNames() const;
     QStringList activePluginsNames() const;
-    QStringList activeInputMethodsNames() const;
     void loadHandlerMap();
     MInputMethodPlugin *activePlugin(MIMHandlerState state) const;
     void loadInputMethodSettings();
@@ -101,7 +98,6 @@ public:
     QList<MGConfItem *> handlerToPluginConfs;
     MGConfItem *imAccessoryEnabledConf;
 
-    QTimer deleteImTimer;
     QRegion activeImRegion;
 
     MIMSettingsDialog *settingsDialog;

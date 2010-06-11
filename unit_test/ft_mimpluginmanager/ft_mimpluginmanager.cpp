@@ -98,9 +98,6 @@ void Ft_MIMPluginManager::testLoadPlugins()
     QStringList activePlugins = subject->activePluginsNames();
     QCOMPARE(activePlugins.count(), 1);
     QCOMPARE(activePlugins.first(), pluginName);
-
-    QStringList activeInputMethods = subject->activeInputMethodsNames();
-    QCOMPARE(activePlugins, activeInputMethods);
 }
 
 
@@ -135,28 +132,10 @@ void Ft_MIMPluginManager::testMultiplePlugins()
     QVERIFY(activePlugins.contains(pluginName3));
 }
 
-void Ft_MIMPluginManager::testFreeInputMethod()
-{
-    subject->setDeleteIMTimeout(300);
-
-    MGConfItem(MImAccesoryEnabled).set(QVariant(true));
-
-    QStringList activeInputMethods = subject->activeInputMethodsNames();
-    QCOMPARE(activeInputMethods.count(), 2);
-
-    QTest::qWait(500); //wait intil timer expiration
-
-    activeInputMethods = subject->activeInputMethodsNames();
-    QCOMPARE(activeInputMethods.count(), 1);
-    QCOMPARE(activeInputMethods.first(), pluginName3);
-}
-
 void Ft_MIMPluginManager::testSwitchPluginBySignal()
 {
     DummyImPlugin *plugin = 0;
     QPointer<DummyInputMethod> inputMethod = 0;
-
-    subject->setDeleteIMTimeout(300);
 
     for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d_ptr->plugins.begin());
             iterator != subject->d_ptr->plugins.end();
@@ -171,19 +150,17 @@ void Ft_MIMPluginManager::testSwitchPluginBySignal()
     QVERIFY(inputMethod != 0);
 
     inputMethod->switchMe(); //emit signal to switch plugin
-    QTest::qWait(500); //wait intil timer expiration
 
-    QStringList activeInputMethods = subject->activeInputMethodsNames();
-    QCOMPARE(activeInputMethods.count(), 1);
-    QCOMPARE(activeInputMethods.first(), pluginName3);
+    QStringList activePlugins = subject->activePluginsNames();
+    QCOMPARE(activePlugins.count(), 1);
+    QVERIFY(activePlugins.contains(pluginName3));
+    QVERIFY(inputMethod != 0);
 }
 
 void Ft_MIMPluginManager::testSwitchToSpecifiedPlugin()
 {
     DummyImPlugin *plugin = 0;
     QPointer<DummyInputMethod> inputMethod = 0;
-
-    subject->setDeleteIMTimeout(300);
 
     for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d_ptr->plugins.begin());
             iterator != subject->d_ptr->plugins.end();
@@ -198,11 +175,11 @@ void Ft_MIMPluginManager::testSwitchToSpecifiedPlugin()
     QVERIFY(inputMethod != 0);
 
     inputMethod->switchMe(pluginName3); //emit signal to switch plugin
-    QTest::qWait(500); //wait intil timer expiration
 
-    QStringList activeInputMethods = subject->activeInputMethodsNames();
-    QCOMPARE(activeInputMethods.count(), 1);
-    QCOMPARE(activeInputMethods.first(), pluginName3);
+    QStringList activePlugins = subject->activePluginsNames();
+    QCOMPARE(activePlugins.count(), 1);
+    QVERIFY(activePlugins.contains(pluginName3));
+    QVERIFY(inputMethod != 0);
 }
 
 QTEST_APPLESS_MAIN(Ft_MIMPluginManager)

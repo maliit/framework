@@ -59,8 +59,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       imAccessoryEnabledConf(0),
       settingsDialog(0)
 {
-    deleteImTimer.setSingleShot(true);
-    deleteImTimer.setInterval(DeleteInputMethodTimeout);
 }
 
 
@@ -100,9 +98,13 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
         MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
         if (plugin) {
             if (!plugin->supportedStates().isEmpty()) {
-                PluginDescription desc = { load.fileName(), 0, PluginState(), M::SwitchUndefined };
-                plugins[plugin] = desc;
-                val = true;
+                MInputMethodBase *inputMethod = plugin->createInputMethod(mICConnection);
+                // only add valid plugin descriptions
+                if (inputMethod) {
+                    PluginDescription desc = { load.fileName(), inputMethod, PluginState(), M::SwitchUndefined };
+                    plugins[plugin] = desc;
+                    val = true;
+                }
             } else {
                 qWarning() << __PRETTY_FUNCTION__
                            << "Plugin does not support any state: " << fileName;
@@ -142,47 +144,32 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
     MInputMethodBase *inputMethod = 0;
 
     activePlugins.insert(plugin);
-    if (!plugins[plugin].inputMethod) {
-        inputMethod = plugin->createInputMethod(mICConnection);
-        bool connected = false;
+    inputMethod = plugins[plugin].inputMethod;
 
-        plugins[plugin].inputMethod = inputMethod;
-        if (inputMethod) {
-            connected = QObject::connect(inputMethod, SIGNAL(regionUpdated(const QRegion &)),
-                                         q, SLOT(updateRegion(const QRegion &)));
 
-            connected = QObject::connect(inputMethod,
-                                         SIGNAL(inputMethodAreaUpdated(const QRegion &)),
-                                         mICConnection,
-                                         SLOT(updateInputMethodArea(const QRegion &)))
-                        && connected;
+    Q_ASSERT(inputMethod);
+    QObject::connect(inputMethod, SIGNAL(regionUpdated(const QRegion &)),
+                     q, SLOT(updateRegion(const QRegion &)));
 
-            connected = QObject::connect(inputMethod,
-                                         SIGNAL(pluginSwitchRequired(M::InputMethodSwitchDirection)),
-                                         q,
-                                         SLOT(switchPlugin(M::InputMethodSwitchDirection)))
-                        && connected;
+    QObject::connect(inputMethod,
+                     SIGNAL(inputMethodAreaUpdated(const QRegion &)),
+                     mICConnection,
+                     SLOT(updateInputMethodArea(const QRegion &)));
 
-            connected = QObject::connect(inputMethod,
-                                         SIGNAL(pluginSwitchRequired(const QString&)),
-                                         q,
-                                         SLOT(switchPlugin(const QString&)))
-                        && connected;
+    QObject::connect(inputMethod,
+                     SIGNAL(pluginSwitchRequired(M::InputMethodSwitchDirection)),
+                     q,
+                     SLOT(switchPlugin(M::InputMethodSwitchDirection)));
 
-            connected = QObject::connect(inputMethod,
-                                         SIGNAL(settingsRequested()),
-                                         q,
-                                         SLOT(showInputMethodSettings()))
-                        && connected;
+    QObject::connect(inputMethod,
+                     SIGNAL(pluginSwitchRequired(const QString&)),
+                     q,
+                     SLOT(switchPlugin(const QString&)));
 
-        }
-        if (!connected) {
-            qWarning() << __PRETTY_FUNCTION__ << "Plugin" << plugin->name()
-                       << "Unable to connect plugin's signals with IC connection's slots";
-        }
-    } else {
-        inputMethod = plugins[plugin].inputMethod;
-    }
+    QObject::connect(inputMethod,
+                     SIGNAL(settingsRequested()),
+                     q,
+                     SLOT(showInputMethodSettings()));
 
     mICConnection->addTarget(inputMethod); // redirect incoming requests
 
@@ -256,19 +243,6 @@ QSet<MIMHandlerState> MIMPluginManagerPrivate::activeHandlers() const
 }
 
 
-void MIMPluginManagerPrivate::deleteInactiveIM()
-{
-    Plugins::iterator iterator;
-
-    for (iterator = plugins.begin(); iterator != plugins.end(); ++iterator) {
-        if (!activePlugins.contains(iterator.key())) {
-            delete iterator->inputMethod;
-            iterator->inputMethod = 0;
-        }
-    }
-}
-
-
 void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
 {
     Q_Q(MIMPluginManager);
@@ -285,6 +259,10 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
     inputMethod->hide();
     inputMethod->reset();
     QObject::disconnect(inputMethod, 0, q, 0),
+    QObject::disconnect(inputMethod,
+                        SIGNAL(inputMethodAreaUpdated(const QRegion &)),
+                        mICConnection,
+                        SLOT(updateInputMethodArea(const QRegion &)));
     mICConnection->removeTarget(inputMethod);
 }
 
@@ -470,20 +448,6 @@ QStringList MIMPluginManagerPrivate::activePluginsNames() const
 }
 
 
-QStringList MIMPluginManagerPrivate::activeInputMethodsNames() const
-{
-    QStringList result;
-
-    for (Plugins::const_iterator iterator = plugins.begin();
-            iterator != plugins.end(); ++iterator) {
-        if (iterator->inputMethod) {
-            result.append(iterator.key()->name());
-        }
-    }
-
-    return result;
-}
-
 void MIMPluginManagerPrivate::loadHandlerMap()
 {
     Q_Q(MIMPluginManager);
@@ -526,7 +490,8 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
         MInputMethodBase *inputMethod = plugins[iterator.value()].inputMethod;
         addHandlerMap(static_cast<MIMHandlerState>(state), pluginName);
         if (!switchPlugin(pluginName, inputMethod)) {
-            deleteImTimer.start();
+            qWarning() << __PRETTY_FUNCTION__ << ", switching to plugin:"
+                       << pluginName << " failed";
         }
     }
 }
@@ -591,8 +556,6 @@ MIMPluginManager::MIMPluginManager()
     connect(d->imAccessoryEnabledConf, SIGNAL(valueChanged()), this, SLOT(updateInputSource()));
 
     updateInputSource();
-
-    connect(&d->deleteImTimer, SIGNAL(timeout()), this, SLOT(deleteInactiveIM()));
 }
 
 
@@ -601,12 +564,6 @@ MIMPluginManager::~MIMPluginManager()
     Q_D(MIMPluginManager);
     MToolbarManager::destroyInstance();
     delete d;
-}
-
-void MIMPluginManager::deleteInactiveIM()
-{
-    Q_D(MIMPluginManager);
-    d->deleteInactiveIM();
 }
 
 
@@ -623,18 +580,6 @@ QStringList MIMPluginManager::activePluginsNames() const
     return d->activePluginsNames();
 }
 
-
-QStringList MIMPluginManager::activeInputMethodsNames() const
-{
-    Q_D(const MIMPluginManager);
-    return d->activeInputMethodsNames();
-}
-
-void MIMPluginManager::setDeleteIMTimeout(int timeout)
-{
-    Q_D(MIMPluginManager);
-    d->deleteImTimer.setInterval(timeout);
-}
 
 void MIMPluginManager::updateInputSource()
 {
@@ -661,7 +606,6 @@ void MIMPluginManager::updateInputSource()
 
     if (!handlers.isEmpty()) {
         d->setActiveHandlers(handlers);
-        d->deleteImTimer.start();
     }
 }
 
@@ -671,9 +615,8 @@ void MIMPluginManager::switchPlugin(M::InputMethodSwitchDirection direction)
     MInputMethodBase *initiator = qobject_cast<MInputMethodBase*>(sender());
 
     if (initiator) {
-        if (d->switchPlugin(direction, initiator)) {
-            d->deleteImTimer.start();
-        } else {
+        if (!d->switchPlugin(direction, initiator)) {
+            // no next plugin, just switch context
             initiator->switchContext(direction, true);
         }
     }
@@ -685,8 +628,9 @@ void MIMPluginManager::switchPlugin(const QString &name)
     MInputMethodBase *initiator = qobject_cast<MInputMethodBase*>(sender());
 
     if (initiator) {
-        if (d->switchPlugin(name, initiator)) {
-            d->deleteImTimer.start();
+        if (!d->switchPlugin(name, initiator)) {
+            qWarning() << __PRETTY_FUNCTION__ << ", switching to plugin:"
+                       << name << " failed";
         }
     }
 }

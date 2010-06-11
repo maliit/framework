@@ -43,15 +43,6 @@ public:
     //!Returns names of activated plugins
     QStringList activePluginsNames() const;
 
-    //!Returns names of existing input methods
-    QStringList activeInputMethodsNames() const;
-
-    /*!
-     * \brief Set timeout for deletion of inactive input method objects.
-     * \param timeout int New timeout
-     */
-    void setDeleteIMTimeout(int timeout);
-
 signals:
     //!
     // This signal is emitted when the whole painting area of the
@@ -63,9 +54,6 @@ public slots:
     void hideActivePlugins();
 
 private slots:
-    //! This method deletes all inactive input method objects
-    void deleteInactiveIM();
-
     //! Update and activate input source.
     void updateInputSource();
 

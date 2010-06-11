@@ -358,7 +358,7 @@ void Ut_MIMPluginManager::testMultilePlugins()
     QCOMPARE(plugin3Count, 1);
 }
 
-void Ut_MIMPluginManager::testFreeInputMethod()
+void Ut_MIMPluginManager::testExistInputMethod()
 {
     MIMPluginManagerPrivate::Plugins::iterator iterator;
     QSet<MIMHandlerState> actualState;
@@ -373,13 +373,10 @@ void Ut_MIMPluginManager::testFreeInputMethod()
     actualState << Accessory;
     subject->setActiveHandlers(actualState);
 
-    subject->deleteInactiveIM();
-
     for (iterator = subject->plugins.begin(); iterator != subject->plugins.end(); ++iterator) {
-        if (subject->activePlugins.contains(iterator.key())) {
+        // no matter the plugin is active or not, the inputmethodbase object is not empty.
+        if (!iterator.key()->supportedStates().isEmpty()) {
             QVERIFY(iterator.value().inputMethod != 0);
-        } else {
-            QVERIFY(iterator.value().inputMethod == 0);
         }
     }
 }
@@ -432,7 +429,6 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
     // nothing should be changed
     subject->switchPlugin(M::SwitchUndefined, inputMethod);
-    subject->deleteInactiveIM();
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->switchContextCallCount, 0);
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchUndefined);
@@ -442,7 +438,6 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     // switch forward
     subject->switchPlugin(M::SwitchForward, inputMethod);
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchForward);
-    subject->deleteInactiveIM();
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
@@ -458,9 +453,9 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     checkHandlerMap(state, pluginName3);
 
     //switch backward
+    inputMethod->setStateCount = 0;
     subject->switchPlugin(M::SwitchBackward, inputMethod3);
     QCOMPARE(subject->plugins[plugin3].lastSwitchDirection, M::SwitchBackward);
-    subject->deleteInactiveIM();
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin == *subject->activePlugins.begin());
@@ -478,7 +473,6 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     // ... again
     subject->switchPlugin(M::SwitchBackward, inputMethod);
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchBackward);
-    subject->deleteInactiveIM();
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
@@ -502,7 +496,6 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     subject->switchPlugin(M::SwitchBackward, inputMethod3);
     plugin->allowedStates << OnScreen << Hardware << Accessory; // restore default configuration
     QCOMPARE(subject->plugins[plugin3].lastSwitchDirection, M::SwitchBackward);
-    subject->deleteInactiveIM();
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
@@ -557,7 +550,6 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
 
     // nothing should be changed
     subject->switchPlugin(pluginName, inputMethod);
-    subject->deleteInactiveIM();
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->switchContextCallCount, 0);
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchUndefined);
@@ -570,8 +562,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     // switch to another plugin
     subject->switchPlugin(pluginName3, inputMethod);
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchUndefined);
-    subject->deleteInactiveIM();
-    QVERIFY(inputMethod == 0);
+    QVERIFY(inputMethod != 0);
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
