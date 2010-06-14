@@ -171,6 +171,11 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
                      q,
                      SLOT(showInputMethodSettings()));
 
+    QObject::connect(inputMethod,
+                     SIGNAL(activeSubViewChanged(QString, MIMHandlerState)),
+                     q,
+                     SLOT(_q_setActiveSubView(QString, MIMHandlerState)));
+
     mICConnection->addTarget(inputMethod); // redirect incoming requests
 
     return;
@@ -494,6 +499,11 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
                        << pluginName << " failed";
         }
     }
+
+    // need update activeSubview if plugin is switched.
+    if (state == OnScreen) {
+        initActiveSubView();
+    }
 }
 
 MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MIMHandlerState state) const
@@ -506,6 +516,30 @@ MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MIMHandlerState state)
     return plugin;
 }
 
+void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId, MIMHandlerState state)
+{
+    // now we only support active subview for OnScreen state.
+    if (state == OnScreen && !subViewId.isEmpty() && activePlugin(OnScreen)
+        && (activeSubViewIdOnScreen != subViewId)) {
+        // check whether this subView is supported by current active plugin.
+        MInputMethodBase *inputMethod = plugins[activePlugin(OnScreen)].inputMethod;
+        Q_ASSERT(inputMethod);
+        foreach (const MInputMethodBase::MInputMethodSubView &subView, inputMethod->subViews(OnScreen)) {
+            if (subView.subViewId == subViewId) {
+                activeSubViewIdOnScreen = subViewId;
+                if (inputMethod->activeSubView(OnScreen) != activeSubViewIdOnScreen) {
+                    inputMethod->setActiveSubView(activeSubViewIdOnScreen, OnScreen);
+                }
+                break;
+            }
+        }
+    }
+    if (state != OnScreen) {
+        qWarning() << "Unsupported state:" << state << " for active subview";
+    }
+}
+
+
 void MIMPluginManagerPrivate::loadInputMethodSettings()
 {
     if (!settingsDialog) {
@@ -517,6 +551,17 @@ void MIMPluginManagerPrivate::loadInputMethodSettings()
     }
 }
 
+void MIMPluginManagerPrivate::initActiveSubView()
+{
+    // initialize activeSubViewIdOnScreen
+    if (activePlugin(OnScreen)) {
+        MInputMethodBase *inputMethod = plugins[activePlugin(OnScreen)].inputMethod;
+        if (activeSubViewIdOnScreen != inputMethod->activeSubView(OnScreen)) {
+            // activeSubViewIdOnScreen is invalid, should be initialized.
+            activeSubViewIdOnScreen = inputMethod->activeSubView(OnScreen);
+        }
+    }
+}
 
 void MIMPluginManagerPrivate::hideActivePlugins()
 {
@@ -556,6 +601,8 @@ MIMPluginManager::MIMPluginManager()
     connect(d->imAccessoryEnabledConf, SIGNAL(valueChanged()), this, SLOT(updateInputSource()));
 
     updateInputSource();
+
+    d->initActiveSubView();
 }
 
 

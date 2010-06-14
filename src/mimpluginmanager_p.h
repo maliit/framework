@@ -81,8 +81,10 @@ public:
     MInputMethodPlugin *activePlugin(MIMHandlerState state) const;
     void loadInputMethodSettings();
     void hideActivePlugins();
+    void initActiveSubView();
 
     void _q_syncHandlerMap(int);
+    void _q_setActiveSubView(const QString &, MIMHandlerState);
 
 public:
     MIMPluginManager *parent;
@@ -97,6 +99,7 @@ public:
 
     QList<MGConfItem *> handlerToPluginConfs;
     MGConfItem *imAccessoryEnabledConf;
+    QString activeSubViewIdOnScreen;
 
     QRegion activeImRegion;
 
