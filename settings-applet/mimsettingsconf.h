@@ -25,7 +25,7 @@
 
 class MInputMethodPlugin;
 class MInputMethodSettingsBase;
-class MGConfItem;
+class QDBusInterface;
 
 class MImSettingsConf : public QObject
 {
@@ -55,6 +55,35 @@ public:
      */
     QList<MInputMethodSettingsBase *> settings() const;
 
+    /*!
+     * \brief Set \a pluginName as the active input method plugin, and \a subViewId as the active subView.
+     */
+    void setActivePlugin(const QString &pluginName, const QString &subViewId = "");
+
+    /*!
+     * \brief Set \a subViewId as the active subView for current input method plugin.
+     */
+    void setActiveSubView(const QString &subViewId);
+
+    struct MImSubView {
+        QString pluginName;
+        QString subViewId;
+        QString subViewTitle;
+    };
+
+    /*!
+     * \brief Return current active subView.
+     */
+    MImSubView activeSubView() const;
+
+    /*!
+     * \brief Return all available subViews.
+     */
+    QList<MImSubView> subViews() const;
+
+Q_SIGNALS:
+    void activeSubViewChanged();
+
 protected:
     MImSettingsConf();
 
@@ -62,6 +91,7 @@ private:
     void loadPlugins();
     void loadSettings();
     bool loadPlugin(const QString &fileName);
+    void connectToIMPluginManagerDBus();
 
     QMap<MInputMethodPlugin *, QString> imPlugins;
     QStringList paths;
@@ -69,6 +99,8 @@ private:
     QList<MInputMethodSettingsBase *> settingList;
     //! Singleton instance
     static MImSettingsConf *imSettingsConfInstance;
+
+    QDBusInterface *impluginMgrIface;
 };
 
 inline MImSettingsConf &MImSettingsConf::instance()

@@ -29,9 +29,15 @@
 #include "mimsettingswidget.h"
 #include "mimsettingsconf.h"
 
+namespace {
+    const int MImSubViewIdentifierRole = Qt::UserRole;
+    const int MImPluginNameRole = Qt::UserRole + 1;
+};
 
 MImSettingsWidget::MImSettingsWidget()
-    : DcpWidget()
+    : DcpWidget(),
+      activeSubViewItem(0),
+      availableSubViewList(0)
 {
     initWidget();
 }
@@ -46,11 +52,16 @@ bool MImSettingsWidget::back()
 MImSettingsWidget::~MImSettingsWidget()
 {
     qDebug() << __PRETTY_FUNCTION__;
+    delete availableSubViewList;
 }
 
 void MImSettingsWidget::initWidget()
 {
     QGraphicsLinearLayout* layout = new QGraphicsLinearLayout(Qt::Vertical, this);
+
+    activeSubViewItem = new MContentItem(MContentItem::TwoTextLabels, this);
+    connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));
+    layout->addItem(activeSubViewItem);
 
     foreach (MInputMethodSettingsBase *settings, MImSettingsConf::instance().settings()) {
         if (settings) {
@@ -66,11 +77,99 @@ void MImSettingsWidget::initWidget()
     }
     setLayout(layout);
     retranslateUi();
+    connect(&MImSettingsConf::instance(), SIGNAL(activeSubViewChanged()), this, SLOT(syncActiveSubView()));
 }
 
 void MImSettingsWidget::retranslateUi()
 {
+    if (!activeSubViewItem)
+        return;
+
+    //% "Active input method"
+    activeSubViewItem->setTitle(qtTrId("qtn_txts_active_input_method"));
+    updateActiveSubViewTitle();
+
     foreach (MContainer *container, settingsContainerMap.values()) {
         container->setTitle(settingsContainerMap.key(container)->title());
     }
+}
+
+void MImSettingsWidget::syncActiveSubView()
+{
+    // update setting
+    updateActiveSubViewTitle();
+    updateActiveSubViewIndex();
+}
+
+void MImSettingsWidget::updateActiveSubViewTitle()
+{
+    if (!activeSubViewItem)
+        return;
+
+    activeSubViewItem->setSubtitle(MImSettingsConf::instance().activeSubView().subViewTitle);
+}
+
+void MImSettingsWidget::showAvailableSubViewList()
+{
+    if (!availableSubViewList) {
+        availableSubViewList = new MPopupList();
+        QStandardItemModel *model = new QStandardItemModel(availableSubViewList);
+        model->sort(0);
+        availableSubViewList->setItemModel(model);
+        connect(availableSubViewList, SIGNAL(clicked(const QModelIndex &)),
+                this, SLOT(setActiveSubView(const QModelIndex &)));
+    }
+    // always update available subview model avoid missing some updated subviews
+    updateAvailableSubViewModel();
+    availableSubViewList->exec();
+}
+
+void MImSettingsWidget::updateActiveSubViewIndex()
+{
+    if (availableSubViewList) {
+        QString subViewId = MImSettingsConf::instance().activeSubView().subViewId;
+        QStandardItemModel *model = static_cast<QStandardItemModel*> (availableSubViewList->itemModel());
+        QList<QStandardItem *> items = model->findItems(activeSubViewItem->subtitle());
+        foreach (const QStandardItem *item, items) {
+            if (subViewId == item->data(Qt::UserRole).toString()) {
+                availableSubViewList->setCurrentIndex(item->index());
+                availableSubViewList->scrollTo(item->index());
+                break;
+            }
+        }
+    }
+}
+
+void MImSettingsWidget::updateAvailableSubViewModel()
+{
+    if (!availableSubViewList)
+        return;
+
+    QStandardItemModel *model = static_cast<QStandardItemModel *> (availableSubViewList->itemModel());
+    model->clear();
+
+    // get all subviews from plugins which support OnScreen
+    foreach (const MImSettingsConf::MImSubView &subView, MImSettingsConf::instance().subViews()) {
+        QStandardItem *item = new QStandardItem(subView.subViewTitle);
+        // set the title of subview as the display role, and ID as the Qt::UserRole role.
+        item->setData(subView.subViewTitle, Qt::DisplayRole);
+        item->setData(subView.subViewId, MImSubViewIdentifierRole);
+        item->setData(subView.pluginName, MImPluginNameRole);
+        model->appendRow(item);
+    }
+    updateActiveSubViewIndex();
+}
+
+void MImSettingsWidget::setActiveSubView(const QModelIndex &index)
+{
+    if (!index.isValid() || !availableSubViewList
+        || !availableSubViewList->selectionModel()->isSelected(index))
+        return;
+
+    availableSubViewList->setCurrentIndex(index);
+    QStandardItemModel *model = static_cast<QStandardItemModel *> (availableSubViewList->itemModel());
+
+    QString pluginName = model->itemFromIndex(index)->data(Qt::UserRole + 1).toString();
+    QString subViewId = model->itemFromIndex(index)->data(Qt::UserRole).toString();
+    MImSettingsConf::instance().setActivePlugin(pluginName, subViewId);
 }

@@ -41,6 +41,8 @@ public:
 
     virtual ~MIMSettingsDialog();
 
+    void refreshUi();
+
 Q_SIGNALS:
     void languageChanged();
 
@@ -51,10 +53,17 @@ protected:
     //! reimp_end
 
 private slots:
+    void showAvailableSubViewList();
+    void setActiveSubView(const QModelIndex &);
     void retranslateSettingsUi();
 
 private:
+    void updateActiveSubViewTitle();
+    void updateActiveSubViewIndex();
+    void updateAvailableSubViewModel();
 
+    MContentItem *activeSubViewItem;
+    MPopupList *availableSubViewList;
     QMap<MInputMethodSettingsBase *, MContainer *> settingsContainerMap;
     MIMPluginManagerPrivate *const imPluginManagerPrivate;
 };

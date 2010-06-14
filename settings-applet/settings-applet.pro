@@ -11,7 +11,8 @@ QMAKE_CXXFLAGS += -Werror
 LIBS += ../src/libmeegoimframework.so
 
 CONFIG += ordered
-CONFIG += plugin gui meegotouch duicontrolpanel debug
+CONFIG += qdbus meegotouch duicontrolpanel debug
+QT = core gui
 
 CONFIG += link_pkgconfig
 PKGCONFIG += gconf-2.0

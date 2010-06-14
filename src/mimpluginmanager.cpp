@@ -565,6 +565,9 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId, MIMH
                     inputMethod->setActiveSubView(activeSubViewIdOnScreen, OnScreen);
                 }
                 emit adaptor->activeSubViewChanged(OnScreen);
+                if (settingsDialog) {
+                    settingsDialog->refreshUi();
+                }
                 break;
             }
         }

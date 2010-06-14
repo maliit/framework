@@ -41,7 +41,22 @@ protected:
     virtual bool back();
     //! reimp_end
 
+private slots:
+    void syncActiveSubView();
+
+    void showAvailableSubViewList();
+
+    void setActiveSubView(const QModelIndex &);
+
+    void updateAvailableSubViewModel();
+
+    void updateActiveSubViewIndex();
+
 private:
+    void updateActiveSubViewTitle();
+
+    MContentItem *activeSubViewItem;
+    MPopupList *availableSubViewList;
     QMap<MInputMethodSettingsBase *, MContainer *> settingsContainerMap;
 };
 #endif

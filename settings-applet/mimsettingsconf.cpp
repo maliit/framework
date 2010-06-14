@@ -17,6 +17,8 @@
 #include <MGConfItem>
 #include <QDir>
 #include <QPluginLoader>
+#include <QDBusInterface>
+#include <QDBusReply>
 #include <QDebug>
 #include "minputmethodbase.h"
 #include "minputmethodplugin.h"
@@ -29,6 +31,10 @@ namespace
     const QString ConfigRoot = "/meegotouch/inputmethods/";
     const QString MImPluginPaths = ConfigRoot + "paths";
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
+
+    const char * const DBusMIMPluginManagerServiceName = "com.maemo.inputmethodpluginmanager1";
+    const char * const DBusMIMPluginManagerPath = "/com/maemo/inputmethodpluginmanager1";
+    const char * const DBusMIMPluginManagerInterface = "com.maemo.inputmethodpluginmanager1";
 }
 
 MImSettingsConf *MImSettingsConf::imSettingsConfInstance = 0;
@@ -37,6 +43,10 @@ MImSettingsConf::MImSettingsConf()
     : paths(MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList()),
       blacklist(MGConfItem(MImPluginDisabled).value().toStringList())
 {
+    connectToIMPluginManagerDBus();
+
+    if (impluginMgrIface)
+        connect(impluginMgrIface, SIGNAL(activeSubViewChanged(int)), this, SIGNAL(activeSubViewChanged()));
 
     loadPlugins();
     loadSettings();
@@ -44,6 +54,8 @@ MImSettingsConf::MImSettingsConf()
 
 MImSettingsConf::~MImSettingsConf()
 {
+    delete impluginMgrIface;
+    impluginMgrIface = 0;
 }
 
 void MImSettingsConf::createInstance()
@@ -128,4 +140,85 @@ QList<MInputMethodPlugin *> MImSettingsConf::plugins() const
 QList<MInputMethodSettingsBase *> MImSettingsConf::settings() const
 {
     return settingList;
+}
+
+void MImSettingsConf::setActivePlugin(const QString &pluginName, const QString &subViewId)
+{
+    if (!pluginName.isEmpty() && impluginMgrIface) {
+        impluginMgrIface->call(QDBus::NoBlock, "setActivePlugin", pluginName, static_cast<int>(OnScreen), subViewId);
+    }
+}
+
+void MImSettingsConf::setActiveSubView(const QString &subViewId)
+{
+    if (!subViewId.isEmpty() && impluginMgrIface) {
+        impluginMgrIface->call(QDBus::NoBlock, "setActiveSubView", subViewId, static_cast<int>(OnScreen));
+    }
+}
+
+
+MImSettingsConf::MImSubView MImSettingsConf::activeSubView() const
+{
+    MImSubView subView;
+    if (impluginMgrIface) {
+        QDBusReply< QMap<QString, QVariant> > activeSubViewReply = impluginMgrIface->call("queryActiveSubView",
+                                                                                          OnScreen);
+        if (activeSubViewReply.isValid() && activeSubViewReply.value().count()) {
+            subView.subViewId = activeSubViewReply.value().keys().at(0);
+            subView.pluginName = activeSubViewReply.value().values().at(0).toString();
+        }
+
+        QDBusReply< QMap<QString, QVariant> > subViewsReply = impluginMgrIface->call("queryAvailableSubViews",
+                                                                                     subView.pluginName,
+                                                                                     OnScreen);
+        if (subViewsReply.isValid()) {
+            subView.subViewTitle = subViewsReply.value().value(subView.subViewId).toString();
+        }
+    }
+
+    return subView;
+}
+
+QList<MImSettingsConf::MImSubView> MImSettingsConf::subViews() const
+{
+    QList<MImSubView> views;
+    if (impluginMgrIface) {
+        QDBusReply<QStringList> reply = impluginMgrIface->call("queryAvailablePlugins", OnScreen);
+        if (reply.isValid()) {
+            foreach (const QString &plugin, reply.value()) {
+                QDBusReply< QMap<QString, QVariant> > replySubViews = impluginMgrIface->call("queryAvailableSubViews",
+                                                                                             plugin, OnScreen);
+                if (replySubViews.isValid()) {
+                    QMap<QString, QVariant> sv = replySubViews.value();
+                    QMap<QString, QVariant>::const_iterator iterator = sv.constBegin();
+                    while (iterator != sv.constEnd()) {
+                        MImSubView subView = { plugin, iterator.key(), iterator.value().toString()};
+                        views << subView;
+                        iterator++;
+                    }
+                }
+            }
+        }
+    }
+    return views;
+}
+
+void MImSettingsConf::connectToIMPluginManagerDBus()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    QDBusConnection connection = QDBusConnection::sessionBus();
+
+    if (!connection.isConnected()) {
+        qWarning() << "Cannot connect to the DBus session bus";
+        return;
+    }
+    impluginMgrIface = new QDBusInterface(DBusMIMPluginManagerServiceName, DBusMIMPluginManagerPath,
+                                          DBusMIMPluginManagerInterface, connection);
+
+    if (!impluginMgrIface->isValid()) {
+        qWarning() << "MImSettingsConf was unable to connect to indicator server: "
+                   << connection.lastError().message();
+        delete impluginMgrIface;
+        impluginMgrIface = 0;
+    }
 }
