@@ -114,12 +114,13 @@ install: build
 	cd passthroughserver && qmake $(QMAKE_OPTIONS)
 	cd src && qmake $(QMAKE_OPTIONS)
 
+
+	#doc package
+	make  $(PARALLEL_MAKEFLAGS) doc
+
 	# Then proceed to normal installation
 	INSTALL_ROOT=$(CURDIR)/debian/tmp make  $(PARALLEL_MAKEFLAGS) install
 
-	#doc package
-
-	make  $(PARALLEL_MAKEFLAGS) doc
 
 
 # Build architecture-independent files here.

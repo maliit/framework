@@ -14,7 +14,7 @@ isEmpty(DOXYGEN_BIN) {
     doc.commands+= $${IN_PWD}/xmlize.pl ;
 
     # Install rules
-    htmldocs.files = ./doc/html/
+    htmldocs.files = ./doc/html/*
 
   } else {
     # out-of-source build
@@ -27,7 +27,7 @@ isEmpty(DOXYGEN_BIN) {
     doc.commands+= ( cd doc ; $${IN_PWD}/xmlize.pl );
 
     # Install rules
-    htmldocs.files = $${OUT_PWD}/doc/html
+    htmldocs.files = $${OUT_PWD}/doc/html/*
   }
 
   htmldocs.path = /usr/share/doc/meego-im-framework
