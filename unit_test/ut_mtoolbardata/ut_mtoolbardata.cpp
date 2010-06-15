@@ -7,9 +7,9 @@
 #include <QDebug>
 
 namespace {
-    const QString Toolbar1 = QDir::currentPath() + "/toolbar1.xml";
-    const QString Toolbar2 = QDir::currentPath() + "/toolbar2.xml";
-    const QString Toolbar3 = QDir::currentPath() + "/toolbar2.xml";
+    QString Toolbar1 = "/toolbar1.xml";
+    QString Toolbar2 = "/toolbar2.xml";
+    QString Toolbar3 = "/toolbar2.xml";
 }
 
 void Ut_MToolbarData::initTestCase()
@@ -18,6 +18,13 @@ void Ut_MToolbarData::initTestCase()
     int argc = 1;
 
     app = new QCoreApplication(argc, argv);
+
+    Toolbar1 = QCoreApplication::applicationDirPath() + Toolbar1;
+    QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
+    Toolbar2 = QCoreApplication::applicationDirPath() + Toolbar2;
+    QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
+    Toolbar3 = QCoreApplication::applicationDirPath() + Toolbar3;
+    QVERIFY2(QFile(Toolbar3).exists(), "toolbar3.xml does not exist");
 }
 
 void Ut_MToolbarData::cleanupTestCase()

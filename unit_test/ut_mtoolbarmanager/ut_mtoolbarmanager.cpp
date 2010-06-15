@@ -41,9 +41,12 @@ void Ut_MToolbarManager::initTestCase()
     static int argc = 1;
     app = new QCoreApplication(argc, argv);
 
-    Toolbar1 = QDir::currentPath() + Toolbar1;
-    Toolbar2 = QDir::currentPath() + Toolbar2;
-    Toolbar3 = QDir::currentPath() + Toolbar3;
+    Toolbar1 = QCoreApplication::applicationDirPath() + Toolbar1;
+    QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
+    Toolbar2 = QCoreApplication::applicationDirPath() + Toolbar2;
+    QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
+    Toolbar3 = QCoreApplication::applicationDirPath() + Toolbar3;
+    QVERIFY2(!QFile(Toolbar3).exists(), "toolbar3.xml should not exist");
 }
 
 void Ut_MToolbarManager::cleanupTestCase()
