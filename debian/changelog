@@ -1,8 +1,10 @@
-meego-im-framework (0.19.4~1) unstable; urgency=low
+meego-im-framework (0.19.4-1) unstable; urgency=low
 
-  * [Unreleased version]
+  * Added support for loading toolbar data in the framework
+  * Updated toolbar specification
+  * Fixed -doc packaged building
 
- -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Wed, 09 Jun 2010 11:15:36 +0300
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Wed, 16 Jun 2010 17:33:21 +0300
 
 meego-im-framework (0.19.3-1) unstable; urgency=low
 
