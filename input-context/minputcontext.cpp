@@ -16,6 +16,7 @@
 
 #include "minputcontext.h"
 
+#include <QX11Info>
 #include <QInputContext>
 #include <QCoreApplication>
 #include <QDBusInterface>
@@ -37,6 +38,10 @@
 #include "minputcontextadaptor.h"
 #include "mpreeditstyle.h"
 #include "mtimestamp.h"
+
+#include <X11/XKBlib.h>
+#undef KeyPress
+#undef KeyRelease
 
 M_LIBRARY
 
@@ -73,6 +78,22 @@ MInputContext::MInputContext(QObject *parent)
       redirectKeys(false),
       objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount))
 {
+    int opcode = -1;
+    int xkbEventBase = -1;
+    int xkbErrorBase = -1;
+    int xkblibMajor = XkbMajorVersion;
+    int xkblibMinor = XkbMinorVersion;
+    if (!XkbLibraryVersion(&xkblibMajor, &xkblibMinor)) {
+        qCritical("%s xkb query version error!", __PRETTY_FUNCTION__);
+        return;
+    }
+
+    Display* display = QX11Info::display();
+    if (!XkbQueryExtension(display, &opcode, &xkbEventBase, &xkbErrorBase, &xkblibMajor, &xkblibMinor)) {
+        qCritical("%s xkb query extension error!", __PRETTY_FUNCTION__);
+        return;
+    }
+
     sipHideTimer.setSingleShot(true);
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
     connect(&sipHideTimer, SIGNAL(timeout()), SLOT(hideOnFocusOut()));
@@ -674,6 +695,16 @@ M::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
 void MInputContext::setRedirectKeys(bool enabled)
 {
     redirectKeys = enabled;
+}
+
+void MInputContext::setDetectableAutoRepeat(bool enabled)
+{
+    Bool detectableAutoRepeatSupported(False);
+    XkbSetDetectableAutoRepeat(QX11Info::display(), enabled ? True : False,
+                               &detectableAutoRepeatSupported);
+    if (detectableAutoRepeatSupported == False) {
+        qWarning() << "Detectable autorepeat not supported.";
+    }
 }
 
 QMap<QString, QVariant> MInputContext::getStateInformation() const

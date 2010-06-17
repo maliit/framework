@@ -121,3 +121,7 @@ void MInputContextConnectionStub::paste()
 void MInputContextConnectionStub::setRedirectKeys(bool /* enabled */)
 {
 }
+
+void MInputContextConnectionStub::setDetectableAutoRepeat(bool /* enabled */)
+{
+}

@@ -48,6 +48,7 @@ public:
     virtual void updateInputMethodArea(const QList<QVariant> &data);
     virtual void setGlobalCorrectionEnabled(bool);
     virtual void setRedirectKeys(bool enabled);
+    virtual void setDetectableAutoRepeat(bool enabled);
 
     // valid is out parameter for value validity
     virtual QRect preeditRectangle(bool &valid);
@@ -124,6 +125,13 @@ void MInputContextAdaptorStub::setRedirectKeys(bool enabled)
     stubMethodEntered("setRedirectKeys", params);
 }
 
+void MInputContextAdaptorStub::setDetectableAutoRepeat(bool enabled)
+{
+    QList<ParameterBase *> params;
+    params.append(new Parameter<bool>(enabled));
+    stubMethodEntered("setDetectableAutoRepeat", params);
+}
+
 QRect MInputContextAdaptorStub::preeditRectangle(bool &valid)
 {
     QList<ParameterBase *> params;
@@ -194,6 +202,11 @@ void MInputContextAdaptor::setGlobalCorrectionEnabled(bool enable)
 void MInputContextAdaptor::setRedirectKeys(bool enabled)
 {
     return gMInputContextAdaptorStub->setRedirectKeys(enabled);
+}
+
+void MInputContextAdaptor::setDetectableAutoRepeat(bool enabled)
+{
+    return gMInputContextAdaptorStub->setDetectableAutoRepeat(enabled);
 }
 
 QRect MInputContextAdaptor::preeditRectangle(bool &valid)

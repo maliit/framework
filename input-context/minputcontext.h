@@ -123,6 +123,16 @@ public:
      */
     virtual void setRedirectKeys(bool enabled);
 
+    /*!
+     * \brief Set detectable autorepeat for X on/off
+     *
+     * Detectable autorepeat means that instead of press, release, press, release, press,
+     * release... sequence of key events you get press, press, press, release key events
+     * when a key is repeated.  The setting is X client specific.  This is intended to be
+     * used when key event redirection is enabled with \a setRedirectKeys.
+     */
+    virtual void setDetectableAutoRepeat(bool enabled);
+
 private slots:
     //! hides input method
     void hideOnFocusOut();

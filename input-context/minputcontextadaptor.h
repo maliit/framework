@@ -50,6 +50,7 @@ public slots:
     virtual Q_NOREPLY void copy();
     virtual Q_NOREPLY void paste();
     virtual Q_NOREPLY void setRedirectKeys(bool enabled);
+    virtual Q_NOREPLY void setDetectableAutoRepeat(bool enabled);
 
     // valid is out parameter for value validity
     virtual QRect preeditRectangle(bool &valid);

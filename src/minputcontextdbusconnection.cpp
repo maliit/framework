@@ -168,7 +168,8 @@ MInputContextDBusConnectionPrivate::MInputContextDBusConnectionPrivate()
     : activeContext(0),
       valid(true),
       globalCorrectionEnabled(false),
-      redirectionEnabled(false)
+      redirectionEnabled(false),
+      detectableAutoRepeat(false)
 {
     // nothing
 }
@@ -364,6 +365,15 @@ void MInputContextDBusConnection::setRedirectKeys(bool enabled)
     d->redirectionEnabled = enabled;
 }
 
+void MInputContextDBusConnection::setDetectableAutoRepeat(bool enabled)
+{
+    if ((d->detectableAutoRepeat != enabled) && d->activeContext) {
+        d->activeContext->call("setDetectableAutoRepeat", enabled);
+    }
+
+    d->detectableAutoRepeat = enabled;
+}
+
 
 void MInputContextDBusConnection::copy()
 {
@@ -431,6 +441,7 @@ void MInputContextDBusConnection::activateContext()
         // update the state of the new active context
         d->activeContext->call("setGlobalCorrectionEnabled", d->globalCorrectionEnabled);
         d->activeContext->call("setRedirectKeys", d->redirectionEnabled);
+        d->activeContext->call("setDetectableAutoRepeat", d->detectableAutoRepeat);
 
     } else {
         qDebug() << __PRETTY_FUNCTION__ << "unable to activate context";

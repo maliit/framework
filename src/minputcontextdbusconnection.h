@@ -66,6 +66,7 @@ public:
     virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
     virtual void setRedirectKeys(bool enabled);
+    virtual void setDetectableAutoRepeat(bool enabled);
     virtual void copy();
     virtual void paste();
     //! \reimp_end

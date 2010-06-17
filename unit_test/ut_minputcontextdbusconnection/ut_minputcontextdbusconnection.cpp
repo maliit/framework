@@ -299,6 +299,10 @@ void Ut_MInputContextDBusConnection::testNoReplyDBusCalls()
     m_subject->setRedirectKeys(true);
     handleMessages();
     QCOMPARE(gMInputContextAdaptorStub->stubCallCount("setRedirectKeys"), 1);
+
+    m_subject->setDetectableAutoRepeat(true);
+    handleMessages();
+    QCOMPARE(gMInputContextAdaptorStub->stubCallCount("setDetectableAutoRepeat"), 1);
 }
 
 

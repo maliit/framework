@@ -68,6 +68,8 @@ public:
     virtual void paste();
 
     virtual void setRedirectKeys(bool enabled);
+
+    virtual void setDetectableAutoRepeat(bool enabled);
 };
 
 

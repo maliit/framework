@@ -73,6 +73,7 @@ public:
     QMap<QString, QVariant> widgetState;
     bool globalCorrectionEnabled;
     bool redirectionEnabled;
+    bool detectableAutoRepeat;
     MToolbarId toolbarId; //current toolbar id
     QSet<MToolbarId> toolbarIds; //all toolbar ids
 };

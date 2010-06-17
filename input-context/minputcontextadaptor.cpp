@@ -112,3 +112,8 @@ void MInputContextAdaptor::setRedirectKeys(bool enabled)
 {
     owner->setRedirectKeys(enabled);
 }
+
+void MInputContextAdaptor::setDetectableAutoRepeat(bool enabled)
+{
+    owner->setDetectableAutoRepeat(enabled);
+}
