@@ -1,0 +1,20 @@
+interface: libmeegoimframework
+type: library
+scope: Platform
+state: unstable
+libs-pkg: libmeegoimframework0
+dev-pkg: libmeegoimframework-dev
+
+interface: org.maemo.duiinputmethodserver1
+type: dbus
+scope: Platform
+state: unstable
+libs-pkg: libmeegoimframework0
+dev-pkg: libmeegoimframework-dev
+
+interface: Toolbar XML
+type: file
+scope: Platform
+state: unstable
+libs-pkg: libmeegoimframework0
+dev-pkg: libmeegoimframework-dev
