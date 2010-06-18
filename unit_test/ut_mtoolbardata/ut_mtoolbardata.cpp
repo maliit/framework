@@ -125,8 +125,8 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->isVisible(), true);
     QCOMPARE(item->toggle(), false);
     QCOMPARE(item->pressed(), false);
-    QCOMPARE(item->icon(), QString("icon4"));
-    QCOMPARE(item->size(), 100);
+    QCOMPARE(item->icon(), QString(""));
+    QCOMPARE(item->iconId(), QString("icon4"));
 
     QCOMPARE(item->actions().count(), 1);
     QCOMPARE(int(item->actions().at(0)->type()), int(MInputMethod::ActionSendCommand));

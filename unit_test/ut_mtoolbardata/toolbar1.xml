@@ -13,7 +13,7 @@
                     <copy />
                 </actions>
             </button>
-            <button name="test3" group="group3" priority="1" showon="always" alignment="left" icon="icon3" text="text3" text_id="id3">
+            <button name="test3" group="group3" priority="1" showon="always" alignment="left" icon_id="icon3" text="text3" text_id="id3">
                 <actions>
                     <paste />
                 </actions>
@@ -38,7 +38,7 @@
                     <copy />
                 </actions>
             </button>
-            <button name="test3" group="group4" priority="2" hideon="selectedtext" alignment="left" icon="icon4" text="text4" text_id="id4">
+            <button name="test3" group="group4" priority="2" hideon="selectedtext" alignment="left" icon_id="icon4" text="text4" text_id="id4">
                 <actions>
                     <sendcommand command="command4" />
                 </actions>

@@ -34,6 +34,7 @@ Similar rule applies with HIDEON attribute, except that there is no "always" val
 The button is aligned within the toolbar according to the value of ALIGMENT attribute.
 The ICON attribute holds the icon file name (absolute file name). The icon will be displayed in the center of the button.
 The SIZE attribute holds the icon size percentage. The icon will be resized according this attribute and the button size.
+The ICON_ID attribute holds the icon logical id to be displayed on button. ICON_ID has higher priority than ICON, so if both ICON and ICON_ID are specified, ICON_ID will be used. Note: only the ICON_ID of the icons loaded by meegotouch theme will be used.
 The TEXT attribute holds the text and TEXT_ID holds the logical id of the text.
 The TOGGLE attribute defines the type of the button whether it is a toggle button or not, by default the value is false.
 If the TOGGLE attribute is true, the PRESSED attribute holds the button state whether the button is pressed or not.
@@ -46,7 +47,7 @@ The PRIORITY attribute the defines the priority order of displaying, the smaller
 The SHOWON attribute tells when the label is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
 The label is aligned within the toolbar according to the value of ALIGMENT attribute.
-The TEXT attribute holds the text and TEXT_ID holds the logical id of the text.
+The TEXT attribute holds the text and TEXT_ID holds the logical id of the text. Similiar like ICON_ID, TEXT_ID has higher priority than TEXT.
 
 \subsubsubsection ACTIONS
 This tag holds a sequence of actions defined within.
@@ -99,6 +100,7 @@ This tag defines that the action is to paste from clipboard.
 <!ATTLIST button alignment (left|right)>
 <!ATTLIST button icon CDATA "">
 <!ATTLIST button size CDATA "">
+<!ATTLIST button icon_id CDATA "">
 <!ATTLIST button text CDATA "">
 <!ATTLIST button text_id CDATA "">
 <!ATTLIST button toggle (true|false)>

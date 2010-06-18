@@ -45,6 +45,7 @@ void MToolbarItemPrivate::assign(const MToolbarItemPrivate &other)
     text      = other.text;
     textId    = other.textId;
     icon      = other.icon;
+    iconId    = other.iconId;
     type      = other.type;
     priority  = other.priority;
     showOn    = other.showOn;
@@ -279,6 +280,23 @@ void MToolbarItem::setIcon(const QString &icon)
     if (d->icon != icon) {
         d->icon = icon;
         emit propertyChanged("icon");
+    }
+}
+
+QString MToolbarItem::iconId() const
+{
+    Q_D(const MToolbarItem);
+
+    return d->iconId;
+}
+
+void MToolbarItem::setIconId(const QString &iconId)
+{
+    Q_D(MToolbarItem);
+
+    if (d->iconId != iconId) {
+        d->iconId = iconId;
+        emit propertyChanged("iconId");
     }
 }
 

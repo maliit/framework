@@ -45,6 +45,7 @@ namespace
     const QString ImTagAlignment             = QString::fromLatin1("alignment");
     const QString ImTagIcon                  = QString::fromLatin1("icon");
     const QString ImTagSize                  = QString::fromLatin1("size");
+    const QString ImTagIconId                = QString::fromLatin1("icon_id");
     const QString ImTagText                  = QString::fromLatin1("text");
     const QString ImTagTextId                = QString::fromLatin1("text_id");
     const QString ImTagToggle                = QString::fromLatin1("toggle");
@@ -560,6 +561,7 @@ void MToolbarData::parseTagButton(const QDomElement &element, MTBParseParameters
     parseAttribute(&MToolbarItem::setAlignment, element, ImTagAlignment, params);
     parseAttribute(&MToolbarItem::setTextId,    element, ImTagTextId,    params);
     parseAttribute(&MToolbarItem::setIcon,      element, ImTagIcon,      params);
+    parseAttribute(&MToolbarItem::setIconId,    element, ImTagIconId,    params);
     parseAttribute(&MToolbarItem::setToggle,    element, ImTagToggle,    params);
     parseAttribute(&MToolbarItem::setPressed,   element, ImTagPressed,   params);
     parseAttribute(&MToolbarItem::setPriority,  element, ImTagPriority,  params);

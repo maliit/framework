@@ -60,6 +60,7 @@ public:
     bool pressed;
     QString icon;
     int size;
+    QString iconId;
 
     //! actions when clicking the widget
     QList<QSharedPointer<MToolbarItemAction> > actions;

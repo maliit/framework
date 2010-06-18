@@ -98,6 +98,7 @@ class MToolbarItem : public QObject
     Q_PROPERTY(bool pressed   READ pressed WRITE setPressed)
     Q_PROPERTY(QString icon   READ icon    WRITE setIcon)
     Q_PROPERTY(int size       READ size    WRITE setSize)
+    Q_PROPERTY(QString iconId READ iconId  WRITE setIconId)
 
 public:
     /*!
@@ -173,6 +174,12 @@ public:
 
     //! Sets icon name
     void setIcon(const QString &icon);
+
+    //! Returns icon id
+    QString iconId() const;
+
+    //! Sets icon id
+    void setIconId(const QString &iconId);
 
     Qt::Alignment alignment() const;
 
