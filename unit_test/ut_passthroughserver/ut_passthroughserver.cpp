@@ -4,6 +4,7 @@
 
 #include <MApplication>
 #include <MWindow>
+#include <QCommonStyle>
 
 void Ut_PassthroughServer::initTestCase()
 {
@@ -12,6 +13,8 @@ void Ut_PassthroughServer::initTestCase()
 
     MApplication::setLoadMInputContext(false);
     app = new MApplication(argc, app_name);
+    app->setStyle(new QCommonStyle);
+
     new MPlainWindow;
 }
 
