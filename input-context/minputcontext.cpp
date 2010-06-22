@@ -307,9 +307,8 @@ void MInputContext::setFocusWidget(QWidget *focused)
     // get detailed focus information from inside qgraphicsview
     QGraphicsView *graphicsView = qobject_cast<QGraphicsView *>(focusWidget());
 
-    if (graphicsView) {
-        QGraphicsScene *scene = graphicsView->scene();
-        focusItem = scene->focusItem();
+    if (graphicsView && graphicsView->scene()) {
+        focusItem = graphicsView->scene()->focusItem();
 
         if (focusItem) {
             focusedObject = dynamic_cast<QObject *>(focusItem);
