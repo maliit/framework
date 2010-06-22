@@ -65,7 +65,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       mICConnection(connection),
       imAccessoryEnabledConf(0),
       settingsDialog(0),
-      adaptor(0)
+      adaptor(0),
+      connectionValid(false)
 {
 }
 
@@ -760,14 +761,17 @@ MIMPluginManager::MIMPluginManager()
 
     d->adaptor = new MIMPluginManagerAdaptor(this);
     bool success = QDBusConnection::sessionBus().registerObject(DBusPath, this);
+    d->connectionValid = true;
 
     if (!success) {
         qDebug() << __PRETTY_FUNCTION__ << " failed to register D-Bus object";
+        d->connectionValid = false;
     }
 
     if (!QDBusConnection::sessionBus().registerService(DBusServiceName)) {
         qDebug() << __PRETTY_FUNCTION__ << " failed to register D-Bus service";
         qDebug() << QDBusConnection::sessionBus().lastError().message();
+        d->connectionValid = false;
     }
 
     qDBusRegisterMetaType<QStringList>();
@@ -917,6 +921,12 @@ void MIMPluginManager::setActiveSubView(const QString &subViewId, MIMHandlerStat
 {
     Q_D(MIMPluginManager);
     d->_q_setActiveSubView(subViewId, state);
+}
+
+bool MIMPluginManager::isDBusConnectionValid() const
+{
+    Q_D(const MIMPluginManager);
+    return d->connectionValid;
 }
 
 #include "moc_mimpluginmanager.cpp"

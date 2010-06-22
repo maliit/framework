@@ -15,6 +15,9 @@ public:
     //! \reimp
     virtual void setState(const QSet<MIMHandlerState> &state);
     virtual void switchContext(M::InputMethodSwitchDirection direction, bool enableAnimation);
+    virtual QList<MInputMethodBase::MInputMethodSubView> subViews(MIMHandlerState state = OnScreen) const;
+    virtual void setActiveSubView(const QString &, MIMHandlerState state = OnScreen);
+    virtual QString activeSubView(MIMHandlerState state = OnScreen) const;
     //! \reimp_end
 
 public:
@@ -24,6 +27,10 @@ public:
     int switchContextCallCount;
     M::InputMethodSwitchDirection directionParam;
     bool enableAnimationParam;
+
+private:
+    QList<MInputMethodBase::MInputMethodSubView> sViews;
+    QString activeSView;
 };
 
 #endif

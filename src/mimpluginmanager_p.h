@@ -115,6 +115,7 @@ public:
     MIMPluginManagerAdaptor *adaptor;
 
     MIMPluginManager *q_ptr;
+    bool connectionValid;
 };
 
 class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor

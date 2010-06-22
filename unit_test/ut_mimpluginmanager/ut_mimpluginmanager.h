@@ -8,6 +8,7 @@
 class MIMPluginManager;
 class MIMPluginManagerPrivate;
 class QCoreApplication;
+class QDBusInterface;
 
 class Ut_MIMPluginManager : public QObject
 {
@@ -33,11 +34,21 @@ private slots:
 
     void testSwitchToSpecifiedPlugin();
 
+    void testSetActivePlugin();
+
+    void testSubViews();
+    void testActiveSubView();
+
+    void testDBusQueryCalls();
+    void testDBusSetCalls();
 private:
+    void handleMessages();
+
     QCoreApplication *app;
     QString pluginPath;
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;
+    QDBusInterface *m_clientInterface;
 
     void checkHandlerMap(int handler, const QString &name);
 };
