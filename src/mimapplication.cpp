@@ -35,7 +35,7 @@ MIMApplication::~MIMApplication()
 bool MIMApplication::x11EventFilter(XEvent *ev)
 {
     handleTransientEvents(ev);
-    return QApplication::x11EventFilter(ev);
+    return MApplication::x11EventFilter(ev);
 }
 
 void MIMApplication::handleTransientEvents(XEvent *ev)
