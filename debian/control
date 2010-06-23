@@ -62,5 +62,5 @@ Description: Debugging version of Qt input method context for MeegoTouch Framewo
 
 Package: meego-im-settings-applet
 Architecture: any
-Depends: duicontrolpanel (>= 0.7.20), libduicontrolpanel (>= 0.7.20), libmeegoimframework0 (= ${binary:Version})
+Depends: duicontrolpanel (>= 0.7.20), libduicontrolpanel-dev (>= 0.7.20), libmeegoimframework0 (= ${binary:Version})
 Description: MeegoTouch Text Input Settings Applet
