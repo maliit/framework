@@ -42,7 +42,7 @@ Description: Technical documentation of MeegoTouch Input Method Framework
 
 Package: meego-im-framework-tests
 Architecture: any
-Depends:  testrunner, ci-testing, meego-im-uiserver (= ${binary:Version}), libmeegoimframework0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends:  testrunner, ci-testing, meego-im-uiserver (= ${binary:Version}), libmeegoimframework0 (= ${binary:Version}), meego-im-settings-applet (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 XB-Maemo-CI-Packages: libmeegoimframework0, meego-im-uiserver
 XB-Maemo-CI-Stage: fast, staging
 Description: MeegoTouch Input Method Framework Unit Test Suite 

@@ -101,6 +101,9 @@ private:
     static MImSettingsConf *imSettingsConfInstance;
 
     QDBusInterface *impluginMgrIface;
+
+    friend class Ut_MIMSettingsConf;
+    friend class Ft_MIMSettingsConf;
 };
 
 inline MImSettingsConf &MImSettingsConf::instance()
