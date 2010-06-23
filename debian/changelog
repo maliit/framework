@@ -1,3 +1,10 @@
+meego-im-framework (0.19.5-1) unstable; urgency=low
+
+  * Interface to toggle detectable autorepeat of X
+  * Custom icon id on toolbar
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Wed, 23 Jun 2010 11:12:18 +0300
+
 meego-im-framework (0.19.4-1) unstable; urgency=low
 
   * Added support for loading toolbar data in the framework
