@@ -87,7 +87,17 @@ public:
     void hideActivePlugins();
     void initActiveSubView();
 
-    void _q_syncHandlerMap(int);
+    /*!
+     * This method is called when one of the gconf about handler map is changed
+     * to synchronize the handlerToPluginConfs.
+     * \param state (can be cast to MIMHandlerState) indicates which state of the
+     * handler map is changed.
+     */
+    void _q_syncHandlerMap(int state);
+
+    /*!
+     * \brief This method is called when activeSubview is changed by settings or plugin.
+     */
     void _q_setActiveSubView(const QString &, MIMHandlerState);
 
     QMap<QString, QString> availableSubViews(const QString &plugin, MIMHandlerState state = OnScreen) const;

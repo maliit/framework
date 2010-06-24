@@ -511,8 +511,6 @@ void MIMPluginManagerPrivate::loadHandlerMap()
 
 void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
 {
-     //  This method is called when one of the gconf about handler map is changed.
-     //  \a state (can be cast to MIMHandlerState) indicates which state of the handler map is changed.
     HandlerMap::iterator iterator = handlerToPlugin.find(static_cast<MIMHandlerState>(state));
     MGConfItem gconf(QString(MImHandlerToPlugin + QString("/%1").arg(state)));
     QString pluginName = gconf.value().toString();
