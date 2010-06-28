@@ -677,9 +677,9 @@ void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &ite
 M::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
 {
     M::TextContentType type = M::FreeTextContentType;
-
     hints &= Qt::ImhExclusiveInputMask;
-    if (hints == Qt::ImhFormattedNumbersOnly) {
+
+    if (hints == Qt::ImhFormattedNumbersOnly || hints == Qt::ImhDigitsOnly) {
         type = M::NumberContentType;
     } else if (hints == Qt::ImhDialableCharactersOnly) {
         type = M::PhoneNumberContentType;
