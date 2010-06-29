@@ -13,5 +13,5 @@ X-DUIApplet-Applet=libmimsettingsapplet.so
 [DCP]
 Category= Regional settings
 Order=4
-WidgetType= DcpLabel2
+WidgetType= Label
 

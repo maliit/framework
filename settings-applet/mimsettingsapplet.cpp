@@ -32,10 +32,6 @@ MImSettingsApplet::~MImSettingsApplet()
 
 void MImSettingsApplet::init()
 {
-    MLocale locale;
-    // add text-input-settings catalog for the settings translation.
-    locale.installTrCatalog("text-input-settings");
-    MLocale::setDefault(locale);
     MImSettingsConf::createInstance();
 }
 
