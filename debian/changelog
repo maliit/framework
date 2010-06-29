@@ -1,3 +1,9 @@
+meego-im-framework (0.19.6-1) unstable; urgency=low
+
+  * Implemented input method settings support in the framework
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Tue, 29 Jun 2010 11:27:31 +0300
+
 meego-im-framework (0.19.5-1) unstable; urgency=low
 
   * Interface to toggle detectable autorepeat of X
