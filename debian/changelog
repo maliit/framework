@@ -1,3 +1,11 @@
+meego-im-framework (0.19.7-1) unstable; urgency=low
+
+  * Fixed NB#177259 - Prevent a crash in MInputContext if the QGraphicsView has no scene
+  * Fixed NB#170191 - not using number keyboard for Qt::ImhDigitsOnly hint
+  * Uses correct X window id to be transient of
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Thu, 01 Jul 2010 10:14:46 +0300
+
 meego-im-framework (0.19.6-1) unstable; urgency=low
 
   * Implemented input method settings support in the framework
