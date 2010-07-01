@@ -49,7 +49,6 @@ Q_SIGNALS:
 protected:
     //! reimp
     virtual void retranslateUi();
-    virtual void orientationChangeEvent(MOrientationChangeEvent *event);
     //! reimp_end
 
 private slots:

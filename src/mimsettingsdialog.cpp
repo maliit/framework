@@ -76,8 +76,6 @@ MIMSettingsDialog::MIMSettingsDialog(MIMPluginManagerPrivate *p, const QString &
         }
     }
     settingsWidget->setLayout(layout);
-    //hack way to avoid dialog does not set size restriction for its central widget
-    settingsWidget->setPreferredWidth(preferredWidth());
 
     setCentralWidget(settingsWidget);
     connect(this, SIGNAL(languageChanged()), this, SLOT(retranslateSettingsUi()));
@@ -99,13 +97,6 @@ void MIMSettingsDialog::retranslateUi()
 {
     emit languageChanged();
     MDialog::retranslateUi();
-}
-
-void MIMSettingsDialog::orientationChangeEvent(MOrientationChangeEvent *event)
-{
-    //hack way to avoid dialog does not set size restriction for its central widget
-    MDialog::orientationChangeEvent(event);
-    centralWidget()->setPreferredWidth(preferredWidth());
 }
 
 void MIMSettingsDialog::updateActiveSubViewTitle()
