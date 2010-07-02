@@ -553,6 +553,16 @@ void MIMPluginManagerPrivate::loadInputMethodSettings()
 }
 
 
+void MIMPluginManagerPrivate::hideActivePlugins()
+{
+    foreach (MInputMethodPlugin *plugin, activePlugins) {
+        plugins[plugin].inputMethod->hide();
+    }
+    if (settingsDialog && settingsDialog->isVisible()) {
+        settingsDialog->reject();
+    }
+}
+
 ///////////////
 // actual class
 
@@ -703,6 +713,12 @@ void MIMPluginManager::updateRegion(const QRegion &region)
         //if settings dialog is visible, don't update region.
         emit regionUpdated(region);
     }
+}
+
+void MIMPluginManager::hideActivePlugins()
+{
+    Q_D(MIMPluginManager);
+    d->hideActivePlugins();
 }
 
 #include "moc_mimpluginmanager.cpp"

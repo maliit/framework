@@ -58,6 +58,10 @@ signals:
     // widget is changed.
     void regionUpdated(const QRegion &region);
 
+public slots:
+    //! Hide all active plugins.
+    void hideActivePlugins();
+
 private slots:
     //! This method deletes all inactive input method objects
     void deleteInactiveIM();

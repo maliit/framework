@@ -48,6 +48,7 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
         mDebug("MIMApplication") << "Remote window was destroyed or iconified - hiding.";
         passThruWindow->hide();
         remoteWinId = 0;
+        emit remoteWindowGone();
     }
 }
 

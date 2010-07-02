@@ -83,6 +83,7 @@ public:
     void loadHandlerMap();
     MInputMethodPlugin *activePlugin(MIMHandlerState state) const;
     void loadInputMethodSettings();
+    void hideActivePlugins();
 
     void _q_syncHandlerMap(int);
 

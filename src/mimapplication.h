@@ -60,6 +60,10 @@ public:
 
     static MIMApplication *instance();
 
+signals:
+    //! This signal is emitted when remote input window is gone or iconified.
+    void remoteWindowGone();
+
 private:
     void handleTransientEvents(XEvent *ev);
     bool wasRemoteWindowIconified(XEvent *ev) const;

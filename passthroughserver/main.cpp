@@ -88,6 +88,9 @@ int main(int argc, char **argv)
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      view, SLOT(updatePosition(const QRegion &)));
 #endif
+    // hide active plugins when remote input window is gone or iconified.
+    QObject::connect(&app, SIGNAL(remoteWindowGone()),
+                     pluginManager, SLOT(hideActivePlugins()));
 
     return app.exec();
 }
