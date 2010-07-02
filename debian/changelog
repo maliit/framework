@@ -1,3 +1,11 @@
+meego-im-framework (0.19.8-1) unstable; urgency=low
+
+  * Fixed NB#177790 - Virtual keyboard becomes invisible after application crash
+  * Fixed NB#175323 - VKB popup makes application minimized and acts unexpected.
+  * Implemented SWP#TINME-979
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Fri, 02 Jul 2010 15:03:12 +0300
+
 meego-im-framework (0.19.7-1) unstable; urgency=low
 
   * Fixed NB#177259 - Prevent a crash in MInputContext if the QGraphicsView has no scene
