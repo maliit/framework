@@ -1,3 +1,9 @@
+meego-im-framework (0.19.8-2) unstable; urgency=low
+
+  * Explictly call disappearSceneWindowNow for settings dialog.
+
+ -- Ning Chi <ext-chi.ning@nokia.com>  Sat, 03 Jul 2010 15:32:30 +0300
+
 meego-im-framework (0.19.8-1) unstable; urgency=low
 
   * Fixed NB#177790 - Virtual keyboard becomes invisible after application crash
