@@ -555,11 +555,14 @@ void MIMPluginManagerPrivate::loadInputMethodSettings()
 
 void MIMPluginManagerPrivate::hideActivePlugins()
 {
-    foreach (MInputMethodPlugin *plugin, activePlugins) {
-        plugins[plugin].inputMethod->hide();
-    }
     if (settingsDialog && settingsDialog->isVisible()) {
         settingsDialog->reject();
+        // There is an animation before the dialog becoming invisible after reject().
+        // so need to explicitly call setVisible(false).
+        settingsDialog->setVisible(false);
+    }
+    foreach (MInputMethodPlugin *plugin, activePlugins) {
+        plugins[plugin].inputMethod->hide();
     }
 }
 
