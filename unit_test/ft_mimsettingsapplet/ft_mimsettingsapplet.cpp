@@ -6,9 +6,12 @@
 
 void ft_MImSettingsApplet::testAppletIsLoadable()
 {
+    // stub_dcpappletmetadata.cpp gives the real applet file.
     DcpAppletMetadata metadata("/dev/null");
-    qDebug()<< "Checking lib at:" <<  qPrintable(metadata.fullBinary());
+    qDebug()<< "Checking lib at:" <<  metadata.fullBinary();
 
+    // Currently, the settings applet could be missing due to the integration issue.
+    // So skip the test if applet is not available.
     if (!QFileInfo(metadata.fullBinary()).exists()) {
         QSKIP("Text Input setting applet is not available, please check the lib file",
               SkipAll);
