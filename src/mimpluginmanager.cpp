@@ -602,7 +602,7 @@ void MIMPluginManagerPrivate::initActiveSubView()
 
 void MIMPluginManagerPrivate::hideActivePlugins()
 {
-    if (settingsDialog && settingsDialog->isVisible()) {
+    if (settingsDialog) {
         // disappear the settings dialog without animation before hiding active plugins.
         MPlainWindow::instance()->sceneManager()->disappearSceneWindowNow(settingsDialog);
     }
