@@ -1,3 +1,10 @@
+meego-im-framework (0.19.9~1) unstable; urgency=low
+
+  * [Unreleased]
+  * Added support for plugin subviews
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Mon, 05 Jul 2010 17:49:36 +0300
+
 meego-im-framework (0.19.8-2) unstable; urgency=low
 
   * Explictly call disappearSceneWindowNow for settings dialog.
