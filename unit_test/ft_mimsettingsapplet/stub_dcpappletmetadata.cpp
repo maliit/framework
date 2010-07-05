@@ -4,8 +4,7 @@
 /* This is used with appletloader for checking if the applet is
  * loadable. */
 
-QString
-DcpAppletMetadata::fullBinary () const
+QString DcpAppletMetadata::fullBinary() const
 {
     QString filename = "libmimsettingsapplet.so";
 
