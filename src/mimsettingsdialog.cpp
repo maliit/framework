@@ -43,6 +43,9 @@ namespace
 
     const int MImSubViewIdentifierRole = Qt::UserRole;
     const int MImPluginNameRole = Qt::UserRole + 1;
+
+    //!object name for settings' widgets
+    const QString ObjectNameActiveInputMethodWidget("ActiveInputMethodWidget");
 };
 
 MIMSettingsDialog::MIMSettingsDialog(MIMPluginManagerPrivate *p, const QString &title,
@@ -57,6 +60,7 @@ MIMSettingsDialog::MIMSettingsDialog(MIMPluginManagerPrivate *p, const QString &
     MWidget *settingsWidget = new MWidget(this);
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical, settingsWidget);
     activeSubViewItem = new MContentItem(MContentItem::TwoTextLabels, settingsWidget);
+    activeSubViewItem->setObjectName(ObjectNameActiveInputMethodWidget);
 
     updateActiveSubViewTitle();
     connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));
