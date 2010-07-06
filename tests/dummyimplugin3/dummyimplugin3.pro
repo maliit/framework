@@ -33,6 +33,6 @@ QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml
 check-xml.command = $$system(true)
 
-QMAKE_EXTRA_TARGETS += memcheck 
+QMAKE_EXTRA_TARGETS += memcheck
 memcheck.target = memcheck
 memcheck.command = $$system(true)

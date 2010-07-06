@@ -34,7 +34,7 @@ EOF
 # are still in the sources tree.
 #
 TESTCONTEXT="system"
-if [ -d `dirname $0`/unit_test -o -d `dirname $0`/../unit_test ]; then
+if [ -d `dirname $0`/tests -o -d `dirname $0`/../tests ]; then
 	TESTCONTEXT="local"
 fi
 
@@ -50,8 +50,8 @@ case "$TESTCONTEXT" in
         export LD_LIBRARY_PATH=../src/:../input-context/
         export TESTPLUGIN_PATH=./plugins/
         export TESTING_IN_SANDBOX=1
-		if [ -d unit_test ]; then
-			TESTBASE=unit_test
+		if [ -d tests ]; then
+			TESTBASE=tests
 		else
 			TESTBASE=.
 		fi

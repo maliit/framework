@@ -17,7 +17,7 @@ done
 
 TESTSUITE_TEMPLATE="<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>
 <testdefinition version=\"0.1\">
-  <suite name=\"meego-im-framework-tests\"> 
+  <suite name=\"meego-im-framework-tests\">
     <set name=\"unit_tests\" description=\"Unit Tests\">
 
       <case name=\"sleep_workaround\" description=\"ensure X server is running. remove when proper fix is in place\" requirement=\"\" timeout=\"60\">
@@ -28,8 +28,8 @@ TESTSUITE_TEMPLATE="<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>
 
       <environments>
         <scratchbox>false</scratchbox>
-        <hardware>true</hardware>    
-      </environments> 
+        <hardware>true</hardware>
+      </environments>
 
     </set>
   </suite>

@@ -107,7 +107,7 @@ install: build
 	# Add here commands to install the package into debian/tmp
 
 	# generate tests.xml
-	cd unit_test && ./gen-tests-xml.sh > tests.xml
+	cd tests && ./gen-tests-xml.sh > tests.xml
 
 	# To workaround the installation of the .service and .prf files,
 	# qmake needs to run again to generate the service file installation target in the Makefile
