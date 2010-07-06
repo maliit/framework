@@ -1,13 +1,15 @@
 #ifndef UT_MINPUTCONTEXT_H
 #define UT_MINPUTCONTEXT_H
 
+#include <MApplication>
+
+#include <memory>
+#include <QPointer>
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QDBusAbstractAdaptor>
 
 #include <minputcontext.h>
-
-class MApplication;
 
 class InputMethodServerDBusStub: public QObject
 {
@@ -155,13 +157,15 @@ private slots:
 
     void testSetRedirectKeys();
 
+    void testInvalidScene();
+
 private:
     void waitAndProcessEvents(int waitTime);
 
 private:
-    MApplication *app;
-    MInputContext *m_subject;
-    InputMethodServerDBusStub *m_stub;
+    std::auto_ptr<MApplication> app;
+    QPointer<MInputContext> m_subject;
+    QPointer<InputMethodServerDBusStub> m_stub;
 };
 
 

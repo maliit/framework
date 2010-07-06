@@ -445,10 +445,10 @@ void MInputContext::imInitiatedHide()
     inputPanelState = InputPanelHidden;
 
     // need to remove focus from the current text entry
-    if (focusWidget() != 0) {
+    if (focusWidget()) {
         QGraphicsView *graphicsView = qobject_cast<QGraphicsView *>(focusWidget());
 
-        if (graphicsView) {
+        if (graphicsView && graphicsView->scene()) {
             // inside qgraphics we remove the focus from item focused there
             QGraphicsScene *scene = graphicsView->scene();
             QGraphicsItem *item = scene->focusItem();

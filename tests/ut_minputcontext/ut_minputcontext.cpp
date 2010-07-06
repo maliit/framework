@@ -10,7 +10,6 @@
 #include <QPointer>
 #include <QClipboard>
 
-#include <MApplication>
 #include <MTheme>
 #include <MSceneManager>
 #include <MSceneWindow>
@@ -332,17 +331,12 @@ void WidgetStub::sendCopyAvailable(bool yes)
 
 void Ut_MInputContext::initTestCase()
 {
-    // make sure we don't delete random crap on error situations
-    m_subject = 0;
-    m_stub = 0;
-    app = 0;
-
     static char *argv[1] = { (char *) "ut_minputcontext" };
     static int argc = 1;
 
     QCoreApplication::setLibraryPaths(QStringList("./inputmethods"));
     MApplication::setLoadMInputContext(false);
-    app = new MApplication(argc, argv);
+    app.reset(new MApplication(argc, argv));
 
     m_stub = new InputMethodServerDBusStub(this);
 
@@ -357,7 +351,6 @@ void Ut_MInputContext::cleanupTestCase()
 {
     delete m_subject;
     delete m_stub;
-    delete app;
 }
 
 
@@ -702,6 +695,18 @@ void Ut_MInputContext::waitAndProcessEvents(int waitTime)
     while (app->hasPendingEvents()) {
         app->processEvents();
     }
+}
+
+void Ut_MInputContext::testInvalidScene()
+{
+    QGraphicsView view;
+
+    // Regression test:
+    // NB#177259 - MInputContext::setFocusWidget crash
+    // commit f76915c6 - Prevent a crash in MInputContext if the QGraphicsView has no scene yet.
+    m_subject->setFocusWidget(&view);
+
+    m_subject->imInitiatedHide();
 }
 
 QTEST_APPLESS_MAIN(Ut_MInputContext)
