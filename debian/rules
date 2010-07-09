@@ -40,10 +40,10 @@ ifneq (,$(filter notranslucency,$(TMP_BUILD_OPTS)))
         endif
 endif
 
-ENABLE_MULTITOUCH = false
+ENABLE_MULTITOUCH = true
 
-ifneq (,$(filter multitouch,$(TMP_BUILD_OPTS)))
-        ENABLE_MULTITOUCH = true
+ifneq (,$(filter nomultitouch,$(TMP_BUILD_OPTS)))
+        ENABLE_MULTITOUCH = false
 endif
 
 ARCHITECTURE := $(shell dpkg-architecture -qDEB_BUILD_ARCH)
