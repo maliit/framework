@@ -156,6 +156,14 @@ public slots:
     //! Update \a region covered by virtual keyboard
     virtual void updateInputMethodArea(const QRegion &region);
 
+signals:
+
+    //! Emitted when input method request to be shown.
+    void showInputMethodRequest();
+
+    //! Emitted when input method request to be hidden.
+    void hideInputMethodRequest();
+
 protected:
     QSet<MInputMethodBase *> targets();
 

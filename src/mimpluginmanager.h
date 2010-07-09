@@ -74,7 +74,10 @@ signals:
     void regionUpdated(const QRegion &region);
 
 public slots:
-    //! Hide all active plugins.
+    //! Show active plugins.
+    void showActivePlugins();
+
+    //! Hide active plugins.
     void hideActivePlugins();
 
 private slots:

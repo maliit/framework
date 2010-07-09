@@ -84,8 +84,9 @@ public:
     void loadHandlerMap();
     MInputMethodPlugin *activePlugin(MIMHandlerState state) const;
     void loadInputMethodSettings();
-    void hideActivePlugins();
     void initActiveSubView();
+    void hideActivePlugins();
+    void showActivePlugins();
 
     /*!
      * This method is called when one of the gconf about handler map is changed

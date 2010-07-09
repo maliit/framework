@@ -3,6 +3,7 @@
 #include <MApplication>
 #include <QDebug>
 #include <QDBusArgument>
+#include <QSignalSpy>
 
 #include "minputcontextadaptor_stub.h"
 #include "mpreeditinjectionevent.h"
@@ -308,21 +309,23 @@ void Ut_MInputContextDBusConnection::testNoReplyDBusCalls()
 
 void Ut_MInputContextDBusConnection::testShowOnFocus()
 {
+    QSignalSpy showSpy(m_subject, SIGNAL(showInputMethodRequest()));
     m_clientInterface->call(QDBus::NoBlock, "showInputMethod");
 
     handleMessages();
 
-    QCOMPARE(m_inputMethod->showCallCount(), 1);
+    QCOMPARE(showSpy.count(), 1);
 }
 
 
 void Ut_MInputContextDBusConnection::testHideOnLostFocus()
 {
+    QSignalSpy hideSpy(m_subject, SIGNAL(hideInputMethodRequest()));
     m_clientInterface->call(QDBus::NoBlock, "hideInputMethod");
 
     handleMessages();
 
-    QCOMPARE(m_inputMethod->hideCallCount(), 1);
+    QCOMPARE(hideSpy.count(), 1);
 }
 
 

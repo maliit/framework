@@ -600,6 +600,13 @@ void MIMPluginManagerPrivate::initActiveSubView()
     }
 }
 
+void MIMPluginManagerPrivate::showActivePlugins()
+{
+    foreach (MInputMethodPlugin *plugin, activePlugins) {
+        plugins[plugin].inputMethod->show();
+    }
+}
+
 void MIMPluginManagerPrivate::hideActivePlugins()
 {
     if (settingsDialog) {
@@ -736,6 +743,12 @@ MIMPluginManager::MIMPluginManager()
 {
     Q_D(MIMPluginManager);
     d->q_ptr = this;
+
+    connect(d->mICConnection, SIGNAL(showInputMethodRequest()),
+            this, SLOT(showActivePlugins()));
+
+    connect(d->mICConnection, SIGNAL(hideInputMethodRequest()),
+            this, SLOT(hideActivePlugins()));
 
     MToolbarManager::createInstance();
 
@@ -889,6 +902,12 @@ void MIMPluginManager::updateRegion(const QRegion &region)
         //if settings dialog is visible, don't update region.
         emit regionUpdated(region);
     }
+}
+
+void MIMPluginManager::showActivePlugins()
+{
+    Q_D(MIMPluginManager);
+    d->showActivePlugins();
 }
 
 void MIMPluginManager::hideActivePlugins()

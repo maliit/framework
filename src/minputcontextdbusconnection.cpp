@@ -461,17 +461,13 @@ void MInputContextDBusConnection::activateContext()
 
 void MInputContextDBusConnection::showInputMethod()
 {
-    foreach (MInputMethodBase *target, targets()) {
-        target->show();
-    }
+    emit showInputMethodRequest();
 }
 
 
 void MInputContextDBusConnection::hideInputMethod()
 {
-    foreach (MInputMethodBase *target, targets()) {
-        target->hide();
-    }
+    emit hideInputMethodRequest();
 }
 
 
