@@ -3,17 +3,17 @@ AC_PREREQ(2.61)
 # package version number (not shared library version)
 # odd micro numbers indicate in-progress development
 # even micro numbers indicate released versions
-m4_define(meegotouchinputmethodbridges_version_major, 0)
-m4_define(meegotouchinputmethodbridges_version_minor, 2)
-m4_define(meegotouchinputmethodbridges_version_micro, 1)
+m4_define(meegotouch_inputmethodbridges_version_major, 0)
+m4_define(meegotouch_inputmethodbridges_version_minor, 2)
+m4_define(meegotouch_inputmethodbridges_version_micro, 2)
 
-m4_define([meegotouchinputmethodbridges_version],
-          [meegotouchinputmethodbridges_version_major.meegotouchinputmethodbridges_version_minor.meegotouchinputmethodbridges_version_micro])
-m4_define([meegotouchinputmethodbridges_api_version],
-          [meegotouchinputmethodbridges_version_major.meegotouchinputmethodbridges_version_minor])
+m4_define([meegotouch_inputmethodbridges_version],
+          [meegotouch_inputmethodbridges_version_major.meegotouch_inputmethodbridges_version_minor.meegotouch_inputmethodbridges_version_micro])
+m4_define([meegotouch_inputmethodbridges_api_version],
+          [meegotouch_inputmethodbridges_version_major.meegotouch_inputmethodbridges_version_minor])
 
-AC_INIT(meegotouchinputmethodbridges, meegotouchinputmethodbridges_version)
-AM_INIT_AUTOMAKE(meegotouchinputmethodbridges, meegotouchinputmethodbridges_version)
+AC_INIT(meegotouch-inputmethodbridges, meegotouch_inputmethodbridges_version)
+AM_INIT_AUTOMAKE(meegotouch-inputmethodbridges, meegotouch_inputmethodbridges_version)
 AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -68,7 +68,7 @@ fi
 
 
 # i18n
-#GETTEXT_PACKAGE="meegotouchinputmethodbridges"
+#GETTEXT_PACKAGE="meegotouch_inputmethodbridges"
 #AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
 #AC_SUBST(GETTEXT_PACKAGE)
 #AS_ALL_LINGUAS
@@ -83,7 +83,7 @@ client-gtk/Makefile
 
 AC_MSG_RESULT([
 Build options:
-  Version                  meegotouchinputmethodbridges_version
+  Version                  meegotouch_inputmethodbridges_version
   Install prefix           $prefix
   Enable debug             $enable_debug
 ])
