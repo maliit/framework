@@ -1,9 +1,8 @@
-meego-im-framework (0.19.9~1) unstable; urgency=low
+meego-im-framework (0.19.9-1) unstable; urgency=low
 
-  * [Unreleased]
   * Added support for plugin subviews
 
- -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Mon, 05 Jul 2010 17:49:36 +0300
+ -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Thu, 15 Jul 2010 16:34:08 +0300
 
 meego-im-framework (0.19.8-2) unstable; urgency=low
 
