@@ -61,14 +61,21 @@ public:
     static MIMApplication *instance();
 
 signals:
+    //! After a map window request (e.g., via show()) this signal gets emitted
+    //! as soon as X mapped our passthru window.
+    void passThruWindowMapped();
+
     //! This signal is emitted when remote input window is gone or iconified.
     void remoteWindowGone();
 
 private:
+    void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);
     bool wasRemoteWindowIconified(XEvent *ev) const;
     bool wasRemoteWindowUnmapped(XEvent *ev) const;
+    bool wasPassThruWindowMapped(XEvent *ev) const;
 
+    // TODO: Change this type to WId
     int remoteWinId;
     QPointer<QWidget> passThruWindow;
 };

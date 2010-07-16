@@ -34,8 +34,18 @@ MIMApplication::~MIMApplication()
 
 bool MIMApplication::x11EventFilter(XEvent *ev)
 {
+    handleMapNotifyEvents(ev);
     handleTransientEvents(ev);
     return MApplication::x11EventFilter(ev);
+}
+
+void MIMApplication::handleMapNotifyEvents(XEvent *ev)
+{
+    if (passThruWindow && wasPassThruWindowMapped(ev)) {
+        mDebug("MIMApplication") << "PassThru window was mapped.";
+
+        emit passThruWindowMapped();
+    }
 }
 
 void MIMApplication::handleTransientEvents(XEvent *ev)
@@ -122,3 +132,10 @@ bool MIMApplication::wasRemoteWindowUnmapped(XEvent *ev) const
     return (UnmapNotify == ev->type &&
             static_cast<int>(ev->xunmap.event) == remoteWinId);
 }
+
+bool MIMApplication::wasPassThruWindowMapped(XEvent *ev) const
+{
+    return (MapNotify == ev->type &&
+            static_cast<WId>(ev->xmap.event) == passThruWindow->effectiveWinId());
+}
+

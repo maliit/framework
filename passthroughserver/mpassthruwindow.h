@@ -19,6 +19,7 @@
 #include <QWidget>
 #include <QDebug>
 #include <QRegion>
+#include <QTimer>
 
 /*!
  * \brief MPassThruWindow uses XFixes to redirect mouse events to VKB
@@ -37,15 +38,25 @@ public:
     //! Destructor
     ~MPassThruWindow();
 
+
 public slots:
     //! Set window ID for given region
     void inputPassthrough(const QRegion &region);
+
+private slots:
+    //! Cancels window show retry loop
+    void cancelShowRequest();
+
+    //! Tries to show this window
+    void showRequest();
 
 private:
     Q_DISABLE_COPY(MPassThruWindow);
 
     int displayWidth;
     int displayHeight;
+    QTimer waitForMapNotify;
+    int showRetryCount;
 
     friend class Ut_PassthroughServer;
 };
