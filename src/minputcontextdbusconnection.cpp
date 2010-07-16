@@ -56,6 +56,7 @@ namespace
     const char * const HasSelectionAttribute = "hasSelection";
     const char * const InputMethodModeAttribute = "inputMethodMode";
     const char * const VisualizationAttribute = "visualizationPriority";
+    const char * const ToolbarIdAttribute = "toolbarId";
     const char * const ToolbarAttribute = "toolbar";
     const char * const WinId = "winId";
 }
@@ -520,7 +521,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
     MToolbarId newToolbarId;
     oldToolbarId = d->toolbarId;
 
-    variant = stateInfo[ToolbarAttribute];
+    variant = stateInfo[ToolbarIdAttribute];
     if (variant.isValid()) {
         // map toolbar id from local to global
         newToolbarId = MToolbarId(variant.toInt(), message().service());
@@ -546,6 +547,17 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
 
     // compare the toolbar id (global)
     if (oldToolbarId != newToolbarId) {
+        QString toolbarFile = stateInfo[ToolbarAttribute].toString();
+        if (!MToolbarManager::instance().contains(newToolbarId) && !toolbarFile.isEmpty()) {
+            // register toolbar if toolbar manager does not contain it but
+            // toolbar file is not empty. This can reload the toolbar data
+            // if im-uiserver crashes.
+            variant = stateInfo[ToolbarIdAttribute];
+            if (variant.isValid()) {
+                const int toolbarLocalId = variant.toInt();
+                registerToolbar(toolbarLocalId, toolbarFile);
+            }
+        }
         QSharedPointer<const MToolbarData> toolbar =
             MToolbarManager::instance().toolbarData(newToolbarId);
 

@@ -738,12 +738,20 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         stateInformation["visualizationPriority"] = queryResult.toBool();
     }
 
-    // toolbar
+    // toolbar id
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarIdQuery));
+
+    if (queryResult.isValid()) {
+        stateInformation["toolbarId"] = queryResult.toInt();
+    }
+
+    // toolbar file
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarQuery));
 
     if (queryResult.isValid()) {
-        stateInformation["toolbar"] = queryResult.toInt();
+        stateInformation["toolbar"] = queryResult.toString();
     }
 
     // surrounding text

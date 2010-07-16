@@ -61,6 +61,11 @@ QSharedPointer<MToolbarData> MToolbarManager::toolbarData(const MToolbarId &id) 
     return QSharedPointer<MToolbarData>();
 }
 
+bool  MToolbarManager::contains(const MToolbarId &id) const
+{
+    return toolbars.contains(id);
+}
+
 QSharedPointer<MToolbarData> MToolbarManager::createToolbar(const QString &name)
 {
     // load a toolbar

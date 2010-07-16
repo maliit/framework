@@ -78,6 +78,11 @@ public:
      */
     QSharedPointer<MToolbarData> toolbarData(const MToolbarId &id) const;
 
+    /*!
+     *\brief Returns whether registered toolbars contain toolbar \a id.
+     */
+    bool contains(const MToolbarId &id) const;
+
 private:
     /*!
      * \brief Default constructor.
