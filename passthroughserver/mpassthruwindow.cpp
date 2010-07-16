@@ -15,6 +15,7 @@
  */
 #include "mpassthruwindow.h"
 #include "mplainwindow.h"
+#include "mimapplication.h"
 
 #include <QX11Info>
 #include <X11/Xlib.h>
@@ -26,9 +27,26 @@
 #include <X11/extensions/shape.h>
 #endif
 
+namespace {
+    const int ShowRetryLimit = 100;
+    const int WaitForMapNotifyTimeout = 100; // in ms
+}
+
 MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
     : QWidget(p)
+    , showRetryCount(0)
 {
+    waitForMapNotify.setSingleShot(false);
+    waitForMapNotify.setInterval(WaitForMapNotifyTimeout);
+
+    // We'll keep sending show requests until we got a map notify event from X.
+    // See NB#173434
+    connect(&waitForMapNotify, SIGNAL(timeout()),
+            this,              SLOT(showRequest()));
+
+    connect(MIMApplication::instance(), SIGNAL(passThruWindowMapped()),
+            this,                       SLOT(cancelShowRequest()));
+
     setWindowTitle("MInputMethod");
 #ifndef M_IM_DISABLE_TRANSLUCENCY
     setAttribute(Qt::WA_TranslucentBackground);
@@ -58,6 +76,35 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
 
 MPassThruWindow::~MPassThruWindow()
 {
+}
+
+void MPassThruWindow::showRequest()
+{
+    waitForMapNotify.start();
+    qDebug() << __PRETTY_FUNCTION__
+             << "trying to show window, count = " << showRetryCount;
+
+    if (showRetryCount == 0) {
+        show();
+    } else if (showRetryCount < ShowRetryLimit) {
+        // Qt refuses to show us if we are already shown, hence we do
+        // it ourself:
+        XMapWindow(QX11Info::display(), effectiveWinId());
+        XFlush(QX11Info::display());
+    } else {
+        // give up ...
+        cancelShowRequest();
+    }
+
+    ++showRetryCount;
+}
+
+void MPassThruWindow::cancelShowRequest()
+{
+    qDebug() << __PRETTY_FUNCTION__
+             << "window got finally mapped, count = " << showRetryCount;
+    showRetryCount = 0;
+    waitForMapNotify.stop();
 }
 
 void MPassThruWindow::inputPassthrough(const QRegion &region)
@@ -127,9 +174,10 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (isVisible() && region.isEmpty()) {
+        // TODO: fix hiding of VKB - it is the same problem as with show()
         hide();
     } else if (!isVisible() && !region.isEmpty()) {
-        show();
+        showRequest();
     }
 }
 
