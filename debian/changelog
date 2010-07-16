@@ -1,3 +1,9 @@
+meego-im-framework (0.19.8-3) unstable; urgency=low
+
+  * Fixed NB#173434 - Harden meego-im-uiserver against compositor crashes
+
+ -- Viacheslav Sobolev <ext-viacheslav.sobolev@vnokia.com>  Fri, 16 Jul 2010 16:31:43 +0300
+
 meego-im-framework (0.19.8-2) unstable; urgency=low
 
   * Explictly call disappearSceneWindowNow for settings dialog.
