@@ -634,6 +634,19 @@ void MInputContext::serviceChangeHandler(const QString &name, const QString &old
             mDebug("MInputContext")
                 << "InputContext: service owner changed. Registering callback again";
             registerContextObject();
+
+            // There could already be focused item when the connection to the uiserver is
+            // established. Show keyboard immediately in that case.
+            QWidget *widget = qApp->focusWidget();
+            // TODO: Should not call testAttribute explicitly, QInputContext::setFocusWidget()
+            // already does it. The right way should be calling QInputContext::setFocusWidget()
+            // and then checking whether QInputContext has focusWidget(). But the QT bug NB#181094
+            // prevents us.
+            if (widget && widget->testAttribute(Qt::WA_InputMethodEnabled)) {
+                setFocusWidget(widget);
+                iface->call(QDBus::NoBlock, "showInputMethod");
+                inputPanelState = InputPanelShown;
+            }
         }
     }
 }
