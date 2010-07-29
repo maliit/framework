@@ -13,3 +13,4 @@ meego-im-uiserver.install
 libmeegoimframework-dev.install
 *.debhelper*
 *.substvars
+meego-im-settings-applet
