@@ -1,9 +1,9 @@
-meego-im-framework (0.19.10~1) unstable; urgency=low
+meego-im-framework (0.19.10-1) unstable; urgency=low
 
   * Fixes: NB#179290 - UIserver is shown as minimised window
   * Fixes: NB#180833 - Messaging-ui toolbar is not visible if meego-im-uiserver restarts / crashes
 
- -- Ning Chi <ext-chi.ning@nokia.com>  Fri, 23 Jul 2010 17:03:41 +0300
+ -- huaming wang <huaming.wang@nokia.com>  Thu, 29 Jul 2010 12:45:50 +0300
 
 meego-im-framework (0.19.9-1) unstable; urgency=low
 
