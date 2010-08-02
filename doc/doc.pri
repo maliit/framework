@@ -30,7 +30,7 @@ isEmpty(DOXYGEN_BIN) {
     htmldocs.files = $${OUT_PWD}/doc/html/*
   }
 
-  htmldocs.path = $$M_INSTALL_DATA/doc/meego-im-framework
+  htmldocs.path = /usr/share/doc/meego-im-framework
   htmldocs.CONFIG += no_check_exist
   INSTALLS += htmldocs
 }
