@@ -22,8 +22,6 @@ The window compositor - composes the translucent background area with the render
 
 However, there are a couple of alternative implementations which uses shape window (requires the XShape extension) and the other one just move the window around according to the input method window size (controlled via compilation options). These versions does not need a compositor.
 
-Window manager guarantees that the input method window rendered by the server stays on stop.
-
 In MeeGoTouch, MeeGoCompositor doubles as both compositor and window manager.
 
 The Framework provides interfaces which are implemented by the plugins. The plugins provides UI to the input method. An example of a plugin is virtual keyboard plugin. This is the place which user has interaction with. The plugin handles text composition and whenever the text is ready it sends to the application via the server.

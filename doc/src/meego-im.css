@@ -1,5 +1,10 @@
+BODY,H1,H2,H3,H4,H5,H6,P,CENTER,TD,TH,UL,DL,DIV {
+  font-family: Arial, Geneva, Helvetica, sans-serif;
+}
+
 H1 {
 	text-align: center;
+        font-size: 160%;
 }
 H2 {
 	font-size: 120%;
@@ -148,30 +153,18 @@ BODY {
 	margin-left: 20px;
 }
 TD.indexkey {
-	background-color: #e8eef2;
-	font-weight: bold;
-	padding-right  : 10px;
-	padding-top    : 2px;
-	padding-left   : 10px;
-	padding-bottom : 2px;
-	margin-left    : 0px;
-	margin-right   : 0px;
-	margin-top     : 2px;
-	margin-bottom  : 2px;
-	border: 1px solid #CCCCCC;
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:#F0F0F0 none repeat scroll 0 0;
+color:black;
 }
 TD.indexvalue {
-	background-color: #e8eef2;
-	font-style: italic;
-	padding-right  : 10px;
-	padding-top    : 2px;
-	padding-left   : 10px;
-	padding-bottom : 2px;
-	margin-left    : 0px;
-	margin-right   : 0px;
-	margin-top     : 2px;
-	margin-bottom  : 2px;
-	border: 1px solid #CCCCCC;
+-moz-background-clip:border;
+-moz-background-inline-policy:continuous;
+-moz-background-origin:padding;
+background:#E4E4E4 none repeat scroll 0 0;
+color:black;
 }
 TR.memlist {
 	background-color: #f0f0f0; 
@@ -197,61 +190,32 @@ SPAN.vhdlkeyword   { color: #700070 }
 SPAN.vhdllogic     { color: #ff0000 }
 
 .mdescLeft {
-	padding: 0px 8px 4px 8px;
-	font-size: 80%;
-	font-style: italic;
-	background-color: #FAFAFA;
-	border-top: 1px none #E0E0E0;
-	border-right: 1px none #E0E0E0;
-	border-bottom: 1px none #E0E0E0;
-	border-left: 1px none #E0E0E0;
-	margin: 0px;
+ border:1px none #E0E0E0;
+ font-size:100%;
+ margin:4px;
+ padding:2px 0 0 8px;
+ white-space:nowrap;
+ width:180px;
 }
 .mdescRight {
-        padding: 0px 8px 4px 8px;
-	font-size: 80%;
-	font-style: italic;
-	background-color: #FAFAFA;
-	border-top: 1px none #E0E0E0;
-	border-right: 1px none #E0E0E0;
-	border-bottom: 1px none #E0E0E0;
-	border-left: 1px none #E0E0E0;
-	margin: 0px;
+ border:1px none #E0E0E0;
+ font-size:100%;
+ margin:4px;
+ padding:2px 8px 0;
 }
 .memItemLeft {
-	padding: 1px 0px 0px 8px;
-	margin: 4px;
-	border-top-width: 1px;
-	border-right-width: 1px;
-	border-bottom-width: 1px;
-	border-left-width: 1px;
-	border-top-color: #E0E0E0;
-	border-right-color: #E0E0E0;
-	border-bottom-color: #E0E0E0;
-	border-left-color: #E0E0E0;
-	border-top-style: solid;
-	border-right-style: none;
-	border-bottom-style: none;
-	border-left-style: none;
-	background-color: #FAFAFA;
-	font-size: 90%;
+        border:1px none #E0E0E0;
+        font-size:100%;
+        margin:4px;
+        padding:2px 0 0 8px;
+        white-space:nowrap;
+        width:180px;
 }
 .memItemRight {
-	padding: 1px 8px 0px 8px;
-	margin: 4px;
-	border-top-width: 1px;
-	border-right-width: 1px;
-	border-bottom-width: 1px;
-	border-left-width: 1px;
-	border-top-color: #E0E0E0;
-	border-right-color: #E0E0E0;
-	border-bottom-color: #E0E0E0;
-	border-left-color: #E0E0E0;
-	border-top-style: solid;
-	border-right-style: none;
-	border-bottom-style: none;
-	border-left-style: none;
-	background-color: #FAFAFA;
+        border:1px none #E0E0E0;
+        font-size:100%;
+        margin:4px;
+        padding:2px 8px 0;
 }
 .memTemplItemLeft {
 	padding: 1px 0px 0px 8px;
@@ -341,9 +305,14 @@ TH.dirtab {
 	font-weight: bold;
 }
 HR { 
-	height: 1px;
-	border: none;
-	border-top: 1px solid black;
+border: 0;
+color: #a0a0a0;
+background-color: #ccc;
+height: 1px;
+width: 100%;
+text-align: left;
+margin: 34px 0px 34px 0px;
+
 }
 
 /* Style for detailed member documentation */
@@ -363,23 +332,23 @@ HR {
 }
 .memitem {
 	padding: 4px;
-	background-color: #FAFAFA;
-	border-width: 1px;
-	border-style: solid;
-	border-color: #E0E0E0;
-	-moz-border-radius: 8px 8px 8px 8px;
 }
 .memname {
 	white-space: nowrap;
 	font-weight: bold;
 	font-size: 105%;
+
+
+
 }
 .memdoc{
 	padding-left: 10px;
 }
 .memproto {
-	width: 100%;
-	font-weight: bold;
+ background-color:#EEEEEE;
+ border:1px solid #DDDDDD;
+ font-weight:bold;
+ padding:3px 0 3px 10px;
 }
 .paramkey {
 	text-align: right;
@@ -388,7 +357,6 @@ HR {
 	white-space: nowrap;
 }
 .paramname {
-	color: #602020;
 	font-style: italic;
 	white-space: nowrap;
 }
@@ -430,22 +398,26 @@ HR {
 }
 
 table.mainIndex {
-   border-spacing: 1px;
+   border-spacing: 0px;
    width: 100%;
-   padding: 4px;
+   padding: 0px;
    background-color: #FAFAFA;
    border-width: 1px;
    border-style: solid;
    border-color: #E0E0E0;
-   -moz-border-radius: 8px 8px 8px 8px;
 }
 
 table.mainIndex TH {
-   background-color: #ffd429;  
-   padding: 4px;
-   border-style: none;
-   -moz-border-radius: 8px 8px 8px 8px;
    width: 33%;
+   border-width: 1px 0px 1px 0px;
+   padding: 2px;
+   border-style: solid;
+   border-color: #666;
+   color:white;
+   background-color:#555;
+   background-image:url('gradient.png')};
+   background-repeat: repeat-x;
+   font-size: 100%;
 }
 
 table.mainIndex TD {
@@ -477,8 +449,8 @@ table.qt-style tr:nth-child(even) {
     color: black;
 }
 
-/* Styles for declarative settings page */
-div.declElement {
+/* Styles for settings language page */
+div.settingsLanguageElement {
    border-style: solid;
    border-width: 1px;
    border-color: #E0E0E0;
@@ -487,14 +459,14 @@ div.declElement {
    background-color: #FDFDFD;
 }
 
-div.declElement h2 {
+div.settingsLanguageElement h2 {
    background-color: #ffd429;
    margin-top: 0px;
    padding: 8px;
    -moz-border-radius: 8px 8px 8px 8px;
 }
 
-table.declAttributes {
+table.settingsLanguageAttributes {
    border-spacing: 1px;
    width: 100%;
    padding: 4px;
@@ -505,16 +477,21 @@ table.declAttributes {
    -moz-border-radius: 8px 8px 8px 8px;
 }
 
-table.declAttributes th {
+table.settingsLanguageAttributes th {
    background-color: #dddddd;
    padding: 4px;
    border-style: none;
    -moz-border-radius: 8px 8px 8px 8px;
 }
 
-table.declAttributes td {
+table.settingsLanguageAttributes td {
    border-style: none;
    vertical-align: top;
    padding-top: 1em;
 }
-/* End of styles for declarative settings page */
+/* End of styles for settings language page */
+
+td.generator {
+   font-size: 75%;
+   color: #a0a0a0;
+}

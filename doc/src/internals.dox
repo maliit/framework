@@ -17,7 +17,6 @@ The application calls (via the MInputContext instance) the following RPC functio
 - im::activateContext [MInputContextDBusConnection::activateContext?]
 - im::showOnFocus [MInputContextDBusConnection::showInputMethod?]
 
-NOT YET IMPLEMENTED
 Then input method reports to the MInputContext instance whether the input method wants to compose all raw key event from hardware keyboard or not. A common use case is input method support for non-latin languages. Here, the input method calls app::setComposingTextInput(bool). This function could be called again if required by the input method, e.g., when an input method plugin was changed.
 
 Additionally, if the application gains a visualization priority higher than the input method, the input method is hidden temporarily. A use case of this is a long-pressed MTextEdit widget, which triggers a zoom-in. The input method will be hidden for the duration of that zoom-in. When the MTextEdit widget enters the release state, a zoom-out is triggered and the input method becomes visible again.
@@ -25,7 +24,6 @@ Additionally, if the application gains a visualization priority higher than the 
 To gain such a visualization priority, the application sets the M::VisualizationPriorityQuery property in its inputMethodQuery() function. The MInputContext instance queries the property during setFocusWidget() and update(). Depending on the current value of the property, it then calls im::visualizationPriorityChanged on the input method side. The input method can then decide about its visibility.
 
 \subsection KeyEventFiltering Key Event Filtering
-NOT YET IMPLEMENTED
 
 All key events received are filtered in MInputContext::filterEvent. This is done mainly to support features meant for hardware keyboard UI interaction. 
 
@@ -85,7 +83,7 @@ There are three modes of typing:
 \subsubsection Pre_edit_string Pre-edit String
 The pre-edit string is composed as the user types. It is not part of the text entry, although it is displayed within a text entry. In practice, this string represents a candidate word that can be selected by the user. If selected, the candidate word is send to the text entry, replacing the partially typed word of the user. Candidate words are created by the word prediction or error correction driver. Candidate words might change as the user continues to type.
 
-The input method calls the app::updatePreedit RPC function when updating the pre-edit string. The receiver of the call, a MInputContext instance, constructs a QInputMethodEvent event, along with the formatting attributes of the pre-edit string. It then forwards the event to the currently focused widget (obtained via focusWidget()), using QApplication::sendEvent(). The emission of the widget's changed signal shall be blocked temporarily. [Why? To prevent recursive events?]
+The input method calls the app::updatePreedit RPC function when updating the pre-edit string. The receiver of the call, a MInputContext instance, constructs a QInputMethodEvent event, along with the formatting attributes of the pre-edit string. It then forwards the event to the currently focused widget (obtained via focusWidget()), using QApplication::sendEvent(). The emission of the widget's changed signal shall be blocked temporarily. 
 
 \subsubsection Commit_string Commit string
 The commit string is the result of an input method interaction which is sent to a widget. It becomes part of the text entry's content.
@@ -161,10 +159,8 @@ When an event takes place on a toolbar widget, the input method sends a sequence
 - <b>paste</b>: input method asks the widget to paste from clipboard
 - <b>sendCommand</b>: input method passes the defined command to app::toolbarWidgetCommand RPC function
 
-[IMPLEMENTED]
 The widget can change the attributes of an item in toolbar. Except the NAME attribute, all others attributes can be changed by the widget in runtime. To change an attribute, a widget call im::setToolbarItemAttribute() RPC function.
 
-[NOT YET IMPLEMENTED]
 The widget can also get the attribute on an item in toolbar by calling im::toolbarItemAttribute() RPC function.
 
 */
