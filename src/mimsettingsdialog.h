@@ -55,6 +55,7 @@ private slots:
     void showAvailableSubViewList();
     void setActiveSubView(const QModelIndex &);
     void retranslateSettingsUi();
+    void handleDialogDisappeared();
 
 private:
     void updateActiveSubViewTitle();

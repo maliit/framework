@@ -83,6 +83,7 @@ MIMSettingsDialog::MIMSettingsDialog(MIMPluginManagerPrivate *p, const QString &
 
     setCentralWidget(settingsWidget);
     connect(this, SIGNAL(languageChanged()), this, SLOT(retranslateSettingsUi()));
+    connect(this, SIGNAL(disappeared()), this, SLOT(handleDialogDisappeared()));
     retranslateSettingsUi();
 }
 
@@ -208,3 +209,14 @@ void MIMSettingsDialog::retranslateSettingsUi()
     }
 }
 
+void MIMSettingsDialog::handleDialogDisappeared()
+{
+    // hide availableSubViewList when keyboard is disappeared.
+    // availableSubViewList is shown by execDialog/appear
+    // means its visibility is controlled by scenemanager,
+    // it won't be hidden together with MIMSettingsDialog
+    // if we don't call reject/disappear for it.
+    if (availableSubViewList) {
+        availableSubViewList->reject();
+    }
+}
