@@ -3,28 +3,21 @@
 This document describes the plugin system of MeeGo Input Method Framework. The system consists of:
 - Plugin manager
 - Input method connection
-- Passthrough window
-- The plugins
 
 The whole system is running inside the input method server process.
 
-XXX MORE TO PUT HERE
-
 \subsection PluginManager Plugin Manager
-Plugin Manager is responsible to load the plugins and activate them.
+Plugin Manager is responsible to load the plugins and to activate them. It also activates a specific view of a plugin.
 
-XXX MORE TO PUT HERE
+\sa MIMPluginManager
 
 \subsection InputMethodConnection Input Method Connection
 Input Method Connection as the name states, functions as the connector between input method server and the application. The connection handles the protocol and data transport between the two ends.
 
-
-XXX MORE TO PUT HERE
+\sa MInputContextConnection
 
 \section management Plugin Management
 \subsection Handlers Handlers 
-
-NOT YET IMPLEMENTED
 
 Handlers are components which handle the input method function. They are essentially plugins and activated by Plugin manager.
 

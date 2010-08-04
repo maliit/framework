@@ -148,7 +148,7 @@ The widget can determine its content type. It returns the content type when aske
 
 \subsection Toolbar Toolbar 
 
-The text entry widget can ask the input method to put a custom widget into a toolbar (which will be part of the input method UI). This widget, called "toolbar widget", is essentially a declarative widget written in XML. It is compiled into into a MWidget [When? Static? Dynamically constructed?]. Details can be found in the <a href="toolbarxml.html">Toolbar Widget XML specification</a>. Toolbar widgets will appear in the toolbar only when instructed by the text entry widget. One use case is rich text editing. The rich text entry could show Bold, Italic, Underline and other buttons to control the rich text editing in the toolbar.
+The text entry widget can ask the input method to put a custom widget into a toolbar (which will be part of the input method UI). This widget, called "toolbar widget", is essentially a declarative widget written in XML. It is compiled into into a widget by the plugin during the loading of the plugin. Details can be found in the <a href="toolbar.html">Input Method Toolbar</a>. Toolbar widgets will appear in the toolbar only when instructed by the text entry widget. One use case is rich text editing. The rich text entry could show Bold, Italic, Underline and other buttons to control the rich text editing in the toolbar.
 
 The input method shows/hides the toolbar widgets upon receiving events as defined in the toolbar widget's XML data.
 
@@ -162,5 +162,6 @@ When an event takes place on a toolbar widget, the input method sends a sequence
 The widget can change the attributes of an item in toolbar. Except the NAME attribute, all others attributes can be changed by the widget in runtime. To change an attribute, a widget call im::setToolbarItemAttribute() RPC function.
 
 The widget can also get the attribute on an item in toolbar by calling im::toolbarItemAttribute() RPC function.
+\sa toolbar
 
 */

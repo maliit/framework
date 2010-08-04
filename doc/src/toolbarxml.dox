@@ -2,7 +2,9 @@
 <b>Version</b>: 0.1
 
 \section Overview
-This document describes the XML specification of the toolbar widget.
+This document describes the XML specification of the toolbar widget. 
+
+\sa MToolbarData
 
 \section Tags
 \subsection TOOLBAR
