@@ -20,6 +20,41 @@
 #include <QDebug>
 #include <QRegion>
 #include <QTimer>
+#include <QPointer>
+
+// Helper class to work around NB#173434 and Qt/X11 problems wrt hide/show.
+class MIMWindowManager
+    : public QObject
+{
+    Q_OBJECT
+
+public:
+    //! Our WM can only manage one window - the passthru window:
+    explicit MIMWindowManager(QWidget *parent = 0);
+
+public slots:
+    void showRequest();
+    void hideRequest();
+
+    //! Depending on the state, either tries to show or hide the parent
+    void showHideRequest();
+
+    //! Cancels window show/hide retry loop
+    void cancelRequest();
+
+private:
+    enum RequestType
+    {
+        NONE,
+        SHOW,
+        HIDE
+    };
+
+    RequestType state;
+
+    int retryCount;
+    QTimer waitForNotify;
+};
 
 /*!
  * \brief MPassThruWindow uses XFixes to redirect mouse events to VKB
@@ -43,20 +78,13 @@ public slots:
     //! Set window ID for given region
     void inputPassthrough(const QRegion &region);
 
-private slots:
-    //! Cancels window show retry loop
-    void cancelShowRequest();
-
-    //! Tries to show this window
-    void showRequest();
-
 private:
     Q_DISABLE_COPY(MPassThruWindow);
 
     int displayWidth;
     int displayHeight;
-    QTimer waitForMapNotify;
-    int showRetryCount;
+
+    QPointer<MIMWindowManager> wm;
 
     friend class Ut_PassthroughServer;
 };

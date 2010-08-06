@@ -28,25 +28,104 @@
 #endif
 
 namespace {
-    const int ShowRetryLimit = 100;
-    const int WaitForMapNotifyTimeout = 100; // in ms
+    const int ShowHideRetryLimit = 100;
+    const int WaitForNotifyTimeout = 100; // in ms
+}
+
+MIMWindowManager::MIMWindowManager(QWidget *parent)
+    : QObject(parent)
+    , state(NONE)
+    , retryCount(0)
+{
+    waitForNotify.setSingleShot(false);
+    waitForNotify.setInterval(WaitForNotifyTimeout);
+
+    // We'll keep sending show/hide requests until we got a map notify event from X.
+    // See NB#173434 - Text input method bar is not displayed in 'SMS Conversational View'
+    // Root cause was: compositor crash between QWidget::show() and actual X mapping of the window.
+    connect(&waitForNotify, SIGNAL(timeout()),
+            this,           SLOT(showHideRequest()));
+
+    connect(MIMApplication::instance(), SIGNAL(passThruWindowMapped()),
+            this,                       SLOT(cancelRequest()));
+
+    connect(MIMApplication::instance(), SIGNAL(passThruWindowUnmapped()),
+            this,                       SLOT(cancelRequest()));
+
+    connect(MIMApplication::instance(), SIGNAL(remoteWindowGone()),
+            this,                       SLOT(hideRequest()));
+}
+
+void MIMWindowManager::showRequest()
+{
+    state = SHOW;
+    retryCount = 0;
+    waitForNotify.start();
+    showHideRequest();
+}
+
+void MIMWindowManager::hideRequest()
+{
+    state = HIDE;
+    retryCount = 0;
+    waitForNotify.start();
+    showHideRequest();
+}
+
+void MIMWindowManager::showHideRequest()
+{
+    qDebug() << __PRETTY_FUNCTION__
+             << "trying to show/hide window, count = " << retryCount;
+
+    QWidget *w = qobject_cast<QWidget *>(parent());
+
+    if (!w) {
+        return;
+    }
+
+    switch (state) {
+    case SHOW:
+        if (retryCount == 0) {
+            w->show();
+        } else if (retryCount < ShowHideRetryLimit) {
+            XMapWindow(QX11Info::display(), w->effectiveWinId());
+            XFlush(QX11Info::display());
+        } else {
+            cancelRequest();
+        }
+        break;
+
+    case HIDE:
+        if (retryCount == 0) {
+            w->hide();
+        } else if (retryCount < ShowHideRetryLimit) {
+            XUnmapWindow(QX11Info::display(), w->effectiveWinId());
+            XFlush(QX11Info::display());
+        } else {
+            cancelRequest();
+        }
+        break;
+
+    default:
+        break;
+    }
+
+    ++retryCount;
+}
+
+void MIMWindowManager::cancelRequest()
+{
+    qDebug() << __PRETTY_FUNCTION__
+             << "window got finally mapped/unmapped, count = " << retryCount;
+    state = NONE;
+    retryCount = 0;
+    waitForNotify.stop();
 }
 
 MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
     : QWidget(p)
-    , showRetryCount(0)
+    , wm(new MIMWindowManager(this))
 {
-    waitForMapNotify.setSingleShot(false);
-    waitForMapNotify.setInterval(WaitForMapNotifyTimeout);
-
-    // We'll keep sending show requests until we got a map notify event from X.
-    // See NB#173434
-    connect(&waitForMapNotify, SIGNAL(timeout()),
-            this,              SLOT(showRequest()));
-
-    connect(MIMApplication::instance(), SIGNAL(passThruWindowMapped()),
-            this,                       SLOT(cancelShowRequest()));
-
     setWindowTitle("MInputMethod");
 #ifndef M_IM_DISABLE_TRANSLUCENCY
     setAttribute(Qt::WA_TranslucentBackground);
@@ -76,35 +155,6 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
 
 MPassThruWindow::~MPassThruWindow()
 {
-}
-
-void MPassThruWindow::showRequest()
-{
-    waitForMapNotify.start();
-    qDebug() << __PRETTY_FUNCTION__
-             << "trying to show window, count = " << showRetryCount;
-
-    if (showRetryCount == 0) {
-        show();
-    } else if (showRetryCount < ShowRetryLimit) {
-        // Qt refuses to show us if we are already shown, hence we do
-        // it ourself:
-        XMapWindow(QX11Info::display(), effectiveWinId());
-        XFlush(QX11Info::display());
-    } else {
-        // give up ...
-        cancelShowRequest();
-    }
-
-    ++showRetryCount;
-}
-
-void MPassThruWindow::cancelShowRequest()
-{
-    qDebug() << __PRETTY_FUNCTION__
-             << "window got finally mapped, count = " << showRetryCount;
-    showRetryCount = 0;
-    waitForMapNotify.stop();
 }
 
 void MPassThruWindow::inputPassthrough(const QRegion &region)
@@ -174,10 +224,9 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (isVisible() && region.isEmpty()) {
-        // TODO: fix hiding of VKB - it is the same problem as with show()
-        hide();
+        wm->hideRequest();
     } else if (!isVisible() && !region.isEmpty()) {
-        showRequest();
+        wm->showRequest();
     }
 }
 

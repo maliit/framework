@@ -41,10 +41,12 @@ bool MIMApplication::x11EventFilter(XEvent *ev)
 
 void MIMApplication::handleMapNotifyEvents(XEvent *ev)
 {
-    if (passThruWindow && wasPassThruWindowMapped(ev)) {
+    if (wasPassThruWindowMapped(ev)) {
         mDebug("MIMApplication") << "PassThru window was mapped.";
-
         emit passThruWindowMapped();
+    } else if (wasPassThruWindowUnmapped(ev)) {
+        mDebug("MIMApplication") << "PassThru window was unmapped.";
+        emit passThruWindowUnmapped();
     }
 }
 
@@ -56,7 +58,6 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
 
     if (wasRemoteWindowIconified(ev) || wasRemoteWindowUnmapped(ev)) {
         mDebug("MIMApplication") << "Remote window was destroyed or iconified - hiding.";
-        passThruWindow->hide();
         remoteWinId = 0;
         emit remoteWindowGone();
     }
@@ -135,7 +136,14 @@ bool MIMApplication::wasRemoteWindowUnmapped(XEvent *ev) const
 
 bool MIMApplication::wasPassThruWindowMapped(XEvent *ev) const
 {
-    return (MapNotify == ev->type &&
+    return (passThruWindow &&
+            MapNotify == ev->type &&
             static_cast<WId>(ev->xmap.event) == passThruWindow->effectiveWinId());
 }
 
+bool MIMApplication::wasPassThruWindowUnmapped(XEvent *ev) const
+{
+    return (passThruWindow &&
+            UnmapNotify == ev->type &&
+            static_cast<WId>(ev->xunmap.event) == passThruWindow->effectiveWinId());
+}

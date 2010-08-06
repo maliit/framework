@@ -65,15 +65,21 @@ signals:
     //! as soon as X mapped our passthru window.
     void passThruWindowMapped();
 
+    //! After an unmap window request (e.g., via hide()) this signal gets
+    //! emitted as soon as X unmapped our passthru window.
+    void passThruWindowUnmapped();
+
     //! This signal is emitted when remote input window is gone or iconified.
     void remoteWindowGone();
 
 private:
     void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);
+
     bool wasRemoteWindowIconified(XEvent *ev) const;
     bool wasRemoteWindowUnmapped(XEvent *ev) const;
     bool wasPassThruWindowMapped(XEvent *ev) const;
+    bool wasPassThruWindowUnmapped(XEvent *ev) const;
 
     // TODO: Change this type to WId
     int remoteWinId;
