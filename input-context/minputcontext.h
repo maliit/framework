@@ -45,7 +45,7 @@ typedef GlibDBusIMServerProxy DBusIMServerProxy;
  * the Meegotouch input method server about the current state of input widgets
  * on the application side.
  */
-class MInputContext: public QInputContext
+class MInputContext : public QInputContext
 {
     Q_OBJECT
     friend class Ut_MInputContext;
