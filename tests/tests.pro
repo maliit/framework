@@ -5,7 +5,6 @@ TEMPLATE = subdirs
 SUBDIRS = \
           ut_minputcontextplugin \
           ut_minputcontext \
-          ut_minputcontextadaptor \
           dummyimplugin \
           dummyimplugin2 \
           dummyimplugin3 \
