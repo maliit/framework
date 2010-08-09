@@ -154,11 +154,10 @@ void MInputContextDBusAdaptor::unregisterToolbar(int id)
     host->unregisterToolbar(id);
 }
 
-void MInputContextDBusAdaptor::setToolbarItemAttribute(int id, const QString &item,
-                                                         const QString &attribute, const QVariantList &values)
+void MInputContextDBusAdaptor::setToolbarItemAttribute(
+    int id, const QString &item, const QString &attribute, const QVariant &value)
 {
-    if (values.size())
-        host->setToolbarItemAttribute(id, item, attribute, values.at(0));
+    host->setToolbarItemAttribute(id, item, attribute, value);
 }
 
 ////////////////
@@ -630,8 +629,8 @@ void MInputContextDBusConnection::unregisterToolbar(int id)
     }
 }
 
-void MInputContextDBusConnection::setToolbarItemAttribute(int id, const QString &item,
-                                                          const QString &attribute, const QVariant &value)
+void MInputContextDBusConnection::setToolbarItemAttribute(
+    int id, const QString &item, const QString &attribute, const QVariant &value)
 {
     MToolbarId globalId(id, message().service());
     if (globalId.isValid() && d->toolbarIds.contains(globalId)) {

@@ -53,7 +53,7 @@ public slots:
                          bool autoRepeat, int count, int nativeScanCode, int nativeModifiers);
     void registerToolbar(int id, const QString &toolbar);
     void unregisterToolbar(int id);
-    void setToolbarItemAttribute(int id, const QString &item, const QString &attribute, const QVariantList &values);
+    void setToolbarItemAttribute(int id, const QString &item, const QString &attribute, const QVariant &values);
 
 private:
     MInputContextDBusConnection *host;

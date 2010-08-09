@@ -680,10 +680,8 @@ void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &ite
                                                       const QString &attribute,
                                                       const QVariant& value)
 {
-    QVariantList values;
-    values << value;
     iface->call(QDBus::NoBlock, "setToolbarItemAttribute", id, item,
-                attribute, values);
+                attribute, value);
 }
 
 M::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
