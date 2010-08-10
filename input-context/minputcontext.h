@@ -25,9 +25,8 @@
 #include <mnamespace.h>
 
 class MPreeditStyleContainer;
-class QDBusInterface;
-class QDBusConnectionInterface;
-
+class QtDBusIMServerProxy;
+typedef QtDBusIMServerProxy DBusIMServerProxy;
 
 /*!
  * \brief On the application side, MInputContext implements input method
@@ -137,9 +136,8 @@ private slots:
     //! hides input method
     void hideOnFocusOut();
 
-    //! looks after service owner changes and re-registers to changed input method server
-    void serviceChangeHandler(const QString &name, const QString &oldOwner,
-                              const QString &newOwner);
+    void onDBusDisconnection();
+    void onDBusConnection();
 
     /*!
      * \brief Notifies input method server of copy/paste availability.
@@ -170,9 +168,6 @@ private:
 
     void connectToDBus();
 
-    //! registers the application to the input method server
-    void registerContextObject();
-
     //! returns content type corresponding to specified hints
     M::TextContentType contentType(Qt::InputMethodHints hints) const;
 
@@ -194,7 +189,7 @@ private:
      */
     QTimer sipHideTimer;
 
-    QDBusInterface *iface;
+    DBusIMServerProxy *imServer;
     bool ownsMComponentData;
 
     bool correctionEnabled;

@@ -10,8 +10,16 @@ STYLE_HEADERS += \
     mpreeditstyle.h \
 
 # Input
-HEADERS += minputcontext.h minputcontextplugin.h minputcontextadaptor.h $$STYLE_HEADERS
-SOURCES += minputcontext.cpp minputcontextplugin.cpp minputcontextadaptor.cpp
+HEADERS += minputcontext.h \
+    minputcontextplugin.h \
+    minputcontextadaptor.h \
+    $$STYLE_HEADERS \
+    qtdbusimserverproxy.h \
+
+SOURCES += minputcontext.cpp \
+    minputcontextplugin.cpp \
+    minputcontextadaptor.cpp \
+    qtdbusimserverproxy.cpp \
 
 QT = core gui
 CONFIG += plugin debug qdbus meegotouch

@@ -19,8 +19,6 @@
 #include <QX11Info>
 #include <QInputContext>
 #include <QCoreApplication>
-#include <QDBusInterface>
-#include <QDBusConnectionInterface>
 #include <QKeyEvent>
 #include <QGraphicsView>
 #include <QGraphicsItem>
@@ -35,7 +33,9 @@
 #include <MLibrary>
 #include <MInputMethodState>
 
+#include <QDBusConnection>
 #include "minputcontextadaptor.h"
+#include "qtdbusimserverproxy.h"
 #include "mpreeditstyle.h"
 #include "mtimestamp.h"
 
@@ -50,10 +50,6 @@ namespace
     const int SoftwareInputPanelHideTimer = 500;
 
     // FIXME: rename these to new prefix
-    const QString DBusServiceName("org.maemo.duiinputmethodserver1");
-    const QString DBusPath("/org/maemo/duiinputmethodserver1");
-    const QString DBusInterface("org.maemo.duiinputmethodserver1");
-
     const QString DBusCallbackPath("/org/maemo/duiinputcontext");
 }
 
@@ -68,7 +64,7 @@ MInputContext::MInputContext(QObject *parent)
     : QInputContext(parent),
       active(false),
       inputPanelState(InputPanelHidden),
-      iface(0),
+      imServer(0),
       ownsMComponentData(false),
       correctionEnabled(false),
       styleContainer(0),
@@ -138,7 +134,7 @@ MInputContext::MInputContext(QObject *parent)
 
 MInputContext::~MInputContext()
 {
-    delete iface;
+    delete imServer;
 
     delete styleContainer;
 
@@ -150,40 +146,21 @@ MInputContext::~MInputContext()
 
 void MInputContext::connectToDBus()
 {
-    QDBusConnection connection = QDBusConnection::sessionBus();
-
-    if (connection.isConnected() == false) {
-        mDebug("MInputContext") << "Cannot connect to the DBus session bus";
-    }
-
-    QDBusConnectionInterface *connectionInterface = connection.interface();
+    qDebug() << __PRETTY_FUNCTION__;
+    imServer = new QtDBusIMServerProxy(dbusObjectPath());
 
     // connect methods we are offering to DBus
     new MInputContextAdaptor(this);
 
-    bool success = connection.registerObject(dbusObjectPath(), this);
-
-    if (!success) {
+    if (!QDBusConnection::sessionBus().registerObject(dbusObjectPath(), this)) {
         qCritical("MInputContext failed to register object via D-Bus: %s",
                   dbusObjectPath().toAscii().data());
     }
 
-    // start to follow server changes
-    connect(connectionInterface, SIGNAL(serviceOwnerChanged(QString, QString, QString)),
-            this, SLOT(serviceChangeHandler(QString, QString, QString)));
 
-    //iface MUST NOT be sibling of object of class derived from QDBusAbstractAdaptor
-    //due to bug in Qt
-    iface = new QDBusInterface(DBusServiceName, DBusPath, DBusInterface, connection, 0);
 
-    // The input method server might not be running when MInputContext is created.
-    // The iface validity is rechecked at serviceChangeHandler().
-    if (!iface->isValid()) {
-        mDebug("MInputContext") << "MInputContext was unable to connect to input method server: "
-                                << connection.lastError().message();
-    } else {
-        registerContextObject();
-    }
+    connect(imServer, SIGNAL(dbusConnected()), this, SLOT(onDBusConnection()));
+    connect(imServer, SIGNAL(dbusDisconnected()), this, SLOT(onDBusDisconnection()));
 }
 
 bool MInputContext::event(QEvent *event)
@@ -201,7 +178,7 @@ bool MInputContext::event(QEvent *event)
                                     << injectionEvent->preedit();
             // send the injected preedit to input method server and back to the widget with proper
             // styling
-            iface->call(QDBus::NoBlock, "setPreedit", injectionEvent->preedit());
+            imServer->setPreedit(injectionEvent->preedit());
             updatePreedit(injectionEvent->preedit(), M::PreeditDefault);
 
             event->accept();
@@ -248,7 +225,7 @@ void MInputContext::reset()
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
 
     // reset input method server
-    iface->call(QDBus::NoBlock, "reset");
+    imServer->reset();
 }
 
 
@@ -265,7 +242,7 @@ void MInputContext::update()
     // get the state information of currently focused widget, and pass it to input method server
     QMap<QString, QVariant> stateInformation = getStateInformation();
 
-    iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation, false);
+    imServer->updateWidgetInformation(stateInformation, false);
 }
 
 
@@ -290,7 +267,7 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
             preeditRect = focused->inputMethodQuery(query).toRect();
         }
 
-        iface->call(QDBus::NoBlock, "mouseClickedOnPreedit", event->globalPos(), preeditRect);
+        imServer->mouseClickedOnPreedit(event->globalPos(), preeditRect);
     }
 }
 
@@ -319,7 +296,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
     if (focused) {
         // for non-null focus widgets, we'll have this context activated
         if (!active) {
-            iface->call(QDBus::NoBlock, "activateContext");
+            imServer->activateContext();
             active = true;
 
             // Notify whatever application's orientation is currently.
@@ -328,7 +305,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
             notifyOrientationChange(angle);
         }
 
-        iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation, true);
+        imServer->updateWidgetInformation(stateInformation, true);
 
         // check if copyable text is selected
         Qt::InputMethodQuery query = Qt::ImCurrentSelection;
@@ -348,14 +325,14 @@ void MInputContext::setFocusWidget(QWidget *focused)
 
     } else {
         copyAllowed = false;
-        iface->call(QDBus::NoBlock, "updateWidgetInformation", stateInformation, true);
+        imServer->updateWidgetInformation(stateInformation, true);
     }
 
     // show or hide Copy/Paste button on input method server
     manageCopyPasteState(copyAvailable);
 
     if (inputPanelState == InputPanelShowPending && focused) {
-        iface->call(QDBus::NoBlock, "showInputMethod");
+        imServer->showInputMethod();
         inputPanelState = InputPanelShown;
     }
 
@@ -396,7 +373,7 @@ bool MInputContext::filterEvent(const QEvent *event)
 
         } else {
             // note: could do this also if panel was hidden
-            iface->call(QDBus::NoBlock, "showInputMethod");
+            imServer->showInputMethod();
             inputPanelState = InputPanelShown;
         }
 
@@ -410,11 +387,11 @@ bool MInputContext::filterEvent(const QEvent *event)
     } else if ((event->type() == QEvent::KeyPress) || (event->type() == QEvent::KeyRelease)) {
         const QKeyEvent *key = static_cast<const QKeyEvent *>(event);
         if (redirectKeys) {
-            iface->call(QDBus::NoBlock, "processKeyEvent", static_cast<int>(key->type()),
-                        key->key(), static_cast<int>(key->modifiers()), key->text(),
-                        key->isAutoRepeat(), key->count(),
-                        static_cast<int>(key->nativeScanCode()),
-                        static_cast<int>(key->nativeModifiers()));
+            imServer->processKeyEvent(key->type(),
+                                      static_cast<Qt::Key>(key->key()), key->modifiers(), key->text(),
+                                      key->isAutoRepeat(), key->count(),
+                                      key->nativeScanCode(),
+                                      key->nativeModifiers());
             eaten = true;
 
         }
@@ -426,7 +403,7 @@ bool MInputContext::filterEvent(const QEvent *event)
 
 void MInputContext::hideOnFocusOut()
 {
-    iface->call(QDBus::NoBlock, "hideInputMethod");
+    imServer->hideInputMethod();
 
     inputPanelState = InputPanelHidden;
 }
@@ -602,58 +579,35 @@ void MInputContext::paste()
 }
 
 
-void MInputContext::registerContextObject()
+void MInputContext::onDBusDisconnection()
 {
-    iface->call(QDBus::NoBlock, "setContextObject", dbusObjectPath());
+    qDebug() << __PRETTY_FUNCTION__;
+    active = false;
+    redirectKeys = false;
+    inputPanelState = InputPanelHidden;
+    MInputMethodState::instance()->setInputMethodArea(QRect());
 }
 
-
-void MInputContext::serviceChangeHandler(const QString &name, const QString &oldOwner,
-                                         const QString &newOwner)
+void MInputContext::onDBusConnection()
 {
-    Q_UNUSED(oldOwner);
-
-    // if the input method server service owner changes, we need to register our
-    // callback object again
-    if (name == DBusServiceName) {
-        active = false;
-        redirectKeys = false;
-        inputPanelState = InputPanelHidden;
-        MInputMethodState::instance()->setInputMethodArea(QRect());
-
-        if (!newOwner.isEmpty()) {
-            if (!iface->isValid()) {
-                // dbus interface don't seem to become valid if on construction the server
-                // wasn't found. workaround this by creating the interface again
-                mDebug("MInputContext") << "recreating dbus interface";
-                delete iface;
-                QDBusConnection connection = QDBusConnection::sessionBus();
-                iface = new QDBusInterface(DBusServiceName, DBusPath, DBusInterface, connection, 0);
-            }
-
-            mDebug("MInputContext")
-                << "InputContext: service owner changed. Registering callback again";
-            registerContextObject();
-
-            // There could already be focused item when the connection to the uiserver is
-            // established. Show keyboard immediately in that case.
-            QWidget *widget = qApp->focusWidget();
-            // TODO: Should not call testAttribute explicitly, QInputContext::setFocusWidget()
-            // already does it. The right way should be calling QInputContext::setFocusWidget()
-            // and then checking whether QInputContext has focusWidget(). But the QT bug NB#181094
-            // prevents us.
-            if (widget && widget->testAttribute(Qt::WA_InputMethodEnabled)) {
-                setFocusWidget(widget);
-                iface->call(QDBus::NoBlock, "showInputMethod");
-                inputPanelState = InputPanelShown;
-            }
-        }
+    qDebug() << __PRETTY_FUNCTION__;
+    // There could already be focused item when the connection to the uiserver is
+    // established. Show keyboard immediately in that case.
+    QWidget *widget = qApp->focusWidget();
+    // TODO: Should not call testAttribute explicitly, QInputContext::setFocusWidget()
+    // already does it. The right way should be calling QInputContext::setFocusWidget()
+    // and then checking whether QInputContext has focusWidget(). But the QT bug NB#181094
+    // prevents us.
+    if (widget && widget->testAttribute(Qt::WA_InputMethodEnabled)) {
+        setFocusWidget(widget);
+        imServer->showInputMethod();
+        inputPanelState = InputPanelShown;
     }
 }
 
 void MInputContext::manageCopyPasteState(bool copyAvailable)
 {
-    iface->call(QDBus::NoBlock, "setCopyPasteState", copyAvailable && copyAllowed, pasteAvailable);
+    imServer->setCopyPasteState(copyAvailable && copyAllowed, pasteAvailable);
 }
 
 
@@ -661,27 +615,27 @@ void MInputContext::notifyOrientationChange(M::OrientationAngle orientation)
 {
     // can get called from signal so cannot be sure we are really currently active
     if (active) {
-        iface->call(QDBus::NoBlock, "appOrientationChanged", (int) orientation);
+        imServer->appOrientationChanged(static_cast<int>(orientation));
     }
 }
 
 
 void MInputContext::notifyToolbarRegistered(int id, const QString &fileName)
 {
-    iface->call(QDBus::NoBlock, "registerToolbar", id, fileName);
+    imServer->registerToolbar(id, fileName);
 }
 
 void MInputContext::notifyToolbarUnregistered(int id)
 {
-    iface->call(QDBus::NoBlock, "unregisterToolbar", id);
+    imServer->unregisterToolbar(id);
 }
 
 void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &item,
                                                       const QString &attribute,
                                                       const QVariant& value)
 {
-    iface->call(QDBus::NoBlock, "setToolbarItemAttribute", id, item,
-                attribute, value);
+    imServer->setToolbarItemAttribute(id, item,
+                                      attribute, value);
 }
 
 M::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
