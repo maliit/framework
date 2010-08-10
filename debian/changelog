@@ -1,6 +1,8 @@
 meego-im-framework (0.19.11~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Fixes: NB#183245 - 'Active input method' dialog never disappears.
+  * Fixes: NB#184056 - "! Plugin not available" is displayed for text input
 
  -- huaming wang <huaming.wang@nokia.com>  Fri, 30 Jul 2010 14:15:32 +0300
 
