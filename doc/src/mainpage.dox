@@ -8,8 +8,8 @@ Non-Qt input contexts need to implement the D-Bus interface to be able to use th
 
 MeeGo Touch Input Method Framework consists of two frameworks:
 
-* MeeGo Touch Input Method UI Framework
-* MeeGo Touch Input Method Engine Framework
+- MeeGo Touch Input Method UI Framework
+- MeeGo Touch Input Method Engine Framework
 
 These frameworks are built in such a way that both the input method engines and UIs are individual plugin components separate from the frameworks. Therefore, developers can create alternate or additional Input Method engine and UI plugins, or customise the existing ones.
 
@@ -21,7 +21,19 @@ These input method plugins can range from simple virtual or hardware keyboards t
 
 MeeGo Touch Input Method UI Framework is an integration framework that provides interfaces to be implemented by input method UI plugins created by developers. Such plugins offer a custom UI to be used in inputting text to text fields in applications. They also buffer and allow on-the-fly modification of text prior to delivery to the application. The included MeeGo Keyboard is an implementation of such a plugin.
 
-<B>Note</B>: The Input Method UI plugins interact with Input Method Engine plugins which can provide them with, for example, modified, alternate or corrected versions of the entered input. For more information, see the @ref libmeegoimengine library introduction.
+<B>Note</B>: The Input Method UI plugins interact with Input Method Engine plugins which can provide them with, for example, modified, alternate or corrected versions of the entered input. For more information, see the libmeegoimengine library introduction.
+
+@section basicusage Basic Usage
+
+<B>Main classes:</B>
+
+The following base classes are needed to implement an input method UI plugin:
+
+- MInputMethodBase : to interact with the input method server and the application
+
+- MInputMethodSettingsBase  : to provide settings in control panel
+
+- MInputMethodPlugin : to enable the plugin to be loaded by the input method server
 
 @section general General documentation
 - <a href="architecture.html">Architecture</a>
