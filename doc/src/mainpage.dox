@@ -1,12 +1,29 @@
-/*! \mainpage MeeGo Touch Input Method Framework Documentation
+/*! @mainpage MeeGo Touch Input Method Framework Documentation
 
-\section intro Introduction
+@section intro Introduction
 
-MeeGo Touch Input Method Framework provides interfaces to create input method plugins to be seamlessly integrated
-with MeeGo Touch based applications as well as plain Qt applications. Input method plugins could range from a simple
-virtual keyboard or hardware keyboard, handwriting recognition, or even a voice text input method.
+MeeGo Touch Input Method Framework provides the necessary framework to input text into text entry fields of applications. To achieve this, MeeGo Touch Input Method Framework indirectly interacts with the applications through the MeeGo Touch Framework, using the supplied MInputContext. MInputContext is an implementation of the QInputContext defined by Qt. This input context enables input services for both native MeeGo Touch and plain Qt applications. The input context is created automatically by the application process and acts a messenger between server and the applications.
 
-\section general General documentation
+Non-Qt input contexts need to implement the D-Bus interface to be able to use the framework.
+
+MeeGo Touch Input Method Framework consists of two frameworks:
+
+* MeeGo Touch Input Method UI Framework
+* MeeGo Touch Input Method Engine Framework
+
+These frameworks are built in such a way that both the input method engines and UIs are individual plugin components separate from the frameworks. Therefore, developers can create alternate or additional Input Method engine and UI plugins, or customise the existing ones.
+
+The UI framework has a client-server type architecture, where the application acts as the client, and the Input Method main application (UI Server) as the server. The server presents the user an input UI whenever the user taps a text entry field. The input UI and any active input method engines are provided by the plugins present in the system at a given time.
+
+These input method plugins can range from simple virtual or hardware keyboards to handwriting recognition or even speech-to-text type of input.
+
+@section inputmethoduifw MeeGo Touch Input Method UI Framework
+
+MeeGo Touch Input Method UI Framework is an integration framework that provides interfaces to be implemented by input method UI plugins created by developers. Such plugins offer a custom UI to be used in inputting text to text fields in applications. They also buffer and allow on-the-fly modification of text prior to delivery to the application. The included MeeGo Keyboard is an implementation of such a plugin.
+
+<B>Note</B>: The Input Method UI plugins interact with Input Method Engine plugins which can provide them with, for example, modified, alternate or corrected versions of the entered input. For more information, see the @ref libmeegoimengine library introduction.
+
+@section general General documentation
 - <a href="architecture.html">Architecture</a>
 - <a href="extensions.html">Extensions to Qt</a>
 - <a href="pluginsystem.html">Plugin System</a>
@@ -14,7 +31,7 @@ virtual keyboard or hardware keyboard, handwriting recognition, or even a voice 
 - <a href="toolbar.html">Input Method Toolbar</a>
 - <a href="toolbarxml.html">Toolbar Widget XML Specification</a>
 
-\section api API reference
+@section api API reference
 <a href="classes.html">All Classes</a>
 
 */
