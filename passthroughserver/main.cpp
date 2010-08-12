@@ -17,6 +17,8 @@
 
 // Input method overlay window
 
+#include <stdlib.h>
+
 #include <QtDebug>
 #include <QWidget>
 #include <QPalette>
@@ -46,6 +48,9 @@ int main(int argc, char **argv)
     // prevent loading of minputcontext because we don't need it and starting
     // it might trigger starting of this service by the d-bus. not nice if that is
     // already happening :)
+    if (-1 == unsetenv("QT_IM_MODULE")) {
+        qWarning("meego-im-uiserver: unable to unset QT_IM_MODULE.");
+    }
     MApplication::setLoadMInputContext(false);
 
     MIMApplication app(argc, argv);
