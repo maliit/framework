@@ -43,6 +43,10 @@ The following base classes are needed to implement an input method UI plugin:
 - <a href="toolbar.html">Input Method Toolbar</a>
 - <a href="toolbarxml.html">Toolbar Widget XML Specification</a>
 
+
+@section tutorial Tutorial
+- <a href="plugintutorial.html">How to implement a plugin</a>
+
 @section api API reference
 <a href="classes.html">All Classes</a>
 
