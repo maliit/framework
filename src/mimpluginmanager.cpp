@@ -66,7 +66,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       imAccessoryEnabledConf(0),
       settingsDialog(0),
       adaptor(0),
-      connectionValid(false)
+      connectionValid(false),
+      acceptRegionUpdates(true)
 {
 }
 
@@ -602,6 +603,8 @@ void MIMPluginManagerPrivate::initActiveSubView()
 
 void MIMPluginManagerPrivate::showActivePlugins()
 {
+    acceptRegionUpdates = true;
+
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         plugins[plugin].inputMethod->show();
     }
@@ -613,9 +616,12 @@ void MIMPluginManagerPrivate::hideActivePlugins()
         // disappear the settings dialog without animation before hiding active plugins.
         MPlainWindow::instance()->sceneManager()->disappearSceneWindowNow(settingsDialog);
     }
+
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         plugins[plugin].inputMethod->hide();
     }
+
+    acceptRegionUpdates = false;
 }
 
 QMap<QString, QString> MIMPluginManagerPrivate::availableSubViews(const QString &plugin, MIMHandlerState state) const
@@ -895,11 +901,15 @@ void MIMPluginManager::showInputMethodSettings()
 void MIMPluginManager::updateRegion(const QRegion &region)
 {
     Q_D(MIMPluginManager);
-    // record input method object's region.
-    if (d->activeImRegion != region)
+    // Record input method object's region.
+    if (d->activeImRegion != region) {
         d->activeImRegion = region;
-    if (!d->settingsDialog || !d->settingsDialog->isVisible()) {
-        //if settings dialog is visible, don't update region.
+    }
+
+    // If settings dialog is visible, don't update region. Don't update region
+    // when no region updates from the plugin side are expected.
+    if (d->acceptRegionUpdates &&
+        (!d->settingsDialog || !d->settingsDialog->isVisible())) {
         emit regionUpdated(region);
     }
 }

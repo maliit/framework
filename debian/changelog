@@ -1,3 +1,10 @@
+meego-im-framework (0.19.12-1) unstable; urgency=low
+
+  * [UNRELEASED]
+  * Fixes: NB#184715 - Device Freezes After Keyboard In Sym View Crashes
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Tue, 17 Aug 2010 15:22:42 +0300
+
 meego-im-framework (0.19.11-1) unstable; urgency=low
 
   * Fixes: NB#183245 - 'Active input method' dialog never disappears.

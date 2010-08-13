@@ -127,6 +127,8 @@ public:
 
     MIMPluginManager *q_ptr;
     bool connectionValid;
+
+    bool acceptRegionUpdates;
 };
 
 class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor
