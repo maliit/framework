@@ -5,6 +5,7 @@ doc.target = doc
 isEmpty(DOXYGEN_BIN) {
     doc.commands = @echo "Unable to detect doxygen in PATH"
 } else {
+  doc.commands += mkdir -p $${OUT_PWD}/doc/html/ ;
   doc.commands+= ( cat $${IN_PWD}/mdoxy.cfg.in | \
         perl -pe \"s:\@M_SRC_DIR\@:$${IN_PWD}:g\" > $${OUT_PWD}/doc/mdoxy.cfg );
   isEqual( IS_OUT_OF_SOURCE, 0 ) {
@@ -20,9 +21,7 @@ isEmpty(DOXYGEN_BIN) {
 
   } else {
     # out-of-source build
-    doc.commands += mkdir -p doc/html/ ;
-
-    doc.commands+= ( cd doc ; $${DOXYGEN_BIN} mdoxy.cfg );
+    doc.commands+= ( cd doc ; $${DOXYGEN_BIN} $${OUT_PWD}/doc/mdoxy.cfg );
     doc.commands+= cp $${IN_PWD}/src/images/* $${OUT_PWD}/doc/html ;
     doc.commands+= ( cd doc ; $${IN_PWD}/xmlize.pl );
 
