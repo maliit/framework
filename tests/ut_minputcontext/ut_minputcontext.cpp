@@ -1,21 +1,12 @@
 #include "ut_minputcontext.h"
 #include "qdbus_stub.h"
 
-#include <QProcess>
 #include <QStringList>
 #include <QDebug>
-#include <QInputContextFactory>
-#include <QDBusConnection>
-#include <QDBusConnectionInterface>
 #include <QPointer>
 #include <QClipboard>
+#include <QGraphicsView>
 
-#include <MTheme>
-#include <MSceneManager>
-#include <MSceneWindow>
-#include <MScene>
-#include <MNavigationBar>
-#include <MComponentData>
 #include "mpreeditinjectionevent.h"
 #include "glibdbusimserverproxy.h"
 

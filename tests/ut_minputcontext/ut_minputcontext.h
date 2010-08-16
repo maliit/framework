@@ -7,7 +7,6 @@
 #include <QPointer>
 #include <QtTest/QtTest>
 #include <QObject>
-#include <QDBusAbstractAdaptor>
 
 #include <minputcontext.h>
 
