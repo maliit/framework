@@ -901,10 +901,9 @@ void MIMPluginManager::showInputMethodSettings()
 void MIMPluginManager::updateRegion(const QRegion &region)
 {
     Q_D(MIMPluginManager);
+
     // Record input method object's region.
-    if (d->activeImRegion != region) {
-        d->activeImRegion = region;
-    }
+    d->activeImRegion = region;
 
     // If settings dialog is visible, don't update region. Don't update region
     // when no region updates from the plugin side are expected.
