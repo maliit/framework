@@ -21,8 +21,6 @@ HEADERSINSTALL = \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
-        minputcontextdbusconnection.h \
-        minputcontextdbusconnection_p.h \
         mimapplication.h \
         mtoolbardata_p.h \
         mtoolbaritem_p.h \
@@ -33,7 +31,6 @@ HEADERS += $$HEADERSINSTALL \
 SOURCES += mimpluginmanager.cpp \
         minputmethodbase.cpp \
         minputcontextconnection.cpp \
-        minputcontextdbusconnection.cpp \
         mplainwindow.cpp \
         mimapplication.cpp \
         mtoolbaritem.cpp \
@@ -44,6 +41,16 @@ SOURCES += mimpluginmanager.cpp \
 
 CONFIG += debug qdbus meegotouch
 QT = core gui xml
+
+contains(DEFINES, QT_DBUS) {
+    SOURCES += minputcontextdbusconnection.cpp
+    HEADERS += minputcontextdbusconnection.h minputcontextdbusconnection_p.h
+} else {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += dbus-glib-1 dbus-1
+    SOURCES += minputcontextglibdbusconnection.cpp
+    HEADERS += minputcontextglibdbusconnection.h
+}
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){

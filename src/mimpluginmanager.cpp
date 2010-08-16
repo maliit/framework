@@ -24,7 +24,6 @@
 #include <MLocale>
 
 #include "minputmethodplugin.h"
-#include "minputcontextdbusconnection.h"
 #include "mtoolbarmanager.h"
 #include "mimsettingsdialog.h"
 
@@ -39,6 +38,14 @@
 #include <QDBusMetaType>
 
 #include <QDebug>
+
+#ifdef QT_DBUS
+#include "minputcontextdbusconnection.h"
+typedef MInputContextDBusConnection MInputContextConnectionImpl;
+#else
+#include "minputcontextglibdbusconnection.h"
+typedef MInputContextGlibDBusConnection MInputContextConnectionImpl;
+#endif
 
 
 namespace
@@ -741,7 +748,7 @@ void MIMPluginManagerAdaptor::setActiveSubView(const QString &subViewId, int sta
 
 MIMPluginManager::MIMPluginManager()
     : QObject(),
-      d_ptr(new MIMPluginManagerPrivate(new MInputContextDBusConnection, this))
+      d_ptr(new MIMPluginManagerPrivate(new MInputContextConnectionImpl, this))
 {
     Q_D(MIMPluginManager);
     d->q_ptr = this;

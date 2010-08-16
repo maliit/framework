@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<node name="/">
+  <interface name="org.maemo.duiinputmethodserver1">
+    <method name="activateContext">
+    </method>
+    <method name="showInputMethod">
+    </method>
+    <method name="hideInputMethod">
+    </method>
+    <method name="mouseClickedOnPreedit">
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+    </method>
+    <method name="setPreedit">
+      <arg type="s"/>
+    </method>
+    <method name="updateWidgetInformation">
+      <arg type="ay"/>
+      <arg type="b"/>
+    </method>
+    <method name="reset">
+    </method>
+    <method name="appOrientationChanged">
+      <arg type="i"/>
+    </method>
+    <method name="setCopyPasteState">
+      <arg type="b"/>
+      <arg type="b"/>
+    </method>
+    <method name="processKeyEvent">
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="s"/>
+      <arg type="b"/>
+      <arg type="i"/>
+      <arg type="u"/>
+      <arg type="u"/>
+    </method>
+    <method name="registerToolbar">
+      <arg type="i"/>
+      <arg type="s"/>
+    </method>
+    <method name="unregisterToolbar">
+      <arg type="i"/>
+    </method>
+    <method name="setToolbarItemAttribute">
+      <arg type="i"/>
+      <arg type="s"/>
+      <arg type="s"/>
+      <arg type="ay"/>
+    </method>
+  </interface>
+</node>

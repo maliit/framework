@@ -10,7 +10,6 @@ SUBDIRS = \
           dummyimplugin3 \
           dummyplugin \
           ut_mimpluginmanager \
-          ut_minputcontextdbusconnection \
           ut_passthroughserver \
           ft_mimpluginmanager \
           ut_mtoolbardata \
@@ -18,6 +17,10 @@ SUBDIRS = \
           ut_mtoolbarmanager \
           ft_mimsettingsapplet \
           ut_mimsettingsconf \
+
+contains(DEFINES, QT_DBUS) {
+SUBDIRS += ut_minputcontextdbusconnection
+}
 
 target.commands += $$system(touch tests.xml)
 target.path = /usr/share/meego-im-framework-tests
