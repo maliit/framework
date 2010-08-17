@@ -185,29 +185,12 @@ void Ut_MIMPluginManager::testLoadPlugins()
     }
     QVERIFY(dummyImPluginFound);
     QVERIFY(dummyImPlugin3Found);
-
-    // Try to activate a plugin that is not loaded -> ignored
-    subject->activatePlugin("ThisPluginDoesNotExist");
-    QCOMPARE(subject->plugins.size(), 2);
-    QVERIFY(subject->activePlugins.size() == 2);
-    dummyImPluginFound = false;
-    dummyImPlugin3Found = false;
-    foreach(plugin, subject->plugins.keys()) {
-        if (plugin->name() == "DummyImPlugin") {
-            dummyImPluginFound = true;
-        } else if (plugin->name() == "DummyImPlugin3") {
-            dummyImPlugin3Found = true;
-        }
-    }
-    QVERIFY(dummyImPluginFound);
-    QVERIFY(dummyImPlugin3Found);
 }
 
 
 void Ut_MIMPluginManager::testAddHandlerMap()
 {
     MInputMethodPlugin *plugin = 0;
-    subject->activatePlugin(pluginName3);
 
     subject->addHandlerMap(OnScreen, pluginName);
     subject->addHandlerMap(Hardware, pluginName);

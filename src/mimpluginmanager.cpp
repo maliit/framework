@@ -134,23 +134,6 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
     return val;
 }
 
-bool MIMPluginManagerPrivate::activatePlugin(const QString &name)
-{
-    foreach (MInputMethodPlugin *plugin, activePlugins) {
-        if (plugin->name() == name) {
-            return true;
-        }
-    }
-
-    foreach (MInputMethodPlugin *plugin, plugins.keys()) {
-        if (plugin->name() == name) {
-            activatePlugin(plugin);
-            return true;
-        }
-    }
-    return false;
-}
-
 void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
 {
     Q_Q(MIMPluginManager);

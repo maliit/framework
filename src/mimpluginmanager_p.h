@@ -56,7 +56,6 @@ public:
     MIMPluginManagerPrivate(MInputContextConnection *connection, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
-    bool activatePlugin(const QString &name);
     void activatePlugin(MInputMethodPlugin *plugin);
     void loadPlugins();
     bool loadPlugin(const QString &fileName);
