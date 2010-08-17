@@ -158,11 +158,11 @@ public:
                                  bool autoRepeat, int count, quint32 nativeScanCode,
                                  quint32 nativeModifiers);
 
-    /* \brief This method is called when keyboard status is changed:
-     * hardware keyboard is opened or closed, BT keyboard is connected
-     * or disconnected
-     * \param state const QList<MIMHandlerState>& list of current states
-     * for this plugin
+    /* \brief This method is called to inform about keyboard status changes
+     *
+     * That is, hardware keyboard is opened or closed, BT keyboard is connected or
+     * disconnected
+     * \param state set of current states for this plugin
      */
     virtual void setState(const QSet<MIMHandlerState> &state);
 
