@@ -603,8 +603,6 @@ void MIMPluginManagerPrivate::initActiveSubView()
 
 void MIMPluginManagerPrivate::showActivePlugins()
 {
-    acceptRegionUpdates = true;
-
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         plugins[plugin].inputMethod->show();
     }
@@ -620,8 +618,6 @@ void MIMPluginManagerPrivate::hideActivePlugins()
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         plugins[plugin].inputMethod->hide();
     }
-
-    acceptRegionUpdates = false;
 }
 
 QMap<QString, QString> MIMPluginManagerPrivate::availableSubViews(const QString &plugin, MIMHandlerState state) const
@@ -916,13 +912,23 @@ void MIMPluginManager::updateRegion(const QRegion &region)
 void MIMPluginManager::showActivePlugins()
 {
     Q_D(MIMPluginManager);
+
+    d->acceptRegionUpdates = true;
     d->showActivePlugins();
 }
 
 void MIMPluginManager::hideActivePlugins()
 {
     Q_D(MIMPluginManager);
+
     d->hideActivePlugins();
+
+    // Do not accept region updates from hidden plugins. Emit an empty region
+    // update, because we cannot assume that a plugin sends a region update
+    // immediately after hiding it. It could play some animation, for example,
+    // and only then send the region update (which would then be ignored).
+    d->acceptRegionUpdates = false;
+    emit regionUpdated(QRegion());
 }
 
 QMap<QString, QString> MIMPluginManager::availableSubViews(const QString &plugin, MIMHandlerState state) const
