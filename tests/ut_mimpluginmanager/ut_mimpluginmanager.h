@@ -41,6 +41,8 @@ private slots:
 
     void testDBusQueryCalls();
     void testDBusSetCalls();
+
+    void testRegionUpdates();
 private:
     void handleMessages();
 

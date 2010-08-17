@@ -751,6 +751,38 @@ void Ut_MIMPluginManager::testDBusSetCalls()
     QCOMPARE(subject->activeSubView(OnScreen), QString("dummyimsv1"));
 }
 
+void Ut_MIMPluginManager::testRegionUpdates()
+{
+    MInputMethodPlugin *plugin3 = 0;
+    QSignalSpy regionUpdates(manager, SIGNAL(regionUpdated(QRegion)));
+    QList<QVariant> regionUpdatesSignal;
+    QVariant region;
+
+    foreach(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+        if (plugin->name() == "DummyImPlugin3") {
+            plugin3 = plugin;
+        }
+    }
+
+    QVERIFY(plugin3);
+    QCOMPARE(regionUpdates.count(), 0);
+
+    // DummyImPlugin3 sends a non-empty region when calling show() on it:
+    subject->activatePlugin(plugin3);
+    manager->showActivePlugins();
+    QCOMPARE(regionUpdates.count(), 1);
+
+    region = regionUpdates.takeFirst().at(0);
+    QVERIFY(!region.value<QRegion>().isEmpty());
+
+    // Now make sure that hiding the plugin also sends an empty region update:
+    manager->hideActivePlugins();
+    QCOMPARE(regionUpdates.count(), 1);
+
+    region = regionUpdates.takeFirst().at(0);
+    QVERIFY(region.value<QRegion>().isEmpty());
+}
+
 void Ut_MIMPluginManager::handleMessages()
 {
     while (app->hasPendingEvents()) {

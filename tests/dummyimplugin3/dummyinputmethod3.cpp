@@ -67,3 +67,8 @@ QString DummyInputMethod3::activeSubView(MIMHandlerState state) const
         return QString();
 }
 
+void DummyInputMethod3::show()
+{
+    emit regionUpdated(QRegion(0, 0, 100, 100));
+}
+

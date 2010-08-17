@@ -18,6 +18,7 @@ public:
     virtual QList<MInputMethodBase::MInputMethodSubView> subViews(MIMHandlerState state = OnScreen) const;
     virtual void setActiveSubView(const QString &, MIMHandlerState state = OnScreen);
     virtual QString activeSubView(MIMHandlerState state = OnScreen) const;
+    virtual void show();
     //! \reimp_end
 
 public:
