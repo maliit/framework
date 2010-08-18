@@ -33,9 +33,11 @@
 namespace
 {
     // FIXME: rename these to new prefix
-    const char * const DBusAddress("unix:path=/var/tmp/duiinputmethodserver1");
     const char * const DBusPath("/org/maemo/duiinputmethodserver1");
     const char * const DBusInterface("org.maemo.duiinputmethodserver1");
+    const char * const ActivationBusName("org.maemo.duiinputmethodserver1");
+    const char * const ActivationPath("/org/maemo/duiinputmethodactivation");
+    const char * const ActivationInterface("org.maemo.duiinputmethodserveractivation");
     const int ConnectionRetryInterval(6*1000); // in ms
 }
 
@@ -45,24 +47,52 @@ GlibDBusIMServerProxy::GlibDBusIMServerProxy(GObject *inputContextAdaptor, const
       connection(NULL),
       inputContextAdaptor(inputContextAdaptor),
       icAdaptorPath(icAdaptorPath),
-      active(true)
+      active(true),
+      activationProxy(NULL),
+      sessionBusConnection(NULL)
 {
     dbus_g_thread_init();
     g_type_init();
 
+    connectToActivationService();
     connect();
 }
 
 GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
 {
     active = false;
-    // Proxy should be taken care of automatically
+    // Proxies should be taken care of automatically
     if (connection) {
         dbus_g_connection_unref(connection);
     }
+    if (sessionBusConnection) {
+        dbus_g_connection_unref(sessionBusConnection);
+    }
 }
 
+
 // Auxiliary connection handling.............................................
+
+void GlibDBusIMServerProxy::connectToActivationService()
+{
+    GError *error = NULL;
+
+    sessionBusConnection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+    if (!sessionBusConnection) {
+        qWarning("MInputContext: unable to create session D-Bus connection: %s", error->message);
+        g_error_free(error);
+        return;
+    }
+
+    activationProxy = dbus_g_proxy_new_for_name(sessionBusConnection, ActivationBusName,
+                                                ActivationPath, ActivationInterface);
+    if (!activationProxy) {
+        qWarning("MInputContext: unable to find the IM server activation service.");
+        dbus_g_connection_unref(sessionBusConnection);
+        sessionBusConnection = 0;
+        return;
+    }
+}
 
 void GlibDBusIMServerProxy::onDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userData)
 {
@@ -75,7 +105,21 @@ void GlibDBusIMServerProxy::connect()
     mDebug("MInputContext") << __PRETTY_FUNCTION__;
     GError *error = NULL;
 
-    connection = dbus_g_connection_open(DBusAddress, &error);
+    if (!activationProxy) {
+        return;
+    }
+
+    char *address;
+    if (!dbus_g_proxy_call(activationProxy, "address", &error, G_TYPE_INVALID,
+                           G_TYPE_STRING, &address, G_TYPE_INVALID)) {
+        qWarning("MInputContext: unable to query input method server address: %s", error->message);
+        g_error_free(error);
+        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connect()));
+        return;
+    }
+
+    connection = dbus_g_connection_open(address, &error);
+    g_free(address);
     if (!connection) {
         qWarning("MInputContext: unable to create D-Bus connection: %s", error->message);
         g_error_free(error);

@@ -20,6 +20,7 @@
 #include "minputcontextconnection.h"
 #include "mtoolbarid.h"
 
+#include <QByteArray>
 #include <QMap>
 #include <QSet>
 #include <QEvent>
@@ -27,9 +28,14 @@
 #include <QVariant>
 #include <glib.h>
 
+#include <dbus/dbus-glib-lowlevel.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus.h>
+
 class QPoint;
 class QRegion;
 struct MDBusGlibICConnection;
+struct MIMSDBusActivater;
 
 /*! \brief Peer-to-peer DBus input context connection based on glib dbus bindings
  */
@@ -148,6 +154,11 @@ private:
     bool detectableAutoRepeat;
     MToolbarId toolbarId; //current toolbar id
     QSet<MToolbarId> toolbarIds; //all toolbar ids
+    QByteArray socketAddress;
+
+    DBusServer *server;
+    DBusGConnection *sessionBusConnection;
+    MIMSDBusActivater *activater;
 
     Q_DISABLE_COPY(MInputContextGlibDBusConnection)
 };
