@@ -12,17 +12,24 @@ STYLE_HEADERS += \
 # Input
 HEADERS += minputcontext.h \
     minputcontextplugin.h \
-    minputcontextadaptor.h \
     $$STYLE_HEADERS \
-    qtdbusimserverproxy.h \
 
 SOURCES += minputcontext.cpp \
     minputcontextplugin.cpp \
-    minputcontextadaptor.cpp \
-    qtdbusimserverproxy.cpp \
 
 QT = core gui
-CONFIG += plugin debug qdbus meegotouch
+CONFIG += plugin debug meegotouch
+
+contains(DEFINES, QT_DBUS) {
+    SOURCES += minputcontextadaptor.cpp qtdbusimserverproxy.cpp
+    HEADERS += qtdbusimserverproxy.h minputcontextadaptor.h
+    CONFIG += qdbus
+} else {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += dbus-glib-1
+    SOURCES += mdbusglibinputcontextadaptor.cpp glibdbusimserverproxy.cpp
+    HEADERS += mdbusglibinputcontextadaptor.h glibdbusimserverproxy.h
+}
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){

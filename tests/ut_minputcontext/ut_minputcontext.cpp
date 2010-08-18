@@ -17,6 +17,7 @@
 #include <MNavigationBar>
 #include <MComponentData>
 #include "mpreeditinjectionevent.h"
+#include "glibdbusimserverproxy.h"
 
 
 namespace
@@ -41,8 +42,88 @@ QWidget *QApplication::focusWidget()
     return gFocusedWidget;
 }
 
-///////////////////////////////////
-//// DBus stub class implementation
+InputMethodServerDBusStub* DBusStub;
+
+// Glib DBus stubbing........................................................
+
+void GlibDBusIMServerProxy::connect()
+{
+}
+
+void GlibDBusIMServerProxy::setContextObject(const QString &inputContextIdentifier)
+{
+    DBusStub->setContextObject(inputContextIdentifier);
+}
+
+void GlibDBusIMServerProxy::activateContext()
+{
+    DBusStub->activateContext();
+}
+
+void GlibDBusIMServerProxy::showInputMethod()
+{
+    DBusStub->showInputMethod();
+}
+
+void GlibDBusIMServerProxy::hideInputMethod()
+{
+    DBusStub->hideInputMethod();
+}
+
+void GlibDBusIMServerProxy::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
+{
+    DBusStub->mouseClickedOnPreedit(pos, preeditRect);
+}
+
+void GlibDBusIMServerProxy::setPreedit(const QString &text)
+{
+    DBusStub->setPreedit(text);
+}
+
+void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant> &/*stateInformation*/,
+                                                    bool /*focusChanged*/)
+{
+}
+
+void GlibDBusIMServerProxy::reset()
+{
+    DBusStub->reset();
+}
+
+void GlibDBusIMServerProxy::appOrientationChanged(int angle)
+{
+    DBusStub->appOrientationChanged(angle);
+}
+
+void GlibDBusIMServerProxy::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
+{
+    DBusStub->setCopyPasteState(copyAvailable, pasteAvailable);
+}
+
+void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                            Qt::KeyboardModifiers modifiers,
+                                            const QString &text, bool autoRepeat, int count,
+                                            quint32 nativeScanCode, quint32 nativeModifiers)
+{
+    DBusStub->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count, nativeScanCode,
+                              nativeModifiers);
+}
+
+void GlibDBusIMServerProxy::registerToolbar(int /*id*/, const QString &/*fileName*/)
+{
+}
+
+void GlibDBusIMServerProxy::unregisterToolbar(int /*id*/)
+{
+}
+
+void GlibDBusIMServerProxy::setToolbarItemAttribute(int /*id*/, const QString &/*item*/,
+                                                    const QString &/*attribute*/, const QVariant &/*value*/)
+{
+}
+
+
+// Qt DBus stub class implementation..........................................
 
 void InputMethodServerDBusStub::RedirectedKeyParamsStruct::clear()
 {
@@ -222,8 +303,8 @@ void InputMethodServerDBusStub::setCopyPasteState(bool copyAvailable, bool paste
 
 void InputMethodServerDBusStub::processKeyEvent(int keyType, int keyCode, int /* modifiers */,
                                                 const QString &text, bool /* autoRepeat */,
-                                                int /* count */, int /* nativeScanCode */,
-                                                int /* nativeModifiers */)
+                                                int /* count */, unsigned int /* nativeScanCode */,
+                                                unsigned int /* nativeModifiers */)
 {
     ++redirectKeyCallCount;
     redirectKeyCallParams.keyType = keyType;
@@ -341,6 +422,7 @@ void Ut_MInputContext::initTestCase()
     m_stub = new InputMethodServerDBusStub(this);
 
     qDBusInterfaceStub->target = m_stub;
+    DBusStub = m_stub;          // for glib dbus use
 
     m_subject = new MInputContext;
     QVERIFY(m_subject != 0);

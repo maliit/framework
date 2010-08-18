@@ -13,7 +13,9 @@ SOURCES += \
     ut_minputcontext.cpp \
 
 
-CONFIG += debug plugin meegotouch qdbus
+CONFIG += debug plugin meegotouch qdbus link_pkgconfig
 QT += testlib
+
+PKGCONFIG += dbus-glib-1
 
 include(../common_check.pri)

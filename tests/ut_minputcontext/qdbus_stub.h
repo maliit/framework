@@ -57,6 +57,11 @@ QDBusInterfaceStub::call(QDBus::CallMode mode, const QString &method, const QVar
             args[i] = Q_ARG(int, *static_cast<int *>(data));
             break;
 
+        case QVariant::UInt:
+            data = new unsigned int(_args[i].toUInt());
+            args[i] = Q_ARG(unsigned int, *static_cast<unsigned int *>(data));
+            break;
+
         case QVariant::Point:
             data = new QPoint(_args[i].toPoint());
             args[i] = Q_ARG(QPoint, *static_cast<QPoint *>(data));

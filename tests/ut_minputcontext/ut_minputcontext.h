@@ -63,7 +63,8 @@ public slots:
     void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
 
     void processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text,
-                         bool autoRepeat, int count, int nativeScanCode, int nativeModifiers);
+                         bool autoRepeat, int count,
+                         unsigned int nativeScanCode, unsigned int nativeModifiers);
 
 private:
     int showInputMethodCallCount;
