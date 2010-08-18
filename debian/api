@@ -5,7 +5,7 @@ state: unstable
 libs-pkg: libmeegoimframework0
 dev-pkg: libmeegoimframework-dev
 
-interface: org.maemo.duiinputmethodserver1
+interface: com.meego.inputmethod.uiserver1
 type: dbus
 scope: Platform
 state: unstable

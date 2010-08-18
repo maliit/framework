@@ -32,12 +32,11 @@
 
 namespace
 {
-    // FIXME: rename these to new prefix
-    const char * const DBusPath("/org/maemo/duiinputmethodserver1");
-    const char * const DBusInterface("org.maemo.duiinputmethodserver1");
-    const char * const ActivationBusName("org.maemo.duiinputmethodserver1");
-    const char * const ActivationPath("/org/maemo/duiinputmethodactivation");
-    const char * const ActivationInterface("org.maemo.duiinputmethodserveractivation");
+    const char * const DBusPath("/com/meego/inputmethod/uiserver1");
+    const char * const DBusInterface("com.meego.inputmethod.uiserver1");
+    const char * const ActivationBusName("com.meego.inputmethod.uiserver1");
+    const char * const ActivationPath("/com/meego/inputmethod/activation");
+    const char * const ActivationInterface("com.meego.inputmethod.uiserveractivation");
     const int ConnectionRetryInterval(6*1000); // in ms
 }
 

@@ -37,13 +37,13 @@ namespace
 {
     const char * const SocketDirectoryTemplate = "/tmp/meego-im-uiserver-XXXXXX";
     const char * const SocketName = "imserver_dbus";
-    const char * const DBusPath = "/org/maemo/duiinputmethodserver1";
+    const char * const DBusPath = "/com/meego/inputmethod/uiserver1";
 
-    const char * const DBusClientPath = "/org/maemo/duiinputcontext";
-    const char * const DBusClientInterface = "org.maemo.duiinputmethodcontext1";
+    const char * const DBusClientPath = "/com/meego/inputmethod/inputcontext";
+    const char * const DBusClientInterface = "com.meego.inputmethod.inputcontext1";
 
-    const char * const ActivationBusName("org.maemo.duiinputmethodserver1");
-    const char * const ActivationPath("/org/maemo/duiinputmethodactivation");
+    const char * const ActivationBusName("com.meego.inputmethod.uiserver1");
+    const char * const ActivationPath("/com/meego/inputmethod/activation");
 
     // attribute names for updateWidgetInformation() map
     const char * const FocusStateAttribute = "focusState";

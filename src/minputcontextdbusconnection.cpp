@@ -37,13 +37,10 @@
 
 namespace
 {
-    // FIXME: using dui prefix
-    const char * const DBusServiceName = "org.maemo.duiinputmethodserver1";
-    const char * const DBusPath = "/org/maemo/duiinputmethodserver1";
-    // FIXME: unused, directly in header
-    const char * const DBusInterface = "org.maemo.duiinputmethodserver1";
+    const char * const DBusServiceName = "com.meego.inputmethod.uiserver1";
+    const char * const DBusPath = "/com/meego/inputmethod/uiserver1";
 
-    const char * const DBusClientInterface = "org.maemo.duiinputcontext1";
+    const char * const DBusClientInterface = "com.meego.inputmethod.inputcontext1";
 
     // attribute names for updateWidgetInformation() map
     const char * const FocusStateAttribute = "focusState";

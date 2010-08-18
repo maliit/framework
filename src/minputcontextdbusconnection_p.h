@@ -31,7 +31,7 @@ class MInputContextDBusConnection;
 class MInputContextDBusAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.maemo.duiinputmethodserver1")
+    Q_CLASSINFO("D-Bus Interface", "com.meego.inputmethod.uiserver1")
 
 public:
     MInputContextDBusAdaptor(MInputContextDBusConnection *host);

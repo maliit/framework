@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <node name="/">
-  <interface name="org.maemo.duiinputmethodserver1">
+  <interface name="com.meego.inputmethod.uiserver1">
     <method name="activateContext">
     </method>
     <method name="showInputMethod">

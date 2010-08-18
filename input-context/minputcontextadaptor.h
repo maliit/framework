@@ -29,8 +29,7 @@ class MInputContext;
 class MInputContextAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    // FIXME: rename to new prefix
-    Q_CLASSINFO("D-Bus Interface", "org.maemo.duiinputcontext1")
+    Q_CLASSINFO("D-Bus Interface", "com.meego.inputmethod.inputcontext1")
 
     // FIXME: introspection
 

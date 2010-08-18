@@ -53,7 +53,7 @@ G_BEGIN_DECLS
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* BOOLEAN:POINTER,POINTER (/tmp/dbus-binding-tool-c-marshallers.8YC6GV:1) */
+/* BOOLEAN:POINTER,POINTER (/tmp/dbus-binding-tool-c-marshallers.AAIIHV:1) */
 extern void dbus_glib_marshal_m_ims_dbus_activater_BOOLEAN__POINTER_POINTER (GClosure     *closure,
                                                                              GValue       *return_value,
                                                                              guint         n_param_values,
@@ -113,7 +113,7 @@ const DBusGObjectInfo dbus_glib_m_ims_dbus_activater_object_info = {
   0,
   dbus_glib_m_ims_dbus_activater_methods,
   1,
-"org.maemo.duiinputmethodserveractivation\0address\0S\0arg0\0O\0F\0N\0s\0\0\0",
+"com.meego.inputmethod.uiserveractivation\0address\0S\0arg0\0O\0F\0N\0s\0\0\0",
 "\0",
 "\0"
 };

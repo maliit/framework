@@ -53,7 +53,7 @@ G_BEGIN_DECLS
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* BOOLEAN:BOOLEAN,POINTER (/tmp/dbus-binding-tool-c-marshallers.UENRGV:1) */
+/* BOOLEAN:BOOLEAN,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:1) */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER (GClosure     *closure,
                                                                                           GValue       *return_value,
                                                                                           guint         n_param_values,
@@ -100,7 +100,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER (GC
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:POINTER,POINTER,POINTER,POINTER,POINTER,POINTER (/tmp/dbus-binding-tool-c-marshallers.UENRGV:2) */
+/* BOOLEAN:POINTER,POINTER,POINTER,POINTER,POINTER,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:2) */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER (GClosure     *closure,
                                                                                                                           GValue       *return_value,
                                                                                                                           guint         n_param_values,
@@ -155,7 +155,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER_POINTER_POI
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:BOXED,POINTER (/tmp/dbus-binding-tool-c-marshallers.UENRGV:3) */
+/* BOOLEAN:BOXED,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:3) */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOXED_POINTER (GClosure     *closure,
                                                                                         GValue       *return_value,
                                                                                         guint         n_param_values,
@@ -202,7 +202,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOXED_POINTER (GClo
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:POINTER (/tmp/dbus-binding-tool-c-marshallers.UENRGV:4) */
+/* BOOLEAN:POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:4) */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER (GClosure     *closure,
                                                                                   GValue       *return_value,
                                                                                   guint         n_param_values,
@@ -247,7 +247,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER (GClosure  
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:STRING,UINT,POINTER (/tmp/dbus-binding-tool-c-marshallers.UENRGV:5) */
+/* BOOLEAN:STRING,UINT,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:5) */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_UINT_POINTER (GClosure     *closure,
                                                                                               GValue       *return_value,
                                                                                               guint         n_param_values,
@@ -296,7 +296,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_UINT_POINTER
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:STRING,POINTER (/tmp/dbus-binding-tool-c-marshallers.UENRGV:6) */
+/* BOOLEAN:STRING,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:6) */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_POINTER (GClosure     *closure,
                                                                                          GValue       *return_value,
                                                                                          guint         n_param_values,
@@ -343,7 +343,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_POINTER (GCl
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:INT,INT,INT,STRING,BOOLEAN,INT,POINTER (/tmp/dbus-binding-tool-c-marshallers.UENRGV:7) */
+/* BOOLEAN:INT,INT,INT,STRING,BOOLEAN,INT,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:7) */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER (GClosure     *closure,
                                                                                                                  GValue       *return_value,
                                                                                                                  guint         n_param_values,
@@ -407,24 +407,24 @@ G_END_DECLS
 #include <dbus/dbus-glib.h>
 static const DBusGMethodInfo dbus_glib_m_dbus_glib_input_context_adaptor_methods[] = {
   { (GCallback) m_dbus_glib_input_context_adaptor_activation_lost_event, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 0 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_im_initiated_hide, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 56 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_commit_string, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_POINTER, 108 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_update_preedit, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_UINT_POINTER, 166 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_key_event, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER, 234 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_update_input_method_area, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOXED_POINTER, 333 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_set_global_correction_enabled, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 401 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_preedit_rectangle, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER, 473 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_copy, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 591 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_paste, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 632 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_set_redirect_keys, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 674 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_set_detectable_auto_repeat, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 735 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_im_initiated_hide, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 59 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_commit_string, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_POINTER, 114 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_update_preedit, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_UINT_POINTER, 175 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_key_event, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER, 246 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_update_input_method_area, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOXED_POINTER, 348 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_set_global_correction_enabled, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 419 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_preedit_rectangle, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER, 494 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_copy, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 615 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_paste, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 659 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_set_redirect_keys, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 704 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_set_detectable_auto_repeat, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 768 },
 };
 
 const DBusGObjectInfo dbus_glib_m_dbus_glib_input_context_adaptor_object_info = {
   0,
   dbus_glib_m_dbus_glib_input_context_adaptor_methods,
   12,
-"org.maemo.duiinputmethodcontext1\0activationLostEvent\0S\0\0org.maemo.duiinputmethodcontext1\0imInitiatedHide\0S\0\0org.maemo.duiinputmethodcontext1\0commitString\0S\0arg0\0I\0s\0\0org.maemo.duiinputmethodcontext1\0updatePreedit\0S\0arg0\0I\0s\0arg1\0I\0u\0\0org.maemo.duiinputmethodcontext1\0keyEvent\0S\0arg0\0I\0i\0arg1\0I\0i\0arg2\0I\0i\0arg3\0I\0s\0arg4\0I\0b\0arg5\0I\0i\0\0org.maemo.duiinputmethodcontext1\0updateInputMethodArea\0S\0arg0\0I\0ay\0\0org.maemo.duiinputmethodcontext1\0setGlobalCorrectionEnabled\0S\0arg0\0I\0b\0\0org.maemo.duiinputmethodcontext1\0preeditRectangle\0S\0arg0\0O\0F\0N\0b\0arg1\0O\0F\0N\0i\0arg2\0O\0F\0N\0i\0arg3\0O\0F\0N\0i\0arg4\0O\0F\0N\0i\0\0org.maemo.duiinputmethodcontext1\0copy\0S\0\0org.maemo.duiinputmethodcontext1\0paste\0S\0\0org.maemo.duiinputmethodcontext1\0setRedirectKeys\0S\0arg0\0I\0b\0\0org.maemo.duiinputmethodcontext1\0setDetectableAutoRepeat\0S\0arg0\0I\0b\0\0\0",
+"com.meego.inputmethod.inputcontext1\0activationLostEvent\0S\0\0com.meego.inputmethod.inputcontext1\0imInitiatedHide\0S\0\0com.meego.inputmethod.inputcontext1\0commitString\0S\0arg0\0I\0s\0\0com.meego.inputmethod.inputcontext1\0updatePreedit\0S\0arg0\0I\0s\0arg1\0I\0u\0\0com.meego.inputmethod.inputcontext1\0keyEvent\0S\0arg0\0I\0i\0arg1\0I\0i\0arg2\0I\0i\0arg3\0I\0s\0arg4\0I\0b\0arg5\0I\0i\0\0com.meego.inputmethod.inputcontext1\0updateInputMethodArea\0S\0arg0\0I\0ay\0\0com.meego.inputmethod.inputcontext1\0setGlobalCorrectionEnabled\0S\0arg0\0I\0b\0\0com.meego.inputmethod.inputcontext1\0preeditRectangle\0S\0arg0\0O\0F\0N\0b\0arg1\0O\0F\0N\0i\0arg2\0O\0F\0N\0i\0arg3\0O\0F\0N\0i\0arg4\0O\0F\0N\0i\0\0com.meego.inputmethod.inputcontext1\0copy\0S\0\0com.meego.inputmethod.inputcontext1\0paste\0S\0\0com.meego.inputmethod.inputcontext1\0setRedirectKeys\0S\0arg0\0I\0b\0\0com.meego.inputmethod.inputcontext1\0setDetectableAutoRepeat\0S\0arg0\0I\0b\0\0\0",
 "\0",
 "\0"
 };

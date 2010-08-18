@@ -40,8 +40,7 @@ Q_DECLARE_METATYPE(QRect);
 class MInputContextDBusConnection: public MInputContextConnection, protected QDBusContext
 {
     Q_OBJECT
-    // FIXME: dui prefix
-    Q_CLASSINFO("D-Bus Interface", "org.maemo.duiinputmethodserver1")
+    Q_CLASSINFO("D-Bus Interface", "com.meego.inputmethod.uiserver1")
 
 public:
     MInputContextDBusConnection();

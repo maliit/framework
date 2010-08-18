@@ -53,9 +53,7 @@ M_LIBRARY
 namespace
 {
     const int SoftwareInputPanelHideTimer = 500;
-
-    // FIXME: rename these to new prefix
-    const QString DBusCallbackPath("/org/maemo/duiinputcontext");
+    const QString DBusCallbackPath("/com/meego/inputmethod/inputcontext");
 }
 
 int MInputContext::connectionCount = -1;

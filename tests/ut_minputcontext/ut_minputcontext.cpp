@@ -13,9 +13,9 @@
 
 namespace
 {
-    const QString DBUS_SERVICE_NAME("org.maemo.duiinputmethodserver1");
-    const QString DBUS_PATH("/org/maemo/duiinputmethodserver1");
-    const QString DBUS_INTERFACE("org.maemo.duiinputmethodserver1");
+    const QString DBUS_SERVICE_NAME("com.meego.inputmethod.uiserver1");
+    const QString DBUS_PATH("/com/meego/inputmethod/uiserver1");
+    const QString DBUS_INTERFACE("com.meego.inputmethod.uiserver1");
 
     const int WidgetStubCursorPosition(37);
     const QString WidgetStubSurroundingText("surrounding");

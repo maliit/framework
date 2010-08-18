@@ -53,7 +53,7 @@ G_BEGIN_DECLS
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* BOOLEAN:INT,POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:1) */
+/* BOOLEAN:INT,POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:1) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_POINTER (GClosure     *closure,
                                                                               GValue       *return_value,
                                                                               guint         n_param_values,
@@ -100,7 +100,7 @@ dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_POINTER (GClosure     *
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:BOOLEAN,BOOLEAN,POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:2) */
+/* BOOLEAN:BOOLEAN,BOOLEAN,POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:2) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__BOOLEAN_BOOLEAN_POINTER (GClosure     *closure,
                                                                                           GValue       *return_value,
                                                                                           guint         n_param_values,
@@ -149,7 +149,7 @@ dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__BOOLEAN_BOOLEAN_POINTER (GC
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:3) */
+/* BOOLEAN:POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:3) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__POINTER (GClosure     *closure,
                                                                           GValue       *return_value,
                                                                           guint         n_param_values,
@@ -194,7 +194,7 @@ dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__POINTER (GClosure     *clos
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:INT,INT,INT,STRING,BOOLEAN,INT,UINT,UINT,POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:4) */
+/* BOOLEAN:INT,INT,INT,STRING,BOOLEAN,INT,UINT,UINT,POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:4) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_UINT_UINT_POINTER (GClosure     *closure,
                                                                                                                    GValue       *return_value,
                                                                                                                    guint         n_param_values,
@@ -255,7 +255,7 @@ dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:INT,INT,INT,INT,INT,INT,POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:5) */
+/* BOOLEAN:INT,INT,INT,INT,INT,INT,POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:5) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_INT_INT_INT_INT_INT_POINTER (GClosure     *closure,
                                                                                                   GValue       *return_value,
                                                                                                   guint         n_param_values,
@@ -312,7 +312,7 @@ dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_INT_INT_INT_INT_INT_POI
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:BOXED,BOOLEAN,POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:6) */
+/* BOOLEAN:BOXED,BOOLEAN,POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:6) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__BOXED_BOOLEAN_POINTER (GClosure     *closure,
                                                                                         GValue       *return_value,
                                                                                         guint         n_param_values,
@@ -361,7 +361,7 @@ dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__BOXED_BOOLEAN_POINTER (GClo
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:INT,STRING,STRING,BOXED,POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:7) */
+/* BOOLEAN:INT,STRING,STRING,BOXED,POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:7) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_STRING_STRING_BOXED_POINTER (GClosure     *closure,
                                                                                                   GValue       *return_value,
                                                                                                   guint         n_param_values,
@@ -414,7 +414,7 @@ dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_STRING_STRING_BOXED_POI
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:INT,STRING,POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:8) */
+/* BOOLEAN:INT,STRING,POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:8) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_STRING_POINTER (GClosure     *closure,
                                                                                      GValue       *return_value,
                                                                                      guint         n_param_values,
@@ -463,7 +463,7 @@ dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__INT_STRING_POINTER (GClosur
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:STRING,POINTER (/tmp/dbus-binding-tool-c-marshallers.6ZM1HV:9) */
+/* BOOLEAN:STRING,POINTER (/tmp/dbus-binding-tool-c-marshallers.EL9VHV:9) */
 extern void dbus_glib_marshal_m_dbus_glib_ic_connection_BOOLEAN__STRING_POINTER (GClosure     *closure,
                                                                                  GValue       *return_value,
                                                                                  guint         n_param_values,
@@ -535,7 +535,7 @@ const DBusGObjectInfo dbus_glib_m_dbus_glib_ic_connection_object_info = {
   0,
   dbus_glib_m_dbus_glib_ic_connection_methods,
   13,
-"org.maemo.duiinputmethodserver1\0activateContext\0S\0\0org.maemo.duiinputmethodserver1\0showInputMethod\0S\0\0org.maemo.duiinputmethodserver1\0hideInputMethod\0S\0\0org.maemo.duiinputmethodserver1\0mouseClickedOnPreedit\0S\0arg0\0I\0i\0arg1\0I\0i\0arg2\0I\0i\0arg3\0I\0i\0arg4\0I\0i\0arg5\0I\0i\0\0org.maemo.duiinputmethodserver1\0setPreedit\0S\0arg0\0I\0s\0\0org.maemo.duiinputmethodserver1\0updateWidgetInformation\0S\0arg0\0I\0ay\0arg1\0I\0b\0\0org.maemo.duiinputmethodserver1\0reset\0S\0\0org.maemo.duiinputmethodserver1\0appOrientationChanged\0S\0arg0\0I\0i\0\0org.maemo.duiinputmethodserver1\0setCopyPasteState\0S\0arg0\0I\0b\0arg1\0I\0b\0\0org.maemo.duiinputmethodserver1\0processKeyEvent\0S\0arg0\0I\0i\0arg1\0I\0i\0arg2\0I\0i\0arg3\0I\0s\0arg4\0I\0b\0arg5\0I\0i\0arg6\0I\0u\0arg7\0I\0u\0\0org.maemo.duiinputmethodserver1\0registerToolbar\0S\0arg0\0I\0i\0arg1\0I\0s\0\0org.maemo.duiinputmethodserver1\0unregisterToolbar\0S\0arg0\0I\0i\0\0org.maemo.duiinputmethodserver1\0setToolbarItemAttribute\0S\0arg0\0I\0i\0arg1\0I\0s\0arg2\0I\0s\0arg3\0I\0ay\0\0\0",
+"com.meego.inputmethod.uiserver1\0activateContext\0S\0\0com.meego.inputmethod.uiserver1\0showInputMethod\0S\0\0com.meego.inputmethod.uiserver1\0hideInputMethod\0S\0\0com.meego.inputmethod.uiserver1\0mouseClickedOnPreedit\0S\0arg0\0I\0i\0arg1\0I\0i\0arg2\0I\0i\0arg3\0I\0i\0arg4\0I\0i\0arg5\0I\0i\0\0com.meego.inputmethod.uiserver1\0setPreedit\0S\0arg0\0I\0s\0\0com.meego.inputmethod.uiserver1\0updateWidgetInformation\0S\0arg0\0I\0ay\0arg1\0I\0b\0\0com.meego.inputmethod.uiserver1\0reset\0S\0\0com.meego.inputmethod.uiserver1\0appOrientationChanged\0S\0arg0\0I\0i\0\0com.meego.inputmethod.uiserver1\0setCopyPasteState\0S\0arg0\0I\0b\0arg1\0I\0b\0\0com.meego.inputmethod.uiserver1\0processKeyEvent\0S\0arg0\0I\0i\0arg1\0I\0i\0arg2\0I\0i\0arg3\0I\0s\0arg4\0I\0b\0arg5\0I\0i\0arg6\0I\0u\0arg7\0I\0u\0\0com.meego.inputmethod.uiserver1\0registerToolbar\0S\0arg0\0I\0i\0arg1\0I\0s\0\0com.meego.inputmethod.uiserver1\0unregisterToolbar\0S\0arg0\0I\0i\0\0com.meego.inputmethod.uiserver1\0setToolbarItemAttribute\0S\0arg0\0I\0i\0arg1\0I\0s\0arg2\0I\0s\0arg3\0I\0ay\0\0\0",
 "\0",
 "\0"
 };

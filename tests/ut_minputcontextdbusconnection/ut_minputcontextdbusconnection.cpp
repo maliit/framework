@@ -11,12 +11,12 @@
 
 namespace
 {
-    const char *const DBusServiceName = "org.maemo.duiinputmethodserver1";
-    const char *const DBusPath = "/org/maemo/duiinputmethodserver1";
-    const char *const DBusInterface = "org.maemo.duiinputmethodserver1";
+    const char *const DBusServiceName = "com.meego.inputmethod.uiserver1";
+    const char *const DBusPath = "/com/meego/inputmethod/uiserver1";
+    const char *const DBusInterface = "com.meego.inputmethod.uiserver1";
 
     // note: avoid path specified in MInputContext to avoid problems if it is instantiated
-    const char *const DBusCallbackPath = "/org/maemo/duiinputcontextTEST";
+    const char *const DBusCallbackPath = "/com/meego/inputmethod/inputcontextTEST";
 
     int DBusWaitTime = 500;
 

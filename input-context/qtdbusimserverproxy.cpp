@@ -30,10 +30,9 @@
 
 namespace
 {
-    // FIXME: rename these to new prefix
-    const QString DBusServiceName("org.maemo.duiinputmethodserver1");
-    const QString DBusPath("/org/maemo/duiinputmethodserver1");
-    const QString DBusInterface("org.maemo.duiinputmethodserver1");
+    const QString DBusServiceName("com.meego.inputmethod.uiserver1");
+    const QString DBusPath("/com/meego/inputmethod/uiserver1");
+    const QString DBusInterface("com.meego.inputmethod.uiserver1");
 }
 
 

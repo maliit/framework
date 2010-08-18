@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <node name="/">
-  <interface name="org.maemo.duiinputmethodcontext1">
+  <interface name="com.meego.inputmethod.inputcontext1">
     <method name="activationLostEvent">
     </method>
     <method name="imInitiatedHide">
