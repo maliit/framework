@@ -24,6 +24,11 @@
 #include <QKeyEvent>
 
 #include "qt-keysym-map.h"
+
+// To workaround glib >= 2.25 where signals is used, while QT already define it as C++ keyword: protected
+#ifdef signals
+#undef signals
+#endif
 #include "qt-gtk-translate.h"
 
 
