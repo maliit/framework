@@ -58,8 +58,7 @@ namespace
     const QString MImPluginPaths    = ConfigRoot + "paths";
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
-    const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
-    const QString MImHandlerToPlugin  = PluginRoot + "handler";
+    const QString PluginRoot          = "/meegotouch/inputmethods/plugins";
     const QString MImAccesoryEnabled  = "/meegotouch/inputmethods/accessoryenabled";
 
     const char * const DBusServiceName = "com.maemo.inputmethodpluginmanager1";
@@ -76,6 +75,14 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       connectionValid(false),
       acceptRegionUpdates(true)
 {
+    inputSourceToNameMap[OnScreen] = "onscreen";
+    inputSourceToNameMap[Hardware] = "hardware";
+    inputSourceToNameMap[Accessory] = "accessory";
+
+    for (InputSourceToNameMap::const_iterator i(inputSourceToNameMap.begin());
+         i != inputSourceToNameMap.end(); ++i) {
+        nameToInputSourceMap[i.value()] = i.key();
+    }
 }
 
 
@@ -412,6 +419,19 @@ bool MIMPluginManagerPrivate::doSwitchPlugin(M::InputMethodSwitchDirection direc
     return false;
 }
 
+QString MIMPluginManagerPrivate::inputSourceName(MIMHandlerState source) const
+{
+    return inputSourceToNameMap.value(source);
+}
+
+
+MIMHandlerState MIMPluginManagerPrivate::inputSourceFromName(const QString &name, bool &valid) const
+{
+    const QString lowercaseName(name.toLower());
+    valid = nameToInputSourceMap.contains(lowercaseName);
+    return nameToInputSourceMap.value(lowercaseName);
+}
+
 void MIMPluginManagerPrivate::changeHandlerMap(MInputMethodPlugin *origin,
                                                MInputMethodPlugin *replacement,
                                                QSet<MIMHandlerState> states)
@@ -423,7 +443,7 @@ void MIMPluginManagerPrivate::changeHandlerMap(MInputMethodPlugin *origin,
             // Update gconfitem to record new plugin for handler map.
             // This should be done after real changing the handler map,
             // to prevent _q_syncHandlerMap also being called to change handler map.
-            MGConfItem gconf(QString(MImHandlerToPlugin + QString("/%1").arg(static_cast<int>(state))));
+            MGConfItem gconf(PluginRoot + "/" + inputSourceName(state));
             gconf.set(replacement->name());
         }
     }
@@ -483,18 +503,22 @@ void MIMPluginManagerPrivate::loadHandlerMap()
 {
     Q_Q(MIMPluginManager);
     QSignalMapper *signalMapper = new QSignalMapper(q);
-    MGConfItem handlerToPluginConf(MImHandlerToPlugin);
-    QList<QString> handlers = handlerToPluginConf.listEntries();
-    // Queries all children under MImHandlerToPlugin,
-    // each is a gconf for one state of the handler map.
-    foreach (const QString &handler, handlers) {
-        QStringList path = handler.split("/");
-        MGConfItem *handlerItem = new MGConfItem(handler);
-        handlerToPluginConfs.append(handlerItem);
-        QString pluginName = handlerItem->value().toString();
-        addHandlerMap((MIMHandlerState)path.last().toInt(), pluginName);
-        QObject::connect(handlerItem, SIGNAL(valueChanged()), signalMapper, SLOT(map()));
-        signalMapper->setMapping(handlerItem, (MIMHandlerState)path.last().toInt());
+    // Queries all children under PluginRoot, each is a gconf entry that maps an
+    // input source to a plugin that handles it
+    foreach (const QString &handler, MGConfItem(PluginRoot).listEntries()) {
+        const QStringList path = handler.split("/");
+        bool validSource(false);
+        const MIMHandlerState source(inputSourceFromName(path.last(), validSource));
+        if (validSource) {
+            MGConfItem *handlerItem = new MGConfItem(handler);
+            handlerToPluginConfs.append(handlerItem);
+            const QString pluginName = handlerItem->value().toString();
+            addHandlerMap(source, pluginName);
+            QObject::connect(handlerItem, SIGNAL(valueChanged()), signalMapper, SLOT(map()));
+            signalMapper->setMapping(handlerItem, source);
+        } else {
+            qWarning() << "Invalid input source used in a gconf key:" << handler;
+        }
     }
     QObject::connect(signalMapper, SIGNAL(mapped(int)), q, SLOT(_q_syncHandlerMap(int)));
 }
@@ -503,7 +527,7 @@ void MIMPluginManagerPrivate::loadHandlerMap()
 void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
 {
     HandlerMap::iterator iterator = handlerToPlugin.find(static_cast<MIMHandlerState>(state));
-    MGConfItem gconf(QString(MImHandlerToPlugin + QString("/%1").arg(state)));
+    MGConfItem gconf(PluginRoot + "/" + inputSourceName(static_cast<MIMHandlerState>(state)));
     QString pluginName = gconf.value().toString();
     MInputMethodPlugin *replacement = 0;
     foreach (MInputMethodPlugin *plugin, plugins.keys()) {
@@ -641,8 +665,7 @@ QString MIMPluginManagerPrivate::activeSubView(MIMHandlerState state) const
 
 void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginName, MIMHandlerState state)
 {
-    MGConfItem currentPluginConf(QString(MImHandlerToPlugin
-                                 + QString("/%1").arg(static_cast<MIMHandlerState>(state))));
+    MGConfItem currentPluginConf(PluginRoot + "/" + inputSourceName(state));
     if (!pluginName.isEmpty() && currentPluginConf.value().toString() != pluginName) {
         // check whether the pluginName is valid
         foreach (MInputMethodPlugin *plugin, plugins.keys()) {

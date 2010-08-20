@@ -21,7 +21,6 @@ namespace
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
     const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
-    const QString MImHandlerToPlugin  = PluginRoot + "handler";
 
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName2 = "DummyImPlugin2";
@@ -64,7 +63,7 @@ void Ut_MIMSettingsConf::initTestCase()
     //ignore the meego-keyboard
     blackList << "libmeego-keyboard.so";
     blackListConf.set(blackList);
-    MGConfItem handlerItem(QString("%1/%2").arg(MImHandlerToPlugin).arg(OnScreen));
+    MGConfItem handlerItem(PluginRoot + "onscreen");
     handlerItem.set(pluginName);
 
     manager = new MIMPluginManager();
@@ -116,7 +115,7 @@ void Ut_MIMSettingsConf::testSetActivePlugin()
 
     MImSettingsConf::instance().setActivePlugin(pluginName3);
     handleMessages();
-    MGConfItem handlerItem(QString("%1/%2").arg(MImHandlerToPlugin).arg(OnScreen));
+    MGConfItem handlerItem(PluginRoot + "onscreen");
     QCOMPARE(handlerItem.value().toString(), pluginName3);
     QVERIFY(manager->activePluginsNames().size() == 1);
     QCOMPARE(manager->activePluginsName(OnScreen), pluginName3);

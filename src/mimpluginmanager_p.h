@@ -104,6 +104,9 @@ public:
     QString activeSubView(MIMHandlerState state) const;
     void setActivePlugin(const QString &pluginName, MIMHandlerState state);
 
+    QString inputSourceName(MIMHandlerState source) const;
+    MIMHandlerState inputSourceFromName(const QString &name, bool &valid) const;
+
 public:
     MIMPluginManager *parent;
     MInputContextConnection *mICConnection;
@@ -128,6 +131,10 @@ public:
     bool connectionValid;
 
     bool acceptRegionUpdates;
+
+    typedef QMap<MIMHandlerState, QString> InputSourceToNameMap;
+    QMap<MIMHandlerState, QString> inputSourceToNameMap;
+    QMap<QString, MIMHandlerState> nameToInputSourceMap;
 };
 
 class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor

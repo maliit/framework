@@ -32,7 +32,6 @@ namespace
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
     const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
-    const QString MImHandlerToPlugin  = PluginRoot + "handler";
 
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName2 = "DummyImPlugin2";
@@ -87,7 +86,7 @@ void Ut_MIMPluginManager::init()
     //ignore the meego-keyboard
     blackList << "libmeego-keyboard.so";
     blackListConf.set(blackList);
-    MGConfItem handlerItem(QString("%1/%2").arg(MImHandlerToPlugin).arg(OnScreen));
+    MGConfItem handlerItem(PluginRoot + "onscreen");
     handlerItem.set(pluginName);
 
     manager = new MIMPluginManager();
@@ -513,7 +512,7 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
 void Ut_MIMPluginManager::checkHandlerMap(int handler, const QString &name)
 {
-    const QString key = QString("/meegotouch/inputmethods/plugins/handler/%1").arg(int(handler));
+    const QString key = QString(PluginRoot + subject->inputSourceName(static_cast<MIMHandlerState>(handler)));
     MGConfItem gconf(key);
     QCOMPARE(gconf.value().toString(), name);
 }
@@ -595,7 +594,7 @@ void Ut_MIMPluginManager::testSetActivePlugin()
     subject->setActivePlugin(pluginName3, OnScreen);
 
     // check gconf item
-    MGConfItem handlerItem(QString("%1/%2").arg(MImHandlerToPlugin).arg(OnScreen));
+    MGConfItem handlerItem(PluginRoot + "onscreen");
     QCOMPARE(handlerItem.value().toString(), pluginName3);
 
     QVERIFY(subject->activePlugins.size() == 1);

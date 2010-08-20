@@ -38,9 +38,6 @@
 
 namespace
 {
-    const QString PluginRoot = "/meegotouch/inputmethods/plugins/";
-    const QString MImHandlerToPlugin = PluginRoot + "handler";
-
     const int MImSubViewIdentifierRole = Qt::UserRole;
     const int MImPluginNameRole = Qt::UserRole + 1;
 

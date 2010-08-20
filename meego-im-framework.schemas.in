@@ -2,8 +2,8 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <key>/schemas/meegotouch/inputmethods/plugins/handler/0</key>
-      <applyto>/meegotouch/inputmethods/plugins/handler/0</applyto>
+      <key>/schemas/meegotouch/inputmethods/plugins/onscreen</key>
+      <applyto>/meegotouch/inputmethods/plugins/onscreen</applyto>
       <owner>meegotouch</owner>
       <type>string</type>
       <default>MeegoKeyboard</default>
@@ -14,8 +14,8 @@
     </schema>
 
     <schema>
-      <key>/schemas/meegotouch/inputmethods/plugins/handler/1</key>
-      <applyto>/meegotouch/inputmethods/plugins/handler/1</applyto>
+      <key>/schemas/meegotouch/inputmethods/plugins/hardware</key>
+      <applyto>/meegotouch/inputmethods/plugins/hardware</applyto>
       <owner>meegotouch</owner>
       <type>string</type>
       <default>MeegoKeyboard</default>

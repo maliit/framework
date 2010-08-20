@@ -27,7 +27,6 @@ namespace
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
     const QString PluginRoot         = "/meegotouch/inputmethods/plugins/";
-    const QString MImStateToPlugin   = PluginRoot + "handler";
     const QString MImAccesoryEnabled = "/meegotouch/inputmethods/accessoryenabled";
 }
 
@@ -70,9 +69,9 @@ void Ft_MIMPluginManager::init()
     MGConfItem(MImPluginDisabled).set(QStringList("libdummyimplugin2.so"));
     MGConfItem(MImPluginActive).set(QStringList("DummyImPlugin"));
 
-    MGConfItem(MImStateToPlugin + "/0").set(pluginName);
-    MGConfItem(MImStateToPlugin + "/1").set(pluginName);
-    MGConfItem(MImStateToPlugin + "/2").set(pluginName3);
+    MGConfItem(PluginRoot + "onscreen").set(pluginName);
+    MGConfItem(PluginRoot + "hardware").set(pluginName);
+    MGConfItem(PluginRoot + "accessory").set(pluginName3);
 
     gMKeyboardStateTrackerStub->setOpenState(false);
     MGConfItem(MImAccesoryEnabled).set(QVariant(false));
