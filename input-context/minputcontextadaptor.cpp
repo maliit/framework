@@ -59,7 +59,7 @@ void MInputContextAdaptor::updatePreedit(const QString &string, int preeditFace)
     PreeditFace face = PreeditDefault;
 
     if (preeditFace >= PreeditDefault
-            && preeditFace <= PreeditNoCandidates)
+        && preeditFace <= PreeditNoCandidates)
         face = PreeditFace(preeditFace);
 
     owner->updatePreedit(string, face);

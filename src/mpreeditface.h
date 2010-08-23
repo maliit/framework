@@ -17,6 +17,10 @@
 #ifndef MPREEDITFACE_H
 #define MPREEDITFACE_H
 
-enum PreeditFace { PreeditDefault, PreeditNoCandidates };
+enum PreeditFace {
+    PreeditDefault,
+    PreeditNoCandidates,
+    PreeditKeyPress           //! Used for displaying the hwkbd key just pressed
+};
 
 #endif

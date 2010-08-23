@@ -41,6 +41,7 @@ class MPreeditStyleContainer : public MStyleContainer
 {
     M_STYLE_CONTAINER(MPreeditStyle)
     M_STYLE_MODE(NoCandidates)
+    M_STYLE_MODE(KeyPress)
 };
 
 #endif

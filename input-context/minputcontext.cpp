@@ -473,6 +473,10 @@ void MInputContext::updatePreedit(const QString &string, PreeditFace preeditFace
         styleContainer->setModeNoCandidates();
         break;
 
+    case PreeditKeyPress:
+        styleContainer->setModeKeyPress();
+        break;
+
     case PreeditDefault:
     default:
         styleContainer->setModeDefault();
