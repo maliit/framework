@@ -56,11 +56,11 @@ void MInputContextAdaptor::commitString(const QString &string)
 
 void MInputContextAdaptor::updatePreedit(const QString &string, int preeditFace)
 {
-    M::PreeditFace face = M::PreeditDefault;
+    PreeditFace face = PreeditDefault;
 
-    if (preeditFace >= M::PreeditDefault
-            && preeditFace <= M::PreeditNoCandidates)
-        face = M::PreeditFace(preeditFace);
+    if (preeditFace >= PreeditDefault
+            && preeditFace <= PreeditNoCandidates)
+        face = PreeditFace(preeditFace);
 
     owner->updatePreedit(string, face);
 }

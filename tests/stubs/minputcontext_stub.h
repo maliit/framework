@@ -43,7 +43,7 @@ public:
     virtual void mouseHandler(int x, QMouseEvent *event);
     virtual void imInitiatedHide();
     virtual void commitString(const QString &string);
-    virtual void updatePreedit(const QString &string, M::PreeditFace preeditFace);
+    virtual void updatePreedit(const QString &string, PreeditFace preeditFace);
     virtual void keyEvent(int type, int key, int modifiers, const QString &text,
                           bool autoRepeat, int count);
     virtual void updateInputMethodArea(const QList<QVariant> &rectList);
@@ -114,11 +114,11 @@ void MInputContextStub::commitString(const QString &string)
     stubMethodEntered("commitString", params);
 }
 
-void MInputContextStub::updatePreedit(const QString &string, M::PreeditFace preeditFace)
+void MInputContextStub::updatePreedit(const QString &string, PreeditFace preeditFace)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<QString>(string));
-    params.append(new Parameter<M::PreeditFace>(preeditFace));
+    params.append(new Parameter<PreeditFace>(preeditFace));
     stubMethodEntered("updatePreedit", params);
 }
 
@@ -232,7 +232,7 @@ void MInputContext::commitString(const QString &string)
     gMInputContextStub->commitString(string);
 }
 
-void MInputContext::updatePreedit(const QString &string, M::PreeditFace preeditFace)
+void MInputContext::updatePreedit(const QString &string, PreeditFace preeditFace)
 {
     gMInputContextStub->updatePreedit(string, preeditFace);
 }
