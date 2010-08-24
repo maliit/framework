@@ -1,3 +1,5 @@
+include(../common_top.pri)
+
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
@@ -13,19 +15,25 @@ HEADERS += \
     ../stubs/mgconfitem_stub.h \
     ../stubs/fakegconf.h \
     ../stubs/minputcontextconnection_stub.h \
+
+
+SOURCES += \
+    ut_mtoolbarmanager.cpp \
+    ../stubs/fakegconf.cpp \
+    ../stubs/minputcontextconnection_stub.cpp \
+
+isEqual(code_coverage_option, off){
+HEADERS += \
     $$SRC_DIR/mtoolbaritem.h \
     $$SRC_DIR/mtoolbardata.h \
     $$SRC_DIR/minputmethodnamespace.h \
     $$SRC_DIR/mtoolbarmanager.h \
 
 SOURCES += \
-    ut_mtoolbarmanager.cpp \
-    ../stubs/fakegconf.cpp \
-    ../stubs/minputcontextconnection_stub.cpp \
     $$SRC_DIR/mtoolbaritem.cpp \
     $$SRC_DIR/mtoolbardata.cpp \
     $$SRC_DIR/mtoolbarmanager.cpp \
-
+}
 
 CONFIG += debug plugin meegotouch qdbus
 
