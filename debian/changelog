@@ -1,3 +1,9 @@
+meego-im-framework (0.19.13~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Ning Chi <ext-chi.ning@nokia.com>  Tue, 24 Aug 2010 17:15:59 +0300
+
 meego-im-framework (0.19.12-1) unstable; urgency=low
 
   * Fixes: NB#184715 - Device Freezes After Keyboard In Sym View Crashes
