@@ -1,8 +1,8 @@
-meego-im-framework (0.19.13~1) unstable; urgency=low
+meego-im-framework (0.19.13-1) unstable; urgency=low
 
-  * [UNRELEASED]
+  * Correct some pro files to enable code coverage.
 
- -- Ning Chi <ext-chi.ning@nokia.com>  Tue, 24 Aug 2010 17:15:59 +0300
+ -- Kimmo Surakka <kimmo.surakka@nokia.com>  Wed, 25 Aug 2010 10:01:22 +0300
 
 meego-im-framework (0.19.12-1) unstable; urgency=low
 
