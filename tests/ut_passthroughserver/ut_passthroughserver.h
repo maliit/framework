@@ -5,8 +5,9 @@
 #include <QObject>
 
 class MWindow;
-class MApplication;
+class MIMApplication;
 class MPassThruWindow;
+class MIMWindowManager;
 
 class Ut_PassthroughServer : public QObject
 {
@@ -21,14 +22,22 @@ private slots:
     //! Test hiding and showing of the window based on region signals
     void testHideShow();
 
+    void testEmergencyHide();
+    void testPassThruWindowManagement();
+
 #if defined(M_IM_DISABLE_TRANSLUCENCY) && defined(M_IM_USE_SHAPE_WINDOW)
     //! Tests window shape based on region signals
     void testWindowShape();
 #endif
 
 private:
-    MApplication *app;
+    void makeVisible();
+    void makeInvisible();
+    void waitForWm();
+
+    MIMApplication *app;
     MPassThruWindow *subject;
+    MIMWindowManager *wm;
 };
 
 #endif

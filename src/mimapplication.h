@@ -84,6 +84,8 @@ private:
     // TODO: Change this type to WId
     int remoteWinId;
     QPointer<QWidget> passThruWindow;
+
+    friend class Ut_PassthroughServer;
 };
 
 #endif // MIM_APPLICATION_H
