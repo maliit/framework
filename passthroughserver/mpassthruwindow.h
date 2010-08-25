@@ -36,24 +36,27 @@ public slots:
     void showRequest();
     void hideRequest();
 
-    //! Depending on the state, either tries to show or hide the parent
-    void showHideRequest();
-
-    //! Cancels window show/hide retry loop
-    void cancelRequest();
-
 private:
     enum RequestType
     {
-        NONE,
-        SHOW,
-        HIDE
+        NONE,   // Default state, does nothing.
+        RETRY,  // Use whatever request type is stored in state.
+                // *Not* a valid value for state itself, though.
+        SHOW,   // Tries aggressively to show the parent widget.
+        HIDE    // Tries aggressively to hide the parent widget.
     };
 
     RequestType state;
 
     int retryCount;
     QTimer waitForNotify;
+
+private slots:
+    //! Depending on the state, either tries to show or hide the parent
+    void showHideRequest(RequestType rt = RETRY);
+
+    //! Cancels window show/hide retry loop
+    void cancelRequest();
 };
 
 /*!

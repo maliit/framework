@@ -58,34 +58,43 @@ MIMWindowManager::MIMWindowManager(QWidget *parent)
 
 void MIMWindowManager::showRequest()
 {
-    state = SHOW;
     retryCount = 0;
     waitForNotify.start();
-    showHideRequest();
+    showHideRequest(SHOW);
 }
 
 void MIMWindowManager::hideRequest()
 {
-    state = HIDE;
     retryCount = 0;
     waitForNotify.start();
-    showHideRequest();
+    showHideRequest(HIDE);
 }
 
-void MIMWindowManager::showHideRequest()
+void MIMWindowManager::showHideRequest(RequestType rt)
 {
-    qDebug() << __PRETTY_FUNCTION__
-             << "trying to show/hide window, count = " << retryCount;
+    if (rt != RETRY) {
+        state = rt;
+    }
 
     QWidget *w = qobject_cast<QWidget *>(parent());
 
-    if (!w) {
+    if (!w || state == NONE) {
         return;
     }
 
+    qDebug() << __PRETTY_FUNCTION__
+             << __LINE__
+             << "Trying to hide/show passthru window (count = "
+             << retryCount
+             << ", request = "
+             << state
+             << ")";
+
     switch (state) {
     case SHOW:
-        if (retryCount == 0) {
+        if (w->testAttribute(Qt::WA_Mapped)) {
+            cancelRequest();
+        } else if (retryCount == 0) {
             w->show();
         } else if (retryCount < ShowHideRetryLimit) {
             XMapWindow(QX11Info::display(), w->effectiveWinId());
@@ -96,7 +105,9 @@ void MIMWindowManager::showHideRequest()
         break;
 
     case HIDE:
-        if (retryCount == 0) {
+        if (!w->testAttribute(Qt::WA_Mapped)) {
+            cancelRequest();
+        } else if (retryCount == 0) {
             w->hide();
         } else if (retryCount < ShowHideRetryLimit) {
             XUnmapWindow(QX11Info::display(), w->effectiveWinId());
@@ -104,6 +115,12 @@ void MIMWindowManager::showHideRequest()
         } else {
             cancelRequest();
         }
+        break;
+
+    case RETRY:
+        qWarning() << __PRETTY_FUNCTION__
+                   << __LINE__
+                   << "Invalid state (RETRY), should not be reached!";
         break;
 
     default:
@@ -116,7 +133,7 @@ void MIMWindowManager::showHideRequest()
 void MIMWindowManager::cancelRequest()
 {
     qDebug() << __PRETTY_FUNCTION__
-             << "window got finally mapped/unmapped, count = " << retryCount;
+             << "Window got finally mapped/unmapped, count = " << retryCount;
     state = NONE;
     retryCount = 0;
     waitForNotify.stop();
