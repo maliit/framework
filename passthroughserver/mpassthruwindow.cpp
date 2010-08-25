@@ -32,7 +32,7 @@ namespace {
     const int WaitForNotifyTimeout = 100; // in ms
 }
 
-MIMWindowManager::MIMWindowManager(QWidget *parent)
+MIMWindowManager::MIMWindowManager(MPassThruWindow *parent)
     : QObject(parent)
     , state(NONE)
     , retryCount(0)
@@ -54,6 +54,10 @@ MIMWindowManager::MIMWindowManager(QWidget *parent)
 
     connect(MIMApplication::instance(), SIGNAL(remoteWindowGone()),
             this,                       SLOT(hideRequest()));
+}
+
+MIMWindowManager::RequestType MIMWindowManager::requestState() {
+    return state;
 }
 
 void MIMWindowManager::showRequest()
@@ -83,7 +87,6 @@ void MIMWindowManager::showHideRequest(RequestType rt)
     }
 
     qDebug() << __PRETTY_FUNCTION__
-             << __LINE__
              << "Trying to hide/show passthru window (count = "
              << retryCount
              << ", request = "
@@ -119,7 +122,6 @@ void MIMWindowManager::showHideRequest(RequestType rt)
 
     case RETRY:
         qWarning() << __PRETTY_FUNCTION__
-                   << __LINE__
                    << "Invalid state (RETRY), should not be reached!";
         break;
 
@@ -141,8 +143,8 @@ void MIMWindowManager::cancelRequest()
 
 MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
     : QWidget(p)
-    , wm(new MIMWindowManager(this))
 {
+    setMIMWindowManager(new MIMWindowManager);
     setWindowTitle("MInputMethod");
 #ifndef M_IM_DISABLE_TRANSLUCENCY
     setAttribute(Qt::WA_TranslucentBackground);
@@ -172,6 +174,16 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
 
 MPassThruWindow::~MPassThruWindow()
 {
+}
+
+void MPassThruWindow::setMIMWindowManager(const QPointer<MIMWindowManager> &newWm)
+{
+    if (wm == newWm) {
+        return;
+    }
+
+    wm = newWm;
+    wm->setParent(this);
 }
 
 void MPassThruWindow::inputPassthrough(const QRegion &region)
