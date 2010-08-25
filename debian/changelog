@@ -1,3 +1,10 @@
+meego-im-framework (0.19.14~1) unstable; urgency=low
+
+  * [UNRELEASED]
+  * Fixes: NB#172960 - Input methods expose sensitive data on D-Bus
+
+ -- Hannu Koivisto <hannu.koivisto@vincit.fi>  Wed, 25 Aug 2010 15:00:00 +0300
+
 meego-im-framework (0.19.13-1) unstable; urgency=low
 
   * Correct some pro files to enable code coverage.
