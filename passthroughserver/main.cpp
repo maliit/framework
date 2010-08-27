@@ -51,12 +51,13 @@ int main(int argc, char **argv)
     if (-1 == unsetenv("QT_IM_MODULE")) {
         qWarning("meego-im-uiserver: unable to unset QT_IM_MODULE.");
     }
+
     MApplication::setLoadMInputContext(false);
 
-    MIMApplication app(argc, argv);
-
     // TODO: Check if hardwiring the QStyle can be removed at a later state.
-    app.setStyle(new QCommonStyle);
+    QApplication::setStyle(new QCommonStyle);
+
+    MIMApplication app(argc, argv);
 
     MPassThruWindow widget(bypassWMHint);
     widget.setFocusPolicy(Qt::NoFocus);
