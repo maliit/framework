@@ -3,8 +3,7 @@ include(../common_top.pri)
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-INCLUDEPATH += ../../src \
-               ../stubs \
+INCLUDEPATH += ../stubs \
 
 SRC_DIR = ../../src
 

@@ -1,7 +1,7 @@
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-INCLUDEPATH += ../../src ../../input-context ../stubs
+INCLUDEPATH += ../../input-context ../stubs
 LIBS += -L../../input-context/ -lminputcontext ../../src/libmeegoimframework.so \
 
 # Input

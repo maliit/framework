@@ -1,8 +1,7 @@
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-INCLUDEPATH += ../../src \
-               ../stubs \
+INCLUDEPATH += ../stubs \
                ../dummyimplugin \
                ../dummyimplugin3 \
 
