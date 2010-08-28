@@ -16,6 +16,5 @@ SOURCES += \
 
 
 CONFIG += debug plugin meegotouch qdbus
-QT += testlib
 
 include(../common_check.pri)

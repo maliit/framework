@@ -14,7 +14,6 @@ SOURCES += \
 
 
 CONFIG += debug plugin meegotouch qdbus link_pkgconfig
-QT += testlib
 
 PKGCONFIG += dbus-glib-1
 

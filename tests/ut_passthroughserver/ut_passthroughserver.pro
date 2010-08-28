@@ -18,7 +18,6 @@ SOURCES += \
 
 
 CONFIG += debug meegotouch
-QT += testlib
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
@@ -27,7 +26,5 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
         LIBS += -lgcov
     }
 }
-
-QMAKE_CLEAN += *.gcno *.gcda
 
 include(../common_check.pri)

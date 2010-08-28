@@ -13,6 +13,5 @@ SOURCES += \
 
 
 CONFIG += debug meegotouch
-QT += testlib
 
 include(../common_check.pri)

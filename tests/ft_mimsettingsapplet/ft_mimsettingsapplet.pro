@@ -9,9 +9,8 @@ SOURCES += ft_mimsettingsapplet.cpp \
 
 TARGET = ft_mimsettingsapplet
 
-CONFIG+=duicontrolpanel meegotouch console
+CONFIG += duicontrolpanel meegotouch console
 CONFIG -= gui windows
-QT += testlib
 
 include(../common_check.pri)
 
