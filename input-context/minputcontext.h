@@ -201,6 +201,7 @@ private:
     bool correctionEnabled;
 
     MPreeditStyleContainer *styleContainer;
+    QString preedit;
 
     QPointer<QObject> connectedObject;
     bool pasteAvailable;
