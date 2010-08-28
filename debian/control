@@ -9,7 +9,6 @@ Package: meego-im-uiserver
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}, meego-im-context
 Recommends: meego-im-virtualkeyboard
-Replaces: dui-im-uiserver
 Description: MeegoTouch Input Method UI Server
  MeegoTouch Input Method UI Server 
 

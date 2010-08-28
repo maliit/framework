@@ -1,2 +1,0 @@
-#!/bin/sh
-ln -s -f /usr/bin/meego-im-uiserver /usr/bin/dui-im-uiserver
