@@ -1,3 +1,4 @@
+include(../common_top.pri)
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
@@ -10,21 +11,23 @@ LIBS += ../../src/libmeegoimframework.so -lXfixes
 # Input
 HEADERS += \
     ut_passthroughserver.h \
-    $$SRC_PATH/mpassthruwindow.h \
 
 SOURCES += \
     ut_passthroughserver.cpp \
-    $$SRC_PATH/mpassthruwindow.cpp \
 
 
 CONFIG += debug meegotouch
 
-# coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
-for(OPTION,$$list($$lower($$COV_OPTION))){
-    isEqual(OPTION, on){
-        QMAKE_CXXFLAGS += -ftest-coverage -fprofile-arcs -fno-elide-constructors
-        LIBS += -lgcov
-    }
+isEqual(code_coverage_option, off){
+HEADERS += \
+    $$SRC_PATH/mpassthruwindow.h \
+SOURCES += \
+    $$SRC_PATH/mpassthruwindow.cpp \
+}else{
+    QMAKE_CXXFLAGS += -fno-elide-constructors
+    LIBS += \
+    ../../passthroughserver/moc_mpassthruwindow.o \
+    ../../passthroughserver/mpassthruwindow.o \
 }
 
 include(../common_check.pri)
