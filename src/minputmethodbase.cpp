@@ -172,13 +172,6 @@ void MInputMethodBase::appOrientationChanged(int angle)
     Q_UNUSED(angle);
 }
 
-void MInputMethodBase::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
-{
-    // empty default implementation
-    Q_UNUSED(copyAvailable);
-    Q_UNUSED(pasteAvailable);
-}
-
 void MInputMethodBase::setToolbar(QSharedPointer<const MToolbarData> toolbar)
 {
     // empty default implementation

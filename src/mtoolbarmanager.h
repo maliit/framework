@@ -23,6 +23,7 @@
 #include <QPointer>
 
 #include "mtoolbardata.h"
+#include "minputmethodnamespace.h"
 
 class MGConfItem;
 class MToolbarId;
@@ -83,6 +84,13 @@ public:
      */
     bool contains(const MToolbarId &id) const;
 
+    /*!
+     * \brief Set copy/paste button state: hide it, show copy or show paste
+     *  \param copyAvailable True if text is selected
+     *  \param pasteAvailable True if clipboard content is not empty
+     */
+    void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
+
 private:
     /*!
      * \brief Default constructor.
@@ -123,6 +131,9 @@ private:
 
     //! Toolbar contaning standard buttons only
     QSharedPointer<MToolbarData> standardToolbar;
+
+    //! Copy/paste button status
+    MInputMethod::CopyPasteState copyPasteStatus;
 
     //! Singleton instance
     static MToolbarManager *toolbarMgrInstance;

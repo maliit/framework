@@ -77,6 +77,20 @@ namespace MInputMethod {
         //! Standard copy/paste button
         ActionCopyPaste,
     };
+
+    /*!
+     * \brief State of Copy/Paste button.
+     */
+    enum CopyPasteState {
+        //! Copy/Paste button is hidden
+        InputMethodNoCopyPaste,
+
+        //! Copy button is accessible
+        InputMethodCopy,
+
+        //! Paste button is accessible
+        InputMethodPaste
+    };
 };
 
 #endif

@@ -188,6 +188,8 @@ public:
 
     QList<QSharedPointer<const MToolbarItemAction> > actions() const;
 
+    QList<QSharedPointer<MToolbarItemAction> > actions();
+
     MInputMethod::VisibleType showOn() const;
 
     void setShowOn(MInputMethod::VisibleType showOn);

@@ -79,11 +79,7 @@ namespace
             return left->alignment() < right->alignment();
         }
 
-        if (left->alignment() == Qt::AlignRight) {
-            return left->priority() > right->priority();
-        } else {
-            return left->priority() < right->priority();
-        }
+        return left->priority() < right->priority();
     }
 }
 

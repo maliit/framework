@@ -29,6 +29,7 @@ namespace {
 MToolbarManager *MToolbarManager::toolbarMgrInstance = 0;
 
 MToolbarManager::MToolbarManager()
+    : copyPasteStatus(MInputMethod::InputMethodNoCopyPaste)
 {
     createStandardObjects();
 }
@@ -71,6 +72,47 @@ bool  MToolbarManager::contains(const MToolbarId &id) const
     return toolbars.contains(id);
 }
 
+void MToolbarManager::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
+{
+    MInputMethod::CopyPasteState newStatus = MInputMethod::InputMethodNoCopyPaste;
+    MInputMethod::ActionType actionType = MInputMethod::ActionUndefined;
+
+    if (!copyPaste) {
+        return;
+    }
+
+    if (copyAvailable) {
+        newStatus = MInputMethod::InputMethodCopy;
+    } else if (pasteAvailable) {
+        newStatus = MInputMethod::InputMethodPaste;
+    }
+
+    if (copyPasteStatus == newStatus)
+        return;
+
+    copyPasteStatus = newStatus;
+    switch (newStatus) {
+    case MInputMethod::InputMethodNoCopyPaste:
+        copyPaste->setVisible(false);
+        break;
+    case MInputMethod::InputMethodCopy:
+        copyPaste->setVisible(true);
+        //% "Copy"
+        copyPaste->setTextId("qtn_comm_copy");
+        actionType = MInputMethod::ActionCopy;
+        break;
+    case MInputMethod::InputMethodPaste:
+        copyPaste->setVisible(true);
+        //% "Paste"
+        copyPaste->setTextId("qtn_comm_paste");
+        actionType = MInputMethod::ActionPaste;
+        break;
+    }
+    if (!copyPaste->actions().isEmpty()) {
+        copyPaste->actions().at(0)->setType(actionType);
+    }
+}
+
 QSharedPointer<MToolbarData> MToolbarManager::createToolbar(const QString &name)
 {
     // load a toolbar
@@ -98,7 +140,7 @@ void MToolbarManager::createStandardObjects()
         toolbars.insert(MToolbarId::standardToolbarId(), standardToolbar);
 
         foreach (QSharedPointer<MToolbarItem> item, standardToolbar->allItems()) {
-            QList<QSharedPointer<const MToolbarItemAction> > actions = item->actions();
+            QList<QSharedPointer<MToolbarItemAction> > actions = item->actions();
             if (actions.isEmpty()) {
                 continue; // should never happen
             }
@@ -111,6 +153,7 @@ void MToolbarManager::createStandardObjects()
                 copyPaste = item;
                 // set initial state
                 copyPaste->setVisible(false);
+                copyPaste->actions().first()->setType(MInputMethod::ActionUndefined);
                 break;
             default:
                 break;

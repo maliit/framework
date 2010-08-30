@@ -826,9 +826,7 @@ void MInputContextGlibDBusConnection::appOrientationChanged(int angle)
 
 void MInputContextGlibDBusConnection::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
-    foreach (MInputMethodBase *target, targets()) {
-        target->setCopyPasteState(copyAvailable, pasteAvailable);
-    }
+    MToolbarManager::instance().setCopyPasteState(copyAvailable, pasteAvailable);
 }
 
 

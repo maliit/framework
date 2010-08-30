@@ -135,12 +135,6 @@ public:
      */
     virtual void appOrientationChanged(int angle);
 
-    /*! \brief Set copy/paste state for appropriate UI elements
-     *  \param copyAvailable bool TRUE if text is selected
-     *  \param pasteAvailable bool TRUE if clipboard content is not empty
-     */
-    virtual void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
-
     /*!
      * \brief Uses a custom toolbar which is defined by given parameter.
      * \param toolbar Pointer to toolbar definition.

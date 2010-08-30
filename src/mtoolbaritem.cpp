@@ -326,6 +326,14 @@ MToolbarItem::actions() const
     return result;
 }
 
+QList<QSharedPointer<MToolbarItemAction> >
+MToolbarItem::actions()
+{
+    Q_D(const MToolbarItem);
+
+    return d->actions;
+}
+
 MInputMethod::VisibleType MToolbarItem::showOn() const
 {
     Q_D(const MToolbarItem);
