@@ -26,11 +26,11 @@ Row may not be empty.
 
 \subsubsection BUTTON
 This tag will be constructed as MButton.
-The NAME attribute should be unique and it is used as a reference in the toolbar system.
-All buttons with the same NAME share their state. If two buttons have the same name then their state is defined by first one and then overriden (completely or partially) by second one. This feature allows to have cosistent button state with different device orientation.
+The NAME attribute is used as a reference in the toolbar system.
+All buttons with the same NAME share their state. If two buttons have the same name then their state is defined by first one and then overriden (completely or partially) by second one. This feature allows to have consistent button state with different device orientation. All names starting with underscore are reserved for Input Method Framework.
 Warning: it is not recommended to create two buttons with the same name inside one layout.
 The GROUP attribute defines the group this button belongs to.
-The PRIORITY attribute the defines the priority order of displaying, the smaller the number, the earlier it is put into the toolbar.
+The PRIORITY attribute the defines priority order of displaying, the smaller the number, the earlier it is put into the toolbar among items with the same ALIGMENT. Please note that button with right alignment will be never placed before button with left alignment. Normal toolbar button should have priority from 1 to 100. Values from 101 to 200 and from -100 to -1 are reserved for Input Method Framework. If application developer wants to create button which will be placed at the end of toolbar afer any button provided by Input Method Framework, then the PRIORITY should be in the range 201..300. If application developer wants to create button which will be placed at the begin of toolbar before any button provided by Input Method Framework, then the PRIORITY should be in the range -200..-101.
 The SHOWON attribute tells when the button is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
 The button is aligned within the toolbar according to the value of ALIGMENT attribute.
@@ -43,9 +43,9 @@ If the TOGGLE attribute is true, the PRESSED attribute holds the button state wh
 
 \subsubsection LABEL
 This tag will be constructed as MLabel.
-The NAME attribute should be unique and it is used as a reference in the toolbar system.
+The NAME attribute has the same meaning as for BUTTON.
 The GROUP attribute defines the group this label belongs to.
-The PRIORITY attribute the defines the priority order of displaying, the smaller the number, the earlier it is put into the toolbar.
+The PRIORITY attribute has the same meaning as for BUTTON.
 The SHOWON attribute tells when the label is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
 The label is aligned within the toolbar according to the value of ALIGMENT attribute.
