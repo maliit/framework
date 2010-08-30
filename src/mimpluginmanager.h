@@ -107,6 +107,7 @@ private:
 
     friend class Ut_MIMPluginManager;
     friend class Ft_MIMPluginManager;
+    friend class Ut_MIMSettingsDialog;
 };
 
 #endif

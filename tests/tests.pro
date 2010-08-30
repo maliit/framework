@@ -17,6 +17,7 @@ SUBDIRS = \
           ut_mtoolbarmanager \
           ft_mimsettingsapplet \
           ut_mimsettingsconf \
+          ut_mimsettingsdialog \
 
 contains(DEFINES, QT_DBUS) {
 SUBDIRS += ut_minputcontextdbusconnection

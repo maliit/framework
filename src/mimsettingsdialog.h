@@ -66,6 +66,8 @@ private:
     MPopupList *availableSubViewList;
     QMap<MInputMethodSettingsBase *, MContainer *> settingsContainerMap;
     MIMPluginManagerPrivate *const imPluginManagerPrivate;
+
+    friend class Ut_MIMSettingsDialog;
 };
 
 #endif
