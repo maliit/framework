@@ -93,14 +93,15 @@ QList<QString> MGConfItemStub::listEntries(const MGConfItem *instance)
     return fakeGConf.listEntries(instanceKeys[instance]);
 }
 
-MGConfItemStub gDefaultMGConfItemStub;
-
 /**
  * This is the stub class instance used by the system. If you want to alter behaviour,
  * derive your stub class from MGConfItemStub, implement the methods you want to
  * fake, create an instance of your stub class and assign the instance into this global variable.
  */
-MGConfItemStub *gMGConfItemStub = &gDefaultMGConfItemStub;
+// this dynamic alloc for gMGConfItemStub will cause memory leak. But it is accaptable for
+// // unit test, because it is just a small memory leak. And this can avoid core dump if there are
+// // some static MGConfItem object declared by application.
+MGConfItemStub *gMGConfItemStub = new MGConfItemStub;
 
 /**
  * These are the proxy method implementations of MGConfItem. They will
