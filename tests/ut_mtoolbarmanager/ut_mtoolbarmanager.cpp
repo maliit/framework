@@ -25,7 +25,7 @@
 #include <QDir>
 
 namespace {
-    const int ValidToolbarCount = 2;
+    const int ValidToolbarCount = 3;
 
     QString Toolbar1 = "/toolbar1.xml";
     QString Toolbar2 = "/toolbar2.xml";
@@ -84,20 +84,15 @@ void Ut_MToolbarManager::testLoadToolbar()
         subject->registerToolbar(toolbarIds.at(i), toolbars.at(i));
         toolbarCount ++;
         QTest::qWait(50);
-        //toolbar loop can only cache no more than MaximumToolbarCount toolbars
         if (i < ValidToolbarCount)
-            QCOMPARE(subject->toolbarList().count(), toolbarCount);
+            QCOMPARE(subject->toolbarList().count(), toolbarCount + 1);
         else
-            QCOMPARE(subject->toolbarList().count(), ValidToolbarCount);
+            QCOMPARE(subject->toolbarList().count(), ValidToolbarCount + 1);
     }
 
     for (int i = 0; i < toolbarIds.count(); i++) {
         QSharedPointer<MToolbarData> toolbar = subject->toolbarData(toolbarIds.at(i));
-        if (i < ValidToolbarCount) {
-            QVERIFY(!toolbar.isNull());
-        } else {
-            QVERIFY(toolbar.isNull());
-        }
+        QVERIFY(!toolbar.isNull());
     }
 
     toolbarCount = ValidToolbarCount;
@@ -106,7 +101,7 @@ void Ut_MToolbarManager::testLoadToolbar()
         if (i < ValidToolbarCount) {
             --toolbarCount;
         }
-        QCOMPARE(subject->toolbars.count(), toolbarCount);
+        QCOMPARE(subject->toolbars.count(), toolbarCount + 1);
         QVERIFY(!subject->toolbars.contains(toolbarIds.at(i)));
     }
 }
@@ -129,9 +124,9 @@ void Ut_MToolbarManager::testSetItemAttribute()
         QTest::qWait(50);
         //toolbar loop can only cache no more than MaximumToolbarCount toolbars
         if (i < ValidToolbarCount)
-            QCOMPARE(subject->toolbarList().count(), toolbarCount);
+            QCOMPARE(subject->toolbarList().count(), toolbarCount + 1);
         else
-            QCOMPARE(subject->toolbarList().count(), ValidToolbarCount);
+            QCOMPARE(subject->toolbarList().count(), ValidToolbarCount + 1);
     }
 
     subject->setToolbarItemAttribute(id1, "test1", "text", QVariant(QString("some text")));
