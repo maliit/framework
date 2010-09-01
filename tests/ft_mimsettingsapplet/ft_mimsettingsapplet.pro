@@ -1,5 +1,4 @@
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
+include(../common_top.pri)
 
 # Input
 HEADERS += ft_mimsettingsapplet.h \

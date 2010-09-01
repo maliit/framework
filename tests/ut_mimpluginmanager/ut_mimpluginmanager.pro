@@ -1,12 +1,8 @@
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
+include(../common_top.pri)
 
 INCLUDEPATH += ../stubs \
                ../dummyimplugin \
                ../dummyimplugin3 \
-
-SRC_DIR = ../../src
-
 
 # Input
 HEADERS += \

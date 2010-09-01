@@ -1,12 +1,6 @@
 include(../common_top.pri)
 
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
-
 INCLUDEPATH += ../stubs \
-
-SRC_DIR = ../../src
-
 
 # Input
 HEADERS += \

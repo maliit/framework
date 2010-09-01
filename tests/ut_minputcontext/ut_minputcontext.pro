@@ -1,5 +1,4 @@
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
+include(../common_top.pri)
 
 INCLUDEPATH += ../../input-context ../stubs
 LIBS += -L../../input-context -lminputcontext ../../src/libmeegoimframework.so \

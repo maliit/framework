@@ -1,13 +1,7 @@
 include(../common_top.pri)
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
 
-INCLUDEPATH += ../../src \
-               ../../passthroughserver \
+INCLUDEPATH += ../../passthroughserver \
                ../stubs \
-
-SRC_DIR = ../../src
-
 
 # Input
 HEADERS += \
@@ -34,7 +28,6 @@ SOURCES += \
 
 
 CONFIG += debug plugin meegotouch qdbus
-QT += testlib
 
 LIBS += \
     ../../src/libmeegoimframework.so.0 \
