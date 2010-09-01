@@ -614,6 +614,9 @@ void MInputContext::onDBusConnection()
     // and then checking whether QInputContext has focusWidget(). But the QT bug NB#181094
     // prevents us.
     if (widget && widget->testAttribute(Qt::WA_InputMethodEnabled)) {
+        // Force activation, since setFocusWidget may have been called after
+        // onDBusDisconnection set active to false.
+        active = false;
         setFocusWidget(widget);
         imServer->showInputMethod();
         inputPanelState = InputPanelShown;
