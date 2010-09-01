@@ -148,8 +148,23 @@ public:
      */
     bool locked() const;
 
+    /*!
+     * \brief Return true if all conditions are met:
+     * 1) toolbar is provided by application,
+     * 2) toolbar contains at least one custom item.
+     */
+    bool isCustom() const;
+
 private:
+    //! Sort layout items according to their priorities and alignments
     void sort(QSharedPointer<MToolbarLayout> layout);
+
+    /*!
+     * \brief Defines whether this toolbar is custom or standard.
+     * \param custom Set this parameter to true if toolbar is custom.
+     * \sa isCustom()
+     */
+    void setCustom(bool custom);
 
     /*!
      * \brief Return item state associated with the given \a name and \a type.
@@ -265,6 +280,7 @@ protected:
     Q_DECLARE_PRIVATE(MToolbarData)
 
     MToolbarDataPrivate *const d_ptr;
+    friend class MToolbarManager;
     friend struct MTBParseStructure;
     friend class Ut_MToolbarData;
 };

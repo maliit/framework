@@ -62,6 +62,8 @@ public:
 
     typedef QMap<QString, QSharedPointer<MToolbarItem> > Items;
     Items items;
+
+    bool custom;
 };
 
 #endif

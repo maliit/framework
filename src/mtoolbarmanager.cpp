@@ -137,6 +137,7 @@ void MToolbarManager::createStandardObjects()
     standardToolbar = createToolbar(StandardToolbar);
 
     if (standardToolbar) {
+        standardToolbar->setCustom(false);
         toolbars.insert(MToolbarId::standardToolbarId(), standardToolbar);
 
         foreach (QSharedPointer<MToolbarItem> item, standardToolbar->allItems()) {

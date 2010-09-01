@@ -119,7 +119,8 @@ MTBParseStructure::MTBParseStructure(const QString &name, MToolbarData::TagParse
 }
 
 MToolbarDataPrivate::MToolbarDataPrivate()
-    : locked(false)
+    : locked(false),
+      custom(false)
 {
 }
 
@@ -327,6 +328,13 @@ bool MToolbarData::locked() const
     return d->locked;
 }
 
+bool MToolbarData::isCustom() const
+{
+    Q_D(const MToolbarData);
+
+    return d->custom;
+}
+
 void MToolbarData::sort(QSharedPointer<MToolbarLayout> layout)
 {
     if (!layout) {
@@ -338,6 +346,14 @@ void MToolbarData::sort(QSharedPointer<MToolbarLayout> layout)
         row->sort();
     }
 }
+
+void MToolbarData::setCustom(bool custom)
+{
+    Q_D(MToolbarData);
+
+    d->custom = custom;
+}
+
 
 QSharedPointer<MToolbarItem> MToolbarData::getOrCreateItemByName(const QString &name,
                                                                  MInputMethod::ItemType type)
@@ -550,6 +566,7 @@ void MToolbarData::parseTagButton(const QDomElement &element, MTBParseParameters
         return;
     }
 
+    setCustom(true);
     params.currentRow->append(item);
     params.currentItem = item;
     parseAttribute(&MToolbarItem::setText,      element, ImTagText,      params);
@@ -597,6 +614,7 @@ void MToolbarData::parseTagLabel(const QDomElement &element, MTBParseParameters 
         return;
     }
 
+    setCustom(true);
     params.currentRow->append(label);
     params.currentItem = label;
 
