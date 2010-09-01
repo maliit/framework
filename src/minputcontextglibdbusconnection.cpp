@@ -764,6 +764,9 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
         // map toolbar id from local to global
         newToolbarId = MToolbarId(variant.toInt(), QString::number(connection->connectionNumber));
     }
+    if (!newToolbarId.isValid()) {
+        newToolbarId = MToolbarId::standardToolbarId();
+    }
 
     // update state
     widgetState = stateInfo;

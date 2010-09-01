@@ -90,15 +90,39 @@ private:
     MToolbarManager();
 
     /*!
-     *\brief Returns a list of the id for all toolbars.
+     * \brief Returns a list of the id for all toolbars.
      */
     QList<MToolbarId> toolbarList() const;
 
+    /*!
+     * \brief Returns new toolbar which is loaded from specified file \a name.
+     */
     QSharedPointer<MToolbarData> createToolbar(const QString &name);
+
+    //! Create standard toolbar items and standard toolbar
+    void createStandardObjects();
+
+    /*!
+     * \brief Add standard toolbar items to the custom toolbar.
+     * \param toolbarData Custom toolbar data
+     */
+    void addStandardButtons(const QSharedPointer<MToolbarData> &toolbarData);
+
+    //! This overloaded function provided for convinience
+    void addStandardButtons(const QSharedPointer<MToolbarLayout> &layout);
 
     typedef QHash<MToolbarId, QSharedPointer<MToolbarData> > ToolbarContainer;
     //! all registered toolbars
     ToolbarContainer toolbars;
+
+    //! Standard close button
+    QSharedPointer<MToolbarItem> close;
+
+    //! Standard copy/paste button
+    QSharedPointer<MToolbarItem> copyPaste;
+
+    //! Toolbar contaning standard buttons only
+    QSharedPointer<MToolbarData> standardToolbar;
 
     //! Singleton instance
     static MToolbarManager *toolbarMgrInstance;

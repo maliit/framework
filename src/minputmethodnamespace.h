@@ -70,6 +70,12 @@ namespace MInputMethod {
 
         //! Hide some group of items
         ActionHideGroup,
+
+        //! Close virtual keyboard
+        ActionClose,
+
+        //! Standard copy/paste button
+        ActionCopyPaste,
     };
 };
 

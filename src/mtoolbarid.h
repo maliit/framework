@@ -40,6 +40,9 @@ public:
     //! Construct identifier with given application \a id and \a service name.
     MToolbarId(int id, const QString &service);
 
+    //! Return identifier for standard toolbar
+    static MToolbarId standardToolbarId();
+
     //! Return true if identifier is valid.
     bool isValid() const;
 

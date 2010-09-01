@@ -19,9 +19,13 @@
 
 #include <QHash>
 
+namespace {
+    const int InvalidId  = -1;
+    const int StandardId = -2;
+}
 
 MToolbarId::MToolbarId()
-    : id(-1)
+    : id(InvalidId)
 {
 }
 
@@ -29,6 +33,11 @@ MToolbarId::MToolbarId(int id, const QString &service)
     : id(id),
       service(service)
 {
+}
+
+MToolbarId MToolbarId::standardToolbarId()
+{
+    return MToolbarId(StandardId, QString());
 }
 
 bool MToolbarId::isValid() const

@@ -22,10 +22,15 @@
 #include <QVariant>
 #include <QDebug>
 
+namespace {
+    const QString StandardToolbar = QString::fromLatin1("/usr/share/meegotouch/imtoolbars/imframework/standard.xml");
+}
+
 MToolbarManager *MToolbarManager::toolbarMgrInstance = 0;
 
 MToolbarManager::MToolbarManager()
 {
+    createStandardObjects();
 }
 
 MToolbarManager::~MToolbarManager()
@@ -83,6 +88,67 @@ QSharedPointer<MToolbarData> MToolbarManager::createToolbar(const QString &name)
     return toolbar;
 }
 
+void MToolbarManager::createStandardObjects()
+{
+    // This code assumes that StandardToolbar provides exactly two buttons: copy/paste and close.
+    // That file is controlled by us, so we can rely on this assertion.
+    standardToolbar = createToolbar(StandardToolbar);
+
+    if (standardToolbar) {
+        toolbars.insert(MToolbarId::standardToolbarId(), standardToolbar);
+
+        foreach (QSharedPointer<MToolbarItem> item, standardToolbar->allItems()) {
+            QList<QSharedPointer<const MToolbarItemAction> > actions = item->actions();
+            if (actions.isEmpty()) {
+                continue; // should never happen
+            }
+
+            switch (actions.at(0)->type()) {
+            case MInputMethod::ActionClose:
+                close = item;
+                break;
+            case MInputMethod::ActionCopyPaste:
+                copyPaste = item;
+                // set initial state
+                copyPaste->setVisible(false);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+}
+
+void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarData> &toolbarData)
+{
+    QSharedPointer<MToolbarLayout> landscape = toolbarData->layout(M::Landscape).constCast<MToolbarLayout>();
+    QSharedPointer<MToolbarLayout> portrait = toolbarData->layout(M::Portrait).constCast<MToolbarLayout>();
+
+    if (landscape) {
+        addStandardButtons(landscape);
+    }
+
+    if (portrait && portrait != landscape) {
+        addStandardButtons(portrait);
+    }
+}
+
+void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarLayout> &layout)
+{
+    if (layout->rows().isEmpty()) {
+        return;
+    }
+
+    QSharedPointer<MToolbarRow> row = layout->rows().last();
+    if (copyPaste) {
+        row->append(copyPaste);
+    }
+    if (close) {
+        row->append(close);
+    }
+    row->sort();
+}
+
 void MToolbarManager::registerToolbar(const MToolbarId &id, const QString &fileName)
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -90,6 +156,12 @@ void MToolbarManager::registerToolbar(const MToolbarId &id, const QString &fileN
         return;
 
     QSharedPointer<MToolbarData> toolbarData = createToolbar(fileName);
+    if (toolbarData) {
+        addStandardButtons(toolbarData);
+    } else {
+        toolbarData = standardToolbar;
+    }
+
     if (toolbarData) {
         toolbars.insert(id, toolbarData);
     }

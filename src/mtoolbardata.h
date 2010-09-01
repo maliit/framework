@@ -237,6 +237,12 @@ private:
     //! Parse XML tag for Paste
     void parseTagPaste(const QDomElement &element, MTBParseParameters &params);
 
+    //! Parse XML tag for CopyPaste
+    void parseTagCopyPaste(const QDomElement &element, MTBParseParameters &params);
+
+    //! Parse XML tag for Close
+    void parseTagClose(const QDomElement &element, MTBParseParameters &params);
+
     //! Parse XML tag for ShowGroup
     void parseTagShowGroup(const QDomElement &element, MTBParseParameters &params);
 

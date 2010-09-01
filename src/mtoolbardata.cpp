@@ -69,6 +69,8 @@ namespace
     const QString ImTagOrientationPortrait   = QString::fromLatin1("portrait");
     const QString ImTagVersion               = QString::fromLatin1("version");
     const QString ImTagVersionDefValue       = QString::fromLatin1("0");
+    const QString ImTagCopyPaste             = QString::fromLatin1("copypaste");
+    const QString ImTagClose                 = QString::fromLatin1("close");
 
     bool lessThanItem(const QSharedPointer<const MToolbarItem> &left,
                       const QSharedPointer<const MToolbarItem> &right)
@@ -625,6 +627,8 @@ void MToolbarData::parseTagActions(const QDomElement &element, MTBParseParameter
         MTBParseStructure(ImTagPaste,           &MToolbarData::parseTagPaste),
         MTBParseStructure(ImTagShowGroup,       &MToolbarData::parseTagShowGroup),
         MTBParseStructure(ImTagHideGroup,       &MToolbarData::parseTagHideGroup),
+        MTBParseStructure(ImTagCopyPaste,       &MToolbarData::parseTagCopyPaste),
+        MTBParseStructure(ImTagClose,           &MToolbarData::parseTagClose),
     };
 
     parseChildren(element, params, parsers, sizeof(parsers) / sizeof(parsers[0]));
@@ -662,6 +666,20 @@ void MToolbarData::parseTagPaste(const QDomElement &element, MTBParseParameters 
 {
     Q_UNUSED(element);
     QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionPaste));
+    params.currentItem->append(action);
+}
+
+void MToolbarData::parseTagCopyPaste(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_UNUSED(element);
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionCopyPaste));
+    params.currentItem->append(action);
+}
+
+void MToolbarData::parseTagClose(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_UNUSED(element);
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionClose));
     params.currentItem->append(action);
 }
 
