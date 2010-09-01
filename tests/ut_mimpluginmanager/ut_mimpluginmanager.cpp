@@ -45,8 +45,8 @@ namespace
 
 void Ut_MIMPluginManager::initTestCase()
 {
-    char *argv[1] = { (char *) "ut_mimpluginloader" };
-    int argc = 1;
+    static char *argv[1] = { (char *) "ut_mimpluginloader" };
+    static int argc = 1;
 
     app = new QCoreApplication(argc, argv);
 

@@ -14,8 +14,8 @@
 
 void Ut_MIMApplication::initTestCase()
 {
-    char *argv[1] = { (char *) "ut_mimapplication" };
-    int argc = 1;
+    static char *argv[1] = { (char *) "ut_mimapplication" };
+    static int argc = 1;
 
     MApplication::setLoadMInputContext(false);
     app = new MIMApplication(argc, argv);

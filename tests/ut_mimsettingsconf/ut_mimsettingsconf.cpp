@@ -30,8 +30,8 @@ namespace
 
 void Ut_MIMSettingsConf::initTestCase()
 {
-    char *argv[1] = { (char *) "ut_mimsettingsconf" };
-    int argc = 1;
+    static char *argv[1] = { (char *) "ut_mimsettingsconf" };
+    static int argc = 1;
 
     app = new QCoreApplication(argc, argv);
 

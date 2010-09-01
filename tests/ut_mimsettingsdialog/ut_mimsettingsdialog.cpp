@@ -47,8 +47,8 @@ int MSceneManager::execDialog(MDialog *dialog)
 
 void Ut_MIMSettingsDialog::initTestCase()
 {
-    char *argv[1] = { (char *) "ut_mimsettingsdialog" };
-    int argc = 1;
+    static char *argv[1] = { (char *) "ut_mimsettingsdialog" };
+    static int argc = 1;
 
     // Avoid waiting if im server is not responding
     MApplication::setLoadMInputContext(false);
