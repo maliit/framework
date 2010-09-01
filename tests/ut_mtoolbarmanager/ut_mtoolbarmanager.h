@@ -36,6 +36,9 @@ private slots:
     void cleanup();
     void testLoadToolbar();
     void testSetItemAttribute();
+    void testStandardObjects();
+    void testSetCopyPaste_data();
+    void testSetCopyPaste();
 
 private:
     QCoreApplication *app;

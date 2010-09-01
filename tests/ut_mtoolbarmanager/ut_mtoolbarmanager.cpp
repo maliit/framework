@@ -24,6 +24,8 @@
 #include <QDebug>
 #include <QDir>
 
+Q_DECLARE_METATYPE(MInputMethod::ActionType);
+
 namespace {
     const int ValidToolbarCount = 3;
 
@@ -149,6 +151,54 @@ void Ut_MToolbarManager::testSetItemAttribute()
     MToolbarId invalidId;
     subject->setToolbarItemAttribute(invalidId, "test1", "text", QVariant(QString("some text")));
     subject->setToolbarItemAttribute(id1, "invalid-item-name", "text", QVariant(QString("some text")));
+}
+
+void Ut_MToolbarManager::testStandardObjects()
+{
+    QVERIFY(subject->standardToolbar != 0);
+    QVERIFY(subject->copyPaste != 0);
+    QVERIFY(subject->close != 0);
+
+    QSharedPointer<const MToolbarLayout> layout = subject->standardToolbar->layout(M::Landscape);
+    QVERIFY(layout);
+    QCOMPARE(layout->rows().count(), 1);
+    QSharedPointer<const MToolbarRow> row = layout->rows().first();
+    QList<QSharedPointer<MToolbarItem> > items = row->items();
+    QVERIFY(!items.isEmpty());
+
+    // verify if copy/paste button is placed before close button
+    QVERIFY(items.indexOf(subject->copyPaste) < items.indexOf(subject->close));
+}
+
+void Ut_MToolbarManager::testSetCopyPaste_data()
+{
+    QTest::addColumn<bool>("copyAvailable");
+    QTest::addColumn<bool>("pasteAvailable");
+    QTest::addColumn<bool>("expectedVisible");
+    QTest::addColumn<MInputMethod::ActionType>("expectedAction");
+    QTest::addColumn<QString>("expectedTextId");
+
+    QTest::newRow("nothing")    << false << false << false << MInputMethod::ActionUndefined << "";
+    QTest::newRow("copy")       << true  << false << true  << MInputMethod::ActionCopy << "qtn_comm_copy";
+    QTest::newRow("paste")      << false << true  << true  << MInputMethod::ActionPaste << "qtn_comm_paste";
+    QTest::newRow("copy+paste") << true  << true  << true  << MInputMethod::ActionCopy << "qtn_comm_copy";
+}
+
+void Ut_MToolbarManager::testSetCopyPaste()
+{
+    QFETCH(bool, copyAvailable);
+    QFETCH(bool, pasteAvailable);
+    QFETCH(bool, expectedVisible);
+    QFETCH(MInputMethod::ActionType, expectedAction);
+    QFETCH(QString, expectedTextId);
+
+    subject->setCopyPasteState(copyAvailable, pasteAvailable);
+    QCOMPARE(subject->copyPaste->isVisible(), expectedVisible);
+    QVERIFY(!subject->copyPaste->actions().isEmpty());
+    QCOMPARE(int(subject->copyPaste->actions().first()->type()), int(expectedAction));
+    if (!expectedTextId.isEmpty()) {
+        QCOMPARE(subject->copyPaste->textId(), expectedTextId);
+    }
 }
 
 QTEST_APPLESS_MAIN(Ut_MToolbarManager);
