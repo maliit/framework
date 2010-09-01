@@ -2,6 +2,10 @@ meego-im-framework (0.19.15~1) unstable; urgency=low
 
   * [UNRELEASED]
   * Fixes: NB#188429 - Application does not receive keyboard events if uiserver was restarted/started after application
+  * new ut_mimapplication
+  * new ut_mimsettingsdialog
+  * Fixed unit test crashes
+  * cleanup .pri/.pro under tests/
 
  -- Hannu Koivisto <hannu.koivisto@vincit.fi>  Fri, 27 Aug 2010 17:45:00 +0300
 
