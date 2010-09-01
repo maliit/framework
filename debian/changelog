@@ -6,6 +6,7 @@ meego-im-framework (0.19.15~1) unstable; urgency=low
   * new ut_mimsettingsdialog
   * Fixed unit test crashes
   * cleanup .pri/.pro under tests/
+  * Fixes: NB#188874 - Title missing from the Active input method selection dialog
 
  -- Hannu Koivisto <hannu.koivisto@vincit.fi>  Fri, 27 Aug 2010 17:45:00 +0300
 

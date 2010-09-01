@@ -118,6 +118,8 @@ void MIMSettingsDialog::showAvailableSubViewList()
 {
     if (!availableSubViewList) {
         availableSubViewList = new MPopupList();
+        //% "Active input method"
+        availableSubViewList->setTitle(qtTrId("qtn_txts_active_input_method"));
         QStandardItemModel *model = new QStandardItemModel(availableSubViewList);
         model->sort(0);
         availableSubViewList->setItemModel(model);
@@ -199,6 +201,10 @@ void MIMSettingsDialog::retranslateSettingsUi()
     if (activeSubViewItem) {
         //% "Active input method"
         activeSubViewItem->setTitle(qtTrId("qtn_txts_active_input_method"));
+    }
+    if (availableSubViewList) {
+        //% "Active input method"
+        availableSubViewList->setTitle(qtTrId("qtn_txts_active_input_method"));
     }
 
     foreach (MContainer *container, settingsContainerMap.values()) {
