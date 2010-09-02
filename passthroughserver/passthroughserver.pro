@@ -29,18 +29,11 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 
 QMAKE_CLEAN += *.gcno *.gcda
 
-# quick hack to make dui-im-uiserver link to provide compatibility with configurations
-# pointing to old binary name
-dui-im-uiserver.path = . 
-dui-im-uiserver.files = "" 
-dui-im-uiserver.extra = ln -s -f $$M_INSTALL_BIN/meego-im-uiserver $(INSTALL_ROOT)/$$M_INSTALL_BIN/dui-im-uiserver
-
 # note: not installing the service file, the input method server
 # is started by other means than by the d-bus.
 # it is still required in scratchbox and N900
 INSTALLS += target \
             servicefiles \
-            #dui-im-uiserver 
 
 
 QMAKE_EXTRA_TARGETS += check-xml
