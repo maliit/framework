@@ -39,7 +39,7 @@ SOURCES += mimpluginmanager.cpp \
         mtoolbarid.cpp \
         mimsettingsdialog.cpp \
 
-CONFIG += debug qdbus meegotouch
+CONFIG += debug qdbus meegotouchcore
 QT = core gui xml
 
 contains(DEFINES, QT_DBUS) {
