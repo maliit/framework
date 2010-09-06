@@ -1,3 +1,9 @@
+meego-im-framework (0.19.18~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Tue, 07 Sep 2010 12:02:48 +0300
+
 meego-im-framework (0.19.17-1) unstable; urgency=low
 
   * Removed obsolete dui-im-uiserver link references from .pro file
