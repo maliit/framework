@@ -155,6 +155,11 @@ public:
      */
     bool isCustom() const;
 
+    /*!
+     * \brief Return true if toolbar should be visible.
+     */
+    bool isVisible() const;
+
 private:
     //! Sort layout items according to their priorities and alignments
     void sort(QSharedPointer<MToolbarLayout> layout);

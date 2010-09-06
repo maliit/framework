@@ -71,6 +71,8 @@ namespace
     const QString ImTagVersionDefValue       = QString::fromLatin1("0");
     const QString ImTagCopyPaste             = QString::fromLatin1("copypaste");
     const QString ImTagClose                 = QString::fromLatin1("close");
+    const QString ImTagVisible               = QString::fromLatin1("visible");
+    const QString ImTagVisibleDefValue       = QString::fromLatin1("true");
 
     bool lessThanItem(const QSharedPointer<const MToolbarItem> &left,
                       const QSharedPointer<const MToolbarItem> &right)
@@ -120,7 +122,8 @@ MTBParseStructure::MTBParseStructure(const QString &name, MToolbarData::TagParse
 
 MToolbarDataPrivate::MToolbarDataPrivate()
     : locked(false),
-      custom(false)
+      custom(false),
+      visible(true)
 {
 }
 
@@ -335,6 +338,13 @@ bool MToolbarData::isCustom() const
     return d->custom;
 }
 
+bool MToolbarData::isVisible() const
+{
+    Q_D(const MToolbarData);
+
+    return d->visible;
+}
+
 void MToolbarData::sort(QSharedPointer<MToolbarLayout> layout)
 {
     if (!layout) {
@@ -451,6 +461,7 @@ void MToolbarData::parseTagToolbar(const QDomElement &element, MTBParseParameter
     Q_D(MToolbarData);
 
     d->locked = (element.attribute(ImTagLocked, ImTagLockedDefValue) == "true") ? true : false;
+    d->visible = (element.attribute(ImTagVisible, ImTagVisibleDefValue) == "true") ? true : false;
     params.version = element.attribute(ImTagVersion, ImTagVersionDefValue).toInt();
 
     if (params.version == 1) {

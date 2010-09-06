@@ -64,6 +64,8 @@ public:
     Items items;
 
     bool custom;
+
+    bool visible;
 };
 
 #endif
