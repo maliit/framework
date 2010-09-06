@@ -13,6 +13,8 @@ The LOCKED attribute enables or disables user interactions for toolbar.
 If user interactions are disabled then user can not hide visible toolbar or show hidden toolbar.
 The VERSION attribute defines version of this specification. Current version is 1.
 Warning: you need to specify version number explicitly, otherwise parser may assume wrong version number and then parsing will fail.
+The VISIBLE attribute defines toolbar's visibility. Toolbar is visible by default, but you could hide it by setting VISIBLE to false.
+Warning: normal application should not use this attribute.
 
 \subsection Layout
 
@@ -30,7 +32,7 @@ The NAME attribute is used as a reference in the toolbar system.
 All buttons with the same NAME share their state. If two buttons have the same name then their state is defined by first one and then overriden (completely or partially) by second one. This feature allows to have consistent button state with different device orientation. All names starting with underscore are reserved for Input Method Framework.
 Warning: it is not recommended to create two buttons with the same name inside one layout.
 The GROUP attribute defines the group this button belongs to.
-The PRIORITY attribute the defines priority order of displaying, the smaller the number, the earlier it is put into the toolbar among items with the same ALIGMENT. Please note that button with right alignment will be never placed before button with left alignment. Normal toolbar button should have priority from 1 to 100. Values from 101 to 200 and from -100 to -1 are reserved for Input Method Framework. If application developer wants to create button which will be placed at the end of toolbar afer any button provided by Input Method Framework, then the PRIORITY should be in the range 201..300. If application developer wants to create button which will be placed at the begin of toolbar before any button provided by Input Method Framework, then the PRIORITY should be in the range -200..-101.
+The PRIORITY attribute defines priority order of displaying, the smaller the number, the earlier it is put into the toolbar among items with the same ALIGMENT. Please note that button with right alignment will be never placed before button with left alignment. Normal toolbar button should have priority from 1 to 100. Values from 101 to 200 and from -100 to -1 are reserved for Input Method Framework. If application developer wants to create button which will be placed at the end of toolbar afer any button provided by Input Method Framework, then the PRIORITY should be in the range 201..300. If application developer wants to create button which will be placed at the begin of toolbar before any button provided by Input Method Framework, then the PRIORITY should be in the range -200..-101.
 The SHOWON attribute tells when the button is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
 The button is aligned within the toolbar according to the value of ALIGMENT attribute.
@@ -93,6 +95,7 @@ This tag defines that the action is to paste from clipboard.
 
 <!ATTLIST layout orientation (landscape|portrait) "landscape">
 <!ATTLIST toolbar version (0|1) "0">
+<!ATTLIST toolbar visible (true|false) "true">
 
 <!ATTLIST button name CDATA #REQUIRED>
 <!ATTLIST button group CDATA>
