@@ -36,5 +36,6 @@ target.files += \
     toolbar1.xml \
     toolbar2.xml \
     toolbar3.xml \
+    toolbar4.xml \
 
 include(../common_check.pri)

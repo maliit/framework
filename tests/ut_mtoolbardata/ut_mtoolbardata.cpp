@@ -9,7 +9,8 @@
 namespace {
     QString Toolbar1 = "/toolbar1.xml";
     QString Toolbar2 = "/toolbar2.xml";
-    QString Toolbar3 = "/toolbar2.xml";
+    QString Toolbar3 = "/toolbar3.xml";
+    QString Toolbar4 = "/toolbar4.xml";
 }
 
 void Ut_MToolbarData::initTestCase()
@@ -25,6 +26,8 @@ void Ut_MToolbarData::initTestCase()
     QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
     Toolbar3 = QCoreApplication::applicationDirPath() + Toolbar3;
     QVERIFY2(QFile(Toolbar3).exists(), "toolbar3.xml does not exist");
+    Toolbar4 = QCoreApplication::applicationDirPath() + Toolbar4;
+    QVERIFY2(QFile(Toolbar4).exists(), "toolbar4.xml does not exist");
 }
 
 void Ut_MToolbarData::cleanupTestCase()
@@ -55,6 +58,7 @@ void Ut_MToolbarData::testLoadXML()
     QVERIFY2(ok, "toolbar1.xml was not loaded correctly");
 
     QVERIFY(subject->locked() == true);
+    QVERIFY(subject->isVisible() == true);
 
     //test lanscape part
     QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
@@ -163,6 +167,7 @@ void Ut_MToolbarData::testLandspaceOnly()
     QVERIFY2(ok, "toolbar2.xml was not loaded correctly");
 
     QVERIFY(subject->locked() == true);
+    QVERIFY(subject->isVisible() == false);
 
     //test lanscape part
     QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
@@ -189,6 +194,8 @@ void Ut_MToolbarData::testLoadOldXML()
     ok = subject->loadNokiaToolbarXml(Toolbar3);
     QVERIFY2(ok, "toolbar3.xml was not loaded correctly");
 
+    QVERIFY(subject->isVisible() == true);
+
     //test lanscape part
     QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
     QVERIFY(!landscape.isNull());
@@ -197,6 +204,16 @@ void Ut_MToolbarData::testLoadOldXML()
     QCOMPARE(row->items().count(), 5);
 
     QVERIFY(subject->layout(M::Landscape) == subject->layout(M::Portrait));
+}
+
+void Ut_MToolbarData::testMinimalXML()
+{
+    bool ok;
+
+    ok = subject->loadNokiaToolbarXml(Toolbar4);
+    QVERIFY2(ok, "toolbar4.xml was not loaded correctly");
+
+    QVERIFY(subject->isVisible() == false);
 }
 
 QTEST_APPLESS_MAIN(Ut_MToolbarData)

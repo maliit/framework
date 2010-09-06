@@ -22,6 +22,7 @@ private slots:
     void testLandspaceOnly();
 
     void testLoadOldXML();
+    void testMinimalXML();
 
 private:
     QCoreApplication *app;
