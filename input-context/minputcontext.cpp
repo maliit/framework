@@ -380,7 +380,8 @@ bool MInputContext::filterEvent(const QEvent *event)
 {
     bool eaten = false;
 
-    if (event->type() == QEvent::RequestSoftwareInputPanel) {
+    switch (event->type()) {
+    case QEvent::RequestSoftwareInputPanel:
         mDebug("MInputContext") << "got event" << event->type();
         sipHideTimer.stop();
 
@@ -397,23 +398,28 @@ bool MInputContext::filterEvent(const QEvent *event)
         }
 
         eaten = true;
+        break;
 
-    } else if (event->type() == QEvent::CloseSoftwareInputPanel) {
+    case QEvent::CloseSoftwareInputPanel:
         mDebug("MInputContext") << "got event" << event->type();
         sipHideTimer.start();
         eaten = true;
+        break;
 
-    } else if ((event->type() == QEvent::KeyPress) || (event->type() == QEvent::KeyRelease)) {
-        const QKeyEvent *key = static_cast<const QKeyEvent *>(event);
+    case QEvent::KeyPress:
+    case QEvent::KeyRelease:
         if (redirectKeys) {
-            imServer->processKeyEvent(key->type(),
-                                      static_cast<Qt::Key>(key->key()), key->modifiers(), key->text(),
-                                      key->isAutoRepeat(), key->count(),
-                                      key->nativeScanCode(),
+            const QKeyEvent *key = static_cast<const QKeyEvent *>(event);
+            imServer->processKeyEvent(key->type(), static_cast<Qt::Key>(key->key()),
+                                      key->modifiers(), key->text(), key->isAutoRepeat(),
+                                      key->count(), key->nativeScanCode(),
                                       key->nativeModifiers());
             eaten = true;
-
         }
+        break;
+
+    default:
+        break;
     }
 
     return eaten;
