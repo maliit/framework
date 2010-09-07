@@ -7,7 +7,7 @@ isEmpty(DOXYGEN_BIN) {
 } else {
   doc.commands += mkdir -p $${OUT_PWD}/doc/html/ ;
   doc.commands+= ( cat $${IN_PWD}/mdoxy.cfg.in | \
-        perl -pe \"s:\@M_SRC_DIR\@:$${IN_PWD}:g\" > $${OUT_PWD}/doc/mdoxy.cfg );
+        perl -pe \"s:\\@M_SRC_DIR\\@:$${IN_PWD}:g\" > $${OUT_PWD}/doc/mdoxy.cfg );
   isEqual( IS_OUT_OF_SOURCE, 0 ) {
     # in-source build
     doc.commands += $${DOXYGEN_BIN} $${IN_PWD}/mdoxy.cfg ;
