@@ -15,15 +15,15 @@ SOURCES += \
     ../stubs/fakegconf.cpp \
     ../stubs/minputcontextconnection_stub.cpp \
 
-isEqual(code_coverage_option, off){
-HEADERS += \
-    $$SRC_DIR/mpassthruwindow.h \
-SOURCES += \
-    $$SRC_DIR/mpassthruwindow.cpp \
-}else{
+isEqual(code_coverage_option, off) {
+    HEADERS += \
+        $$PASSTHROUGH_DIR/mpassthruwindow.h
+    SOURCES += \
+        $$PASSTHROUGH_DIR/mpassthruwindow.cpp
+} else {
     LIBS += \
-        ../../passthroughserver/moc_mpassthruwindow.o \
-        ../../passthroughserver/mpassthruwindow.o \
+        $$PASSTHROUGH_DIR/moc_mpassthruwindow.o \
+        $$PASSTHROUGH_DIR/mpassthruwindow.o
 }
 
 

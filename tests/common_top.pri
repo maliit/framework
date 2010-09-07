@@ -9,8 +9,13 @@ QMAKE_CLEAN += *.log *~
 target.path = /usr/lib/meego-im-framework-tests/$$TARGET
 INSTALLS += target
 
-INCLUDEPATH += . ../../src
-SRC_DIR += ../../src
+SRC_DIR = ../../src
+PASSTHROUGH_DIR = ../../passthroughserver
+
+INCLUDEPATH += . \
+               $$SRC_DIR \
+               $$PASSTHROUGH_DIR
+
 
 code_coverage_option=off
 for(OPTION,$$list($$lower($$COV_OPTION))){
