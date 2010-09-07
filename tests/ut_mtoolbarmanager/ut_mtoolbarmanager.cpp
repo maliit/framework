@@ -108,7 +108,7 @@ void Ut_MToolbarManager::testLoadToolbar()
             --toolbarCount;
         }
         QCOMPARE(subject->toolbars.count(), toolbarCount + 1);
-        QVERIFY(!subject->toolbars.contains(toolbarIds.at(i)));
+        QVERIFY(!subject->contains(toolbarIds.at(i)));
     }
 }
 

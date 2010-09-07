@@ -6,11 +6,14 @@
             <button name="test1" group="group1" priority="0" showon="always" alignment="right" icon="icon1" text="text1" text_id="id1">
                 <actions>
                     <sendstring string="sendstring1"> </sendstring>
+                    <hidegroup group="group3"> </hidegroup>
                 </actions>
             </button>
-            <button name="test2" group="group2" priority="10" showon="selectedtext" alignment="left" icon="icon2" text="text2" text_id="id2" toggle="true">
+            <button name="test2" size="50" group="group2" priority="10" showon="selectedtext" alignment="left" icon="icon2" text="text2" text_id="id2" toggle="true">
                 <actions>
                     <copy />
+                    <showgroup group="group3"> </showgroup>
+                    <sendkeysequence keysequence="Ctrl+C"> </sendkeysequence>
                 </actions>
             </button>
             <button name="test3" group="group3" priority="1" showon="always" alignment="left" icon_id="icon3" text="text3" text_id="id3">
@@ -34,9 +37,6 @@
         </row>
         <row>
             <button name="test2">
-                <actions>
-                    <copy />
-                </actions>
             </button>
             <button name="test3" group="group4" priority="2" hideon="selectedtext" alignment="left" icon_id="icon4" text="text4" text_id="id4">
                 <actions>

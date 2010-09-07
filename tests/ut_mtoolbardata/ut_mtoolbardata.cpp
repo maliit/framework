@@ -84,12 +84,13 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->icon(), QString("icon1"));
     QCOMPARE(item->size(), 100);
 
-    QCOMPARE(item->actions().count(), 1);
+    QCOMPARE(item->actions().count(), 2);
     QCOMPARE(item->actions().at(0)->type(), MInputMethod::ActionSendString);
     QCOMPARE(item->actions().at(0)->keys(), QString());
     QCOMPARE(item->actions().at(0)->text(), QString("sendstring1"));
     QCOMPARE(item->actions().at(0)->command(), QString());
     QCOMPARE(item->actions().at(0)->group(), QString());
+    QCOMPARE(item->actions().at(1)->group(), QString("group3"));
 
     item = row->items().at(1);
     QVERIFY(!item.isNull());
@@ -106,14 +107,16 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->toggle(), true);
     QCOMPARE(item->pressed(), false);
     QCOMPARE(item->icon(), QString("icon2"));
-    QCOMPARE(item->size(), 100);
+    QCOMPARE(item->size(), 50);
 
-    QCOMPARE(item->actions().count(), 1);
+    QCOMPARE(item->actions().count(), 3);
     QCOMPARE(item->actions().at(0)->type(), MInputMethod::ActionCopy);
     QCOMPARE(item->actions().at(0)->keys(), QString());
     QCOMPARE(item->actions().at(0)->text(), QString());
     QCOMPARE(item->actions().at(0)->command(), QString());
     QCOMPARE(item->actions().at(0)->group(), QString());
+    QCOMPARE(item->actions().at(1)->group(), QString("group3"));
+    QCOMPARE(item->actions().at(2)->keys(), QString("Ctrl+C"));
 
     item = row->items().at(2);
     QVERIFY(!item.isNull());
@@ -154,6 +157,9 @@ void Ut_MToolbarData::testLoadXML()
 
     QVERIFY(landscape->rows().at(0)->items().at(1) == row->items().at(0));
     QVERIFY(landscape->rows().at(0)->items().at(2) == row->items().at(1));
+
+    ok = subject->equal(Toolbar1);
+    QVERIFY2(ok, "toolbar1.xml is not equal to currently loaded toolbar");
 }
 
 void Ut_MToolbarData::testLandspaceOnly()
