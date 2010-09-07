@@ -1,3 +1,11 @@
+meego-im-framework (0.19.17-1) unstable; urgency=low
+
+  * Removed obsolete dui-im-uiserver link references from .pro file
+  * Use qdbus only if qt dbus input context support is compiled in 
+  * Avoid using unnecessary meegotouch components
+
+ -- huaming wang <huaming@nokia.com>  Tue, 07 Sep 2010 10:19:05 +0300
+
 meego-im-framework (0.19.16-1) unstable; urgency=low
 
   * Framework provides standard toolbar if application does not have toolbar
