@@ -408,6 +408,12 @@ bool MInputContext::filterEvent(const QEvent *event)
 
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
+        if (event->type() == QEvent::KeyPress) {
+            MInputMethodState::instance()->emitKeyPress(*(static_cast<const QKeyEvent*>(event)));
+        } else {
+            MInputMethodState::instance()->emitKeyRelease(*(static_cast<const QKeyEvent*>(event)));
+        }
+
         if (redirectKeys) {
             const QKeyEvent *key = static_cast<const QKeyEvent *>(event);
             imServer->processKeyEvent(key->type(), static_cast<Qt::Key>(key->key()),
