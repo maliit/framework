@@ -1,6 +1,8 @@
 meego-im-framework (0.19.18~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Toolbar could be completely hidden by the application.
+  * Standard buttons (close and copy/paste) could be hidden by the application.
 
  -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Tue, 07 Sep 2010 12:02:48 +0300
 
