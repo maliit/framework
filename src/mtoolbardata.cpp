@@ -73,6 +73,9 @@ namespace
     const QString ImTagClose                 = QString::fromLatin1("close");
     const QString ImTagVisible               = QString::fromLatin1("visible");
     const QString ImTagVisibleDefValue       = QString::fromLatin1("true");
+    const QString ImTagRefuse                = QString::fromLatin1("refuse");
+
+    const QChar NameSeparator(',');
 
     bool lessThanItem(const QSharedPointer<const MToolbarItem> &left,
                       const QSharedPointer<const MToolbarItem> &right)
@@ -345,6 +348,13 @@ bool MToolbarData::isVisible() const
     return d->visible;
 }
 
+QStringList MToolbarData::refusedNames() const
+{
+    Q_D(const MToolbarData);
+
+    return d->refusedNames;
+}
+
 void MToolbarData::sort(QSharedPointer<MToolbarLayout> layout)
 {
     if (!layout) {
@@ -462,6 +472,7 @@ void MToolbarData::parseTagToolbar(const QDomElement &element, MTBParseParameter
 
     d->locked = (element.attribute(ImTagLocked, ImTagLockedDefValue) == "true") ? true : false;
     d->visible = (element.attribute(ImTagVisible, ImTagVisibleDefValue) == "true") ? true : false;
+    d->refusedNames = element.attribute(ImTagRefuse).split(NameSeparator);
     params.version = element.attribute(ImTagVersion, ImTagVersionDefValue).toInt();
 
     if (params.version == 1) {

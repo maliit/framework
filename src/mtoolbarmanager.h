@@ -117,7 +117,8 @@ private:
     void addStandardButtons(const QSharedPointer<MToolbarData> &toolbarData);
 
     //! This overloaded function provided for convinience
-    void addStandardButtons(const QSharedPointer<MToolbarLayout> &layout);
+    void addStandardButtons(const QSharedPointer<MToolbarLayout> &layout,
+                            const QSharedPointer<MToolbarData> &toolbarData);
 
     typedef QHash<MToolbarId, QSharedPointer<MToolbarData> > ToolbarContainer;
     //! all registered toolbars

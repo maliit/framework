@@ -160,6 +160,12 @@ public:
      */
     bool isVisible() const;
 
+    /*!
+     * \brief Return list of standard item names which should
+     * not be inserted into this toolbar.
+     */
+    QStringList refusedNames() const;
+
 private:
     //! Sort layout items according to their priorities and alignments
     void sort(QSharedPointer<MToolbarLayout> layout);

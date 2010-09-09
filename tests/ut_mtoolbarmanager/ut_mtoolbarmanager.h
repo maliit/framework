@@ -39,6 +39,8 @@ private slots:
     void testStandardObjects();
     void testSetCopyPaste_data();
     void testSetCopyPaste();
+    void testHideStandardButton_data();
+    void testHideStandardButton();
 
 private:
     QCoreApplication *app;

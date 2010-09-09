@@ -206,5 +206,37 @@ void Ut_MToolbarManager::testSetCopyPaste()
     }
 }
 
+void Ut_MToolbarManager::testHideStandardButton_data()
+{
+    QTest::addColumn<QString>("fileName");
+    QTest::addColumn<bool>("expectClose");
+    QTest::addColumn<bool>("expectCopyPaste");
+
+    QTest::newRow("both")      << Toolbar1 << true  << true;
+    QTest::newRow("copy only") << Toolbar2 << false << true;
+    QTest::newRow("standard")  << Toolbar3 << true  << true;
+}
+
+void Ut_MToolbarManager::testHideStandardButton()
+{
+    QFETCH(QString, fileName);
+    QFETCH(bool, expectClose);
+    QFETCH(bool, expectCopyPaste);
+
+    MToolbarId id(1, "Ut_MToolbarManager");
+    subject->registerToolbar(id, fileName);
+
+    QSharedPointer<MToolbarData> toolbarData = subject->toolbarData(id);
+    QVERIFY(toolbarData);
+    QSharedPointer<const MToolbarLayout> layout = toolbarData->layout(M::Landscape);
+    QVERIFY(layout);
+    QCOMPARE(layout->rows().count(), 1);
+    QSharedPointer<const MToolbarRow> row = layout->rows().first();
+    QList<QSharedPointer<MToolbarItem> > items = row->items();
+
+    QVERIFY(items.contains(subject->close) == expectClose);
+    QVERIFY(items.contains(subject->copyPaste) == expectCopyPaste);
+}
+
 QTEST_APPLESS_MAIN(Ut_MToolbarManager);
 

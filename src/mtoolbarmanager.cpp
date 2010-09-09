@@ -169,26 +169,27 @@ void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarData> &too
     QSharedPointer<MToolbarLayout> portrait = toolbarData->layout(M::Portrait).constCast<MToolbarLayout>();
 
     if (landscape) {
-        addStandardButtons(landscape);
+        addStandardButtons(landscape, toolbarData);
     }
 
     if (portrait && portrait != landscape) {
-        addStandardButtons(portrait);
+        addStandardButtons(portrait, toolbarData);
     }
 }
 
-void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarLayout> &layout)
+void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarLayout> &layout,
+                                         const QSharedPointer<MToolbarData> &toolbarData)
 {
     if (layout->rows().isEmpty()) {
         return;
     }
 
     QSharedPointer<MToolbarRow> row = layout->rows().last();
-    if (copyPaste) {
-        row->append(copyPaste);
-    }
-    if (close) {
-        row->append(close);
+
+    foreach (const QSharedPointer<MToolbarItem> &item, standardToolbar->allItems()) {
+        if (!toolbarData->refusedNames().contains(item->name())) {
+            row->append(item);
+        }
     }
     row->sort();
 }

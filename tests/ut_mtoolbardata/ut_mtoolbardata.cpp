@@ -216,5 +216,29 @@ void Ut_MToolbarData::testMinimalXML()
     QVERIFY(subject->isVisible() == false);
 }
 
+void Ut_MToolbarData::testRefuseAttribute_data()
+{
+    QTest::addColumn<QString>("fileName");
+    QTest::addColumn<QStringList>("expectedValue");
+
+    QTest::newRow("toolbar1") << Toolbar1 << (QStringList() << "_close");
+    QTest::newRow("toolbar2") << Toolbar2 << (QStringList() << "");
+    QTest::newRow("toolbar3") << Toolbar3 << (QStringList() << "_close" << "_copypaste");
+}
+
+void Ut_MToolbarData::testRefuseAttribute()
+{
+    QFETCH(QString, fileName);
+    QFETCH(QStringList, expectedValue);
+
+    QVERIFY2(QFile(fileName).exists(), "xml file does not exist");
+    bool ok;
+
+    ok = subject->loadNokiaToolbarXml(fileName);
+    QVERIFY2(ok, "toolbar was not loaded correctly");
+
+    QCOMPARE(subject->refusedNames(), expectedValue);
+}
+
 QTEST_APPLESS_MAIN(Ut_MToolbarData)
 

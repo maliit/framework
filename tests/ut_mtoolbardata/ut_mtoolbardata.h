@@ -24,6 +24,9 @@ private slots:
     void testLoadOldXML();
     void testMinimalXML();
 
+    void testRefuseAttribute_data();
+    void testRefuseAttribute();
+
 private:
     QCoreApplication *app;
     MToolbarData *subject;

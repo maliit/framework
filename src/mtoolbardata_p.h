@@ -19,9 +19,9 @@
 #ifndef MTOOLBARDATA_P_H
 #define MTOOLBARDATA_P_H
 
-//#include <QObject>
 #include <QSharedPointer>
 #include <QList>
+#include <QStringList>
 
 class MToolbarItem;
 class MToolbarRow;
@@ -66,6 +66,8 @@ public:
     bool custom;
 
     bool visible;
+
+    QStringList refusedNames;
 };
 
 #endif
