@@ -15,6 +15,7 @@ The VERSION attribute defines version of this specification. Current version is 
 Warning: you need to specify version number explicitly, otherwise parser may assume wrong version number and then parsing will fail.
 The VISIBLE attribute defines toolbar's visibility. Toolbar is visible by default, but you could hide it by setting VISIBLE to false.
 Warning: normal application should not use this attribute.
+The REFUSE attribute enumerates names of standard items which should not be added to your toolbar. Names should be separated by commas. See also "Standard toolbar items".
 
 \subsection Layout
 
@@ -77,6 +78,10 @@ This tag defines that the action is to copy selected text.
 \subsubsubsubsection PASTE
 This tag defines that the action is to paste from clipboard.
 
+\section Standard toolbar items
+Button "_close" closes keyboard and removes focus from active text entry.
+Button "_copypaste" copies selected text (if any) or pastes current clipboard content.
+
 \section DTD
 \code
 <!DOCTYPE MEEGO_IM_TOOLBAR_WIDGET [
@@ -92,10 +97,11 @@ This tag defines that the action is to paste from clipboard.
 <!ELEMENT paste EMPTY>
 
 <!ATTLIST toolbar locked (true|false) "false">
-
-<!ATTLIST layout orientation (landscape|portrait) "landscape">
 <!ATTLIST toolbar version (0|1) "0">
 <!ATTLIST toolbar visible (true|false) "true">
+<!ATTLIST toolbar refuse CDATA "">
+
+<!ATTLIST layout orientation (landscape|portrait) "landscape">
 
 <!ATTLIST button name CDATA #REQUIRED>
 <!ATTLIST button group CDATA>
