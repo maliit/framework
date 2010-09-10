@@ -2,7 +2,7 @@ Source: meego-im-framework
 Section: libs
 Priority: extra
 Maintainer: Mohammad Anwari <Mohammad.Anwari@nokia.com> 
-Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.6) | libqt4-maemo5-dev (>= 4.6), doxygen, libqt4-opengl-dev | libqt4-maemo5-dev, libgles2-sgx-img-dev [arm armel] | libgles2-dev [arm armel], opengles-sgx-img-common-dev [arm armel], libgl-dev [i386], libgl1 [i386], libxcomposite-dev, libxfixes-dev, libxext-dev, libmeegoreactionmap-dev (>= 0.14.0-1), dbus-1-utils, pkg-config, dpkg-dev, libmeegotouch-dev (>= 0.20.29), libduicontrolpanel-dev (>= 0.7.20), graphviz
+Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.6) | libqt4-maemo5-dev (>= 4.6), doxygen, libqt4-opengl-dev | libqt4-maemo5-dev, libgles2-sgx-img-dev [arm armel] | libgles2-dev [arm armel], opengles-sgx-img-common-dev [arm armel], libgl-dev [i386], libgl1 [i386], libxcomposite-dev, libxfixes-dev, libxext-dev, libmeegoreactionmap-dev (>= 0.14.0-1), dbus-1-utils, pkg-config, dpkg-dev, libmeegotouch-dev (>= 0.20.38), libduicontrolpanel-dev (>= 0.7.20), graphviz
 Standards-Version: 3.7.2
 
 Package: meego-im-uiserver
