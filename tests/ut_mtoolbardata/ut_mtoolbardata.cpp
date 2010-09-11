@@ -243,5 +243,39 @@ void Ut_MToolbarData::testRefuseAttribute()
     QCOMPARE(subject->refusedNames(), expectedValue);
 }
 
+void Ut_MToolbarData::testAddItem()
+{
+    QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
+    bool ok;
+    QSharedPointer<MToolbarRow> row;
+    QSharedPointer<MToolbarItem> item;
+    QSharedPointer<MToolbarItem> button(new MToolbarItem("addItem", MInputMethod::ItemButton));
+
+    button->setPriority(-1);
+    button->setAlignment(Qt::AlignLeft);
+
+    ok = subject->append(QSharedPointer<MToolbarRow>(new MToolbarRow), button);
+    QVERIFY2(!ok, "Item should not be added to non-constructed toolbar");
+
+    ok = subject->loadNokiaToolbarXml(Toolbar1);
+    QVERIFY2(ok, "toolbar1.xml was not loaded correctly");
+
+    QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
+    QVERIFY(!landscape.isNull());
+    QCOMPARE(landscape->rows().count(), 1);
+    row = landscape->rows().at(0).constCast<MToolbarRow>();
+    QVERIFY(!row->items().isEmpty());
+
+    ok = subject->append(row, button);
+    QVERIFY2(ok, "Item was not added");
+    QVERIFY(row->items().last() == button);
+
+    ok = subject->append(row, button);
+    QVERIFY2(!ok, "Item should not be added twice");
+
+    ok = subject->append(QSharedPointer<MToolbarRow>(), button);
+    QVERIFY2(!ok, "Item should not be added to non-existing row");
+}
+
 QTEST_APPLESS_MAIN(Ut_MToolbarData)
 

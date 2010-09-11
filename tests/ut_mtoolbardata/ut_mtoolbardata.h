@@ -27,6 +27,8 @@ private slots:
     void testRefuseAttribute_data();
     void testRefuseAttribute();
 
+    void testAddItem();
+
 private:
     QCoreApplication *app;
     MToolbarData *subject;

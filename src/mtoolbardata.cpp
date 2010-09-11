@@ -140,13 +140,6 @@ MToolbarRow::~MToolbarRow()
     delete d_ptr;
 }
 
-void MToolbarRow::append(QSharedPointer<MToolbarItem> item)
-{
-    Q_D(MToolbarRow);
-
-    d->items.append(item);
-}
-
 QList<QSharedPointer<MToolbarItem> > MToolbarRow::items() const
 {
     Q_D(const MToolbarRow);
@@ -159,6 +152,13 @@ void MToolbarRow::sort()
     Q_D(MToolbarRow);
 
     qSort(d->items.begin(), d->items.end(), &lessThanItem);
+}
+
+void MToolbarRow::append(QSharedPointer<MToolbarItem> item)
+{
+    Q_D(MToolbarRow);
+
+    d->items.append(item);
 }
 
 MToolbarLayout::MToolbarLayout(M::Orientation orientation)
@@ -307,6 +307,25 @@ bool MToolbarData::isVisible() const
     Q_D(const MToolbarData);
 
     return d->visible;
+}
+
+bool MToolbarData::append(QSharedPointer<MToolbarRow> row, QSharedPointer<MToolbarItem> item)
+{
+    Q_D(MToolbarData);
+
+    if ((!layout(M::Landscape) || !layout(M::Landscape)->rows().contains(row))
+       && (!layout(M::Portrait) || !layout(M::Portrait)->rows().contains(row))) {
+        return false;
+    }
+
+    if (this->item(item->name())) {
+        return false;
+    }
+
+    row->append(item);
+    d->items.insert(item->name(), item);
+
+    return true;
 }
 
 QSharedPointer<MToolbarItem> MToolbarData::item(const QString &name)

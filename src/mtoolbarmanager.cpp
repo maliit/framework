@@ -188,7 +188,7 @@ void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarLayout> &l
 
     foreach (const QSharedPointer<MToolbarItem> &item, standardToolbar->allItems()) {
         if (!toolbarData->refusedNames().contains(item->name())) {
-            row->append(item);
+            toolbarData->append(row, item);
         }
     }
     row->sort();

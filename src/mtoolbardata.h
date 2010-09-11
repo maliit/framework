@@ -44,9 +44,6 @@ public:
     //! Destructor.
     virtual ~MToolbarRow();
 
-    //! Append item to row
-    void append(QSharedPointer<MToolbarItem> item);
-
     //! Return all items contained by this row
     QList<QSharedPointer<MToolbarItem> > items() const;
 
@@ -57,7 +54,12 @@ private:
     Q_DISABLE_COPY(MToolbarRow)
     Q_DECLARE_PRIVATE(MToolbarRow)
 
+    //! Append item to row
+    void append(QSharedPointer<MToolbarItem> item);
+
     MToolbarRowPrivate *const d_ptr;
+
+    friend class MToolbarData;
 };
 
 /*!
@@ -143,6 +145,10 @@ public:
     bool isVisible() const;
 
 private:
+    //! Append given \a item to the given \a row.
+    //! \return Return false if item could not be added.
+    bool append(QSharedPointer<MToolbarRow> row, QSharedPointer<MToolbarItem> item);
+
     //! Returns pointer to item for given \a name
     QSharedPointer<MToolbarItem> item(const QString &name);
 
