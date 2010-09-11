@@ -157,9 +157,6 @@ void Ut_MToolbarData::testLoadXML()
 
     QVERIFY(landscape->rows().at(0)->items().at(1) == row->items().at(0));
     QVERIFY(landscape->rows().at(0)->items().at(2) == row->items().at(1));
-
-    ok = subject->equal(Toolbar1);
-    QVERIFY2(ok, "toolbar1.xml is not equal to currently loaded toolbar");
 }
 
 void Ut_MToolbarData::testLandspaceOnly()

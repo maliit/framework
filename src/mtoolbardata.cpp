@@ -264,22 +264,11 @@ bool MToolbarData::loadNokiaToolbarXml(const QString &fileName)
     return valid;
 }
 
-QString MToolbarData::fileName() const
+QList<QSharedPointer<MToolbarItem> > MToolbarData::allItems() const
 {
     Q_D(const MToolbarData);
 
-    return d->toolbarFileName;
-}
-
-bool MToolbarData::equal(const QString &toolbar) const
-{
-    Q_D(const MToolbarData);
-    QString absoluteFileName = toolbar;
-    QFileInfo info(toolbar);
-
-    if (info.isRelative())
-        absoluteFileName = ToolbarConfigurationPath + info.fileName();
-    return (absoluteFileName == d->toolbarFileName);
+    return d->items.values();
 }
 
 QSharedPointer<const MToolbarLayout> MToolbarData::layout(M::Orientation orientation) const
@@ -297,34 +286,6 @@ QSharedPointer<const MToolbarLayout> MToolbarData::layout(M::Orientation orienta
     default:
         return QSharedPointer<const MToolbarLayout>();
     }
-}
-
-QSharedPointer<MToolbarItem> MToolbarData::item(const QString &name)
-{
-    Q_D(MToolbarData);
-    QSharedPointer<MToolbarItem> result;
-    MToolbarDataPrivate::Items::iterator iterator(d->items.find(name));
-
-    if (iterator != d->items.end()) {
-        result = *iterator;
-    }
-
-    return result;
-}
-
-void MToolbarData::sort()
-{
-    Q_D(MToolbarData);
-
-    sort(d->layoutLandscape);
-    sort(d->layoutPortrait);
-}
-
-QList<QSharedPointer<MToolbarItem> > MToolbarData::allItems() const
-{
-    Q_D(const MToolbarData);
-
-    return d->items.values();
 }
 
 bool MToolbarData::locked() const
@@ -348,11 +309,25 @@ bool MToolbarData::isVisible() const
     return d->visible;
 }
 
-QStringList MToolbarData::refusedNames() const
+QSharedPointer<MToolbarItem> MToolbarData::item(const QString &name)
 {
-    Q_D(const MToolbarData);
+    Q_D(MToolbarData);
+    QSharedPointer<MToolbarItem> result;
+    MToolbarDataPrivate::Items::iterator iterator(d->items.find(name));
 
-    return d->refusedNames;
+    if (iterator != d->items.end()) {
+        result = *iterator;
+    }
+
+    return result;
+}
+
+void MToolbarData::sort()
+{
+    Q_D(MToolbarData);
+
+    sort(d->layoutLandscape);
+    sort(d->layoutPortrait);
 }
 
 void MToolbarData::sort(QSharedPointer<MToolbarLayout> layout)
@@ -367,13 +342,19 @@ void MToolbarData::sort(QSharedPointer<MToolbarLayout> layout)
     }
 }
 
+QStringList MToolbarData::refusedNames() const
+{
+    Q_D(const MToolbarData);
+
+    return d->refusedNames;
+}
+
 void MToolbarData::setCustom(bool custom)
 {
     Q_D(MToolbarData);
 
     d->custom = custom;
 }
-
 
 QSharedPointer<MToolbarItem> MToolbarData::getOrCreateItemByName(const QString &name,
                                                                  MInputMethod::ItemType type)
@@ -546,34 +527,6 @@ void MToolbarData::parseTagRow(const QDomElement &element, MTBParseParameters &p
     parseChildren(element, params, parsers, 2);
 }
 
-void MToolbarData::parseChildren(const QDomElement &element, MTBParseParameters &params,
-                                 const MTBParseStructure *parserList, int parserCount)
-{
-    Q_ASSERT(parserCount > 0);
-
-    for (QDomNode child = element.firstChild(); !child.isNull() && params.validTag;
-            child = child.nextSibling()) {
-        if (child.isElement()) {
-            const QDomElement childElement = child.toElement();
-            bool found = false;
-            for (int i = 0; i < parserCount; ++i) {
-                if (childElement.tagName() == parserList[i].tagName) {
-                    (this->*(parserList[i].parser))(childElement, params);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                qWarning() << __PRETTY_FUNCTION__ << "Unexpected tag" << childElement.tagName() << "on line"
-                           << childElement.lineNumber() << "column" << childElement.columnNumber()
-                           << "in toolbar file" << params.fileName;
-                params.validTag = false;
-            }
-        }
-    }
-}
-
-
 void MToolbarData::parseTagButton(const QDomElement &element, MTBParseParameters &params)
 {
     const QString name = element.attribute(ImTagName);
@@ -731,5 +684,32 @@ void MToolbarData::parseTagHideGroup(const QDomElement &element, MTBParseParamet
     QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionHideGroup));
     action->setGroup(element.attribute(ImTagGroup));
     params.currentItem->append(action);
+}
+
+void MToolbarData::parseChildren(const QDomElement &element, MTBParseParameters &params,
+                                 const MTBParseStructure *parserList, int parserCount)
+{
+    Q_ASSERT(parserCount > 0);
+
+    for (QDomNode child = element.firstChild(); !child.isNull() && params.validTag;
+            child = child.nextSibling()) {
+        if (child.isElement()) {
+            const QDomElement childElement = child.toElement();
+            bool found = false;
+            for (int i = 0; i < parserCount; ++i) {
+                if (childElement.tagName() == parserList[i].tagName) {
+                    (this->*(parserList[i].parser))(childElement, params);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                qWarning() << __PRETTY_FUNCTION__ << "Unexpected tag" << childElement.tagName() << "on line"
+                           << childElement.lineNumber() << "column" << childElement.columnNumber()
+                           << "in toolbar file" << params.fileName;
+                params.validTag = false;
+            }
+        }
+    }
 }
 

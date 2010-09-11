@@ -110,37 +110,19 @@ public:
     ~MToolbarData();
 
     /*!
-    * \brief Load a custom toolbar's content from \a fileName xml file.
-    * \a fileName is the xml file name (with ".xml" postfix). And \a fileName could have absolute path.
-    * If no absolute path specified, then it will be taken from the default path
-    * "/usr/share/meegotouch/imtoolbars/".
-    * \param fileName Name of the xml file which contains the content of a custom toolbar.
-    */
-    bool loadNokiaToolbarXml(const QString &fileName);
-
-    /*!
-    * \brief Returns the custom toolbar's xml file name.
-    */
-    QString fileName() const;
-
-    /*!
-     *\brief Returns true \a toolbar equal this custom toolbar.
-     * \a toolbar is the xml file name.
-     * \sa fileName(), \sa loadNokiaToolbarXml().
+     * \brief Load a custom toolbar's content from \a fileName xml file.
+     * \a fileName is the xml file name (with ".xml" postfix). And \a fileName could have absolute path.
+     * If no absolute path specified, then it will be taken from the default path
+     * "/usr/share/meegotouch/imtoolbars/".
+     * \param fileName Name of the xml file which contains the content of a custom toolbar.
      */
-    bool equal(const QString &toolbar) const;
-
-    //! Returns pointer to layout for given \a orientation.
-    QSharedPointer<const MToolbarLayout> layout(M::Orientation orientation) const;
-
-    //! Returns pointer to item for given \a name
-    QSharedPointer<MToolbarItem> item(const QString &name);
-
-    //! Sort toolbar items according to their priorities and alignments
-    void sort();
+    bool loadNokiaToolbarXml(const QString &fileName);
 
     //! Return all items in this toolbar
     QList<QSharedPointer<MToolbarItem> > allItems() const;
+
+    //! Returns pointer to layout for given \a orientation.
+    QSharedPointer<const MToolbarLayout> layout(M::Orientation orientation) const;
 
     /*!
      * \brief Return true if toolbar is locked, so user can not
@@ -160,15 +142,21 @@ public:
      */
     bool isVisible() const;
 
+private:
+    //! Returns pointer to item for given \a name
+    QSharedPointer<MToolbarItem> item(const QString &name);
+
+    //! Sort toolbar items according to their priorities and alignments
+    void sort();
+
+    //! Sort layout items according to their priorities and alignments
+    void sort(QSharedPointer<MToolbarLayout> layout);
+
     /*!
      * \brief Return list of standard item names which should
      * not be inserted into this toolbar.
      */
     QStringList refusedNames() const;
-
-private:
-    //! Sort layout items according to their priorities and alignments
-    void sort(QSharedPointer<MToolbarLayout> layout);
 
     /*!
      * \brief Defines whether this toolbar is custom or standard.
@@ -294,6 +282,7 @@ protected:
     friend class MToolbarManager;
     friend struct MTBParseStructure;
     friend class Ut_MToolbarData;
+    friend class Ut_MToolbarManager;
 };
 
 #endif
