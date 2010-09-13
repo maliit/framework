@@ -264,7 +264,7 @@ bool MToolbarData::loadNokiaToolbarXml(const QString &fileName)
     return valid;
 }
 
-QList<QSharedPointer<MToolbarItem> > MToolbarData::allItems() const
+QList<QSharedPointer<MToolbarItem> > MToolbarData::items() const
 {
     Q_D(const MToolbarData);
 
@@ -328,9 +328,9 @@ bool MToolbarData::append(QSharedPointer<MToolbarRow> row, QSharedPointer<MToolb
     return true;
 }
 
-QSharedPointer<MToolbarItem> MToolbarData::item(const QString &name)
+QSharedPointer<MToolbarItem> MToolbarData::item(const QString &name) const
 {
-    Q_D(MToolbarData);
+    Q_D(const MToolbarData);
     QSharedPointer<MToolbarItem> result;
     MToolbarDataPrivate::Items::iterator iterator(d->items.find(name));
 

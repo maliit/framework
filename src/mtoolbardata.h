@@ -121,7 +121,7 @@ public:
     bool loadNokiaToolbarXml(const QString &fileName);
 
     //! Return all items in this toolbar
-    QList<QSharedPointer<MToolbarItem> > allItems() const;
+    QList<QSharedPointer<MToolbarItem> > items() const;
 
     //! Returns pointer to layout for given \a orientation.
     QSharedPointer<const MToolbarLayout> layout(M::Orientation orientation) const;
@@ -150,7 +150,7 @@ private:
     bool append(QSharedPointer<MToolbarRow> row, QSharedPointer<MToolbarItem> item);
 
     //! Returns pointer to item for given \a name
-    QSharedPointer<MToolbarItem> item(const QString &name);
+    QSharedPointer<MToolbarItem> item(const QString &name) const;
 
     //! Sort toolbar items according to their priorities and alignments
     void sort();

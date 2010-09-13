@@ -140,7 +140,7 @@ void MToolbarManager::createStandardObjects()
         standardToolbar->setCustom(false);
         toolbars.insert(MToolbarId::standardToolbarId(), standardToolbar);
 
-        foreach (QSharedPointer<MToolbarItem> item, standardToolbar->allItems()) {
+        foreach (QSharedPointer<MToolbarItem> item, standardToolbar->items()) {
             QList<QSharedPointer<MToolbarItemAction> > actions = item->actions();
             if (actions.isEmpty()) {
                 continue; // should never happen
@@ -186,7 +186,7 @@ void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarLayout> &l
 
     QSharedPointer<MToolbarRow> row = layout->rows().last();
 
-    foreach (const QSharedPointer<MToolbarItem> &item, standardToolbar->allItems()) {
+    foreach (const QSharedPointer<MToolbarItem> &item, standardToolbar->items()) {
         if (!toolbarData->refusedNames().contains(item->name())) {
             toolbarData->append(row, item);
         }
