@@ -529,9 +529,17 @@ void MIMPluginManagerPrivate::loadHandlerMap()
 
 void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
 {
-    HandlerMap::iterator iterator = handlerToPlugin.find(static_cast<MIMHandlerState>(state));
-    MGConfItem gconf(PluginRoot + "/" + inputSourceName(static_cast<MIMHandlerState>(state)));
-    QString pluginName = gconf.value().toString();
+    const MIMHandlerState source = static_cast<MIMHandlerState>(state);
+
+    MInputMethodPlugin *currentPlugin = activePlugin(source);
+    MGConfItem gconf(PluginRoot + "/" + inputSourceName(source));
+    const QString pluginName = gconf.value().toString();
+
+    // already synchronized.
+    if (currentPlugin && pluginName == currentPlugin->name()) {
+       return;
+    }
+
     MInputMethodPlugin *replacement = 0;
     foreach (MInputMethodPlugin *plugin, plugins.keys()) {
         if (plugin->name() == pluginName) {
@@ -539,11 +547,9 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
             break;
         }
     }
-    if (replacement
-        && iterator != handlerToPlugin.end()
-        && iterator.value()->name() != pluginName) {
+    if (replacement) {
         // switch plugin if handler gconf is changed.
-        MInputMethodBase *inputMethod = plugins[iterator.value()].inputMethod;
+        MInputMethodBase *inputMethod = plugins[currentPlugin].inputMethod;
         addHandlerMap(static_cast<MIMHandlerState>(state), pluginName);
         if (!switchPlugin(pluginName, inputMethod)) {
             qWarning() << __PRETTY_FUNCTION__ << ", switching to plugin:"
@@ -581,7 +587,9 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId, MIMH
                 if (inputMethod->activeSubView(OnScreen) != activeSubViewIdOnScreen) {
                     inputMethod->setActiveSubView(activeSubViewIdOnScreen, OnScreen);
                 }
-                emit adaptor->activeSubViewChanged(OnScreen);
+                if (adaptor) {
+                    emit adaptor->activeSubViewChanged(OnScreen);
+                }
                 if (settingsDialog) {
                     settingsDialog->refreshUi();
                 }
@@ -614,6 +622,12 @@ void MIMPluginManagerPrivate::initActiveSubView()
         if (activeSubViewIdOnScreen != inputMethod->activeSubView(OnScreen)) {
             // activeSubViewIdOnScreen is invalid, should be initialized.
             activeSubViewIdOnScreen = inputMethod->activeSubView(OnScreen);
+            if (adaptor) {
+                emit adaptor->activeSubViewChanged(OnScreen);
+            }
+            if (settingsDialog) {
+                settingsDialog->refreshUi();
+            }
         }
     }
 }
@@ -674,6 +688,12 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginName, MIMHand
         foreach (MInputMethodPlugin *plugin, plugins.keys()) {
             if (plugin->name() == pluginName) {
                 currentPluginConf.set(pluginName);
+                // Force call _q_syncHandlerMap() even though we already connect
+                // _q_syncHandlerMap() with gconf valueChanged(). Because if the
+                // request comes from different threads, the _q_syncHandlerMap()
+                // won't be called at once. This means the synchronization of
+                // handler map could be delayed if we don't force call it.
+                _q_syncHandlerMap(state);
                 break;
             }
         }
