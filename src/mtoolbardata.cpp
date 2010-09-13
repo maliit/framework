@@ -331,14 +331,8 @@ bool MToolbarData::append(QSharedPointer<MToolbarRow> row, QSharedPointer<MToolb
 QSharedPointer<MToolbarItem> MToolbarData::item(const QString &name) const
 {
     Q_D(const MToolbarData);
-    QSharedPointer<MToolbarItem> result;
-    MToolbarDataPrivate::Items::iterator iterator(d->items.find(name));
 
-    if (iterator != d->items.end()) {
-        result = *iterator;
-    }
-
-    return result;
+    return d->items.value(name);
 }
 
 void MToolbarData::sort()
