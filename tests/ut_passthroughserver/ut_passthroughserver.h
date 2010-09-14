@@ -7,7 +7,6 @@
 class MWindow;
 class MIMApplication;
 class MPassThruWindow;
-class MIMWindowManager;
 
 class Ut_PassthroughServer : public QObject
 {
@@ -23,7 +22,6 @@ private slots:
     void testHideShow();
 
     void testEmergencyHide();
-    void testPassThruWindowManagement();
 
 #if defined(M_IM_DISABLE_TRANSLUCENCY) && defined(M_IM_USE_SHAPE_WINDOW)
     //! Tests window shape based on region signals
@@ -33,12 +31,9 @@ private slots:
 private:
     void makeVisible();
     void makeInvisible();
-    void waitForWm();
 
     MIMApplication *app;
     MPassThruWindow *subject;
-    MIMWindowManager *wm;
 };
 
 #endif
-

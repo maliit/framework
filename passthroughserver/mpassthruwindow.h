@@ -22,53 +22,6 @@
 #include <QTimer>
 #include <QPointer>
 
-class MPassThruWindow;
-
-// Helper class to work around NB#173434 and Qt/X11 problems wrt hide/show.
-class MIMWindowManager
-    : public QObject
-{
-    Q_OBJECT
-
-public:
-    //! The MIMWindowManager processes hide/show requests of MPassThruWindow,
-    //! depending on the RequestType.
-    enum RequestType
-    {
-        NONE,   //!< Default state, does nothing.
-        RETRY,  //!< Use whatever request type is stored in state.
-                //!< *Not* a valid value for state itself, though.
-        SHOW,   //!< Tries aggressively to show the parent widget.
-        HIDE    //!< Tries aggressively to hide the parent widget.
-    };
-
-    //! Our WM can only manage one window - the passthru window:
-    explicit MIMWindowManager(MPassThruWindow *parent = 0);
-
-    //! Returns the current request state.
-    RequestType requestState();
-
-public slots:
-    //! Tries aggressively to show the parent widget.
-    void showRequest();
-
-    //! Tries aggressively to hide the parent widget.
-    void hideRequest();
-
-private:
-    RequestType state;
-
-    int retryCount;
-    QTimer waitForNotify;
-
-private slots:
-    //! Depending on the state, either tries to show or hide the parent
-    void showHideRequest(RequestType rt = RETRY);
-
-    //! Cancels window show/hide retry loop
-    void cancelRequest();
-};
-
 /*!
  * \brief MPassThruWindow uses XFixes to redirect mouse events to VKB
  */
@@ -86,9 +39,6 @@ public:
     //! Destructor
     ~MPassThruWindow();
 
-    //! Set the MIMWindowManager instance, MPassThruWindow takes ownership
-    void setMIMWindowManager(const QPointer<MIMWindowManager> &wm);
-
 public slots:
     //! Set window ID for given region
     void inputPassthrough(const QRegion &region);
@@ -98,8 +48,6 @@ private:
 
     int displayWidth;
     int displayHeight;
-
-    QPointer<MIMWindowManager> wm;
 
     friend class Ut_PassthroughServer;
 };

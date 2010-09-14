@@ -27,124 +27,9 @@
 #include <X11/extensions/shape.h>
 #endif
 
-namespace {
-    const int ShowHideRetryLimit = 100;
-    const int WaitForNotifyTimeout = 100; // in ms
-}
-
-MIMWindowManager::MIMWindowManager(MPassThruWindow *parent)
-    : QObject(parent)
-    , state(NONE)
-    , retryCount(0)
-{
-    waitForNotify.setSingleShot(false);
-    waitForNotify.setInterval(WaitForNotifyTimeout);
-
-    // We'll keep sending show/hide requests until we got a map notify event from X.
-    // See NB#173434 - Text input method bar is not displayed in 'SMS Conversational View'
-    // Root cause was: compositor crash between QWidget::show() and actual X mapping of the window.
-    connect(&waitForNotify, SIGNAL(timeout()),
-            this,           SLOT(showHideRequest()));
-
-    connect(MIMApplication::instance(), SIGNAL(passThruWindowMapped()),
-            this,                       SLOT(cancelRequest()));
-
-    connect(MIMApplication::instance(), SIGNAL(passThruWindowUnmapped()),
-            this,                       SLOT(cancelRequest()));
-
-    connect(MIMApplication::instance(), SIGNAL(remoteWindowGone()),
-            this,                       SLOT(hideRequest()));
-}
-
-MIMWindowManager::RequestType MIMWindowManager::requestState() {
-    return state;
-}
-
-void MIMWindowManager::showRequest()
-{
-    retryCount = 0;
-    waitForNotify.start();
-    showHideRequest(SHOW);
-}
-
-void MIMWindowManager::hideRequest()
-{
-    retryCount = 0;
-    waitForNotify.start();
-    showHideRequest(HIDE);
-}
-
-void MIMWindowManager::showHideRequest(RequestType rt)
-{
-    if (rt != RETRY) {
-        state = rt;
-    }
-
-    QWidget *w = qobject_cast<QWidget *>(parent());
-
-    if (!w || state == NONE) {
-        return;
-    }
-
-    qDebug() << __PRETTY_FUNCTION__
-             << "Trying to hide/show passthru window (count = "
-             << retryCount
-             << ", request = "
-             << state
-             << ")";
-
-    switch (state) {
-    case SHOW:
-        if (w->testAttribute(Qt::WA_Mapped)) {
-            cancelRequest();
-        } else if (retryCount == 0) {
-            w->show();
-        } else if (retryCount < ShowHideRetryLimit) {
-            XMapWindow(QX11Info::display(), w->effectiveWinId());
-            XFlush(QX11Info::display());
-        } else {
-            cancelRequest();
-        }
-        break;
-
-    case HIDE:
-        if (!w->testAttribute(Qt::WA_Mapped)) {
-            cancelRequest();
-        } else if (retryCount == 0) {
-            w->hide();
-        } else if (retryCount < ShowHideRetryLimit) {
-            XUnmapWindow(QX11Info::display(), w->effectiveWinId());
-            XFlush(QX11Info::display());
-        } else {
-            cancelRequest();
-        }
-        break;
-
-    case RETRY:
-        qWarning() << __PRETTY_FUNCTION__
-                   << "Invalid state (RETRY), should not be reached!";
-        break;
-
-    default:
-        break;
-    }
-
-    ++retryCount;
-}
-
-void MIMWindowManager::cancelRequest()
-{
-    qDebug() << __PRETTY_FUNCTION__
-             << "Window got finally mapped/unmapped, count = " << retryCount;
-    state = NONE;
-    retryCount = 0;
-    waitForNotify.stop();
-}
-
 MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
     : QWidget(p)
 {
-    setMIMWindowManager(new MIMWindowManager);
     setWindowTitle("MInputMethod");
 #ifndef M_IM_DISABLE_TRANSLUCENCY
     setAttribute(Qt::WA_TranslucentBackground);
@@ -174,16 +59,6 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
 
 MPassThruWindow::~MPassThruWindow()
 {
-}
-
-void MPassThruWindow::setMIMWindowManager(const QPointer<MIMWindowManager> &newWm)
-{
-    if (wm == newWm) {
-        return;
-    }
-
-    wm = newWm;
-    wm->setParent(this);
 }
 
 void MPassThruWindow::inputPassthrough(const QRegion &region)
@@ -253,9 +128,9 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (isVisible() && region.isEmpty()) {
-        wm->hideRequest();
+        hide();
     } else if (!isVisible() && !region.isEmpty()) {
-        wm->showRequest();
+        show();
     }
 }
 
