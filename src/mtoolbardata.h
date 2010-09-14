@@ -23,44 +23,16 @@
 #include <QList>
 
 #include "minputmethodnamespace.h"
-#include "mtoolbaritem.h"
-#include "mtoolbarrow.h"
+#include <MNamespace>
+
+class MToolbarLayout;
+class MToolbarRow;
+class MToolbarItem;
 
 class QDomElement;
 struct MTBParseParameters;
 struct MTBParseStructure;
-class MToolbarLayoutPrivate;
 class MToolbarDataPrivate;
-
-/*!
- * \brief MToolbarLayout defines toolbar layout for specified orientation
- */
-class MToolbarLayout {
-public:
-    //! Creates empty layout object for given \a orientation
-    explicit MToolbarLayout(M::Orientation orientation = M::Landscape);
-
-    //! Destructor.
-    virtual ~MToolbarLayout();
-
-    //! Append row to layout
-    void append(QSharedPointer<MToolbarRow> row);
-
-    //! Return all items contained by this row
-    QList<QSharedPointer<const MToolbarRow> > rows() const;
-
-    //! Return all items contained by this row
-    QList<QSharedPointer<MToolbarRow> > rows();
-
-    //! Return layout's orientation
-    M::Orientation orientation() const;
-
-private:
-    Q_DISABLE_COPY(MToolbarLayout)
-    Q_DECLARE_PRIVATE(MToolbarLayout)
-
-    MToolbarLayoutPrivate *const d_ptr;
-};
 
 /*!
   \brief MToolbarData corresponds to a toolbar defined in a XML file

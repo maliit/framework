@@ -17,6 +17,7 @@
 
 #include "mtoolbarmanager.h"
 #include "mtoolbarid.h"
+#include "mtoolbarlayout.h"
 
 #include <MLocale>
 #include <QVariant>

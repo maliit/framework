@@ -19,6 +19,7 @@ HEADERSINSTALL = \
         minputmethodnamespace.h \
         minputmethodsettingsbase.h \
         mtoolbarrow.h \
+        mtoolbarlayout.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
@@ -29,6 +30,7 @@ HEADERS += $$HEADERSINSTALL \
         mtoolbarid.h \
         mimsettingsdialog.h \
         mtoolbarrow_p.h \
+        mtoolbarlayout_p.h \
 
 SOURCES += mimpluginmanager.cpp \
         minputmethodbase.cpp \
@@ -41,6 +43,7 @@ SOURCES += mimpluginmanager.cpp \
         mtoolbarid.cpp \
         mimsettingsdialog.cpp \
         mtoolbarrow.cpp \
+        mtoolbarlayout.cpp \
 
 CONFIG += debug meegotouchcore qdbus
 QT = core gui xml

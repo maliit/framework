@@ -1,6 +1,8 @@
 #include "ut_mtoolbardata.h"
 
 #include <mtoolbardata.h>
+#include <mtoolbarrow.h>
+#include <mtoolbarlayout.h>
 #include <QCoreApplication>
 #include <QFile>
 #include <QDir>

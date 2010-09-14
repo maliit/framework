@@ -18,6 +18,7 @@
 #include "mtoolbardata.h"
 #include "mtoolbardata_p.h"
 #include "mtoolbarrow.h"
+#include "mtoolbarlayout.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -120,49 +121,7 @@ MToolbarDataPrivate::MToolbarDataPrivate()
 {
 }
 
-MToolbarLayout::MToolbarLayout(M::Orientation orientation)
-    : d_ptr(new MToolbarLayoutPrivate)
-{
-    d_ptr->orientation = orientation;
-}
-
-MToolbarLayout::~MToolbarLayout()
-{
-    delete d_ptr;
-}
-
-void MToolbarLayout::append(QSharedPointer<MToolbarRow> row)
-{
-    Q_D(MToolbarLayout);
-
-    d->rows.append(row);
-}
-
-QList<QSharedPointer<const MToolbarRow> > MToolbarLayout::rows() const
-{
-    Q_D(const MToolbarLayout);
-    QList<QSharedPointer<const MToolbarRow> > result;
-
-    foreach (const QSharedPointer<const MToolbarRow> row, d->rows) {
-        result.append(row);
-    }
-
-    return result;
-}
-
-QList<QSharedPointer<MToolbarRow> > MToolbarLayout::rows()
-{
-    Q_D(MToolbarLayout);
-
-    return d->rows;
-}
-
-M::Orientation MToolbarLayout::orientation() const
-{
-    Q_D(const MToolbarLayout);
-
-    return d->orientation;
-}
+// Actual class implementation
 
 MToolbarData::MToolbarData()
     : d_ptr(new MToolbarDataPrivate)

@@ -19,6 +19,8 @@
 #include "ut_mtoolbarmanager.h"
 #include <mtoolbarmanager.h>
 #include <mtoolbardata.h>
+#include <mtoolbarrow.h>
+#include <mtoolbarlayout.h>
 #include <mtoolbarid.h>
 #include <QCoreApplication>
 #include <QDebug>

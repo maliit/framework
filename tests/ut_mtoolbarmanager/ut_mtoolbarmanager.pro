@@ -21,11 +21,15 @@ HEADERS += \
     $$SRC_DIR/mtoolbardata.h \
     $$SRC_DIR/minputmethodnamespace.h \
     $$SRC_DIR/mtoolbarmanager.h \
+    $$SRC_DIR/mtoolbarrow.h \
+    $$SRC_DIR/mtoolbarlayout.h \
 
 SOURCES += \
     $$SRC_DIR/mtoolbaritem.cpp \
     $$SRC_DIR/mtoolbardata.cpp \
     $$SRC_DIR/mtoolbarmanager.cpp \
+    $$SRC_DIR/mtoolbarrow.cpp \
+    $$SRC_DIR/mtoolbarlayout.cpp \
 }
 
 CONFIG += debug plugin meegotouch qdbus

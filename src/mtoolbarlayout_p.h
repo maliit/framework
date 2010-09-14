@@ -20,38 +20,18 @@
 #define MTOOLBARDATA_P_H
 
 #include <QSharedPointer>
-#include <QMap>
-#include <QStringList>
-#include <QString>
+#include <QList>
 
 #include <mtoolbaritem.h>
 
-class MToolbarDataPrivate
+class MToolbarLayoutPrivate
 {
 public:
-    //! Construct new instance.
-    MToolbarDataPrivate();
+    //! Rows contained by this layout
+    QList<QSharedPointer<MToolbarRow> > rows;
 
-    //! Layout for landscape orientation
-    QSharedPointer<MToolbarLayout> layoutLandscape;
-
-    //! Layout for portrait orientation
-    QSharedPointer<MToolbarLayout> layoutPortrait;
-
-    //! Name of file containing this toolbar
-    QString toolbarFileName;
-
-    //! Contains true if toolbar is locked
-    bool locked;
-
-    typedef QMap<QString, QSharedPointer<MToolbarItem> > Items;
-    Items items;
-
-    bool custom;
-
-    bool visible;
-
-    QStringList refusedNames;
+    //! Orientation
+    M::Orientation orientation;
 };
 
 #endif
