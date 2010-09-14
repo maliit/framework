@@ -1,10 +1,9 @@
-meego-im-framework (0.19.18~1) unstable; urgency=low
+meego-im-framework (0.19.18-1) unstable; urgency=low
 
-  * [UNRELEASED]
   * Toolbar could be completely hidden by the application.
   * Standard buttons (close and copy/paste) could be hidden by the application.
 
- -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Tue, 07 Sep 2010 12:02:48 +0300
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 14 Sep 2010 12:56:06 +0300
 
 meego-im-framework (0.19.17-1) unstable; urgency=low
 
@@ -12,7 +11,7 @@ meego-im-framework (0.19.17-1) unstable; urgency=low
   * Use qdbus only if qt dbus input context support is compiled in 
   * Avoid using unnecessary meegotouch components
 
- -- huaming wang <huaming@nokia.com>  Tue, 07 Sep 2010 10:19:05 +0300
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 07 Sep 2010 10:19:05 +0300
 
 meego-im-framework (0.19.16-1) unstable; urgency=low
 
