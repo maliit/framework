@@ -15,9 +15,9 @@
  */
 
 
-
 #include "mtoolbardata.h"
 #include "mtoolbardata_p.h"
+#include "mtoolbarrow.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -76,16 +76,6 @@ namespace
     const QString ImTagRefuse                = QString::fromLatin1("refuse");
 
     const QChar NameSeparator(',');
-
-    bool lessThanItem(const QSharedPointer<const MToolbarItem> &left,
-                      const QSharedPointer<const MToolbarItem> &right)
-    {
-        if (left->alignment() != right->alignment()) {
-            return left->alignment() < right->alignment();
-        }
-
-        return left->priority() < right->priority();
-    }
 }
 
 struct MTBParseParameters {
@@ -128,37 +118,6 @@ MToolbarDataPrivate::MToolbarDataPrivate()
       custom(false),
       visible(true)
 {
-}
-
-MToolbarRow::MToolbarRow()
-    : d_ptr(new MToolbarRowPrivate)
-{
-}
-
-MToolbarRow::~MToolbarRow()
-{
-    delete d_ptr;
-}
-
-QList<QSharedPointer<MToolbarItem> > MToolbarRow::items() const
-{
-    Q_D(const MToolbarRow);
-
-    return d->items;
-}
-
-void MToolbarRow::sort()
-{
-    Q_D(MToolbarRow);
-
-    qSort(d->items.begin(), d->items.end(), &lessThanItem);
-}
-
-void MToolbarRow::append(QSharedPointer<MToolbarItem> item)
-{
-    Q_D(MToolbarRow);
-
-    d->items.append(item);
 }
 
 MToolbarLayout::MToolbarLayout(M::Orientation orientation)

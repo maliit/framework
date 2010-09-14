@@ -21,16 +21,11 @@
 
 #include <QSharedPointer>
 #include <QList>
+#include <QMap>
 #include <QStringList>
+#include <QString>
 
-class MToolbarItem;
-class MToolbarRow;
-
-class MToolbarRowPrivate
-{
-public:
-    QList<QSharedPointer<MToolbarItem> > items;
-};
+#include <mtoolbaritem.h>
 
 class MToolbarLayoutPrivate
 {

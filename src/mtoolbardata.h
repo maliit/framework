@@ -21,46 +21,16 @@
 
 #include <QObject>
 #include <QList>
-#include <QMap>
 
 #include "minputmethodnamespace.h"
 #include "mtoolbaritem.h"
+#include "mtoolbarrow.h"
 
 class QDomElement;
 struct MTBParseParameters;
 struct MTBParseStructure;
-class MToolbarRowPrivate;
 class MToolbarLayoutPrivate;
 class MToolbarDataPrivate;
-
-/*!
- * \brief MToolbarRow defines content of one row in toolbar
- */
-class MToolbarRow {
-public:
-    //! Constructor.
-    MToolbarRow();
-
-    //! Destructor.
-    virtual ~MToolbarRow();
-
-    //! Return all items contained by this row
-    QList<QSharedPointer<MToolbarItem> > items() const;
-
-    //! Sort items according to their priorities and alignments
-    void sort();
-
-private:
-    Q_DISABLE_COPY(MToolbarRow)
-    Q_DECLARE_PRIVATE(MToolbarRow)
-
-    //! Append item to row
-    void append(QSharedPointer<MToolbarItem> item);
-
-    MToolbarRowPrivate *const d_ptr;
-
-    friend class MToolbarData;
-};
 
 /*!
  * \brief MToolbarLayout defines toolbar layout for specified orientation
