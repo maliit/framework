@@ -1,0 +1,8 @@
+0.19.19~1
+========
+
+* API changes
+ - Public API of MToolbarData and MToolbarRow was changed, most of methods are private now.
+ - Source code of MToolbarRow and MToolbarLayout was moved to dedicated files, so you need
+   to include mtoolbarrow.h and mtoolbarlayout.h if you want to use that classes.
+
