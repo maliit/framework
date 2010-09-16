@@ -55,6 +55,9 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
     Atom input = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_INPUT", False);
     XChangeProperty(dpy, winId(), XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False), XA_ATOM, 32,
                     PropModeReplace, (unsigned char *) &input, 1);
+
+    connect(MIMApplication::instance(), SIGNAL(remoteWindowGone()),
+            this,                       SLOT(inputPassthrough()));
 }
 
 MPassThruWindow::~MPassThruWindow()

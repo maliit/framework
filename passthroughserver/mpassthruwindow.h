@@ -41,7 +41,7 @@ public:
 
 public slots:
     //! Set window ID for given region
-    void inputPassthrough(const QRegion &region);
+    void inputPassthrough(const QRegion &region = QRegion());
 
 private:
     Q_DISABLE_COPY(MPassThruWindow);
