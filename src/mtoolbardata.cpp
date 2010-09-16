@@ -227,7 +227,8 @@ bool MToolbarData::isVisible() const
     return d->visible;
 }
 
-bool MToolbarData::append(QSharedPointer<MToolbarRow> row, QSharedPointer<MToolbarItem> item)
+bool MToolbarData::append(const QSharedPointer<MToolbarRow> &row,
+                          const QSharedPointer<MToolbarItem> &item)
 {
     Q_D(MToolbarData);
 
@@ -261,7 +262,7 @@ void MToolbarData::sort()
     sort(d->layoutPortrait);
 }
 
-void MToolbarData::sort(QSharedPointer<MToolbarLayout> layout)
+void MToolbarData::sort(const QSharedPointer<MToolbarLayout> &layout)
 {
     if (!layout) {
         return;

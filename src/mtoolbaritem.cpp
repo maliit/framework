@@ -414,7 +414,7 @@ void MToolbarItem::setAlignment(Qt::Alignment alignment)
     d->alignment = alignment;
 }
 
-void MToolbarItem::append(QSharedPointer<MToolbarItemAction> action)
+void MToolbarItem::append(const QSharedPointer<MToolbarItemAction> &action)
 {
     Q_D(MToolbarItem);
 

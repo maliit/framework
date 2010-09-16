@@ -29,7 +29,7 @@ MToolbarLayout::~MToolbarLayout()
     delete d_ptr;
 }
 
-void MToolbarLayout::append(QSharedPointer<MToolbarRow> row)
+void MToolbarLayout::append(const QSharedPointer<MToolbarRow> &row)
 {
     Q_D(MToolbarLayout);
 

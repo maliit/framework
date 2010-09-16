@@ -48,7 +48,7 @@ private:
     Q_DECLARE_PRIVATE(MToolbarRow)
 
     //! Append item to row
-    void append(QSharedPointer<MToolbarItem> item);
+    void append(const QSharedPointer<MToolbarItem> &item);
 
     MToolbarRowPrivate *const d_ptr;
 

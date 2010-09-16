@@ -55,7 +55,7 @@ void MToolbarRow::sort()
     qSort(d->items.begin(), d->items.end(), &lessThanItem);
 }
 
-void MToolbarRow::append(QSharedPointer<MToolbarItem> item)
+void MToolbarRow::append(const QSharedPointer<MToolbarItem> &item)
 {
     Q_D(MToolbarRow);
 

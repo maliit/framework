@@ -247,7 +247,7 @@ protected:
     void setAlignment(Qt::Alignment alignment);
 
     //! Add \a action to action list for this item.
-    void append(QSharedPointer<MToolbarItemAction> action);
+    void append(const QSharedPointer<MToolbarItemAction> &action);
 
 private:
     Q_DECLARE_PRIVATE(MToolbarItem)

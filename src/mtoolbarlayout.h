@@ -39,7 +39,7 @@ public:
     virtual ~MToolbarLayout();
 
     //! Append row to layout
-    void append(QSharedPointer<MToolbarRow> row);
+    void append(const QSharedPointer<MToolbarRow> &row);
 
     //! Return all items contained by this row
     QList<QSharedPointer<const MToolbarRow> > rows() const;
