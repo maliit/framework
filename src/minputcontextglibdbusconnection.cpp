@@ -799,12 +799,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
                 registerToolbar(connection, toolbarLocalId, toolbarFile);
             }
         }
-        QSharedPointer<const MToolbarData> toolbar =
-            MToolbarManager::instance().toolbarData(newToolbarId);
-
-        foreach (MInputMethodBase *target, targets()) {
-            target->setToolbar(toolbar);
-        }
+        emit toolbarIdChanged(newToolbarId);
         // store the new used toolbar id(global).
         toolbarId = newToolbarId;
     }

@@ -24,6 +24,7 @@
 
 class MIMPluginManagerPrivate;
 class QRegion;
+class MToolbarId;
 
 class MIMPluginManager: public QObject
 {
@@ -95,6 +96,9 @@ private slots:
 
     //! Updates the whole painting area for input method objects.
     void updateRegion(const QRegion &region);
+
+    //! Set toolbar to active plugin with given \a id
+    void setToolbar(const MToolbarId &id);
 
 protected:
     MIMPluginManagerPrivate *const d_ptr;

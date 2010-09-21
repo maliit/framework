@@ -28,6 +28,7 @@
 
 #include "mimhandlerstate.h"
 #include "mimdirection.h"
+#include "mtoolbarid.h"
 
 class MInputMethodPlugin;
 class MInputContextConnection;
@@ -135,6 +136,8 @@ public:
     typedef QMap<MIMHandlerState, QString> InputSourceToNameMap;
     QMap<MIMHandlerState, QString> inputSourceToNameMap;
     QMap<QString, MIMHandlerState> nameToInputSourceMap;
+
+    MToolbarId toolbarId;
 };
 
 class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor

@@ -43,6 +43,7 @@ private slots:
     void testDBusSetCalls();
 
     void testRegionUpdates();
+    void testSetToolbar();
 private:
     void handleMessages();
 

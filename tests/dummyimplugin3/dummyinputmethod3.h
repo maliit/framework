@@ -4,6 +4,8 @@
 #include <minputmethodbase.h>
 #include <QSet>
 
+#include "mtoolbardata.h"
+
 class DummyInputMethod3 : public MInputMethodBase
 {
     Q_OBJECT
@@ -19,6 +21,7 @@ public:
     virtual void setActiveSubView(const QString &, MIMHandlerState state = OnScreen);
     virtual QString activeSubView(MIMHandlerState state = OnScreen) const;
     virtual void show();
+    virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
     //! \reimp_end
 
 public:
@@ -28,6 +31,7 @@ public:
     int switchContextCallCount;
     M::InputMethodSwitchDirection directionParam;
     bool enableAnimationParam;
+    QSharedPointer<const MToolbarData> toolbarParam;
 
 private:
     QList<MInputMethodBase::MInputMethodSubView> sViews;

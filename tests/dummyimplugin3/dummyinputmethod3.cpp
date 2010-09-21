@@ -72,3 +72,8 @@ void DummyInputMethod3::show()
     emit regionUpdated(QRegion(0, 0, 100, 100));
 }
 
+void DummyInputMethod3::setToolbar(QSharedPointer<const MToolbarData> toolbar)
+{
+    toolbarParam = toolbar;
+}
+

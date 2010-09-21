@@ -317,6 +317,9 @@ void MIMPluginManagerPrivate::replacePlugin(M::InputMethodSwitchDirection direct
         switchedTo->switchContext(direction, false);
     }
     initiator->lastSwitchDirection = direction;
+    QSharedPointer<const MToolbarData> toolbar =
+        MToolbarManager::instance().toolbarData(toolbarId);
+    switchedTo->setToolbar(toolbar);
     switchedTo->show();
 }
 
@@ -765,6 +768,9 @@ MIMPluginManager::MIMPluginManager()
     connect(d->mICConnection, SIGNAL(hideInputMethodRequest()),
             this, SLOT(hideActivePlugins()));
 
+    connect(d->mICConnection, SIGNAL(toolbarIdChanged(const MToolbarId &)),
+            this, SLOT(setToolbar(const MToolbarId &)));
+
     MToolbarManager::createInstance();
 
     d->paths     = MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
@@ -919,6 +925,21 @@ void MIMPluginManager::updateRegion(const QRegion &region)
     if (d->acceptRegionUpdates &&
         (!d->settingsDialog || !d->settingsDialog->isVisible())) {
         emit regionUpdated(region);
+    }
+}
+
+void MIMPluginManager::setToolbar(const MToolbarId &id)
+{
+    Q_D(MIMPluginManager);
+
+    // Record MToolbarId for switch Plugin
+    d->toolbarId = id;
+
+    QSharedPointer<const MToolbarData> toolbar =
+        MToolbarManager::instance().toolbarData(id);
+
+    foreach (MInputMethodPlugin *plugin, d->activePlugins) {
+        d->plugins[plugin].inputMethod->setToolbar(toolbar);
     }
 }
 

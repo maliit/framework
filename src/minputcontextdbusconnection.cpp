@@ -554,12 +554,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
                 registerToolbar(toolbarLocalId, toolbarFile);
             }
         }
-        QSharedPointer<const MToolbarData> toolbar =
-            MToolbarManager::instance().toolbarData(newToolbarId);
-
-        foreach (MInputMethodBase *target, targets()) {
-            target->setToolbar(toolbar);
-        }
+        emit toolbarIdChanged(newToolbarId);
         // store the new used toolbar id(global).
         d->toolbarId = newToolbarId;
     }

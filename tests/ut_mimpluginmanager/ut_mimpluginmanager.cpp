@@ -18,6 +18,8 @@
 #include <mimpluginmanager_p.h>
 #include <minputmethodplugin.h>
 
+#include "mtoolbarmanager.h"
+
 typedef QSet<MIMHandlerState> HandlerStates;
 Q_DECLARE_METATYPE(HandlerStates);
 Q_DECLARE_METATYPE(MIMHandlerState);
@@ -40,6 +42,9 @@ namespace
     const char * const DBusMIMPluginManagerServiceName = "com.maemo.inputmethodpluginmanager1";
     const char * const DBusMIMPluginManagerPath = "/com/maemo/inputmethodpluginmanager1";
     const char * const DBusMIMPluginManagerInterface = "com.maemo.inputmethodpluginmanager1";
+
+    QString Toolbar1 = "/toolbar1.xml";
+    QString Toolbar2 = "/toolbar2.xml";
 }
 
 
@@ -49,6 +54,11 @@ void Ut_MIMPluginManager::initTestCase()
     static int argc = 1;
 
     app = new QCoreApplication(argc, argv);
+
+    Toolbar1 = QCoreApplication::applicationDirPath() + Toolbar1;
+    QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
+    Toolbar2 = QCoreApplication::applicationDirPath() + Toolbar2;
+    QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
 
     // Use either global test plugin directory or TESTPLUGIN_PATH, if it is
     // set (to local sandbox's plugin directory by makefile, at least).
@@ -508,6 +518,35 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     QCOMPARE(inputMethod3->setStateCount, 0);
     inputMethod3->setStateCount = 0;
     checkHandlerMap(state, pluginName3);
+
+    //test toolbar status when switch plugin
+    MToolbarId toolbarId1(1, "toolbarIdTest1");
+    MToolbarManager::instance().registerToolbar(toolbarId1, Toolbar1);
+    QSharedPointer<const MToolbarData> toolbarData1 =
+        MToolbarManager::instance().toolbarData(toolbarId1);
+    MToolbarId toolbarId2(2, "toolbarIdTest2");
+    MToolbarManager::instance().registerToolbar(toolbarId2, Toolbar2);
+    QSharedPointer<const MToolbarData> toolbarData2 =
+        MToolbarManager::instance().toolbarData(toolbarId2);
+
+    QVERIFY(toolbarData1.data());
+    QVERIFY(toolbarData2.data());
+    QVERIFY(toolbarData1.data() != toolbarData2.data());
+
+    manager->setToolbar(toolbarId1);
+    subject->setActivePlugin(plugin->name(), OnScreen);
+    subject->switchPlugin(M::SwitchForward, inputMethod);
+    QVERIFY(inputMethod->toolbarParam == toolbarData1);
+    QVERIFY(inputMethod3->toolbarParam == toolbarData1);
+
+    manager->setToolbar(toolbarId2);
+    subject->setActivePlugin(plugin3->name(), OnScreen);
+    subject->switchPlugin(M::SwitchBackward, inputMethod3);
+    QVERIFY(inputMethod->toolbarParam == toolbarData2);
+    QVERIFY(inputMethod3->toolbarParam == toolbarData2);
+
+    MToolbarManager::instance().unregisterToolbar(toolbarId1);
+    MToolbarManager::instance().unregisterToolbar(toolbarId2);
 }
 
 void Ut_MIMPluginManager::checkHandlerMap(int handler, const QString &name)
@@ -763,6 +802,43 @@ void Ut_MIMPluginManager::testRegionUpdates()
 
     region = regionUpdates.takeFirst().at(0);
     QVERIFY(region.value<QRegion>().isEmpty());
+}
+
+void Ut_MIMPluginManager::testSetToolbar()
+{
+    MInputMethodPlugin *plugin1 = 0;
+    foreach(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+        if (plugin->name() == "DummyImPlugin") {
+            plugin1 = plugin;
+        }
+    }
+    QVERIFY(plugin1);
+
+    QPointer<DummyInputMethod > inputMethod  = 0;
+    inputMethod  = dynamic_cast<DummyInputMethod  *>(subject->plugins[plugin1].inputMethod);
+    QVERIFY(inputMethod);
+
+    MToolbarId toolbarId1(1, "toolbarIdTest1");
+    MToolbarManager::instance().registerToolbar(toolbarId1, Toolbar1);
+    QSharedPointer<const MToolbarData> toolbarData1 =
+        MToolbarManager::instance().toolbarData(toolbarId1);
+    MToolbarId toolbarId2(2, "toolbarIdTest2");
+    MToolbarManager::instance().registerToolbar(toolbarId2, Toolbar2);
+    QSharedPointer<const MToolbarData> toolbarData2 =
+        MToolbarManager::instance().toolbarData(toolbarId2);
+
+    QVERIFY(toolbarData1.data());
+    QVERIFY(toolbarData2.data());
+    QVERIFY(toolbarData1.data() != toolbarData2.data());
+
+    subject->setActivePlugin(plugin1->name(), OnScreen);
+    manager->setToolbar(toolbarId1);
+    QVERIFY(inputMethod->toolbarParam == toolbarData1);
+    manager->setToolbar(toolbarId2);
+    QVERIFY(inputMethod->toolbarParam == toolbarData2);
+
+    MToolbarManager::instance().unregisterToolbar(toolbarId1);
+    MToolbarManager::instance().unregisterToolbar(toolbarId2);
 }
 
 void Ut_MIMPluginManager::handleMessages()

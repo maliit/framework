@@ -29,4 +29,9 @@ LIBS += \
     -ldummyimplugin \
     -ldummyimplugin3 \
 
+target.files += \
+    $$TARGET \
+    toolbar1.xml \
+    toolbar2.xml \
+
 include(../common_check.pri)
