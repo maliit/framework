@@ -1,4 +1,9 @@
-0.19.19~1
+0.19.20
+========
+
+* Uses MInputMethodState signals for notifying application for real hw keyboard signals
+
+0.19.19
 ========
 
 * API changes
