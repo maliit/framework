@@ -2,6 +2,7 @@ meego-im-framework (0.19.20~1) unstable; urgency=low
 
   * [Unreleased]
   * Uses MInputMethodState signaling for notifying app about real hw kbd events
+  * NB#190949 - Toolbar disappear when plugin is switched
 
  -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Wed, 22 Sep 2010 14:15:18 +0300
 
