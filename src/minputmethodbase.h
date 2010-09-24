@@ -258,6 +258,8 @@ signals:
 
 private:
     Q_DISABLE_COPY(MInputMethodBase)
+    Q_DECLARE_PRIVATE(MInputMethodBase)
+    Q_PRIVATE_SLOT(d_func(), void _q_handleIndicatorServiceChanged(const QString &, const QString &, const QString &));
 
     MInputMethodBasePrivate *d;
 };
