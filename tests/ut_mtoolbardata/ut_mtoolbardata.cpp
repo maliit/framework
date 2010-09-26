@@ -273,10 +273,23 @@ void Ut_MToolbarData::testAddItem()
     QVERIFY(row->items().last() == button);
 
     ok = subject->append(row, button);
-    QVERIFY2(!ok, "Item should not be added twice");
+    QVERIFY2(!ok, "Item should not be added twice to the same row");
 
     ok = subject->append(QSharedPointer<MToolbarRow>(), button);
     QVERIFY2(!ok, "Item should not be added to non-existing row");
+
+    QSharedPointer<const MToolbarLayout> portrait = subject->layout(M::Portrait);
+    QVERIFY(!portrait.isNull());
+    QVERIFY(portrait->rows().count() > 0);
+    row = portrait->rows().last().constCast<MToolbarRow>();
+    QVERIFY(!row->items().isEmpty());
+
+    ok = subject->append(row, button);
+    QVERIFY2(ok, "Item was not added");
+    QVERIFY(row->items().last() == button);
+
+    ok = subject->append(row, button);
+    QVERIFY2(!ok, "Item should not be added twice to the same row");
 }
 
 QTEST_APPLESS_MAIN(Ut_MToolbarData)

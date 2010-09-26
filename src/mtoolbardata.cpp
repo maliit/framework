@@ -237,7 +237,7 @@ bool MToolbarData::append(const QSharedPointer<MToolbarRow> &row,
         return false;
     }
 
-    if (this->item(item->name())) {
+    if (row->items().contains(item)) {
         return false;
     }
 
