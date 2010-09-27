@@ -2,57 +2,48 @@
 <b>Version</b>: 0.1
 
 \section Overview
-This document describes the XML specification of the toolbar widget. 
+This document describes the XML specification of the toolbar widget.
 
 \sa MToolbarData
 
 \section Tags
-\subsection TOOLBAR
-Root tag, it contains the definition for all items in the toolbar.
-The LOCKED attribute enables or disables user interactions for toolbar.
-If user interactions are disabled then user can not hide visible toolbar or show hidden toolbar.
+\subsection INPUT-METHOD
+Root tag, it contains information which should be used by input method plugin.
 The VERSION attribute defines version of this specification. Current version is 1.
 Warning: you need to specify version number explicitly, otherwise parser may assume wrong version number and then parsing will fail.
 The VISIBLE attribute defines toolbar's visibility. Toolbar is visible by default, but you could hide it by setting VISIBLE to false.
 Warning: normal application should not use this attribute.
-The REFUSE attribute enumerates names of standard items which should not be added to your toolbar. Names should be separated by commas. See also "Standard toolbar items".
+The REFUSE attribute enumerates names of standard items which should not be added to your toolbar. Names should be separated by commas without spaces. See also "Standard toolbar items".
 
-\subsection Layout
+\subsection TOOLBAR
+It contains the definition for all items in the toolbar.
+TOOLBAR tag could be used as root tag for backward compatibility.
+This tag have same attributes as INPUT-METHOD.
 
-Layout describes the actual toolbar layout for a given screen orientation.  If the layout doesn't have a portrait variant, the software shall use the landscape variant when the device is in portrait orientation. Each layout contains one or more rows.
-
-\subsection Row
-
-This tag defines one row in toolbar.
-It is not recommended to create more than one row for landscape orientation.
-Row may not be empty.
+\subsection ITEMS
+This tag contains definitions of all items which will be placed into layouts.
 
 \subsubsection BUTTON
 This tag will be constructed as MButton.
 The NAME attribute is used as a reference in the toolbar system.
 All buttons with the same NAME share their state. If two buttons have the same name then their state is defined by first one and then overriden (completely or partially) by second one. This feature allows to have consistent button state with different device orientation. All names starting with underscore are reserved for Input Method Framework.
-Warning: it is not recommended to create two buttons with the same name inside one layout.
+Warning: it is not recommended to create more than one button with the same name inside one layout.
 The GROUP attribute defines the group this button belongs to.
-The PRIORITY attribute defines priority order of displaying, the smaller the number, the earlier it is put into the toolbar among items with the same ALIGMENT. Please note that button with right alignment will be never placed before button with left alignment. Normal toolbar button should have priority from 1 to 100. Values from 101 to 200 and from -100 to -1 are reserved for Input Method Framework. If application developer wants to create button which will be placed at the end of toolbar afer any button provided by Input Method Framework, then the PRIORITY should be in the range 201..300. If application developer wants to create button which will be placed at the begin of toolbar before any button provided by Input Method Framework, then the PRIORITY should be in the range -200..-101.
 The SHOWON attribute tells when the button is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
-The button is aligned within the toolbar according to the value of ALIGMENT attribute.
+The button is aligned within the toolbar according to the value of ALIGMENT attribute. Normal button should have default (center) alignment, but you could use right or left alignment if you want to override close or copy/paste button.
 The ICON attribute holds the icon file name (absolute file name). The icon will be displayed in the center of the button.
 The SIZE attribute holds the icon size percentage. The icon will be resized according this attribute and the button size.
 The ICON_ID attribute holds the icon logical id to be displayed on button. ICON_ID has higher priority than ICON, so if both ICON and ICON_ID are specified, ICON_ID will be used. Note: only the ICON_ID of the icons loaded by meegotouch theme will be used.
 The TEXT attribute holds the text and TEXT_ID holds the logical id of the text.
 The TOGGLE attribute defines the type of the button whether it is a toggle button or not, by default the value is false.
 If the TOGGLE attribute is true, the PRESSED attribute holds the button state whether the button is pressed or not.
+The HIGHLIGHTED attribute selects which background image should be used.
 
 \subsubsection LABEL
 This tag will be constructed as MLabel.
-The NAME attribute has the same meaning as for BUTTON.
-The GROUP attribute defines the group this label belongs to.
-The PRIORITY attribute has the same meaning as for BUTTON.
-The SHOWON attribute tells when the label is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
-Similar rule applies with HIDEON attribute, except that there is no "always" value.
-The label is aligned within the toolbar according to the value of ALIGMENT attribute.
-The TEXT attribute holds the text and TEXT_ID holds the logical id of the text. Similiar like ICON_ID, TEXT_ID has higher priority than TEXT.
+LABEL tag could have following attributes: NAME, GROUP, SHOWON, HIDEON, ALIGMENT, TEXT and TEXT_ID.
+Every attribute has the same meaning as for BUTTON tag.
 
 \subsubsubsection ACTIONS
 This tag holds a sequence of actions defined within.
@@ -78,16 +69,33 @@ This tag defines that the action is to copy selected text.
 \subsubsubsubsection PASTE
 This tag defines that the action is to paste from clipboard.
 
+\subsection Layout
+
+Layout describes the actual toolbar layout for a given screen orientation.  If the layout doesn't have a portrait variant, the software shall use the landscape variant when the device is in portrait orientation. Each layout contains one row only.
+
+\subsubsection Row
+
+This tag defines one row in toolbar.
+It is not recommended to create more than one row for landscape orientation.
+Row may not be empty.
+Warning: this tag is deprecated and will be removed soon, because toolbar should have one row only.
+
+\subsubsection Item
+
+This tag defines which item should be placed into toolbar.
+NAME attribute selects correspondig item (button or label) which is defined in the Items section.
+
 \section Standard toolbar items
-Button "_close" closes keyboard and removes focus from active text entry.
-Button "_copypaste" copies selected text (if any) or pastes current clipboard content.
+Button "_close" closes keyboard and removes focus from active text entry. This button is right aligned.
+Button "_copypaste" copies selected text (if any) or pastes current clipboard content. This button is left aligned.
 
 \section DTD
 \code
-<!DOCTYPE MEEGO_IM_TOOLBAR_WIDGET [
-<!ELEMENT toolbar (layout+)>
-<!ELEMENT layout (row+)>
-<!ELEMENT row ((button|label)+)>
+<!DOCTYPE MEEGO_INPUT_METHOD [
+<!ELEMENT input-method (toolbar)>
+<!ELEMENT toolbar (items,layout+)>
+<!ELEMENT items ((button|label)+)>
+<!ELEMENT layout (item+)>
 <!ELEMENT button (actions*)>
 <!ELEMENT actions (sendkeysequence|sendstring|sendcommand|copy|paste|showgroup|hidegroup)*>
 <!ELEMENT sendkeysequence (#CDATA)>
@@ -96,7 +104,10 @@ Button "_copypaste" copies selected text (if any) or pastes current clipboard co
 <!ELEMENT copy EMPTY>
 <!ELEMENT paste EMPTY>
 
-<!ATTLIST toolbar locked (true|false) "false">
+<!ATTLIST input-method version (0|1) "0">
+<!ATTLIST input-method visible (true|false) "true">
+<!ATTLIST input-method refuse CDATA "">
+
 <!ATTLIST toolbar version (0|1) "0">
 <!ATTLIST toolbar visible (true|false) "true">
 <!ATTLIST toolbar refuse CDATA "">
@@ -105,10 +116,9 @@ Button "_copypaste" copies selected text (if any) or pastes current clipboard co
 
 <!ATTLIST button name CDATA #REQUIRED>
 <!ATTLIST button group CDATA>
-<!ATTLIST button priority CDATA>
 <!ATTLIST button showon (selectedtext|always)>
 <!ATTLIST button hideon (selectedtext)>
-<!ATTLIST button alignment (left|right)>
+<!ATTLIST button alignment (left|right|center) "center">
 <!ATTLIST button icon CDATA "">
 <!ATTLIST button size CDATA "">
 <!ATTLIST button icon_id CDATA "">
@@ -116,13 +126,13 @@ Button "_copypaste" copies selected text (if any) or pastes current clipboard co
 <!ATTLIST button text_id CDATA "">
 <!ATTLIST button toggle (true|false)>
 <!ATTLIST button pressed (true|false)>
+<!ATTLIST button highlighted (true|false) "false">
 
 <!ATTLIST label name CDATA #REQUIRED>
 <!ATTLIST label group CDATA>
-<!ATTLIST label priority CDATA>
 <!ATTLIST label showOn (selectedtext|always)>
 <!ATTLIST label hideOn (selectedtext)>
-<!ATTLIST label alignment (left|right)>
+<!ATTLIST label alignment (left|right|center) "center">
 <!ATTLIST label text CDATA "">
 <!ATTLIST label text_id CDATA "">
 
@@ -132,6 +142,7 @@ Button "_copypaste" copies selected text (if any) or pastes current clipboard co
 <!ATTLIST showgroup group CDATA>
 <!ATTLIST hidegroup group CDATA>
 
+<!ATTLIST item name CDATA #REQUIRED>
 ]>
 \endcode
 */

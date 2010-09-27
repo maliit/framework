@@ -1,3 +1,10 @@
+0.19.24
+========
+
+* API changes
+ - Toolbar specification was changed.
+   Check latest version of the specification in the file doc/src/toolbarxml.dox
+
 0.19.22
 ========
 
