@@ -28,7 +28,9 @@
 #endif
 
 MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
-    : QWidget(p)
+    : QWidget(p),
+      raiseOnShow(bypassWMHint) // if bypassing window hint, also do raise to ensure visibility
+
 {
     setWindowTitle("MInputMethod");
 #ifndef M_IM_DISABLE_TRANSLUCENCY
@@ -134,6 +136,10 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
         hide();
     } else if (!isVisible() && !region.isEmpty()) {
         show();
+        
+        if (raiseOnShow) {
+            raise();
+        }
     }
 }
 

@@ -49,6 +49,8 @@ private:
     int displayWidth;
     int displayHeight;
 
+    bool raiseOnShow;
+
     friend class Ut_PassthroughServer;
 };
 
