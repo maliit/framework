@@ -97,10 +97,10 @@ struct MTBParseParameters {
 };
 
 struct MTBParseStructure {
-    MTBParseStructure(const QString &name, MToolbarData::TagParser p);
+    MTBParseStructure(const QString &name, MToolbarDataPrivate::TagParser p);
 
     QString tagName;
-    MToolbarData::TagParser parser;
+    MToolbarDataPrivate::TagParser parser;
 };
 
 MTBParseParameters::MTBParseParameters()
@@ -109,23 +109,409 @@ MTBParseParameters::MTBParseParameters()
 {
 }
 
-MTBParseStructure::MTBParseStructure(const QString &name, MToolbarData::TagParser p)
+MTBParseStructure::MTBParseStructure(const QString &name, MToolbarDataPrivate::TagParser p)
     : tagName(name),
       parser(p)
 {
 }
 
-MToolbarDataPrivate::MToolbarDataPrivate()
-    : locked(false),
+MToolbarDataPrivate::MToolbarDataPrivate(MToolbarData *owner)
+    : q_ptr(owner),
+      locked(false),
       custom(false),
       visible(true)
 {
 }
 
+QSharedPointer<MToolbarItem> MToolbarDataPrivate::getOrCreateItemByName(const QString &name,
+                                                                        MInputMethod::ItemType type)
+{
+    Items::iterator iterator(items.find(name));
+    QSharedPointer<MToolbarItem> result;
+
+    if (iterator != items.end()) {
+        result = *iterator;
+    } else {
+        result = QSharedPointer<MToolbarItem>(new MToolbarItem(name, type));
+        items.insert(name, result);
+    }
+
+    return result;
+}
+
+Qt::Alignment MToolbarDataPrivate::alignment(const QString &alignmentString)
+{
+    Qt::Alignment align = Qt::AlignCenter;
+    if (alignmentString == ImTagLeft)
+        align = Qt::AlignLeft;
+    else if (alignmentString == ImTagRight)
+        align = Qt::AlignRight;
+    else if (alignmentString == ImTagCenter)
+        align = Qt::AlignCenter;
+    return align;
+}
+
+M::Orientation MToolbarDataPrivate::orientation(const QString &orientationString)
+{
+    M::Orientation orient = M::Portrait;
+    if (orientationString == ImTagOrientationLandscape)
+        orient = M::Landscape;
+    return orient;
+}
+
+MInputMethod::VisibleType MToolbarDataPrivate::visibleType(const QString &visibleTypeString)
+{
+    MInputMethod::VisibleType type = MInputMethod::VisibleUndefined;
+    if (visibleTypeString == ImTagSelectedText)
+        type = MInputMethod::VisibleWhenSelectingText;
+    else if (visibleTypeString == ImTagAlways)
+        type = MInputMethod::VisibleAlways;
+    return type;
+}
+
+void MToolbarDataPrivate::parseAttribute(SetString setter, const QDomElement &element,
+                                  const QString &attributeName, const MTBParseParameters &params)
+{
+    if (element.hasAttribute(attributeName)) {
+        MToolbarItem &item = *params.currentItem;
+        (item.*setter)(element.attribute(attributeName));
+    }
+}
+
+void MToolbarDataPrivate::parseAttribute(SetVisibleType setter, const QDomElement &element,
+                                  const QString &attributeName, const MTBParseParameters &params)
+{
+    if (element.hasAttribute(attributeName)) {
+        MToolbarItem &item = *params.currentItem;
+        (item.*setter)(visibleType(element.attribute(attributeName)));
+    }
+}
+
+void MToolbarDataPrivate::parseAttribute(SetBool setter, const QDomElement &element,
+                                  const QString &attributeName, const MTBParseParameters &params)
+{
+    if (element.hasAttribute(attributeName)) {
+        bool value = (element.attribute(attributeName) == "true") ? true : false;
+        MToolbarItem &item = *params.currentItem;
+        (item.*setter)(value);
+    }
+}
+
+void MToolbarDataPrivate::parseAttribute(SetAlignment setter, const QDomElement &element,
+                                  const QString &attributeName, const MTBParseParameters &params)
+{
+    if (element.hasAttribute(attributeName)) {
+        MToolbarItem &item = *params.currentItem;
+        (item.*setter)(alignment(element.attribute(attributeName)));
+    }
+}
+
+void MToolbarDataPrivate::parseAttribute(SetInt setter, const QDomElement &element,
+                                  const QString &attributeName, const MTBParseParameters &params)
+{
+    if (element.hasAttribute(attributeName)) {
+        MToolbarItem &item = *params.currentItem;
+        (item.*setter)(element.attribute(attributeName).toInt());
+    }
+}
+
+void MToolbarDataPrivate::parseTagToolbar(const QDomElement &element, MTBParseParameters &params)
+{
+    locked = (element.attribute(ImTagLocked, ImTagLockedDefValue) == "true") ? true : false;
+    visible = (element.attribute(ImTagVisible, ImTagVisibleDefValue) == "true") ? true : false;
+    refusedNames = element.attribute(ImTagRefuse).split(NameSeparator);
+    params.version = element.attribute(ImTagVersion, ImTagVersionDefValue).toInt();
+
+    if (params.version == 1) {
+        const MTBParseStructure parsers[2] = {
+            MTBParseStructure(ImTagLayout, &MToolbarDataPrivate::parseTagLayout),
+            MTBParseStructure(ImTagItems,  &MToolbarDataPrivate::parseTagItems),
+        };
+
+        parseChildren(element, params, parsers, 2);
+    } else if (params.version == 0) {
+        QSharedPointer<MToolbarLayout> layout(new MToolbarLayout());
+
+        layoutLandscape = layout;
+        params.currentLayout = layout;
+
+        const MTBParseStructure parsers[2] = {
+            MTBParseStructure(ImTagButton, &MToolbarDataPrivate::parseTagButton),
+            MTBParseStructure(ImTagLabel,  &MToolbarDataPrivate::parseTagLabel),
+        };
+
+        parseChildren(element, params, parsers, 2);
+    } else {
+        qWarning() << __PRETTY_FUNCTION__ << "Invalid version number" << params.version;
+        params.validTag = false;
+    }
+}
+
+void MToolbarDataPrivate::parseTagLayout(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_Q(MToolbarData);
+    const QString attribute = element.attribute(ImTagOrientation, ImTagOrientationDefValue);
+    const M::Orientation orientationData = orientation(attribute);
+    QSharedPointer<MToolbarLayout> layout = q->layout(orientationData).constCast<MToolbarLayout>();
+
+    if (layout && layout->orientation() == orientationData) {
+        qWarning() << __PRETTY_FUNCTION__ << "Duplicated layout for" << attribute;
+        params.validTag = false;
+        return;
+    }
+
+    layout = QSharedPointer<MToolbarLayout>(new MToolbarLayout(orientationData));
+    switch (orientationData) {
+    case M::Landscape:
+        layoutLandscape = layout;
+        break;
+    case M::Portrait:
+        layoutPortrait = layout;
+        break;
+    default:
+        Q_ASSERT(0); // should never happen
+    }
+    params.currentLayout = layout;
+
+    const MTBParseStructure parsers[2] = {
+        MTBParseStructure(ImTagItem, &MToolbarDataPrivate::parseTagItem),
+        MTBParseStructure(ImTagRow,  &MToolbarDataPrivate::parseTagRow),
+    };
+
+    parseChildren(element, params, parsers, 2);
+}
+
+void MToolbarDataPrivate::parseTagRow(const QDomElement &element, MTBParseParameters &params)
+{
+    qWarning() << __PRETTY_FUNCTION__ << "XML tag 'row' is deprecated and will be removed soon. Do not use it.";
+
+    const MTBParseStructure parsers[2] = {
+        MTBParseStructure(ImTagButton, &MToolbarDataPrivate::parseTagButton),
+        MTBParseStructure(ImTagLabel,  &MToolbarDataPrivate::parseTagLabel),
+    };
+
+    parseChildren(element, params, parsers, 2);
+}
+
+void MToolbarDataPrivate::parseTagButton(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_Q(MToolbarData);
+    const QString name = element.attribute(ImTagName);
+
+    if (name.isEmpty()) {
+        return;
+    }
+
+    QSharedPointer<MToolbarItem> item = getOrCreateItemByName(name, MInputMethod::ItemButton);
+
+    if(item->type() != MInputMethod::ItemButton) {
+        return;
+    }
+
+    q->setCustom(true);
+
+    if (params.currentLayout) {
+        params.currentLayout->append(item);
+    }
+
+    params.currentItem = item;
+    parseAttribute(&MToolbarItem::setText,      element, ImTagText,      params);
+    parseAttribute(&MToolbarItem::setGroup,     element, ImTagGroup,     params);
+    parseAttribute(&MToolbarItem::setShowOn,    element, ImTagShowOn,    params);
+    parseAttribute(&MToolbarItem::setHideOn,    element, ImTagHideOn,    params);
+    parseAttribute(&MToolbarItem::setAlignment, element, ImTagAlignment, params);
+    parseAttribute(&MToolbarItem::setTextId,    element, ImTagTextId,    params);
+    parseAttribute(&MToolbarItem::setIcon,      element, ImTagIcon,      params);
+    parseAttribute(&MToolbarItem::setIconId,    element, ImTagIconId,    params);
+    parseAttribute(&MToolbarItem::setToggle,    element, ImTagToggle,    params);
+    parseAttribute(&MToolbarItem::setPressed,   element, ImTagPressed,   params);
+
+    if (element.hasAttribute(ImTagSize)) {
+        bool ok;
+        int size = element.attribute(ImTagSize).remove("%").toInt(&ok, 10);
+        if (ok) {
+            item->setSize(size);
+        }
+    }
+
+    /*
+     * We need to override button's actions here, so we will collect actions into temporary
+     * object,...
+     */
+    QSharedPointer<MToolbarItem> tmpItem = QSharedPointer<MToolbarItem>(new MToolbarItem(*item));
+    tmpItem->clearActions();
+    params.currentItem = tmpItem;
+
+    const MTBParseStructure parser(ImTagActions, &MToolbarDataPrivate::parseTagActions);
+    parseChildren(element, params, &parser);
+
+    if (!tmpItem->actions().isEmpty()) {
+        *item = *tmpItem; // ... and update shared object if needed
+    }
+}
+
+void MToolbarDataPrivate::parseTagLabel(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_Q(MToolbarData);
+    const QString name = element.attribute(ImTagName);
+    QSharedPointer<MToolbarItem> label = getOrCreateItemByName(name, MInputMethod::ItemLabel);
+
+    if(label->type() != MInputMethod::ItemLabel) {
+        return;
+    }
+
+    q->setCustom(true);
+
+    if (params.currentLayout) {
+        params.currentLayout->append(label);
+    }
+
+    params.currentItem = label;
+
+    parseAttribute(&MToolbarItem::setGroup, element, ImTagGroup, params);
+    parseAttribute(&MToolbarItem::setShowOn, element, ImTagShowOn, params);
+    parseAttribute(&MToolbarItem::setHideOn, element, ImTagHideOn, params);
+    parseAttribute(&MToolbarItem::setAlignment, element, ImTagAlignment, params);
+    parseAttribute(&MToolbarItem::setText, element, ImTagText, params);
+    parseAttribute(&MToolbarItem::setTextId, element, ImTagTextId, params);
+}
+
+void MToolbarDataPrivate::parseTagActions(const QDomElement &element, MTBParseParameters &params)
+{
+    if (!params.currentItem || (params.currentItem->type() != MInputMethod::ItemButton)) {
+        return;
+    }
+
+    const MTBParseStructure parsers[] = {
+        MTBParseStructure(ImTagSendKeySequence, &MToolbarDataPrivate::parseTagSendKeySequence),
+        MTBParseStructure(ImTagSendString,      &MToolbarDataPrivate::parseTagSendString),
+        MTBParseStructure(ImTagSendCommand,     &MToolbarDataPrivate::parseTagSendCommand),
+        MTBParseStructure(ImTagCopy,            &MToolbarDataPrivate::parseTagCopy),
+        MTBParseStructure(ImTagPaste,           &MToolbarDataPrivate::parseTagPaste),
+        MTBParseStructure(ImTagShowGroup,       &MToolbarDataPrivate::parseTagShowGroup),
+        MTBParseStructure(ImTagHideGroup,       &MToolbarDataPrivate::parseTagHideGroup),
+        MTBParseStructure(ImTagCopyPaste,       &MToolbarDataPrivate::parseTagCopyPaste),
+        MTBParseStructure(ImTagClose,           &MToolbarDataPrivate::parseTagClose),
+    };
+
+    parseChildren(element, params, parsers, sizeof(parsers) / sizeof(parsers[0]));
+}
+
+void MToolbarDataPrivate::parseTagSendKeySequence(const QDomElement &element, MTBParseParameters &params)
+{
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionSendKeySequence));
+    action->setKeys(element.attribute(ImTagKeySequence));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagSendString(const QDomElement &element, MTBParseParameters &params)
+{
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionSendString));
+    action->setText(element.attribute(ImTagString));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagSendCommand(const QDomElement &element, MTBParseParameters &params)
+{
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionSendCommand));
+    action->setCommand(element.attribute(ImTagCommand));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagCopy(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_UNUSED(element);
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionCopy));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagPaste(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_UNUSED(element);
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionPaste));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagCopyPaste(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_UNUSED(element);
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionCopyPaste));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagClose(const QDomElement &element, MTBParseParameters &params)
+{
+    Q_UNUSED(element);
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionClose));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagShowGroup(const QDomElement &element, MTBParseParameters &params)
+{
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionShowGroup));
+    action->setGroup(element.attribute(ImTagGroup));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagHideGroup(const QDomElement &element, MTBParseParameters &params)
+{
+    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionHideGroup));
+    action->setGroup(element.attribute(ImTagGroup));
+    params.currentItem->append(action);
+}
+
+void MToolbarDataPrivate::parseTagItems(const QDomElement &element, MTBParseParameters &params)
+{
+    const MTBParseStructure parsers[2] = {
+        MTBParseStructure(ImTagButton, &MToolbarDataPrivate::parseTagButton),
+        MTBParseStructure(ImTagLabel,  &MToolbarDataPrivate::parseTagLabel),
+    };
+
+    parseChildren(element, params, parsers, 2);
+}
+
+void MToolbarDataPrivate::parseTagItem(const QDomElement &element, MTBParseParameters &params)
+{
+    const QString name = element.attribute(ImTagName);
+    MToolbarDataPrivate::Items::iterator iterator(items.find(name));
+
+    if (iterator != items.end() && *iterator) {
+        params.currentLayout->append(*iterator);
+    }
+}
+
+void MToolbarDataPrivate::parseChildren(const QDomElement &element, MTBParseParameters &params,
+                                 const MTBParseStructure *parserList, int parserCount)
+{
+    Q_ASSERT(parserCount > 0);
+
+    for (QDomNode child = element.firstChild(); !child.isNull() && params.validTag;
+            child = child.nextSibling()) {
+        if (child.isElement()) {
+            const QDomElement childElement = child.toElement();
+            bool found = false;
+            for (int i = 0; i < parserCount; ++i) {
+                if (childElement.tagName() == parserList[i].tagName) {
+                    (this->*(parserList[i].parser))(childElement, params);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                qWarning() << __PRETTY_FUNCTION__ << "Unexpected tag" << childElement.tagName() << "on line"
+                           << childElement.lineNumber() << "column" << childElement.columnNumber()
+                           << "in toolbar file" << params.fileName;
+                params.validTag = false;
+            }
+        }
+    }
+}
+
+
 // Actual class implementation
 
 MToolbarData::MToolbarData()
-    : d_ptr(new MToolbarDataPrivate)
+    : d_ptr(new MToolbarDataPrivate(this))
 {
 }
 
@@ -174,7 +560,7 @@ bool MToolbarData::loadToolbarXml(const QString &fileName)
                    << "wrong format xml" << absoluteFileName << "for virtual keyboard tool bar";
         valid = false;
     } else {
-        parseTagToolbar(root, params);
+        d->parseTagToolbar(root, params);
         valid = params.validTag;
     }
 
@@ -269,391 +655,5 @@ void MToolbarData::setCustom(bool custom)
     Q_D(MToolbarData);
 
     d->custom = custom;
-}
-
-QSharedPointer<MToolbarItem> MToolbarData::getOrCreateItemByName(const QString &name,
-                                                                 MInputMethod::ItemType type)
-{
-    Q_D(MToolbarData);
-    MToolbarDataPrivate::Items::iterator iterator(d->items.find(name));
-    QSharedPointer<MToolbarItem> result;
-
-    if (iterator != d->items.end()) {
-        result = *iterator;
-    } else {
-        result = QSharedPointer<MToolbarItem>(new MToolbarItem(name, type));
-        d->items.insert(name, result);
-    }
-
-    return result;
-}
-
-Qt::Alignment MToolbarData::alignment(const QString &alignmentString)
-{
-    Qt::Alignment align = Qt::AlignCenter;
-    if (alignmentString == ImTagLeft)
-        align = Qt::AlignLeft;
-    else if (alignmentString == ImTagRight)
-        align = Qt::AlignRight;
-    else if (alignmentString == ImTagCenter)
-        align = Qt::AlignCenter;
-    return align;
-}
-
-M::Orientation MToolbarData::orientation(const QString &orientationString)
-{
-    M::Orientation orient = M::Portrait;
-    if (orientationString == ImTagOrientationLandscape)
-        orient = M::Landscape;
-    return orient;
-}
-
-MInputMethod::VisibleType MToolbarData::visibleType(const QString &visibleTypeString)
-{
-    MInputMethod::VisibleType type = MInputMethod::VisibleUndefined;
-    if (visibleTypeString == ImTagSelectedText)
-        type = MInputMethod::VisibleWhenSelectingText;
-    else if (visibleTypeString == ImTagAlways)
-        type = MInputMethod::VisibleAlways;
-    return type;
-}
-
-void MToolbarData::parseAttribute(SetString setter, const QDomElement &element,
-                                  const QString &attributeName, const MTBParseParameters &params)
-{
-    if (element.hasAttribute(attributeName)) {
-        MToolbarItem &item = *params.currentItem;
-        (item.*setter)(element.attribute(attributeName));
-    }
-}
-
-void MToolbarData::parseAttribute(SetVisibleType setter, const QDomElement &element,
-                                  const QString &attributeName, const MTBParseParameters &params)
-{
-    if (element.hasAttribute(attributeName)) {
-        MToolbarItem &item = *params.currentItem;
-        (item.*setter)(visibleType(element.attribute(attributeName)));
-    }
-}
-
-void MToolbarData::parseAttribute(SetBool setter, const QDomElement &element,
-                                  const QString &attributeName, const MTBParseParameters &params)
-{
-    if (element.hasAttribute(attributeName)) {
-        bool value = (element.attribute(attributeName) == "true") ? true : false;
-        MToolbarItem &item = *params.currentItem;
-        (item.*setter)(value);
-    }
-}
-
-void MToolbarData::parseAttribute(SetAlignment setter, const QDomElement &element,
-                                  const QString &attributeName, const MTBParseParameters &params)
-{
-    if (element.hasAttribute(attributeName)) {
-        MToolbarItem &item = *params.currentItem;
-        (item.*setter)(alignment(element.attribute(attributeName)));
-    }
-}
-
-void MToolbarData::parseAttribute(SetInt setter, const QDomElement &element,
-                                  const QString &attributeName, const MTBParseParameters &params)
-{
-    if (element.hasAttribute(attributeName)) {
-        MToolbarItem &item = *params.currentItem;
-        (item.*setter)(element.attribute(attributeName).toInt());
-    }
-}
-
-void MToolbarData::parseTagToolbar(const QDomElement &element, MTBParseParameters &params)
-{
-    Q_D(MToolbarData);
-
-    d->locked = (element.attribute(ImTagLocked, ImTagLockedDefValue) == "true") ? true : false;
-    d->visible = (element.attribute(ImTagVisible, ImTagVisibleDefValue) == "true") ? true : false;
-    d->refusedNames = element.attribute(ImTagRefuse).split(NameSeparator);
-    params.version = element.attribute(ImTagVersion, ImTagVersionDefValue).toInt();
-
-    if (params.version == 1) {
-        const MTBParseStructure parsers[2] = {
-            MTBParseStructure(ImTagLayout, &MToolbarData::parseTagLayout),
-            MTBParseStructure(ImTagItems,  &MToolbarData::parseTagItems),
-        };
-
-        parseChildren(element, params, parsers, 2);
-    } else if (params.version == 0) {
-        QSharedPointer<MToolbarLayout> layout(new MToolbarLayout());
-
-        d->layoutLandscape = layout;
-        params.currentLayout = layout;
-
-        const MTBParseStructure parsers[2] = {
-            MTBParseStructure(ImTagButton, &MToolbarData::parseTagButton),
-            MTBParseStructure(ImTagLabel,  &MToolbarData::parseTagLabel),
-        };
-
-        parseChildren(element, params, parsers, 2);
-    } else {
-        qWarning() << __PRETTY_FUNCTION__ << "Invalid version number" << params.version;
-        params.validTag = false;
-    }
-}
-
-void MToolbarData::parseTagLayout(const QDomElement &element, MTBParseParameters &params)
-{
-    Q_D(MToolbarData);
-    const QString attribute = element.attribute(ImTagOrientation, ImTagOrientationDefValue);
-    const M::Orientation orientationData = orientation(attribute);
-    QSharedPointer<MToolbarLayout> layout = this->layout(orientationData).constCast<MToolbarLayout>();
-
-    if (layout && layout->orientation() == orientationData) {
-        qWarning() << __PRETTY_FUNCTION__ << "Duplicated layout for" << attribute;
-        params.validTag = false;
-        return;
-    }
-
-    layout = QSharedPointer<MToolbarLayout>(new MToolbarLayout(orientationData));
-    switch (orientationData) {
-    case M::Landscape:
-        d->layoutLandscape = layout;
-        break;
-    case M::Portrait:
-        d->layoutPortrait = layout;
-        break;
-    default:
-        Q_ASSERT(0); // should never happen
-    }
-    params.currentLayout = layout;
-
-    const MTBParseStructure parsers[2] = {
-        MTBParseStructure(ImTagItem, &MToolbarData::parseTagItem),
-        MTBParseStructure(ImTagRow,  &MToolbarData::parseTagRow),
-    };
-
-    parseChildren(element, params, parsers, 2);
-}
-
-void MToolbarData::parseTagRow(const QDomElement &element, MTBParseParameters &params)
-{
-    qWarning() << __PRETTY_FUNCTION__ << "XML tag 'row' is deprecated and will be removed soon. Do not use it.";
-
-    const MTBParseStructure parsers[2] = {
-        MTBParseStructure(ImTagButton, &MToolbarData::parseTagButton),
-        MTBParseStructure(ImTagLabel,  &MToolbarData::parseTagLabel),
-    };
-
-    parseChildren(element, params, parsers, 2);
-}
-
-void MToolbarData::parseTagButton(const QDomElement &element, MTBParseParameters &params)
-{
-    const QString name = element.attribute(ImTagName);
-
-    if (name.isEmpty()) {
-        return;
-    }
-
-    QSharedPointer<MToolbarItem> item = getOrCreateItemByName(name, MInputMethod::ItemButton);
-
-    if(item->type() != MInputMethod::ItemButton) {
-        return;
-    }
-
-    setCustom(true);
-
-    if (params.currentLayout) {
-        params.currentLayout->append(item);
-    }
-
-    params.currentItem = item;
-    parseAttribute(&MToolbarItem::setText,      element, ImTagText,      params);
-    parseAttribute(&MToolbarItem::setGroup,     element, ImTagGroup,     params);
-    parseAttribute(&MToolbarItem::setShowOn,    element, ImTagShowOn,    params);
-    parseAttribute(&MToolbarItem::setHideOn,    element, ImTagHideOn,    params);
-    parseAttribute(&MToolbarItem::setAlignment, element, ImTagAlignment, params);
-    parseAttribute(&MToolbarItem::setTextId,    element, ImTagTextId,    params);
-    parseAttribute(&MToolbarItem::setIcon,      element, ImTagIcon,      params);
-    parseAttribute(&MToolbarItem::setIconId,    element, ImTagIconId,    params);
-    parseAttribute(&MToolbarItem::setToggle,    element, ImTagToggle,    params);
-    parseAttribute(&MToolbarItem::setPressed,   element, ImTagPressed,   params);
-
-    if (element.hasAttribute(ImTagSize)) {
-        bool ok;
-        int size = element.attribute(ImTagSize).remove("%").toInt(&ok, 10);
-        if (ok) {
-            item->setSize(size);
-        }
-    }
-
-    /*
-     * We need to override button's actions here, so we will collect actions into temporary
-     * object,...
-     */
-    QSharedPointer<MToolbarItem> tmpItem = QSharedPointer<MToolbarItem>(new MToolbarItem(*item));
-    tmpItem->clearActions();
-    params.currentItem = tmpItem;
-
-    const MTBParseStructure parser(ImTagActions, &MToolbarData::parseTagActions);
-    parseChildren(element, params, &parser);
-
-    if (!tmpItem->actions().isEmpty()) {
-        *item = *tmpItem; // ... and update shared object if needed
-    }
-}
-
-void MToolbarData::parseTagLabel(const QDomElement &element, MTBParseParameters &params)
-{
-    const QString name = element.attribute(ImTagName);
-    QSharedPointer<MToolbarItem> label = getOrCreateItemByName(name, MInputMethod::ItemLabel);
-
-    if(label->type() != MInputMethod::ItemLabel) {
-        return;
-    }
-
-    setCustom(true);
-
-    if (params.currentLayout) {
-        params.currentLayout->append(label);
-    }
-
-    params.currentItem = label;
-
-    parseAttribute(&MToolbarItem::setGroup, element, ImTagGroup, params);
-    parseAttribute(&MToolbarItem::setShowOn, element, ImTagShowOn, params);
-    parseAttribute(&MToolbarItem::setHideOn, element, ImTagHideOn, params);
-    parseAttribute(&MToolbarItem::setAlignment, element, ImTagAlignment, params);
-    parseAttribute(&MToolbarItem::setText, element, ImTagText, params);
-    parseAttribute(&MToolbarItem::setTextId, element, ImTagTextId, params);
-}
-
-void MToolbarData::parseTagActions(const QDomElement &element, MTBParseParameters &params)
-{
-    if (!params.currentItem || (params.currentItem->type() != MInputMethod::ItemButton)) {
-        return;
-    }
-
-    const MTBParseStructure parsers[] = {
-        MTBParseStructure(ImTagSendKeySequence, &MToolbarData::parseTagSendKeySequence),
-        MTBParseStructure(ImTagSendString,      &MToolbarData::parseTagSendString),
-        MTBParseStructure(ImTagSendCommand,     &MToolbarData::parseTagSendCommand),
-        MTBParseStructure(ImTagCopy,            &MToolbarData::parseTagCopy),
-        MTBParseStructure(ImTagPaste,           &MToolbarData::parseTagPaste),
-        MTBParseStructure(ImTagShowGroup,       &MToolbarData::parseTagShowGroup),
-        MTBParseStructure(ImTagHideGroup,       &MToolbarData::parseTagHideGroup),
-        MTBParseStructure(ImTagCopyPaste,       &MToolbarData::parseTagCopyPaste),
-        MTBParseStructure(ImTagClose,           &MToolbarData::parseTagClose),
-    };
-
-    parseChildren(element, params, parsers, sizeof(parsers) / sizeof(parsers[0]));
-}
-
-void MToolbarData::parseTagSendKeySequence(const QDomElement &element, MTBParseParameters &params)
-{
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionSendKeySequence));
-    action->setKeys(element.attribute(ImTagKeySequence));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagSendString(const QDomElement &element, MTBParseParameters &params)
-{
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionSendString));
-    action->setText(element.attribute(ImTagString));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagSendCommand(const QDomElement &element, MTBParseParameters &params)
-{
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionSendCommand));
-    action->setCommand(element.attribute(ImTagCommand));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagCopy(const QDomElement &element, MTBParseParameters &params)
-{
-    Q_UNUSED(element);
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionCopy));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagPaste(const QDomElement &element, MTBParseParameters &params)
-{
-    Q_UNUSED(element);
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionPaste));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagCopyPaste(const QDomElement &element, MTBParseParameters &params)
-{
-    Q_UNUSED(element);
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionCopyPaste));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagClose(const QDomElement &element, MTBParseParameters &params)
-{
-    Q_UNUSED(element);
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionClose));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagShowGroup(const QDomElement &element, MTBParseParameters &params)
-{
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionShowGroup));
-    action->setGroup(element.attribute(ImTagGroup));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagHideGroup(const QDomElement &element, MTBParseParameters &params)
-{
-    QSharedPointer<MToolbarItemAction> action(new MToolbarItemAction(MInputMethod::ActionHideGroup));
-    action->setGroup(element.attribute(ImTagGroup));
-    params.currentItem->append(action);
-}
-
-void MToolbarData::parseTagItems(const QDomElement &element, MTBParseParameters &params)
-{
-    const MTBParseStructure parsers[2] = {
-        MTBParseStructure(ImTagButton, &MToolbarData::parseTagButton),
-        MTBParseStructure(ImTagLabel,  &MToolbarData::parseTagLabel),
-    };
-
-    parseChildren(element, params, parsers, 2);
-}
-
-void MToolbarData::parseTagItem(const QDomElement &element, MTBParseParameters &params)
-{
-    Q_D(MToolbarData);
-    const QString name = element.attribute(ImTagName);
-    MToolbarDataPrivate::Items::iterator iterator(d->items.find(name));
-
-    if (iterator != d->items.end() && *iterator) {
-        params.currentLayout->append(*iterator);
-    }
-}
-
-void MToolbarData::parseChildren(const QDomElement &element, MTBParseParameters &params,
-                                 const MTBParseStructure *parserList, int parserCount)
-{
-    Q_ASSERT(parserCount > 0);
-
-    for (QDomNode child = element.firstChild(); !child.isNull() && params.validTag;
-            child = child.nextSibling()) {
-        if (child.isElement()) {
-            const QDomElement childElement = child.toElement();
-            bool found = false;
-            for (int i = 0; i < parserCount; ++i) {
-                if (childElement.tagName() == parserList[i].tagName) {
-                    (this->*(parserList[i].parser))(childElement, params);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                qWarning() << __PRETTY_FUNCTION__ << "Unexpected tag" << childElement.tagName() << "on line"
-                           << childElement.lineNumber() << "column" << childElement.columnNumber()
-                           << "in toolbar file" << params.fileName;
-                params.validTag = false;
-            }
-        }
-    }
 }
 

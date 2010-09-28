@@ -244,6 +244,7 @@ private:
     MToolbarItemPrivate *const d_ptr;
 
     friend class MToolbarData;
+    friend class MToolbarDataPrivate;
     friend class ParseParameters;
     friend class Ut_MToolbarData;
 };
