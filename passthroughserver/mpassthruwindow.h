@@ -46,9 +46,6 @@ public slots:
 private:
     Q_DISABLE_COPY(MPassThruWindow);
 
-    int displayWidth;
-    int displayHeight;
-
     bool raiseOnShow;
 
     friend class Ut_PassthroughServer;
