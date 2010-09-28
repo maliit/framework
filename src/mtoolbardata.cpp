@@ -77,6 +77,7 @@ namespace
     const QString ImTagRefuse                = QString::fromLatin1("refuse");
     const QString ImTagItems                 = QString::fromLatin1("items");
     const QString ImTagItem                  = QString::fromLatin1("item");
+    const QString ImTagHighlighted           = QString::fromLatin1("highlighted");
 
     const QChar NameSeparator(',');
 }
@@ -315,16 +316,17 @@ void MToolbarDataPrivate::parseTagButton(const QDomElement &element, MTBParsePar
     }
 
     params.currentItem = item;
-    parseAttribute(&MToolbarItem::setText,      element, ImTagText,      params);
-    parseAttribute(&MToolbarItem::setGroup,     element, ImTagGroup,     params);
-    parseAttribute(&MToolbarItem::setShowOn,    element, ImTagShowOn,    params);
-    parseAttribute(&MToolbarItem::setHideOn,    element, ImTagHideOn,    params);
-    parseAttribute(&MToolbarItem::setAlignment, element, ImTagAlignment, params);
-    parseAttribute(&MToolbarItem::setTextId,    element, ImTagTextId,    params);
-    parseAttribute(&MToolbarItem::setIcon,      element, ImTagIcon,      params);
-    parseAttribute(&MToolbarItem::setIconId,    element, ImTagIconId,    params);
-    parseAttribute(&MToolbarItem::setToggle,    element, ImTagToggle,    params);
-    parseAttribute(&MToolbarItem::setPressed,   element, ImTagPressed,   params);
+    parseAttribute(&MToolbarItem::setText,        element, ImTagText,        params);
+    parseAttribute(&MToolbarItem::setGroup,       element, ImTagGroup,       params);
+    parseAttribute(&MToolbarItem::setShowOn,      element, ImTagShowOn,      params);
+    parseAttribute(&MToolbarItem::setHideOn,      element, ImTagHideOn,      params);
+    parseAttribute(&MToolbarItem::setAlignment,   element, ImTagAlignment,   params);
+    parseAttribute(&MToolbarItem::setTextId,      element, ImTagTextId,      params);
+    parseAttribute(&MToolbarItem::setIcon,        element, ImTagIcon,        params);
+    parseAttribute(&MToolbarItem::setIconId,      element, ImTagIconId,      params);
+    parseAttribute(&MToolbarItem::setToggle,      element, ImTagToggle,      params);
+    parseAttribute(&MToolbarItem::setPressed,     element, ImTagPressed,     params);
+    parseAttribute(&MToolbarItem::setHighlighted, element, ImTagHighlighted, params);
 
     if (element.hasAttribute(ImTagSize)) {
         bool ok;

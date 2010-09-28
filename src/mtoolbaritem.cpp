@@ -34,7 +34,8 @@ MToolbarItemPrivate::MToolbarItemPrivate()
       visible(true),
       toggle(false),
       pressed(false),
-      size(100)
+      size(100),
+      highlighted(false)
 {
 }
 
@@ -266,6 +267,16 @@ void MToolbarItem::setPressed(bool pressed)
     }
 }
 
+void MToolbarItem::setHighlighted(bool highlighted)
+{
+    Q_D(MToolbarItem);
+
+    if (d->highlighted != highlighted) {
+        d->highlighted = highlighted;
+        emit propertyChanged("highlighted");
+    }
+}
+
 QString MToolbarItem::icon() const
 {
     Q_D(const MToolbarItem);
@@ -384,6 +395,13 @@ void MToolbarItem::setSize(int size)
         d->size = size;
         emit propertyChanged("size");
     }
+}
+
+bool MToolbarItem::highlighted() const
+{
+    Q_D(const MToolbarItem);
+
+    return d->highlighted;
 }
 
 void MToolbarItem::clearActions()

@@ -203,6 +203,9 @@ public:
 
     void setSize(int size);
 
+    //! Return highlighted state for the item.
+    bool highlighted() const;
+
 public slots:
     //! Sets new text for item
     void setText(const QString &text);
@@ -216,6 +219,13 @@ public slots:
      * This attribute is applicable for toggle buttons only.
      */
     void setPressed(bool pressed);
+
+    /*!
+     * \brief Set highlighted state for item
+     *
+     * This attribute is applicable for buttons only.
+     */
+    void setHighlighted(bool highlighted);
 
 signals:
     /*!

@@ -64,6 +64,8 @@ public:
 
     //! actions when clicking the widget
     QList<QSharedPointer<MToolbarItemAction> > actions;
+
+    bool highlighted;
 };
 
 #endif

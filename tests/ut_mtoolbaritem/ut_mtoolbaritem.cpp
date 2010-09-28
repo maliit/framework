@@ -98,5 +98,26 @@ void Ut_MToolbarItem::testSetProperty()
     QVERIFY(spy.count() == 0);
 }
 
+void Ut_MToolbarItem::testHighlighted()
+{
+    QSignalSpy spy(subject, SIGNAL(propertyChanged(const QString &)));
+
+    QVERIFY(spy.isValid());
+
+    QVERIFY(!subject->highlighted());
+
+    subject->setHighlighted(false);
+    QVERIFY(spy.isEmpty());
+
+    subject->setHighlighted(true);
+    QVERIFY(spy.count() == 1);
+    QVERIFY(spy.first().count() == 1);
+    QCOMPARE(spy.first().first().toString(), QString("highlighted"));
+    spy.clear();
+
+    subject->setHighlighted(true);
+    QVERIFY(spy.isEmpty());
+}
+
 QTEST_APPLESS_MAIN(Ut_MToolbarItem)
 

@@ -19,6 +19,7 @@ private slots:
     void cleanup();
 
     void testSetProperty();
+    void testHighlighted();
 
 private:
     QCoreApplication *app;

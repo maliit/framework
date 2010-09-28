@@ -2,7 +2,7 @@
 <!DOCTYPE DUI_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
 <toolbar locked="true" version="1" visible="true" refuse="_close">
     <items>
-        <button name="test1" group="group1" showon="always" alignment="right" icon="icon1" text="text1" text_id="id1">
+        <button name="test1" group="group1" showon="always" alignment="right" icon="icon1" text="text1" text_id="id1" highlighted="true">
             <actions>
                 <sendstring string="sendstring1" />
                 <hidegroup group="group3" />

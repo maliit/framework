@@ -81,6 +81,7 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->pressed(), false);
     QCOMPARE(item->icon(), QString("icon1"));
     QCOMPARE(item->size(), 100);
+    QVERIFY(item->highlighted());
 
     QCOMPARE(item->actions().count(), 2);
     QCOMPARE(item->actions().at(0)->type(), MInputMethod::ActionSendString);
@@ -105,6 +106,7 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->pressed(), false);
     QCOMPARE(item->icon(), QString("icon2"));
     QCOMPARE(item->size(), 50);
+    QVERIFY(!item->highlighted());
 
     QCOMPARE(item->actions().count(), 3);
     QCOMPARE(item->actions().at(0)->type(), MInputMethod::ActionCopy);
