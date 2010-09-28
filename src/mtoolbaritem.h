@@ -183,9 +183,6 @@ public:
 
     Qt::Alignment alignment() const;
 
-    int priority() const;
-
-
     QList<QSharedPointer<const MToolbarItemAction> > actions() const;
 
     QList<QSharedPointer<MToolbarItemAction> > actions();
@@ -230,14 +227,6 @@ signals:
 protected:
     //! Remove all actions from this item
     void clearActions();
-
-    /*!
-     * \brief Set priority for item. Most prioritized items are shown at
-     * borders of the screen.
-     *
-     * Priority could not be changed after toolbar loading.
-     */
-    void setPriority(int priority);
 
     /*!
      * \brief Set alignment for item.

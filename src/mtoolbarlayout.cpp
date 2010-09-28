@@ -29,30 +29,23 @@ MToolbarLayout::~MToolbarLayout()
     delete d_ptr;
 }
 
-void MToolbarLayout::append(const QSharedPointer<MToolbarRow> &row)
+bool MToolbarLayout::append(const QSharedPointer<MToolbarItem> &item)
 {
     Q_D(MToolbarLayout);
 
-    d->rows.append(row);
-}
-
-QList<QSharedPointer<const MToolbarRow> > MToolbarLayout::rows() const
-{
-    Q_D(const MToolbarLayout);
-    QList<QSharedPointer<const MToolbarRow> > result;
-
-    foreach (const QSharedPointer<const MToolbarRow> row, d->rows) {
-        result.append(row);
+    if (d->items.contains(item)) {
+        return false;
     }
 
-    return result;
+    d->items.append(item);
+    return true;
 }
 
-QList<QSharedPointer<MToolbarRow> > MToolbarLayout::rows()
+QList<QSharedPointer<MToolbarItem> > MToolbarLayout::items() const
 {
-    Q_D(MToolbarLayout);
+    Q_D(const MToolbarLayout);
 
-    return d->rows;
+    return d->items;
 }
 
 M::Orientation MToolbarLayout::orientation() const

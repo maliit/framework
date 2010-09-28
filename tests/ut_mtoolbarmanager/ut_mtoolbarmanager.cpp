@@ -19,7 +19,7 @@
 #include "ut_mtoolbarmanager.h"
 #include <mtoolbarmanager.h>
 #include <mtoolbardata.h>
-#include <mtoolbarrow.h>
+#include <mtoolbaritem.h>
 #include <mtoolbarlayout.h>
 #include <mtoolbarid.h>
 #include <QCoreApplication>
@@ -156,13 +156,14 @@ void Ut_MToolbarManager::testStandardObjects()
 
     QSharedPointer<const MToolbarLayout> layout = subject->standardToolbar->layout(M::Landscape);
     QVERIFY(layout);
-    QCOMPARE(layout->rows().count(), 1);
-    QSharedPointer<const MToolbarRow> row = layout->rows().first();
-    QList<QSharedPointer<MToolbarItem> > items = row->items();
+    QList<QSharedPointer<MToolbarItem> > items = layout->items();
     QVERIFY(!items.isEmpty());
 
-    // verify if copy/paste button is placed before close button
-    QVERIFY(items.indexOf(subject->copyPaste) < items.indexOf(subject->close));
+    QVERIFY(items.indexOf(subject->copyPaste) > -1);
+    QVERIFY(items.indexOf(subject->close) > -1);
+
+    QCOMPARE(subject->copyPaste->alignment(), Qt::AlignLeft);
+    QCOMPARE(subject->close->alignment(), Qt::AlignRight);
 }
 
 void Ut_MToolbarManager::testSetCopyPaste_data()
@@ -220,9 +221,7 @@ void Ut_MToolbarManager::testHideStandardButton()
     QVERIFY(toolbarData);
     QSharedPointer<const MToolbarLayout> layout = toolbarData->layout(M::Landscape);
     QVERIFY(layout);
-    QCOMPARE(layout->rows().count(), 1);
-    QSharedPointer<const MToolbarRow> row = layout->rows().first();
-    QList<QSharedPointer<MToolbarItem> > items = row->items();
+    QList<QSharedPointer<MToolbarItem> > items = layout->items();
 
     QVERIFY(items.contains(subject->close) == expectClose);
     QVERIFY(items.contains(subject->copyPaste) == expectCopyPaste);

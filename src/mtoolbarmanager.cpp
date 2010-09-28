@@ -124,8 +124,6 @@ QSharedPointer<MToolbarData> MToolbarManager::createToolbar(const QString &name)
         qWarning() << "ToolbarsManager: toolbar load error: "
                    << name;
         toolbar.clear();
-    } else {
-        toolbar->sort();
     }
 
     return toolbar;
@@ -169,6 +167,10 @@ void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarData> &too
     QSharedPointer<MToolbarLayout> landscape = toolbarData->layout(M::Landscape).constCast<MToolbarLayout>();
     QSharedPointer<MToolbarLayout> portrait = toolbarData->layout(M::Portrait).constCast<MToolbarLayout>();
 
+    if (!toolbarData || !standardToolbar) {
+        return;
+    }
+
     if (landscape) {
         addStandardButtons(landscape, toolbarData);
     }
@@ -181,18 +183,11 @@ void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarData> &too
 void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarLayout> &layout,
                                          const QSharedPointer<MToolbarData> &toolbarData)
 {
-    if (layout->rows().isEmpty()) {
-        return;
-    }
-
-    QSharedPointer<MToolbarRow> row = layout->rows().last();
-
     foreach (const QSharedPointer<MToolbarItem> &item, standardToolbar->items()) {
         if (!toolbarData->refusedNames().contains(item->name())) {
-            toolbarData->append(row, item);
+            toolbarData->append(layout, item);
         }
     }
-    row->sort();
 }
 
 void MToolbarManager::registerToolbar(const MToolbarId &id, const QString &fileName)

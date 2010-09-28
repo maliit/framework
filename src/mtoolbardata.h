@@ -26,7 +26,6 @@
 #include <MNamespace>
 
 class MToolbarLayout;
-class MToolbarRow;
 class MToolbarItem;
 
 class QDomElement;
@@ -87,18 +86,16 @@ public:
     bool isVisible() const;
 
 private:
-    //! Append given \a item to the given \a row.
+    //! Append given \a item to the given layout.
+    //! \param toolbarLayout should point to lanscape or portrait layout of this toolbar.
     //! \return Return false if item could not be added.
-    bool append(const QSharedPointer<MToolbarRow> &row, const QSharedPointer<MToolbarItem> &item);
+    //!
+    //! \sa layout(M::Orientation)
+    bool append(const QSharedPointer<MToolbarLayout> &toolbarLayout,
+                const QSharedPointer<MToolbarItem> &item);
 
     //! Returns pointer to item for given \a name
     QSharedPointer<MToolbarItem> item(const QString &name) const;
-
-    //! Sort toolbar items according to their priorities and alignments
-    void sort();
-
-    //! Sort layout items according to their priorities and alignments
-    void sort(const QSharedPointer<MToolbarLayout> &layout);
 
     /*!
      * \brief Return list of standard item names which should
@@ -210,6 +207,12 @@ private:
 
     //! Parse XML tag for HideGroup
     void parseTagHideGroup(const QDomElement &element, MTBParseParameters &params);
+
+    //! Parse XML tag for Items
+    void parseTagItems(const QDomElement &element, MTBParseParameters &params);
+
+    //! Parse XML tag for Item
+    void parseTagItem(const QDomElement &element, MTBParseParameters &params);
 
     //! Type of tag parser methods
     typedef void (MToolbarData::*TagParser)(const QDomElement &, MTBParseParameters &);

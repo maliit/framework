@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE DUI_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
 <toolbar version="1">
+    <items>
+        <button name="_copypaste" alignment="left" text_id="qtn_comm_copy" >
+            <actions>
+                <copypaste />
+            </actions>
+        </button>
+        <button name="_close" showon="always" alignment="right" icon_id="icon-m-framework-close" >
+            <actions>
+                <close />
+            </actions>
+        </button>
+    </items>
     <layout orientation="landscape">
-        <row>
-            <button name="_copypaste" priority="110" alignment="right" text_id="qtn_comm_copy" >
-                <actions>
-                    <copypaste />
-                </actions>
-            </button>
-            <button name="_close" priority="120" showon="always" alignment="right" icon_id="icon-m-framework-close" >
-                <actions>
-                    <close />
-                </actions>
-            </button>
-        </row>
+        <item name="_copypaste" />
+        <item name="_close" />
     </layout>
 </toolbar>
 

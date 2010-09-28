@@ -27,8 +27,8 @@
 class MToolbarLayoutPrivate
 {
 public:
-    //! Rows contained by this layout
-    QList<QSharedPointer<MToolbarRow> > rows;
+    //! Items contained by this layout.
+    QList<QSharedPointer<MToolbarItem> > items;
 
     //! Orientation
     M::Orientation orientation;

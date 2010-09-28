@@ -307,13 +307,6 @@ Qt::Alignment MToolbarItem::alignment() const
     return d->alignment;
 }
 
-int MToolbarItem::priority() const
-{
-    Q_D(const MToolbarItem);
-
-    return d->priority;
-}
-
 QList<QSharedPointer<const MToolbarItemAction> >
 MToolbarItem::actions() const
 {
@@ -398,13 +391,6 @@ void MToolbarItem::clearActions()
     Q_D(MToolbarItem);
 
     d->actions.clear();
-}
-
-void MToolbarItem::setPriority(int priority)
-{
-    Q_D(MToolbarItem);
-
-    d->priority = priority;
 }
 
 void MToolbarItem::setAlignment(Qt::Alignment alignment)

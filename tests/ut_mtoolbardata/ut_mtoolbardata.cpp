@@ -1,8 +1,8 @@
 #include "ut_mtoolbardata.h"
 
 #include <mtoolbardata.h>
-#include <mtoolbarrow.h>
 #include <mtoolbarlayout.h>
+#include <mtoolbaritem.h>
 #include <QCoreApplication>
 #include <QFile>
 #include <QDir>
@@ -53,7 +53,6 @@ void Ut_MToolbarData::testLoadXML()
     qDebug() << "Try to load file" << Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
     bool ok;
-    QSharedPointer<const MToolbarRow> row;
     QSharedPointer<MToolbarItem> item;
 
     ok = subject->loadToolbarXml(Toolbar1);
@@ -62,19 +61,16 @@ void Ut_MToolbarData::testLoadXML()
     QVERIFY(subject->locked() == true);
     QVERIFY(subject->isVisible() == true);
 
-    //test lanscape part
+    //test landscape part
     QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
     QVERIFY(!landscape.isNull());
-    QCOMPARE(landscape->rows().count(), 1);
-    row = landscape->rows().at(0);
-    QCOMPARE(row->items().count(), 5);
+    QCOMPARE(landscape->items().count(), 4);
 
-    item = row->items().at(0);
+    item = landscape->items().at(0);
     QVERIFY(!item.isNull());
     QCOMPARE(item->type(), MInputMethod::ItemButton);
     QCOMPARE(item->name(), QString("test1"));
     QCOMPARE(item->group(), QString("group1"));
-    QCOMPARE(item->priority(), 0);
     QCOMPARE(int(item->showOn()), int(MInputMethod::VisibleAlways));
     QCOMPARE(int(item->hideOn()), int(MInputMethod::VisibleUndefined));
     QCOMPARE(item->alignment(), Qt::AlignRight);
@@ -94,15 +90,14 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->actions().at(0)->group(), QString());
     QCOMPARE(item->actions().at(1)->group(), QString("group3"));
 
-    item = row->items().at(1);
+    item = landscape->items().at(1);
     QVERIFY(!item.isNull());
     QCOMPARE(item->type(), MInputMethod::ItemButton);
     QCOMPARE(item->name(), QString("test2"));
     QCOMPARE(item->group(), QString("group2"));
-    QCOMPARE(item->priority(), 10);
     QCOMPARE(int(item->showOn()), int(MInputMethod::VisibleWhenSelectingText));
     QCOMPARE(int(item->hideOn()), int(MInputMethod::VisibleUndefined));
-    QCOMPARE(item->alignment(), Qt::AlignLeft);
+    QCOMPARE(item->alignment(), Qt::AlignCenter);
     QCOMPARE(item->text(), QString("text2"));
     QCOMPARE(item->textId(), QString("id2"));
     QCOMPARE(item->isVisible(), true);
@@ -120,45 +115,43 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->actions().at(1)->group(), QString("group3"));
     QCOMPARE(item->actions().at(2)->keys(), QString("Ctrl+C"));
 
-    item = row->items().at(2);
+    item = landscape->items().at(2);
     QVERIFY(!item.isNull());
     QCOMPARE(item->type(), MInputMethod::ItemButton);
     QCOMPARE(item->name(), QString("test3"));
-    QCOMPARE(item->group(), QString("group4"));
-    QCOMPARE(item->priority(), 2);
+    QCOMPARE(item->group(), QString("group3"));
     QCOMPARE(int(item->showOn()), int(MInputMethod::VisibleAlways));
-    QCOMPARE(int(item->hideOn()), int(MInputMethod::VisibleWhenSelectingText));
+    QCOMPARE(int(item->hideOn()), int(MInputMethod::VisibleUndefined));
     QCOMPARE(item->alignment(), Qt::AlignLeft);
-    QCOMPARE(item->text(), QString("text4"));
-    QCOMPARE(item->textId(), QString("id4"));
+    QCOMPARE(item->text(), QString("text3"));
+    QCOMPARE(item->textId(), QString("id3"));
     QCOMPARE(item->isVisible(), true);
     QCOMPARE(item->toggle(), false);
     QCOMPARE(item->pressed(), false);
     QCOMPARE(item->icon(), QString(""));
-    QCOMPARE(item->iconId(), QString("icon4"));
+    QCOMPARE(item->iconId(), QString("icon3"));
 
     QCOMPARE(item->actions().count(), 1);
-    QCOMPARE(int(item->actions().at(0)->type()), int(MInputMethod::ActionSendCommand));
+    QCOMPARE(int(item->actions().at(0)->type()), int(MInputMethod::ActionPaste));
     QCOMPARE(item->actions().at(0)->keys(), QString());
     QCOMPARE(item->actions().at(0)->text(), QString());
-    QCOMPARE(item->actions().at(0)->command(), QString("command4"));
+    QCOMPARE(item->actions().at(0)->command(), QString());
     QCOMPARE(item->actions().at(0)->group(), QString());
 
     // test portrait part
     QSharedPointer<const MToolbarLayout> portrait = subject->layout(M::Portrait);
     QVERIFY(!portrait.isNull());
-    QCOMPARE(portrait->rows().count(), 2);
-    row = portrait->rows().at(0);
-    QCOMPARE(row->items().count(), 1);
+    QCOMPARE(portrait->items().count(), 4);
 
-    //itema are shared between layouts
-    QVERIFY(landscape->rows().at(0)->items().at(0) == row->items().at(0));
+    //items are shared between layouts
+    QVERIFY(landscape->items().at(1) == portrait->items().at(0));
+    QVERIFY(landscape->items().at(2) == portrait->items().at(1));
+    QVERIFY(landscape->items().at(3) == portrait->items().at(2));
 
-    row = portrait->rows().at(1);
-    QCOMPARE(row->items().count(), 2);
-
-    QVERIFY(landscape->rows().at(0)->items().at(1) == row->items().at(0));
-    QVERIFY(landscape->rows().at(0)->items().at(2) == row->items().at(1));
+    item = portrait->items().at(3);
+    QVERIFY(!item.isNull());
+    QCOMPARE(item->type(), MInputMethod::ItemButton);
+    QCOMPARE(item->name(), QString("test5"));
 }
 
 void Ut_MToolbarData::testLandspaceOnly()
@@ -166,7 +159,6 @@ void Ut_MToolbarData::testLandspaceOnly()
     qDebug() << "Try to load file" << Toolbar2;
     QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
     bool ok;
-    QSharedPointer<const MToolbarRow> row;
 
     ok = subject->loadToolbarXml(Toolbar2);
     QVERIFY2(ok, "toolbar2.xml was not loaded correctly");
@@ -174,19 +166,17 @@ void Ut_MToolbarData::testLandspaceOnly()
     QVERIFY(subject->locked() == true);
     QVERIFY(subject->isVisible() == false);
 
-    //test lanscape part
+    //test landscape part
     QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
     QVERIFY(!landscape.isNull());
-    QCOMPARE(landscape->rows().count(), 1);
-    row = landscape->rows().at(0);
-    QCOMPARE(row->items().count(), 5);
+    QCOMPARE(landscape->items().count(), 5);
 
     //verify at least some item's attributes
-    QCOMPARE(row->items().at(0)->type(), MInputMethod::ItemButton);
-    QCOMPARE(row->items().at(1)->type(), MInputMethod::ItemButton);
-    QCOMPARE(row->items().at(2)->type(), MInputMethod::ItemButton);
-    QCOMPARE(row->items().at(3)->type(), MInputMethod::ItemLabel);
-    QCOMPARE(row->items().at(4)->type(), MInputMethod::ItemButton);
+    QCOMPARE(landscape->items().at(0)->type(), MInputMethod::ItemButton);
+    QCOMPARE(landscape->items().at(1)->type(), MInputMethod::ItemButton);
+    QCOMPARE(landscape->items().at(2)->type(), MInputMethod::ItemButton);
+    QCOMPARE(landscape->items().at(3)->type(), MInputMethod::ItemLabel);
+    QCOMPARE(landscape->items().at(4)->type(), MInputMethod::ItemButton);
 
     QVERIFY(subject->layout(M::Landscape) == subject->layout(M::Portrait));
 }
@@ -201,12 +191,10 @@ void Ut_MToolbarData::testLoadOldXML()
 
     QVERIFY(subject->isVisible() == true);
 
-    //test lanscape part
+    //test landscape part
     QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
     QVERIFY(!landscape.isNull());
-    QCOMPARE(landscape->rows().count(), 1);
-    QSharedPointer<const MToolbarRow> row = landscape->rows().at(0);
-    QCOMPARE(row->items().count(), 5);
+    QCOMPARE(landscape->items().count(), 5);
 
     QVERIFY(subject->layout(M::Landscape) == subject->layout(M::Portrait));
 }
@@ -249,46 +237,40 @@ void Ut_MToolbarData::testAddItem()
 {
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
     bool ok;
-    QSharedPointer<MToolbarRow> row;
     QSharedPointer<MToolbarItem> item;
     QSharedPointer<MToolbarItem> button(new MToolbarItem("addItem", MInputMethod::ItemButton));
 
-    button->setPriority(-1);
     button->setAlignment(Qt::AlignLeft);
 
-    ok = subject->append(QSharedPointer<MToolbarRow>(new MToolbarRow), button);
+    ok = subject->append(QSharedPointer<MToolbarLayout>(new MToolbarLayout), button);
     QVERIFY2(!ok, "Item should not be added to non-constructed toolbar");
 
     ok = subject->loadToolbarXml(Toolbar1);
     QVERIFY2(ok, "toolbar1.xml was not loaded correctly");
 
-    QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
+    QSharedPointer<MToolbarLayout> landscape = subject->layout(M::Landscape).constCast<MToolbarLayout>();
     QVERIFY(!landscape.isNull());
-    QCOMPARE(landscape->rows().count(), 1);
-    row = landscape->rows().at(0).constCast<MToolbarRow>();
-    QVERIFY(!row->items().isEmpty());
+    QVERIFY(!landscape->items().isEmpty());
 
-    ok = subject->append(row, button);
+    ok = subject->append(landscape, button);
     QVERIFY2(ok, "Item was not added");
-    QVERIFY(row->items().last() == button);
+    QVERIFY(landscape->items().last() == button);
 
-    ok = subject->append(row, button);
+    ok = subject->append(landscape, button);
     QVERIFY2(!ok, "Item should not be added twice to the same row");
 
-    ok = subject->append(QSharedPointer<MToolbarRow>(), button);
+    ok = subject->append(QSharedPointer<MToolbarLayout>(), button);
     QVERIFY2(!ok, "Item should not be added to non-existing row");
 
-    QSharedPointer<const MToolbarLayout> portrait = subject->layout(M::Portrait);
+    QSharedPointer<MToolbarLayout> portrait = subject->layout(M::Portrait).constCast<MToolbarLayout>();
     QVERIFY(!portrait.isNull());
-    QVERIFY(portrait->rows().count() > 0);
-    row = portrait->rows().last().constCast<MToolbarRow>();
-    QVERIFY(!row->items().isEmpty());
+    QVERIFY(!portrait->items().isEmpty());
 
-    ok = subject->append(row, button);
+    ok = subject->append(portrait, button);
     QVERIFY2(ok, "Item was not added");
-    QVERIFY(row->items().last() == button);
+    QVERIFY(portrait->items().last() == button);
 
-    ok = subject->append(row, button);
+    ok = subject->append(portrait, button);
     QVERIFY2(!ok, "Item should not be added twice to the same row");
 }
 

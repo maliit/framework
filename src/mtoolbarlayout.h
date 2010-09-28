@@ -19,11 +19,11 @@
 #ifndef MTOOLBARLAYOUT_H
 #define MTOOLBARLAYOUT_H
 
-//#include <QObject>
 #include <QList>
 #include <QSharedPointer>
+#include <MNamespace>
 
-#include "mtoolbarrow.h"
+#include <mtoolbaritem.h>
 
 class MToolbarLayoutPrivate;
 
@@ -39,13 +39,10 @@ public:
     virtual ~MToolbarLayout();
 
     //! Append row to layout
-    void append(const QSharedPointer<MToolbarRow> &row);
+    bool append(const QSharedPointer<MToolbarItem> &item);
 
     //! Return all items contained by this row
-    QList<QSharedPointer<const MToolbarRow> > rows() const;
-
-    //! Return all items contained by this row
-    QList<QSharedPointer<MToolbarRow> > rows();
+    QList<QSharedPointer<MToolbarItem> > items() const;
 
     //! Return layout's orientation
     M::Orientation orientation() const;

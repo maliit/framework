@@ -4,6 +4,7 @@
 * API changes
  - Toolbar specification was changed.
    Check latest version of the specification in the file doc/src/toolbarxml.dox
+ - class MToolbarRow was removed
 
 0.19.22
 ========
