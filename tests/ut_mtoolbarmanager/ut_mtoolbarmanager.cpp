@@ -170,11 +170,11 @@ void Ut_MToolbarManager::testSetCopyPaste_data()
 {
     QTest::addColumn<bool>("copyAvailable");
     QTest::addColumn<bool>("pasteAvailable");
-    QTest::addColumn<bool>("expectedVisible");
+    QTest::addColumn<bool>("expectedEnabled");
     QTest::addColumn<MInputMethod::ActionType>("expectedAction");
     QTest::addColumn<QString>("expectedTextId");
 
-    QTest::newRow("nothing")    << false << false << false << MInputMethod::ActionUndefined << "";
+    QTest::newRow("nothing")    << false << false << false << MInputMethod::ActionUndefined << "qtn_comm_copy";
     QTest::newRow("copy")       << true  << false << true  << MInputMethod::ActionCopy << "qtn_comm_copy";
     QTest::newRow("paste")      << false << true  << true  << MInputMethod::ActionPaste << "qtn_comm_paste";
     QTest::newRow("copy+paste") << true  << true  << true  << MInputMethod::ActionCopy << "qtn_comm_copy";
@@ -184,12 +184,13 @@ void Ut_MToolbarManager::testSetCopyPaste()
 {
     QFETCH(bool, copyAvailable);
     QFETCH(bool, pasteAvailable);
-    QFETCH(bool, expectedVisible);
+    QFETCH(bool, expectedEnabled);
     QFETCH(MInputMethod::ActionType, expectedAction);
     QFETCH(QString, expectedTextId);
 
     subject->setCopyPasteState(copyAvailable, pasteAvailable);
-    QCOMPARE(subject->copyPaste->isVisible(), expectedVisible);
+    QVERIFY(subject->copyPaste->isVisible());
+    QVERIFY(subject->copyPaste->enabled() == expectedEnabled);
     QVERIFY(!subject->copyPaste->actions().isEmpty());
     QCOMPARE(int(subject->copyPaste->actions().first()->type()), int(expectedAction));
     if (!expectedTextId.isEmpty()) {

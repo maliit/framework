@@ -75,12 +75,12 @@ bool  MToolbarManager::contains(const MToolbarId &id) const
 
 void MToolbarManager::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
-    MInputMethod::CopyPasteState newStatus = MInputMethod::InputMethodNoCopyPaste;
-    MInputMethod::ActionType actionType = MInputMethod::ActionUndefined;
-
     if (!copyPaste) {
         return;
     }
+
+    MInputMethod::CopyPasteState newStatus = MInputMethod::InputMethodNoCopyPaste;
+    MInputMethod::ActionType actionType = MInputMethod::ActionUndefined;
 
     if (copyAvailable) {
         newStatus = MInputMethod::InputMethodCopy;
@@ -91,26 +91,27 @@ void MToolbarManager::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
     if (copyPasteStatus == newStatus)
         return;
 
+    bool enabled = false;
+    QString textId("qtn_comm_copy");
+
     copyPasteStatus = newStatus;
     switch (newStatus) {
     case MInputMethod::InputMethodNoCopyPaste:
-        copyPaste->setVisible(false);
         break;
     case MInputMethod::InputMethodCopy:
-        copyPaste->setVisible(true);
-        //% "Copy"
-        copyPaste->setTextId("qtn_comm_copy");
+        enabled = true;
         actionType = MInputMethod::ActionCopy;
         break;
     case MInputMethod::InputMethodPaste:
-        copyPaste->setVisible(true);
-        //% "Paste"
-        copyPaste->setTextId("qtn_comm_paste");
+        enabled = true;
+        textId = "qtn_comm_paste";
         actionType = MInputMethod::ActionPaste;
         break;
     }
+    copyPaste->setTextId(textId);
+    copyPaste->setEnabled(enabled);
     if (!copyPaste->actions().isEmpty()) {
-        copyPaste->actions().at(0)->setType(actionType);
+        copyPaste->actions().first()->setType(actionType);
     }
 }
 
@@ -152,7 +153,9 @@ void MToolbarManager::createStandardObjects()
             case MInputMethod::ActionCopyPaste:
                 copyPaste = item;
                 // set initial state
-                copyPaste->setVisible(false);
+                copyPaste->setVisible(true);
+                copyPaste->setEnabled(false);
+                copyPaste->setTextId("qtn_comm_copy");
                 copyPaste->actions().first()->setType(MInputMethod::ActionUndefined);
                 break;
             default:
