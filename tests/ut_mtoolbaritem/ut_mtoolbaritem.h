@@ -20,6 +20,7 @@ private slots:
 
     void testSetProperty();
     void testHighlighted();
+    void testCustom();
 
 private:
     QCoreApplication *app;

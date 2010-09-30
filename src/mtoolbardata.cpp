@@ -657,5 +657,9 @@ void MToolbarData::setCustom(bool custom)
     Q_D(MToolbarData);
 
     d->custom = custom;
+
+    foreach (const QSharedPointer<MToolbarItem> &item, items()) {
+        item->setCustom(custom);
+    }
 }
 

@@ -30,12 +30,13 @@ MToolbarItemPrivate::MToolbarItemPrivate()
       priority(0),
       showOn(MInputMethod::VisibleUndefined),
       hideOn(MInputMethod::VisibleUndefined),
-      alignment(Qt::AlignRight),
+      alignment(Qt::AlignCenter),
       visible(true),
       toggle(false),
       pressed(false),
       size(100),
-      highlighted(false)
+      highlighted(false),
+      custom(true)
 {
 }
 
@@ -402,6 +403,23 @@ bool MToolbarItem::highlighted() const
     Q_D(const MToolbarItem);
 
     return d->highlighted;
+}
+
+bool MToolbarItem::isCustom() const
+{
+    Q_D(const MToolbarItem);
+
+    return d->custom;
+}
+
+void MToolbarItem::setCustom(bool custom)
+{
+    Q_D(MToolbarItem);
+
+    if (d->custom != custom) {
+        d->custom = custom;
+        emit propertyChanged("custom");
+    }
 }
 
 void MToolbarItem::clearActions()

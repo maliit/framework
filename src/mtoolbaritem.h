@@ -206,6 +206,10 @@ public:
     //! Return highlighted state for the item.
     bool highlighted() const;
 
+    bool isCustom() const;
+
+    void setCustom(bool custom);
+
 public slots:
     //! Sets new text for item
     void setText(const QString &text);

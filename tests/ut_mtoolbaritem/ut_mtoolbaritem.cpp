@@ -119,5 +119,26 @@ void Ut_MToolbarItem::testHighlighted()
     QVERIFY(spy.isEmpty());
 }
 
+void Ut_MToolbarItem::testCustom()
+{
+    QSignalSpy spy(subject, SIGNAL(propertyChanged(const QString &)));
+
+    QVERIFY(spy.isValid());
+
+    QVERIFY(subject->isCustom());
+
+    subject->setCustom(true);
+    QVERIFY(spy.isEmpty());
+
+    subject->setCustom(false);
+    QVERIFY(spy.count() == 1);
+    QVERIFY(spy.first().count() == 1);
+    QCOMPARE(spy.first().first().toString(), QString("custom"));
+    spy.clear();
+
+    subject->setCustom(false);
+    QVERIFY(spy.isEmpty());
+}
+
 QTEST_APPLESS_MAIN(Ut_MToolbarItem)
 

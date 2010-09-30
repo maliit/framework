@@ -66,6 +66,9 @@ public:
     QList<QSharedPointer<MToolbarItemAction> > actions;
 
     bool highlighted;
+
+    //! Contains true if this item is provided by standard toolbar
+    bool custom;
 };
 
 #endif
