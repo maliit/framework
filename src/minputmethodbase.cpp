@@ -110,6 +110,8 @@ void MInputMethodBasePrivate::_q_handleIndicatorServiceChanged(const QString &se
                                                                const QString &oldOwner,
                                                                const QString &newOwner)
 {
+    Q_UNUSED(oldOwner);
+
     qDebug() << __PRETTY_FUNCTION__;
     if (serviceName != DBusIndicatorServiceName)
         return;
