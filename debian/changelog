@@ -1,3 +1,10 @@
+meego-im-framework (0.19.21~1) unstable; urgency=low
+
+  * [UNRELEASED]
+  * Fixes: NB#184023 - VKB shown for a while in front of unlock-UI
+
+ -- huaming wang <huaming.wang@nokia.com>  Mon, 27 Sep 2010 11:28:54 +0300
+
 meego-im-framework (0.19.20-1) unstable; urgency=low
 
   * Uses MInputMethodState signaling for notifying app about real hw kbd events
