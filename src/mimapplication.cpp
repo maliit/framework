@@ -71,23 +71,18 @@ void MIMApplication::setTransientHint(int newRemoteWinId)
 
     remoteWinId = newRemoteWinId;
 
-    // The transient hint is strictly speaken not necessary yet - we still
-    // handle window stacking order manually by making the VKB plugin raise
-    // over the top-most application window.
-    // TODO: Get rid of window stacking code in plugin side, depends on fix
-    // for NB#172937.
-    XSetTransientForHint(QX11Info::display(), activeWindow()->winId(), remoteWinId);
+    XSetTransientForHint(QX11Info::display(),
+                         passThruWindow->effectiveWinId(),
+                         remoteWinId);
 
-    // Using PropertyChangeMask is a work-around for NB#172722.
-    XSelectInput(QX11Info::display(), newRemoteWinId, StructureNotifyMask | PropertyChangeMask);
+    // Using PropertyChangeMask is a work-around for NB#172722 (a WONTFIX):
+    XSelectInput(QX11Info::display(),
+                 remoteWinId,
+                 StructureNotifyMask | PropertyChangeMask);
 }
 
 void MIMApplication::setPassThruWindow(QWidget *newPassThruWindow)
 {
-    // The MPassThruWindow is different from the activeWindow, but we have to
-    // follow the X11 events from the activeWindow while hiding its viewport (an
-    // MPassThruWindow instance, usually), in order to not mess with the
-    // application logic.
     if (newPassThruWindow != passThruWindow) {
         passThruWindow = newPassThruWindow;
     }

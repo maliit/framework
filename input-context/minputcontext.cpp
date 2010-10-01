@@ -236,7 +236,7 @@ void MInputContext::reset()
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
 
     // send existing preedit to widget, documentation unclear whether this is
-    // allowed, but trolls gave permission to use it. Most of qt's internal 
+    // allowed, but trolls gave permission to use it. Most of qt's internal
     // input methods do the same thing.
     QInputMethodEvent event;
     event.setCommitString(preedit);
