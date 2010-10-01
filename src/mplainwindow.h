@@ -27,7 +27,7 @@ class MPlainWindow : public MWindow
     Q_OBJECT
 
 public:
-    MPlainWindow(QWidget *parent = 0);
+    explicit MPlainWindow(QWidget *parent = 0);
     virtual ~MPlainWindow();
     static MPlainWindow *instance();
 
