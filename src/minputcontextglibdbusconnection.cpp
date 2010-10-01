@@ -484,7 +484,7 @@ void MInputContextGlibDBusConnection::sendCommitString(const QString &string)
 }
 
 
-void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent)
+void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent, bool signalOnly)
 {
     if (activeContext) {
         int type = static_cast<int>(keyEvent.type());

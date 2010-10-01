@@ -52,7 +52,7 @@ public:
     //! \reimp
     virtual void sendPreeditString(const QString &string, PreeditFace preeditFace = PreeditDefault);
     virtual void sendCommitString(const QString &string);
-    virtual void sendKeyEvent(const QKeyEvent &keyEvent);
+    virtual void sendKeyEvent(const QKeyEvent &keyEvent, bool signalOnly=false);
     virtual void notifyImInitiatedHiding();
 
     virtual int contentType(bool &valid);

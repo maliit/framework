@@ -534,20 +534,27 @@ void MInputContext::updatePreedit(const QString &string, PreeditFace preeditFace
 
 
 void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
-                             bool autoRepeat, int count)
+                             bool autoRepeat, int count, bool signalOnly)
 {
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
 
-    if (focusWidget() == 0) {
-        return;
-    }
 
-    // just construct an event instance out of the parameters.
-    QKeyEvent event(static_cast<QEvent::Type>(type), key,
+    // Construct an event instance out of the parameters.
+    QEvent::Type eventType = static_cast<QEvent::Type>(type);
+    QKeyEvent event(eventType, key,
                     static_cast<Qt::KeyboardModifiers>(modifiers),
                     text, autoRepeat, count);
 
-    QCoreApplication::sendEvent(focusWidget(), &event);
+    if (eventType == QEvent::KeyPress) {
+        MInputMethodState::instance()->emitKeyPress(event);
+    } else if (eventType == QEvent::KeyRelease) {
+        MInputMethodState::instance()->emitKeyRelease(event);
+    }
+
+    if (focusWidget() != 0 && signalOnly == false) {
+        QCoreApplication::sendEvent(focusWidget(), &event);
+    }
+
 }
 
 

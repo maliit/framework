@@ -1,3 +1,12 @@
+0.19.21
+========
+
+* API changes
+ - MInputContext::keyEvent will always emit a signal, additional parameter "signalOnly"
+   is used to suppress delivering the KeyEvent to focused widget.
+ - D-BUS message "keyEvent" in interface "com.meego.inputmethod.inputcontext1" has new
+   boolean parameter to match the new parameter in MInputContext::keyEvent
+
 0.19.20
 ========
 

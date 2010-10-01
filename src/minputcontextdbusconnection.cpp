@@ -238,7 +238,7 @@ void MInputContextDBusConnection::sendCommitString(const QString &string)
 }
 
 
-void MInputContextDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent)
+void MInputContextDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent, bool signalOnly)
 {
     if (d->activeContext) {
         int type = static_cast<int>(keyEvent.type());
@@ -246,7 +246,7 @@ void MInputContextDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent)
         int modifiers = static_cast<int>(keyEvent.modifiers());
 
         d->activeContext->call("keyEvent", type, key, modifiers, keyEvent.text(),
-                               keyEvent.isAutoRepeat(), keyEvent.count());
+                               keyEvent.isAutoRepeat(), keyEvent.count(), signalOnly);
     }
 }
 

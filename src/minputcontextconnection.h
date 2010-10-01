@@ -113,8 +113,15 @@ public:
 
     /*!
      * \brief Sends key event to the application
+     *
+     * This method is used to deliver the key event to active widget.
+     * A \a MInputMethodState::keyPress or \a MInputMethodState::keyRelease
+     * event is also emitted. If the \a signalOnly parameter is \a true,
+     * only the signal is emitted (no event is sent to widget).
+     * \param keyEvent The event to send
+     * \param signalOnly only the signal should be emitted.
      */
-    virtual void sendKeyEvent(const QKeyEvent &keyEvent) = 0;
+    virtual void sendKeyEvent(const QKeyEvent &keyEvent, bool signalOnly = false) = 0;
 
     /*!
      * \brief notifies about hiding initiated by the input method server side

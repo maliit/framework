@@ -53,10 +53,10 @@ static gboolean m_dbus_glib_input_context_adaptor_update_preedit(
 
 static gboolean m_dbus_glib_input_context_adaptor_key_event(
     MDBusGlibInputContextAdaptor *obj, gint32 type, gint32 key, gint32 modifiers, const char *text,
-    gboolean autoRepeat, gint32 count, GError **/*error*/)
+    gboolean autoRepeat, gint32 count, gboolean signalOnly, GError **/*error*/)
 {
     obj->inputContext->keyEvent(type, key, modifiers, QString::fromUtf8(text),
-                                autoRepeat == TRUE, count);
+                                autoRepeat == TRUE, count, signalOnly);
     return TRUE;
 }
 

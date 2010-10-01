@@ -67,9 +67,9 @@ void MInputContextAdaptor::updatePreedit(const QString &string, int preeditFace)
 
 
 void MInputContextAdaptor::keyEvent(int type, int key, int modifiers, const QString &text,
-                                    bool autoRepeat, int count)
+                                    bool autoRepeat, int count, bool signalOnly)
 {
-    owner->keyEvent(type, key, modifiers, text, autoRepeat, count);
+    owner->keyEvent(type, key, modifiers, text, autoRepeat, count, signalOnly);
 }
 
 

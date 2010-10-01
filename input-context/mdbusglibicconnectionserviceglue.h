@@ -53,32 +53,38 @@ G_BEGIN_DECLS
 #endif /* !G_ENABLE_DEBUG */
 
 
-/* BOOLEAN:BOOLEAN,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:1) */
-extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER (GClosure     *closure,
-                                                                                          GValue       *return_value,
-                                                                                          guint         n_param_values,
-                                                                                          const GValue *param_values,
-                                                                                          gpointer      invocation_hint,
-                                                                                          gpointer      marshal_data);
+/* BOOLEAN:INT,INT,INT,STRING,BOOLEAN,INT,BOOLEAN,POINTER */
+extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_BOOLEAN_POINTER (GClosure     *closure,
+                                                                                                                         GValue       *return_value,
+                                                                                                                         guint         n_param_values,
+                                                                                                                         const GValue *param_values,
+                                                                                                                         gpointer      invocation_hint,
+                                                                                                                         gpointer      marshal_data);
 void
-dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER (GClosure     *closure,
-                                                                              GValue       *return_value G_GNUC_UNUSED,
-                                                                              guint         n_param_values,
-                                                                              const GValue *param_values,
-                                                                              gpointer      invocation_hint G_GNUC_UNUSED,
-                                                                              gpointer      marshal_data)
+dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_BOOLEAN_POINTER (GClosure     *closure,
+                                                                                                             GValue       *return_value G_GNUC_UNUSED,
+                                                                                                             guint         n_param_values,
+                                                                                                             const GValue *param_values,
+                                                                                                             gpointer      invocation_hint G_GNUC_UNUSED,
+                                                                                                             gpointer      marshal_data)
 {
-  typedef gboolean (*GMarshalFunc_BOOLEAN__BOOLEAN_POINTER) (gpointer     data1,
-                                                             gboolean     arg_1,
-                                                             gpointer     arg_2,
-                                                             gpointer     data2);
-  register GMarshalFunc_BOOLEAN__BOOLEAN_POINTER callback;
+  typedef gboolean (*GMarshalFunc_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_BOOLEAN_POINTER) (gpointer     data1,
+                                                                                            gint         arg_1,
+                                                                                            gint         arg_2,
+                                                                                            gint         arg_3,
+                                                                                            gpointer     arg_4,
+                                                                                            gboolean     arg_5,
+                                                                                            gint         arg_6,
+                                                                                            gboolean     arg_7,
+                                                                                            gpointer     arg_8,
+                                                                                            gpointer     data2);
+  register GMarshalFunc_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_BOOLEAN_POINTER callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
   gboolean v_return;
 
   g_return_if_fail (return_value != NULL);
-  g_return_if_fail (n_param_values == 3);
+  g_return_if_fail (n_param_values == 9);
 
   if (G_CCLOSURE_SWAP_DATA (closure))
     {
@@ -90,17 +96,23 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER (GC
       data1 = g_value_peek_pointer (param_values + 0);
       data2 = closure->data;
     }
-  callback = (GMarshalFunc_BOOLEAN__BOOLEAN_POINTER) (marshal_data ? marshal_data : cc->callback);
+  callback = (GMarshalFunc_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_BOOLEAN_POINTER) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
-                       g_marshal_value_peek_boolean (param_values + 1),
-                       g_marshal_value_peek_pointer (param_values + 2),
+                       g_marshal_value_peek_int (param_values + 1),
+                       g_marshal_value_peek_int (param_values + 2),
+                       g_marshal_value_peek_int (param_values + 3),
+                       g_marshal_value_peek_string (param_values + 4),
+                       g_marshal_value_peek_boolean (param_values + 5),
+                       g_marshal_value_peek_int (param_values + 6),
+                       g_marshal_value_peek_boolean (param_values + 7),
+                       g_marshal_value_peek_pointer (param_values + 8),
                        data2);
 
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:POINTER,POINTER,POINTER,POINTER,POINTER,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:2) */
+/* BOOLEAN:POINTER,POINTER,POINTER,POINTER,POINTER,POINTER */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER (GClosure     *closure,
                                                                                                                           GValue       *return_value,
                                                                                                                           guint         n_param_values,
@@ -155,7 +167,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER_POINTER_POI
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:BOXED,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:3) */
+/* BOOLEAN:BOXED,POINTER */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOXED_POINTER (GClosure     *closure,
                                                                                         GValue       *return_value,
                                                                                         guint         n_param_values,
@@ -202,7 +214,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOXED_POINTER (GClo
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:4) */
+/* BOOLEAN:POINTER */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER (GClosure     *closure,
                                                                                   GValue       *return_value,
                                                                                   guint         n_param_values,
@@ -247,7 +259,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER (GClosure  
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:STRING,UINT,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:5) */
+/* BOOLEAN:STRING,UINT,POINTER */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_UINT_POINTER (GClosure     *closure,
                                                                                               GValue       *return_value,
                                                                                               guint         n_param_values,
@@ -296,7 +308,7 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_UINT_POINTER
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:STRING,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:6) */
+/* BOOLEAN:STRING,POINTER */
 extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_POINTER (GClosure     *closure,
                                                                                          GValue       *return_value,
                                                                                          guint         n_param_values,
@@ -343,37 +355,32 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_POINTER (GCl
   g_value_set_boolean (return_value, v_return);
 }
 
-/* BOOLEAN:INT,INT,INT,STRING,BOOLEAN,INT,POINTER (/tmp/dbus-binding-tool-c-marshallers.DKORHV:7) */
-extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER (GClosure     *closure,
-                                                                                                                 GValue       *return_value,
-                                                                                                                 guint         n_param_values,
-                                                                                                                 const GValue *param_values,
-                                                                                                                 gpointer      invocation_hint,
-                                                                                                                 gpointer      marshal_data);
+/* BOOLEAN:BOOLEAN,POINTER */
+extern void dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER (GClosure     *closure,
+                                                                                          GValue       *return_value,
+                                                                                          guint         n_param_values,
+                                                                                          const GValue *param_values,
+                                                                                          gpointer      invocation_hint,
+                                                                                          gpointer      marshal_data);
 void
-dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER (GClosure     *closure,
-                                                                                                     GValue       *return_value G_GNUC_UNUSED,
-                                                                                                     guint         n_param_values,
-                                                                                                     const GValue *param_values,
-                                                                                                     gpointer      invocation_hint G_GNUC_UNUSED,
-                                                                                                     gpointer      marshal_data)
+dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER (GClosure     *closure,
+                                                                              GValue       *return_value G_GNUC_UNUSED,
+                                                                              guint         n_param_values,
+                                                                              const GValue *param_values,
+                                                                              gpointer      invocation_hint G_GNUC_UNUSED,
+                                                                              gpointer      marshal_data)
 {
-  typedef gboolean (*GMarshalFunc_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER) (gpointer     data1,
-                                                                                    gint         arg_1,
-                                                                                    gint         arg_2,
-                                                                                    gint         arg_3,
-                                                                                    gpointer     arg_4,
-                                                                                    gboolean     arg_5,
-                                                                                    gint         arg_6,
-                                                                                    gpointer     arg_7,
-                                                                                    gpointer     data2);
-  register GMarshalFunc_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER callback;
+  typedef gboolean (*GMarshalFunc_BOOLEAN__BOOLEAN_POINTER) (gpointer     data1,
+                                                             gboolean     arg_1,
+                                                             gpointer     arg_2,
+                                                             gpointer     data2);
+  register GMarshalFunc_BOOLEAN__BOOLEAN_POINTER callback;
   register GCClosure *cc = (GCClosure*) closure;
   register gpointer data1, data2;
   gboolean v_return;
 
   g_return_if_fail (return_value != NULL);
-  g_return_if_fail (n_param_values == 8);
+  g_return_if_fail (n_param_values == 3);
 
   if (G_CCLOSURE_SWAP_DATA (closure))
     {
@@ -385,16 +392,11 @@ dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_
       data1 = g_value_peek_pointer (param_values + 0);
       data2 = closure->data;
     }
-  callback = (GMarshalFunc_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER) (marshal_data ? marshal_data : cc->callback);
+  callback = (GMarshalFunc_BOOLEAN__BOOLEAN_POINTER) (marshal_data ? marshal_data : cc->callback);
 
   v_return = callback (data1,
-                       g_marshal_value_peek_int (param_values + 1),
-                       g_marshal_value_peek_int (param_values + 2),
-                       g_marshal_value_peek_int (param_values + 3),
-                       g_marshal_value_peek_string (param_values + 4),
-                       g_marshal_value_peek_boolean (param_values + 5),
-                       g_marshal_value_peek_int (param_values + 6),
-                       g_marshal_value_peek_pointer (param_values + 7),
+                       g_marshal_value_peek_boolean (param_values + 1),
+                       g_marshal_value_peek_pointer (param_values + 2),
                        data2);
 
   g_value_set_boolean (return_value, v_return);
@@ -410,21 +412,21 @@ static const DBusGMethodInfo dbus_glib_m_dbus_glib_input_context_adaptor_methods
   { (GCallback) m_dbus_glib_input_context_adaptor_im_initiated_hide, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 59 },
   { (GCallback) m_dbus_glib_input_context_adaptor_commit_string, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_POINTER, 114 },
   { (GCallback) m_dbus_glib_input_context_adaptor_update_preedit, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__STRING_UINT_POINTER, 175 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_key_event, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_POINTER, 246 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_update_input_method_area, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOXED_POINTER, 348 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_set_global_correction_enabled, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 419 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_preedit_rectangle, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER, 494 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_copy, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 615 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_paste, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 659 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_set_redirect_keys, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 704 },
-  { (GCallback) m_dbus_glib_input_context_adaptor_set_detectable_auto_repeat, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 768 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_key_event, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__INT_INT_INT_STRING_BOOLEAN_INT_BOOLEAN_POINTER, 246 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_update_input_method_area, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOXED_POINTER, 357 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_set_global_correction_enabled, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 428 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_preedit_rectangle, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER_POINTER_POINTER_POINTER_POINTER_POINTER, 503 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_copy, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 624 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_paste, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__POINTER, 668 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_set_redirect_keys, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 713 },
+  { (GCallback) m_dbus_glib_input_context_adaptor_set_detectable_auto_repeat, dbus_glib_marshal_m_dbus_glib_input_context_adaptor_BOOLEAN__BOOLEAN_POINTER, 777 },
 };
 
 const DBusGObjectInfo dbus_glib_m_dbus_glib_input_context_adaptor_object_info = {
   0,
   dbus_glib_m_dbus_glib_input_context_adaptor_methods,
   12,
-"com.meego.inputmethod.inputcontext1\0activationLostEvent\0S\0\0com.meego.inputmethod.inputcontext1\0imInitiatedHide\0S\0\0com.meego.inputmethod.inputcontext1\0commitString\0S\0arg0\0I\0s\0\0com.meego.inputmethod.inputcontext1\0updatePreedit\0S\0arg0\0I\0s\0arg1\0I\0u\0\0com.meego.inputmethod.inputcontext1\0keyEvent\0S\0arg0\0I\0i\0arg1\0I\0i\0arg2\0I\0i\0arg3\0I\0s\0arg4\0I\0b\0arg5\0I\0i\0\0com.meego.inputmethod.inputcontext1\0updateInputMethodArea\0S\0arg0\0I\0ay\0\0com.meego.inputmethod.inputcontext1\0setGlobalCorrectionEnabled\0S\0arg0\0I\0b\0\0com.meego.inputmethod.inputcontext1\0preeditRectangle\0S\0arg0\0O\0F\0N\0b\0arg1\0O\0F\0N\0i\0arg2\0O\0F\0N\0i\0arg3\0O\0F\0N\0i\0arg4\0O\0F\0N\0i\0\0com.meego.inputmethod.inputcontext1\0copy\0S\0\0com.meego.inputmethod.inputcontext1\0paste\0S\0\0com.meego.inputmethod.inputcontext1\0setRedirectKeys\0S\0arg0\0I\0b\0\0com.meego.inputmethod.inputcontext1\0setDetectableAutoRepeat\0S\0arg0\0I\0b\0\0\0",
+"com.meego.inputmethod.inputcontext1\0activationLostEvent\0S\0\0com.meego.inputmethod.inputcontext1\0imInitiatedHide\0S\0\0com.meego.inputmethod.inputcontext1\0commitString\0S\0arg0\0I\0s\0\0com.meego.inputmethod.inputcontext1\0updatePreedit\0S\0arg0\0I\0s\0arg1\0I\0u\0\0com.meego.inputmethod.inputcontext1\0keyEvent\0S\0arg0\0I\0i\0arg1\0I\0i\0arg2\0I\0i\0arg3\0I\0s\0arg4\0I\0b\0arg5\0I\0i\0arg6\0I\0b\0\0com.meego.inputmethod.inputcontext1\0updateInputMethodArea\0S\0arg0\0I\0ay\0\0com.meego.inputmethod.inputcontext1\0setGlobalCorrectionEnabled\0S\0arg0\0I\0b\0\0com.meego.inputmethod.inputcontext1\0preeditRectangle\0S\0arg0\0O\0F\0N\0b\0arg1\0O\0F\0N\0i\0arg2\0O\0F\0N\0i\0arg3\0O\0F\0N\0i\0arg4\0O\0F\0N\0i\0\0com.meego.inputmethod.inputcontext1\0copy\0S\0\0com.meego.inputmethod.inputcontext1\0paste\0S\0\0com.meego.inputmethod.inputcontext1\0setRedirectKeys\0S\0arg0\0I\0b\0\0com.meego.inputmethod.inputcontext1\0setDetectableAutoRepeat\0S\0arg0\0I\0b\0\0\0",
 "\0",
 "\0"
 };

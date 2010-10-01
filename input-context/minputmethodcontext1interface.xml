@@ -19,6 +19,7 @@
       <arg type="s"/>
       <arg type="b"/>
       <arg type="i"/>
+      <arg type="b"/>
     </method>
     <method name="updateInputMethodArea">
       <arg type="ay"/>
