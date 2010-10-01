@@ -34,6 +34,23 @@
 #include "mpassthruwindow.h"
 #include "mimapplication.h"
 
+namespace {
+    void disableMInputContextPlugin()
+    {
+        // prevent loading of minputcontext because we don't need it and starting
+        // it might trigger starting of this service by the d-bus. not nice if that is
+        // already happening :)
+        if (-1 == unsetenv("QT_IM_MODULE")) {
+            qWarning("meego-im-uiserver: unable to unset QT_IM_MODULE.");
+        }
+
+        MApplication::setLoadMInputContext(false);
+
+        // TODO: Check if hardwiring the QStyle can be removed at a later stage.
+        QApplication::setStyle(new QCommonStyle);
+    }
+}
+
 int main(int argc, char **argv)
 {
     bool bypassWMHint = false;
@@ -45,17 +62,10 @@ int main(int argc, char **argv)
         }
     }
 
-    // prevent loading of minputcontext because we don't need it and starting
-    // it might trigger starting of this service by the d-bus. not nice if that is
-    // already happening :)
-    if (-1 == unsetenv("QT_IM_MODULE")) {
-        qWarning("meego-im-uiserver: unable to unset QT_IM_MODULE.");
-    }
-
-    MApplication::setLoadMInputContext(false);
-
-    // TODO: Check if hardwiring the QStyle can be removed at a later state.
-    QApplication::setStyle(new QCommonStyle);
+    // QT_IM_MODULE, MApplication and QtMaemo5Style all try to load
+    // MInputContext, which is fine for the application. For the passthrough
+    // server itself, we absolutely need to prevent that.
+    disableMInputContextPlugin();
 
     MIMApplication app(argc, argv);
 
