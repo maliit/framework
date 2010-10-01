@@ -69,6 +69,11 @@ public:
 
     //! Contains true if this item is provided by standard toolbar
     bool custom;
+
+    //! This property holds whether the item is enabled.
+    //!
+    //! An enabled item handles mouse events; a disabled item does not.
+    bool enabled;
 };
 
 #endif

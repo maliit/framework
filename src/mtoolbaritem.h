@@ -99,6 +99,7 @@ class MToolbarItem : public QObject
     Q_PROPERTY(QString icon   READ icon    WRITE setIcon)
     Q_PROPERTY(int size       READ size    WRITE setSize)
     Q_PROPERTY(QString iconId READ iconId  WRITE setIconId)
+    Q_PROPERTY(bool enabled   READ enabled WRITE setEnabled)
 
 public:
     /*!
@@ -210,6 +211,9 @@ public:
 
     void setCustom(bool custom);
 
+    //! Return true if item is enabled; otherwise return false.
+    bool enabled() const;
+
 public slots:
     //! Sets new text for item
     void setText(const QString &text);
@@ -230,6 +234,9 @@ public slots:
      * This attribute is applicable for buttons only.
      */
     void setHighlighted(bool highlighted);
+
+    //! If \a enabled is true, the item is enabled; otherwise, it is disabled.
+    void setEnabled(bool enabled);
 
 signals:
     /*!
