@@ -511,6 +511,7 @@ void MInputContext::updatePreedit(const QString &string, MInputMethod::PreeditFa
     QTextCharFormat format;
     format.merge(standardFormat(QInputContext::PreeditFormat));
     format.setUnderlineStyle((*styleContainer)->underline());
+    format.setUnderlineColor((*styleContainer)->underlineColor());
     QColor color = (*styleContainer)->backgroundColor();
 
     if (color.isValid()) {

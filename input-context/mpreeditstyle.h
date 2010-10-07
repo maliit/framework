@@ -33,6 +33,7 @@ class MPreeditStyle : public MStyle
 
 public:
     M_STYLE_ATTRIBUTE(QTextCharFormat::UnderlineStyle, underline, Underline)
+    M_STYLE_ATTRIBUTE(QColor, underlineColor, UnderlineColor)
     M_STYLE_ATTRIBUTE(QColor, fontColor, FontColor)
     M_STYLE_ATTRIBUTE(QColor, backgroundColor, BackgroundColor)
 };
