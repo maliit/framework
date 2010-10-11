@@ -586,9 +586,7 @@ void MInputContextDBusConnection::updateInputMethodArea(const QRegion &region)
 
 void MInputContextDBusConnection::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
-    foreach (MInputMethodBase *target, targets()) {
-        target->setCopyPasteState(copyAvailable, pasteAvailable);
-    }
+    MToolbarManager::instance().setCopyPasteState(copyAvailable, pasteAvailable);
 }
 
 
