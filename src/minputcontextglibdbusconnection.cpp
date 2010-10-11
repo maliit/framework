@@ -498,6 +498,7 @@ void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent, bo
                                    G_TYPE_STRING, keyEvent.text().toUtf8().data(),
                                    G_TYPE_BOOLEAN, keyEvent.isAutoRepeat() ? TRUE : FALSE,
                                    G_TYPE_INT, keyEvent.count(),
+                                   G_TYPE_BOOLEAN, signalOnly,
                                    G_TYPE_INVALID);
     }
 }
