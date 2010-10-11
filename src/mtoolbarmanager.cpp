@@ -137,10 +137,10 @@ void MToolbarManager::createStandardObjects()
     standardToolbar = createToolbar(StandardToolbar);
 
     if (standardToolbar) {
-        standardToolbar->setCustom(false);
         toolbars.insert(MToolbarId::standardToolbarId(), standardToolbar);
 
         foreach (QSharedPointer<MToolbarItem> item, standardToolbar->items()) {
+            item->setCustom(false);
             QList<QSharedPointer<MToolbarItemAction> > actions = item->actions();
             if (actions.isEmpty()) {
                 continue; // should never happen

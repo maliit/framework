@@ -68,19 +68,6 @@ public:
     QSharedPointer<const MToolbarLayout> layout(M::Orientation orientation) const;
 
     /*!
-     * \brief Return true if toolbar is locked, so user can not
-     * close it manually
-     */
-    bool locked() const;
-
-    /*!
-     * \brief Return true if all conditions are met:
-     * 1) toolbar is provided by application,
-     * 2) toolbar contains at least one custom item.
-     */
-    bool isCustom() const;
-
-    /*!
      * \brief Return true if toolbar should be visible.
      */
     bool isVisible() const;
@@ -102,13 +89,6 @@ private:
      * not be inserted into this toolbar.
      */
     QStringList refusedNames() const;
-
-    /*!
-     * \brief Defines whether this toolbar is custom or standard.
-     * \param custom Set this parameter to true if toolbar is custom.
-     * \sa isCustom()
-     */
-    void setCustom(bool custom);
 
 protected:
     Q_DECLARE_PRIVATE(MToolbarData)

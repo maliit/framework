@@ -118,8 +118,6 @@ MTBParseStructure::MTBParseStructure(const QString &name, MToolbarDataPrivate::T
 
 MToolbarDataPrivate::MToolbarDataPrivate(MToolbarData *owner)
     : q_ptr(owner),
-      locked(false),
-      custom(false),
       visible(true)
 {
 }
@@ -218,7 +216,6 @@ void MToolbarDataPrivate::parseAttribute(SetInt setter, const QDomElement &eleme
 
 void MToolbarDataPrivate::parseTagToolbar(const QDomElement &element, MTBParseParameters &params)
 {
-    locked = (element.attribute(ImTagLocked, ImTagLockedDefValue) == "true") ? true : false;
     visible = (element.attribute(ImTagVisible, ImTagVisibleDefValue) == "true") ? true : false;
     refusedNames = element.attribute(ImTagRefuse).split(NameSeparator);
     params.version = element.attribute(ImTagVersion, ImTagVersionDefValue).toInt();
@@ -296,7 +293,6 @@ void MToolbarDataPrivate::parseTagRow(const QDomElement &element, MTBParseParame
 
 void MToolbarDataPrivate::parseTagButton(const QDomElement &element, MTBParseParameters &params)
 {
-    Q_Q(MToolbarData);
     const QString name = element.attribute(ImTagName);
 
     if (name.isEmpty()) {
@@ -308,8 +304,6 @@ void MToolbarDataPrivate::parseTagButton(const QDomElement &element, MTBParsePar
     if(item->type() != MInputMethod::ItemButton) {
         return;
     }
-
-    q->setCustom(true);
 
     if (params.currentLayout) {
         params.currentLayout->append(item);
@@ -354,15 +348,12 @@ void MToolbarDataPrivate::parseTagButton(const QDomElement &element, MTBParsePar
 
 void MToolbarDataPrivate::parseTagLabel(const QDomElement &element, MTBParseParameters &params)
 {
-    Q_Q(MToolbarData);
     const QString name = element.attribute(ImTagName);
     QSharedPointer<MToolbarItem> label = getOrCreateItemByName(name, MInputMethod::ItemLabel);
 
     if(label->type() != MInputMethod::ItemLabel) {
         return;
     }
-
-    q->setCustom(true);
 
     if (params.currentLayout) {
         params.currentLayout->append(label);
@@ -595,20 +586,6 @@ QSharedPointer<const MToolbarLayout> MToolbarData::layout(M::Orientation orienta
     }
 }
 
-bool MToolbarData::locked() const
-{
-    Q_D(const MToolbarData);
-
-    return d->locked;
-}
-
-bool MToolbarData::isCustom() const
-{
-    Q_D(const MToolbarData);
-
-    return d->custom;
-}
-
 bool MToolbarData::isVisible() const
 {
     Q_D(const MToolbarData);
@@ -650,16 +627,5 @@ QStringList MToolbarData::refusedNames() const
     Q_D(const MToolbarData);
 
     return d->refusedNames;
-}
-
-void MToolbarData::setCustom(bool custom)
-{
-    Q_D(MToolbarData);
-
-    d->custom = custom;
-
-    foreach (const QSharedPointer<MToolbarItem> &item, items()) {
-        item->setCustom(custom);
-    }
 }
 

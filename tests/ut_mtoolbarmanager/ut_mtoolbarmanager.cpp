@@ -93,10 +93,6 @@ void Ut_MToolbarManager::testLoadToolbar()
     for (int i = 0; i < toolbarIds.count(); i++) {
         QSharedPointer<MToolbarData> toolbar = subject->toolbarData(toolbarIds.at(i));
         QVERIFY(!toolbar.isNull());
-
-        // toolbar is custom if it is loaded from specified file
-        // otherwise standard toolbar should be provided
-        QVERIFY(toolbar->isCustom() == QFile(toolbars.at(i)).exists());
     }
 
     for (int i = toolbarIds.count() - 1; i >= 0; --i) {
@@ -150,7 +146,6 @@ void Ut_MToolbarManager::testSetItemAttribute()
 void Ut_MToolbarManager::testStandardObjects()
 {
     QVERIFY(subject->standardToolbar != 0);
-    QVERIFY(subject->standardToolbar->isCustom() == false);
     QVERIFY(subject->copyPaste != 0);
     QVERIFY(subject->close != 0);
 

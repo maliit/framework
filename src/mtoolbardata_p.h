@@ -165,13 +165,8 @@ public:
     //! Name of file containing this toolbar
     QString toolbarFileName;
 
-    //! Contains true if toolbar is locked
-    bool locked;
-
     typedef QMap<QString, QSharedPointer<MToolbarItem> > Items;
     Items items;
-
-    bool custom;
 
     bool visible;
 

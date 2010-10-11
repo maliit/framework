@@ -58,7 +58,6 @@ void Ut_MToolbarData::testLoadXML()
     ok = subject->loadToolbarXml(Toolbar1);
     QVERIFY2(ok, "toolbar1.xml was not loaded correctly");
 
-    QVERIFY(subject->locked() == true);
     QVERIFY(subject->isVisible() == true);
 
     //test landscape part
@@ -165,7 +164,6 @@ void Ut_MToolbarData::testLandspaceOnly()
     ok = subject->loadToolbarXml(Toolbar2);
     QVERIFY2(ok, "toolbar2.xml was not loaded correctly");
 
-    QVERIFY(subject->locked() == true);
     QVERIFY(subject->isVisible() == false);
 
     //test landscape part
