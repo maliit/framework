@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE DUI_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
+<!DOCTYPE MEEGO_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
 <input-method version="1" visible="true" refuse="_close">
     <toolbar>
         <items>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE DUI_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
+<!DOCTYPE MEEGO_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
 <toolbar refuse="_close,_copypaste">
     <button name="test1" text="text1" />
     <button name="test2" text="text2" />

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE DUI_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
+<!DOCTYPE MEEGO_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
 <toolbar version="1">
     <items>
         <button name="_copypaste" alignment="left" text_id="qtn_comm_copy" >
