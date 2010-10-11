@@ -25,14 +25,18 @@
 
 namespace {
     const QString StandardToolbar = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/standard.xml");
+    const char * const PreferredDomainSettingName("/meegotouch/inputmethods/preferred_domain");
+    const char * const DomainItemName("_domain");
 }
 
 MToolbarManager *MToolbarManager::toolbarMgrInstance = 0;
 
 MToolbarManager::MToolbarManager()
-    : copyPasteStatus(MInputMethod::InputMethodNoCopyPaste)
+    : copyPasteStatus(MInputMethod::InputMethodNoCopyPaste),
+      preferredDomainSetting(PreferredDomainSettingName)
 {
     createStandardObjects();
+    connect(&preferredDomainSetting, SIGNAL(valueChanged()), this, SLOT(handlePreferredDomainUpdate()));
 }
 
 MToolbarManager::~MToolbarManager()
@@ -193,6 +197,34 @@ void MToolbarManager::addStandardButtons(const QSharedPointer<MToolbarLayout> &l
     }
 }
 
+void MToolbarManager::handlePreferredDomainUpdate()
+{
+    foreach (QSharedPointer<MToolbarData> toolbar, toolbars) {
+        updateDomain(toolbar);
+    }
+}
+
+void MToolbarManager::updateDomain(QSharedPointer<MToolbarData> &toolbar)
+{
+    const QString domain(preferredDomainSetting.value().toString());
+    if (domain.isEmpty()) {
+        return;
+    }
+
+    QSharedPointer<MToolbarItem> item(toolbar->item(DomainItemName));
+    if (!item) {
+        return;
+    }
+
+    QList<QSharedPointer<MToolbarItemAction> > actions(item->actions());
+    if (actions.length() != 1 || actions[0]->type() != MInputMethod::ActionSendString) {
+        return;
+    }
+
+    actions[0]->setText(domain);
+    item->setText(domain);
+}
+
 void MToolbarManager::registerToolbar(const MToolbarId &id, const QString &fileName)
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -202,6 +234,7 @@ void MToolbarManager::registerToolbar(const MToolbarId &id, const QString &fileN
     QSharedPointer<MToolbarData> toolbarData = createToolbar(fileName);
     if (toolbarData) {
         addStandardButtons(toolbarData);
+        updateDomain(toolbarData);
     } else {
         toolbarData = standardToolbar;
     }

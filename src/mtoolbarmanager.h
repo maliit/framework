@@ -22,10 +22,11 @@
 #include <QHash>
 #include <QPointer>
 
+#include <MGConfItem>
+
 #include "mtoolbardata.h"
 #include "minputmethodnamespace.h"
 
-class MGConfItem;
 class MToolbarId;
 
 /*!
@@ -91,6 +92,10 @@ public:
      */
     void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
 
+private slots:
+    //! \brief Handle preferred_domain GConf setting updates.
+    void handlePreferredDomainUpdate();
+
 private:
     /*!
      * \brief Default constructor.
@@ -120,6 +125,9 @@ private:
     void addStandardButtons(const QSharedPointer<MToolbarLayout> &layout,
                             const QSharedPointer<MToolbarData> &toolbarData);
 
+    //! \brief Update the text of a button named _domain in \a toolbar to match the configuration.
+    void updateDomain(QSharedPointer<MToolbarData> &toolbar);
+
     typedef QHash<MToolbarId, QSharedPointer<MToolbarData> > ToolbarContainer;
     //! all registered toolbars
     ToolbarContainer toolbars;
@@ -135,6 +143,9 @@ private:
 
     //! Copy/paste button status
     MInputMethod::CopyPasteState copyPasteStatus;
+
+    //! Preferred domain for URL and Email toolbar domain buttons.
+    MGConfItem preferredDomainSetting;
 
     //! Singleton instance
     static MToolbarManager *toolbarMgrInstance;
