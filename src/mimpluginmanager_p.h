@@ -26,8 +26,7 @@
 #include <QDBusAbstractAdaptor>
 #include <MDialog>
 
-#include "mimhandlerstate.h"
-#include "mimdirection.h"
+#include "minputmethodnamespace.h"
 #include "mtoolbarid.h"
 
 class MInputMethodPlugin;
@@ -43,16 +42,16 @@ class MIMPluginManagerPrivate
 {
     Q_DECLARE_PUBLIC(MIMPluginManager)
 public:
-    typedef QSet<MIMHandlerState> PluginState;
+    typedef QSet<MInputMethod::HandlerState> PluginState;
     struct PluginDescription {
         QString fileName;
         MInputMethodBase *inputMethod;
         PluginState state;
-        M::InputMethodSwitchDirection lastSwitchDirection;
+        MInputMethod::SwitchDirection lastSwitchDirection;
     };
     typedef QMap<MInputMethodPlugin *, PluginDescription> Plugins;
     typedef QSet<MInputMethodPlugin *> ActivePlugins;
-    typedef QMap<MIMHandlerState, MInputMethodPlugin *> HandlerMap;
+    typedef QMap<MInputMethod::HandlerState, MInputMethodPlugin *> HandlerMap;
 
     MIMPluginManagerPrivate(MInputContextConnection *connection, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
@@ -60,29 +59,30 @@ public:
     void activatePlugin(MInputMethodPlugin *plugin);
     void loadPlugins();
     bool loadPlugin(const QString &fileName);
-    void addHandlerMap(MIMHandlerState state, const QString &pluginName);
-    void setActiveHandlers(const QSet<MIMHandlerState> &states);
-    QSet<MIMHandlerState> activeHandlers() const;
+    void addHandlerMap(MInputMethod::HandlerState state, const QString &pluginName);
+    void setActiveHandlers(const QSet<MInputMethod::HandlerState> &states);
+    QSet<MInputMethod::HandlerState> activeHandlers() const;
     void deactivatePlugin(MInputMethodPlugin *plugin);
-    void convertAndFilterHandlers(const QStringList &handlerNames, QSet<MIMHandlerState> *handlers);
+    void convertAndFilterHandlers(const QStringList &handlerNames,
+                                  QSet<MInputMethod::HandlerState> *handlers);
 
-    void replacePlugin(M::InputMethodSwitchDirection direction, Plugins::iterator initiator,
+    void replacePlugin(MInputMethod::SwitchDirection direction, Plugins::iterator initiator,
                        Plugins::iterator replacement);
-    bool switchPlugin(M::InputMethodSwitchDirection direction, MInputMethodBase *initiator);
+    bool switchPlugin(MInputMethod::SwitchDirection direction, MInputMethodBase *initiator);
     bool switchPlugin(const QString &name, MInputMethodBase *initiator);
-    bool doSwitchPlugin(M::InputMethodSwitchDirection direction,
+    bool doSwitchPlugin(MInputMethod::SwitchDirection direction,
                         Plugins::iterator source,
                         Plugins::iterator replacement);
     void changeHandlerMap(MInputMethodPlugin *origin,
                           MInputMethodPlugin *replacement,
-                          QSet<MIMHandlerState> states);
+                          QSet<MInputMethod::HandlerState> states);
 
     QStringList loadedPluginsNames() const;
-    QStringList loadedPluginsNames(MIMHandlerState state) const;
+    QStringList loadedPluginsNames(MInputMethod::HandlerState state) const;
     QStringList activePluginsNames() const;
-    QString activePluginsName(MIMHandlerState state) const;
+    QString activePluginsName(MInputMethod::HandlerState state) const;
     void loadHandlerMap();
-    MInputMethodPlugin *activePlugin(MIMHandlerState state) const;
+    MInputMethodPlugin *activePlugin(MInputMethod::HandlerState state) const;
     void loadInputMethodSettings();
     void initActiveSubView();
     void hideActivePlugins();
@@ -91,7 +91,7 @@ public:
     /*!
      * This method is called when one of the gconf about handler map is changed
      * to synchronize the handlerToPluginConfs.
-     * \param state (can be cast to MIMHandlerState) indicates which state of the
+     * \param state (can be cast to MInputMethod::HandlerState) indicates which state of the
      * handler map is changed.
      */
     void _q_syncHandlerMap(int state);
@@ -99,14 +99,16 @@ public:
     /*!
      * \brief This method is called when activeSubview is changed by settings or plugin.
      */
-    void _q_setActiveSubView(const QString &, MIMHandlerState);
+    void _q_setActiveSubView(const QString &, MInputMethod::HandlerState);
 
-    QMap<QString, QString> availableSubViews(const QString &plugin, MIMHandlerState state = OnScreen) const;
-    QString activeSubView(MIMHandlerState state) const;
-    void setActivePlugin(const QString &pluginName, MIMHandlerState state);
+    QMap<QString, QString> availableSubViews(const QString &plugin,
+                                             MInputMethod::HandlerState state
+                                              = MInputMethod::OnScreen) const;
+    QString activeSubView(MInputMethod::HandlerState state) const;
+    void setActivePlugin(const QString &pluginName, MInputMethod::HandlerState state);
 
-    QString inputSourceName(MIMHandlerState source) const;
-    MIMHandlerState inputSourceFromName(const QString &name, bool &valid) const;
+    QString inputSourceName(MInputMethod::HandlerState source) const;
+    MInputMethod::HandlerState inputSourceFromName(const QString &name, bool &valid) const;
 
 public:
     MIMPluginManager *parent;
@@ -133,9 +135,9 @@ public:
 
     bool acceptRegionUpdates;
 
-    typedef QMap<MIMHandlerState, QString> InputSourceToNameMap;
-    QMap<MIMHandlerState, QString> inputSourceToNameMap;
-    QMap<QString, MIMHandlerState> nameToInputSourceMap;
+    typedef QMap<MInputMethod::HandlerState, QString> InputSourceToNameMap;
+    QMap<MInputMethod::HandlerState, QString> inputSourceToNameMap;
+    QMap<QString, MInputMethod::HandlerState> nameToInputSourceMap;
 
     MToolbarId toolbarId;
 };

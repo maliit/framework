@@ -17,7 +17,8 @@
 #ifndef MINPUTCONTEXTCONNECTION_H
 #define MINPUTCONTEXTCONNECTION_H
 
-#include "mpreeditface.h"
+#include "minputmethodnamespace.h"
+
 #include <QRect>
 #include <QObject>
 
@@ -101,7 +102,8 @@ public:
      * \param preeditFace Selects visual styling for preedit
      */
     virtual void sendPreeditString(const QString &string,
-                                   PreeditFace preeditFace = PreeditDefault) = 0;
+                                   MInputMethod::PreeditFace preeditFace
+                                    = MInputMethod::PreeditDefault) = 0;
 
     /*!
      * \brief Updates commit string in the application widget

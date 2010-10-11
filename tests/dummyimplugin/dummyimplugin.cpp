@@ -6,7 +6,7 @@
 
 DummyImPlugin::DummyImPlugin()
 {
-    allowedStates << OnScreen << Hardware << Accessory;
+    allowedStates << MInputMethod::OnScreen << MInputMethod::Hardware << MInputMethod::Accessory;
 }
 
 QString DummyImPlugin::name() const
@@ -30,7 +30,7 @@ MInputMethodSettingsBase *DummyImPlugin::createInputMethodSettings()
     return 0;
 }
 
-QSet<MIMHandlerState> DummyImPlugin::supportedStates() const
+QSet<MInputMethod::HandlerState> DummyImPlugin::supportedStates() const
 {
     return allowedStates;
 }

@@ -222,7 +222,7 @@ bool MInputContextDBusConnection::isValid()
 
 
 void MInputContextDBusConnection::sendPreeditString(const QString &string,
-        PreeditFace preeditFace)
+                                                    MInputMethod::PreeditFace preeditFace)
 {
     if (d->activeContext) {
         d->activeContext->call("updatePreedit", string, preeditFace);

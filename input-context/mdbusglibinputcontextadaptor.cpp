@@ -47,7 +47,7 @@ static gboolean m_dbus_glib_input_context_adaptor_update_preedit(
     GError **/*error*/)
 {
     obj->inputContext->updatePreedit(QString::fromUtf8(string),
-                                     static_cast<PreeditFace>(preeditFace));
+                                     static_cast<MInputMethod::PreeditFace>(preeditFace));
     return TRUE;
 }
 

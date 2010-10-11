@@ -15,21 +15,23 @@ public:
     DummyInputMethod3(MInputContextConnection *connection);
 
     //! \reimp
-    virtual void setState(const QSet<MIMHandlerState> &state);
-    virtual void switchContext(M::InputMethodSwitchDirection direction, bool enableAnimation);
-    virtual QList<MInputMethodBase::MInputMethodSubView> subViews(MIMHandlerState state = OnScreen) const;
-    virtual void setActiveSubView(const QString &, MIMHandlerState state = OnScreen);
-    virtual QString activeSubView(MIMHandlerState state = OnScreen) const;
+    virtual void setState(const QSet<MInputMethod::HandlerState> &state);
+    virtual void switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation);
+    virtual QList<MInputMethodBase::MInputMethodSubView> subViews(MInputMethod::HandlerState state
+                                                                   = MInputMethod::OnScreen) const;
+    virtual void setActiveSubView(const QString &,
+                                  MInputMethod::HandlerState state = MInputMethod::OnScreen);
+    virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
     virtual void show();
     virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
     //! \reimp_end
 
 public:
     int setStateCount;
-    QSet<MIMHandlerState> setStateParam;
+    QSet<MInputMethod::HandlerState> setStateParam;
 
     int switchContextCallCount;
-    M::InputMethodSwitchDirection directionParam;
+    MInputMethod::SwitchDirection directionParam;
     bool enableAnimationParam;
     QSharedPointer<const MToolbarData> toolbarParam;
 

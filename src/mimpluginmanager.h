@@ -19,8 +19,8 @@
 
 #include <QObject>
 #include <QMap>
-#include "mimdirection.h"
-#include "mimhandlerstate.h"
+
+#include "minputmethodnamespace.h"
 
 class MIMPluginManagerPrivate;
 class QRegion;
@@ -45,25 +45,26 @@ public:
     QStringList loadedPluginsNames() const;
 
     //! Returns names of loaded plugins which support \a state
-    QStringList loadedPluginsNames(MIMHandlerState state) const;
+    QStringList loadedPluginsNames(MInputMethod::HandlerState state) const;
 
     //! Returns names of activated plugins
     QStringList activePluginsNames() const;
 
     //! Returns names of activated plugin for \a state
-    QString activePluginsName(MIMHandlerState state) const;
+    QString activePluginsName(MInputMethod::HandlerState state) const;
 
     //! Returns all subviews (IDs and titles) of loaded plugins which support \a state.
-    QMap<QString, QString> availableSubViews(const QString &plugin, MIMHandlerState state = OnScreen) const;
+    QMap<QString, QString> availableSubViews(const QString &plugin,
+                                             MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
 
     //! Returns the ID of active subview of the activated plugin for \a state.
-    QString activeSubView(MIMHandlerState state) const;
+    QString activeSubView(MInputMethod::HandlerState state) const;
 
     //! Sets \a pluginName as the activated plugin for \a state.
-    void setActivePlugin(const QString &pluginName, MIMHandlerState state);
+    void setActivePlugin(const QString &pluginName, MInputMethod::HandlerState state);
 
     //! Sets \a subViewId as the active subview of the activated plugin for \a state.
-    void setActiveSubView(const QString &subViewId, MIMHandlerState state);
+    void setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state);
 
     //! Returns true if the connection to D-Bus is valid and the object is properly usable
     bool isDBusConnectionValid() const;
@@ -86,7 +87,7 @@ private slots:
     void updateInputSource();
 
     //! Switches plugin in according to given \a direction
-    void switchPlugin(M::InputMethodSwitchDirection direction);
+    void switchPlugin(MInputMethod::SwitchDirection direction);
 
     //! Switches active plugin to inactive plugin with given \a name
     void switchPlugin(const QString &name);
@@ -107,7 +108,7 @@ private:
     Q_DISABLE_COPY(MIMPluginManager)
     Q_DECLARE_PRIVATE(MIMPluginManager)
     Q_PRIVATE_SLOT(d_func(), void _q_syncHandlerMap(int));
-    Q_PRIVATE_SLOT(d_func(), void _q_setActiveSubView(const QString &, MIMHandlerState));
+    Q_PRIVATE_SLOT(d_func(), void _q_setActiveSubView(const QString &, MInputMethod::HandlerState));
 
     friend class Ut_MIMPluginManager;
     friend class Ft_MIMPluginManager;

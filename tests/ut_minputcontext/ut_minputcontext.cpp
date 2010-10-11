@@ -551,7 +551,7 @@ void Ut_MInputContext::testUpdatePreedit()
     //test preedit with traditional style
     m_subject->setFocusWidget(&widget);
     gFocusedWidget = &widget;
-    m_subject->updatePreedit(updateString, PreeditDefault);
+    m_subject->updatePreedit(updateString, MInputMethod::PreeditDefault);
 
     waitAndProcessEvents(0);
 
@@ -563,7 +563,7 @@ void Ut_MInputContext::testUpdatePreedit()
     QVERIFY(attributes.count() > 0);
 
     //test preedit with alternate style
-    m_subject->updatePreedit(updateString, PreeditNoCandidates);
+    m_subject->updatePreedit(updateString, MInputMethod::PreeditNoCandidates);
 
     waitAndProcessEvents(50);
 

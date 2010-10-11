@@ -75,9 +75,9 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       connectionValid(false),
       acceptRegionUpdates(true)
 {
-    inputSourceToNameMap[OnScreen] = "onscreen";
-    inputSourceToNameMap[Hardware] = "hardware";
-    inputSourceToNameMap[Accessory] = "accessory";
+    inputSourceToNameMap[MInputMethod::OnScreen] = "onscreen";
+    inputSourceToNameMap[MInputMethod::Hardware] = "hardware";
+    inputSourceToNameMap[MInputMethod::Accessory] = "accessory";
 
     for (InputSourceToNameMap::const_iterator i(inputSourceToNameMap.begin());
          i != inputSourceToNameMap.end(); ++i) {
@@ -125,7 +125,8 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
                 MInputMethodBase *inputMethod = plugin->createInputMethod(mICConnection);
                 // only add valid plugin descriptions
                 if (inputMethod) {
-                    PluginDescription desc = { load.fileName(), inputMethod, PluginState(), M::SwitchUndefined };
+                    PluginDescription desc = { load.fileName(), inputMethod, PluginState(),
+                                               MInputMethod::SwitchUndefined };
                     plugins[plugin] = desc;
                     val = true;
                 }
@@ -164,9 +165,9 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
                      SLOT(updateInputMethodArea(const QRegion &)));
 
     QObject::connect(inputMethod,
-                     SIGNAL(pluginSwitchRequired(M::InputMethodSwitchDirection)),
+                     SIGNAL(pluginSwitchRequired(MInputMethod::SwitchDirection)),
                      q,
-                     SLOT(switchPlugin(M::InputMethodSwitchDirection)));
+                     SLOT(switchPlugin(MInputMethod::SwitchDirection)));
 
     QObject::connect(inputMethod,
                      SIGNAL(pluginSwitchRequired(const QString&)),
@@ -179,9 +180,9 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
                      SLOT(showInputMethodSettings()));
 
     QObject::connect(inputMethod,
-                     SIGNAL(activeSubViewChanged(QString, MIMHandlerState)),
+                     SIGNAL(activeSubViewChanged(QString, MInputMethod::HandlerState)),
                      q,
-                     SLOT(_q_setActiveSubView(QString, MIMHandlerState)));
+                     SLOT(_q_setActiveSubView(QString, MInputMethod::HandlerState)));
 
     mICConnection->addTarget(inputMethod); // redirect incoming requests
 
@@ -189,7 +190,8 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
 }
 
 
-void MIMPluginManagerPrivate::addHandlerMap(MIMHandlerState state, const QString &pluginName)
+void MIMPluginManagerPrivate::addHandlerMap(MInputMethod::HandlerState state,
+                                            const QString &pluginName)
 {
     foreach (MInputMethodPlugin *plugin, plugins.keys()) {
         if (plugin->name() == pluginName) {
@@ -200,7 +202,7 @@ void MIMPluginManagerPrivate::addHandlerMap(MIMHandlerState state, const QString
 }
 
 
-void MIMPluginManagerPrivate::setActiveHandlers(const QSet<MIMHandlerState> &states)
+void MIMPluginManagerPrivate::setActiveHandlers(const QSet<MInputMethod::HandlerState> &states)
 {
     QSet<MInputMethodPlugin *> activatedPlugins;
     MInputMethodBase *inputMethod = 0;
@@ -213,7 +215,7 @@ void MIMPluginManagerPrivate::setActiveHandlers(const QSet<MIMHandlerState> &sta
     }
 
     //activate new plugins
-    foreach (MIMHandlerState state, states) {
+    foreach (MInputMethod::HandlerState state, states) {
         HandlerMap::const_iterator iterator = handlerToPlugin.find(state);
         MInputMethodPlugin *plugin = 0;
 
@@ -245,9 +247,9 @@ void MIMPluginManagerPrivate::setActiveHandlers(const QSet<MIMHandlerState> &sta
 }
 
 
-QSet<MIMHandlerState> MIMPluginManagerPrivate::activeHandlers() const
+QSet<MInputMethod::HandlerState> MIMPluginManagerPrivate::activeHandlers() const
 {
-    QSet<MIMHandlerState> handlers;
+    QSet<MInputMethod::HandlerState> handlers;
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         handlers << handlerToPlugin.key(plugin);
     }
@@ -280,28 +282,29 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
 
 
 void MIMPluginManagerPrivate::convertAndFilterHandlers(const QStringList &handlerNames,
-                                                       QSet<MIMHandlerState> *handlers)
+                                                       QSet<MInputMethod::HandlerState> *handlers)
 {
     bool ok = false;
     bool disableOnscreenKbd = false;
 
     foreach (const QString &name, handlerNames) {
-        int handlerNumber = (MIMHandlerState)name.toInt(&ok);
-        if (ok && handlerNumber >= OnScreen && handlerNumber <= Accessory) {
+        int handlerNumber = (MInputMethod::HandlerState)name.toInt(&ok);
+        if (ok && handlerNumber >= MInputMethod::OnScreen
+            && handlerNumber <= MInputMethod::Accessory) {
             if (!disableOnscreenKbd) {
-                disableOnscreenKbd = handlerNumber != OnScreen;
+                disableOnscreenKbd = handlerNumber != MInputMethod::OnScreen;
             }
-            handlers->insert((MIMHandlerState)handlerNumber);
+            handlers->insert((MInputMethod::HandlerState)handlerNumber);
         }
     }
 
     if (disableOnscreenKbd) {
-        handlers->remove(OnScreen);
+        handlers->remove(MInputMethod::OnScreen);
     }
 }
 
 
-void MIMPluginManagerPrivate::replacePlugin(M::InputMethodSwitchDirection direction,
+void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direction,
                                             Plugins::iterator initiator,
                                             Plugins::iterator replacement)
 {
@@ -324,10 +327,10 @@ void MIMPluginManagerPrivate::replacePlugin(M::InputMethodSwitchDirection direct
 }
 
 
-bool MIMPluginManagerPrivate::switchPlugin(M::InputMethodSwitchDirection direction,
+bool MIMPluginManagerPrivate::switchPlugin(MInputMethod::SwitchDirection direction,
                                            MInputMethodBase *initiator)
 {
-    if (direction == M::SwitchUndefined) {
+    if (direction == MInputMethod::SwitchUndefined) {
         return true; //do nothing for this direction
     }
 
@@ -348,7 +351,7 @@ bool MIMPluginManagerPrivate::switchPlugin(M::InputMethodSwitchDirection directi
 
     //find next inactive plugin and activate it
     for (int n = 0; n < plugins.size() - 1; ++n) {
-        if (direction == M::SwitchForward) {
+        if (direction == MInputMethod::SwitchForward) {
             ++iterator;
             if (iterator == plugins.end()) {
                 iterator = plugins.begin();
@@ -400,15 +403,15 @@ bool MIMPluginManagerPrivate::switchPlugin(const QString &name, MInputMethodBase
         return true;
     }
 
-    return doSwitchPlugin(M::SwitchUndefined, source, iterator);
+    return doSwitchPlugin(MInputMethod::SwitchUndefined, source, iterator);
 }
 
-bool MIMPluginManagerPrivate::doSwitchPlugin(M::InputMethodSwitchDirection direction,
+bool MIMPluginManagerPrivate::doSwitchPlugin(MInputMethod::SwitchDirection direction,
                                              Plugins::iterator source,
                                              Plugins::iterator replacement)
 {
     if (!activePlugins.contains(replacement.key())) {
-        const QSet<MIMHandlerState> intersect(replacement.key()->supportedStates()
+        const QSet<MInputMethod::HandlerState> intersect(replacement.key()->supportedStates()
                 & source->state);
         // switch to other plugin if it could handle any state
         // handled by current plugin just now
@@ -422,13 +425,14 @@ bool MIMPluginManagerPrivate::doSwitchPlugin(M::InputMethodSwitchDirection direc
     return false;
 }
 
-QString MIMPluginManagerPrivate::inputSourceName(MIMHandlerState source) const
+QString MIMPluginManagerPrivate::inputSourceName(MInputMethod::HandlerState source) const
 {
     return inputSourceToNameMap.value(source);
 }
 
 
-MIMHandlerState MIMPluginManagerPrivate::inputSourceFromName(const QString &name, bool &valid) const
+MInputMethod::HandlerState
+MIMPluginManagerPrivate::inputSourceFromName(const QString &name, bool &valid) const
 {
     const QString lowercaseName(name.toLower());
     valid = nameToInputSourceMap.contains(lowercaseName);
@@ -437,9 +441,9 @@ MIMHandlerState MIMPluginManagerPrivate::inputSourceFromName(const QString &name
 
 void MIMPluginManagerPrivate::changeHandlerMap(MInputMethodPlugin *origin,
                                                MInputMethodPlugin *replacement,
-                                               QSet<MIMHandlerState> states)
+                                               QSet<MInputMethod::HandlerState> states)
 {
-    foreach (MIMHandlerState state, states) {
+    foreach (MInputMethod::HandlerState state, states) {
         HandlerMap::iterator iterator = handlerToPlugin.find(state);
         if (iterator != handlerToPlugin.end() && *iterator == origin) {
             *iterator = replacement; //for unit tests
@@ -464,7 +468,7 @@ QStringList MIMPluginManagerPrivate::loadedPluginsNames() const
 }
 
 
-QStringList MIMPluginManagerPrivate::loadedPluginsNames(MIMHandlerState state) const
+QStringList MIMPluginManagerPrivate::loadedPluginsNames(MInputMethod::HandlerState state) const
 {
     QStringList result;
 
@@ -489,7 +493,7 @@ QStringList MIMPluginManagerPrivate::activePluginsNames() const
 }
 
 
-QString MIMPluginManagerPrivate::activePluginsName(MIMHandlerState state) const
+QString MIMPluginManagerPrivate::activePluginsName(MInputMethod::HandlerState state) const
 {
     QString result;
 
@@ -511,7 +515,7 @@ void MIMPluginManagerPrivate::loadHandlerMap()
     foreach (const QString &handler, MGConfItem(PluginRoot).listEntries()) {
         const QStringList path = handler.split("/");
         bool validSource(false);
-        const MIMHandlerState source(inputSourceFromName(path.last(), validSource));
+        const MInputMethod::HandlerState source(inputSourceFromName(path.last(), validSource));
         if (validSource) {
             MGConfItem *handlerItem = new MGConfItem(handler);
             handlerToPluginConfs.append(handlerItem);
@@ -529,7 +533,7 @@ void MIMPluginManagerPrivate::loadHandlerMap()
 
 void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
 {
-    const MIMHandlerState source = static_cast<MIMHandlerState>(state);
+    const MInputMethod::HandlerState source = static_cast<MInputMethod::HandlerState>(state);
 
     MInputMethodPlugin *currentPlugin = activePlugin(source);
     MGConfItem gconf(PluginRoot + "/" + inputSourceName(source));
@@ -550,7 +554,7 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
     if (replacement) {
         // switch plugin if handler gconf is changed.
         MInputMethodBase *inputMethod = plugins[currentPlugin].inputMethod;
-        addHandlerMap(static_cast<MIMHandlerState>(state), pluginName);
+        addHandlerMap(static_cast<MInputMethod::HandlerState>(state), pluginName);
         if (!switchPlugin(pluginName, inputMethod)) {
             qWarning() << __PRETTY_FUNCTION__ << ", switching to plugin:"
                        << pluginName << " failed";
@@ -558,12 +562,12 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
     }
 
     // need update activeSubview if plugin is switched.
-    if (state == OnScreen) {
+    if (state == MInputMethod::OnScreen) {
         initActiveSubView();
     }
 }
 
-MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MIMHandlerState state) const
+MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MInputMethod::HandlerState state) const
 {
     MInputMethodPlugin *plugin = 0;
     HandlerMap::const_iterator iterator = handlerToPlugin.find(state);
@@ -573,22 +577,27 @@ MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(MIMHandlerState state)
     return plugin;
 }
 
-void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId, MIMHandlerState state)
+void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
+                                                  MInputMethod::HandlerState state)
 {
     // now we only support active subview for OnScreen state.
-    if (state == OnScreen && !subViewId.isEmpty() && activePlugin(OnScreen)
+    if (state == MInputMethod::OnScreen && !subViewId.isEmpty()
+        && activePlugin(MInputMethod::OnScreen)
         && (activeSubViewIdOnScreen != subViewId)) {
+
         // check whether this subView is supported by current active plugin.
-        MInputMethodBase *inputMethod = plugins[activePlugin(OnScreen)].inputMethod;
+        MInputMethodBase *inputMethod = plugins[activePlugin(MInputMethod::OnScreen)].inputMethod;
         Q_ASSERT(inputMethod);
-        foreach (const MInputMethodBase::MInputMethodSubView &subView, inputMethod->subViews(OnScreen)) {
+
+        foreach (const MInputMethodBase::MInputMethodSubView &subView,
+                 inputMethod->subViews(MInputMethod::OnScreen)) {
             if (subView.subViewId == subViewId) {
                 activeSubViewIdOnScreen = subViewId;
-                if (inputMethod->activeSubView(OnScreen) != activeSubViewIdOnScreen) {
-                    inputMethod->setActiveSubView(activeSubViewIdOnScreen, OnScreen);
+                if (inputMethod->activeSubView(MInputMethod::OnScreen) != activeSubViewIdOnScreen) {
+                    inputMethod->setActiveSubView(activeSubViewIdOnScreen, MInputMethod::OnScreen);
                 }
                 if (adaptor) {
-                    emit adaptor->activeSubViewChanged(OnScreen);
+                    emit adaptor->activeSubViewChanged(MInputMethod::OnScreen);
                 }
                 if (settingsDialog) {
                     settingsDialog->refreshUi();
@@ -597,7 +606,7 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId, MIMH
             }
         }
     }
-    if (state != OnScreen) {
+    if (state != MInputMethod::OnScreen) {
         qWarning() << "Unsupported state:" << state << " for active subview";
     }
 }
@@ -617,13 +626,13 @@ void MIMPluginManagerPrivate::loadInputMethodSettings()
 void MIMPluginManagerPrivate::initActiveSubView()
 {
     // initialize activeSubViewIdOnScreen
-    if (activePlugin(OnScreen)) {
-        MInputMethodBase *inputMethod = plugins[activePlugin(OnScreen)].inputMethod;
-        if (activeSubViewIdOnScreen != inputMethod->activeSubView(OnScreen)) {
+    if (activePlugin(MInputMethod::OnScreen)) {
+        MInputMethodBase *inputMethod = plugins[activePlugin(MInputMethod::OnScreen)].inputMethod;
+        if (activeSubViewIdOnScreen != inputMethod->activeSubView(MInputMethod::OnScreen)) {
             // activeSubViewIdOnScreen is invalid, should be initialized.
-            activeSubViewIdOnScreen = inputMethod->activeSubView(OnScreen);
+            activeSubViewIdOnScreen = inputMethod->activeSubView(MInputMethod::OnScreen);
             if (adaptor) {
-                emit adaptor->activeSubViewChanged(OnScreen);
+                emit adaptor->activeSubViewChanged(MInputMethod::OnScreen);
             }
             if (settingsDialog) {
                 settingsDialog->refreshUi();
@@ -651,7 +660,9 @@ void MIMPluginManagerPrivate::hideActivePlugins()
     }
 }
 
-QMap<QString, QString> MIMPluginManagerPrivate::availableSubViews(const QString &plugin, MIMHandlerState state) const
+QMap<QString, QString>
+MIMPluginManagerPrivate::availableSubViews(const QString &plugin,
+                                           MInputMethod::HandlerState state) const
 {
     QMap<QString, QString> subViews;
     Plugins::iterator iterator(plugins.begin());
@@ -670,7 +681,7 @@ QMap<QString, QString> MIMPluginManagerPrivate::availableSubViews(const QString 
     return subViews;
 }
 
-QString MIMPluginManagerPrivate::activeSubView(MIMHandlerState state) const
+QString MIMPluginManagerPrivate::activeSubView(MInputMethod::HandlerState state) const
 {
     QString subView;
     MInputMethodPlugin *currentPlugin = activePlugin(state);
@@ -680,7 +691,8 @@ QString MIMPluginManagerPrivate::activeSubView(MIMHandlerState state) const
     return subView;
 }
 
-void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginName, MIMHandlerState state)
+void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginName,
+                                              MInputMethod::HandlerState state)
 {
     MGConfItem currentPluginConf(PluginRoot + "/" + inputSourceName(state));
     if (!pluginName.isEmpty() && currentPluginConf.value().toString() != pluginName) {
@@ -725,21 +737,23 @@ QStringList MIMPluginManagerAdaptor::queryAvailablePlugins()
 QStringList MIMPluginManagerAdaptor::queryAvailablePlugins(int state)
 {
     Q_ASSERT(owner);
-    return owner->loadedPluginsNames(static_cast<MIMHandlerState>(state));
+    return owner->loadedPluginsNames(static_cast<MInputMethod::HandlerState>(state));
 }
 
 QString MIMPluginManagerAdaptor::queryActivePlugin(int state)
 {
     Q_ASSERT(owner);
-    return owner->activePluginsName(static_cast<MIMHandlerState>(state));
+    return owner->activePluginsName(static_cast<MInputMethod::HandlerState>(state));
 }
 
-QMap<QString, QVariant> MIMPluginManagerAdaptor::queryAvailableSubViews(const QString &plugin, int state)
+QMap<QString, QVariant> MIMPluginManagerAdaptor::queryAvailableSubViews(const QString &plugin,
+                                                                        int state)
 {
     Q_ASSERT(owner);
     QMap<QString, QVariant> vSubViews;
 
-    QMap<QString, QString> subViews = owner->availableSubViews(plugin, static_cast<MIMHandlerState>(state));
+    QMap<QString, QString> subViews
+        = owner->availableSubViews(plugin, static_cast<MInputMethod::HandlerState>(state));
     QMapIterator<QString, QString> subView(subViews);
     while (subView.hasNext()) {
         subView.next();
@@ -752,24 +766,25 @@ QMap<QString, QVariant> MIMPluginManagerAdaptor::queryActiveSubView(int state)
 {
     Q_ASSERT(owner);
     QMap<QString, QVariant> activeSubbView;
-    activeSubbView.insert(owner->activeSubView(static_cast<MIMHandlerState>(state)),
-                          owner->activePluginsName(static_cast<MIMHandlerState>(state)));
+    activeSubbView.insert(owner->activeSubView(static_cast<MInputMethod::HandlerState>(state)),
+                          owner->activePluginsName(static_cast<MInputMethod::HandlerState>(state)));
     return activeSubbView;
 }
 
-void MIMPluginManagerAdaptor::setActivePlugin(const QString &pluginName, int state, const QString &subViewId)
+void MIMPluginManagerAdaptor::setActivePlugin(const QString &pluginName, int state,
+                                              const QString &subViewId)
 {
     Q_ASSERT(owner);
-    owner->setActivePlugin(pluginName, static_cast<MIMHandlerState>(state));
+    owner->setActivePlugin(pluginName, static_cast<MInputMethod::HandlerState>(state));
     if (!subViewId.isEmpty()) {
-        owner->setActiveSubView(subViewId, static_cast<MIMHandlerState>(state));
+        owner->setActiveSubView(subViewId, static_cast<MInputMethod::HandlerState>(state));
     }
 }
 
 void MIMPluginManagerAdaptor::setActiveSubView(const QString &subViewId, int state)
 {
     Q_ASSERT(owner);
-    owner->setActiveSubView(subViewId, static_cast<MIMHandlerState>(state));
+    owner->setActiveSubView(subViewId, static_cast<MInputMethod::HandlerState>(state));
 }
 
 ///////////////
@@ -846,7 +861,7 @@ QStringList MIMPluginManager::loadedPluginsNames() const
 }
 
 
-QStringList MIMPluginManager::loadedPluginsNames(MIMHandlerState state) const
+QStringList MIMPluginManager::loadedPluginsNames(MInputMethod::HandlerState state) const
 {
     Q_D(const MIMPluginManager);
     return d->loadedPluginsNames(state);
@@ -860,7 +875,7 @@ QStringList MIMPluginManager::activePluginsNames() const
 }
 
 
-QString MIMPluginManager::activePluginsName(MIMHandlerState state) const
+QString MIMPluginManager::activePluginsName(MInputMethod::HandlerState state) const
 {
     Q_D(const MIMPluginManager);
     return d->activePluginsName(state);
@@ -871,22 +886,22 @@ void MIMPluginManager::updateInputSource()
     Q_D(MIMPluginManager);
     // Hardware and Accessory can work together.
     // OnScreen is mutually exclusive to Hardware and Accessory.
-    QSet<MIMHandlerState> handlers = d->activeHandlers();
+    QSet<MInputMethod::HandlerState> handlers = d->activeHandlers();
     if (MKeyboardStateTracker::instance()->isOpen()) {
         // hw keyboard is on
-        handlers.remove(OnScreen);
-        handlers.insert(Hardware);
+        handlers.remove(MInputMethod::OnScreen);
+        handlers.insert(MInputMethod::Hardware);
     } else {
         // hw keyboard is off
-        handlers.remove(Hardware);
-        handlers.insert(OnScreen);
+        handlers.remove(MInputMethod::Hardware);
+        handlers.insert(MInputMethod::OnScreen);
     }
 
     if (d->imAccessoryEnabledConf->value().toBool()) {
-        handlers.remove(OnScreen);
-        handlers.insert(Accessory);
+        handlers.remove(MInputMethod::OnScreen);
+        handlers.insert(MInputMethod::Accessory);
     } else {
-        handlers.remove(Accessory);
+        handlers.remove(MInputMethod::Accessory);
     }
 
     if (!handlers.isEmpty()) {
@@ -894,7 +909,7 @@ void MIMPluginManager::updateInputSource()
     }
 }
 
-void MIMPluginManager::switchPlugin(M::InputMethodSwitchDirection direction)
+void MIMPluginManager::switchPlugin(MInputMethod::SwitchDirection direction)
 {
     Q_D(MIMPluginManager);
     MInputMethodBase *initiator = qobject_cast<MInputMethodBase*>(sender());
@@ -985,25 +1000,26 @@ void MIMPluginManager::hideActivePlugins()
     emit regionUpdated(QRegion());
 }
 
-QMap<QString, QString> MIMPluginManager::availableSubViews(const QString &plugin, MIMHandlerState state) const
+QMap<QString, QString> MIMPluginManager::availableSubViews(const QString &plugin,
+                                                           MInputMethod::HandlerState state) const
 {
     Q_D(const MIMPluginManager);
     return d->availableSubViews(plugin, state);
 }
 
-QString MIMPluginManager::activeSubView(MIMHandlerState state) const
+QString MIMPluginManager::activeSubView(MInputMethod::HandlerState state) const
 {
     Q_D(const MIMPluginManager);
     return d->activeSubView(state);
 }
 
-void MIMPluginManager::setActivePlugin(const QString &pluginName, MIMHandlerState state)
+void MIMPluginManager::setActivePlugin(const QString &pluginName, MInputMethod::HandlerState state)
 {
     Q_D(MIMPluginManager);
     d->setActivePlugin(pluginName, state);
 }
 
-void MIMPluginManager::setActiveSubView(const QString &subViewId, MIMHandlerState state)
+void MIMPluginManager::setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state)
 {
     Q_D(MIMPluginManager);
     d->_q_setActiveSubView(subViewId, state);

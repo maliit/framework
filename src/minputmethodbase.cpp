@@ -217,7 +217,7 @@ void MInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                                      count));
 }
 
-void MInputMethodBase::setState(const QSet<MIMHandlerState> &state)
+void MInputMethodBase::setState(const QSet<MInputMethod::HandlerState> &state)
 {
     // empty default implementation
     Q_UNUSED(state);
@@ -228,7 +228,7 @@ void MInputMethodBase::clientChanged()
     // empty default implementation
 }
 
-void MInputMethodBase::switchContext(M::InputMethodSwitchDirection direction, bool enableAnimation)
+void MInputMethodBase::switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation)
 {
     // empty default implementation
     Q_UNUSED(direction);
@@ -242,21 +242,22 @@ void MInputMethodBase::sendInputModeIndicator(MInputMethodBase::InputModeIndicat
     }
 }
 
-QList<MInputMethodBase::MInputMethodSubView> MInputMethodBase::subViews(MIMHandlerState state) const
+QList<MInputMethodBase::MInputMethodSubView>
+MInputMethodBase::subViews(MInputMethod::HandlerState state) const
 {
     Q_UNUSED(state);
     QList<MInputMethodSubView> sVs;
     return sVs;
 }
 
-void MInputMethodBase::setActiveSubView(const QString &subViewId, MIMHandlerState state)
+void MInputMethodBase::setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state)
 {
     // empty default implementation
     Q_UNUSED(subViewId);
     Q_UNUSED(state);
 }
 
-QString MInputMethodBase::activeSubView(MIMHandlerState state) const
+QString MInputMethodBase::activeSubView(MInputMethod::HandlerState state) const
 {
     Q_UNUSED(state);
     return QString();

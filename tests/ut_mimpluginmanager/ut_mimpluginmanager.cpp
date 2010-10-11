@@ -20,9 +20,9 @@
 
 #include "mtoolbarmanager.h"
 
-typedef QSet<MIMHandlerState> HandlerStates;
+typedef QSet<MInputMethod::HandlerState> HandlerStates;
 Q_DECLARE_METATYPE(HandlerStates);
-Q_DECLARE_METATYPE(MIMHandlerState);
+Q_DECLARE_METATYPE(MInputMethod::HandlerState);
 
 namespace
 {
@@ -201,19 +201,19 @@ void Ut_MIMPluginManager::testAddHandlerMap()
 {
     MInputMethodPlugin *plugin = 0;
 
-    subject->addHandlerMap(OnScreen, pluginName);
-    subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessory, pluginName3);
+    subject->addHandlerMap(MInputMethod::OnScreen, pluginName);
+    subject->addHandlerMap(MInputMethod::Hardware, pluginName);
+    subject->addHandlerMap(MInputMethod::Accessory, pluginName3);
 
-    plugin = subject->handlerToPlugin[OnScreen];
+    plugin = subject->handlerToPlugin[MInputMethod::OnScreen];
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
 
-    plugin = subject->handlerToPlugin[Hardware];
+    plugin = subject->handlerToPlugin[MInputMethod::Hardware];
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
 
-    plugin = subject->handlerToPlugin[Accessory];
+    plugin = subject->handlerToPlugin[MInputMethod::Accessory];
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName3);
 }
@@ -224,23 +224,23 @@ void Ut_MIMPluginManager::testConvertAndFilterHandlers_data()
     QTest::addColumn<QStringList>("names");
     QTest::addColumn<HandlerStates>("expectedStates");
 
-    for (int n = 0; n <= Accessory; ++n) {
+    for (int n = 0; n <= MInputMethod::Accessory; ++n) {
         QTest::newRow("single state")
                 << (QStringList() << QString::number(n))
-                << (HandlerStates() << MIMHandlerState(n));
+                << (HandlerStates() << MInputMethod::HandlerState(n));
     }
 
     QTest::newRow("0 1")
             << (QStringList() << "0" << "1")
-            << (HandlerStates() << Hardware);
+            << (HandlerStates() << MInputMethod::Hardware);
 
     QTest::newRow("1 2")
             << (QStringList() << "1" << "2")
-            << (HandlerStates() << Accessory << Hardware);
+            << (HandlerStates() << MInputMethod::Accessory << MInputMethod::Hardware);
 
     QTest::newRow("1 1")
             << (QStringList() << "1" << "1")
-            << (HandlerStates() << Hardware);
+            << (HandlerStates() << MInputMethod::Hardware);
 }
 
 
@@ -259,18 +259,18 @@ void Ut_MIMPluginManager::testConvertAndFilterHandlers()
 
 void Ut_MIMPluginManager::testSwitchPluginState()
 {
-    QSet<MIMHandlerState> actualState;
+    QSet<MInputMethod::HandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
     MInputMethodBase *inputMethodBase = 0;
     DummyInputMethod  *inputMethod  = 0;
     DummyInputMethod3 *inputMethod3 = 0;
 
-    subject->addHandlerMap(OnScreen, pluginName);
-    subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessory, pluginName3);
+    subject->addHandlerMap(MInputMethod::OnScreen, pluginName);
+    subject->addHandlerMap(MInputMethod::Hardware, pluginName);
+    subject->addHandlerMap(MInputMethod::Accessory, pluginName3);
 
-    actualState << OnScreen;
+    actualState << MInputMethod::OnScreen;
     QVERIFY(subject->activePlugins.size() == 1);
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 1);
@@ -284,10 +284,10 @@ void Ut_MIMPluginManager::testSwitchPluginState()
     QCOMPARE(inputMethod->setStateCount, 1);
     inputMethod->setStateCount = 0;
     QCOMPARE(inputMethod->setStateParam.size(), 1);
-    QCOMPARE(*inputMethod->setStateParam.begin(), OnScreen);
+    QCOMPARE(*inputMethod->setStateParam.begin(), MInputMethod::OnScreen);
 
     actualState.clear();
-    actualState << Hardware;
+    actualState << MInputMethod::Hardware;
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 1);
     plugin = dynamic_cast<DummyImPlugin *>(*subject->activePlugins.begin());
@@ -300,10 +300,10 @@ void Ut_MIMPluginManager::testSwitchPluginState()
     QCOMPARE(inputMethod->setStateCount, 1);
     inputMethod->setStateCount = 0;
     QCOMPARE(inputMethod->setStateParam.size(), 1);
-    QCOMPARE(*inputMethod->setStateParam.begin(), Hardware);
+    QCOMPARE(*inputMethod->setStateParam.begin(), MInputMethod::Hardware);
 
     actualState.clear();
-    actualState << Accessory;
+    actualState << MInputMethod::Accessory;
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 1);
     plugin3 = dynamic_cast<DummyImPlugin3 *>(*subject->activePlugins.begin());
@@ -316,13 +316,13 @@ void Ut_MIMPluginManager::testSwitchPluginState()
     QCOMPARE(inputMethod3->setStateCount, 1);
     inputMethod3->setStateCount = 0;
     QCOMPARE(inputMethod3->setStateParam.size(), 1);
-    QCOMPARE(*inputMethod3->setStateParam.begin(), Accessory);
+    QCOMPARE(*inputMethod3->setStateParam.begin(), MInputMethod::Accessory);
 }
 
 
 void Ut_MIMPluginManager::testMultilePlugins()
 {
-    QSet<MIMHandlerState> actualState;
+    QSet<MInputMethod::HandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
     int pluginCount = 0;
@@ -331,11 +331,11 @@ void Ut_MIMPluginManager::testMultilePlugins()
     DummyInputMethod  *inputMethod  = 0;
     DummyInputMethod3 *inputMethod3 = 0;
 
-    subject->addHandlerMap(OnScreen, pluginName);
-    subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessory, pluginName3);
+    subject->addHandlerMap(MInputMethod::OnScreen, pluginName);
+    subject->addHandlerMap(MInputMethod::Hardware, pluginName);
+    subject->addHandlerMap(MInputMethod::Accessory, pluginName3);
 
-    actualState << Accessory << Hardware;
+    actualState << MInputMethod::Accessory << MInputMethod::Hardware;
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 2);
     foreach(MInputMethodPlugin * p, subject->activePlugins) {
@@ -350,7 +350,7 @@ void Ut_MIMPluginManager::testMultilePlugins()
             QCOMPARE(inputMethod3->setStateCount, 1);
             inputMethod3->setStateCount = 0;
             QCOMPARE(inputMethod3->setStateParam.size(), 1);
-            QCOMPARE(*inputMethod3->setStateParam.begin(), Accessory);
+            QCOMPARE(*inputMethod3->setStateParam.begin(), MInputMethod::Accessory);
         }
         plugin = dynamic_cast<DummyImPlugin *>(p);
         if (plugin != 0) {
@@ -363,7 +363,7 @@ void Ut_MIMPluginManager::testMultilePlugins()
             QCOMPARE(inputMethod->setStateCount, 1);
             inputMethod->setStateCount = 0;
             QCOMPARE(inputMethod->setStateParam.size(), 1);
-            QCOMPARE(*inputMethod->setStateParam.begin(), Hardware);
+            QCOMPARE(*inputMethod->setStateParam.begin(), MInputMethod::Hardware);
         }
     }
     QCOMPARE(pluginCount, 1);
@@ -373,16 +373,16 @@ void Ut_MIMPluginManager::testMultilePlugins()
 void Ut_MIMPluginManager::testExistInputMethod()
 {
     MIMPluginManagerPrivate::Plugins::iterator iterator;
-    QSet<MIMHandlerState> actualState;
+    QSet<MInputMethod::HandlerState> actualState;
 
-    subject->addHandlerMap(OnScreen, pluginName);
-    subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessory, pluginName3);
+    subject->addHandlerMap(MInputMethod::OnScreen, pluginName);
+    subject->addHandlerMap(MInputMethod::Hardware, pluginName);
+    subject->addHandlerMap(MInputMethod::Accessory, pluginName3);
 
-    actualState << OnScreen;
+    actualState << MInputMethod::OnScreen;
     subject->setActiveHandlers(actualState);
     actualState.clear();
-    actualState << Accessory;
+    actualState << MInputMethod::Accessory;
     subject->setActiveHandlers(actualState);
 
     for (iterator = subject->plugins.begin(); iterator != subject->plugins.end(); ++iterator) {
@@ -395,26 +395,26 @@ void Ut_MIMPluginManager::testExistInputMethod()
 
 void Ut_MIMPluginManager::testPluginSwitcher_data()
 {
-    QTest::addColumn<MIMHandlerState>("state");
+    QTest::addColumn<MInputMethod::HandlerState>("state");
 
-    QTest::newRow("OnScreen")  << OnScreen;
-    QTest::newRow("Hardware")  << Hardware;
-    QTest::newRow("Accessory") << Accessory;
+    QTest::newRow("OnScreen")  << MInputMethod::OnScreen;
+    QTest::newRow("Hardware")  << MInputMethod::Hardware;
+    QTest::newRow("Accessory") << MInputMethod::Accessory;
 }
 
 void Ut_MIMPluginManager::testPluginSwitcher()
 {
-    QFETCH(MIMHandlerState, state);
-    QSet<MIMHandlerState> actualState;
+    QFETCH(MInputMethod::HandlerState, state);
+    QSet<MInputMethod::HandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
     MInputMethodBase *inputMethodBase = 0;
     QPointer<DummyInputMethod > inputMethod  = 0;
     QPointer<DummyInputMethod3> inputMethod3 = 0;
 
-    subject->addHandlerMap(OnScreen, pluginName);
-    subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessory, pluginName);
+    subject->addHandlerMap(MInputMethod::OnScreen, pluginName);
+    subject->addHandlerMap(MInputMethod::Hardware, pluginName);
+    subject->addHandlerMap(MInputMethod::Accessory, pluginName);
 
     // find for loaded plugins
     for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->plugins.begin());
@@ -440,16 +440,16 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     subject->setActiveHandlers(actualState);
 
     // nothing should be changed
-    subject->switchPlugin(M::SwitchUndefined, inputMethod);
+    subject->switchPlugin(MInputMethod::SwitchUndefined, inputMethod);
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->switchContextCallCount, 0);
-    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchUndefined);
+    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, MInputMethod::SwitchUndefined);
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin == *subject->activePlugins.begin());
 
     // switch forward
-    subject->switchPlugin(M::SwitchForward, inputMethod);
-    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchForward);
+    subject->switchPlugin(MInputMethod::SwitchForward, inputMethod);
+    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, MInputMethod::SwitchForward);
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
@@ -466,8 +466,8 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
     //switch backward
     inputMethod->setStateCount = 0;
-    subject->switchPlugin(M::SwitchBackward, inputMethod3);
-    QCOMPARE(subject->plugins[plugin3].lastSwitchDirection, M::SwitchBackward);
+    subject->switchPlugin(MInputMethod::SwitchBackward, inputMethod3);
+    QCOMPARE(subject->plugins[plugin3].lastSwitchDirection, MInputMethod::SwitchBackward);
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin == *subject->activePlugins.begin());
@@ -483,8 +483,8 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     checkHandlerMap(state, pluginName);
 
     // ... again
-    subject->switchPlugin(M::SwitchBackward, inputMethod);
-    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchBackward);
+    subject->switchPlugin(MInputMethod::SwitchBackward, inputMethod);
+    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, MInputMethod::SwitchBackward);
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
@@ -494,7 +494,7 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     QVERIFY(inputMethod3 != 0);
     QCOMPARE(inputMethod3->switchContextCallCount, 1);
     inputMethod3->switchContextCallCount = 0;
-    QCOMPARE(inputMethod3->directionParam, M::SwitchBackward);
+    QCOMPARE(inputMethod3->directionParam, MInputMethod::SwitchBackward);
     QVERIFY(inputMethod3->enableAnimationParam == false);
     QCOMPARE(inputMethod3->setStateCount, 1);
     inputMethod3->setStateCount = 0;
@@ -505,9 +505,10 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     // try to switch to plugin which could not support the same state
     // nothing should be changed
     plugin->allowedStates.clear();
-    subject->switchPlugin(M::SwitchBackward, inputMethod3);
-    plugin->allowedStates << OnScreen << Hardware << Accessory; // restore default configuration
-    QCOMPARE(subject->plugins[plugin3].lastSwitchDirection, M::SwitchBackward);
+    subject->switchPlugin(MInputMethod::SwitchBackward, inputMethod3);
+    plugin->allowedStates << MInputMethod::OnScreen << MInputMethod::Hardware
+                          << MInputMethod::Accessory; // restore default configuration
+    QCOMPARE(subject->plugins[plugin3].lastSwitchDirection, MInputMethod::SwitchBackward);
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
@@ -534,14 +535,14 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     QVERIFY(toolbarData1.data() != toolbarData2.data());
 
     manager->setToolbar(toolbarId1);
-    subject->setActivePlugin(plugin->name(), OnScreen);
-    subject->switchPlugin(M::SwitchForward, inputMethod);
+    subject->setActivePlugin(plugin->name(), MInputMethod::OnScreen);
+    subject->switchPlugin(MInputMethod::SwitchForward, inputMethod);
     QVERIFY(inputMethod->toolbarParam == toolbarData1);
     QVERIFY(inputMethod3->toolbarParam == toolbarData1);
 
     manager->setToolbar(toolbarId2);
-    subject->setActivePlugin(plugin3->name(), OnScreen);
-    subject->switchPlugin(M::SwitchBackward, inputMethod3);
+    subject->setActivePlugin(plugin3->name(), MInputMethod::OnScreen);
+    subject->switchPlugin(MInputMethod::SwitchBackward, inputMethod3);
     QVERIFY(inputMethod->toolbarParam == toolbarData2);
     QVERIFY(inputMethod3->toolbarParam == toolbarData2);
 
@@ -551,24 +552,26 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
 void Ut_MIMPluginManager::checkHandlerMap(int handler, const QString &name)
 {
-    const QString key = QString(PluginRoot + subject->inputSourceName(static_cast<MIMHandlerState>(handler)));
+    const QString key
+        = QString(PluginRoot
+                  + subject->inputSourceName(static_cast<MInputMethod::HandlerState>(handler)));
     MGConfItem gconf(key);
     QCOMPARE(gconf.value().toString(), name);
 }
 
 void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
 {
-    const MIMHandlerState state = OnScreen;
-    QSet<MIMHandlerState> actualState;
+    const MInputMethod::HandlerState state = MInputMethod::OnScreen;
+    QSet<MInputMethod::HandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
     MInputMethodBase *inputMethodBase = 0;
     QPointer<DummyInputMethod > inputMethod  = 0;
     QPointer<DummyInputMethod3> inputMethod3 = 0;
 
-    subject->addHandlerMap(OnScreen, pluginName);
-    subject->addHandlerMap(Hardware, pluginName);
-    subject->addHandlerMap(Accessory, pluginName);
+    subject->addHandlerMap(MInputMethod::OnScreen, pluginName);
+    subject->addHandlerMap(MInputMethod::Hardware, pluginName);
+    subject->addHandlerMap(MInputMethod::Accessory, pluginName);
 
     // find for loaded plugins
     for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->plugins.begin());
@@ -593,7 +596,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     subject->switchPlugin(pluginName, inputMethod);
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->switchContextCallCount, 0);
-    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchUndefined);
+    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, MInputMethod::SwitchUndefined);
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin == *subject->activePlugins.begin());
     foreach (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
@@ -602,7 +605,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
 
     // switch to another plugin
     subject->switchPlugin(pluginName3, inputMethod);
-    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, M::SwitchUndefined);
+    QCOMPARE(subject->plugins[plugin].lastSwitchDirection, MInputMethod::SwitchUndefined);
     QVERIFY(inputMethod != 0);
 
     QCOMPARE(subject->activePlugins.count(), 1);
@@ -612,7 +615,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     inputMethod3 = dynamic_cast<DummyInputMethod3 *>(inputMethodBase);
     QVERIFY(inputMethod3 != 0);
     QCOMPARE(inputMethod3->switchContextCallCount, 1);
-    QCOMPARE(inputMethod3->directionParam, M::SwitchUndefined);
+    QCOMPARE(inputMethod3->directionParam, MInputMethod::SwitchUndefined);
     QCOMPARE(inputMethod3->setStateCount, 1);
     inputMethod3->setStateCount = 0;
     QCOMPARE(inputMethod3->setStateParam.size(), 1);
@@ -630,7 +633,7 @@ void Ut_MIMPluginManager::testSetActivePlugin()
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
 
-    subject->setActivePlugin(pluginName3, OnScreen);
+    subject->setActivePlugin(pluginName3, MInputMethod::OnScreen);
 
     // check gconf item
     MGConfItem handlerItem(PluginRoot + "onscreen");
@@ -646,14 +649,14 @@ void Ut_MIMPluginManager::testSubViews()
 {
     QList<MInputMethodBase::MInputMethodSubView> subViews;
     foreach (MInputMethodPlugin *plugin, subject->plugins.keys()) {
-        subViews += subject->plugins[plugin].inputMethod->subViews(OnScreen);
+        subViews += subject->plugins[plugin].inputMethod->subViews(MInputMethod::OnScreen);
     }
-    // only has subviews for OnScreen
+    // only has subviews for MInputMethod::OnScreen
     QCOMPARE(subViews.count(), 4);
 
     subViews.clear();
     foreach (MInputMethodPlugin *plugin, subject->plugins.keys()) {
-        subViews += subject->plugins[plugin].inputMethod->subViews(Hardware);
+        subViews += subject->plugins[plugin].inputMethod->subViews(MInputMethod::Hardware);
     }
     // doesn't have subviews for Hardware
     QCOMPARE(subViews.count(), 0);
@@ -667,19 +670,19 @@ void Ut_MIMPluginManager::testActiveSubView()
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyimsv1"));
-    subject->_q_setActiveSubView(QString("dummyimsv2"), OnScreen);
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyimsv2"));
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
+    subject->_q_setActiveSubView(QString("dummyimsv2"), MInputMethod::OnScreen);
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyimsv2"));
 
-    subject->setActivePlugin(pluginName3, OnScreen);
+    subject->setActivePlugin(pluginName3, MInputMethod::OnScreen);
     QVERIFY(subject->activePlugins.size() == 1);
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName3);
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyim3sv1"));
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv1"));
 
-    subject->_q_setActiveSubView(QString("dummyim3sv2"), OnScreen);
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyim3sv2"));
+    subject->_q_setActiveSubView(QString("dummyim3sv2"), MInputMethod::OnScreen);
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv2"));
 }
 
 void Ut_MIMPluginManager::testDBusQueryCalls()
@@ -693,29 +696,30 @@ void Ut_MIMPluginManager::testDBusQueryCalls()
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyimsv1"));
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
 
     QVERIFY(m_clientInterface);
-    QDBusReply<QStringList> AvailablePluginReply = m_clientInterface->call("queryAvailablePlugins", OnScreen);
+    QDBusReply<QStringList> AvailablePluginReply
+        = m_clientInterface->call("queryAvailablePlugins", MInputMethod::OnScreen);
     QVERIFY(AvailablePluginReply.isValid());
     QCOMPARE(AvailablePluginReply.value().count(), 2);
     QVERIFY(AvailablePluginReply.value().contains(pluginName));
     QVERIFY(AvailablePluginReply.value().contains(pluginName3));
 
-    QDBusReply<QString> ActivePluginReply = m_clientInterface->call("queryActivePlugin", OnScreen);
+    QDBusReply<QString> ActivePluginReply = m_clientInterface->call("queryActivePlugin",
+                                                                    MInputMethod::OnScreen);
     QVERIFY(ActivePluginReply.isValid());
     QCOMPARE(ActivePluginReply.value(), pluginName);
 
-    QDBusReply< QMap<QString, QVariant> > activeSubViewReply = m_clientInterface->call("queryActiveSubView",
-                                                                                       OnScreen);
+    QDBusReply< QMap<QString, QVariant> > activeSubViewReply
+        = m_clientInterface->call("queryActiveSubView", MInputMethod::OnScreen);
     QVERIFY(activeSubViewReply.isValid());
     QVERIFY(activeSubViewReply.value().count() > 0);
     QCOMPARE(activeSubViewReply.value().values().at(0).toString(), pluginName);
     QCOMPARE(activeSubViewReply.value().keys().at(0), QString("dummyimsv1"));
 
-    QDBusReply< QMap<QString, QVariant> > subViewsReply = m_clientInterface->call("queryAvailableSubViews",
-                                                                                  pluginName,
-                                                                                  OnScreen);
+    QDBusReply< QMap<QString, QVariant> > subViewsReply
+        = m_clientInterface->call("queryAvailableSubViews", pluginName, MInputMethod::OnScreen);
     QVERIFY(subViewsReply.isValid());
     QCOMPARE(subViewsReply.value().count(), 2);
 }
@@ -731,45 +735,50 @@ void Ut_MIMPluginManager::testDBusSetCalls()
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyimsv1"));
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
 
     QVERIFY(m_clientInterface);
 
-    m_clientInterface->call(QDBus::NoBlock, "setActivePlugin", pluginName3, static_cast<int>(OnScreen));
+    m_clientInterface->call(QDBus::NoBlock, "setActivePlugin", pluginName3,
+                            static_cast<int>(MInputMethod::OnScreen));
     handleMessages();
 
     QVERIFY(subject->activePlugins.size() == 1);
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName3);
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyim3sv1"));
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv1"));
 
     // try to set a wrong plugin
-    m_clientInterface->call(QDBus::NoBlock, "setActivePlugin", pluginName2, static_cast<int>(OnScreen));
+    m_clientInterface->call(QDBus::NoBlock, "setActivePlugin", pluginName2,
+                            static_cast<int>(MInputMethod::OnScreen));
     handleMessages();
     QVERIFY(subject->activePlugins.size() == 1);
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName3);
 
-    m_clientInterface->call(QDBus::NoBlock, "setActiveSubView", QString("dummyim3sv2"), static_cast<int>(OnScreen));
+    m_clientInterface->call(QDBus::NoBlock, "setActiveSubView", QString("dummyim3sv2"),
+                            static_cast<int>(MInputMethod::OnScreen));
     handleMessages();
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyim3sv2"));
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv2"));
 
     // try to set a wrong subview
-    m_clientInterface->call(QDBus::NoBlock, "setActiveSubView", QString("dummyimisv2"), static_cast<int>(OnScreen));
+    m_clientInterface->call(QDBus::NoBlock, "setActiveSubView", QString("dummyimisv2"),
+                            static_cast<int>(MInputMethod::OnScreen));
     handleMessages();
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyim3sv2"));
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv2"));
 
     // try to set both subview id and plugin
-    m_clientInterface->call(QDBus::NoBlock, "setActivePlugin", pluginName, static_cast<int>(OnScreen),
+    m_clientInterface->call(QDBus::NoBlock, "setActivePlugin", pluginName,
+                            static_cast<int>(MInputMethod::OnScreen),
                             QString("dummyimsv1"));
     handleMessages();
     QVERIFY(subject->activePlugins.size() == 1);
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
-    QCOMPARE(subject->activeSubView(OnScreen), QString("dummyimsv1"));
+    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
 }
 
 void Ut_MIMPluginManager::testRegionUpdates()
@@ -831,7 +840,7 @@ void Ut_MIMPluginManager::testSetToolbar()
     QVERIFY(toolbarData2.data());
     QVERIFY(toolbarData1.data() != toolbarData2.data());
 
-    subject->setActivePlugin(plugin1->name(), OnScreen);
+    subject->setActivePlugin(plugin1->name(), MInputMethod::OnScreen);
     manager->setToolbar(toolbarId1);
     QVERIFY(inputMethod->toolbarParam == toolbarData1);
     manager->setToolbar(toolbarId2);

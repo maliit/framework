@@ -463,7 +463,7 @@ MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
 // Server -> input context...................................................
 
 void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
-                                                       PreeditFace preeditFace)
+                                                        MInputMethod::PreeditFace preeditFace)
 {
     if (activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updatePreedit",

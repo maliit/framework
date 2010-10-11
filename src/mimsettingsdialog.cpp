@@ -106,9 +106,10 @@ void MIMSettingsDialog::updateActiveSubViewTitle()
     if (!activeSubViewItem)
         return;
 
-    QString subViewId = imPluginManagerPrivate->activeSubView(OnScreen);
-    QMap<QString, QString> subViews =
-        imPluginManagerPrivate->availableSubViews(imPluginManagerPrivate->activePluginsName(OnScreen), OnScreen);
+    QString subViewId = imPluginManagerPrivate->activeSubView(MInputMethod::OnScreen);
+    QString activePluginsName = imPluginManagerPrivate->activePluginsName(MInputMethod::OnScreen);
+    QMap<QString, QString> subViews
+        = imPluginManagerPrivate->availableSubViews(activePluginsName, MInputMethod::OnScreen);
     QString subViewTitle = subViews.value(subViewId);
 
     activeSubViewItem->setSubtitle(subViewTitle);
@@ -156,8 +157,10 @@ void MIMSettingsDialog::updateAvailableSubViewModel()
     model->clear();
 
     // get all subviews from plugins which support OnScreen
-    foreach (const QString &pluginName, imPluginManagerPrivate->loadedPluginsNames(OnScreen)) {
-        QMap<QString, QString> subViews = imPluginManagerPrivate->availableSubViews(pluginName, OnScreen);
+    foreach (const QString &pluginName,
+             imPluginManagerPrivate->loadedPluginsNames(MInputMethod::OnScreen)) {
+        QMap<QString, QString> subViews
+            = imPluginManagerPrivate->availableSubViews(pluginName, MInputMethod::OnScreen);
         QMap<QString, QString>::const_iterator i = subViews.constBegin();
         while (i != subViews.constEnd()) {
             QStandardItem *item = new QStandardItem(i.value());
@@ -186,11 +189,11 @@ void MIMSettingsDialog::setActiveSubView(const QModelIndex &index)
 
     // check whether OnScreen plugin is changed.
     QString pluginName = model->itemFromIndex(index)->data(MImPluginNameRole).toString();
-    imPluginManagerPrivate->setActivePlugin(pluginName, OnScreen);
+    imPluginManagerPrivate->setActivePlugin(pluginName, MInputMethod::OnScreen);
 
     // check whether active subview is changed.
     QString subViewId = model->itemFromIndex(index)->data(MImSubViewIdentifierRole).toString();
-    imPluginManagerPrivate->_q_setActiveSubView(subViewId, OnScreen);
+    imPluginManagerPrivate->_q_setActiveSubView(subViewId, MInputMethod::OnScreen);
 }
 
 void MIMSettingsDialog::retranslateSettingsUi()

@@ -23,13 +23,13 @@ public:
 
     virtual MInputMethodSettingsBase *createInputMethodSettings();
 
-    virtual QSet<MIMHandlerState> supportedStates() const;
+    virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end
 
 public:
     int setStateCount;
-    QList<MIMHandlerState> setStateParam;
-    QSet<MIMHandlerState> allowedStates;
+    QList<MInputMethod::HandlerState> setStateParam;
+    QSet<MInputMethod::HandlerState> allowedStates;
 };
 
 #endif

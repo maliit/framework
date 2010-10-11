@@ -11,9 +11,6 @@ HEADERSINSTALL = \
         mimpluginmanager.h \
         minputcontextconnection.h \
         mplainwindow.h \
-        mpreeditface.h \
-        mimhandlerstate.h \
-        mimdirection.h \
         mtoolbaritem.h \
         mtoolbardata.h \
         minputmethodnamespace.h \

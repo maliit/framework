@@ -30,7 +30,7 @@ MInputContextConnectionStub::~MInputContextConnectionStub()
 }
 
 void MInputContextConnectionStub::sendPreeditString(const QString &string,
-        PreeditFace preeditFace)
+                                                    MInputMethod::PreeditFace preeditFace)
 {
     Q_UNUSED(string);
     Q_UNUSED(preeditFace);

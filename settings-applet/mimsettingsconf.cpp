@@ -131,7 +131,7 @@ QList<MInputMethodPlugin *> MImSettingsConf::plugins() const
     foreach (MInputMethodPlugin *plugin, imPlugins.keys()) {
         if (blacklist.contains(imPlugins.value(plugin)))
             continue;
-        if (plugin->supportedStates().contains(OnScreen))
+        if (plugin->supportedStates().contains(MInputMethod::OnScreen))
             pluginList << plugin;
     }
     return pluginList;
@@ -145,14 +145,16 @@ QList<MInputMethodSettingsBase *> MImSettingsConf::settings() const
 void MImSettingsConf::setActivePlugin(const QString &pluginName, const QString &subViewId)
 {
     if (!pluginName.isEmpty() && impluginMgrIface) {
-        impluginMgrIface->call(QDBus::NoBlock, "setActivePlugin", pluginName, static_cast<int>(OnScreen), subViewId);
+        impluginMgrIface->call(QDBus::NoBlock, "setActivePlugin", pluginName,
+                               static_cast<int>(MInputMethod::OnScreen), subViewId);
     }
 }
 
 void MImSettingsConf::setActiveSubView(const QString &subViewId)
 {
     if (!subViewId.isEmpty() && impluginMgrIface) {
-        impluginMgrIface->call(QDBus::NoBlock, "setActiveSubView", subViewId, static_cast<int>(OnScreen));
+        impluginMgrIface->call(QDBus::NoBlock, "setActiveSubView", subViewId,
+                               static_cast<int>(MInputMethod::OnScreen));
     }
 }
 
@@ -161,16 +163,16 @@ MImSettingsConf::MImSubView MImSettingsConf::activeSubView() const
 {
     MImSubView subView;
     if (impluginMgrIface) {
-        QDBusReply< QMap<QString, QVariant> > activeSubViewReply = impluginMgrIface->call("queryActiveSubView",
-                                                                                          OnScreen);
+        QDBusReply< QMap<QString, QVariant> > activeSubViewReply
+            = impluginMgrIface->call("queryActiveSubView", MInputMethod::OnScreen);
         if (activeSubViewReply.isValid() && activeSubViewReply.value().count()) {
             subView.subViewId = activeSubViewReply.value().keys().at(0);
             subView.pluginName = activeSubViewReply.value().values().at(0).toString();
         }
 
-        QDBusReply< QMap<QString, QVariant> > subViewsReply = impluginMgrIface->call("queryAvailableSubViews",
-                                                                                     subView.pluginName,
-                                                                                     OnScreen);
+        QDBusReply< QMap<QString, QVariant> > subViewsReply
+            = impluginMgrIface->call("queryAvailableSubViews", subView.pluginName,
+                                     MInputMethod::OnScreen);
         if (subViewsReply.isValid()) {
             subView.subViewTitle = subViewsReply.value().value(subView.subViewId).toString();
         }
@@ -183,11 +185,13 @@ QList<MImSettingsConf::MImSubView> MImSettingsConf::subViews() const
 {
     QList<MImSubView> views;
     if (impluginMgrIface) {
-        QDBusReply<QStringList> reply = impluginMgrIface->call("queryAvailablePlugins", OnScreen);
+        QDBusReply<QStringList> reply
+            = impluginMgrIface->call("queryAvailablePlugins", MInputMethod::OnScreen);
         if (reply.isValid()) {
             foreach (const QString &plugin, reply.value()) {
-                QDBusReply< QMap<QString, QVariant> > replySubViews = impluginMgrIface->call("queryAvailableSubViews",
-                                                                                             plugin, OnScreen);
+                QDBusReply< QMap<QString, QVariant> > replySubViews
+                    = impluginMgrIface->call("queryAvailableSubViews",
+                                             plugin, MInputMethod::OnScreen);
                 if (replySubViews.isValid()) {
                     QMap<QString, QVariant> sv = replySubViews.value();
                     QMap<QString, QVariant>::const_iterator iterator = sv.constBegin();

@@ -21,7 +21,8 @@
 #include <QMap>
 #include <QList>
 #include <QStringList>
-#include "mimhandlerstate.h"
+
+#include "minputmethodnamespace.h"
 
 class MInputMethodPlugin;
 class MInputMethodSettingsBase;

@@ -22,7 +22,7 @@ public:
 
     virtual MInputMethodSettingsBase *createInputMethodSettings();
 
-    virtual QSet<MIMHandlerState> supportedStates() const;
+    virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end
 };
 

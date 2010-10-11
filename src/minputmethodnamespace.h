@@ -91,6 +91,27 @@ namespace MInputMethod {
         //! Paste button is accessible
         InputMethodPaste
     };
+
+    /*!
+     * This enum defines direction of plugin switching
+     */
+    enum SwitchDirection {
+        SwitchUndefined, //!< Special value for uninitialized variables
+        SwitchForward, //!< Activate next plugin
+        SwitchBackward //!< Activate previous plugin
+    };
+
+    enum PreeditFace {
+        PreeditDefault,
+        PreeditNoCandidates,
+        PreeditKeyPress           //! Used for displaying the hwkbd key just pressed
+    };
+
+    enum HandlerState {
+        OnScreen,
+        Hardware,
+        Accessory
+    };
 };
 
 #endif

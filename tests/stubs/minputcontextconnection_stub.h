@@ -17,7 +17,7 @@
 #ifndef MINPUTCONTEXTCONNECTIONSTUB_H
 #define MINPUTCONTEXTCONNECTIONSTUB_H
 
-#include "mpreeditface.h"
+#include "minputmethodnamespace.h"
 #include "minputcontextconnection.h"
 #include <QRect>
 #include <QObject>
@@ -35,7 +35,8 @@ public:
     virtual ~MInputContextConnectionStub();
 
     virtual void sendPreeditString(const QString &string,
-                                   PreeditFace preeditFace = PreeditDefault);
+                                   MInputMethod::PreeditFace preeditFace
+                                    = MInputMethod::PreeditDefault);
 
     virtual void sendCommitString(const QString &string);
 

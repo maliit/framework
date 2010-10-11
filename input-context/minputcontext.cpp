@@ -190,7 +190,7 @@ bool MInputContext::event(QEvent *event)
             // send the injected preedit to input method server and back to the widget with proper
             // styling
             imServer->setPreedit(injectionEvent->preedit());
-            updatePreedit(injectionEvent->preedit(), PreeditDefault);
+            updatePreedit(injectionEvent->preedit(), MInputMethod::PreeditDefault);
 
             event->accept();
             return true;
@@ -485,7 +485,7 @@ void MInputContext::commitString(const QString &string)
 }
 
 
-void MInputContext::updatePreedit(const QString &string, PreeditFace preeditFace)
+void MInputContext::updatePreedit(const QString &string, MInputMethod::PreeditFace preeditFace)
 {
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string;
     mTimestamp("MInputContext", string);
@@ -494,15 +494,15 @@ void MInputContext::updatePreedit(const QString &string, PreeditFace preeditFace
 
     // update style mode
     switch (preeditFace) {
-    case PreeditNoCandidates:
+    case MInputMethod::PreeditNoCandidates:
         styleContainer->setModeNoCandidates();
         break;
 
-    case PreeditKeyPress:
+    case MInputMethod::PreeditKeyPress:
         styleContainer->setModeKeyPress();
         break;
 
-    case PreeditDefault:
+    case MInputMethod::PreeditDefault:
     default:
         styleContainer->setModeDefault();
     }

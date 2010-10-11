@@ -5,7 +5,7 @@ DummyInputMethod3::DummyInputMethod3(MInputContextConnection *connection)
     : MInputMethodBase(connection),
       setStateCount(0),
       switchContextCallCount(0),
-      directionParam(M::SwitchUndefined),
+      directionParam(MInputMethod::SwitchUndefined),
       enableAnimationParam(false)
 {
     MInputMethodBase::MInputMethodSubView sv1;
@@ -21,14 +21,14 @@ DummyInputMethod3::DummyInputMethod3(MInputContextConnection *connection)
     activeSView = "dummyim3sv1";
 }
 
-void DummyInputMethod3::setState(const QSet<MIMHandlerState> &state)
+void DummyInputMethod3::setState(const QSet<MInputMethod::HandlerState> &state)
 {
     qDebug() << __PRETTY_FUNCTION__ << state;
     ++setStateCount;
     setStateParam = state;
 }
 
-void DummyInputMethod3::switchContext(M::InputMethodSwitchDirection direction,
+void DummyInputMethod3::switchContext(MInputMethod::SwitchDirection direction,
                               bool enableAnimation)
 {
     ++switchContextCallCount;
@@ -36,20 +36,21 @@ void DummyInputMethod3::switchContext(M::InputMethodSwitchDirection direction,
     enableAnimationParam = enableAnimation;
 }
 
-QList<MInputMethodBase::MInputMethodSubView> DummyInputMethod3::subViews(MIMHandlerState state) const
+QList<MInputMethodBase::MInputMethodSubView>
+DummyInputMethod3::subViews(MInputMethod::HandlerState state) const
 {
     qDebug() << __PRETTY_FUNCTION__;
     QList<MInputMethodBase::MInputMethodSubView> svs;
-    if (state == OnScreen) {
+    if (state == MInputMethod::OnScreen) {
         svs = sViews;
     }
     return svs;
 }
 
-void DummyInputMethod3::setActiveSubView(const QString &sVId, MIMHandlerState state)
+void DummyInputMethod3::setActiveSubView(const QString &sVId, MInputMethod::HandlerState state)
 {
     qDebug() << __PRETTY_FUNCTION__;
-    if (state == OnScreen) {
+    if (state == MInputMethod::OnScreen) {
         foreach (const MInputMethodBase::MInputMethodSubView &sv, sViews) {
             if (sv.subViewId == sVId) {
                 activeSView = sVId;
@@ -58,10 +59,10 @@ void DummyInputMethod3::setActiveSubView(const QString &sVId, MIMHandlerState st
     }
 }
 
-QString DummyInputMethod3::activeSubView(MIMHandlerState state) const
+QString DummyInputMethod3::activeSubView(MInputMethod::HandlerState state) const
 {
     qDebug() << __PRETTY_FUNCTION__;
-    if (state == OnScreen)
+    if (state == MInputMethod::OnScreen)
         return activeSView;
     else
         return QString();

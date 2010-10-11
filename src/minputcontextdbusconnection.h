@@ -23,6 +23,7 @@
 #include <QEvent>
 
 #include "minputcontextconnection.h"
+#include "minputmethodnamespace.h"
 
 class QPoint;
 class QString;
@@ -50,7 +51,9 @@ public:
     bool isValid();
 
     //! \reimp
-    virtual void sendPreeditString(const QString &string, PreeditFace preeditFace = PreeditDefault);
+    virtual void sendPreeditString(const QString &string,
+                                   MInputMethod::PreeditFace preeditFace
+                                    = MInputMethod::PreeditDefault);
     virtual void sendCommitString(const QString &string);
     virtual void sendKeyEvent(const QKeyEvent &keyEvent, bool signalOnly=false);
     virtual void notifyImInitiatedHiding();

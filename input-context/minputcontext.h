@@ -23,7 +23,7 @@
 #include <QPointer>
 
 #include <mnamespace.h>
-#include <mpreeditface.h>
+#include <minputmethodnamespace.h>
 
 class MPreeditStyleContainer;
 #ifdef QT_DBUS
@@ -87,7 +87,7 @@ public:
     // \brief Updates preedit string of the current focus widget
     // \param string    The new string
     // \param preeditFace Selects style for preedit string
-    virtual void updatePreedit(const QString &string, PreeditFace preeditFace);
+    virtual void updatePreedit(const QString &string, MInputMethod::PreeditFace preeditFace);
 
     //! \brief Sends a non-printable key event. Parameters as in QKeyEvent constructor
     virtual void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,

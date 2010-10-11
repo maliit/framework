@@ -9,7 +9,7 @@
 #include <mimpluginmanager.h>
 #include <minputmethodplugin.h>
 
-Q_DECLARE_METATYPE(MIMHandlerState);
+Q_DECLARE_METATYPE(MInputMethod::HandlerState);
 
 namespace
 {
@@ -85,8 +85,8 @@ void Ut_MIMSettingsConf::init()
     MImSettingsConf::instance().setActivePlugin(pluginName);
     MImSettingsConf::instance().setActiveSubView(QString("dummyimsv1"));
     handleMessages();
-    QCOMPARE(manager->activePluginsName(OnScreen), pluginName);
-    QCOMPARE(manager->activeSubView(OnScreen), QString("dummyimsv1"));
+    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginName);
+    QCOMPARE(manager->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
 }
 
 void Ut_MIMSettingsConf::cleanup()
@@ -111,21 +111,21 @@ void Ut_MIMSettingsConf::testPlugins()
 void Ut_MIMSettingsConf::testSetActivePlugin()
 {
     QCOMPARE(MImSettingsConf::instance().plugins().size(), 2);
-    QCOMPARE(manager->activePluginsName(OnScreen), pluginName);
+    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginName);
 
     MImSettingsConf::instance().setActivePlugin(pluginName3);
     handleMessages();
     MGConfItem handlerItem(PluginRoot + "onscreen");
     QCOMPARE(handlerItem.value().toString(), pluginName3);
     QVERIFY(manager->activePluginsNames().size() == 1);
-    QCOMPARE(manager->activePluginsName(OnScreen), pluginName3);
+    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginName3);
 
     MImSettingsConf::instance().setActivePlugin(pluginName, QString("dummyimsv2"));
     handleMessages();
     QCOMPARE(handlerItem.value().toString(), pluginName);
     QVERIFY(manager->activePluginsNames().size() == 1);
-    QCOMPARE(manager->activePluginsName(OnScreen), pluginName);
-    QCOMPARE(manager->activeSubView(OnScreen), QString("dummyimsv2"));
+    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginName);
+    QCOMPARE(manager->activeSubView(MInputMethod::OnScreen), QString("dummyimsv2"));
 
 }
 

@@ -23,6 +23,7 @@
 
 #include "minputmethodbase.h"
 #include "minputmethodsettingsbase.h"
+#include "minputmethodnamespace.h"
 
 class MInputContextConnection;
 class MInputMethodBase;
@@ -64,7 +65,7 @@ public:
      * WARNING: If result is empty then this plugin will not be loaded
      * during startup.
      */
-    virtual QSet<MIMHandlerState> supportedStates() const = 0;
+    virtual QSet<MInputMethod::HandlerState> supportedStates() const = 0;
 };
 
 

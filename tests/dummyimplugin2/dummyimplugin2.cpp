@@ -24,11 +24,11 @@ MInputMethodSettingsBase *DummyImPlugin2::createInputMethodSettings()
     return 0;
 }
 
-QSet<MIMHandlerState> DummyImPlugin2::supportedStates() const
+QSet<MInputMethod::HandlerState> DummyImPlugin2::supportedStates() const
 {
-    QSet<MIMHandlerState> result;
+    QSet<MInputMethod::HandlerState> result;
 
-    result << OnScreen << Hardware << Accessory;
+    result << MInputMethod::OnScreen << MInputMethod::Hardware << MInputMethod::Accessory;
     return result;
 }
 

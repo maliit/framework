@@ -98,14 +98,15 @@ void Ut_MIMSettingsDialog::cleanup()
 
 void Ut_MIMSettingsDialog::testShowAvailableSubViewList()
 {
-    QString activePlugin = pluginMgr->activePluginsName(OnScreen);
+    QString activePlugin = pluginMgr->activePluginsName(MInputMethod::OnScreen);
     QVERIFY(activePlugin == PluginName);
 
-    QMap<QString, QString> availableSubviews = pluginMgr->availableSubViews(activePlugin, OnScreen);
+    QMap<QString, QString> availableSubviews = pluginMgr->availableSubViews(activePlugin,
+                                                                            MInputMethod::OnScreen);
     QCOMPARE(availableSubviews.count(), 2);
 
-    pluginMgr->setActiveSubView(QString("dummyimsv2"), OnScreen);
-    QCOMPARE(pluginMgr->activeSubView(OnScreen), QString("dummyimsv2"));
+    pluginMgr->setActiveSubView(QString("dummyimsv2"), MInputMethod::OnScreen);
+    QCOMPARE(pluginMgr->activeSubView(MInputMethod::OnScreen), QString("dummyimsv2"));
 
     subject->showAvailableSubViewList();
 
@@ -133,7 +134,7 @@ void Ut_MIMSettingsDialog::testSetActiveView()
     QCOMPARE(items.count(), 1);
     subject->availableSubViewList->click(items[0]->index());
 
-    QCOMPARE(pluginMgr->activeSubView(OnScreen), QString("dummyimsv2"));
+    QCOMPARE(pluginMgr->activeSubView(MInputMethod::OnScreen), QString("dummyimsv2"));
 }
 
 void Ut_MIMSettingsDialog::testRetranslateUi()

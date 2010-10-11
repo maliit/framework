@@ -22,8 +22,7 @@
 #include <QVariant>
 #include <QMap>
 #include <MNamespace>
-#include "mimhandlerstate.h"
-#include "mimdirection.h"
+
 #include "minputmethodnamespace.h"
 
 class QRegion;
@@ -158,7 +157,7 @@ public:
      * disconnected
      * \param state set of current states for this plugin
      */
-    virtual void setState(const QSet<MIMHandlerState> &state);
+    virtual void setState(const QSet<MInputMethod::HandlerState> &state);
 
     /*! \brief This method is called when target client is changed.
      */
@@ -169,7 +168,7 @@ public:
      * \param direction Switching direction
      * \param enableAnimation Contains true if swipe should be animated
      */
-    virtual void switchContext(M::InputMethodSwitchDirection direction, bool enableAnimation);
+    virtual void switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation);
 
     /*!
      * \brief Sends input mode indicate state.
@@ -184,7 +183,8 @@ public:
      * Implement this function to return the subviews which are supported by this input
      * method for the specified state. The subview titles will be shown in the input method settings.
      */
-    virtual QList<MInputMethodSubView> subViews(MIMHandlerState state = OnScreen) const;
+    virtual QList<MInputMethodSubView> subViews(MInputMethod::HandlerState state
+                                                 = MInputMethod::OnScreen) const;
 
     /*!
      * \brief Sets \a subViewId as the active subview for \a state.
@@ -195,7 +195,8 @@ public:
      *  this method when active subview for specified state is changed from the input method
      *  settings.
      */
-    virtual void setActiveSubView(const QString &subViewId, MIMHandlerState state = OnScreen);
+    virtual void setActiveSubView(const QString &subViewId,
+                                  MInputMethod::HandlerState state = MInputMethod::OnScreen);
 
     /*!
      * \brief Returns current active subview ID for \a state.
@@ -203,7 +204,7 @@ public:
      *  Implement this method to inform input method plugins manager about current active subview
      *  for specified state.
      */
-    virtual QString activeSubView(MIMHandlerState state = OnScreen) const;
+    virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
 
 signals:
     /*!
@@ -228,7 +229,7 @@ signals:
     /*!
      * Inform that plugin should be switched in according to \a direction.
      */
-    void pluginSwitchRequired(M::InputMethodSwitchDirection direction);
+    void pluginSwitchRequired(MInputMethod::SwitchDirection direction);
 
     /*!
      * Inform that active plugin should be replaced with specified one.
@@ -254,7 +255,8 @@ signals:
      * \param state the state which \a subViewId belongs to.
      * Emitted when plugin changes the active subview for specified state.
      */
-    void activeSubViewChanged(const QString &subViewId, MIMHandlerState state = OnScreen);
+    void activeSubViewChanged(const QString &subViewId,
+                              MInputMethod::HandlerState state = MInputMethod::OnScreen);
 
 private:
     Q_DISABLE_COPY(MInputMethodBase)
