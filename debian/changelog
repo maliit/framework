@@ -1,9 +1,8 @@
-meego-im-framework (0.19.21~1) unstable; urgency=low
+meego-im-framework (0.19.20-2) unstable; urgency=low
 
-  * [UNRELEASED]
   * Fixes: NB#184023 - VKB shown for a while in front of unlock-UI
 
- -- huaming wang <huaming.wang@nokia.com>  Mon, 27 Sep 2010 11:28:54 +0300
+ -- Kimmo Surakka <kimmo.surakka@nokia.com>  Mon, 11 Oct 2010 14:48:54 +0300
 
 meego-im-framework (0.19.20-1) unstable; urgency=low
 
