@@ -1,3 +1,11 @@
+0.19.22
+========
+
+* API changes
+ - moved contents from mpreeditface.h, mimdirection.h and mimhandlerstate.h
+   to minputmethodnamespace.h using "MInputMethod" namespace.
+   Also renamed MInputMethodSwitchDirection -> SwitchDirection.
+
 0.19.21
 ========
 

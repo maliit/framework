@@ -1,6 +1,7 @@
 meego-im-framework (0.19.22~1) unstable; urgency=low
 
-  * [UNRELEASE]
+  * [UNRELEASED]
+  * Gathered enums from multiple files to minputmethodnamespace.h
 
  -- huaming wang <huaming.wang@nokia.com>  Tue, 12 Oct 2010 16:41:40 +0300
 
