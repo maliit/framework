@@ -2,7 +2,7 @@ unix {
      M_PREFIX = /usr
      M_INSTALL_BIN = $$M_PREFIX/bin
      M_INSTALL_LIBS = $$M_PREFIX/lib
-     M_INSTALL_HEADERS = $$M_PREFIX/include/meegotouch
+     M_INSTALL_HEADERS = $$M_PREFIX/include
 }
 mac {
      # Do mac stuff here
@@ -11,12 +11,12 @@ mac {
     INCLUDEPATH += include/
     M_INSTALL_BIN = $$M_PREFIX/bin/
     M_INSTALL_LIBS = $$M_PREFIX/lib/
-    M_INSTALL_HEADERS = $$M_PREFIX/include/meegotouch/
+    M_INSTALL_HEADERS = $$M_PREFIX/include
 }
 win32 {
      # Do win32 stuff here
      M_PREFIX = /usr
      M_INSTALL_BIN = $$M_PREFIX/bin/
      M_INSTALL_LIBS = $$M_PREFIX/lib/
-     M_INSTALL_HEADERS = $$M_PREFIX/include/meegotouch/
+     M_INSTALL_HEADERS = $$M_PREFIX/include
 }
