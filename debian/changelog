@@ -1,10 +1,9 @@
-meego-im-framework (0.19.21~1) unstable; urgency=low
+meego-im-framework (0.19.21-1) unstable; urgency=low
 
-  * [UNRELEASED]
   * Changed VKB to always emit a signal from key press and release
   * Fixes: NB#184023 - VKB shown for a while in front of unlock-UI
 
- -- Kimmo Surakka <kimmo.surakka@nokia.com>  Thu, 07 Oct 2010 15:59:30 +0300
+ -- huaming wang <huaming@wuhan>  Tue, 12 Oct 2010 12:47:45 +0300
 
 meego-im-framework (0.19.20-1) unstable; urgency=low
 
