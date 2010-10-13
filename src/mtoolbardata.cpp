@@ -78,6 +78,7 @@ namespace
     const QString ImTagItems                 = QString::fromLatin1("items");
     const QString ImTagItem                  = QString::fromLatin1("item");
     const QString ImTagHighlighted           = QString::fromLatin1("highlighted");
+    const QString ImTagInputMethod           = QString::fromLatin1("input-method");
 
     const QChar NameSeparator(',');
 }
@@ -214,11 +215,29 @@ void MToolbarDataPrivate::parseAttribute(SetInt setter, const QDomElement &eleme
     }
 }
 
-void MToolbarDataPrivate::parseTagToolbar(const QDomElement &element, MTBParseParameters &params)
+void MToolbarDataPrivate::parseTagInputMethod(const QDomElement &element, MTBParseParameters &params)
 {
     visible = (element.attribute(ImTagVisible, ImTagVisibleDefValue) == "true") ? true : false;
-    refusedNames = element.attribute(ImTagRefuse).split(NameSeparator);
+    if (element.hasAttribute(ImTagRefuse)) {
+        refusedNames = element.attribute(ImTagRefuse).split(NameSeparator);
+    }
     params.version = element.attribute(ImTagVersion, ImTagVersionDefValue).toInt();
+
+    const MTBParseStructure parser(ImTagToolbar, &MToolbarDataPrivate::parseTagToolbar);
+    parseChildren(element, params, &parser);
+}
+
+void MToolbarDataPrivate::parseTagToolbar(const QDomElement &element, MTBParseParameters &params)
+{
+    if (element.hasAttribute(ImTagVisible)) {
+        visible = (element.attribute(ImTagVisible) == "true") ? true : false;
+    }
+    if (element.hasAttribute(ImTagRefuse)) {
+        refusedNames = element.attribute(ImTagRefuse).split(NameSeparator);
+    }
+    if (element.hasAttribute(ImTagVersion)) {
+        params.version = element.attribute(ImTagVersion).toInt();
+    }
 
     if (params.version == 1) {
         const MTBParseStructure parsers[2] = {
@@ -474,7 +493,7 @@ void MToolbarDataPrivate::parseTagItem(const QDomElement &element, MTBParseParam
 }
 
 void MToolbarDataPrivate::parseChildren(const QDomElement &element, MTBParseParameters &params,
-                                 const MTBParseStructure *parserList, int parserCount)
+                                        const MTBParseStructure *parserList, int parserCount)
 {
     Q_ASSERT(parserCount > 0);
 
@@ -482,21 +501,27 @@ void MToolbarDataPrivate::parseChildren(const QDomElement &element, MTBParsePara
             child = child.nextSibling()) {
         if (child.isElement()) {
             const QDomElement childElement = child.toElement();
-            bool found = false;
-            for (int i = 0; i < parserCount; ++i) {
-                if (childElement.tagName() == parserList[i].tagName) {
-                    (this->*(parserList[i].parser))(childElement, params);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                qWarning() << __PRETTY_FUNCTION__ << "Unexpected tag" << childElement.tagName() << "on line"
-                           << childElement.lineNumber() << "column" << childElement.columnNumber()
-                           << "in toolbar file" << params.fileName;
-                params.validTag = false;
-            }
+            parseDomElement(childElement, params, parserList, parserCount);
         }
+    }
+}
+
+void MToolbarDataPrivate::parseDomElement(const QDomElement &element, MTBParseParameters &params,
+                                          const MTBParseStructure *parserList, int parserCount)
+{
+    bool found = false;
+    for (int i = 0; i < parserCount; ++i) {
+        if (element.tagName() == parserList[i].tagName) {
+            (this->*(parserList[i].parser))(element, params);
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        qWarning() << __PRETTY_FUNCTION__ << "Unexpected tag" << element.tagName() << "on line"
+            << element.lineNumber() << "column" << element.columnNumber()
+            << "in toolbar file" << params.fileName;
+        params.validTag = false;
     }
 }
 
@@ -548,12 +573,17 @@ bool MToolbarData::loadToolbarXml(const QString &fileName)
 
     const QDomElement root = doc.documentElement();
     //check the root tag
-    if (!root.isNull() && root.tagName() != ImTagToolbar) {
+    if (!root.isNull() && root.tagName() != ImTagToolbar && root.tagName() != ImTagInputMethod) {
         qWarning() << __PRETTY_FUNCTION__
                    << "wrong format xml" << absoluteFileName << "for virtual keyboard tool bar";
         valid = false;
     } else {
-        d->parseTagToolbar(root, params);
+        const MTBParseStructure parsers[2] = {
+            MTBParseStructure(ImTagToolbar,     &MToolbarDataPrivate::parseTagToolbar),
+            MTBParseStructure(ImTagInputMethod, &MToolbarDataPrivate::parseTagInputMethod),
+        };
+
+        d->parseDomElement(root, params, parsers, 2);
         valid = params.validTag;
     }
 

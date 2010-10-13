@@ -215,7 +215,7 @@ void Ut_MToolbarData::testRefuseAttribute_data()
     QTest::addColumn<QStringList>("expectedValue");
 
     QTest::newRow("toolbar1") << Toolbar1 << (QStringList() << "_close");
-    QTest::newRow("toolbar2") << Toolbar2 << (QStringList() << "");
+    QTest::newRow("toolbar2") << Toolbar2 << QStringList();
     QTest::newRow("toolbar3") << Toolbar3 << (QStringList() << "_close" << "_copypaste");
 }
 

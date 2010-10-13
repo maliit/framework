@@ -89,6 +89,9 @@ public:
     void parseAttribute(SetInt setter, const QDomElement &element,
                         const QString &attributeName, const MTBParseParameters &params);
 
+    //! Parse XML tag for input method.
+    void parseTagInputMethod(const QDomElement &element, MTBParseParameters &params);
+
     //! Parse XML tag for toolbar.
     void parseTagToolbar(const QDomElement &element, MTBParseParameters &params);
 
@@ -153,6 +156,15 @@ public:
     void parseChildren(const QDomElement &element, MTBParseParameters &params,
                        const MTBParseStructure *parserList, int parserCount = 1);
 
+    /*!
+     * \brief Helper method for parsing DOM element
+     * \param element Element to be parsed
+     * \param params Parsing state
+     * \param parserList, a TBParseStructure array.
+     * \param parserCount, the number of TBParseStructure in the array.
+     */
+    void parseDomElement(const QDomElement &element, MTBParseParameters &params,
+                         const MTBParseStructure *parserList, int parserCount = 1);
 public:
     MToolbarData *q_ptr;
 

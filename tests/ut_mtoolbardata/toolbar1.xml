@@ -1,44 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE DUI_IM_TOOLBAR_WIDGET SYSTEM 'ImToolbarDTD.dtd'>
-<toolbar version="1" visible="true" refuse="_close">
-    <items>
-        <button name="test1" group="group1" showon="always" alignment="right" icon="icon1" text="text1" text_id="id1" highlighted="true">
-            <actions>
-                <sendstring string="sendstring1" />
-                <hidegroup group="group3" />
-            </actions>
-        </button>
-        <button name="test2" size="50" group="group2" showon="selectedtext" alignment="center" icon="icon2" text="text2" text_id="id2" toggle="true">
-            <actions>
-                <copy />
-                <showgroup group="group3" />
-                <sendkeysequence keysequence="Ctrl+C" />
-            </actions>
-        </button>
-        <button name="test3" group="group3" showon="always" alignment="left" icon_id="icon3" text="text3" text_id="id3">
-            <actions>
-                <paste />
-            </actions>
-        </button>
-        <label name="test4" text="text4">
-        </label>
-        <button name="test5" text="test5">
-            <actions>
-                <paste />
-            </actions>
-        </button>
-    </items>
-    <layout orientation="landscape">
-        <item name="test1" />
-        <item name="test2" />
-        <item name="test3" />
-        <item name="test4" />
-    </layout>
-    <layout orientation="portrait">
-        <item name="test2" />
-        <item name="test3" />
-        <item name="test4" />
-        <item name="test5" />
-    </layout>
-</toolbar>
+<input-method version="1" visible="true" refuse="_close">
+    <toolbar>
+        <items>
+            <button name="test1" group="group1" showon="always" alignment="right" icon="icon1" text="text1" text_id="id1" highlighted="true">
+                <actions>
+                    <sendstring string="sendstring1" />
+                    <hidegroup group="group3" />
+                </actions>
+            </button>
+            <button name="test2" size="50" group="group2" showon="selectedtext" alignment="center" icon="icon2" text="text2" text_id="id2" toggle="true">
+                <actions>
+                    <copy />
+                    <showgroup group="group3" />
+                    <sendkeysequence keysequence="Ctrl+C" />
+                </actions>
+            </button>
+            <button name="test3" group="group3" showon="always" alignment="left" icon_id="icon3" text="text3" text_id="id3">
+                <actions>
+                    <paste />
+                </actions>
+            </button>
+            <label name="test4" text="text4">
+            </label>
+            <button name="test5" text="test5">
+                <actions>
+                    <paste />
+                </actions>
+            </button>
+        </items>
+        <layout orientation="landscape">
+            <item name="test1" />
+            <item name="test2" />
+            <item name="test3" />
+            <item name="test4" />
+        </layout>
+        <layout orientation="portrait">
+            <item name="test2" />
+            <item name="test3" />
+            <item name="test4" />
+            <item name="test5" />
+        </layout>
+    </toolbar>
+</input-method>
 
