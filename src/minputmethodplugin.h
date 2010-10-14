@@ -70,6 +70,6 @@ public:
 
 
 Q_DECLARE_INTERFACE(MInputMethodPlugin,
-                    "com.nokia.maemo.MInputMethodPlugin/1.0")
+                    "com.meego.meegoimframework.MInputMethodPlugin/1.0")
 
 #endif
