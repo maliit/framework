@@ -60,7 +60,7 @@ public:
      * "/usr/share/meegoimframework/imtoolbars/".
      * \param fileName Name of the xml file which contains the content of a custom toolbar.
      */
-    bool loadNokiaToolbarXml(const QString &fileName);
+    bool loadToolbarXml(const QString &fileName);
 
     //! Return all items in this toolbar
     QList<QSharedPointer<MToolbarItem> > items() const;

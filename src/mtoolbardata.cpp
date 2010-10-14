@@ -133,7 +133,7 @@ MToolbarData::~MToolbarData()
     delete d_ptr;
 }
 
-bool MToolbarData::loadNokiaToolbarXml(const QString &fileName)
+bool MToolbarData::loadToolbarXml(const QString &fileName)
 {
     Q_D(MToolbarData);
     QString absoluteFileName = fileName;

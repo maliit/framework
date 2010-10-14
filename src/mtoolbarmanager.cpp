@@ -118,7 +118,7 @@ QSharedPointer<MToolbarData> MToolbarManager::createToolbar(const QString &name)
 {
     // load a toolbar
     QSharedPointer<MToolbarData> toolbar(new MToolbarData);
-    const bool loaded = toolbar->loadNokiaToolbarXml(name);
+    const bool loaded = toolbar->loadToolbarXml(name);
 
     if (!loaded) {
         qWarning() << "ToolbarsManager: toolbar load error: "
