@@ -57,7 +57,7 @@ public:
      * \brief Load a custom toolbar's content from \a fileName xml file.
      * \a fileName is the xml file name (with ".xml" postfix). And \a fileName could have absolute path.
      * If no absolute path specified, then it will be taken from the default path
-     * "/usr/share/meegotouch/imtoolbars/".
+     * "/usr/share/meegoimframework/imtoolbars/".
      * \param fileName Name of the xml file which contains the content of a custom toolbar.
      */
     bool loadNokiaToolbarXml(const QString &fileName);

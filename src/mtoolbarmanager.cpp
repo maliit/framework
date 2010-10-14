@@ -24,7 +24,7 @@
 #include <QDebug>
 
 namespace {
-    const QString StandardToolbar = QString::fromLatin1("/usr/share/meegotouch/imtoolbars/imframework/standard.xml");
+    const QString StandardToolbar = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/standard.xml");
 }
 
 MToolbarManager *MToolbarManager::toolbarMgrInstance = 0;
