@@ -42,9 +42,9 @@ When a handler is activated, the following will be carried out:
 \subsubsection SettingsHandler Handler 
 Plugin Manager selects the active plugin based on the settings. GConf stores the settings of the plugin names which will be selected whenever the handler or language is changed or run in the first time. The settings hierarchy looks like this:
 
-/code
+\code
 /M/InputMethods/Plugins/Handler/<HANDLER> : <PLUGIN-NAME>
-/endcode
+\endcode
 
 \subsection PluginMap Plugin Map
 When input method server is started, Plugin Manager reads the available plugins in the system and collects the handler information from the plugins. It then generates an in-memory map to be used whenever the handler is changed. The map is refreshed whenever a new plugin is installed or removed.
