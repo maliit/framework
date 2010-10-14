@@ -1,11 +1,10 @@
-meego-im-framework (0.19.22~1) unstable; urgency=low
+meego-im-framework (0.19.22-1) unstable; urgency=low
 
-  * [UNRELEASED]
   * Gathered enums from multiple files to minputmethodnamespace.h
   * Fixes: NB#195548 - COREWEB: /usr/bin/meego-im-uiserver 'QDBusAbstractInterface::isValid MInputMethodBasePrivate::_q_handleIndicatorServiceChanged MInputMethodBase::qt_metacall MKeyboardHost::qt_metacall'
   * Moved im framework stuff out of meegotouch dir
 
- -- huaming wang <huaming.wang@nokia.com>  Tue, 12 Oct 2010 16:41:40 +0300
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Thu, 14 Oct 2010 18:33:04 +0300
 
 meego-im-framework (0.19.21-1) unstable; urgency=low
 
