@@ -134,7 +134,7 @@ QString MInputMethodBasePrivate::indicatorIconID(MInputMethodBase::InputModeIndi
 
 MInputMethodBase::MInputMethodBase(MInputContextConnection *icConnection, QObject *parent)
     : QObject(parent),
-      d(new MInputMethodBasePrivate(icConnection, this))
+      d_ptr(new MInputMethodBasePrivate(icConnection, this))
 {
     // nothing
 }
@@ -142,13 +142,15 @@ MInputMethodBase::MInputMethodBase(MInputContextConnection *icConnection, QObjec
 
 MInputMethodBase::~MInputMethodBase()
 {
-    delete d;
+    delete d_ptr;
 }
 
 
 MInputContextConnection *
 MInputMethodBase::inputContextConnection() const
 {
+    Q_D(const MInputMethodBase);
+
     return d->icConnection;
 }
 
@@ -237,6 +239,8 @@ void MInputMethodBase::switchContext(MInputMethod::SwitchDirection direction, bo
 
 void MInputMethodBase::sendInputModeIndicator(MInputMethodBase::InputModeIndicator mode)
 {
+    Q_D(MInputMethodBase);
+
     if (d->indicatorIface) {
         d->indicatorIface->call(QDBus::NoBlock, "setIconID", d->indicatorIconID(mode));
     }
