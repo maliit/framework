@@ -27,7 +27,7 @@
 
 namespace
 {
-    const QString ToolbarConfigurationPath   = QString::fromLatin1("/usr/share/meegotouch/imtoolbars/");
+    const QString ToolbarConfigurationPath   = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/");
 
     const QString ImTagToolbar               = QString::fromLatin1("toolbar");
     const QString ImTagLocked                = QString::fromLatin1("locked");
@@ -133,7 +133,7 @@ MToolbarData::~MToolbarData()
     delete d_ptr;
 }
 
-bool MToolbarData::loadNokiaToolbarXml(const QString &fileName)
+bool MToolbarData::loadToolbarXml(const QString &fileName)
 {
     Q_D(MToolbarData);
     QString absoluteFileName = fileName;

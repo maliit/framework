@@ -56,7 +56,7 @@ void Ut_MToolbarData::testLoadXML()
     QSharedPointer<const MToolbarRow> row;
     QSharedPointer<MToolbarItem> item;
 
-    ok = subject->loadNokiaToolbarXml(Toolbar1);
+    ok = subject->loadToolbarXml(Toolbar1);
     QVERIFY2(ok, "toolbar1.xml was not loaded correctly");
 
     QVERIFY(subject->locked() == true);
@@ -168,7 +168,7 @@ void Ut_MToolbarData::testLandspaceOnly()
     bool ok;
     QSharedPointer<const MToolbarRow> row;
 
-    ok = subject->loadNokiaToolbarXml(Toolbar2);
+    ok = subject->loadToolbarXml(Toolbar2);
     QVERIFY2(ok, "toolbar2.xml was not loaded correctly");
 
     QVERIFY(subject->locked() == true);
@@ -196,7 +196,7 @@ void Ut_MToolbarData::testLoadOldXML()
     QVERIFY2(QFile(Toolbar3).exists(), "toolbar3.xml does not exist");
     bool ok;
 
-    ok = subject->loadNokiaToolbarXml(Toolbar3);
+    ok = subject->loadToolbarXml(Toolbar3);
     QVERIFY2(ok, "toolbar3.xml was not loaded correctly");
 
     QVERIFY(subject->isVisible() == true);
@@ -215,7 +215,7 @@ void Ut_MToolbarData::testMinimalXML()
 {
     bool ok;
 
-    ok = subject->loadNokiaToolbarXml(Toolbar4);
+    ok = subject->loadToolbarXml(Toolbar4);
     QVERIFY2(ok, "toolbar4.xml was not loaded correctly");
 
     QVERIFY(subject->isVisible() == false);
@@ -239,7 +239,7 @@ void Ut_MToolbarData::testRefuseAttribute()
     QVERIFY2(QFile(fileName).exists(), "xml file does not exist");
     bool ok;
 
-    ok = subject->loadNokiaToolbarXml(fileName);
+    ok = subject->loadToolbarXml(fileName);
     QVERIFY2(ok, "toolbar was not loaded correctly");
 
     QCOMPARE(subject->refusedNames(), expectedValue);
@@ -259,7 +259,7 @@ void Ut_MToolbarData::testAddItem()
     ok = subject->append(QSharedPointer<MToolbarRow>(new MToolbarRow), button);
     QVERIFY2(!ok, "Item should not be added to non-constructed toolbar");
 
-    ok = subject->loadNokiaToolbarXml(Toolbar1);
+    ok = subject->loadToolbarXml(Toolbar1);
     QVERIFY2(ok, "toolbar1.xml was not loaded correctly");
 
     QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);

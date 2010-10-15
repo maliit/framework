@@ -24,7 +24,7 @@
 #include <QDebug>
 
 namespace {
-    const QString StandardToolbar = QString::fromLatin1("/usr/share/meegotouch/imtoolbars/imframework/standard.xml");
+    const QString StandardToolbar = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/standard.xml");
 }
 
 MToolbarManager *MToolbarManager::toolbarMgrInstance = 0;
@@ -118,7 +118,7 @@ QSharedPointer<MToolbarData> MToolbarManager::createToolbar(const QString &name)
 {
     // load a toolbar
     QSharedPointer<MToolbarData> toolbar(new MToolbarData);
-    const bool loaded = toolbar->loadNokiaToolbarXml(name);
+    const bool loaded = toolbar->loadToolbarXml(name);
 
     if (!loaded) {
         qWarning() << "ToolbarsManager: toolbar load error: "

@@ -6,6 +6,8 @@
    to minputmethodnamespace.h using "MInputMethod" namespace.
    Also renamed MInputMethodSwitchDirection -> SwitchDirection.
 
+- Moved headers out of meegotouch dir to /usr/include/meegoimframework/
+
 0.19.21
 ========
 
