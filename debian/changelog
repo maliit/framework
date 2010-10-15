@@ -1,3 +1,9 @@
+meego-im-framework (0.19.24~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- huaming wang <huaming.wang@nokia.com>  Fri, 15 Oct 2010 11:07:40 +0300
+
 meego-im-framework (0.19.23-1) unstable; urgency=low
 
   * Bump up version
