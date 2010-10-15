@@ -1,6 +1,10 @@
 meego-im-framework (0.19.24~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Toolbar is single line
+  * Copy/paste button is on the left side of toolbar
+  * Toolbar is rectangular
+  * Custom toolbar buttons aligned in the center
 
  -- huaming wang <huaming.wang@nokia.com>  Fri, 15 Oct 2010 11:07:40 +0300
 
