@@ -1,6 +1,7 @@
 meego-im-framework (0.19.24~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Fixes: NB#198057 - COREWEB: /usr/bin/meego-im-uiserver '__sincosf'
   * Toolbar is single line
   * Copy/paste button is on the left side of toolbar
   * Toolbar is rectangular
