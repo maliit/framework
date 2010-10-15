@@ -34,7 +34,7 @@ MPlainWindow *MPlainWindow::instance()
 }
 
 MPlainWindow::MPlainWindow(QWidget *parent) :
-    MWindow(new MSceneManager, parent)
+    MWindow(parent)
 {
     if (m_instance)
         qFatal("There can be only one instance of MPlainWindow");

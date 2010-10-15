@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     QSize sceneSize = view->visibleSceneSize(M::Landscape);
     int w = sceneSize.width();
     int h = sceneSize.height();
-    view->scene()->setSceneRect(0, 0, w, h);
+    view->setSceneRect(0, 0, w, h);
 
     widget.resize(sceneSize);
 
