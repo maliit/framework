@@ -52,3 +52,8 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.depends += lib$${TARGET}.so
 
+QMAKE_EXTRA_TARGETS += mdbusglibicconnectionserviceglue.h
+mdbusglibicconnectionserviceglue.h.commands = \
+    dbus-binding-tool --prefix=m_dbus_glib_input_context_adaptor --mode=glib-server \
+        --output=mdbusglibicconnectionserviceglue.h minputmethodcontext1interface.xml
+mdbusglibicconnectionserviceglue.h.depends = minputmethodcontext1interface.xml
