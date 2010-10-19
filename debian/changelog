@@ -1,3 +1,9 @@
+meego-im-framework (0.19.25~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 19 Oct 2010 13:45:58 +0300
+
 meego-im-framework (0.19.24-1) unstable; urgency=low
 
   * Fixes: NB#198057 - COREWEB: /usr/bin/meego-im-uiserver '__sincosf'
