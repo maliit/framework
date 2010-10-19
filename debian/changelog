@@ -1,6 +1,7 @@
 meego-im-framework (0.19.25~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Support configurable domain button for URL/Email toolbars
 
  -- huaming wang <huaming.wang@nokia.com>  Tue, 19 Oct 2010 13:45:58 +0300
 
