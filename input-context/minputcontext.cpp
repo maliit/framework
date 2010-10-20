@@ -189,8 +189,9 @@ bool MInputContext::event(QEvent *event)
                                     << injectionEvent->preedit();
             // send the injected preedit to input method server and back to the widget with proper
             // styling
-            imServer->setPreedit(injectionEvent->preedit());
+            // Note: plugin could change the preedit style in imServer->setPreedit().
             updatePreedit(injectionEvent->preedit(), MInputMethod::PreeditDefault);
+            imServer->setPreedit(injectionEvent->preedit());
 
             event->accept();
             return true;
