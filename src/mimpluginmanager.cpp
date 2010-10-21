@@ -324,6 +324,7 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
         MToolbarManager::instance().toolbarData(toolbarId);
     switchedTo->setToolbar(toolbar);
     switchedTo->show();
+    switchedTo->showLanguageNotification();
 }
 
 

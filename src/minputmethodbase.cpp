@@ -267,4 +267,9 @@ QString MInputMethodBase::activeSubView(MInputMethod::HandlerState state) const
     return QString();
 }
 
+void MInputMethodBase::showLanguageNotification()
+{
+    // empty default implementation
+}
+
 #include "moc_minputmethodbase.cpp"

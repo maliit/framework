@@ -206,6 +206,9 @@ public:
      */
     virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
 
+    //! Show notification informing about current language
+    virtual void showLanguageNotification();
+
 signals:
     /*!
      * Inform that the screen area covered by the input method has been changed.
