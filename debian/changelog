@@ -1,3 +1,9 @@
+meego-im-framework (0.19.26~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Gibran Rodriguez <ext-gibran.rodriguez@nokia.com>  Fri, 22 Oct 2010 10:44:46 +0300
+
 meego-im-framework (0.19.25-1) unstable; urgency=low
 
   * Support configurable domain button for URL/Email toolbars
