@@ -20,9 +20,9 @@ QStringList DummyImPlugin::languages() const
 }
 
 MInputMethodBase *
-DummyImPlugin::createInputMethod(MInputContextConnection *icConnection)
+DummyImPlugin::createInputMethod(MAbstractInputMethodHost *imHost)
 {
-    return new DummyInputMethod(icConnection);
+    return new DummyInputMethod(imHost);
 }
 
 MInputMethodSettingsBase *DummyImPlugin::createInputMethodSettings()

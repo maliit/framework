@@ -8,8 +8,8 @@ TARGET = meegoimframework
 HEADERSINSTALL = \
         minputmethodplugin.h \
         minputmethodbase.h \
+        mabstractinputmethodhost.h \
         mimpluginmanager.h \
-        minputcontextconnection.h \
         mplainwindow.h \
         mtoolbaritem.h \
         mtoolbardata.h \
@@ -20,6 +20,8 @@ HEADERSINSTALL = \
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
         mimapplication.h \
+        minputcontextconnection.h \
+        minputmethodhost.h \
         mtoolbardata_p.h \
         mtoolbaritem_p.h \
         mtoolbarmanager.h \
@@ -29,6 +31,8 @@ HEADERS += $$HEADERSINSTALL \
 
 SOURCES += mimpluginmanager.cpp \
         minputmethodbase.cpp \
+        mabstractinputmethodhost.cpp \
+        minputmethodhost.cpp \
         minputcontextconnection.cpp \
         mplainwindow.cpp \
         mimapplication.cpp \

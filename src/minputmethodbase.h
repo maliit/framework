@@ -29,14 +29,14 @@ class QRegion;
 class QPoint;
 class QRect;
 class QGraphicsScene;
-class MInputContextConnection;
+class MAbstractInputMethodHost;
 class MInputMethodBasePrivate;
 class MToolbarData;
 
 /*!
  * \brief MInputMethodBase is a base class for input method servers.
  * 
- * It defines the interface which input context connection classes can use for
+ * It defines the interface which input method framework can use for
  * passing commands received from the applications
  */
 class MInputMethodBase: public QObject
@@ -86,15 +86,15 @@ public:
     };
 
     /*! Constructor for input method base
-     * \param icConnection input context connection class, not owned by input method base
+     * \param imHost input method host instace, not owned by input method base
      */
-    MInputMethodBase(MInputContextConnection *icConnection, QObject *parent = 0);
+    MInputMethodBase(MAbstractInputMethodHost *imHost, QObject *parent = 0);
 
     ~MInputMethodBase();
 
-    /*! \brief Returns input context connection associated with this input method base
+    /*! \brief Returns input method host
      */
-    MInputContextConnection *inputContextConnection() const;
+    MAbstractInputMethodHost *inputMethodHost() const;
 
     /*! \brief Shows the input method.
      */

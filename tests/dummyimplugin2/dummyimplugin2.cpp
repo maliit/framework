@@ -14,7 +14,7 @@ QStringList DummyImPlugin2::languages() const
 }
 
 MInputMethodBase *
-DummyImPlugin2::createInputMethod(MInputContextConnection * /* icConnection */)
+DummyImPlugin2::createInputMethod(MAbstractInputMethodHost * /* imHost */)
 {
     return NULL;
 }

@@ -25,9 +25,8 @@
 #include "minputmethodsettingsbase.h"
 #include "minputmethodnamespace.h"
 
-class MInputContextConnection;
 class MInputMethodBase;
-
+class MAbstractInputMethodHost;
 
 /*!
  * \brief MInputMethodPlugin is an interface class for all input method plugins.
@@ -51,7 +50,7 @@ public:
      * this plugin. This function will be only called once and the allocated
      * resources will be owned by the input method server.
      */
-    virtual MInputMethodBase *createInputMethod(MInputContextConnection *icConnection) = 0;
+    virtual MInputMethodBase *createInputMethod(MAbstractInputMethodHost *host) = 0;
 
     /*! \brief Creates and returns the MInputMethodSettingsBase object for
      * this plugin. This function will be only called once and the allocated

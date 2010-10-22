@@ -1,8 +1,8 @@
 #include "dummyinputmethod3.h"
 #include <QDebug>
 
-DummyInputMethod3::DummyInputMethod3(MInputContextConnection *connection)
-    : MInputMethodBase(connection),
+DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *imHost)
+    : MInputMethodBase(imHost),
       setStateCount(0),
       switchContextCallCount(0),
       directionParam(MInputMethod::SwitchUndefined),

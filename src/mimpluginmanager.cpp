@@ -69,6 +69,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
+      mIMHost(connection),
       imAccessoryEnabledConf(0),
       settingsDialog(0),
       adaptor(0),
@@ -122,7 +123,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
         MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
         if (plugin) {
             if (!plugin->supportedStates().isEmpty()) {
-                MInputMethodBase *inputMethod = plugin->createInputMethod(mICConnection);
+                MInputMethodBase *inputMethod = plugin->createInputMethod(&mIMHost);
                 // only add valid plugin descriptions
                 if (inputMethod) {
                     PluginDescription desc = { load.fileName(), inputMethod, PluginState(),

@@ -13,7 +13,7 @@ class DummyInputMethod : public MInputMethodBase
 
 public:
 
-    DummyInputMethod(MInputContextConnection *connection);
+    DummyInputMethod(MAbstractInputMethodHost *imHost);
 
     //! \reimp
     virtual void setState(const QSet<MInputMethod::HandlerState> &state);

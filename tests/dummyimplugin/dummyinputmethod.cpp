@@ -2,8 +2,8 @@
 #include <QDebug>
 #include <QTimer>
 
-DummyInputMethod::DummyInputMethod(MInputContextConnection *connection)
-    : MInputMethodBase(connection),
+DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *imHost)
+    : MInputMethodBase(imHost),
       setStateCount(0),
       switchContextCallCount(0),
       directionParam(MInputMethod::SwitchUndefined),

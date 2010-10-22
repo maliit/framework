@@ -28,6 +28,7 @@
 
 #include "minputmethodnamespace.h"
 #include "mtoolbarid.h"
+#include "minputmethodhost.h"
 
 class MInputMethodPlugin;
 class MInputContextConnection;
@@ -36,6 +37,7 @@ class MGConfItem;
 class MInputMethodBase;
 class MIMSettingsDialog;
 class MIMPluginManagerAdaptor;
+
 
 /* Internal class only! Interfaces here change, internal developers only*/
 class MIMPluginManagerPrivate
@@ -113,6 +115,7 @@ public:
 public:
     MIMPluginManager *parent;
     MInputContextConnection *mICConnection;
+    MInputMethodHost mIMHost;
 
     Plugins plugins;
     ActivePlugins activePlugins;

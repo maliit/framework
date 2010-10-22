@@ -15,7 +15,7 @@
  */
 
 #include "minputmethodbase.h"
-#include "minputcontextconnection.h"
+#include "mabstractinputmethodhost.h"
 
 #include <QGraphicsView>
 #include <QDebug>
@@ -32,7 +32,7 @@ namespace {
 class MInputMethodBasePrivate
 {
 public:
-    MInputMethodBasePrivate(MInputContextConnection *icConnection, MInputMethodBase *parent);
+    MInputMethodBasePrivate(MAbstractInputMethodHost *imHost, MInputMethodBase *parent);
     ~MInputMethodBasePrivate();
 
     void _q_handleIndicatorServiceChanged(const QString &serviceName, const QString &oldOwner,
@@ -41,7 +41,7 @@ public:
     //! map the InputModeIndicator to icon id
     QString indicatorIconID(MInputMethodBase::InputModeIndicator mode);
 
-    MInputContextConnection *icConnection;
+    MAbstractInputMethodHost *imHost;
     QDBusInterface *indicatorIface; // indicator server interface
     QDBusServiceWatcher *indicatorServiceWatcher;
     QMap<MInputMethodBase::InputModeIndicator, QString> indicatorMap;
@@ -49,8 +49,9 @@ public:
 
 
 
-MInputMethodBasePrivate::MInputMethodBasePrivate(MInputContextConnection *icConnection, MInputMethodBase *parent)
-    : icConnection(icConnection),
+MInputMethodBasePrivate::MInputMethodBasePrivate(MAbstractInputMethodHost *imHost,
+                                                 MInputMethodBase *parent)
+    : imHost(imHost),
       indicatorIface(0),
       indicatorServiceWatcher(new QDBusServiceWatcher(DBusIndicatorServiceName, QDBusConnection::sessionBus(),
                                                       QDBusServiceWatcher::WatchForOwnerChange, parent))
@@ -132,9 +133,9 @@ QString MInputMethodBasePrivate::indicatorIconID(MInputMethodBase::InputModeIndi
 
 ///////////////
 
-MInputMethodBase::MInputMethodBase(MInputContextConnection *icConnection, QObject *parent)
+MInputMethodBase::MInputMethodBase(MAbstractInputMethodHost *imHost, QObject *parent)
     : QObject(parent),
-      d_ptr(new MInputMethodBasePrivate(icConnection, this))
+      d_ptr(new MInputMethodBasePrivate(imHost, this))
 {
     // nothing
 }
@@ -146,12 +147,12 @@ MInputMethodBase::~MInputMethodBase()
 }
 
 
-MInputContextConnection *
-MInputMethodBase::inputContextConnection() const
+MAbstractInputMethodHost *
+MInputMethodBase::inputMethodHost() const
 {
     Q_D(const MInputMethodBase);
 
-    return d->icConnection;
+    return d->imHost;
 }
 
 void MInputMethodBase::show()
@@ -215,8 +216,8 @@ void MInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                        quint32 /* nativeScanCode */, quint32 /* nativeModifiers */)
 {
     // default implementation, just sendKeyEvent back
-    inputContextConnection()->sendKeyEvent(QKeyEvent(keyType, keyCode, modifiers, text, autoRepeat,
-                                                     count));
+    inputMethodHost()->sendKeyEvent(QKeyEvent(keyType, keyCode, modifiers, text, autoRepeat,
+                                              count));
 }
 
 void MInputMethodBase::setState(const QSet<MInputMethod::HandlerState> &state)
