@@ -69,7 +69,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
-      mIMHost(connection),
       imAccessoryEnabledConf(0),
       settingsDialog(0),
       adaptor(0),
@@ -123,13 +122,16 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
         MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
         if (plugin) {
             if (!plugin->supportedStates().isEmpty()) {
-                MInputMethodBase *inputMethod = plugin->createInputMethod(&mIMHost);
+                MInputMethodHost *inputMethodHost = new MInputMethodHost(mICConnection);
+                MInputMethodBase *inputMethod = plugin->createInputMethod(inputMethodHost);
                 // only add valid plugin descriptions
                 if (inputMethod) {
-                    PluginDescription desc = { load.fileName(), inputMethod, PluginState(),
-                                               MInputMethod::SwitchUndefined };
+                    PluginDescription desc = { load.fileName(), inputMethod, inputMethodHost,
+                                               PluginState(), MInputMethod::SwitchUndefined };
                     plugins[plugin] = desc;
                     val = true;
+                } else {
+                    delete inputMethodHost;
                 }
             } else {
                 qWarning() << __PRETTY_FUNCTION__
@@ -154,7 +156,7 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
 
     activePlugins.insert(plugin);
     inputMethod = plugins[plugin].inputMethod;
-
+    plugins[plugin].imHost->setEnabled(true);
 
     Q_ASSERT(inputMethod);
     QObject::connect(inputMethod, SIGNAL(regionUpdated(const QRegion &)),
@@ -266,6 +268,7 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
 
     activePlugins.remove(plugin);
     MInputMethodBase *inputMethod = plugins[plugin].inputMethod;
+    plugins[plugin].imHost->setEnabled(false);
 
     if (!inputMethod)
         return;

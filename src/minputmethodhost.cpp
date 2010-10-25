@@ -32,6 +32,12 @@ MInputMethodHost::~MInputMethodHost()
     // nothing
 }
 
+
+void MInputMethodHost::setEnabled(bool enabled)
+{
+    this->enabled = enabled;
+}
+
 int MInputMethodHost::contentType(bool &valid)
 {
     return connection->contentType(valid);
@@ -75,51 +81,71 @@ QRect MInputMethodHost::preeditRectangle(bool &valid)
 void MInputMethodHost::sendPreeditString(const QString &string,
                                          MInputMethod::PreeditFace preeditFace)
 {
-    connection->sendPreeditString(string, preeditFace);
+    if (enabled) {
+        connection->sendPreeditString(string, preeditFace);
+    }
 }
 
 void MInputMethodHost::sendCommitString(const QString &string)
 {
-    connection->sendCommitString(string);
+    if (enabled) {
+        connection->sendCommitString(string);
+    }
 }
 
 void MInputMethodHost::sendKeyEvent(const QKeyEvent &keyEvent,
                                     MInputMethod::EventRequestType requestType)
 {
-    connection->sendKeyEvent(keyEvent, requestType);
+    if (enabled) {
+        connection->sendKeyEvent(keyEvent, requestType);
+    }
 }
 
 void MInputMethodHost::notifyImInitiatedHiding()
 {
-    connection->notifyImInitiatedHiding();
+    if (enabled) {
+        connection->notifyImInitiatedHiding();
+    }
 }
 
 void MInputMethodHost::copy()
 {
-    connection->copy();
+    if (enabled) {
+        connection->copy();
+    }
 }
 
 void MInputMethodHost::paste()
 {
-    connection->paste();
+    if (enabled) {        
+        connection->paste();
+    }
 }
 
 void MInputMethodHost::setRedirectKeys(bool redirectEnabled)
 {
-    connection->setRedirectKeys(redirectEnabled);
+    if (enabled) {
+        connection->setRedirectKeys(redirectEnabled);
+    }
 }
 
 void MInputMethodHost::setDetectableAutoRepeat(bool autoRepeatEnabled)
 {
-    connection->setDetectableAutoRepeat(autoRepeatEnabled);
+    if (enabled) {
+        connection->setDetectableAutoRepeat(autoRepeatEnabled);
+    }
 }
 
 void MInputMethodHost::setGlobalCorrectionEnabled(bool correctionEnabled)
 {
-    connection->setGlobalCorrectionEnabled(correctionEnabled);
+    if (enabled) {
+        connection->setGlobalCorrectionEnabled(correctionEnabled);
+    }
 }
 
 void MInputMethodHost::updateInputMethodArea(const QRegion &region)
 {
-    connection->updateInputMethodArea(region);
+    if (enabled) {
+        connection->updateInputMethodArea(region);
+    }
 }

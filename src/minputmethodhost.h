@@ -32,6 +32,9 @@ public:
     explicit MInputMethodHost(MInputContextConnection *inputContextConnection, QObject *parent = 0);
     virtual ~MInputMethodHost();
 
+    //! if enabled, the plugin(s) associated with this host are allowed to communicate
+    void setEnabled(bool enabled);
+
     // \reimp
     virtual int contentType(bool &valid);
     virtual bool correctionEnabled(bool &valid);
@@ -65,6 +68,7 @@ private:
     Q_DISABLE_COPY(MInputMethodHost)
 
     MInputContextConnection *connection;
+    bool enabled;
 };
 
 

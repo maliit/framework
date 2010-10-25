@@ -48,6 +48,7 @@ public:
     struct PluginDescription {
         QString fileName;
         MInputMethodBase *inputMethod;
+        MInputMethodHost *imHost;
         PluginState state;
         MInputMethod::SwitchDirection lastSwitchDirection;
     };
@@ -115,7 +116,6 @@ public:
 public:
     MIMPluginManager *parent;
     MInputContextConnection *mICConnection;
-    MInputMethodHost mIMHost;
 
     Plugins plugins;
     ActivePlugins activePlugins;
