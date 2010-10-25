@@ -22,9 +22,11 @@
 
 #include "minputmethodnamespace.h"
 
-class MIMPluginManagerPrivate;
 class QRegion;
+class MIMPluginManagerPrivate;
 class MToolbarId;
+class MInputMethodBase;
+
 
 class MIMPluginManager: public QObject
 {
@@ -69,6 +71,15 @@ public:
     //! Returns true if the connection to D-Bus is valid and the object is properly usable
     bool isDBusConnectionValid() const;
 
+    //! Switches plugin in according to given \a direction
+    void switchPlugin(MInputMethod::SwitchDirection direction, MInputMethodBase *initiator);
+
+    //! Switches active plugin to inactive plugin with given \a name
+    void switchPlugin(const QString &name, MInputMethodBase *initiator);
+
+    //! Shows settings for all loaded inputmethod plugins.
+    void showInputMethodSettings();
+
 signals:
     //!
     // This signal is emitted when the whole painting area of the
@@ -85,15 +96,6 @@ public slots:
 private slots:
     //! Update and activate input source.
     void updateInputSource();
-
-    //! Switches plugin in according to given \a direction
-    void switchPlugin(MInputMethod::SwitchDirection direction);
-
-    //! Switches active plugin to inactive plugin with given \a name
-    void switchPlugin(const QString &name);
-
-    //! Shows settings for all loaded inputmethod plugins.
-    void showInputMethodSettings();
 
     //! Updates the whole painting area for input method objects.
     void updateRegion(const QRegion &region);

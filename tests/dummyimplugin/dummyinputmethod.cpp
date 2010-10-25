@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QTimer>
 
+#include "mabstractinputmethodhost.h"
+
 DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *imHost)
     : MInputMethodBase(imHost),
       setStateCount(0),
@@ -34,17 +36,16 @@ void DummyInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
 void DummyInputMethod::switchMe()
 {
     qDebug() << __PRETTY_FUNCTION__;
-    emit pluginSwitchRequired(MInputMethod::SwitchForward);
+    inputMethodHost()->switchPlugin(MInputMethod::SwitchForward);
 }
 
 void DummyInputMethod::switchMe(const QString &name)
 {
     qDebug() << __PRETTY_FUNCTION__;
-    emit pluginSwitchRequired(name);
+    inputMethodHost()->switchPlugin(name);
 }
 
-void DummyInputMethod::switchContext(MInputMethod::SwitchDirection direction,
-        bool enableAnimation)
+void DummyInputMethod::switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation)
 {
     ++switchContextCallCount;
     directionParam = direction;

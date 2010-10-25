@@ -111,6 +111,8 @@ void MIMPluginManagerPrivate::loadPlugins()
 
 bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
 {
+    Q_Q(MIMPluginManager);
+
     bool val = false;
     QPluginLoader load(fileName);
     QObject *pluginInstance = load.instance();
@@ -122,14 +124,16 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
         MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
         if (plugin) {
             if (!plugin->supportedStates().isEmpty()) {
-                MInputMethodHost *inputMethodHost = new MInputMethodHost(mICConnection);
+                MInputMethodHost *inputMethodHost = new MInputMethodHost(mICConnection, q);
                 MInputMethodBase *inputMethod = plugin->createInputMethod(inputMethodHost);
+
                 // only add valid plugin descriptions
                 if (inputMethod) {
                     PluginDescription desc = { load.fileName(), inputMethod, inputMethodHost,
                                                PluginState(), MInputMethod::SwitchUndefined };
                     plugins[plugin] = desc;
                     val = true;
+                    inputMethodHost->setInputMethod(inputMethod);
                 } else {
                     delete inputMethodHost;
                 }
@@ -166,21 +170,6 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
                      SIGNAL(inputMethodAreaUpdated(const QRegion &)),
                      mICConnection,
                      SLOT(updateInputMethodArea(const QRegion &)));
-
-    QObject::connect(inputMethod,
-                     SIGNAL(pluginSwitchRequired(MInputMethod::SwitchDirection)),
-                     q,
-                     SLOT(switchPlugin(MInputMethod::SwitchDirection)));
-
-    QObject::connect(inputMethod,
-                     SIGNAL(pluginSwitchRequired(const QString&)),
-                     q,
-                     SLOT(switchPlugin(const QString&)));
-
-    QObject::connect(inputMethod,
-                     SIGNAL(settingsRequested()),
-                     q,
-                     SLOT(showInputMethodSettings()));
 
     QObject::connect(inputMethod,
                      SIGNAL(activeSubViewChanged(QString, MInputMethod::HandlerState)),
@@ -914,10 +903,10 @@ void MIMPluginManager::updateInputSource()
     }
 }
 
-void MIMPluginManager::switchPlugin(MInputMethod::SwitchDirection direction)
+void MIMPluginManager::switchPlugin(MInputMethod::SwitchDirection direction,
+                                    MInputMethodBase *initiator)
 {
     Q_D(MIMPluginManager);
-    MInputMethodBase *initiator = qobject_cast<MInputMethodBase*>(sender());
 
     if (initiator) {
         if (!d->switchPlugin(direction, initiator)) {
@@ -927,10 +916,10 @@ void MIMPluginManager::switchPlugin(MInputMethod::SwitchDirection direction)
     }
 }
 
-void MIMPluginManager::switchPlugin(const QString &name)
+void MIMPluginManager::switchPlugin(const QString &name,
+                                    MInputMethodBase *initiator)
 {
     Q_D(MIMPluginManager);
-    MInputMethodBase *initiator = qobject_cast<MInputMethodBase*>(sender());
 
     if (initiator) {
         if (!d->switchPlugin(name, initiator)) {

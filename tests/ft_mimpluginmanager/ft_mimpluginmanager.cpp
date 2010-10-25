@@ -148,7 +148,7 @@ void Ft_MIMPluginManager::testSwitchPluginBySignal()
     inputMethod = dynamic_cast<DummyInputMethod *>(subject->d_ptr->plugins[plugin].inputMethod);
     QVERIFY(inputMethod != 0);
 
-    inputMethod->switchMe(); //emit signal to switch plugin
+    inputMethod->switchMe();
 
     QStringList activePlugins = subject->activePluginsNames();
     QCOMPARE(activePlugins.count(), 1);
@@ -173,7 +173,7 @@ void Ft_MIMPluginManager::testSwitchToSpecifiedPlugin()
     inputMethod = dynamic_cast<DummyInputMethod *>(subject->d_ptr->plugins[plugin].inputMethod);
     QVERIFY(inputMethod != 0);
 
-    inputMethod->switchMe(pluginName3); //emit signal to switch plugin
+    inputMethod->switchMe(pluginName3);
 
     QStringList activePlugins = subject->activePluginsNames();
     QCOMPARE(activePlugins.count(), 1);

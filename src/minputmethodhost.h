@@ -20,6 +20,7 @@
 #include "mabstractinputmethodhost.h"
 
 class MInputContextConnection;
+class MIMPluginManager;
 
 /*!
  * \brief Interface implementation for connecting input method instances to the environment.
@@ -29,11 +30,15 @@ class MInputMethodHost: public MAbstractInputMethodHost
     Q_OBJECT
 
 public:
-    explicit MInputMethodHost(MInputContextConnection *inputContextConnection, QObject *parent = 0);
+    MInputMethodHost(MInputContextConnection *inputContextConnection,
+                     MIMPluginManager *pluginManager, QObject *parent = 0);
     virtual ~MInputMethodHost();
 
-    //! if enabled, the plugin(s) associated with this host are allowed to communicate
+    //! if enabled, the plugin associated with this host are allowed to communicate
     void setEnabled(bool enabled);
+
+    //! associate input method with this host instance
+    void setInputMethod(MInputMethodBase *inputMethod);
 
     // \reimp
     virtual int contentType(bool &valid);
@@ -57,6 +62,10 @@ public:
     virtual void setRedirectKeys(bool enabled);
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void setGlobalCorrectionEnabled(bool enabled);
+
+    virtual void switchPlugin(MInputMethod::SwitchDirection direction);
+    virtual void switchPlugin(const QString &pluginName);
+    virtual void showSettings();
     // \reimp_end
 
 
@@ -64,6 +73,8 @@ private:
     Q_DISABLE_COPY(MInputMethodHost)
 
     MInputContextConnection *connection;
+    MIMPluginManager *pluginManager;
+    MInputMethodBase *inputMethod;
     bool enabled;
 };
 

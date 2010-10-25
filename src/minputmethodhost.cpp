@@ -16,12 +16,16 @@
 
 #include "minputmethodhost.h"
 #include "minputcontextconnection.h"
+#include "mimpluginmanager.h"
 
 
 MInputMethodHost::MInputMethodHost(MInputContextConnection *inputContextConnection,
-                                   QObject *parent)
+                                   MIMPluginManager *pluginManager, QObject *parent)
     : MAbstractInputMethodHost(parent),
-      connection(inputContextConnection)
+      connection(inputContextConnection),
+      pluginManager(pluginManager),
+      inputMethod(0),
+      enabled(false)
 {
     // nothing
 }
@@ -37,6 +41,12 @@ void MInputMethodHost::setEnabled(bool enabled)
 {
     this->enabled = enabled;
 }
+
+void MInputMethodHost::setInputMethod(MInputMethodBase *inputMethod)
+{
+    this->inputMethod = inputMethod;
+}
+
 
 int MInputMethodHost::contentType(bool &valid)
 {
@@ -143,3 +153,23 @@ void MInputMethodHost::setGlobalCorrectionEnabled(bool correctionEnabled)
     }
 }
 
+void MInputMethodHost::switchPlugin(MInputMethod::SwitchDirection direction)
+{    
+    if (enabled) {
+        pluginManager->switchPlugin(direction, inputMethod);
+    }
+}
+
+void MInputMethodHost::switchPlugin(const QString &pluginName)
+{
+    if (enabled) {
+        pluginManager->switchPlugin(pluginName, inputMethod);
+    }
+}
+
+void MInputMethodHost::showSettings()
+{
+    if (enabled) {
+        pluginManager->showInputMethodSettings();
+    }
+}

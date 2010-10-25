@@ -156,6 +156,23 @@ public:
      */
     virtual void setGlobalCorrectionEnabled(bool enabled) = 0;
 
+
+    /*!
+     * Asks environment to change active plugin according to \a direction.
+     */
+    virtual void switchPlugin(MInputMethod::SwitchDirection direction) = 0;
+
+    /*!
+     * Asks environment to change active plugin to specified one.
+     * \param pluginName Name for plugin which will be activated
+     */
+    virtual void switchPlugin(const QString &pluginName) = 0;
+
+    /*!
+     * Asks environment to show settings.
+     */
+    virtual void showSettings() = 0;
+
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
     Q_DECLARE_PRIVATE(MAbstractInputMethodHost)

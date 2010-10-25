@@ -230,29 +230,6 @@ signals:
     void inputMethodAreaUpdated(const QRegion &region);
 
     /*!
-     * Inform that plugin should be switched in according to \a direction.
-     */
-    void pluginSwitchRequired(MInputMethod::SwitchDirection direction);
-
-    /*!
-     * Inform that active plugin should be replaced with specified one.
-     * \param pluginName Name orf plugin which will be activated
-     */
-    void pluginSwitchRequired(const QString &pluginName);
-
-    /*!
-     * Inform that active plugin should be replaced with another one
-     * specified by settings.
-     */
-    void pluginSwitchRequired();
-
-    /*!
-     * Inform that input method settings should be shown.
-     * Emitted when the plugin requires input method settings.
-     */
-    void settingsRequested();
-
-    /*!
      * Inform that active subview is changed to \a subViewId for \a state.
      * \param subViewId the identifier of the new subview.
      * \param state the state which \a subViewId belongs to.
