@@ -1,6 +1,7 @@
 meego-im-framework (0.19.26~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Changes: MInputContext::keyEvent() method signature changed
 
  -- Gibran Rodriguez <ext-gibran.rodriguez@nokia.com>  Fri, 22 Oct 2010 10:44:46 +0300
 

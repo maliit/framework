@@ -55,7 +55,8 @@ public slots:
 
     void setContextObject(const QString &callbackObject);
     void activateContext();
-    void sendKeyEvent(const QKeyEvent &keyEvent);
+    void sendKeyEvent(const QKeyEvent &keyEvent,
+                      MInputMethod::EventRequestType requestType);
 
     void appOrientationChanged(int angle);
 

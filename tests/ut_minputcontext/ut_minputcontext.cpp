@@ -273,9 +273,11 @@ void InputMethodServerDBusStub::activateContext()
     activateContextCallCount++;
 }
 
-void InputMethodServerDBusStub::sendKeyEvent(const QKeyEvent &keyEvent)
+void InputMethodServerDBusStub::sendKeyEvent(const QKeyEvent &keyEvent,
+                                             MInputMethod::EventRequestType requestType)
 {
     Q_UNUSED(keyEvent);
+    Q_UNUSED(requestType)
     keyEventCallCount++;
 }
 
@@ -605,12 +607,12 @@ void Ut_MInputContext::testNonTextEntryWidget()
 void Ut_MInputContext::testSendKeyEvent()
 {
     QKeyEvent keyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
-    m_stub->sendKeyEvent(keyEvent);
+    m_stub->sendKeyEvent(keyEvent, MInputMethod::EventRequestBoth);
     QCOMPARE(m_stub->keyEventCount(), 1);
 
     WidgetStub widget(0);
     m_subject->setFocusWidget(&widget);
-    m_stub->sendKeyEvent(keyEvent);
+    m_stub->sendKeyEvent(keyEvent, MInputMethod::EventRequestBoth);
     QCOMPARE(m_stub->keyEventCount(), 2);
 
 }

@@ -484,7 +484,8 @@ void MInputContextGlibDBusConnection::sendCommitString(const QString &string)
 }
 
 
-void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent, bool signalOnly)
+void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent,
+                                                   MInputMethod::EventRequestType requestType)
 {
     if (activeContext) {
         int type = static_cast<int>(keyEvent.type());
@@ -498,7 +499,7 @@ void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent, bo
                                    G_TYPE_STRING, keyEvent.text().toUtf8().data(),
                                    G_TYPE_BOOLEAN, keyEvent.isAutoRepeat() ? TRUE : FALSE,
                                    G_TYPE_INT, keyEvent.count(),
-                                   G_TYPE_BOOLEAN, signalOnly,
+                                   G_TYPE_UCHAR, static_cast<uchar>(requestType),
                                    G_TYPE_INVALID);
     }
 }

@@ -45,7 +45,8 @@ public:
     virtual void commitString(const QString &string);
     virtual void updatePreedit(const QString &string, PreeditFace preeditFace);
     virtual void keyEvent(int type, int key, int modifiers, const QString &text,
-                          bool autoRepeat, int count);
+                          bool autoRepeat, int count,
+                          MInputMethod::KeyEventType requestType);
     virtual void updateInputMethodArea(const QList<QVariant> &rectList);
     virtual void setGlobalCorrectionEnabled(bool enable);
 };
@@ -123,7 +124,8 @@ void MInputContextStub::updatePreedit(const QString &string, PreeditFace preedit
 }
 
 void MInputContextStub::keyEvent(int type, int key, int modifiers, const QString &text,
-                                   bool autoRepeat, int count)
+                                 bool autoRepeat, int count,
+                                 MInputMethod::KeyEventType requestType)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<int>(type));
@@ -132,6 +134,7 @@ void MInputContextStub::keyEvent(int type, int key, int modifiers, const QString
     params.append(new Parameter<QString>(text));
     params.append(new Parameter<bool>(autoRepeat));
     params.append(new Parameter<int>(count));
+    params.append(new Parameter<MInputMethod::KeyEventType>(requestType));
     stubMethodEntered("keyEvent", params);
 }
 
@@ -238,9 +241,10 @@ void MInputContext::updatePreedit(const QString &string, PreeditFace preeditFace
 }
 
 void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
-                               bool autoRepeat, int count)
+                             bool autoRepeat, int count,
+                             MInputMethod::KeyEventType requestType)
 {
-    gMInputContextStub->keyEvent(type, key, modifiers, text, autoRepeat, count);
+    gMInputContextStub->keyEvent(type, key, modifiers, text, autoRepeat, count, requestType);
 }
 
 void MInputContext::updateInputMethodArea(const QList<QVariant> &rectList)

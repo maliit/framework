@@ -1,3 +1,12 @@
+0.19.26
+========
+
+* API changes
+ - A request type parameter was added to MInputContext::keyEvent to
+   allow signal only and event only key events.
+ - Similar change to MInputContextConnection::sendKeyEvent and the "keyEvent"
+   method in DBUS interface "com.meego.inputmethod.inputcontext1".
+
 0.19.24
 ========
 

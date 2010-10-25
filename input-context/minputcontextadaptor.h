@@ -43,7 +43,7 @@ public slots:
     virtual Q_NOREPLY void commitString(const QString &string);
     virtual Q_NOREPLY void updatePreedit(const QString &string, int preeditFace);
     virtual Q_NOREPLY void keyEvent(int type, int key, int modifiers, const QString &text,
-                                    bool autoRepeat, int count, bool signalOnly);
+                                    bool autoRepeat, int count, uchar requestType);
     virtual Q_NOREPLY void updateInputMethodArea(const QList<QVariant> &data);
     virtual Q_NOREPLY void setGlobalCorrectionEnabled(bool);
     virtual Q_NOREPLY void copy();

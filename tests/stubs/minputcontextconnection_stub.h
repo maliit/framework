@@ -40,7 +40,8 @@ public:
 
     virtual void sendCommitString(const QString &string);
 
-    virtual void sendKeyEvent(const QKeyEvent &keyEvent, bool signalOnly = false);
+    virtual void sendKeyEvent(const QKeyEvent &keyEvent,
+                              MInputMethod::EventRequestType requestType);
 
     virtual void notifyImInitiatedHiding();
 

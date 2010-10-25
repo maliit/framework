@@ -534,10 +534,10 @@ void MInputContext::updatePreedit(const QString &string, MInputMethod::PreeditFa
 
 
 void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
-                             bool autoRepeat, int count, bool signalOnly)
+                             bool autoRepeat, int count,
+                             MInputMethod::EventRequestType requestType)
 {
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
-
 
     // Construct an event instance out of the parameters.
     QEvent::Type eventType = static_cast<QEvent::Type>(type);
@@ -545,13 +545,15 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
                     static_cast<Qt::KeyboardModifiers>(modifiers),
                     text, autoRepeat, count);
 
-    if (eventType == QEvent::KeyPress) {
-        MInputMethodState::instance()->emitKeyPress(event);
-    } else if (eventType == QEvent::KeyRelease) {
-        MInputMethodState::instance()->emitKeyRelease(event);
+    if (requestType != MInputMethod::EventRequestEventOnly) {
+        if (eventType == QEvent::KeyPress) {
+            MInputMethodState::instance()->emitKeyPress(event);
+        } else if (eventType == QEvent::KeyRelease) {
+            MInputMethodState::instance()->emitKeyRelease(event);
+        }
     }
 
-    if (focusWidget() != 0 && signalOnly == false) {
+    if (focusWidget() != 0 && requestType != MInputMethod::EventRequestSignalOnly) {
         QCoreApplication::sendEvent(focusWidget(), &event);
     }
 

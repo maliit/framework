@@ -41,10 +41,11 @@ void MInputContextConnectionStub::sendCommitString(const QString &string)
     Q_UNUSED(string);
 }
 
-void MInputContextConnectionStub::sendKeyEvent(const QKeyEvent &keyEvent, bool signalOnly)
+void MInputContextConnectionStub::sendKeyEvent(const QKeyEvent &keyEvent,
+                                               MInputMethod::EventRequestType requestType)
 {
     Q_UNUSED(keyEvent);
-    Q_UNUSED(signalOnly);
+    Q_UNUSED(requestType);
 }
 
 void MInputContextConnectionStub::notifyImInitiatedHiding()

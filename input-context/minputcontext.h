@@ -91,7 +91,8 @@ public:
 
     //! \brief Sends a non-printable key event. Parameters as in QKeyEvent constructor
     virtual void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
-                          int count, bool signalOnly = false);
+                          int count, MInputMethod::EventRequestType requestType
+                          = MInputMethod::EventRequestBoth);
 
     //!
     // \brief Updates the input method window area

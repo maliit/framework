@@ -44,7 +44,7 @@ public:
     virtual void commitString(const QString &string);
     virtual void updatePreedit(const QString &string, int preeditFace);
     virtual void keyEvent(int type, int key, int modifiers, const QString &text,
-                          bool autoRepeat, int count);
+                          bool autoRepeat, int count, uchar requestType);
     virtual void updateInputMethodArea(const QList<QVariant> &data);
     virtual void setGlobalCorrectionEnabled(bool);
     virtual void setRedirectKeys(bool enabled);
@@ -91,7 +91,8 @@ void MInputContextAdaptorStub::updatePreedit(const QString &string, int preeditF
 }
 
 void MInputContextAdaptorStub::keyEvent(int type, int key, int modifiers,
-        const QString &text, bool autoRepeat, int count)
+                                        const QString &text, bool autoRepeat, int count,
+                                        uchar requestType)
 {
     QList<ParameterBase *> params;
     params.append(new Parameter<int>(type));
@@ -100,6 +101,7 @@ void MInputContextAdaptorStub::keyEvent(int type, int key, int modifiers,
     params.append(new Parameter<QString>(text));
     params.append(new Parameter<bool>(autoRepeat));
     params.append(new Parameter<int>(count));
+    params.append(new Parameter<uchar>(requestType));
     stubMethodEntered("keyEvent", params);
 }
 
@@ -184,9 +186,9 @@ void MInputContextAdaptor::updatePreedit(const QString &string, int preeditFace)
 }
 
 void MInputContextAdaptor::keyEvent(int type, int key, int modifiers, const QString &text,
-                                      bool autoRepeat, int count)
+                                    bool autoRepeat, int count, uchar requestType)
 {
-    gMInputContextAdaptorStub->keyEvent(type, key, modifiers, text, autoRepeat, count);
+    gMInputContextAdaptorStub->keyEvent(type, key, modifiers, text, autoRepeat, count, requestType);
 }
 
 void MInputContextAdaptor::updateInputMethodArea(const QList<QVariant> &data)

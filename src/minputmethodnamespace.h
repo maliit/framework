@@ -112,6 +112,14 @@ namespace MInputMethod {
         Hardware,
         Accessory
     };
+
+    /// \brief Key event request type for \a MInputContext::keyEvent().
+    enum EventRequestType {
+        EventRequestBoth,         //!< Both a Qt::KeyEvent and a signal
+        EventRequestSignalOnly,   //!< Only a signal
+        EventRequestEventOnly     //!< Only a Qt::KeyEvent
+    };
+
 };
 
 #endif
