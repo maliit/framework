@@ -156,24 +156,6 @@ public:
      */
     virtual void setGlobalCorrectionEnabled(bool enabled) = 0;
 
-public slots:
-
-    //! Update \a region covered by virtual keyboard
-    virtual void updateInputMethodArea(const QRegion &region) = 0;
-
-signals:
-
-    //! \internal
-    //! Emitted when input method request to be shown.
-    void showInputMethodRequest();
-
-    //! Emitted when input method request to be hidden.
-    void hideInputMethodRequest();
-
-    //! Emitted when set toobar to input method.
-    void toolbarIdChanged(const MToolbarId &id);
-    //! \internal_end.
-
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
     Q_DECLARE_PRIVATE(MAbstractInputMethodHost)

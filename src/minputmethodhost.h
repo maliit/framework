@@ -59,10 +59,6 @@ public:
     virtual void setGlobalCorrectionEnabled(bool enabled);
     // \reimp_end
 
-public slots:
-    // \reimp
-    virtual void updateInputMethodArea(const QRegion &region);
-    // \reimp_end
 
 private:
     Q_DISABLE_COPY(MInputMethodHost)

@@ -143,9 +143,3 @@ void MInputMethodHost::setGlobalCorrectionEnabled(bool correctionEnabled)
     }
 }
 
-void MInputMethodHost::updateInputMethodArea(const QRegion &region)
-{
-    if (enabled) {
-        connection->updateInputMethodArea(region);
-    }
-}
