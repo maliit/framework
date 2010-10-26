@@ -125,25 +125,25 @@ namespace MInputMethod {
       * Input mode indicator.
       */
     enum InputModeIndicator {
-        NoIndicator,    //!< No indicator should be shown
-        LatinLower,     //!< Latin lower case mode
-        LatinUpper,     //!< Latin upper case mode
-        LatinLocked,    //!< Latin caps locked mode
-        CyrillicLower,  //!< Cyrillic lower case mode
-        CyrillicUpper,  //!< Cyrillic upper case mode
-        CyrillicLocked, //!< Cyrillic caps locked mode
-        Arabic,         //!< Arabic mode
-        Pinyin,         //!< Pinyin mode
-        Zhuyin,         //!< Zhuyin mode
-        Cangjie,        //!< Cangjie mode
-        NumAndSymLatched,   //!< Number and Symbol latched mode
-        NumAndSymLocked,//!< Number and Symbol locked mode
-        DeadKeyAcute,   //!< Dead key acute mode
-        DeadKeyCaron,   //!< Dead key caron mode
-        DeadKeyCircumflex,  //!< Dead key circumflex mode
-        DeadKeyDiaeresis,   //!< Dead key diaeresis mode
-        DeadKeyGrave,   //!< Dead key grave mode
-        DeadKeyTilde    //!< Dead key tilde mode
+        NoIndicator,                 //!< No indicator should be shown
+        LatinLowerIndicator,         //!< Latin lower case mode
+        LatinUpperIndicator,         //!< Latin upper case mode
+        LatinLockedIndicator,        //!< Latin caps locked mode
+        CyrillicLowerIndicator,      //!< Cyrillic lower case mode
+        CyrillicUpperIndicator,      //!< Cyrillic upper case mode
+        CyrillicLockedIndicator,     //!< Cyrillic caps locked mode
+        ArabicIndicator,             //!< Arabic mode
+        PinyinIndicator,             //!< Pinyin mode
+        ZhuyinIndicator,             //!< Zhuyin mode
+        CangjieIndicator,            //!< Cangjie mode
+        NumAndSymLatchedIndicator,   //!< Number and Symbol latched mode
+        NumAndSymLockedIndicator,    //!< Number and Symbol locked mode
+        DeadKeyAcuteIndicator,       //!< Dead key acute mode
+        DeadKeyCaronIndicator,       //!< Dead key caron mode
+        DeadKeyCircumflexIndicator,  //!< Dead key circumflex mode
+        DeadKeyDiaeresisIndicator,   //!< Dead key diaeresis mode
+        DeadKeyGraveIndicator,       //!< Dead key grave mode
+        DeadKeyTildeIndicator        //!< Dead key tilde mode
     };
 };
 

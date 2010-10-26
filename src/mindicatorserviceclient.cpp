@@ -40,24 +40,24 @@ MIndicatorServiceClient::MIndicatorServiceClient(QObject *parent)
             this, SLOT(handleIndicatorServiceChanged(QString, QString, QString)));
 
     indicatorMap.insert(MInputMethod::NoIndicator, "");
-    indicatorMap.insert(MInputMethod::LatinLower, "icon-s-status-latin-lowercase");
-    indicatorMap.insert(MInputMethod::LatinUpper, "icon-s-status-latin-uppercase");
-    indicatorMap.insert(MInputMethod::LatinLocked, "icon-s-status-latin-caps");
-    indicatorMap.insert(MInputMethod::CyrillicLower, "icon-s-status-cyrillic-lowercase");
-    indicatorMap.insert(MInputMethod::CyrillicUpper, "icon-s-status-cyrillic-uppercase");
-    indicatorMap.insert(MInputMethod::CyrillicLocked, "icon-s-status-cyrillic-caps");
-    indicatorMap.insert(MInputMethod::Arabic, "icon-s-status-arabic");
-    indicatorMap.insert(MInputMethod::Pinyin, "icon-s-status-pinyin");
-    indicatorMap.insert(MInputMethod::Zhuyin, "icon-s-status-zhuyin");
-    indicatorMap.insert(MInputMethod::Cangjie, "icon-s-status-cangjie");
-    indicatorMap.insert(MInputMethod::NumAndSymLatched, "icon-s-status-number");
-    indicatorMap.insert(MInputMethod::NumAndSymLocked, "icon-s-status-number-locked");
-    indicatorMap.insert(MInputMethod::DeadKeyAcute, "icon-s-status-acute");
-    indicatorMap.insert(MInputMethod::DeadKeyCaron, "icon-s-status-caron");
-    indicatorMap.insert(MInputMethod::DeadKeyCircumflex, "icon-s-status-circumflex");
-    indicatorMap.insert(MInputMethod::DeadKeyDiaeresis, "icon-s-status-diaeresis");
-    indicatorMap.insert(MInputMethod::DeadKeyGrave, "icon-s-status-grave");
-    indicatorMap.insert(MInputMethod::DeadKeyTilde, "icon-s-status-tilde");
+    indicatorMap.insert(MInputMethod::LatinLowerIndicator, "icon-s-status-latin-lowercase");
+    indicatorMap.insert(MInputMethod::LatinUpperIndicator, "icon-s-status-latin-uppercase");
+    indicatorMap.insert(MInputMethod::LatinLockedIndicator, "icon-s-status-latin-caps");
+    indicatorMap.insert(MInputMethod::CyrillicLowerIndicator, "icon-s-status-cyrillic-lowercase");
+    indicatorMap.insert(MInputMethod::CyrillicUpperIndicator, "icon-s-status-cyrillic-uppercase");
+    indicatorMap.insert(MInputMethod::CyrillicLockedIndicator, "icon-s-status-cyrillic-caps");
+    indicatorMap.insert(MInputMethod::ArabicIndicator, "icon-s-status-arabic");
+    indicatorMap.insert(MInputMethod::PinyinIndicator, "icon-s-status-pinyin");
+    indicatorMap.insert(MInputMethod::ZhuyinIndicator, "icon-s-status-zhuyin");
+    indicatorMap.insert(MInputMethod::CangjieIndicator, "icon-s-status-cangjie");
+    indicatorMap.insert(MInputMethod::NumAndSymLatchedIndicator, "icon-s-status-number");
+    indicatorMap.insert(MInputMethod::NumAndSymLockedIndicator, "icon-s-status-number-locked");
+    indicatorMap.insert(MInputMethod::DeadKeyAcuteIndicator, "icon-s-status-acute");
+    indicatorMap.insert(MInputMethod::DeadKeyCaronIndicator, "icon-s-status-caron");
+    indicatorMap.insert(MInputMethod::DeadKeyCircumflexIndicator, "icon-s-status-circumflex");
+    indicatorMap.insert(MInputMethod::DeadKeyDiaeresisIndicator, "icon-s-status-diaeresis");
+    indicatorMap.insert(MInputMethod::DeadKeyGraveIndicator, "icon-s-status-grave");
+    indicatorMap.insert(MInputMethod::DeadKeyTildeIndicator, "icon-s-status-tilde");
 }
 
 MIndicatorServiceClient::~MIndicatorServiceClient()
