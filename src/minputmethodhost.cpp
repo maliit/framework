@@ -17,15 +17,18 @@
 #include "minputmethodhost.h"
 #include "minputcontextconnection.h"
 #include "mimpluginmanager.h"
+#include "mindicatorserviceclient.h"
 
 
 MInputMethodHost::MInputMethodHost(MInputContextConnection *inputContextConnection,
-                                   MIMPluginManager *pluginManager, QObject *parent)
+                                   MIMPluginManager *pluginManager,
+                                   MIndicatorServiceClient &indicatorService, QObject *parent)
     : MAbstractInputMethodHost(parent),
       connection(inputContextConnection),
       pluginManager(pluginManager),
       inputMethod(0),
-      enabled(false)
+      enabled(false),
+      indicatorService(indicatorService)
 {
     // nothing
 }
@@ -150,6 +153,13 @@ void MInputMethodHost::setGlobalCorrectionEnabled(bool correctionEnabled)
 {
     if (enabled) {
         connection->setGlobalCorrectionEnabled(correctionEnabled);
+    }
+}
+
+void MInputMethodHost::setInputModeIndicator(MInputMethod::InputModeIndicator mode)
+{
+    if (enabled) {
+        indicatorService.setInputModeIndicator(mode);
     }
 }
 

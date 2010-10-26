@@ -21,6 +21,7 @@
 
 class MInputContextConnection;
 class MIMPluginManager;
+class MIndicatorServiceClient;
 
 /*!
  * \brief Interface implementation for connecting input method instances to the environment.
@@ -31,7 +32,8 @@ class MInputMethodHost: public MAbstractInputMethodHost
 
 public:
     MInputMethodHost(MInputContextConnection *inputContextConnection,
-                     MIMPluginManager *pluginManager, QObject *parent = 0);
+                     MIMPluginManager *pluginManager, MIndicatorServiceClient &indicatorService,
+                     QObject *parent = 0);
     virtual ~MInputMethodHost();
 
     //! if enabled, the plugin associated with this host are allowed to communicate
@@ -63,6 +65,8 @@ public:
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void setGlobalCorrectionEnabled(bool enabled);
 
+    virtual void setInputModeIndicator(MInputMethod::InputModeIndicator mode);
+
     virtual void switchPlugin(MInputMethod::SwitchDirection direction);
     virtual void switchPlugin(const QString &pluginName);
     virtual void showSettings();
@@ -76,6 +80,7 @@ private:
     MIMPluginManager *pluginManager;
     MInputMethodBase *inputMethod;
     bool enabled;
+    MIndicatorServiceClient &indicatorService;
 };
 
 

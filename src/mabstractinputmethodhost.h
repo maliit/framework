@@ -156,6 +156,12 @@ public:
      */
     virtual void setGlobalCorrectionEnabled(bool enabled) = 0;
 
+    /*!
+     * \brief Sets input mode indicator state.
+     * \param mode Input mode indicator state.
+     * \sa InputModeIndicator.
+     */
+    virtual void setInputModeIndicator(MInputMethod::InputModeIndicator mode) = 0;
 
     /*!
      * Asks environment to change active plugin according to \a direction.

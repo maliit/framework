@@ -73,7 +73,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       settingsDialog(0),
       adaptor(0),
       connectionValid(false),
-      acceptRegionUpdates(true)
+      acceptRegionUpdates(true),
+      indicatorService(0)
 {
     inputSourceToNameMap[MInputMethod::OnScreen] = "onscreen";
     inputSourceToNameMap[MInputMethod::Hardware] = "hardware";
@@ -124,7 +125,8 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
         MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
         if (plugin) {
             if (!plugin->supportedStates().isEmpty()) {
-                MInputMethodHost *inputMethodHost = new MInputMethodHost(mICConnection, q);
+                MInputMethodHost *inputMethodHost = new MInputMethodHost(mICConnection, q,
+                                                                         indicatorService);
                 MInputMethodBase *inputMethod = plugin->createInputMethod(inputMethodHost);
 
                 // only add valid plugin descriptions

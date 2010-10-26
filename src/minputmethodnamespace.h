@@ -120,6 +120,31 @@ namespace MInputMethod {
         EventRequestEventOnly     //!< Only a Qt::KeyEvent
     };
 
+     /*!
+      * This enum contains possible values for all the modes that are shown in the
+      * Input mode indicator.
+      */
+    enum InputModeIndicator {
+        NoIndicator,    //!< No indicator should be shown
+        LatinLower,     //!< Latin lower case mode
+        LatinUpper,     //!< Latin upper case mode
+        LatinLocked,    //!< Latin caps locked mode
+        CyrillicLower,  //!< Cyrillic lower case mode
+        CyrillicUpper,  //!< Cyrillic upper case mode
+        CyrillicLocked, //!< Cyrillic caps locked mode
+        Arabic,         //!< Arabic mode
+        Pinyin,         //!< Pinyin mode
+        Zhuyin,         //!< Zhuyin mode
+        Cangjie,        //!< Cangjie mode
+        NumAndSymLatched,   //!< Number and Symbol latched mode
+        NumAndSymLocked,//!< Number and Symbol locked mode
+        DeadKeyAcute,   //!< Dead key acute mode
+        DeadKeyCaron,   //!< Dead key caron mode
+        DeadKeyCircumflex,  //!< Dead key circumflex mode
+        DeadKeyDiaeresis,   //!< Dead key diaeresis mode
+        DeadKeyGrave,   //!< Dead key grave mode
+        DeadKeyTilde    //!< Dead key tilde mode
+    };
 };
 
 #endif

@@ -17,17 +17,7 @@
 #include "minputmethodbase.h"
 #include "mabstractinputmethodhost.h"
 
-#include <QGraphicsView>
-#include <QDebug>
 #include <QKeyEvent>
-#include <QDBusInterface>
-#include <QDBusServiceWatcher>
-
-namespace {
-    const char * const DBusIndicatorServiceName = "com.meego.core.MInputMethodStatusIndicator";
-    const char * const DBusIndicatorPath = "/inputmethodstatusindicator";
-    const char * const DBusIndicatorInterface = "com.meego.core.MInputMethodStatusIndicator";
-};
 
 class MInputMethodBasePrivate
 {
@@ -35,100 +25,20 @@ public:
     MInputMethodBasePrivate(MAbstractInputMethodHost *imHost, MInputMethodBase *parent);
     ~MInputMethodBasePrivate();
 
-    void _q_handleIndicatorServiceChanged(const QString &serviceName, const QString &oldOwner,
-                                          const QString &newOwner);
-    void connectToIndicatorDBus();
-    //! map the InputModeIndicator to icon id
-    QString indicatorIconID(MInputMethodBase::InputModeIndicator mode);
-
     MAbstractInputMethodHost *imHost;
-    QDBusInterface *indicatorIface; // indicator server interface
-    QDBusServiceWatcher *indicatorServiceWatcher;
-    QMap<MInputMethodBase::InputModeIndicator, QString> indicatorMap;
 };
 
 
 
 MInputMethodBasePrivate::MInputMethodBasePrivate(MAbstractInputMethodHost *imHost,
                                                  MInputMethodBase *parent)
-    : imHost(imHost),
-      indicatorIface(0),
-      indicatorServiceWatcher(new QDBusServiceWatcher(DBusIndicatorServiceName, QDBusConnection::sessionBus(),
-                                                      QDBusServiceWatcher::WatchForOwnerChange, parent))
+    : imHost(imHost)
 {
-    connectToIndicatorDBus();
-    QObject::connect(indicatorServiceWatcher, SIGNAL(serviceOwnerChanged(QString, QString, QString)),
-                     parent, SLOT(_q_handleIndicatorServiceChanged(QString, QString, QString)));
-
-    indicatorMap.insert(MInputMethodBase::NoIndicator, "");
-    indicatorMap.insert(MInputMethodBase::LatinLower, "icon-s-status-latin-lowercase");
-    indicatorMap.insert(MInputMethodBase::LatinUpper, "icon-s-status-latin-uppercase");
-    indicatorMap.insert(MInputMethodBase::LatinLocked, "icon-s-status-latin-caps");
-    indicatorMap.insert(MInputMethodBase::CyrillicLower, "icon-s-status-cyrillic-lowercase");
-    indicatorMap.insert(MInputMethodBase::CyrillicUpper, "icon-s-status-cyrillic-uppercase");
-    indicatorMap.insert(MInputMethodBase::CyrillicLocked, "icon-s-status-cyrillic-caps");
-    indicatorMap.insert(MInputMethodBase::Arabic, "icon-s-status-arabic");
-    indicatorMap.insert(MInputMethodBase::Pinyin, "icon-s-status-pinyin");
-    indicatorMap.insert(MInputMethodBase::Zhuyin, "icon-s-status-zhuyin");
-    indicatorMap.insert(MInputMethodBase::Cangjie, "icon-s-status-cangjie");
-    indicatorMap.insert(MInputMethodBase::NumAndSymLatched, "icon-s-status-number");
-    indicatorMap.insert(MInputMethodBase::NumAndSymLocked, "icon-s-status-number-locked");
-    indicatorMap.insert(MInputMethodBase::DeadKeyAcute, "icon-s-status-acute");
-    indicatorMap.insert(MInputMethodBase::DeadKeyCaron, "icon-s-status-caron");
-    indicatorMap.insert(MInputMethodBase::DeadKeyCircumflex, "icon-s-status-circumflex");
-    indicatorMap.insert(MInputMethodBase::DeadKeyDiaeresis, "icon-s-status-diaeresis");
-    indicatorMap.insert(MInputMethodBase::DeadKeyGrave, "icon-s-status-grave");
-    indicatorMap.insert(MInputMethodBase::DeadKeyTilde, "icon-s-status-tilde");
 }
 
 
 MInputMethodBasePrivate::~MInputMethodBasePrivate()
 {
-    delete indicatorIface;
-}
-
-void MInputMethodBasePrivate::connectToIndicatorDBus()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-    QDBusConnection connection = QDBusConnection::sessionBus();
-
-    if (!connection.isConnected()) {
-        qWarning() << "Cannot connect to the DBus session bus";
-        return;
-    }
-    indicatorIface = new QDBusInterface(DBusIndicatorServiceName, DBusIndicatorPath,
-                                        DBusIndicatorInterface, connection);
-
-    if (!indicatorIface->isValid()) {
-        qWarning() << "MInputContextDBusConnection was unable to connect to indicator server: "
-                   << connection.lastError().message();
-        delete indicatorIface;
-        indicatorIface = 0;
-    }
-}
-
-void MInputMethodBasePrivate::_q_handleIndicatorServiceChanged(const QString &serviceName,
-                                                               const QString &oldOwner,
-                                                               const QString &newOwner)
-{
-    Q_UNUSED(oldOwner);
-
-    qDebug() << __PRETTY_FUNCTION__;
-    if (serviceName != DBusIndicatorServiceName)
-        return;
-
-    if (indicatorIface && !indicatorIface->isValid()) {
-        delete indicatorIface;
-        indicatorIface = 0;
-    }
-    if (!newOwner.isEmpty()) {
-        connectToIndicatorDBus();
-    }
-}
-
-QString MInputMethodBasePrivate::indicatorIconID(MInputMethodBase::InputModeIndicator mode)
-{
-    return indicatorMap.value(mode);
 }
 
 ///////////////
@@ -238,15 +148,6 @@ void MInputMethodBase::switchContext(MInputMethod::SwitchDirection direction, bo
     Q_UNUSED(enableAnimation);
 }
 
-void MInputMethodBase::sendInputModeIndicator(MInputMethodBase::InputModeIndicator mode)
-{
-    Q_D(MInputMethodBase);
-
-    if (d->indicatorIface) {
-        d->indicatorIface->call(QDBus::NoBlock, "setIconID", d->indicatorIconID(mode));
-    }
-}
-
 QList<MInputMethodBase::MInputMethodSubView>
 MInputMethodBase::subViews(MInputMethod::HandlerState state) const
 {
@@ -273,4 +174,3 @@ void MInputMethodBase::showLanguageNotification()
     // empty default implementation
 }
 
-#include "moc_minputmethodbase.cpp"

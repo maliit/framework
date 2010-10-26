@@ -29,6 +29,7 @@
 #include "minputmethodnamespace.h"
 #include "mtoolbarid.h"
 #include "minputmethodhost.h"
+#include "mindicatorserviceclient.h"
 
 class MInputMethodPlugin;
 class MInputContextConnection;
@@ -143,7 +144,11 @@ public:
     QMap<QString, MInputMethod::HandlerState> nameToInputSourceMap;
 
     MToolbarId toolbarId;
+
+    MIndicatorServiceClient indicatorService;
 };
+
+
 
 class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor
 {

@@ -19,6 +19,7 @@ HEADERSINSTALL = \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
+        mindicatorserviceclient.h \
         mimapplication.h \
         minputcontextconnection.h \
         minputmethodhost.h \
@@ -30,6 +31,7 @@ HEADERS += $$HEADERSINSTALL \
         mtoolbarlayout_p.h \
 
 SOURCES += mimpluginmanager.cpp \
+        mindicatorserviceclient.cpp \
         minputmethodbase.cpp \
         mabstractinputmethodhost.cpp \
         minputmethodhost.cpp \

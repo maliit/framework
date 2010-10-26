@@ -45,34 +45,6 @@ class MInputMethodBase: public QObject
 
 public:
      /*!
-      * This enum contains possible values for all the modes that are shown in the
-      * Input mode indicator.
-      *
-      * \sa sendInputModeIndicator().
-      */
-    enum InputModeIndicator {
-        NoIndicator,    //!< No indicator should be shown
-        LatinLower,     //!< Latin lower case mode
-        LatinUpper,     //!< Latin upper case mode
-        LatinLocked,    //!< Latin caps locked mode
-        CyrillicLower,  //!< Cyrillic lower case mode
-        CyrillicUpper,  //!< Cyrillic upper case mode
-        CyrillicLocked, //!< Cyrillic caps locked mode
-        Arabic,         //!< Arabic mode
-        Pinyin,         //!< Pinyin mode
-        Zhuyin,         //!< Zhuyin mode
-        Cangjie,        //!< Cangjie mode
-        NumAndSymLatched,   //!< Number and Symbol latched mode
-        NumAndSymLocked,//!< Number and Symbol locked mode
-        DeadKeyAcute,   //!< Dead key acute mode
-        DeadKeyCaron,   //!< Dead key caron mode
-        DeadKeyCircumflex,  //!< Dead key circumflex mode
-        DeadKeyDiaeresis,   //!< Dead key diaeresis mode
-        DeadKeyGrave,   //!< Dead key grave mode
-        DeadKeyTilde    //!< Dead key tilde mode
-    };
-
-     /*!
      * MInputMethodSubView defines an input method subview with an identifier \a subViewId
      * and a title \a subViewTitle.
      *
@@ -170,14 +142,6 @@ public:
      */
     virtual void switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation);
 
-    /*!
-     * \brief Sends input mode indicate state.
-     * Default implementation is sending the input mode indicate state \a mode to application framework.
-     * \param mode Input mode indicator state.
-     * \sa InputModeIndicator.
-     */
-    void sendInputModeIndicator(InputModeIndicator mode);
-
     /*! \brief Returns all subviews (IDs and titles) which are supported for \a state.
      *
      * Implement this function to return the subviews which are supported by this input
@@ -241,7 +205,6 @@ signals:
 private:
     Q_DISABLE_COPY(MInputMethodBase)
     Q_DECLARE_PRIVATE(MInputMethodBase)
-    Q_PRIVATE_SLOT(d_func(), void _q_handleIndicatorServiceChanged(const QString &, const QString &, const QString &));
 
     MInputMethodBasePrivate * const d_ptr;
 };
