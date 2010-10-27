@@ -39,9 +39,9 @@ namespace
     const QString pluginName2 = "DummyImPlugin2";
     const QString pluginName3 = "DummyImPlugin3";
 
-    const char * const DBusMIMPluginManagerServiceName = "com.maemo.inputmethodpluginmanager1";
-    const char * const DBusMIMPluginManagerPath = "/com/maemo/inputmethodpluginmanager1";
-    const char * const DBusMIMPluginManagerInterface = "com.maemo.inputmethodpluginmanager1";
+    const char * const DBusMIMPluginManagerServiceName = "com.meego.inputmethodpluginmanager1";
+    const char * const DBusMIMPluginManagerPath = "/com/meego/inputmethodpluginmanager1";
+    const char * const DBusMIMPluginManagerInterface = "com.meego.inputmethodpluginmanager1";
 
     QString Toolbar1 = "/toolbar1.xml";
     QString Toolbar2 = "/toolbar2.xml";

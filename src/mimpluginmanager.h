@@ -32,7 +32,7 @@ class MInputMethodBase;
 class MIMPluginManager: public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.maemo.inputmethodpluginmanager1")
+    Q_CLASSINFO("D-Bus Interface", "com.meego.inputmethodpluginmanager1")
 
 public:
     /*!

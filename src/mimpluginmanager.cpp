@@ -59,8 +59,8 @@ namespace
     const QString PluginRoot          = "/meegotouch/inputmethods/plugins";
     const QString MImAccesoryEnabled  = "/meegotouch/inputmethods/accessoryenabled";
 
-    const char * const DBusServiceName = "com.maemo.inputmethodpluginmanager1";
-    const char * const DBusPath = "/com/maemo/inputmethodpluginmanager1";
+    const char * const DBusServiceName = "com.meego.inputmethodpluginmanager1";
+    const char * const DBusPath = "/com/meego/inputmethodpluginmanager1";
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,

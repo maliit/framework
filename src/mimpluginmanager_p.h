@@ -153,7 +153,8 @@ public:
 class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.maemo.inputmethodpluginmanager1")
+    Q_CLASSINFO("D-Bus Interface", "com.meego.inputmethodpluginmanager1")
+
 public:
     explicit MIMPluginManagerAdaptor(MIMPluginManager *parent);
     virtual ~MIMPluginManagerAdaptor();

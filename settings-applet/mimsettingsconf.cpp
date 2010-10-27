@@ -32,9 +32,9 @@ namespace
     const QString MImPluginPaths = ConfigRoot + "paths";
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
-    const char * const DBusMIMPluginManagerServiceName = "com.maemo.inputmethodpluginmanager1";
-    const char * const DBusMIMPluginManagerPath = "/com/maemo/inputmethodpluginmanager1";
-    const char * const DBusMIMPluginManagerInterface = "com.maemo.inputmethodpluginmanager1";
+    const char * const DBusMIMPluginManagerServiceName = "com.meego.inputmethodpluginmanager1";
+    const char * const DBusMIMPluginManagerPath = "/com/meego/inputmethodpluginmanager1";
+    const char * const DBusMIMPluginManagerInterface = "com.meego.inputmethodpluginmanager1";
 }
 
 MImSettingsConf *MImSettingsConf::imSettingsConfInstance = 0;
