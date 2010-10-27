@@ -36,8 +36,6 @@ class MIMPluginManager: public QObject
 public:
     /*!
      * \Brief Constructs object MIMPluginManager
-     * \param deleteIMtimeout int timeout for deletion of inactive input method objects.
-     * Use default value to set default timeout.
      */
     MIMPluginManager();
 
@@ -57,7 +55,8 @@ public:
 
     //! Returns all subviews (IDs and titles) of loaded plugins which support \a state.
     QMap<QString, QString> availableSubViews(const QString &plugin,
-                                             MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
+                                             MInputMethod::HandlerState state
+                                              = MInputMethod::OnScreen) const;
 
     //! Returns the ID of active subview of the activated plugin for \a state.
     QString activeSubView(MInputMethod::HandlerState state) const;
