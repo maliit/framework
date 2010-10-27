@@ -6,6 +6,13 @@
    allow signal only and event only key events.
  - Similar change to MInputContextConnection::sendKeyEvent and the "keyEvent"
    method in DBUS interface "com.meego.inputmethod.inputcontext1".
+ - Removed MInputContextConnection from public API and replaced it with
+   MAbstractInputMethodHost for MInputMethodBase.
+ - Removed some ...Requsted() signals from MInputMethodBase and replaced with
+   methods in MAbstractInputMethodHost
+ - Removed indicator setting from MInputMethodBase and replaced with method on
+   MAbstractInputMethodHost. Moved the indicator enum to MInputMethod namespace.
+ - Changed the D-Bus interface of MIMPluginManager to use meego prefix.
 
 0.19.24
 ========
