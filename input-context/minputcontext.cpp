@@ -73,6 +73,7 @@ MInputContext::MInputContext(QObject *parent)
       styleContainer(0),
       connectedObject(0),
       pasteAvailable(false),
+      copyAvailable(false),
       copyAllowed(true),
       redirectKeys(false),
       objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount))
@@ -296,8 +297,6 @@ void MInputContext::setFocusWidget(QWidget *focused)
 {
     QObject *focusedObject = focused;
     QGraphicsItem *focusItem = 0;
-    bool copyAvailable = false;
-
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << focused;
     QInputContext::setFocusWidget(focused);
 
@@ -340,16 +339,19 @@ void MInputContext::setFocusWidget(QWidget *focused)
             copyAllowed = !(focused->inputMethodHints() & Qt::ImhHiddenText);
         }
 
-        // FIXME: paste status doesn't update if paste becomes available from application side
         pasteAvailable = !QApplication::clipboard()->text().isEmpty();
 
+        connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(handleClipboardDataChange()), Qt::UniqueConnection);
     } else {
+        copyAvailable = false;
         copyAllowed = false;
         imServer->updateWidgetInformation(stateInformation, true);
+
+        disconnect(QApplication::clipboard(), SIGNAL(dataChanged()), this, 0);
     }
 
     // show or hide Copy/Paste button on input method server
-    manageCopyPasteState(copyAvailable);
+    notifyCopyPasteState();
 
     if (inputPanelState == InputPanelShowPending && focused) {
         imServer->showInputMethod();
@@ -371,7 +373,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
     if (focusedObject && focusedObject->metaObject()
             && focusedObject->metaObject()->indexOfSignal(signalName) != -1) {
         connect(focusedObject, SIGNAL(copyAvailable(bool)),
-                this, SLOT(manageCopyPasteState(bool)));
+                this, SLOT(handleCopyAvailabilityChange(bool)));
         connectedObject = focusedObject;
     }
 }
@@ -558,7 +560,6 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
     if (focusWidget() != 0 && requestType != MInputMethod::EventRequestSignalOnly) {
         QCoreApplication::sendEvent(focusWidget(), &event);
     }
-
 }
 
 
@@ -588,6 +589,17 @@ QRect MInputContext::preeditRectangle(bool &valid) const
 }
 
 
+void MInputContext::handleClipboardDataChange()
+{
+    bool newPasteAvailable = !QApplication::clipboard()->text().isEmpty();
+
+    if (newPasteAvailable != pasteAvailable) {
+        pasteAvailable = newPasteAvailable;
+        notifyCopyPasteState();
+    }
+}
+
+
 void MInputContext::copy()
 {
     bool ok = false;
@@ -603,8 +615,6 @@ void MInputContext::copy()
         keyEvent(QEvent::KeyPress, Qt::Key_C, Qt::ControlModifier, "", false, 1);
         keyEvent(QEvent::KeyRelease, Qt::Key_C, Qt::ControlModifier, "", false, 1);
     }
-
-    pasteAvailable = !QApplication::clipboard()->text().isEmpty(); //verify if something was copied
 }
 
 
@@ -623,10 +633,6 @@ void MInputContext::paste()
         keyEvent(QEvent::KeyPress, Qt::Key_V, Qt::ControlModifier, "", false, 1);
         keyEvent(QEvent::KeyRelease, Qt::Key_V, Qt::ControlModifier, "", false, 1);
     }
-
-    QApplication::clipboard()->clear();
-    pasteAvailable = false;
-    manageCopyPasteState(false); // there is no chance to have selection after paste
 }
 
 
@@ -659,11 +665,18 @@ void MInputContext::onDBusConnection()
     }
 }
 
-void MInputContext::manageCopyPasteState(bool copyAvailable)
+void MInputContext::handleCopyAvailabilityChange(bool copyAvailable)
+{
+    if (this->copyAvailable != copyAvailable) {
+        this->copyAvailable = copyAvailable;
+        notifyCopyPasteState();
+    }
+}
+
+void MInputContext::notifyCopyPasteState()
 {
     imServer->setCopyPasteState(copyAvailable && copyAllowed, pasteAvailable);
 }
-
 
 void MInputContext::notifyOrientationChange(M::OrientationAngle orientation)
 {

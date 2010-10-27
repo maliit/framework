@@ -147,10 +147,10 @@ private slots:
     void onDBusConnection();
 
     /*!
-     * \brief Notifies input method server of copy/paste availability.
+     * \brief Notifies input method server of copy availability.
      * \param copyAvailable bool Specifies wheter copy is available
      */
-    void manageCopyPasteState(bool copyAvailable);
+    void handleCopyAvailabilityChange(bool copyAvailable);
 
     //! Notify input method plugin about new \a orientation angle of application's active window.
     void notifyOrientationChange(M::OrientationAngle orientation);
@@ -164,6 +164,9 @@ private slots:
     //! Notify input method plugin about the \attribute of the \a item in the custom toolbar which has the unique \a id is changed to \a value.
     void notifyToolbarItemAttributeChanged(int id, const QString &item, const QString &attribute, const QVariant& value);
 
+    //! Checks whether there is someting to paste in the clipboard and notifies input method plugin about it.
+    void handleClipboardDataChange();
+
 private:
     Q_DISABLE_COPY(MInputContext)
 
@@ -174,6 +177,8 @@ private:
     };
 
     void connectToDBus();
+
+    void notifyCopyPasteState();
 
     //! returns content type corresponding to specified hints
     M::TextContentType contentType(Qt::InputMethodHints hints) const;
@@ -206,6 +211,7 @@ private:
 
     QPointer<QObject> connectedObject;
     bool pasteAvailable;
+    bool copyAvailable;
     bool copyAllowed;
     //! redirect all hw key events to the input method or not
     bool redirectKeys;

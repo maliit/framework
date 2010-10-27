@@ -653,32 +653,14 @@ void Ut_MInputContext::testCopyPasteState()
 
     QApplication::clipboard()->clear();
 
-    QTest::qWait(500); // just processing pending events is not robust.
-    while (app->hasPendingEvents()) {
-        app->processEvents();
-    }
+    waitAndProcessEvents(100);
 
     int count = m_stub->setCopyPasteStateCount();
     params.clear();
     qDebug() << "No focused widget";
     gFocusedWidget = 0;
     m_subject->setFocusWidget(0);
-    QTest::qWait(500); // just processing pending events is not robust.
-    while (app->hasPendingEvents()) {
-        app->processEvents();
-    }
-    ++count;
-    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
-    QCOMPARE(params.count(), 2);
-    QCOMPARE(params.takeFirst(), false);
-    QCOMPARE(params.takeFirst(), false);
-
-    qDebug() << "Update button state";
-    m_subject->manageCopyPasteState(false);
-    QTest::qWait(500); // just processing pending events is not robust.
-    while (app->hasPendingEvents()) {
-        app->processEvents();
-    }
+    waitAndProcessEvents(100);
     ++count;
     QCOMPARE(m_stub->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
@@ -688,10 +670,7 @@ void Ut_MInputContext::testCopyPasteState()
     qDebug() << "Set widget without selection";
     gFocusedWidget = &widget;
     m_subject->setFocusWidget(&widget);
-    QTest::qWait(500); // just processing pending events is not robust.
-    while (app->hasPendingEvents()) {
-        app->processEvents();
-    }
+    waitAndProcessEvents(100);
     ++count;
     QCOMPARE(m_stub->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
@@ -700,41 +679,66 @@ void Ut_MInputContext::testCopyPasteState()
 
     qDebug() << "Update button state with empty selection";
     widget.sendCopyAvailable(false);
-    QTest::qWait(500); // just processing pending events is not robust.
-    while (app->hasPendingEvents()) {
-        app->processEvents();
-    }
-    ++count;
+    waitAndProcessEvents(100);
     QCOMPARE(m_stub->setCopyPasteStateCount(), count);
-    QCOMPARE(params.count(), 2);
-    QCOMPARE(params.takeFirst(), false);
-    QCOMPARE(params.takeFirst(), false);
 
+    qDebug() << "Update button state with something selected";
     widget.selectedText = "Some text";
     widget.sendCopyAvailable(true);
     qDebug() << "Text was selected";
-    QTest::qWait(500); // just processing pending events is not robust.
-    while (app->hasPendingEvents()) {
-        app->processEvents();
-    }
+    waitAndProcessEvents(100);
     ++count;
     QVERIFY(m_stub->setCopyPasteStateCount() == count);
     QVERIFY(params.count() == 2);
     QCOMPARE(params.takeFirst(), true);
     QCOMPARE(params.takeFirst(), false);
 
+    qDebug() << "Set some text to clipboard (simulate paste)";
+    QApplication::clipboard()->setText("Some text");
+    waitAndProcessEvents(100);
+    ++count;
+    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(params.count(), 2);
+    QCOMPARE(params.takeFirst(), true);
+    QCOMPARE(params.takeFirst(), true);
+
+    qDebug() << "Update button state with text unselected";
+    widget.sendCopyAvailable(false);
+    waitAndProcessEvents(100);
+    ++count;
+    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(params.count(), 2);
+    QCOMPARE(params.takeFirst(), false);
+    QCOMPARE(params.takeFirst(), true);
+
+    qDebug() << "Clear clipboard";
+    QApplication::clipboard()->clear();
+    waitAndProcessEvents(100);
+    ++count;
+    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(params.count(), 2);
+    QCOMPARE(params.takeFirst(), false);
+    QCOMPARE(params.takeFirst(), false);
+
     qDebug() << "Restore initial state";
     gFocusedWidget = 0;
     m_subject->setFocusWidget(0);
-    QTest::qWait(500); // just processing pending events is not robust.
-    while (app->hasPendingEvents()) {
-        app->processEvents();
-    }
+    waitAndProcessEvents(100);
     ++count;
     QVERIFY(m_stub->setCopyPasteStateCount() == count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
+
+    qDebug() << "Set some text to clipboard (simulate paste)";
+    QApplication::clipboard()->setText("Some text");
+    waitAndProcessEvents(100);
+    QVERIFY(m_stub->setCopyPasteStateCount() == count);
+
+    qDebug() << "Clear clipboard";
+    QApplication::clipboard()->clear();
+    waitAndProcessEvents(100);
+    QVERIFY(m_stub->setCopyPasteStateCount() == count);
 }
 
 void Ut_MInputContext::testSetRedirectKeys()
