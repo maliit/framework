@@ -28,6 +28,7 @@ class MToolbarId;
 class MInputMethodBase;
 
 
+//! Note: this class is not considered stable API
 class MIMPluginManager: public QObject
 {
     Q_OBJECT
