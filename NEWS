@@ -1,3 +1,10 @@
+0.19.27
+=======
+
+* API changes
+ - MInputMethodBase was renamed to MAbstractInputMethod
+ - MInputMethodSettingsBase was renamed to MAbstractInputMethodSettings
+
 0.19.26
 ========
 
