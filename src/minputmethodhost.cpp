@@ -45,7 +45,7 @@ void MInputMethodHost::setEnabled(bool enabled)
     this->enabled = enabled;
 }
 
-void MInputMethodHost::setInputMethod(MInputMethodBase *inputMethod)
+void MInputMethodHost::setInputMethod(MAbstractInputMethod *inputMethod)
 {
     this->inputMethod = inputMethod;
 }

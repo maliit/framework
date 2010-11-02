@@ -20,7 +20,7 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDebug>
-#include "minputmethodbase.h"
+
 #include "minputmethodplugin.h"
 #include "mimsettingsconf.h"
 

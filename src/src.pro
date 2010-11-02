@@ -7,7 +7,7 @@ TARGET = meegoimframework
 # Input
 HEADERSINSTALL = \
         minputmethodplugin.h \
-        minputmethodbase.h \
+        mabstractinputmethod.h \
         mabstractinputmethodhost.h \
         mimpluginmanager.h \
         mplainwindow.h \
@@ -32,7 +32,7 @@ HEADERS += $$HEADERSINSTALL \
 
 SOURCES += mimpluginmanager.cpp \
         mindicatorserviceclient.cpp \
-        minputmethodbase.cpp \
+        mabstractinputmethod.cpp \
         mabstractinputmethodhost.cpp \
         minputmethodhost.cpp \
         minputcontextconnection.cpp \

@@ -108,10 +108,10 @@ void Ut_MIMPluginManager::init()
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
     DummyInputMethod  *inputMethod  = 0;
-    MInputMethodBase *inputMethodBase = 0;
-    inputMethodBase = subject->plugins[plugin].inputMethod;
-    QVERIFY(inputMethodBase != 0);
-    inputMethod = dynamic_cast<DummyInputMethod *>(inputMethodBase);
+    MAbstractInputMethod *abstractInputMethod = 0;
+    abstractInputMethod = subject->plugins[plugin].inputMethod;
+    QVERIFY(abstractInputMethod != 0);
+    inputMethod = dynamic_cast<DummyInputMethod *>(abstractInputMethod);
     QVERIFY(inputMethod != 0);
     inputMethod->setStateCount = 0;
 
@@ -262,7 +262,7 @@ void Ut_MIMPluginManager::testSwitchPluginState()
     QSet<MInputMethod::HandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
-    MInputMethodBase *inputMethodBase = 0;
+    MAbstractInputMethod *abstractInputMethod = 0;
     DummyInputMethod  *inputMethod  = 0;
     DummyInputMethod3 *inputMethod3 = 0;
 
@@ -277,9 +277,9 @@ void Ut_MIMPluginManager::testSwitchPluginState()
     plugin = dynamic_cast<DummyImPlugin *>(*subject->activePlugins.begin());
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
-    inputMethodBase = subject->plugins[plugin].inputMethod;
-    QVERIFY(inputMethodBase != 0);
-    inputMethod = dynamic_cast<DummyInputMethod *>(inputMethodBase);
+    abstractInputMethod = subject->plugins[plugin].inputMethod;
+    QVERIFY(abstractInputMethod != 0);
+    inputMethod = dynamic_cast<DummyInputMethod *>(abstractInputMethod);
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->setStateCount, 1);
     inputMethod->setStateCount = 0;
@@ -293,9 +293,9 @@ void Ut_MIMPluginManager::testSwitchPluginState()
     plugin = dynamic_cast<DummyImPlugin *>(*subject->activePlugins.begin());
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
-    inputMethodBase = subject->plugins[plugin].inputMethod;
-    QVERIFY(inputMethodBase != 0);
-    inputMethod = dynamic_cast<DummyInputMethod *>(inputMethodBase);
+    abstractInputMethod = subject->plugins[plugin].inputMethod;
+    QVERIFY(abstractInputMethod != 0);
+    inputMethod = dynamic_cast<DummyInputMethod *>(abstractInputMethod);
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->setStateCount, 1);
     inputMethod->setStateCount = 0;
@@ -309,9 +309,9 @@ void Ut_MIMPluginManager::testSwitchPluginState()
     plugin3 = dynamic_cast<DummyImPlugin3 *>(*subject->activePlugins.begin());
     QVERIFY(plugin3 != 0);
     QCOMPARE(plugin3->name(), pluginName3);
-    inputMethodBase = subject->plugins[plugin3].inputMethod;
-    QVERIFY(inputMethodBase != 0);
-    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(inputMethodBase);
+    abstractInputMethod = subject->plugins[plugin3].inputMethod;
+    QVERIFY(abstractInputMethod != 0);
+    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(abstractInputMethod);
     QVERIFY(inputMethod3 != 0);
     QCOMPARE(inputMethod3->setStateCount, 1);
     inputMethod3->setStateCount = 0;
@@ -327,7 +327,7 @@ void Ut_MIMPluginManager::testMultilePlugins()
     DummyImPlugin3 *plugin3 = 0;
     int pluginCount = 0;
     int plugin3Count = 0;
-    MInputMethodBase *inputMethodBase = 0;
+    MAbstractInputMethod *abstractInputMethod = 0;
     DummyInputMethod  *inputMethod  = 0;
     DummyInputMethod3 *inputMethod3 = 0;
 
@@ -343,9 +343,9 @@ void Ut_MIMPluginManager::testMultilePlugins()
         if (plugin3 != 0) {
             ++plugin3Count;
             QCOMPARE(plugin3->name(), pluginName3);
-            inputMethodBase = subject->plugins[p].inputMethod;
-            QVERIFY(inputMethodBase != 0);
-            inputMethod3 = dynamic_cast<DummyInputMethod3 *>(inputMethodBase);
+            abstractInputMethod = subject->plugins[p].inputMethod;
+            QVERIFY(abstractInputMethod != 0);
+            inputMethod3 = dynamic_cast<DummyInputMethod3 *>(abstractInputMethod);
             QVERIFY(inputMethod3 != 0);
             QCOMPARE(inputMethod3->setStateCount, 1);
             inputMethod3->setStateCount = 0;
@@ -356,9 +356,9 @@ void Ut_MIMPluginManager::testMultilePlugins()
         if (plugin != 0) {
             ++pluginCount;
             QCOMPARE(plugin->name(), pluginName);
-            inputMethodBase = subject->plugins[p].inputMethod;
-            QVERIFY(inputMethodBase != 0);
-            inputMethod = dynamic_cast<DummyInputMethod *>(inputMethodBase);
+            abstractInputMethod = subject->plugins[p].inputMethod;
+            QVERIFY(abstractInputMethod != 0);
+            inputMethod = dynamic_cast<DummyInputMethod *>(abstractInputMethod);
             QVERIFY(inputMethod != 0);
             QCOMPARE(inputMethod->setStateCount, 1);
             inputMethod->setStateCount = 0;
@@ -386,7 +386,7 @@ void Ut_MIMPluginManager::testExistInputMethod()
     subject->setActiveHandlers(actualState);
 
     for (iterator = subject->plugins.begin(); iterator != subject->plugins.end(); ++iterator) {
-        // no matter the plugin is active or not, the inputmethodbase object is not empty.
+        // no matter the plugin is active or not, the inputmethod object is not empty.
         if (!iterator.key()->supportedStates().isEmpty()) {
             QVERIFY(iterator.value().inputMethod != 0);
         }
@@ -408,7 +408,7 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     QSet<MInputMethod::HandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
-    MInputMethodBase *inputMethodBase = 0;
+    MAbstractInputMethod *abstractInputMethod = 0;
     QPointer<DummyInputMethod > inputMethod  = 0;
     QPointer<DummyInputMethod3> inputMethod3 = 0;
 
@@ -453,9 +453,9 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
-    inputMethodBase = subject->plugins[plugin3].inputMethod;
-    QVERIFY(inputMethodBase != 0);
-    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(inputMethodBase);
+    abstractInputMethod = subject->plugins[plugin3].inputMethod;
+    QVERIFY(abstractInputMethod != 0);
+    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(abstractInputMethod);
     QVERIFY(inputMethod3 != 0);
     QCOMPARE(inputMethod3->switchContextCallCount, 0);
     QCOMPARE(inputMethod3->setStateCount, 1);
@@ -471,9 +471,9 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin == *subject->activePlugins.begin());
-    inputMethodBase = subject->plugins[plugin].inputMethod;
-    QVERIFY(inputMethodBase != 0);
-    inputMethod = dynamic_cast<DummyInputMethod *>(inputMethodBase);
+    abstractInputMethod = subject->plugins[plugin].inputMethod;
+    QVERIFY(abstractInputMethod != 0);
+    inputMethod = dynamic_cast<DummyInputMethod *>(abstractInputMethod);
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->switchContextCallCount, 0);
     QCOMPARE(inputMethod->setStateCount, 1);
@@ -488,9 +488,9 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
-    inputMethodBase = subject->plugins[plugin3].inputMethod;
-    QVERIFY(inputMethodBase != 0);
-    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(inputMethodBase);
+    abstractInputMethod = subject->plugins[plugin3].inputMethod;
+    QVERIFY(abstractInputMethod != 0);
+    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(abstractInputMethod);
     QVERIFY(inputMethod3 != 0);
     QCOMPARE(inputMethod3->switchContextCallCount, 1);
     inputMethod3->switchContextCallCount = 0;
@@ -513,8 +513,8 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
     QVERIFY(inputMethod3 != 0);
-    inputMethodBase = inputMethod3;
-    QVERIFY(inputMethodBase == subject->plugins[plugin3].inputMethod);
+    abstractInputMethod = inputMethod3;
+    QVERIFY(abstractInputMethod == subject->plugins[plugin3].inputMethod);
     QCOMPARE(inputMethod3->switchContextCallCount, 0);
     QCOMPARE(inputMethod3->setStateCount, 0);
     inputMethod3->setStateCount = 0;
@@ -565,7 +565,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     QSet<MInputMethod::HandlerState> actualState;
     DummyImPlugin  *plugin  = 0;
     DummyImPlugin3 *plugin3 = 0;
-    MInputMethodBase *inputMethodBase = 0;
+    MAbstractInputMethod *abstractInputMethod = 0;
     QPointer<DummyInputMethod > inputMethod  = 0;
     QPointer<DummyInputMethod3> inputMethod3 = 0;
 
@@ -610,9 +610,9 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
 
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin3 == *subject->activePlugins.begin());
-    inputMethodBase = subject->plugins[plugin3].inputMethod;
-    QVERIFY(inputMethodBase != 0);
-    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(inputMethodBase);
+    abstractInputMethod = subject->plugins[plugin3].inputMethod;
+    QVERIFY(abstractInputMethod != 0);
+    inputMethod3 = dynamic_cast<DummyInputMethod3 *>(abstractInputMethod);
     QVERIFY(inputMethod3 != 0);
     QCOMPARE(inputMethod3->switchContextCallCount, 1);
     QCOMPARE(inputMethod3->directionParam, MInputMethod::SwitchUndefined);
@@ -647,7 +647,7 @@ void Ut_MIMPluginManager::testSetActivePlugin()
 
 void Ut_MIMPluginManager::testSubViews()
 {
-    QList<MInputMethodBase::MInputMethodSubView> subViews;
+    QList<MAbstractInputMethod::MInputMethodSubView> subViews;
     foreach (MInputMethodPlugin *plugin, subject->plugins.keys()) {
         subViews += subject->plugins[plugin].inputMethod->subViews(MInputMethod::OnScreen);
     }

@@ -40,7 +40,7 @@ public:
     void setEnabled(bool enabled);
 
     //! associate input method with this host instance
-    void setInputMethod(MInputMethodBase *inputMethod);
+    void setInputMethod(MAbstractInputMethod *inputMethod);
 
     // \reimp
     virtual int contentType(bool &valid);
@@ -78,7 +78,7 @@ private:
 
     MInputContextConnection *connection;
     MIMPluginManager *pluginManager;
-    MInputMethodBase *inputMethod;
+    MAbstractInputMethod *inputMethod;
     bool enabled;
     MIndicatorServiceClient &indicatorService;
 };

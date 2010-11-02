@@ -14,113 +14,113 @@
  * of this file.
  */
 
-#include "minputmethodbase.h"
+#include "mabstractinputmethod.h"
 #include "mabstractinputmethodhost.h"
 
 #include <QKeyEvent>
 
-class MInputMethodBasePrivate
+class MAbstractInputMethodPrivate
 {
 public:
-    MInputMethodBasePrivate(MAbstractInputMethodHost *imHost, MInputMethodBase *parent);
-    ~MInputMethodBasePrivate();
+    MAbstractInputMethodPrivate(MAbstractInputMethodHost *imHost, MAbstractInputMethod *parent);
+    ~MAbstractInputMethodPrivate();
 
     MAbstractInputMethodHost *imHost;
 };
 
 
 
-MInputMethodBasePrivate::MInputMethodBasePrivate(MAbstractInputMethodHost *imHost,
-                                                 MInputMethodBase *parent)
+MAbstractInputMethodPrivate::MAbstractInputMethodPrivate(MAbstractInputMethodHost *imHost,
+                                                         MAbstractInputMethod *parent)
     : imHost(imHost)
 {
 }
 
 
-MInputMethodBasePrivate::~MInputMethodBasePrivate()
+MAbstractInputMethodPrivate::~MAbstractInputMethodPrivate()
 {
 }
 
 ///////////////
 
-MInputMethodBase::MInputMethodBase(MAbstractInputMethodHost *imHost, QObject *parent)
+MAbstractInputMethod::MAbstractInputMethod(MAbstractInputMethodHost *imHost, QObject *parent)
     : QObject(parent),
-      d_ptr(new MInputMethodBasePrivate(imHost, this))
+      d_ptr(new MAbstractInputMethodPrivate(imHost, this))
 {
     // nothing
 }
 
 
-MInputMethodBase::~MInputMethodBase()
+MAbstractInputMethod::~MAbstractInputMethod()
 {
     delete d_ptr;
 }
 
 
 MAbstractInputMethodHost *
-MInputMethodBase::inputMethodHost() const
+MAbstractInputMethod::inputMethodHost() const
 {
-    Q_D(const MInputMethodBase);
+    Q_D(const MAbstractInputMethod);
 
     return d->imHost;
 }
 
-void MInputMethodBase::show()
+void MAbstractInputMethod::show()
 {
     // empty default implementation
 }
 
-void MInputMethodBase::hide()
+void MAbstractInputMethod::hide()
 {
     // empty default implementation
 }
 
-void MInputMethodBase::setPreedit(const QString &)
+void MAbstractInputMethod::setPreedit(const QString &)
 {
     // empty default implementation
 }
 
-void MInputMethodBase::update()
+void MAbstractInputMethod::update()
 {
     // empty default implementation
 }
 
-void MInputMethodBase::reset()
+void MAbstractInputMethod::reset()
 {
     // empty default implementation
 }
 
-void MInputMethodBase::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
+void MAbstractInputMethod::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
 {
     // empty default implementation
     Q_UNUSED(pos);
     Q_UNUSED(preeditRect);
 }
 
-void MInputMethodBase::focusChanged(bool /* focusIn */)
+void MAbstractInputMethod::focusChanged(bool /* focusIn */)
 {
     // empty default implementation
 }
 
-void MInputMethodBase::visualizationPriorityChanged(bool priority)
+void MAbstractInputMethod::visualizationPriorityChanged(bool priority)
 {
     // empty default implementation
     Q_UNUSED(priority);
 }
 
-void MInputMethodBase::appOrientationChanged(int angle)
+void MAbstractInputMethod::appOrientationChanged(int angle)
 {
     // empty default implementation
     Q_UNUSED(angle);
 }
 
-void MInputMethodBase::setToolbar(QSharedPointer<const MToolbarData> toolbar)
+void MAbstractInputMethod::setToolbar(QSharedPointer<const MToolbarData> toolbar)
 {
     // empty default implementation
     Q_UNUSED(toolbar);
 }
 
-void MInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+void MAbstractInputMethod::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                        Qt::KeyboardModifiers modifiers,
                                        const QString &text, bool autoRepeat, int count,
                                        quint32 /* nativeScanCode */, quint32 /* nativeModifiers */)
@@ -130,46 +130,48 @@ void MInputMethodBase::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                               count));
 }
 
-void MInputMethodBase::setState(const QSet<MInputMethod::HandlerState> &state)
+void MAbstractInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
 {
     // empty default implementation
     Q_UNUSED(state);
 }
 
-void MInputMethodBase::clientChanged()
+void MAbstractInputMethod::clientChanged()
 {
     // empty default implementation
 }
 
-void MInputMethodBase::switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation)
+void MAbstractInputMethod::switchContext(MInputMethod::SwitchDirection direction,
+                                         bool enableAnimation)
 {
     // empty default implementation
     Q_UNUSED(direction);
     Q_UNUSED(enableAnimation);
 }
 
-QList<MInputMethodBase::MInputMethodSubView>
-MInputMethodBase::subViews(MInputMethod::HandlerState state) const
+QList<MAbstractInputMethod::MInputMethodSubView>
+MAbstractInputMethod::subViews(MInputMethod::HandlerState state) const
 {
     Q_UNUSED(state);
     QList<MInputMethodSubView> sVs;
     return sVs;
 }
 
-void MInputMethodBase::setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state)
+void MAbstractInputMethod::setActiveSubView(const QString &subViewId,
+                                            MInputMethod::HandlerState state)
 {
     // empty default implementation
     Q_UNUSED(subViewId);
     Q_UNUSED(state);
 }
 
-QString MInputMethodBase::activeSubView(MInputMethod::HandlerState state) const
+QString MAbstractInputMethod::activeSubView(MInputMethod::HandlerState state) const
 {
     Q_UNUSED(state);
     return QString();
 }
 
-void MInputMethodBase::showLanguageNotification()
+void MAbstractInputMethod::showLanguageNotification()
 {
     // empty default implementation
 }

@@ -32,7 +32,7 @@
 #include <QString>
 #include <QVariant>
 
-#include "minputmethodbase.h"
+#include "mabstractinputmethod.h"
 #include "mimapplication.h"
 
 namespace
@@ -452,7 +452,7 @@ void MInputContextDBusConnection::activateContext()
     }
 
     // notify plugins
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->clientChanged();
     }
 }
@@ -473,7 +473,7 @@ void MInputContextDBusConnection::hideInputMethod()
 void MInputContextDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
                                                         const QRect &preeditRect)
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->mouseClickedOnPreedit(pos, preeditRect);
     }
 }
@@ -481,7 +481,7 @@ void MInputContextDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
 
 void MInputContextDBusConnection::setPreedit(const QString &text)
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->setPreedit(text);
     }
 }
@@ -489,7 +489,7 @@ void MInputContextDBusConnection::setPreedit(const QString &text)
 
 void MInputContextDBusConnection::reset()
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->reset();
     }
 }
@@ -529,7 +529,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
     d->widgetState = stateInfo;
 
     if (focusChanged) {
-        foreach (MInputMethodBase *target, targets()) {
+        foreach (MAbstractInputMethod *target, targets()) {
             target->focusChanged(stateInfo[FocusStateAttribute].toBool());
         }
 
@@ -538,7 +538,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
 
     // call notification methods if needed
     if (oldVisualization != newVisualization) {
-        foreach (MInputMethodBase *target, targets()) {
+        foreach (MAbstractInputMethod *target, targets()) {
             target->visualizationPriorityChanged(newVisualization);
         }
     }
@@ -562,7 +562,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
     }
 
     // general notification last
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->update();
     }
 }
@@ -570,7 +570,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
 
 void MInputContextDBusConnection::appOrientationChanged(int angle)
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->appOrientationChanged(angle);
     }
 }
@@ -597,7 +597,7 @@ void MInputContextDBusConnection::processKeyEvent(QEvent::Type keyType, Qt::Key 
                                                   const QString &text, bool autoRepeat, int count,
                                                   quint32 nativeScanCode, quint32 nativeModifiers)
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
                                 nativeScanCode, nativeModifiers);
     }

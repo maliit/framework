@@ -19,7 +19,7 @@ public:
 
     virtual QStringList languages() const;
 
-    virtual MInputMethodBase *createInputMethod(MAbstractInputMethodHost *imHost);
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *imHost);
 
     virtual MInputMethodSettingsBase *createInputMethodSettings();
 

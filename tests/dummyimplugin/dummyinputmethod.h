@@ -1,13 +1,13 @@
 #ifndef DUMMYINPUTMETHOD_H
 #define DUMMYINPUTMETHOD_H
 
-#include <minputmethodbase.h>
+#include <mabstractinputmethod.h>
 #include <QSet>
 
 #include "mtoolbardata.h"
 #include "minputmethodnamespace.h"
 
-class DummyInputMethod : public MInputMethodBase
+class DummyInputMethod : public MAbstractInputMethod
 {
     Q_OBJECT
 
@@ -19,7 +19,7 @@ public:
     virtual void setState(const QSet<MInputMethod::HandlerState> &state);
     virtual void switchContext(MInputMethod::SwitchDirection direction,
                                bool enableAnimation);
-    virtual QList<MInputMethodBase::MInputMethodSubView> subViews(MInputMethod::HandlerState state
+    virtual QList<MAbstractInputMethod::MInputMethodSubView> subViews(MInputMethod::HandlerState state
                                                                    = MInputMethod::OnScreen) const;
     virtual void setActiveSubView(const QString &,
                                   MInputMethod::HandlerState state = MInputMethod::OnScreen);
@@ -41,7 +41,7 @@ public slots:
     void switchMe(const QString &name);
 
 private:
-    QList<MInputMethodBase::MInputMethodSubView> sViews;
+    QList<MAbstractInputMethod::MInputMethodSubView> sViews;
     QString activeSView;
 };
 

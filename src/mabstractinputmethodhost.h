@@ -26,7 +26,7 @@ class QString;
 class QRegion;
 class QKeyEvent;
 
-class MInputMethodBase;
+class MAbstractInputMethod;
 class MToolbarId;
 
 class MAbstractInputMethodHostPrivate;
@@ -34,7 +34,7 @@ class MAbstractInputMethodHostPrivate;
 /*!
  * \brief Provides an interface for input method instances to connect to the environment.
  *
- * MAbstractInputMethodHost provides methods MInputMethodBase instances can use
+ * MAbstractInputMethodHost provides methods MAbstractInputMethod instances can use
  * for interacting with the application that is using input method services and
  * the input method framework state itself.
  * Note: this is not meant to be derived by the input method framework users.

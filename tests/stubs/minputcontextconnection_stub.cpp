@@ -16,7 +16,7 @@
 
 #include "minputcontextconnection_stub.h"
 
-#include "minputmethodbase.h"
+#include "mabstractinputmethod.h"
 
 
 MInputContextConnectionStub::MInputContextConnectionStub()

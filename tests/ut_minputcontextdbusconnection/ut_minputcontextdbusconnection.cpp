@@ -28,7 +28,7 @@ namespace
 // Target for input context connection
 
 TargetStub::TargetStub(MInputContextConnection *icConnection, QObject *parent)
-    : MInputMethodBase(icConnection, parent)
+    : MAbstractInputMethod(icConnection, parent)
 {
     resetCallCounts();
 }

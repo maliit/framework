@@ -35,7 +35,7 @@ class MInputMethodPlugin;
 class MInputContextConnection;
 class MIMPluginManager;
 class MGConfItem;
-class MInputMethodBase;
+class MAbstractInputMethod;
 class MIMSettingsDialog;
 class MIMPluginManagerAdaptor;
 
@@ -48,7 +48,7 @@ public:
     typedef QSet<MInputMethod::HandlerState> PluginState;
     struct PluginDescription {
         QString fileName;
-        MInputMethodBase *inputMethod;
+        MAbstractInputMethod *inputMethod;
         MInputMethodHost *imHost;
         PluginState state;
         MInputMethod::SwitchDirection lastSwitchDirection;
@@ -72,8 +72,8 @@ public:
 
     void replacePlugin(MInputMethod::SwitchDirection direction, Plugins::iterator initiator,
                        Plugins::iterator replacement);
-    bool switchPlugin(MInputMethod::SwitchDirection direction, MInputMethodBase *initiator);
-    bool switchPlugin(const QString &name, MInputMethodBase *initiator);
+    bool switchPlugin(MInputMethod::SwitchDirection direction, MAbstractInputMethod *initiator);
+    bool switchPlugin(const QString &name, MAbstractInputMethod *initiator);
     bool doSwitchPlugin(MInputMethod::SwitchDirection direction,
                         Plugins::iterator source,
                         Plugins::iterator replacement);

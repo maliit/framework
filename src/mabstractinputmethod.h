@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#ifndef MINPUTMETHODBASE_H
-#define MINPUTMETHODBASE_H
+#ifndef MABSTRACTINPUTMETHOD_H
+#define MABSTRACTINPUTMETHOD_H
 
 #include <QObject>
 #include <QEvent>
@@ -30,16 +30,16 @@ class QPoint;
 class QRect;
 class QGraphicsScene;
 class MAbstractInputMethodHost;
-class MInputMethodBasePrivate;
+class MAbstractInputMethodPrivate;
 class MToolbarData;
 
 /*!
- * \brief MInputMethodBase is a base class for input method servers.
+ * \brief MAbstractInputMethod is a base class for input method servers.
  * 
  * It defines the interface which input method framework can use for
  * passing commands received from the applications
  */
-class MInputMethodBase: public QObject
+class MAbstractInputMethod: public QObject
 {
     Q_OBJECT
 
@@ -60,9 +60,9 @@ public:
     /*! Constructor for input method base
      * \param imHost input method host instace, not owned by input method base
      */
-    MInputMethodBase(MAbstractInputMethodHost *imHost, QObject *parent = 0);
+    MAbstractInputMethod(MAbstractInputMethodHost *imHost, QObject *parent = 0);
 
-    ~MInputMethodBase();
+    ~MAbstractInputMethod();
 
     /*! \brief Returns input method host
      */
@@ -203,10 +203,10 @@ signals:
                               MInputMethod::HandlerState state = MInputMethod::OnScreen);
 
 private:
-    Q_DISABLE_COPY(MInputMethodBase)
-    Q_DECLARE_PRIVATE(MInputMethodBase)
+    Q_DISABLE_COPY(MAbstractInputMethod)
+    Q_DECLARE_PRIVATE(MAbstractInputMethod)
 
-    MInputMethodBasePrivate * const d_ptr;
+    MAbstractInputMethodPrivate * const d_ptr;
 };
 
 #endif

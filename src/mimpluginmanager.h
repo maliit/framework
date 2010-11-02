@@ -25,7 +25,7 @@
 class QRegion;
 class MIMPluginManagerPrivate;
 class MToolbarId;
-class MInputMethodBase;
+class MAbstractInputMethod;
 
 
 //! Note: this class is not considered stable API
@@ -72,10 +72,10 @@ public:
     bool isDBusConnectionValid() const;
 
     //! Switches plugin in according to given \a direction
-    void switchPlugin(MInputMethod::SwitchDirection direction, MInputMethodBase *initiator);
+    void switchPlugin(MInputMethod::SwitchDirection direction, MAbstractInputMethod *initiator);
 
     //! Switches active plugin to inactive plugin with given \a name
-    void switchPlugin(const QString &name, MInputMethodBase *initiator);
+    void switchPlugin(const QString &name, MAbstractInputMethod *initiator);
 
     //! Shows settings for all loaded inputmethod plugins.
     void showInputMethodSettings();

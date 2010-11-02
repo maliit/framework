@@ -17,15 +17,15 @@
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
 #include "mplainwindow.h"
+#include "minputmethodplugin.h"
+#include "mtoolbarmanager.h"
+#include "mimsettingsdialog.h"
+#include "mabstractinputmethod.h"
 
 #include <MGConfItem>
 #include <MKeyboardStateTracker>
 #include <MSceneManager>
 #include <MLocale>
-
-#include "minputmethodplugin.h"
-#include "mtoolbarmanager.h"
-#include "mimsettingsdialog.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -125,7 +125,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
             if (!plugin->supportedStates().isEmpty()) {
                 MInputMethodHost *inputMethodHost = new MInputMethodHost(mICConnection, q,
                                                                          indicatorService);
-                MInputMethodBase *inputMethod = plugin->createInputMethod(inputMethodHost);
+                MAbstractInputMethod *inputMethod = plugin->createInputMethod(inputMethodHost);
 
                 // only add valid plugin descriptions
                 if (inputMethod) {
@@ -156,7 +156,7 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
         return;
     }
 
-    MInputMethodBase *inputMethod = 0;
+    MAbstractInputMethod *inputMethod = 0;
 
     activePlugins.insert(plugin);
     inputMethod = plugins[plugin].inputMethod;
@@ -197,7 +197,7 @@ void MIMPluginManagerPrivate::addHandlerMap(MInputMethod::HandlerState state,
 void MIMPluginManagerPrivate::setActiveHandlers(const QSet<MInputMethod::HandlerState> &states)
 {
     QSet<MInputMethodPlugin *> activatedPlugins;
-    MInputMethodBase *inputMethod = 0;
+    MAbstractInputMethod *inputMethod = 0;
 
     //clear all cached states before activating new one
     for (Plugins::iterator iterator = plugins.begin();
@@ -256,7 +256,7 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
         return;
 
     activePlugins.remove(plugin);
-    MInputMethodBase *inputMethod = plugins[plugin].inputMethod;
+    MAbstractInputMethod *inputMethod = plugins[plugin].inputMethod;
     plugins[plugin].imHost->setEnabled(false);
 
     if (!inputMethod)
@@ -302,7 +302,7 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
                                             Plugins::iterator replacement)
 {
     PluginState state = initiator->state;
-    MInputMethodBase *switchedTo = 0;
+    MAbstractInputMethod *switchedTo = 0;
 
     deactivatePlugin(initiator.key());
     activatePlugin(replacement.key());
@@ -322,7 +322,7 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
 
 
 bool MIMPluginManagerPrivate::switchPlugin(MInputMethod::SwitchDirection direction,
-                                           MInputMethodBase *initiator)
+                                           MAbstractInputMethod *initiator)
 {
     if (direction == MInputMethod::SwitchUndefined) {
         return true; //do nothing for this direction
@@ -365,7 +365,7 @@ bool MIMPluginManagerPrivate::switchPlugin(MInputMethod::SwitchDirection directi
     return false;
 }
 
-bool MIMPluginManagerPrivate::switchPlugin(const QString &name, MInputMethodBase *initiator)
+bool MIMPluginManagerPrivate::switchPlugin(const QString &name, MAbstractInputMethod *initiator)
 {
     //Find plugin initiated this switch
     Plugins::iterator iterator(plugins.begin());
@@ -547,7 +547,7 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
     }
     if (replacement) {
         // switch plugin if handler gconf is changed.
-        MInputMethodBase *inputMethod = plugins[currentPlugin].inputMethod;
+        MAbstractInputMethod *inputMethod = plugins[currentPlugin].inputMethod;
         addHandlerMap(static_cast<MInputMethod::HandlerState>(state), pluginName);
         if (!switchPlugin(pluginName, inputMethod)) {
             qWarning() << __PRETTY_FUNCTION__ << ", switching to plugin:"
@@ -580,10 +580,11 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
         && (activeSubViewIdOnScreen != subViewId)) {
 
         // check whether this subView is supported by current active plugin.
-        MInputMethodBase *inputMethod = plugins[activePlugin(MInputMethod::OnScreen)].inputMethod;
+        MAbstractInputMethod *inputMethod
+            = plugins[activePlugin(MInputMethod::OnScreen)].inputMethod;
         Q_ASSERT(inputMethod);
 
-        foreach (const MInputMethodBase::MInputMethodSubView &subView,
+        foreach (const MAbstractInputMethod::MInputMethodSubView &subView,
                  inputMethod->subViews(MInputMethod::OnScreen)) {
             if (subView.subViewId == subViewId) {
                 activeSubViewIdOnScreen = subViewId;
@@ -621,7 +622,8 @@ void MIMPluginManagerPrivate::initActiveSubView()
 {
     // initialize activeSubViewIdOnScreen
     if (activePlugin(MInputMethod::OnScreen)) {
-        MInputMethodBase *inputMethod = plugins[activePlugin(MInputMethod::OnScreen)].inputMethod;
+        MAbstractInputMethod *inputMethod
+            = plugins[activePlugin(MInputMethod::OnScreen)].inputMethod;
         if (activeSubViewIdOnScreen != inputMethod->activeSubView(MInputMethod::OnScreen)) {
             // activeSubViewIdOnScreen is invalid, should be initialized.
             activeSubViewIdOnScreen = inputMethod->activeSubView(MInputMethod::OnScreen);
@@ -664,7 +666,7 @@ MIMPluginManagerPrivate::availableSubViews(const QString &plugin,
     for (; iterator != plugins.end(); ++iterator) {
         if (iterator.key()->name() == plugin) {
             if (iterator->inputMethod) {
-                foreach (const MInputMethodBase::MInputMethodSubView &subView,
+                foreach (const MAbstractInputMethod::MInputMethodSubView &subView,
                          iterator->inputMethod->subViews(state)) {
                     subViews.insert(subView.subViewId, subView.subViewTitle);
                 }
@@ -906,7 +908,7 @@ void MIMPluginManager::updateInputSource()
 }
 
 void MIMPluginManager::switchPlugin(MInputMethod::SwitchDirection direction,
-                                    MInputMethodBase *initiator)
+                                    MAbstractInputMethod *initiator)
 {
     Q_D(MIMPluginManager);
 
@@ -919,7 +921,7 @@ void MIMPluginManager::switchPlugin(MInputMethod::SwitchDirection direction,
 }
 
 void MIMPluginManager::switchPlugin(const QString &name,
-                                    MInputMethodBase *initiator)
+                                    MAbstractInputMethod *initiator)
 {
     Q_D(MIMPluginManager);
 

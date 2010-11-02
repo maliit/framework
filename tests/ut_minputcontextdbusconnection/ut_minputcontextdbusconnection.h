@@ -7,7 +7,7 @@
 #include <QDBusInterface>
 
 #include "minputcontextdbusconnection.h"
-#include "minputmethodbase.h"
+#include "mabstractinputmethod.h"
 
 
 class MApplication;
@@ -15,7 +15,7 @@ class QGraphicsScene;
 class MInputContext;
 
 // input method base stub that dbus connection calls
-class TargetStub: public MInputMethodBase
+class TargetStub: public MAbstractInputMethod
 {
 public:
     TargetStub(MInputContextConnection *icConnection, QObject *parent = 0);

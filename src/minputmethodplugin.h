@@ -21,12 +21,12 @@
 #include <QtPlugin>
 #include <QSet>
 
-#include "minputmethodbase.h"
 #include "minputmethodsettingsbase.h"
 #include "minputmethodnamespace.h"
 
-class MInputMethodBase;
+class MAbstractInputMethod;
 class MAbstractInputMethodHost;
+
 
 /*!
  * \brief MInputMethodPlugin is an interface class for all input method plugins.
@@ -46,11 +46,11 @@ public:
      */
     virtual QStringList languages() const = 0;
 
-    /*! \brief Creates and returns the MInputMethodBase object for
+    /*! \brief Creates and returns the MAbstractInputMethod object for
      * this plugin. This function will be only called once and the allocated
      * resources will be owned by the input method server.
      */
-    virtual MInputMethodBase *createInputMethod(MAbstractInputMethodHost *host) = 0;
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host) = 0;
 
     /*! \brief Creates and returns the MInputMethodSettingsBase object for
      * this plugin. This function will be only called once and the allocated

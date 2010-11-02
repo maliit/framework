@@ -15,8 +15,8 @@
  */
 
 #include "minputcontextconnection.h"
+#include "mabstractinputmethod.h"
 
-#include "minputmethodbase.h"
 #include <QSet>
 
 class MInputContextConnectionPrivate
@@ -25,7 +25,7 @@ public:
     MInputContextConnectionPrivate();
     ~MInputContextConnectionPrivate();
 
-    QSet<MInputMethodBase *> targets; // not owned by us
+    QSet<MAbstractInputMethod *> targets; // not owned by us
 };
 
 
@@ -56,12 +56,12 @@ MInputContextConnection::~MInputContextConnection()
     delete d;
 }
 
-void MInputContextConnection::addTarget(MInputMethodBase *target)
+void MInputContextConnection::addTarget(MAbstractInputMethod *target)
 {
     d->targets.insert(target);
 }
 
-void MInputContextConnection::removeTarget(MInputMethodBase *target)
+void MInputContextConnection::removeTarget(MAbstractInputMethod *target)
 {
     d->targets.remove(target);
 }
@@ -71,7 +71,7 @@ void MInputContextConnection::updateInputMethodArea(const QRegion &region)
     Q_UNUSED(region);
 }
 
-QSet<MInputMethodBase *> MInputContextConnection::targets()
+QSet<MAbstractInputMethod *> MInputContextConnection::targets()
 {
     return d->targets;
 }

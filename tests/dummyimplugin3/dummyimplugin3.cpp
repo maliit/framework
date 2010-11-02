@@ -20,7 +20,7 @@ QStringList DummyImPlugin3::languages() const
     return QStringList("EN");
 }
 
-MInputMethodBase *
+MAbstractInputMethod *
 DummyImPlugin3::createInputMethod(MAbstractInputMethodHost *imHost)
 {
     return new DummyInputMethod3(imHost);

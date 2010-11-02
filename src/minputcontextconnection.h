@@ -27,7 +27,7 @@ class QRegion;
 class QKeyEvent;
 
 class MInputContextConnectionPrivate;
-class MInputMethodBase;
+class MAbstractInputMethod;
 class MToolbarId;
 
 
@@ -46,12 +46,12 @@ public:
     /*!
      * \brief Adds the target which get called on incoming requests
      */
-    virtual void addTarget(MInputMethodBase *target);
+    virtual void addTarget(MAbstractInputMethod *target);
 
     /*!
      * \brief Removes the handler of the connection
      */
-    virtual void removeTarget(MInputMethodBase *target);
+    virtual void removeTarget(MAbstractInputMethod *target);
 
     /*!
      * \brief returns content type for focused widget if output parameter valid is true,
@@ -182,7 +182,7 @@ signals:
     //! \internal_end.
 
 protected:
-    QSet<MInputMethodBase *> targets();
+    QSet<MAbstractInputMethod *> targets();
 
 private:
     MInputContextConnectionPrivate *d;

@@ -30,7 +30,7 @@
 
 #include <stdlib.h>
 
-#include "minputmethodbase.h"
+#include "mabstractinputmethod.h"
 #include "mimapplication.h"
 
 namespace
@@ -355,7 +355,7 @@ void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnect
     activeContext = 0;
 
     // notify plugins
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->clientChanged();
     }
 }
@@ -628,7 +628,7 @@ void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *con
     }
 
     // notify plugins
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->clientChanged();
     }
 }
@@ -649,7 +649,7 @@ void MInputContextGlibDBusConnection::hideInputMethod()
 void MInputContextGlibDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
                                                            const QRect &preeditRect)
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->mouseClickedOnPreedit(pos, preeditRect);
     }
 }
@@ -657,7 +657,7 @@ void MInputContextGlibDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
 
 void MInputContextGlibDBusConnection::setPreedit(const QString &text)
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->setPreedit(text);
     }
 }
@@ -665,7 +665,7 @@ void MInputContextGlibDBusConnection::setPreedit(const QString &text)
 
 void MInputContextGlibDBusConnection::reset()
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->reset();
     }
 }
@@ -774,7 +774,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
     widgetState = stateInfo;
 
     if (focusChanged) {
-        foreach (MInputMethodBase *target, targets()) {
+        foreach (MAbstractInputMethod *target, targets()) {
             target->focusChanged(stateInfo[FocusStateAttribute].toBool());
         }
 
@@ -783,7 +783,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
 
     // call notification methods if needed
     if (oldVisualization != newVisualization) {
-        foreach (MInputMethodBase *target, targets()) {
+        foreach (MAbstractInputMethod *target, targets()) {
             target->visualizationPriorityChanged(newVisualization);
         }
     }
@@ -807,7 +807,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
     }
 
     // general notification last
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->update();
     }
 }
@@ -815,7 +815,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
 
 void MInputContextGlibDBusConnection::appOrientationChanged(int angle)
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->appOrientationChanged(angle);
     }
 }
@@ -831,7 +831,7 @@ void MInputContextGlibDBusConnection::processKeyEvent(
     QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers, const QString &text,
     bool autoRepeat, int count, quint32 nativeScanCode, quint32 nativeModifiers)
 {
-    foreach (MInputMethodBase *target, targets()) {
+    foreach (MAbstractInputMethod *target, targets()) {
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
                                 nativeScanCode, nativeModifiers);
     }

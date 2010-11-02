@@ -5,18 +5,18 @@
 #include "mabstractinputmethodhost.h"
 
 DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *imHost)
-    : MInputMethodBase(imHost),
+    : MAbstractInputMethod(imHost),
       setStateCount(0),
       switchContextCallCount(0),
       directionParam(MInputMethod::SwitchUndefined),
       enableAnimationParam(false)
 {
-    MInputMethodBase::MInputMethodSubView sv1;
+    MAbstractInputMethod::MInputMethodSubView sv1;
     sv1.subViewId = "dummyimsv1";
     sv1.subViewTitle = "dummimysv1";
     sViews.append(sv1);
 
-    MInputMethodBase::MInputMethodSubView sv2;
+    MAbstractInputMethod::MInputMethodSubView sv2;
     sv2.subViewId = "dummyimsv2";
     sv2.subViewTitle = "dummyimsv2";
     sViews.append(sv2);
@@ -52,11 +52,11 @@ void DummyInputMethod::switchContext(MInputMethod::SwitchDirection direction, bo
     enableAnimationParam = enableAnimation;
 }
 
-QList<MInputMethodBase::MInputMethodSubView>
+QList<MAbstractInputMethod::MInputMethodSubView>
 DummyInputMethod::subViews(MInputMethod::HandlerState state) const
 {
     qDebug() << __PRETTY_FUNCTION__;
-    QList<MInputMethodBase::MInputMethodSubView> svs;
+    QList<MAbstractInputMethod::MInputMethodSubView> svs;
     if (state == MInputMethod::OnScreen) {
         svs = sViews;
     }
@@ -67,7 +67,7 @@ void DummyInputMethod::setActiveSubView(const QString &sVId, MInputMethod::Handl
 {
     qDebug() << __PRETTY_FUNCTION__;
     if (state == MInputMethod::OnScreen) {
-        foreach (const MInputMethodBase::MInputMethodSubView &sv, sViews) {
+        foreach (const MAbstractInputMethod::MInputMethodSubView &sv, sViews) {
             if (sv.subViewId == sVId) {
                 activeSView = sVId;
             }
