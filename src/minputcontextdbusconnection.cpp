@@ -123,7 +123,7 @@ void MInputContextDBusAdaptor::reset()
 
 void MInputContextDBusAdaptor::appOrientationChanged(int angle)
 {
-    host->appOrientationChanged(angle);
+    host->handleAppOrientationChange(angle);
 }
 
 void MInputContextDBusAdaptor::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
@@ -453,7 +453,7 @@ void MInputContextDBusConnection::activateContext()
 
     // notify plugins
     foreach (MAbstractInputMethod *target, targets()) {
-        target->clientChanged();
+        target->handleClientChange();
     }
 }
 
@@ -530,7 +530,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
 
     if (focusChanged) {
         foreach (MAbstractInputMethod *target, targets()) {
-            target->focusChanged(stateInfo[FocusStateAttribute].toBool());
+            target->handleFocusChange(stateInfo[FocusStateAttribute].toBool());
         }
 
         updateTransientHint();
@@ -539,7 +539,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
     // call notification methods if needed
     if (oldVisualization != newVisualization) {
         foreach (MAbstractInputMethod *target, targets()) {
-            target->visualizationPriorityChanged(newVisualization);
+            target->handleVisualizationPriorityChange(newVisualization);
         }
     }
 
@@ -571,7 +571,7 @@ MInputContextDBusConnection::updateWidgetInformation(const QMap<QString, QVarian
 void MInputContextDBusConnection::appOrientationChanged(int angle)
 {
     foreach (MAbstractInputMethod *target, targets()) {
-        target->appOrientationChanged(angle);
+        target->handleAppOrientationChange(angle);
     }
 }
 

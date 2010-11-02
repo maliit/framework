@@ -90,25 +90,25 @@ void MAbstractInputMethod::reset()
     // empty default implementation
 }
 
-void MAbstractInputMethod::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
+void MAbstractInputMethod::handleMouseClickOnPreedit(const QPoint &pos, const QRect &preeditRect)
 {
     // empty default implementation
     Q_UNUSED(pos);
     Q_UNUSED(preeditRect);
 }
 
-void MAbstractInputMethod::focusChanged(bool /* focusIn */)
+void MAbstractInputMethod::handleFocusChange(bool /* focusIn */)
 {
     // empty default implementation
 }
 
-void MAbstractInputMethod::visualizationPriorityChanged(bool priority)
+void MAbstractInputMethod::handleVisualizationPriorityChange(bool priority)
 {
     // empty default implementation
     Q_UNUSED(priority);
 }
 
-void MAbstractInputMethod::appOrientationChanged(int angle)
+void MAbstractInputMethod::handleAppOrientationChange(int angle)
 {
     // empty default implementation
     Q_UNUSED(angle);
@@ -136,7 +136,7 @@ void MAbstractInputMethod::setState(const QSet<MInputMethod::HandlerState> &stat
     Q_UNUSED(state);
 }
 
-void MAbstractInputMethod::clientChanged()
+void MAbstractInputMethod::handleClientChange()
 {
     // empty default implementation
 }

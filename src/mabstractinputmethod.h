@@ -90,21 +90,21 @@ public:
 
     /*! \brief Notifies input method server about mouse click on the preedit string
      */
-    virtual void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
+    virtual void handleMouseClickOnPreedit(const QPoint &pos, const QRect &preeditRect);
 
     /*! \brief Notifies input method server about changed focus
      *  \param focusIn true - focus has entered a widget, false - focus has left a widget
      */
-    virtual void focusChanged(bool focusIn);
+    virtual void handleFocusChange(bool focusIn);
 
     /*! \brief Notifies that the focus widget in application changed visualization priority
      */
-    virtual void visualizationPriorityChanged(bool priority);
+    virtual void handleVisualizationPriorityChange(bool priority);
 
     /*! \brief Target application changed orientation. Input method usually changes its
      *         own orientation according to this.
      */
-    virtual void appOrientationChanged(int angle);
+    virtual void handleAppOrientationChange(int angle);
 
     /*!
      * \brief Uses a custom toolbar which is defined by given parameter.
@@ -133,7 +133,7 @@ public:
 
     /*! \brief This method is called when target client is changed.
      */
-    virtual void clientChanged();
+    virtual void handleClientChange();
 
     /*!
      * \brief Switch context to given direction

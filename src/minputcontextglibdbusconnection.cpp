@@ -356,7 +356,7 @@ void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnect
 
     // notify plugins
     foreach (MAbstractInputMethod *target, targets()) {
-        target->clientChanged();
+        target->handleClientChange();
     }
 }
 
@@ -629,7 +629,7 @@ void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *con
 
     // notify plugins
     foreach (MAbstractInputMethod *target, targets()) {
-        target->clientChanged();
+        target->handleClientChange();
     }
 }
 
@@ -650,7 +650,7 @@ void MInputContextGlibDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
                                                            const QRect &preeditRect)
 {
     foreach (MAbstractInputMethod *target, targets()) {
-        target->mouseClickedOnPreedit(pos, preeditRect);
+        target->handleMouseClickOnPreedit(pos, preeditRect);
     }
 }
 
@@ -775,7 +775,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
 
     if (focusChanged) {
         foreach (MAbstractInputMethod *target, targets()) {
-            target->focusChanged(stateInfo[FocusStateAttribute].toBool());
+            target->handleFocusChange(stateInfo[FocusStateAttribute].toBool());
         }
 
         updateTransientHint();
@@ -784,7 +784,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
     // call notification methods if needed
     if (oldVisualization != newVisualization) {
         foreach (MAbstractInputMethod *target, targets()) {
-            target->visualizationPriorityChanged(newVisualization);
+            target->handleVisualizationPriorityChange(newVisualization);
         }
     }
 
@@ -816,7 +816,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
 void MInputContextGlibDBusConnection::appOrientationChanged(int angle)
 {
     foreach (MAbstractInputMethod *target, targets()) {
-        target->appOrientationChanged(angle);
+        target->handleAppOrientationChange(angle);
     }
 }
 
