@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=DUIApplet
 Name=Meegotouch textinput settings
-X-logical-id=qtn_txts_text_input
+X-logical-id=qtn_sett_main_language
 X-translation-catalog=text-input-settings
 
 Icon=
@@ -11,7 +11,7 @@ Exec=
 X-DUIApplet-Applet=libmimsettingsapplet.so
 
 [DCP]
-Category= Regional settings
+Category=Language & Keyboard
 Order=4
-WidgetType= Label
+WidgetType=Label
 
