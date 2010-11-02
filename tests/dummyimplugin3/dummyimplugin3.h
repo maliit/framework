@@ -21,7 +21,7 @@ public:
 
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *imHost);
 
-    virtual MInputMethodSettingsBase *createInputMethodSettings();
+    virtual MAbstractInputMethodSettings *createInputMethodSettings();
 
     virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end

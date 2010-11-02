@@ -19,7 +19,7 @@ DummyImPlugin2::createInputMethod(MAbstractInputMethodHost * /* imHost */)
     return NULL;
 }
 
-MInputMethodSettingsBase *DummyImPlugin2::createInputMethodSettings()
+MAbstractInputMethodSettings *DummyImPlugin2::createInputMethodSettings()
 {
     return 0;
 }

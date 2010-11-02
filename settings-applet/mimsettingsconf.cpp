@@ -118,7 +118,7 @@ bool MImSettingsConf::loadPlugin(const QString &fileName)
 void MImSettingsConf::loadSettings()
 {
     foreach (MInputMethodPlugin *plugin, plugins()) {
-        MInputMethodSettingsBase *settings = plugin->createInputMethodSettings();
+        MAbstractInputMethodSettings *settings = plugin->createInputMethodSettings();
         if (settings) {
             settingList.append(settings);
         }
@@ -137,7 +137,7 @@ QList<MInputMethodPlugin *> MImSettingsConf::plugins() const
     return pluginList;
 }
 
-QList<MInputMethodSettingsBase *> MImSettingsConf::settings() const
+QList<MAbstractInputMethodSettings *> MImSettingsConf::settings() const
 {
     return settingList;
 }

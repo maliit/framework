@@ -23,7 +23,7 @@
 #include <QItemSelectionModel>
 #include <QDebug>
 
-#include <minputmethodsettingsbase.h>
+#include <mabstractinputmethodsettings.h>
 #include <minputmethodplugin.h>
 
 #include "mimsettingswidget.h"
@@ -67,7 +67,7 @@ void MImSettingsWidget::initWidget()
     connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));
     layout->addItem(activeSubViewItem);
 
-    foreach (MInputMethodSettingsBase *settings, MImSettingsConf::instance().settings()) {
+    foreach (MAbstractInputMethodSettings *settings, MImSettingsConf::instance().settings()) {
         if (settings) {
             QGraphicsWidget *contentWidget = settings->createContentWidget(this);
             if (contentWidget) {

@@ -27,7 +27,7 @@
 #include <MPopupList>
 
 #include "minputmethodplugin.h"
-#include "minputmethodsettingsbase.h"
+#include "mabstractinputmethodsettings.h"
 #include "mimpluginmanager_p.h"
 #include "mplainwindow.h"
 
@@ -64,7 +64,7 @@ MIMSettingsDialog::MIMSettingsDialog(MIMPluginManagerPrivate *p, const QString &
     layout->addItem(activeSubViewItem);
 
     foreach (MInputMethodPlugin *plugin, imPluginManagerPrivate->plugins.keys()) {
-        MInputMethodSettingsBase *settings = plugin->createInputMethodSettings();
+        MAbstractInputMethodSettings *settings = plugin->createInputMethodSettings();
         if (settings) {
             QGraphicsWidget *contentWidget = settings->createContentWidget(settingsWidget);
             if (contentWidget) {

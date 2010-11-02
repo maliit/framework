@@ -14,7 +14,7 @@ HEADERSINSTALL = \
         mtoolbaritem.h \
         mtoolbardata.h \
         minputmethodnamespace.h \
-        minputmethodsettingsbase.h \
+        mabstractinputmethodsettings.h \
         mtoolbarlayout.h \
 
 HEADERS += $$HEADERSINSTALL \

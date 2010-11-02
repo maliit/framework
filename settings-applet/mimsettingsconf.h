@@ -25,7 +25,7 @@
 #include "minputmethodnamespace.h"
 
 class MInputMethodPlugin;
-class MInputMethodSettingsBase;
+class MAbstractInputMethodSettings;
 class QDBusInterface;
 
 class MImSettingsConf : public QObject
@@ -54,7 +54,7 @@ public:
     /*!
      * \brief Return all input method settings.
      */
-    QList<MInputMethodSettingsBase *> settings() const;
+    QList<MAbstractInputMethodSettings *> settings() const;
 
     /*!
      * \brief Set \a pluginName as the active input method plugin, and \a subViewId as the active subView.
@@ -97,7 +97,7 @@ private:
     QMap<MInputMethodPlugin *, QString> imPlugins;
     QStringList paths;
     QStringList blacklist;
-    QList<MInputMethodSettingsBase *> settingList;
+    QList<MAbstractInputMethodSettings *> settingList;
     //! Singleton instance
     static MImSettingsConf *imSettingsConfInstance;
 

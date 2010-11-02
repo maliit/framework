@@ -22,7 +22,7 @@
 
 class MContentItem;
 class MPopupList;
-class MInputMethodSettingsBase;
+class MAbstractInputMethodSettings;
 class MContainer;
 
 class MImSettingsWidget : public DcpWidget
@@ -57,6 +57,6 @@ private:
 
     MContentItem *activeSubViewItem;
     MPopupList *availableSubViewList;
-    QMap<MInputMethodSettingsBase *, MContainer *> settingsContainerMap;
+    QMap<MAbstractInputMethodSettings *, MContainer *> settingsContainerMap;
 };
 #endif

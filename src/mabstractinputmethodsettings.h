@@ -14,23 +14,23 @@
  * of this file.
  */
 
-#ifndef MINPUTMETHODSETTINGSBASE_H
-#define MINPUTMETHODSETTINGSBASE_H
+#ifndef MABSTRACTINPUTMETHODSETTINGS_H
+#define MABSTRACTINPUTMETHODSETTINGS_H
 
 #include <QString>
 
 class QGraphicsWidget;
 
 /*!
- * \brief MInputMethodSettingsBase is a base class for input method settings.
+ * \brief MAbstractInputMethodSettings is a base class for input method settings.
  *
- * MInputMethodSettingsBase defines the setting of a input method plugin. contentWidget()
+ * MAbstractInputMethodSettings defines the setting of a input method plugin. contentWidget()
  * holds its content.
  * Each input method plugin can implement its own setting by inheriting this class.
  *
  */
 
-class MInputMethodSettingsBase
+class MAbstractInputMethodSettings
 {
 public:
     /*!

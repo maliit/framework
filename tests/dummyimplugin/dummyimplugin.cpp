@@ -25,7 +25,7 @@ DummyImPlugin::createInputMethod(MAbstractInputMethodHost *imHost)
     return new DummyInputMethod(imHost);
 }
 
-MInputMethodSettingsBase *DummyImPlugin::createInputMethodSettings()
+MAbstractInputMethodSettings *DummyImPlugin::createInputMethodSettings()
 {
     return 0;
 }

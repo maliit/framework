@@ -30,7 +30,7 @@ class MContentItem;
 class MPopupList;
 class QModelIndex;
 class MContainer;
-class MInputMethodSettingsBase;
+class MAbstractInputMethodSettings;
 
 class MIMSettingsDialog : public MDialog
 {
@@ -64,7 +64,7 @@ private:
 
     MContentItem *activeSubViewItem;
     MPopupList *availableSubViewList;
-    QMap<MInputMethodSettingsBase *, MContainer *> settingsContainerMap;
+    QMap<MAbstractInputMethodSettings *, MContainer *> settingsContainerMap;
     MIMPluginManagerPrivate *const imPluginManagerPrivate;
 
     friend class Ut_MIMSettingsDialog;
