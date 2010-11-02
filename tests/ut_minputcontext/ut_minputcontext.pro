@@ -14,6 +14,6 @@ SOURCES += \
 
 CONFIG += debug plugin meegotouch qdbus link_pkgconfig
 
-PKGCONFIG += dbus-glib-1
+PKGCONFIG += dbus-glib-1 contextsubscriber-1.0
 
 include(../common_check.pri)

@@ -1,5 +1,6 @@
 #include "ut_minputcontext.h"
 #include "qdbus_stub.h"
+#include "contextproperty_stub.h"
 
 #include <QStringList>
 #include <QDebug>
