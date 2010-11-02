@@ -22,6 +22,10 @@
 class MInputContextConnection;
 class MIMPluginManager;
 class MIndicatorServiceClient;
+class MAbstractInputMethod;
+
+class QRegion;
+
 
 /*!
  * \brief Interface implementation for connecting input method instances to the environment.
@@ -39,7 +43,8 @@ public:
     //! if enabled, the plugin associated with this host are allowed to communicate
     void setEnabled(bool enabled);
 
-    //! associate input method with this host instance
+    //! associate input method with this host instance.
+    //! Multiple calls is (currently) undefined behavior.
     void setInputMethod(MAbstractInputMethod *inputMethod);
 
     // \reimp
@@ -69,6 +74,8 @@ public:
 
     virtual void switchPlugin(MInputMethod::SwitchDirection direction);
     virtual void switchPlugin(const QString &pluginName);
+    virtual void setScreenRegion(const QRegion &region);
+    virtual void setInputMethodArea(const QRegion &region);
     virtual void showSettings();
     // \reimp_end
 

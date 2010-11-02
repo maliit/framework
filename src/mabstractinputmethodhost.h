@@ -26,7 +26,6 @@ class QString;
 class QRegion;
 class QKeyEvent;
 
-class MAbstractInputMethod;
 class MToolbarId;
 
 class MAbstractInputMethodHostPrivate;
@@ -174,6 +173,26 @@ public slots:
      * \param pluginName Name for plugin which will be activated
      */
     virtual void switchPlugin(const QString &pluginName) = 0;
+
+    /*!
+     * Reserves screen area for input method. Mouse events on top of this
+     * area do not fall through to the application
+     *
+     * \param region the new region
+     */
+    virtual void setScreenRegion(const QRegion &region) = 0;
+
+    /*!
+     * Sets part of the screen area covered by the input method that
+     * should be avoided by the application receiving input in order not to be
+     * obscured.
+     *
+     * For now this region must be so simple that its bounding box can be
+     * effectively used as the avoidance area.
+     *
+     * \param region the new region
+     */
+    virtual void setInputMethodArea(const QRegion &region) = 0;
 
     /*!
      * Asks environment to show settings.

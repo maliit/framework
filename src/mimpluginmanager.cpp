@@ -163,13 +163,6 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
     plugins[plugin].imHost->setEnabled(true);
 
     Q_ASSERT(inputMethod);
-    QObject::connect(inputMethod, SIGNAL(regionUpdated(const QRegion &)),
-                     q, SLOT(updateRegion(const QRegion &)));
-
-    QObject::connect(inputMethod,
-                     SIGNAL(inputMethodAreaUpdated(const QRegion &)),
-                     mICConnection,
-                     SLOT(updateInputMethodArea(const QRegion &)));
 
     QObject::connect(inputMethod,
                      SIGNAL(activeSubViewChanged(QString, MInputMethod::HandlerState)),
@@ -266,10 +259,6 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
     inputMethod->hide();
     inputMethod->reset();
     QObject::disconnect(inputMethod, 0, q, 0),
-    QObject::disconnect(inputMethod,
-                        SIGNAL(inputMethodAreaUpdated(const QRegion &)),
-                        mICConnection,
-                        SLOT(updateInputMethodArea(const QRegion &)));
     mICConnection->removeTarget(inputMethod);
 }
 

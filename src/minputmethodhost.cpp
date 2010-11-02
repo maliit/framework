@@ -18,6 +18,7 @@
 #include "minputcontextconnection.h"
 #include "mimpluginmanager.h"
 #include "mindicatorserviceclient.h"
+#include "mabstractinputmethod.h"
 
 
 MInputMethodHost::MInputMethodHost(MInputContextConnection *inputContextConnection,
@@ -174,6 +175,20 @@ void MInputMethodHost::switchPlugin(const QString &pluginName)
 {
     if (enabled) {
         pluginManager->switchPlugin(pluginName, inputMethod);
+    }
+}
+
+void MInputMethodHost::setScreenRegion(const QRegion &region)
+{
+    if (enabled) {
+        pluginManager->updateRegion(region);
+    }
+}
+
+void MInputMethodHost::setInputMethodArea(const QRegion &region)
+{
+    if (enabled) {
+        connection->updateInputMethodArea(region);
     }
 }
 

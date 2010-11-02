@@ -93,12 +93,12 @@ public slots:
     //! Hide active plugins.
     void hideActivePlugins();
 
+    //! Updates the whole painting area for input method objects.
+    void updateRegion(const QRegion &region);
+
 private slots:
     //! Update and activate input source.
     void updateInputSource();
-
-    //! Updates the whole painting area for input method objects.
-    void updateRegion(const QRegion &region);
 
     //! Set toolbar to active plugin with given \a id
     void setToolbar(const MToolbarId &id);

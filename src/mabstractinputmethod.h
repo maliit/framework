@@ -175,25 +175,6 @@ public:
 
 signals:
     /*!
-     * Inform that the screen area covered by the input method has been changed.
-     *
-     * \param region the new region
-     */
-    void regionUpdated(const QRegion &region);
-
-    /*!
-     * Inform that the part of the screen area covered by the input method that
-     * should be avoided by the screen area receiving input in order not to be
-     * obscured has been changed.
-     *
-     * For now this region must be so simple that its bounding box can be
-     * effectively used as the avoidance area.
-     *
-     * \param region the new region
-     */
-    void inputMethodAreaUpdated(const QRegion &region);
-
-    /*!
      * Inform that active subview is changed to \a subViewId for \a state.
      * \param subViewId the identifier of the new subview.
      * \param state the state which \a subViewId belongs to.

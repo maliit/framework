@@ -1,4 +1,6 @@
 #include "dummyinputmethod3.h"
+#include "mabstractinputmethodhost.h"
+
 #include <QDebug>
 
 DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *imHost)
@@ -70,7 +72,7 @@ QString DummyInputMethod3::activeSubView(MInputMethod::HandlerState state) const
 
 void DummyInputMethod3::show()
 {
-    emit regionUpdated(QRegion(0, 0, 100, 100));
+    inputMethodHost()->setScreenRegion(QRegion(0, 0, 100, 100));
 }
 
 void DummyInputMethod3::setToolbar(QSharedPointer<const MToolbarData> toolbar)
