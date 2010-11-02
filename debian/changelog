@@ -3,6 +3,8 @@ meego-im-framework (0.19.27~1) unstable; urgency=low
   * [UNRELEASED]
   * Changes: add color style for preedit
   * Fixes: NB#195194 - Paste button doesn't appear when one copies using hwkbd
+  * Renamed MInputMethodBase to MAbstractInputMethod
+  * Renamed MInputMethodSettingsBase to MAbstractInputMethodSettings
 
  -- huaming wang <huaming.wang@nokia.com>  Thu, 28 Oct 2010 11:34:31 +0300
 
