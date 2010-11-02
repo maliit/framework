@@ -89,6 +89,7 @@ public:
      */
     virtual QRect preeditRectangle(bool &valid) = 0;
 
+public slots:
     /*!
      * \brief Updates pre-edit string in the application widget
      *
