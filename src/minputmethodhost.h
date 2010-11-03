@@ -27,6 +27,7 @@ class MAbstractInputMethod;
 class QRegion;
 
 
+//! \internal
 /*!
  * \brief Interface implementation for connecting input method instances to the environment.
  */
@@ -90,5 +91,6 @@ private:
     MIndicatorServiceClient &indicatorService;
 };
 
+//! \internal_end
 
 #endif
