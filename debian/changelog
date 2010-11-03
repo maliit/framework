@@ -1,3 +1,9 @@
+meego-im-framework (0.19.28~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Gibran Rodriguez  <ext-gibran.rodriguez@nokia.com>  Wed, 03 Nov 2010 14:06:44 +0200
+
 meego-im-framework (0.19.27-1) unstable; urgency=low
 
   * Changes: add color style for preedit
