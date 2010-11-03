@@ -6,6 +6,8 @@ meego-im-framework (0.19.27~1) unstable; urgency=low
   * Fixes: NB#191425 - Source package 'meego-im-framework' and 'meego-keyboard' ...
   * Renamed MInputMethodBase to MAbstractInputMethod
   * Renamed MInputMethodSettingsBase to MAbstractInputMethodSettings
+  * Replaced some signals in MAbstractInputMethod with method in MAbstactInputMethodHost
+  * Renamed ...Changed() methods in MAbstractInputMethod to handle...()
 
  -- huaming wang <huaming.wang@nokia.com>  Thu, 28 Oct 2010 11:34:31 +0300
 
