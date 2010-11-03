@@ -4,6 +4,14 @@
 * API changes
  - MInputMethodBase was renamed to MAbstractInputMethod
  - MInputMethodSettingsBase was renamed to MAbstractInputMethodSettings
+ - Removed region signal from MAbstractInputMethod and replaced them with
+   setScreenRegion() and setInputMethodArea() in MAbstractInputMethodHost.
+ - renamed in MAbstractInputMethod:
+   - mouseClickedOnPreedit() -> handleMouseClickOnPreedit(
+   - focusChanged() -> handleFocusChange()
+   - visualizationPriorityChanged() -> handleVisualizationPriorityChange
+   - appOrientationChanged() -> handleAppOrientationChange()
+   - clientChanged -> handleClientChange()
 
 0.19.26
 ========
