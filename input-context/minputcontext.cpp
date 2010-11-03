@@ -168,12 +168,15 @@ bool MInputContext::event(QEvent *event)
             }
 
             mDebug("MInputContext") << "MInputContext got preedit injection:"
-                                    << injectionEvent->preedit();
+                                    << injectionEvent->preedit()
+                                    << ", event cursor pos:" << injectionEvent->eventCursorPosition();
             // send the injected preedit to input method server and back to the widget with proper
             // styling
             // Note: plugin could change the preedit style in imServer->setPreedit().
+            // The cursor is hidden for preedit by default. The input method server can decide
+            // whether it needs the cursor.
             updatePreedit(injectionEvent->preedit(), MInputMethod::PreeditDefault);
-            imServer->setPreedit(injectionEvent->preedit());
+            imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
 
             event->accept();
             return true;
@@ -469,9 +472,9 @@ void MInputContext::commitString(const QString &string)
 }
 
 
-void MInputContext::updatePreedit(const QString &string, MInputMethod::PreeditFace preeditFace)
+void MInputContext::updatePreedit(const QString &string, MInputMethod::PreeditFace preeditFace, int cursorPos)
 {
-    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string << ", cursorPos:" << cursorPos;
     mTimestamp("MInputContext", string);
 
     preedit = string;
@@ -511,6 +514,10 @@ void MInputContext::updatePreedit(const QString &string, MInputMethod::PreeditFa
     QList<QInputMethodEvent::Attribute> attributes;
     attributes << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0,
                string.length(), format);
+
+    if (cursorPos >= 0) {
+        attributes << QInputMethodEvent::Attribute(QInputMethodEvent::Cursor, cursorPos, 1, QVariant());
+    }
 
     QInputMethodEvent event(string, attributes);
 

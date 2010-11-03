@@ -94,10 +94,12 @@ public slots:
      *
      * \param string    The new pre-edit string
      * \param preeditFace Selects visual styling for preedit
+     * \param cursorPos The cursur position inside preedit
      */
     virtual void sendPreeditString(const QString &string,
                                    MInputMethod::PreeditFace preeditFace
-                                    = MInputMethod::PreeditDefault) = 0;
+                                    = MInputMethod::PreeditDefault,
+                                   int cursorPos = -1) = 0;
 
     /*!
      * \brief Updates commit string in the application widget

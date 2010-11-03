@@ -11,6 +11,7 @@
     <method name="updatePreedit">
       <arg type="s"/>
       <arg type="u"/>
+      <arg type="i"/>
     </method>
     <method name="keyEvent">
       <arg type="i"/>

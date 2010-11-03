@@ -177,9 +177,9 @@ m_dbus_glib_ic_connection_mouse_clicked_on_preedit(MDBusGlibICConnection *obj,
 
 static gboolean
 m_dbus_glib_ic_connection_set_preedit(MDBusGlibICConnection *obj, const char *text,
-                                      GError **/*error*/)
+                                      gint32 cursorPos, GError **/*error*/)
 {
-    obj->icConnection->setPreedit(QString::fromUtf8(text));
+    obj->icConnection->setPreedit(QString::fromUtf8(text), cursorPos);
     return TRUE;
 }
 
@@ -463,12 +463,14 @@ MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
 // Server -> input context...................................................
 
 void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
-                                                        MInputMethod::PreeditFace preeditFace)
+                                                        MInputMethod::PreeditFace preeditFace,
+                                                        int cursorPos)
 {
     if (activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updatePreedit",
                                    G_TYPE_STRING, string.toUtf8().data(),
                                    G_TYPE_UINT, static_cast<unsigned int>(preeditFace),
+                                   G_TYPE_INT, cursorPos,
                                    G_TYPE_INVALID);
     }
 }
@@ -655,10 +657,10 @@ void MInputContextGlibDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
 }
 
 
-void MInputContextGlibDBusConnection::setPreedit(const QString &text)
+void MInputContextGlibDBusConnection::setPreedit(const QString &text, int cursorPos)
 {
     foreach (MAbstractInputMethod *target, targets()) {
-        target->setPreedit(text);
+        target->setPreedit(text, cursorPos);
     }
 }
 

@@ -49,7 +49,7 @@ public:
 
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
 
-    void setPreedit(const QString &text);
+    void setPreedit(const QString &text, int cursorPos);
 
     void updateWidgetInformation(const QMap<QString, QVariant> &stateInformation,
                                  bool focusChanged);

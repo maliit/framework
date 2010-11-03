@@ -17,6 +17,7 @@
     </method>
     <method name="setPreedit">
       <arg type="s"/>
+      <arg type="i"/>
     </method>
     <method name="updateWidgetInformation">
       <arg type="ay"/>

@@ -198,13 +198,14 @@ void GlibDBusIMServerProxy::mouseClickedOnPreedit(const QPoint &pos, const QRect
                                G_TYPE_INVALID);
 }
 
-void GlibDBusIMServerProxy::setPreedit(const QString &text)
+void GlibDBusIMServerProxy::setPreedit(const QString &text, int cursorPos)
 {
     if (!glibObjectProxy) {
         return;
     }
     dbus_g_proxy_call_no_reply(glibObjectProxy, "setPreedit",
                                G_TYPE_STRING, text.toUtf8().data(),
+                               G_TYPE_INT, cursorPos,
                                G_TYPE_INVALID);
 }
 

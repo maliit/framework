@@ -52,7 +52,8 @@ public:
     //! \reimp
     virtual void sendPreeditString(const QString &string,
                                    MInputMethod::PreeditFace preeditFace
-                                    = MInputMethod::PreeditDefault);
+                                    = MInputMethod::PreeditDefault,
+                                   int cursorPos = -1);
     virtual void sendCommitString(const QString &string);
     virtual void sendKeyEvent(const QKeyEvent &keyEvent,
                               MInputMethod::EventRequestType requestType);
@@ -89,7 +90,7 @@ public slots:
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
 
     //! ipc method provided to the application, sets preedit
-    void setPreedit(const QString &text);
+    void setPreedit(const QString &text, int cursorPos);
 
     void updateWidgetInformation(MDBusGlibICConnection *connection,
                                  const QMap<QString, QVariant> &stateInformation,

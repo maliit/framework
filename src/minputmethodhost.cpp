@@ -93,10 +93,11 @@ QRect MInputMethodHost::preeditRectangle(bool &valid)
 }
 
 void MInputMethodHost::sendPreeditString(const QString &string,
-                                         MInputMethod::PreeditFace preeditFace)
+                                         MInputMethod::PreeditFace preeditFace,
+                                         int cursorPos)
 {
     if (enabled) {
-        connection->sendPreeditString(string, preeditFace);
+        connection->sendPreeditString(string, preeditFace, cursorPos);
     }
 }
 

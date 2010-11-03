@@ -44,10 +44,11 @@ static gboolean m_dbus_glib_input_context_adaptor_commit_string(
 
 static gboolean m_dbus_glib_input_context_adaptor_update_preedit(
     MDBusGlibInputContextAdaptor *obj, const char *string, guint32 preeditFace,
-    GError **/*error*/)
+    gint32 cursorPos, GError **/*error*/)
 {
     obj->inputContext->updatePreedit(QString::fromUtf8(string),
-                                     static_cast<MInputMethod::PreeditFace>(preeditFace));
+                                     static_cast<MInputMethod::PreeditFace>(preeditFace),
+                                     cursorPos);
     return TRUE;
 }
 

@@ -59,7 +59,8 @@ public:
     virtual QRect preeditRectangle(bool &valid);
     virtual void sendPreeditString(const QString &string,
                                    MInputMethod::PreeditFace preeditFace
-                                    = MInputMethod::PreeditDefault);
+                                    = MInputMethod::PreeditDefault,
+                                   int cursorPos = -1);
     virtual void sendCommitString(const QString &string);
     virtual void sendKeyEvent(const QKeyEvent &keyEvent,
                               MInputMethod::EventRequestType requestType

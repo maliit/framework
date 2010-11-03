@@ -77,8 +77,15 @@ public:
     virtual void hide();
 
     /*! \brief Sets preedit string of the input method server
+     *  \param preeditString preedit string
+     *  \param cursorPos the cursor position inside preedit.
+     *
+     *  Note: This method is used by application to initiate the predit and the cursor
+     *  position for input method server. Input method server fully controls the preedit
+     *  and the cursor inside it. (Input method server decides whether and where to show
+     *  cursor inside preedit).
      */
-    virtual void setPreedit(const QString &preeditString);
+    virtual void setPreedit(const QString &preeditString, int cursorPos);
 
     /*! \brief Update input method server state
      */

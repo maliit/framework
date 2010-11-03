@@ -50,7 +50,7 @@ public slots:
     void showInputMethod();
     void hideInputMethod();
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
-    void setPreedit(const QString &text);
+    void setPreedit(const QString &text, int cursorPos);
     void reset();
 
     void setContextObject(const QString &callbackObject);

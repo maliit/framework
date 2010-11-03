@@ -75,7 +75,7 @@ void MAbstractInputMethod::hide()
     // empty default implementation
 }
 
-void MAbstractInputMethod::setPreedit(const QString &)
+void MAbstractInputMethod::setPreedit(const QString &, int)
 {
     // empty default implementation
 }

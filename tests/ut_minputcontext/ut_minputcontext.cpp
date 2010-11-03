@@ -66,9 +66,9 @@ void GlibDBusIMServerProxy::mouseClickedOnPreedit(const QPoint &pos, const QRect
     DBusStub->mouseClickedOnPreedit(pos, preeditRect);
 }
 
-void GlibDBusIMServerProxy::setPreedit(const QString &text)
+void GlibDBusIMServerProxy::setPreedit(const QString &text, int cursorPos)
 {
-    DBusStub->setPreedit(text);
+    DBusStub->setPreedit(text, cursorPos);
 }
 
 void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant> &/*stateInformation*/,
@@ -246,9 +246,10 @@ void InputMethodServerDBusStub::mouseClickedOnPreedit(const QPoint &pos, const Q
 }
 
 
-void InputMethodServerDBusStub::setPreedit(const QString &text)
+void InputMethodServerDBusStub::setPreedit(const QString &text, int cursorPos)
 {
-    Q_UNUSED(text)
+    Q_UNUSED(text);
+    Q_UNUSED(cursorPos);
 
     setPreeditCallCount++;
 }
@@ -560,7 +561,7 @@ void Ut_MInputContext::testUpdatePreedit()
     //test preedit with traditional style
     m_subject->setFocusWidget(&widget);
     gFocusedWidget = &widget;
-    m_subject->updatePreedit(updateString, MInputMethod::PreeditDefault);
+    m_subject->updatePreedit(updateString, MInputMethod::PreeditDefault, -1);
 
     waitAndProcessEvents(0);
 
@@ -572,7 +573,7 @@ void Ut_MInputContext::testUpdatePreedit()
     QVERIFY(attributes.count() > 0);
 
     //test preedit with alternate style
-    m_subject->updatePreedit(updateString, MInputMethod::PreeditNoCandidates);
+    m_subject->updatePreedit(updateString, MInputMethod::PreeditNoCandidates, -1);
 
     waitAndProcessEvents(50);
 
