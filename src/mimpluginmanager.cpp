@@ -16,6 +16,7 @@
 
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
+#include "mimpluginmanageradaptor.h"
 #include "mplainwindow.h"
 #include "minputmethodplugin.h"
 #include "mtoolbarmanager.h"
@@ -696,82 +697,6 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginName,
         }
     }
 }
-
-
-MIMPluginManagerAdaptor::MIMPluginManagerAdaptor(MIMPluginManager *parent)
-    : QDBusAbstractAdaptor(parent),
-      owner(parent)
-{
-    if (!parent) {
-        qFatal("Creating MIMPluginManagerAdaptor without a parent");
-    }
-}
-
-
-MIMPluginManagerAdaptor::~MIMPluginManagerAdaptor()
-{
-    // nothing
-}
-
-QStringList MIMPluginManagerAdaptor::queryAvailablePlugins()
-{
-    Q_ASSERT(owner);
-    return owner->loadedPluginsNames();
-}
-
-QStringList MIMPluginManagerAdaptor::queryAvailablePlugins(int state)
-{
-    Q_ASSERT(owner);
-    return owner->loadedPluginsNames(static_cast<MInputMethod::HandlerState>(state));
-}
-
-QString MIMPluginManagerAdaptor::queryActivePlugin(int state)
-{
-    Q_ASSERT(owner);
-    return owner->activePluginsName(static_cast<MInputMethod::HandlerState>(state));
-}
-
-QMap<QString, QVariant> MIMPluginManagerAdaptor::queryAvailableSubViews(const QString &plugin,
-                                                                        int state)
-{
-    Q_ASSERT(owner);
-    QMap<QString, QVariant> vSubViews;
-
-    QMap<QString, QString> subViews
-        = owner->availableSubViews(plugin, static_cast<MInputMethod::HandlerState>(state));
-    QMapIterator<QString, QString> subView(subViews);
-    while (subView.hasNext()) {
-        subView.next();
-        vSubViews.insert(subView.key(), subView.value());
-    }
-    return vSubViews;
-}
-
-QMap<QString, QVariant> MIMPluginManagerAdaptor::queryActiveSubView(int state)
-{
-    Q_ASSERT(owner);
-    QMap<QString, QVariant> activeSubbView;
-    activeSubbView.insert(owner->activeSubView(static_cast<MInputMethod::HandlerState>(state)),
-                          owner->activePluginsName(static_cast<MInputMethod::HandlerState>(state)));
-    return activeSubbView;
-}
-
-void MIMPluginManagerAdaptor::setActivePlugin(const QString &pluginName, int state,
-                                              const QString &subViewId)
-{
-    Q_ASSERT(owner);
-    owner->setActivePlugin(pluginName, static_cast<MInputMethod::HandlerState>(state));
-    if (!subViewId.isEmpty()) {
-        owner->setActiveSubView(subViewId, static_cast<MInputMethod::HandlerState>(state));
-    }
-}
-
-void MIMPluginManagerAdaptor::setActiveSubView(const QString &subViewId, int state)
-{
-    Q_ASSERT(owner);
-    owner->setActiveSubView(subViewId, static_cast<MInputMethod::HandlerState>(state));
-}
-
 
 
 ///////////////

@@ -23,8 +23,6 @@
 #include <QMap>
 #include <QSet>
 #include <QRegion>
-#include <QDBusAbstractAdaptor>
-#include <MDialog>
 
 #include "minputmethodnamespace.h"
 #include "mtoolbarid.h"
@@ -146,38 +144,6 @@ public:
     MToolbarId toolbarId;
 
     MIndicatorServiceClient indicatorService;
-};
-
-
-
-class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor
-{
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.meego.inputmethodpluginmanager1")
-
-public:
-    explicit MIMPluginManagerAdaptor(MIMPluginManager *parent);
-    virtual ~MIMPluginManagerAdaptor();
-
-public slots:
-    QStringList queryAvailablePlugins();
-    QStringList queryAvailablePlugins(int state);
-    QString queryActivePlugin(int state);
-    //! Returns all available subviews (IDs and titles).
-    QMap<QString, QVariant> queryAvailableSubViews(const QString &pluginName, int state);
-    //! Returns the active subview ID and the plugin which it belongs.
-    QMap<QString, QVariant> queryActiveSubView(int state);
-    Q_NOREPLY void setActivePlugin(const QString &pluginname, int state, const QString &subviewId = "");
-    Q_NOREPLY void setActiveSubView(const QString &subViewId, int state);
-
-signals:
-    //! This signal is emitted when the active subview of \a state is changed.
-    void activeSubViewChanged(int state);
-
-private:
-    MIMPluginManager *owner;
-    friend class MIMPluginManager;
-    friend class MIMPluginManagerPrivate;
 };
 
 #endif
