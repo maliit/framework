@@ -14,10 +14,11 @@
  * of this file.
  */
 
+#include "mimsettingsapplet.h"
+
 #include <MAction>
 #include <MLocale>
 
-#include "mimsettingsapplet.h"
 #include "mimsettingswidget.h"
 #include "mimsettingsbrief.h"
 #include "mimsettingsconf.h"
@@ -37,8 +38,14 @@ void MImSettingsApplet::init()
 
 DcpWidget* MImSettingsApplet::constructWidget(int widgetId)
 {
-    Q_UNUSED(widgetId);
-    MImSettingsWidget *widget = new MImSettingsWidget();
+    DcpWidget *widget = NULL;
+
+    // Create the main settings page
+    if (widgetId == 0)
+        widget = new MImSettingsWidget();
+    // widgetId tells the settings page number for a certain settings plug-in.
+    // If we will have multiple settings pages in the future, they must
+    // be constructed according to the widgetId. So far we have only one page.
     return widget;
 }
 

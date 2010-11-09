@@ -14,6 +14,8 @@
  * of this file.
  */
 
+#include "mimsettingswidget.h"
+
 #include <MContainer>
 #include <MContentItem>
 #include <MLocale>
@@ -26,7 +28,6 @@
 #include <mabstractinputmethodsettings.h>
 #include <minputmethodplugin.h>
 
-#include "mimsettingswidget.h"
 #include "mimsettingsconf.h"
 
 namespace {
@@ -39,6 +40,7 @@ namespace {
 
 MImSettingsWidget::MImSettingsWidget()
     : DcpWidget(),
+      activeSubViewContainer(0),
       activeSubViewItem(0),
       availableSubViewList(0)
 {
@@ -60,12 +62,15 @@ MImSettingsWidget::~MImSettingsWidget()
 
 void MImSettingsWidget::initWidget()
 {
-    QGraphicsLinearLayout* layout = new QGraphicsLinearLayout(Qt::Vertical, this);
+    QGraphicsLinearLayout* mainLayout = new QGraphicsLinearLayout(Qt::Vertical, this);
 
+    activeSubViewContainer = new MContainer("", this);
     activeSubViewItem = new MContentItem(MContentItem::TwoTextLabels, this);
     activeSubViewItem->setObjectName(ObjectNameActiveInputMethodWidget);
     connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));
-    layout->addItem(activeSubViewItem);
+    activeSubViewContainer->setStyleName("CommonLargePanel");
+    activeSubViewContainer->setCentralWidget(activeSubViewItem);
+    mainLayout->addItem(activeSubViewContainer);
 
     foreach (MAbstractInputMethodSettings *settings, MImSettingsConf::instance().settings()) {
         if (settings) {
@@ -73,22 +78,25 @@ void MImSettingsWidget::initWidget()
             if (contentWidget) {
                 MContainer *container = new MContainer(settings->title(), this);
                 container->setCentralWidget(contentWidget);
+                container->setStyleName("CommonLargePanel");
                 //TODO: icon for the settings.
-                layout->addItem(container);
+                mainLayout->addItem(container);
                 settingsContainerMap.insert(settings, container);
             }
         }
     }
-    setLayout(layout);
+    setLayout(mainLayout);
     retranslateUi();
     connect(&MImSettingsConf::instance(), SIGNAL(activeSubViewChanged()), this, SLOT(syncActiveSubView()));
 }
 
 void MImSettingsWidget::retranslateUi()
 {
-    if (!activeSubViewItem)
+    if (!activeSubViewItem || !activeSubViewContainer)
         return;
 
+    //% "Text input"
+    activeSubViewContainer->setTitle(qtTrId("qtn_txts_text_input"));
     //% "Active input method"
     activeSubViewItem->setTitle(qtTrId("qtn_txts_active_input_method"));
     updateActiveSubViewTitle();

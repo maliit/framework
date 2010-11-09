@@ -55,6 +55,7 @@ private slots:
 private:
     void updateActiveSubViewTitle();
 
+    MContainer *activeSubViewContainer;
     MContentItem *activeSubViewItem;
     MPopupList *availableSubViewList;
     QMap<MAbstractInputMethodSettings *, MContainer *> settingsContainerMap;
