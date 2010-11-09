@@ -59,6 +59,11 @@ ifneq (,$(filter n900,$(TMP_BUILD_OPTS)))
         ENABLE_MULTITOUCH = false
 endif
 
+ifneq (,$(filter timestamps,$(TMP_BUILD_OPTS)))
+    QMAKE_OPTIONS += DEFINES+=M_TIMESTAMP
+endif
+
+
 # shared library versions, option 1
 version=0.1.0
 major=0
