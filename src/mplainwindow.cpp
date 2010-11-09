@@ -18,6 +18,7 @@
 
 #include <MSceneManager>
 #include <MGConfItem>
+#include <MTimestamp>
 #include <QDebug>
 
 namespace
@@ -105,4 +106,23 @@ void MPlainWindow::updatePosition(const QRegion &region)
     }
 }
 #endif
+
+bool MPlainWindow::viewportEvent(QEvent *event)
+{
+#ifdef M_TIMESTAMP
+    QString start;
+    QString end;
+    start = QString("%1_start").arg(event->type());
+    end = QString("%1_end").arg(event->type());
+
+    mTimestamp("MPlainWindow", start);
+#endif
+
+    bool result = MWindow::viewportEvent(event);
+
+#ifdef M_TIMESTAMP
+    mTimestamp("MPlainWindow", end);
+#endif
+    return result;
+}
 

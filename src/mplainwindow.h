@@ -36,6 +36,11 @@ public slots:
     void updatePosition(const QRegion &region);
 #endif
 
+protected:
+    //! \reimp
+    virtual bool viewportEvent(QEvent *event);
+    //! \reimp_end
+
 private:
     Q_DISABLE_COPY(MPlainWindow);
 
