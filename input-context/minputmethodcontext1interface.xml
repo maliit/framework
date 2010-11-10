@@ -10,7 +10,7 @@
     </method>
     <method name="updatePreedit">
       <arg type="s"/>
-      <arg type="u"/>
+      <arg type="ay"/>
       <arg type="i"/>
     </method>
     <method name="keyEvent">

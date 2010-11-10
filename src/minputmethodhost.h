@@ -58,8 +58,7 @@ public:
     virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
     virtual void sendPreeditString(const QString &string,
-                                   MInputMethod::PreeditFace preeditFace
-                                    = MInputMethod::PreeditDefault,
+                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                    int cursorPos = -1);
     virtual void sendCommitString(const QString &string);
     virtual void sendKeyEvent(const QKeyEvent &keyEvent,

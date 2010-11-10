@@ -99,12 +99,11 @@ public:
      *
      * Implement this method to update the pre-edit string
      * \param string    The new pre-edit string
-     * \param preeditFace Selects visual styling for preedit
+     * \param preeditFormats Selects visual stylings for each part of preedit
      * \param cursorPos The cursor position inside preedit
      */
     virtual void sendPreeditString(const QString &string,
-                                   MInputMethod::PreeditFace preeditFace
-                                    = MInputMethod::PreeditDefault,
+                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                    int cursorPos = -1) = 0;
 
     /*!

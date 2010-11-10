@@ -462,16 +462,30 @@ MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
 
 // Server -> input context...................................................
 
+QDataStream &operator<<(QDataStream &s, const MInputMethod::PreeditTextFormat &t)
+{
+    s << (qint32)t.start << (qint32)t.length
+      << (qint32)t.preeditFace;
+    return s;
+}
+
 void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
-                                                        MInputMethod::PreeditFace preeditFace,
+                                                        const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                                         int cursorPos)
 {
     if (activeContext) {
+        QByteArray temporaryStorage;
+        QDataStream valueStream(&temporaryStorage, QIODevice::WriteOnly);
+        valueStream << preeditFormats;
+        GArray * const gdata(g_array_sized_new(FALSE, FALSE, 1, temporaryStorage.size()));
+        g_array_append_vals(gdata, temporaryStorage.constData(),
+                            temporaryStorage.size());
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updatePreedit",
                                    G_TYPE_STRING, string.toUtf8().data(),
-                                   G_TYPE_UINT, static_cast<unsigned int>(preeditFace),
+                                   DBUS_TYPE_G_UCHAR_ARRAY, gdata,
                                    G_TYPE_INT, cursorPos,
                                    G_TYPE_INVALID);
+        g_array_unref(gdata);
     }
 }
 

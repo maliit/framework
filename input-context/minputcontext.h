@@ -81,9 +81,10 @@ public:
     //!
     // \brief Updates preedit string of the current focus widget
     // \param string    The new string
-    // \param preeditFace Selects style for preedit string
+    // \param preeditFormats The formats for each part of preedit.
     // \param cursorPos Cursor postion. If it is less the 0, then the cursor will be hidden.
-    virtual void updatePreedit(const QString &string, MInputMethod::PreeditFace preeditFace, int cursorPos = -1);
+    virtual void updatePreedit(const QString &string, const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                               int cursorPos = -1);
 
     //! \brief Sends a non-printable key event. Parameters as in QKeyEvent constructor
     virtual void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,

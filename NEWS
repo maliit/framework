@@ -1,3 +1,16 @@
+0.19.31
+=======
+* API changes
+ - Parameters in MInputContext::updatePreedit() are changed to accept definitions
+   of different formats for each part of preedit, and support to show cursor inside
+   preedit.
+ - A parameter cursorPos is added to MAbstractInputMethod::setPreedit().
+ - Parameters in MInputMethodHost::sendPreeditString() are changed to accept definitions
+   of different formats for each part of preedit, and support to show cursor inside
+   preedit.
+ - new struct PreeditTextFormat in namespace MInputMethod which defines the text format
+   for the preedit string.
+
 0.19.30
 =======
 * API changes

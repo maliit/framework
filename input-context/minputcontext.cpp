@@ -175,7 +175,11 @@ bool MInputContext::event(QEvent *event)
             // Note: plugin could change the preedit style in imServer->setPreedit().
             // The cursor is hidden for preedit by default. The input method server can decide
             // whether it needs the cursor.
-            updatePreedit(injectionEvent->preedit(), MInputMethod::PreeditDefault);
+            QList<MInputMethod::PreeditTextFormat> preeditFormats;
+            MInputMethod::PreeditTextFormat preeditFormat(0, injectionEvent->preedit().length(),
+                                                          MInputMethod::PreeditDefault);
+            preeditFormats << preeditFormat;
+            updatePreedit(injectionEvent->preedit(), preeditFormats);
             imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
 
             event->accept();
@@ -472,48 +476,52 @@ void MInputContext::commitString(const QString &string)
 }
 
 
-void MInputContext::updatePreedit(const QString &string, MInputMethod::PreeditFace preeditFace, int cursorPos)
+void MInputContext::updatePreedit(const QString &string,
+                                  const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                  int cursorPos)
 {
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string << ", cursorPos:" << cursorPos;
     mTimestamp("MInputContext", string);
 
     preedit = string;
 
-    // update style mode
-    switch (preeditFace) {
-    case MInputMethod::PreeditNoCandidates:
-        styleContainer->setModeNoCandidates();
-        break;
-
-    case MInputMethod::PreeditKeyPress:
-        styleContainer->setModeKeyPress();
-        break;
-
-    case MInputMethod::PreeditDefault:
-    default:
-        styleContainer->setModeDefault();
-    }
-
-    // set proper formatting
-    QTextCharFormat format;
-    format.merge(standardFormat(QInputContext::PreeditFormat));
-    format.setUnderlineStyle((*styleContainer)->underline());
-    format.setUnderlineColor((*styleContainer)->underlineColor());
-    QColor color = (*styleContainer)->backgroundColor();
-
-    if (color.isValid()) {
-        format.setBackground(color);
-    }
-
-    color = (*styleContainer)->fontColor();
-
-    if (color.isValid()) {
-        format.setForeground(color);
-    }
-
     QList<QInputMethodEvent::Attribute> attributes;
-    attributes << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0,
-               string.length(), format);
+    foreach (const MInputMethod::PreeditTextFormat &preeditFormat, preeditFormats) {
+        // update style mode
+        switch (preeditFormat.preeditFace) {
+        case MInputMethod::PreeditNoCandidates:
+            styleContainer->setModeNoCandidates();
+            break;
+
+        case MInputMethod::PreeditKeyPress:
+            styleContainer->setModeKeyPress();
+            break;
+
+        case MInputMethod::PreeditDefault:
+        default:
+            styleContainer->setModeDefault();
+        }
+
+        // set proper formatting
+        QTextCharFormat format;
+        format.merge(standardFormat(QInputContext::PreeditFormat));
+        format.setUnderlineStyle((*styleContainer)->underline());
+        format.setUnderlineColor((*styleContainer)->underlineColor());
+        QColor color = (*styleContainer)->backgroundColor();
+
+        if (color.isValid()) {
+            format.setBackground(color);
+        }
+
+        color = (*styleContainer)->fontColor();
+
+        if (color.isValid()) {
+            format.setForeground(color);
+        }
+
+        attributes << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, preeditFormat.start,
+                                                   preeditFormat.length, format);
+    }
 
     if (cursorPos >= 0) {
         attributes << QInputMethodEvent::Attribute(QInputMethodEvent::Cursor, cursorPos, 1, QVariant());

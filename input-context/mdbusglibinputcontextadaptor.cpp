@@ -16,6 +16,7 @@
 
 #include "mdbusglibinputcontextadaptor.h"
 #include "minputcontext.h"
+#include <minputmethodnamespace.h>
 
 
 G_DEFINE_TYPE(MDBusGlibInputContextAdaptor, m_dbus_glib_input_context_adaptor, G_TYPE_OBJECT)
@@ -42,13 +43,30 @@ static gboolean m_dbus_glib_input_context_adaptor_commit_string(
     return TRUE;
 }
 
-static gboolean m_dbus_glib_input_context_adaptor_update_preedit(
-    MDBusGlibInputContextAdaptor *obj, const char *string, guint32 preeditFace,
-    gint32 cursorPos, GError **/*error*/)
+QDataStream &operator>>(QDataStream &s, MInputMethod::PreeditTextFormat &t)
 {
-    obj->inputContext->updatePreedit(QString::fromUtf8(string),
-                                     static_cast<MInputMethod::PreeditFace>(preeditFace),
-                                     cursorPos);
+    int preeditFace;
+    s >> t.start;
+    s >> t.length;
+    s >> preeditFace;
+    t.preeditFace = static_cast<MInputMethod::PreeditFace>(preeditFace);
+    return s;
+}
+
+static gboolean m_dbus_glib_input_context_adaptor_update_preedit(MDBusGlibInputContextAdaptor *obj,
+                                                                 const char *string,
+                                                                 GArray *preeditFormats,
+                                                                 gint32 cursorPos, GError **/*error*/)
+{
+    const QByteArray storageWrapper(QByteArray::fromRawData(preeditFormats->data, preeditFormats->len));
+    QDataStream formatListStream(storageWrapper);
+    QList<MInputMethod::PreeditTextFormat> formatList;
+    formatListStream >> formatList;
+    if (formatListStream.status() == QDataStream::Ok) {
+        obj->inputContext->updatePreedit(QString::fromUtf8(string),
+                                         formatList,
+                                         cursorPos);
+    }
     return TRUE;
 }
 

@@ -145,6 +145,26 @@ namespace MInputMethod {
         DeadKeyGraveIndicator,       //!< Dead key grave mode
         DeadKeyTildeIndicator        //!< Dead key tilde mode
     };
+
+    /*!
+     * PreeditTextFormat defines the text format for part of the preedit string
+     * specified by start and length.
+     *
+     * \sa PreeditFace.
+     */
+    struct PreeditTextFormat {
+        int start;
+        int length;
+        PreeditFace preeditFace;
+
+        PreeditTextFormat()
+            : start(0), length(0), preeditFace(PreeditDefault)
+        {};
+
+        PreeditTextFormat(int s, int l, const PreeditFace &face)
+            : start(s), length(l), preeditFace(face)
+        {};
+    };
 };
 
 #endif
