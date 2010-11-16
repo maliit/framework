@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=DUIApplet
 Name=Meegotouch textinput settings
-X-logical-id=qtn_sett_main_language
+X-logical-id=qtn_txts_text_input
 X-translation-catalog=text-input-settings
 
 Icon=
