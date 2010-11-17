@@ -1,8 +1,8 @@
-meego-im-framework (0.19.29~1) unstable; urgency=low
+meego-im-framework (0.19.29-1) unstable; urgency=low
 
-  * [UNRELEASED]
+  * new release
 
- -- Gibran Rodriguez <ext-gibran-rodriguez@nokia.com>  Wed, 10 Nov 2010 13:06:21 +0200
+ -- huaming wang <huaming.wang@nokia.com>  Wed, 17 Nov 2010 14:23:26 +0200
 
 meego-im-framework (0.19.28-1) unstable; urgency=low
 
