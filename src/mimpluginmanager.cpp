@@ -40,13 +40,8 @@
 
 #include <QDebug>
 
-#ifdef QT_DBUS
-#include "minputcontextdbusconnection.h"
-typedef MInputContextDBusConnection MInputContextConnectionImpl;
-#else
 #include "minputcontextglibdbusconnection.h"
 typedef MInputContextGlibDBusConnection MInputContextConnectionImpl;
-#endif
 
 
 namespace

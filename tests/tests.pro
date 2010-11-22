@@ -20,10 +20,6 @@ SUBDIRS = \
           ut_mimsettingsdialog \
           ut_mimapplication \
 
-contains(DEFINES, QT_DBUS) {
-SUBDIRS += ut_minputcontextdbusconnection
-}
-
 target.commands += $$system(touch tests.xml)
 target.path = /usr/share/meego-im-framework-tests
 target.files += qtestlib2junitxml.xsl runtests.sh tests.xml

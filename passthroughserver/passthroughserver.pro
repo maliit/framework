@@ -49,11 +49,7 @@ message(Argument added to im server: $$SOFTWARE $$TARGETDEVICE)
 
 SERVICE_FILE = minputmethodserver.service.in
 
-contains(DEFINES, QT_DBUS) {
-    ACTIVATION_OR_REAL_INTERFACE = com.meego.inputmethod.uiserver1
-} else {
-    ACTIVATION_OR_REAL_INTERFACE = com.meego.inputmethod.uiserveractivation
-}
+ACTIVATION_OR_REAL_INTERFACE = com.meego.inputmethod.uiserveractivation
 
 servicefilegenerator.output = minputmethodserver.service
 servicefilegenerator.input = SERVICE_FILE

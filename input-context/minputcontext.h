@@ -26,13 +26,8 @@
 #include <minputmethodnamespace.h>
 
 class MPreeditStyleContainer;
-#ifdef QT_DBUS
-class QtDBusIMServerProxy;
-typedef QtDBusIMServerProxy DBusIMServerProxy;
-#else
 class GlibDBusIMServerProxy;
 typedef GlibDBusIMServerProxy DBusIMServerProxy;
-#endif
 
 /*!
  * \brief On the application side, MInputContext implements input method

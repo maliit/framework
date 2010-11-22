@@ -33,14 +33,8 @@
 #include <MLibrary>
 #include <MInputMethodState>
 
-#ifdef QT_DBUS
-#include <QDBusConnection>
-#include "minputcontextadaptor.h"
-#include "qtdbusimserverproxy.h"
-#else
 #include "mdbusglibinputcontextadaptor.h"
 #include "glibdbusimserverproxy.h"
-#endif
 #include "mpreeditstyle.h"
 #include "mtimestamp.h"
 
@@ -151,25 +145,12 @@ MInputContext::~MInputContext()
 void MInputContext::connectToDBus()
 {
     qDebug() << __PRETTY_FUNCTION__;
-#ifdef QT_DBUS
-    imServer = new QtDBusIMServerProxy(dbusObjectPath());
-
-    // connect methods we are offering to DBus
-    new MInputContextAdaptor(this);
-
-    if (!QDBusConnection::sessionBus().registerObject(dbusObjectPath(), this)) {
-        qCritical("MInputContext failed to register object via D-Bus: %s",
-                  dbusObjectPath().toAscii().data());
-    }
-
-#else
     MDBusGlibInputContextAdaptor *inputContextAdaptor
         = M_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR(
             g_object_new(M_TYPE_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR, NULL));
 
     inputContextAdaptor->inputContext = this;
     imServer = new GlibDBusIMServerProxy(G_OBJECT(inputContextAdaptor), DBusCallbackPath);
-#endif
 
     connect(imServer, SIGNAL(dbusConnected()), this, SLOT(onDBusConnection()));
     connect(imServer, SIGNAL(dbusDisconnected()), this, SLOT(onDBusDisconnection()));
