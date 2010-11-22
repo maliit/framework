@@ -57,6 +57,7 @@ void MToolbarItemPrivate::assign(const MToolbarItemPrivate &other)
     visible   = other.visible;
     toggle    = other.toggle;
     pressed   = other.pressed;
+    enabled   = other.enabled;
     size      = other.size;
     actions   = other.actions;
 }

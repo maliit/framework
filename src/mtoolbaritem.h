@@ -235,7 +235,11 @@ public slots:
      */
     void setHighlighted(bool highlighted);
 
-    //! If \a enabled is true, the item is enabled; otherwise, it is disabled.
+    /*!
+     * \brief  If \a enabled is true, the item is enabled; otherwise, it is disabled.
+     *
+     * This attribute is applicable for buttons only.
+     */
     void setEnabled(bool enabled);
 
 signals:

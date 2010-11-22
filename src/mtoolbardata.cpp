@@ -50,6 +50,7 @@ namespace
     const QString ImTagTextId                = QString::fromLatin1("text_id");
     const QString ImTagToggle                = QString::fromLatin1("toggle");
     const QString ImTagPressed               = QString::fromLatin1("pressed");
+    const QString ImTagEnabled               = QString::fromLatin1("enabled");
     const QString ImTagSelectedText          = QString::fromLatin1("selectedtext");
     const QString ImTagAlways                = QString::fromLatin1("always");
     const QString ImTagLeft                  = QString::fromLatin1("left");
@@ -340,6 +341,7 @@ void MToolbarDataPrivate::parseTagButton(const QDomElement &element, MTBParsePar
     parseAttribute(&MToolbarItem::setToggle,      element, ImTagToggle,      params);
     parseAttribute(&MToolbarItem::setPressed,     element, ImTagPressed,     params);
     parseAttribute(&MToolbarItem::setHighlighted, element, ImTagHighlighted, params);
+    parseAttribute(&MToolbarItem::setEnabled,   element, ImTagEnabled,   params);
 
     if (element.hasAttribute(ImTagSize)) {
         bool ok;

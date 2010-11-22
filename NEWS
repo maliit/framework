@@ -1,3 +1,9 @@
+0.19.30
+=======
+* API changes
+ - Toolbar specification was changed. Add a new attibute "enabled" for button.
+   Check latest version of the specification in the file doc/src/toolbarxml.dox.
+
 0.19.27
 =======
 

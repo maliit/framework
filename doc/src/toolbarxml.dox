@@ -39,6 +39,7 @@ The TEXT attribute holds the text and TEXT_ID holds the logical id of the text.
 The TOGGLE attribute defines the type of the button whether it is a toggle button or not, by default the value is false.
 If the TOGGLE attribute is true, the PRESSED attribute holds the button state whether the button is pressed or not.
 The HIGHLIGHTED attribute selects which background image should be used.
+The ENABLED attribute holds whether the button is enabled. Default value is true. If it is set to false, the button will be disabled.
 
 \subsubsection LABEL
 This tag will be constructed as MLabel.
@@ -127,6 +128,7 @@ Button "_copypaste" copies selected text (if any) or pastes current clipboard co
 <!ATTLIST button toggle (true|false)>
 <!ATTLIST button pressed (true|false)>
 <!ATTLIST button highlighted (true|false) "false">
+<!ATTLIST button enabled (true|false) "true">
 
 <!ATTLIST label name CDATA #REQUIRED>
 <!ATTLIST label group CDATA>
