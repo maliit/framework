@@ -622,7 +622,6 @@ void MInputContext::onDBusDisconnection()
     qDebug() << __PRETTY_FUNCTION__;
     active = false;
     redirectKeys = false;
-    inputPanelState = InputPanelHidden;
     MInputMethodState::instance()->setInputMethodArea(QRect());
 }
 
@@ -641,8 +640,10 @@ void MInputContext::onDBusConnection()
         // onDBusDisconnection set active to false.
         active = false;
         setFocusWidget(widget);
-        imServer->showInputMethod();
-        inputPanelState = InputPanelShown;
+        if (inputPanelState != InputPanelHidden) {
+            imServer->showInputMethod();
+            inputPanelState = InputPanelShown;
+        }
     }
 }
 
