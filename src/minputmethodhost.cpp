@@ -92,6 +92,11 @@ QRect MInputMethodHost::preeditRectangle(bool &valid)
     return connection->preeditRectangle(valid);
 }
 
+QRect MInputMethodHost::cursorRectangle(bool &valid)
+{
+    return connection->cursorRectangle(valid);
+}
+
 void MInputMethodHost::sendPreeditString(const QString &string,
                                          const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                          int cursorPos)

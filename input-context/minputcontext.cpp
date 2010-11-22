@@ -834,6 +834,16 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     // window id for transient VKB - it is enough to just query the focused widget here:
     stateInformation["winId"] = static_cast<int>(focused->effectiveWinId());
 
+    queryResult = focused->inputMethodQuery(Qt::ImMicroFocus);
+    if (queryResult.isValid()) {
+        // The replied rectangle is covering the area of the input cursor in qwidget coordinates.
+        // Need to map the rectangle to global coordinate.
+        QRect cursorRect = queryResult.toRect();
+        cursorRect = QRect(focused->mapToGlobal(cursorRect.topLeft()),
+                           focused->mapToGlobal(cursorRect.bottomRight()));
+        stateInformation["cursorRectangle"] = cursorRect;
+    }
+
     return stateInformation;
 }
 

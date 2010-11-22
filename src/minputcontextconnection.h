@@ -90,9 +90,14 @@ public:
     virtual int inputMethodMode(bool &valid) = 0;
 
     /*!
-     * \brief get input method mode
+     * \brief get preedit rectangle
      */
     virtual QRect preeditRectangle(bool &valid) = 0;
+
+    /*!
+     * \brief get cursor rectangle
+     */
+    virtual QRect cursorRectangle(bool &valid) = 0;
 
     /*!
      * \brief Updates pre-edit string in the application widget

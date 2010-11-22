@@ -10,6 +10,7 @@
    preedit.
  - new struct PreeditTextFormat in namespace MInputMethod which defines the text format
    for the preedit string.
+ - MAbstractInputMethodHost was changed. Add a new pure virtual method cursorRectangle().
 
 0.19.30
 =======

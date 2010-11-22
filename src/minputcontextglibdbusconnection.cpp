@@ -59,6 +59,7 @@ namespace
     const char * const ToolbarIdAttribute = "toolbarId";
     const char * const ToolbarAttribute = "toolbar";
     const char * const WinId = "winId";
+    const char * const CursorRectAttribute = "cursorRectangle";
 }
 
 //! \internal
@@ -754,6 +755,12 @@ bool MInputContextGlibDBusConnection::autoCapitalizationEnabled(bool &valid)
     return capitalizationVariant.toBool();
 }
 
+QRect MInputContextGlibDBusConnection::cursorRectangle(bool &valid)
+{
+    QVariant cursorRectVariant = widgetState[CursorRectAttribute];
+    valid = cursorRectVariant.isValid();
+    return cursorRectVariant.toRect();
+}
 
 void
 MInputContextGlibDBusConnection::updateWidgetInformation(

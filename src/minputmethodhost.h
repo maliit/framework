@@ -57,6 +57,7 @@ public:
     virtual bool hasSelection(bool &valid);
     virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
+    virtual QRect cursorRectangle(bool &valid);
     virtual void sendPreeditString(const QString &string,
                                    const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                    int cursorPos = -1);
