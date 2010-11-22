@@ -2,6 +2,7 @@ meego-im-framework (0.19.30~1) unstable; urgency=low
 
   * [UNRELEASED]
   * Fixes: NB#206117 - meego-im-uiserver restart screws up dialer
+  * Changes: Remove QtDBus stuffs
 
  -- huaming wang <huaming.wang@nokia.com>  Wed, 17 Nov 2010 14:25:37 +0200
 
