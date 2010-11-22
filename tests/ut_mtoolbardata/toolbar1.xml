@@ -16,7 +16,7 @@
                     <sendkeysequence keysequence="Ctrl+C" />
                 </actions>
             </button>
-            <button name="test3" group="group3" showon="always" alignment="left" icon_id="icon3" text="text3" text_id="id3">
+            <button name="test3" group="group3" showon="always" alignment="left" icon_id="icon3" text="text3" text_id="id3"  enabled="false">
                 <actions>
                     <paste />
                 </actions>

@@ -96,6 +96,22 @@ void Ut_MToolbarItem::testSetProperty()
 
     subject->setProperty("pressed", QVariant(true));
     QVERIFY(spy.count() == 0);
+    spy.clear();
+
+    subject->setProperty("enabled", QVariant(false));
+    QVERIFY(spy.count() == 1);
+    QVERIFY(spy.first().count() == 1);
+    QCOMPARE(spy.first().first().toString(), QString("enabled"));
+    spy.clear();
+
+    subject->setProperty("enabled", QVariant(false));
+    QVERIFY(spy.count() == 0);
+
+    subject->setProperty("enabled", QVariant(true));
+    QVERIFY(spy.count() == 1);
+    QVERIFY(spy.first().count() == 1);
+    QCOMPARE(spy.first().first().toString(), QString("enabled"));
+    spy.clear();
 }
 
 void Ut_MToolbarItem::testHighlighted()
