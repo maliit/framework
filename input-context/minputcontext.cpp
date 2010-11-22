@@ -262,6 +262,10 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
     mDebug("MInputContext") << " event pos: " << event->globalPos() << " cursor pos:" << x;
 
+    if (x < 0) {
+        return;
+    }
+
     // input method server needs to be informed about clicks
     if (event->type() == QEvent::MouseButtonRelease) {
 
