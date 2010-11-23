@@ -54,7 +54,7 @@ RECURSIVE             = YES
 EXCLUDE               = 
 EXCLUDE_PATTERNS      = moc_*.cpp *_p.h *_p.cpp */demo/*
 IMAGE_PATH            = @M_SRC_DIR@/images
-INPUT_FILTER          = 
+INPUT_FILTER          = "sed -f @M_SRC_DIR@/aliases.sed <"
 
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index
