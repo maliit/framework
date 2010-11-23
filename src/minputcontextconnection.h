@@ -30,7 +30,7 @@ class MInputContextConnectionPrivate;
 class MAbstractInputMethod;
 class MToolbarId;
 
-
+//! \internal
 /*!
  * \brief MInputContextConnection is a base class of the input method communication implementation
  * between the input context and the input method server.
@@ -188,6 +188,6 @@ protected:
 private:
     MInputContextConnectionPrivate *d;
 };
-
+//! \internal_end
 
 #endif

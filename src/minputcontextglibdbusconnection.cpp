@@ -61,6 +61,7 @@ namespace
     const char * const WinId = "winId";
 }
 
+//! \internal
 //! \brief Class for a mostly dummy object for activating input method server over D-Bus
 //!
 //! The class has only one method, address, which is used to obtain the address of the
@@ -78,6 +79,7 @@ struct MIMSDBusActivaterClass
 {
     GObjectClass parent;
 };
+//! \internal_end
 
 #define M_TYPE_IMS_DBUS_ACTIVATER              (m_ims_dbus_activater_get_type())
 #define M_IMS_DBUS_ACTIVATER(object)           (G_TYPE_CHECK_INSTANCE_CAST((object), M_TYPE_IMS_DBUS_ACTIVATER, MIMSDBusActivater))
@@ -110,7 +112,7 @@ m_ims_dbus_activater_class_init(MIMSDBusActivaterClass */*klass*/)
                                     &dbus_glib_m_ims_dbus_activater_object_info);
 }
 
-
+//! \internal
 //! \brief GObject-based input context connection class
 //!
 //! There is one of these for each client connection
@@ -132,6 +134,7 @@ struct MDBusGlibICConnectionClass
 {
     GObjectClass parent;
 };
+//! \internal_end
 
 #define M_TYPE_DBUS_GLIB_IC_CONNECTION              (m_dbus_glib_ic_connection_get_type())
 #define M_DBUS_GLIB_IC_CONNECTION(object)           (G_TYPE_CHECK_INSTANCE_CAST((object), M_TYPE_DBUS_GLIB_IC_CONNECTION, MDBusGlibICConnection))

@@ -28,6 +28,7 @@ class MIMApplication;
 #endif
 #define mApp (static_cast<MIMApplication *>(QCoreApplication::instance()))
 
+//! \internal
 /*! \brief A helper class to filter X11 events
  *
  *  This class allows the meego-im-uiserver to make itself transient to the
@@ -87,6 +88,7 @@ private:
 
     friend class Ut_PassthroughServer;
 };
+//! \internal_end
 
 #endif // MIM_APPLICATION_H
 

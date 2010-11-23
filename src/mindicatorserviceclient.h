@@ -27,9 +27,9 @@ class QString;
 class QDBusInterface;
 class QDBusServiceWatcher;
 
+//! \internal
 /*!
  * \brief Provides interface for setting the system keyboard indicator state.
- *
  */
 class MIndicatorServiceClient: public QObject
 {
@@ -56,5 +56,6 @@ private:
     QDBusServiceWatcher *indicatorServiceWatcher;
     QMap<MInputMethod::InputModeIndicator, QString> indicatorMap;
 };
+//! \internal_end
 
 #endif

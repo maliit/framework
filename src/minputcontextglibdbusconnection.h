@@ -37,6 +37,7 @@ class QRegion;
 struct MDBusGlibICConnection;
 struct MIMSDBusActivater;
 
+//! \internal
 /*! \brief Peer-to-peer DBus input context connection based on glib dbus bindings
  */
 class MInputContextGlibDBusConnection : public MInputContextConnection
@@ -165,6 +166,7 @@ private:
 
     Q_DISABLE_COPY(MInputContextGlibDBusConnection)
 };
+//! \internal_end
 
 
 #endif

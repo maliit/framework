@@ -29,6 +29,7 @@
 
 class MToolbarId;
 
+//! \internal
 /*!
  \brief The MToolbarManager class manager the virtual keyboard toolbar.
 
@@ -158,6 +159,7 @@ inline MToolbarManager &MToolbarManager::instance()
     Q_ASSERT(toolbarMgrInstance);
     return *toolbarMgrInstance;
 }
+//! \internal_end
 
 #endif
 

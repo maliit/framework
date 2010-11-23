@@ -32,6 +32,7 @@ class QModelIndex;
 class MContainer;
 class MAbstractInputMethodSettings;
 
+//! \internal
 class MIMSettingsDialog : public MDialog
 {
     Q_OBJECT
@@ -47,9 +48,9 @@ Q_SIGNALS:
     void languageChanged();
 
 protected:
-    //! reimp
+    //! \reimp
     virtual void retranslateUi();
-    //! reimp_end
+    //! \reimp_end
 
 private slots:
     void showAvailableSubViewList();
@@ -69,5 +70,6 @@ private:
 
     friend class Ut_MIMSettingsDialog;
 };
+//! \internal_end
 
 #endif

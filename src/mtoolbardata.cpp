@@ -84,6 +84,7 @@ namespace
     const QChar NameSeparator(',');
 }
 
+//! \internal
 struct MTBParseParameters {
     MTBParseParameters();
 
@@ -105,6 +106,7 @@ struct MTBParseStructure {
     QString tagName;
     MToolbarDataPrivate::TagParser parser;
 };
+//! \internal_end
 
 MTBParseParameters::MTBParseParameters()
     : validTag(true),

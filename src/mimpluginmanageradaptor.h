@@ -26,7 +26,7 @@
 
 class MIMPluginManager;
 
-
+//! \internal
 class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
@@ -59,5 +59,6 @@ private:
     friend class MIMPluginManager;
     friend class MIMPluginManagerPrivate;
 };
+//! \internal_end
 
 #endif

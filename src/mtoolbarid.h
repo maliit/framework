@@ -26,6 +26,7 @@
 
 class MGConfItem;
 
+//! \internal
 /*!
  * \brief MToolbarId contains global unique identifier for toolbar.
  *
@@ -64,6 +65,8 @@ private:
 
 //! Returns hash value for given \a id
 uint qHash(const MToolbarId &id);
+
+//! \internal_end
 
 #endif
 
