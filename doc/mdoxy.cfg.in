@@ -46,8 +46,6 @@ WARN_LOGFILE          = "doxygen.log"
 
 FILE_VERSION_FILTER   = "sh @M_SRC_DIR@/versionString.sh @M_SRC_DIR@/.."
 INPUT                 = @M_SRC_DIR@/../src/ \
-                        @M_SRC_DIR@/../passthroughserver/ \
-                        @M_SRC_DIR@/../input-context/ \
                         @M_SRC_DIR@/../doc/src/
 FILE_PATTERNS         = *.cpp *.h *.dox
 RECURSIVE             = YES
