@@ -1,3 +1,9 @@
+meego-im-framework (0.19.31~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 23 Nov 2010 11:56:39 +0200
+
 meego-im-framework (0.19.30-1) unstable; urgency=low
 
   * Fixes: NB#206117 - meego-im-uiserver restart screws up dialer
