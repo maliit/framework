@@ -35,7 +35,8 @@ class MToolbarItemActionPrivate;
  *
  * See also MInputMethod::ActionType
  */
-struct MToolbarItemAction {
+class MToolbarItemAction {
+public:
     //! Construct empty object
     explicit MToolbarItemAction(MInputMethod::ActionType action = MInputMethod::ActionUndefined);
 
