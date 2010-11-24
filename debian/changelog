@@ -1,4 +1,10 @@
-meego-im-framework (0.19.31~1) unstable; urgency=low
+meego-im-framework (0.19.32~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- huaming wang <huaming.wang@nokia.com>  Wed, 24 Nov 2010 11:59:36 +0200
+
+meego-im-framework (0.19.31-1) unstable; urgency=low
 
   * Changes: support set cursor inside preedit.
   * Changes: support different styles for different part of preedit.
