@@ -344,6 +344,7 @@ void MToolbarDataPrivate::parseTagButton(const QDomElement &element, MTBParsePar
     parseAttribute(&MToolbarItem::setPressed,     element, ImTagPressed,     params);
     parseAttribute(&MToolbarItem::setHighlighted, element, ImTagHighlighted, params);
     parseAttribute(&MToolbarItem::setEnabled,   element, ImTagEnabled,   params);
+    parseAttribute(&MToolbarItem::setVisible,   element, ImTagVisible,   params);
 
     if (element.hasAttribute(ImTagSize)) {
         bool ok;

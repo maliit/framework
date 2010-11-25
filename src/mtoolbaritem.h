@@ -142,7 +142,7 @@ public:
     /*!
     * \brief Sets the visibility of the item.
     */
-    void setVisible(bool);
+    void setVisible(bool newVisible, bool explicitly);
 
     //! Returns text from item
     QString text() const;
@@ -242,6 +242,11 @@ public slots:
      * This attribute is applicable for buttons only.
      */
     void setEnabled(bool enabled);
+
+    /*!
+     * \brief Explictly set the visiblity for the item.
+     */
+    void setVisible(bool newVisible);
 
 signals:
     /*!

@@ -40,10 +40,11 @@ The TOGGLE attribute defines the type of the button whether it is a toggle butto
 If the TOGGLE attribute is true, the PRESSED attribute holds the button state whether the button is pressed or not.
 The HIGHLIGHTED attribute selects which background image should be used.
 The ENABLED attribute holds whether the button is enabled. Default value is true. If it is set to false, the button will be disabled.
+The VISIBLE attribute defines the button's visibility. Normally, application does not need to specify this attribute. The button is visible by default, but application could hide it by setting VISIBLE to false. This attribute will override the SHOWON and HIDEON.
 
 \subsubsection LABEL
 This tag will be constructed as MLabel.
-LABEL tag could have following attributes: NAME, GROUP, SHOWON, HIDEON, ALIGMENT, TEXT and TEXT_ID.
+LABEL tag could have following attributes: NAME, GROUP, VISIBLE, SHOWON, HIDEON, ALIGMENT, TEXT and TEXT_ID.
 Every attribute has the same meaning as for BUTTON tag.
 
 \subsubsubsection ACTIONS
@@ -70,6 +71,9 @@ This tag defines that the action is to copy selected text.
 \subsubsubsubsection PASTE
 This tag defines that the action is to paste from clipboard.
 
+\subsubsubsubsection CLOSE
+This tag defines that the action is to close keyboard and removes focus from active text entry.
+
 \subsection Layout
 
 Layout describes the actual toolbar layout for a given screen orientation.  If the layout doesn't have a portrait variant, the software shall use the landscape variant when the device is in portrait orientation. Each layout contains one row only.
@@ -89,6 +93,7 @@ NAME attribute selects correspondig item (button or label) which is defined in t
 \section Standard toolbar items
 Button "_close" closes keyboard and removes focus from active text entry. This button is right aligned.
 Button "_copypaste" copies selected text (if any) or pastes current clipboard content. This button is left aligned.
+Warning: you can use REFUSE to remove standard toolbar items. But you should not change the attributes of standard toolbar items.
 
 \section DTD
 \code
@@ -98,7 +103,7 @@ Button "_copypaste" copies selected text (if any) or pastes current clipboard co
 <!ELEMENT items ((button|label)+)>
 <!ELEMENT layout (item+)>
 <!ELEMENT button (actions*)>
-<!ELEMENT actions (sendkeysequence|sendstring|sendcommand|copy|paste|showgroup|hidegroup)*>
+<!ELEMENT actions (sendkeysequence|sendstring|sendcommand|copy|paste|showgroup|hidegroup|close)*>
 <!ELEMENT sendkeysequence (#CDATA)>
 <!ELEMENT showgroup (#CDATA)>
 <!ELEMENT hidegroup (#CDATA)>

@@ -54,6 +54,7 @@ public:
     QString text;
     QString textId;
     bool visible;
+    bool explicitlySettingVisible;
 
     // below attributes are only valid for Button
     bool toggle;

@@ -1,3 +1,10 @@
+0.19.32
+=======
+* API changes
+ - Toolbar specification was changed. Add a new attibute "visible" for button.
+   Check latest version of the specification in the file doc/src/toolbarxml.dox.
+ - new variant of MToolbarItem::setVisible() with explicit visibility flag was added.
+
 0.19.31
 =======
 * API changes

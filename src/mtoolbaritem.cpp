@@ -32,6 +32,7 @@ MToolbarItemPrivate::MToolbarItemPrivate()
       hideOn(MInputMethod::VisibleUndefined),
       alignment(Qt::AlignCenter),
       visible(true),
+      explicitlySettingVisible(false),
       toggle(false),
       pressed(false),
       size(100),
@@ -55,6 +56,7 @@ void MToolbarItemPrivate::assign(const MToolbarItemPrivate &other)
     hideOn    = other.hideOn;
     alignment = other.alignment;
     visible   = other.visible;
+    explicitlySettingVisible = other.explicitlySettingVisible;
     toggle    = other.toggle;
     pressed   = other.pressed;
     enabled   = other.enabled;
@@ -193,14 +195,25 @@ bool MToolbarItem::isVisible() const
     return d->visible;
 }
 
-void MToolbarItem::setVisible(bool v)
+void MToolbarItem::setVisible(bool newVisible, bool explicitly)
 {
     Q_D(MToolbarItem);
 
-    if (d->visible != v) {
-        d->visible = v;
+    // if application already explicitly set visible, then
+    // ignore the later unexplicitly setting visible requests.
+    if (d->explicitlySettingVisible && !explicitly)
+        return;
+    d->explicitlySettingVisible = explicitly;
+
+    if (d->visible != newVisible) {
+        d->visible = newVisible;
         emit propertyChanged("visible");
     }
+}
+
+void MToolbarItem::setVisible(bool newVisible)
+{
+    setVisible(newVisible, true);
 }
 
 QString MToolbarItem::text() const
