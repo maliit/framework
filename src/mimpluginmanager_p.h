@@ -24,6 +24,8 @@
 #include <QSet>
 #include <QRegion>
 
+#include <MGConfItem>
+
 #include "minputmethodnamespace.h"
 #include "mtoolbarid.h"
 #include "minputmethodhost.h"
@@ -112,7 +114,12 @@ public:
     QString inputSourceName(MInputMethod::HandlerState source) const;
     MInputMethod::HandlerState inputSourceFromName(const QString &name, bool &valid) const;
 
-public:
+    //! Returns the string value of the last active subview.
+    QString lastActiveSubView() const;
+
+    //! Sets last active subview.
+    void setLastActiveSubView(const QString &subview);
+
     MIMPluginManager *parent;
     MInputContextConnection *mICConnection;
 
@@ -144,6 +151,8 @@ public:
     MToolbarId toolbarId;
 
     MIndicatorServiceClient indicatorService;
+
+    MGConfItem lastActiveSubViewConf;
 };
 
 #endif

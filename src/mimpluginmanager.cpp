@@ -48,15 +48,16 @@ namespace
 {
     const QString DefaultPluginLocation("/usr/lib/meego-im-plugins/");
 
-    const QString ConfigRoot          = "/meegotouch/inputmethods/";
-    const QString MImPluginPaths    = ConfigRoot + "paths";
-    const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
+    const QString ConfigRoot           = "/meegotouch/inputmethods/";
+    const QString MImPluginPaths       = ConfigRoot + "paths";
+    const QString MImPluginDisabled    = ConfigRoot + "disabledpluginfiles";
 
-    const QString PluginRoot          = "/meegotouch/inputmethods/plugins";
-    const QString MImAccesoryEnabled  = "/meegotouch/inputmethods/accessoryenabled";
+    const QString PluginRoot           = "/meegotouch/inputmethods/plugins";
+    const QString MImAccesoryEnabled   = "/meegotouch/inputmethods/accessoryenabled";
+    const QString LastActiveSubView    = "/meegotouch/inputmethods/virtualkeyboard/lastactivesubview";
 
     const char * const DBusServiceName = "com.meego.inputmethodpluginmanager1";
-    const char * const DBusPath = "/com/meego/inputmethodpluginmanager1";
+    const char * const DBusPath        = "/com/meego/inputmethodpluginmanager1";
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
@@ -68,7 +69,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       adaptor(0),
       connectionValid(false),
       acceptRegionUpdates(true),
-      indicatorService(0)
+      indicatorService(0),
+      lastActiveSubViewConf(LastActiveSubView)
 {
     inputSourceToNameMap[MInputMethod::OnScreen] = "onscreen";
     inputSourceToNameMap[MInputMethod::Hardware] = "hardware";
@@ -576,6 +578,8 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
                 if (inputMethod->activeSubView(MInputMethod::OnScreen) != activeSubViewIdOnScreen) {
                     inputMethod->setActiveSubView(activeSubViewIdOnScreen, MInputMethod::OnScreen);
                 }
+                // Save the last active subview
+                setLastActiveSubView(subViewId);
                 if (adaptor) {
                     emit adaptor->activeSubViewChanged(MInputMethod::OnScreen);
                 }
@@ -693,6 +697,16 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginName,
     }
 }
 
+QString MIMPluginManagerPrivate::lastActiveSubView() const
+{
+    return lastActiveSubViewConf.value().toString();
+}
+
+void MIMPluginManagerPrivate::setLastActiveSubView(const QString &subview)
+{
+    lastActiveSubViewConf.set(subview);
+}
+
 
 ///////////////
 // actual class
@@ -730,6 +744,10 @@ MIMPluginManager::MIMPluginManager()
     connect(d->imAccessoryEnabledConf, SIGNAL(valueChanged()), this, SLOT(updateInputSource()));
 
     updateInputSource();
+
+    // Set the last active subview
+    if (!d->lastActiveSubView().isEmpty())
+        d->_q_setActiveSubView(d->lastActiveSubView(), MInputMethod::OnScreen);
 
     d->initActiveSubView();
 
