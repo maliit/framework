@@ -97,7 +97,7 @@ MInputContext::MInputContext(QObject *parent)
     if (MComponentData::instance() == 0) {
         QStringList args = qApp->arguments();
         int argc = 1;
-        QString appName = args[0];
+        QString appName = (!args.isEmpty()) ? args[0] : QString();
         char *argv[1];
         QByteArray appNameArray = appName.toLocal8Bit();
         argv[0] = appNameArray.data();
