@@ -29,11 +29,12 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 
 QMAKE_CLEAN += *.gcno *.gcda
 
-# note: not installing the service file, the input method server
-# is started by other means than by the d-bus.
-# it is still required in scratchbox and N900
-INSTALLS += target \
-            servicefiles \
+INSTALLS += target
+
+# installing dbus service file needs to be explicitly enabled
+dbusservice {
+   INSTALLS += servicefiles
+}
 
 
 QMAKE_EXTRA_TARGETS += check-xml
