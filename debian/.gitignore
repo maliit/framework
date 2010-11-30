@@ -9,7 +9,6 @@ libmeegoimframework0
 meego-im-framework-tests
 tmp
 meego-im-context.install
-meego-im-uiserver.install
 libmeegoimframework-dev.install
 *.debhelper*
 *.substvars

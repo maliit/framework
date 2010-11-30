@@ -52,13 +52,6 @@ ifneq (armel, ${ARCHITECTURE})
         ENABLE_MULTITOUCH = false
 endif
 
-ifneq (,$(filter n900,$(TMP_BUILD_OPTS)))
-        QMAKE_OPTIONS += TARGETDEVICE="-target N900 -bypass-wm-hint"
-        DBUS_SERVICE_FILE:=usr/share/dbus-1/
-        #multi-touch is not available for N900
-        ENABLE_MULTITOUCH = false
-endif
-
 ifneq (,$(filter timestamps,$(TMP_BUILD_OPTS)))
     QMAKE_OPTIONS += DEFINES+=M_TIMESTAMP
 endif
@@ -78,7 +71,6 @@ configure-stamp:
 	qmake -r $(QMAKE_OPTIONS)
 	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libmeegoimframework-dev.install < debian/libmeegoimframework-dev.install.in
 	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/meego-im-context.install < debian/meego-im-context.install.in
-	sed -e 's|DBUS_SERVICE_FILE|${DBUS_SERVICE_FILE}|' > debian/meego-im-uiserver.install < debian/meego-im-uiserver.install.in
 
 	touch configure-stamp
 
