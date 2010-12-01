@@ -1,3 +1,9 @@
+meego-im-framework (0.19.34~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Gibran Rodriguez <ext-gibran.rodriguez@nokia.com>  Wed, 01 Dec 2010 12:07:37 +0200
+
 meego-im-framework (0.19.33-1) unstable; urgency=low
 
   * Changes: support query cursor rectangle from application.
