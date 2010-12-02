@@ -1,5 +1,4 @@
 #include "ut_minputcontext.h"
-#include "qdbus_stub.h"
 
 #include <QStringList>
 #include <QDebug>
@@ -415,7 +414,6 @@ void Ut_MInputContext::initTestCase()
 
     m_stub = new InputMethodServerDBusStub(this);
 
-    qDBusInterfaceStub->target = m_stub;
     DBusStub = m_stub;          // for glib dbus use
 
     m_subject = new MInputContext;
@@ -432,13 +430,6 @@ void Ut_MInputContext::cleanupTestCase()
 
 void Ut_MInputContext::init()
 {
-    // see NB#198630
-    // ut_minputcontext now is using a stub QDBusConnection, while we have
-    // implicit dependency to contextsubscrible, and contenxtsubscrible also
-    // try to use QDBusConnect. Our stub QDbusConnection will lead to the
-    // contenxtsubscrible crash.
-    QSKIP("Stubbed QtDBus makes ut_minputcontext can not really work", SkipAll);
-
     m_stub->resetCallCounts();
 }
 
