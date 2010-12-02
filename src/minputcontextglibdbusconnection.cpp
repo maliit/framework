@@ -602,6 +602,14 @@ void MInputContextGlibDBusConnection::paste()
 }
 
 
+void MInputContextGlibDBusConnection::setSelection(int start, int length)
+{
+    dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setSelection",
+                               G_TYPE_INT, start,
+                               G_TYPE_INT, length,
+                               G_TYPE_INVALID);
+}
+
 void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &region)
 {
     if (activeContext) {

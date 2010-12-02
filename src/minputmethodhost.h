@@ -79,6 +79,7 @@ public:
     virtual void setScreenRegion(const QRegion &region);
     virtual void setInputMethodArea(const QRegion &region);
     virtual void showSettings();
+    virtual void setSelection(int start, int length);
     // \reimp_end
 
 

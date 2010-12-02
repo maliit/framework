@@ -204,3 +204,10 @@ void MInputMethodHost::showSettings()
         pluginManager->showInputMethodSettings();
     }
 }
+
+void MInputMethodHost::setSelection(int start, int length)
+{
+    if (enabled) {
+        connection->setSelection(start, length);
+    }
+}

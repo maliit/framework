@@ -136,6 +136,16 @@ public:
      */
     virtual void setDetectableAutoRepeat(bool enabled);
 
+    /*!
+     * \brief Sets selection which start from \start with \a length in the focus widget.
+     *
+     * \param start the start index
+     * \param length the length of selection
+     * Note: The cursor will be moved after the commit string has been committed, and the
+     * preedit string will be located at the new edit position.
+     */
+    virtual void setSelection(int start, int length);
+
 private slots:
     //! hides input method
     void hideOnFocusOut();

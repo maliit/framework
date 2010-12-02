@@ -45,5 +45,9 @@
     <method name="setDetectableAutoRepeat">
       <arg type="b"/>
     </method>
+    <method name="setSelection">
+        <arg type="i"/>
+        <arg type="i"/>
+    </method>
   </interface>
 </node>

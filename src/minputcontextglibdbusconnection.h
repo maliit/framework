@@ -73,6 +73,7 @@ public:
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void copy();
     virtual void paste();
+    virtual void setSelection(int start, int length);
     //! \reimp_end
 
 public slots:

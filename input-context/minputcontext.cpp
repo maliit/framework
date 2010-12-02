@@ -938,3 +938,12 @@ void MInputContext::registerExistingToolbars()
         }
     }
 }
+
+void MInputContext::setSelection(int start, int length)
+{
+    QList<QInputMethodEvent::Attribute> attributes;
+    attributes << QInputMethodEvent::Attribute(QInputMethodEvent::Selection, start,
+                                                length, QVariant());
+    QInputMethodEvent event("", attributes);
+    sendEvent(event);
+}

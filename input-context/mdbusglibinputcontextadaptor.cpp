@@ -144,6 +144,12 @@ static gboolean m_dbus_glib_input_context_adaptor_set_detectable_auto_repeat(
     return TRUE;
 }
 
+static gboolean m_dbus_glib_input_context_adaptor_set_selection(MDBusGlibInputContextAdaptor *obj,
+                                                                gint32 start, gint32 length, GError **/*error*/)
+{
+    obj->inputContext->setSelection(start,length);
+    return TRUE;
+}
 
 #include "mdbusglibicconnectionserviceglue.h"
 

@@ -169,6 +169,11 @@ public:
      */
     virtual void setGlobalCorrectionEnabled(bool) = 0;
 
+    /*!
+     *\brief Sets selection text start from \a start with \a length in the application widget.
+     */
+    virtual void setSelection(int start, int length) = 0;
+
 public slots:
 
     //! Update \a region covered by virtual keyboard
