@@ -484,8 +484,8 @@ void MInputContext::updatePreedit(const QString &string,
                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                   int cursorPos)
 {
+    mTimestamp("MInputContext", "start text=" + string);
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string << ", cursorPos:" << cursorPos;
-    mTimestamp("MInputContext", string);
 
     preedit = string;
 
@@ -534,6 +534,7 @@ void MInputContext::updatePreedit(const QString &string,
     QInputMethodEvent event(string, attributes);
 
     sendEvent(event);
+    mTimestamp("MInputContext", "end");
 }
 
 

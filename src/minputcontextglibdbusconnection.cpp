@@ -32,6 +32,7 @@
 
 #include "mabstractinputmethod.h"
 #include "mimapplication.h"
+#include <MTimestamp>
 
 namespace
 {
@@ -477,6 +478,7 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
                                                         const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                                         int cursorPos)
 {
+    mTimestamp("MInputContextGlibDBusConnection", "start text=" + string);
     if (activeContext) {
         QByteArray temporaryStorage;
         QDataStream valueStream(&temporaryStorage, QIODevice::WriteOnly);
@@ -491,6 +493,7 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
                                    G_TYPE_INVALID);
         g_array_unref(gdata);
     }
+    mTimestamp("MInputContextGlibDBusConnection", "end");
 }
 
 
