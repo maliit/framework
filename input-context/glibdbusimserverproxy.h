@@ -77,7 +77,7 @@ signals:
     void dbusConnected();
 
 private slots:
-    void connect();
+    void connectToDBus();
 
 private:
     void connectToActivationService();

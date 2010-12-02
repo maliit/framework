@@ -54,7 +54,7 @@ GlibDBusIMServerProxy::GlibDBusIMServerProxy(GObject *inputContextAdaptor, const
     g_type_init();
 
     connectToActivationService();
-    connect();
+    connectToDBus();
 }
 
 GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
@@ -99,7 +99,7 @@ void GlibDBusIMServerProxy::onDisconnectionTrampoline(DBusGProxy */*proxy*/, gpo
     static_cast<GlibDBusIMServerProxy *>(userData)->onDisconnection();
 }
 
-void GlibDBusIMServerProxy::connect()
+void GlibDBusIMServerProxy::connectToDBus()
 {
     mDebug("MInputContext") << __PRETTY_FUNCTION__;
     GError *error = NULL;
@@ -113,7 +113,7 @@ void GlibDBusIMServerProxy::connect()
                            G_TYPE_STRING, &address, G_TYPE_INVALID)) {
         qWarning("MInputContext: unable to query input method server address: %s", error->message);
         g_error_free(error);
-        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connect()));
+        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
         return;
     }
 
@@ -122,7 +122,7 @@ void GlibDBusIMServerProxy::connect()
     if (!connection) {
         qWarning("MInputContext: unable to create D-Bus connection: %s", error->message);
         g_error_free(error);
-        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connect()));
+        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
         return;
     }
 
@@ -131,7 +131,7 @@ void GlibDBusIMServerProxy::connect()
         qWarning("MInputContext: unable to find the D-Bus service.");
         dbus_g_connection_unref(connection);
         connection = 0;
-        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connect()));
+        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
         return;
     }
     g_signal_connect(G_OBJECT(glibObjectProxy), "destroy", G_CALLBACK(onDisconnectionTrampoline),
@@ -150,7 +150,7 @@ void GlibDBusIMServerProxy::onDisconnection()
     connection = 0;
     emit dbusDisconnected();
     if (active) {
-        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connect()));
+        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
     }
 }
 
