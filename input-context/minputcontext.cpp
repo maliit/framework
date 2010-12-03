@@ -420,6 +420,37 @@ bool MInputContext::filterEvent(const QEvent *event)
         break;
 
     default:
+        if (event->type() == MPreeditInjectionEvent::eventNumber()) {
+            if (correctionEnabled) {
+                const MPreeditInjectionEvent *injectionEvent
+                    = dynamic_cast<const MPreeditInjectionEvent *>(event);
+
+                if (injectionEvent == 0) {
+                    break;
+                }
+
+                mDebug("MInputContext") << "MInputContext got preedit injection:"
+                                        << injectionEvent->preedit()
+                                        << ", event cursor pos:" << injectionEvent->eventCursorPosition();
+                // send the injected preedit to input method server and back to the widget with proper
+                // styling
+                // Note: plugin could change the preedit style in imServer->setPreedit().
+                // The cursor is hidden for preedit by default. The input method server can decide
+                // whether it needs the cursor.
+                QList<MInputMethod::PreeditTextFormat> preeditFormats;
+                const MInputMethod::PreeditTextFormat preeditFormat(
+                    0, injectionEvent->preedit().length(), MInputMethod::PreeditDefault);
+                preeditFormats << preeditFormat;
+                updatePreedit(injectionEvent->preedit(), preeditFormats);
+                imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
+
+                eaten = true;
+
+            } else {
+                mDebug("MInputContext")
+                    << "MInputContext ignored preedit injection because correction is disabled";
+            }
+        }
         break;
     }
 
