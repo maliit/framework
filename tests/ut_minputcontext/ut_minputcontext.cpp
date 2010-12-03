@@ -37,7 +37,7 @@ InputMethodServerDBusStub* DBusStub;
 
 // Glib DBus stubbing........................................................
 
-void GlibDBusIMServerProxy::connect()
+void GlibDBusIMServerProxy::connectToDBus()
 {
 }
 
