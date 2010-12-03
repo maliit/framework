@@ -186,6 +186,8 @@ private:
     //! returns state for currently focused widget, key is attribute name.
     QMap<QString, QVariant> getStateInformation() const;
 
+    //! registers existing toolbars to input method server and updates their state
+    void registerExistingToolbars();
 
     bool active; // is connection active
     InputPanelState inputPanelState; // state for the input method server's software input panel

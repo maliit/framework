@@ -689,6 +689,9 @@ void MInputContext::onDBusDisconnection()
 void MInputContext::onDBusConnection()
 {
     qDebug() << __PRETTY_FUNCTION__;
+
+    registerExistingToolbars();
+
     // There could already be focused item when the connection to the uiserver is
     // established. Show keyboard immediately in that case.
     QWidget *widget = qApp->focusWidget();
@@ -889,3 +892,25 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     return stateInformation;
 }
 
+void MInputContext::registerExistingToolbars()
+{
+    QList<int> ids = MInputMethodState::instance()->toolbarIds();
+
+    foreach (int id, ids) {
+        QString fileName = MInputMethodState::instance()->toolbar(id);
+        imServer->registerToolbar(id, fileName);
+
+        MInputMethodState::ItemAttributeMap itemAttributes
+            = MInputMethodState::instance()->toolbarState(id);
+
+        foreach (QString itemName, itemAttributes.keys()) {
+            MInputMethodState::AttributeMap attributes = itemAttributes.value(itemName);
+
+            foreach (QString attributeName, attributes.keys()) {
+                QVariant value = attributes.value(attributeName);
+
+                imServer->setToolbarItemAttribute(id, itemName, attributeName, value);
+            }
+        }
+    }
+}
