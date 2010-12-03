@@ -112,12 +112,17 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
             return;
         }
 
+        quint32 customRegion[size * 4]; // custom region is pack of x, y, w, h
         XRectangle *rect = rects;
         for (int i = 0; i < size; ++i, ++rect) {
             rect->x = regionRects.at(i).x();
             rect->y = regionRects.at(i).y();
             rect->width = regionRects.at(i).width();
             rect->height = regionRects.at(i).height();
+            customRegion[i * 4 + 0] = rect->x;
+            customRegion[i * 4 + 1] = rect->y;
+            customRegion[i * 4 + 2] = rect->width;
+            customRegion[i * 4 + 3] = rect->height;
         }
 
         const XserverRegion shapeRegion = XFixesCreateRegion(dpy, rects, size);
@@ -125,6 +130,9 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
         XFixesSetWindowShapeRegion(dpy, winId(), ShapeInput, 0, 0, shapeRegion);
 
         XFixesDestroyRegion(dpy, shapeRegion);
+
+        XChangeProperty(dpy, winId(), XInternAtom(dpy, "_MEEGOTOUCH_CUSTOM_REGION", False), XA_CARDINAL, 32,
+                        PropModeReplace, (unsigned char *) customRegion, size * 4);
 
         free(rects);
         XSync(dpy, False);
