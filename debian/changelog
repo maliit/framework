@@ -1,3 +1,9 @@
+meego-im-framework (0.19.35~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 07 Dec 2010 11:54:01 +0200
+
 meego-im-framework (0.19.34-1) unstable; urgency=low
 
   * Fixes: NB#202294 - COREWEB: /usr/lib/xulrunner-2.0b8pre/plugin-container 'QObject::connect QSingleShotTimer::QSingleShotTimer QTimer::singleShot GlibDBusIMServerProxy::onDisconnection'
