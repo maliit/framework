@@ -1,10 +1,9 @@
-meego-im-framework (0.19.34~1) unstable; urgency=low
+meego-im-framework (0.19.34-1) unstable; urgency=low
 
-  * [UNRELEASED]
   * Fixes: NB#202294 - COREWEB: /usr/lib/xulrunner-2.0b8pre/plugin-container 'QObject::connect QSingleShotTimer::QSingleShotTimer QTimer::singleShot GlibDBusIMServerProxy::onDisconnection'
   * Fixes: MIC: move pre-edit injection event handling to filterEvent
 
- -- Gibran Rodriguez <ext-gibran.rodriguez@nokia.com>  Wed, 01 Dec 2010 12:07:37 +0200
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 07 Dec 2010 11:52:04 +0200
 
 meego-im-framework (0.19.33-1) unstable; urgency=low
 
