@@ -21,7 +21,7 @@ SOURCES += \
     $$SRC_DIR/minputcontextconnection.cpp \
 
 
-CONFIG += debug plugin meegotouch qdbus
+CONFIG += plugin meegotouch qdbus
 
 LIBS += \
     ../../src/libmeegoimframework.so.0 \

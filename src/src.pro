@@ -49,7 +49,7 @@ SOURCES += mimpluginmanager.cpp \
         mtoolbarlayout.cpp \
         minputcontextglibdbusconnection.cpp \
 
-CONFIG += debug meegotouchcore qdbus link_pkgconfig
+CONFIG += meegotouchcore qdbus link_pkgconfig
 QT = core gui xml
 
 PKGCONFIG += dbus-glib-1 dbus-1

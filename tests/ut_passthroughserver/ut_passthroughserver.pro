@@ -11,9 +11,7 @@ SOURCES += \
     ut_passthroughserver.cpp \
 
 
-CONFIG += debug meegotouch
-
-CONFIG += debug meegotouch
+CONFIG += meegotouch
 QT += testlib
 
 isEqual(code_coverage_option, off) {

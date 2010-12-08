@@ -11,6 +11,6 @@ SOURCES += \
     ut_minputcontextplugin.cpp
 
 
-CONFIG += debug meegotouch
+CONFIG += meegotouch
 
 include(../common_check.pri)

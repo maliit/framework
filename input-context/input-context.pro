@@ -1,3 +1,5 @@
+include(../mconfig.pri)
+
 TEMPLATE = lib
 TARGET = minputcontext
 DEPENDPATH += .
@@ -22,7 +24,7 @@ SOURCES += minputcontext.cpp \
     glibdbusimserverproxy.cpp \
 
 QT = core gui
-CONFIG += plugin debug meegotouch link_pkgconfig
+CONFIG += plugin meegotouch link_pkgconfig
 
 PKGCONFIG += dbus-glib-1
 

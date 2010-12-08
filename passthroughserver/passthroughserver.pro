@@ -17,7 +17,7 @@ HEADERS += \
            mpassthruwindow.h \
 
 QT += core gui
-CONFIG += debug meegotouchcore
+CONFIG += meegotouchcore
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){

@@ -4,17 +4,21 @@
 export DH_VERBOSE=1
 
 DEBDIR = ..
-CFLAGS = -Wall -g
 
 comma :=,
 empty :=
 space := $(empty) $(empty)
 
-
+# Set the build type (debug/release)
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
+	QMAKE_OPTIONS+=CONFIG+=debug
 else
-	CFLAGS += -O2
+	QMAKE_OPTIONS+=CONFIG+=release
+endif
+
+# Don't build documentation by setting DEB_BUILD_OPTION=nodocs
+ifeq (,$(findstring nodocs,$(DEB_BUILD_OPTIONS)))
+	QMAKE_OPTIONS+=CONFIG+=docs
 endif
 
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))

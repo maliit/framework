@@ -7,9 +7,7 @@ LIBS += -L../../src -lmeegoimframework
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-QMAKE_CXXFLAGS += -Werror
-
-CONFIG += plugin meegotouch
+CONFIG += debug plugin meegotouch
 
 HEADERS += dummyimplugin2.h
 SOURCES += dummyimplugin2.cpp

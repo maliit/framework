@@ -34,6 +34,7 @@ MAbstractInputMethodPrivate::MAbstractInputMethodPrivate(MAbstractInputMethodHos
                                                          MAbstractInputMethod *parent)
     : imHost(imHost)
 {
+    Q_UNUSED(parent)
 }
 
 

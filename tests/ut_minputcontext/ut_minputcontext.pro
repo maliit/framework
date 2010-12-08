@@ -12,7 +12,7 @@ SOURCES += \
     ut_minputcontext.cpp \
 
 
-CONFIG += debug plugin meegotouch qdbus link_pkgconfig
+CONFIG += plugin meegotouch qdbus link_pkgconfig
 
 PKGCONFIG += dbus-glib-1
 

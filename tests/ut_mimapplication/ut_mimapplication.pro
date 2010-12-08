@@ -27,7 +27,7 @@ isEqual(code_coverage_option, off) {
 }
 
 
-CONFIG += debug plugin meegotouch qdbus
+CONFIG += plugin meegotouch qdbus
 
 LIBS += \
     ../../src/libmeegoimframework.so.0 \

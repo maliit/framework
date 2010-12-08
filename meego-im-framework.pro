@@ -1,3 +1,4 @@
+
 CONFIG += ordered
 TARGET = meego-im-uiserver
 TEMPLATE = subdirs
@@ -9,7 +10,9 @@ isEqual( IN_PWD, $${OUT_PWD} ) {
     IS_OUT_OF_SOURCE = 1
 }
 
-include (doc/doc.pri)
+CONFIG(docs) {
+    include (doc/doc.pri)
+}
 
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml

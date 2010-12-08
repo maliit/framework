@@ -1,3 +1,5 @@
+include(../mconfig.pri)
+
 TEMPLATE      = lib
 TARGET        = $$qtLibraryTarget(mimsettingsapplet)
 
@@ -6,12 +8,10 @@ include (desktop.pri)
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-QMAKE_CXXFLAGS += -Werror
-
 LIBS += ../src/libmeegoimframework.so
 
 CONFIG += ordered
-CONFIG += plugin qdbus meegotouch duicontrolpanel debug
+CONFIG += plugin qdbus meegotouch duicontrolpanel
 QT = core gui
 
 CONFIG += link_pkgconfig
