@@ -7,6 +7,7 @@
     </method>
     <method name="commitString">
       <arg type="s"/>
+      <arg type="i"/>
     </method>
     <method name="updatePreedit">
       <arg type="s"/>

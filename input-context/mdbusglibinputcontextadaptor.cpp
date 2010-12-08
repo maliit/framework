@@ -37,9 +37,9 @@ static gboolean m_dbus_glib_input_context_adaptor_im_initiated_hide(
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_commit_string(
-    MDBusGlibInputContextAdaptor *obj, const char *string, GError **/*error*/)
+    MDBusGlibInputContextAdaptor *obj, const char *string, gint32 cursorPos, GError **/*error*/)
 {
-    obj->inputContext->commitString(QString::fromUtf8(string));
+    obj->inputContext->commitString(QString::fromUtf8(string), cursorPos);
     return TRUE;
 }
 

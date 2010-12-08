@@ -73,16 +73,21 @@ public:
     //! \brief Notifies about hiding initiated by the input method server side
     virtual void imInitiatedHide();
 
-    //!
-    // \brief Commits a string to current focus widget
-    // \param string    The new string committed
-    virtual void commitString(const QString &string);
+    /*!
+     * \brief Commits a string to current focus widget, and set cursor position.
+     * \param string    The new string committed
+     * \param cursorPos The cursor position to be set. the cursorPos is the position
+     * related to commited string. Its value is between 0 to the length of commited
+     * string, or less than 0 which equals the length of string, means set the cursor
+     * at the end of the committed string.
+     */
+    virtual void commitString(const QString &string, int cursorPos = -1);
 
     //!
     // \brief Updates preedit string of the current focus widget
     // \param string    The new string
     // \param preeditFormats The formats for each part of preedit.
-    // \param cursorPos Cursor postion. If it is less the 0, then the cursor will be hidden.
+    // \param cursorPos Cursor postion. If it is less than 0, then the cursor will be hidden.
     virtual void updatePreedit(const QString &string, const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                int cursorPos = -1);
 

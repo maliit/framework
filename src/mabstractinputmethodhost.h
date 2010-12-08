@@ -106,11 +106,15 @@ public slots:
                                    int cursorPos = -1) = 0;
 
     /*!
-     * \brief Updates commit string in the application widget
+     * \brief Updates commit string in the application widget, and set cursor position.
      *
      * \param string    The string to be committed
+     * \param cursorPos The cursor position to be set. the cursorPos is the position
+     * related to commited string. Its value is between 0 to the length of commited
+     * string, or less than 0 which equals the length of string, means set the cursor
+     * at the end of the committed string.
      */
-    virtual void sendCommitString(const QString &string) = 0;
+    virtual void sendCommitString(const QString &string, int cursorPos = -1) = 0;
 
     /*!
      * \brief Sends key event to the application

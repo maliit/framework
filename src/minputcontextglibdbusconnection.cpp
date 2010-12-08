@@ -497,11 +497,12 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
 }
 
 
-void MInputContextGlibDBusConnection::sendCommitString(const QString &string)
+void MInputContextGlibDBusConnection::sendCommitString(const QString &string, int cursorPos)
 {
     if (activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "commitString",
                                    G_TYPE_STRING, string.toUtf8().data(),
+                                   G_TYPE_INT, cursorPos,
                                    G_TYPE_INVALID);
     }
 }

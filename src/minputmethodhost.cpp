@@ -106,10 +106,10 @@ void MInputMethodHost::sendPreeditString(const QString &string,
     }
 }
 
-void MInputMethodHost::sendCommitString(const QString &string)
+void MInputMethodHost::sendCommitString(const QString &string, int cursorPos)
 {
     if (enabled) {
-        connection->sendCommitString(string);
+        connection->sendCommitString(string, cursorPos);
     }
 }
 

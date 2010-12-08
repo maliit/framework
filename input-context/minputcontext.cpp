@@ -507,17 +507,33 @@ void MInputContext::imInitiatedHide()
 }
 
 
-void MInputContext::commitString(const QString &string)
+void MInputContext::commitString(const QString &string, int cursorPos)
 {
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
     mTimestamp("MInputContext", string);
 
     preedit.clear();
 
-    QInputMethodEvent event;
-    event.setCommitString(string);
+    int start = -1;
+    const QWidget *focused = focusWidget();
+    if (cursorPos >= 0 && focused) {
+        // obtain the cursor absolute position
+        QVariant queryResult = focused->inputMethodQuery(Qt::ImCursorPosition);
+        if (queryResult.isValid()) {
+            start = queryResult.toInt() + cursorPos;
+        }
+    }
 
-    sendEvent(event);
+    if (start >= 0) {
+        QList<QInputMethodEvent::Attribute> attributes;
+        attributes << QInputMethodEvent::Attribute(QInputMethodEvent::Selection, start, 0, QVariant());
+        QInputMethodEvent event("", attributes);
+        sendEvent(event);
+    } else {
+        QInputMethodEvent event;
+        event.setCommitString(string);
+        sendEvent(event);
+    }
 }
 
 
