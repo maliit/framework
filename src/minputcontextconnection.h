@@ -105,10 +105,15 @@ public:
      * Implement this method to update the pre-edit string
      * \param string    The new pre-edit string
      * \param preeditFormats Selects visual stylings for each part of preedit
+     * \param replacementStart The position at which characters are to be replaced relative
+     *  from the start of the preedit string.
+     * \param replacementLength The number of characters to be replaced in the preedit string.
      * \param cursorPos The cursor position inside preedit
      */
     virtual void sendPreeditString(const QString &string,
                                    const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                   int replacementStart = 0,
+                                   int replacementLength = 0,
                                    int cursorPos = -1) = 0;
 
     /*!
@@ -116,12 +121,14 @@ public:
      *
      * Implement this method to update the commit string
      * \param string    The string to be committed
-     * \param cursorPos The cursor position to be set. the cursorPos is the position
-     * related to commited string. Its value is between 0 to the length of commited
-     * string, or less than 0 which equals the length of string, means set the cursor
-     * at the end of the committed string.
+     * \param replaceStart The position at which characters are to be replaced relative
+     *  from the start of the preedit string.
+     * \param replaceLength The number of characters to be replaced in the preedit string.
+     * \param cursorPos The cursor position to be set. the cursorPos is the position relative
+     *  to commit string start. Negative values are used as commit string end position
      */
-    virtual void sendCommitString(const QString &string, int cursorPos = -1) = 0;
+    virtual void sendCommitString(const QString &string, int replaceStart = 0,
+                                  int replaceLength = 0, int cursorPos = -1) = 0;
 
     /*!
      * \brief Sends key event to the application

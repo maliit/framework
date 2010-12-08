@@ -76,20 +76,33 @@ public:
     /*!
      * \brief Commits a string to current focus widget, and set cursor position.
      * \param string    The new string committed
-     * \param cursorPos The cursor position to be set. the cursorPos is the position
-     * related to commited string. Its value is between 0 to the length of commited
-     * string, or less than 0 which equals the length of string, means set the cursor
-     * at the end of the committed string.
+     * \param replacementStart The position at which characters are to be replaced relative
+     *  from the start of the preedit string.
+     * \param replacementLength The number of characters to be replaced in the preedit string.
+     * \param cursorPos The cursor position to be set. the cursorPos is the position relative
+     *  to commit string start. Negative values are used as commit string end position
+     *
+     * Note: If \a replacementLength is 0, \a replacementStart gives the insertion position
+     * for the inserted \a string.
+     * For example, if the replacement starting at -1 with a length of 2, then application will
+     * remove the last character before the preedit string and the first character afterwards,
+     * and insert the commit string directly before the preedit string.
      */
-    virtual void commitString(const QString &string, int cursorPos = -1);
+    virtual void commitString(const QString &string, int replacementStart = 0,
+                              int replacementLength = 0, int cursorPos = -1);
 
-    //!
-    // \brief Updates preedit string of the current focus widget
-    // \param string    The new string
-    // \param preeditFormats The formats for each part of preedit.
-    // \param cursorPos Cursor postion. If it is less than 0, then the cursor will be hidden.
+    /*!
+     * \brief Updates preedit string of the current focus widget
+     * \param string    The new string
+     * \param preeditFormats The formats for each part of preedit.
+     * \param replacementStart The position at which characters are to be replaced relative
+     *  from the start of the preedit string.
+     * \param replacementLength The number of characters to be replaced in the preedit string.
+     * \param cursorPos Cursor position. If it is less than 0, then the cursor will be hidden.
+     *
+     */
     virtual void updatePreedit(const QString &string, const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
-                               int cursorPos = -1);
+                               int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
 
     //! \brief Sends a non-printable key event. Parameters as in QKeyEvent constructor
     virtual void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,

@@ -60,8 +60,10 @@ public:
     virtual QRect cursorRectangle(bool &valid);
     virtual void sendPreeditString(const QString &string,
                                    const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                   int replacementStart = 0, int replacementLength = 0,
                                    int cursorPos = -1);
-    virtual void sendCommitString(const QString &string, int cursorPos = -1);
+    virtual void sendCommitString(const QString &string, int replaceStart = 0,
+                                  int replaceLength = 0, int cursorPos = -1);
     virtual void sendKeyEvent(const QKeyEvent &keyEvent,
                               MInputMethod::EventRequestType requestType
                                = MInputMethod::EventRequestBoth);

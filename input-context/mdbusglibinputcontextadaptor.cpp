@@ -37,9 +37,11 @@ static gboolean m_dbus_glib_input_context_adaptor_im_initiated_hide(
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_commit_string(
-    MDBusGlibInputContextAdaptor *obj, const char *string, gint32 cursorPos, GError **/*error*/)
+    MDBusGlibInputContextAdaptor *obj, const char *string, gint32 replaceStart,
+    gint32 replaceLength, gint32 cursorPos, GError **/*error*/)
 {
-    obj->inputContext->commitString(QString::fromUtf8(string), cursorPos);
+    obj->inputContext->commitString(QString::fromUtf8(string), replaceStart,
+                                    replaceLength, cursorPos);
     return TRUE;
 }
 
@@ -56,6 +58,8 @@ QDataStream &operator>>(QDataStream &s, MInputMethod::PreeditTextFormat &t)
 static gboolean m_dbus_glib_input_context_adaptor_update_preedit(MDBusGlibInputContextAdaptor *obj,
                                                                  const char *string,
                                                                  GArray *preeditFormats,
+                                                                 gint32 replaceStart,
+                                                                 gint32 replaceLength,
                                                                  gint32 cursorPos, GError **/*error*/)
 {
     const QByteArray storageWrapper(QByteArray::fromRawData(preeditFormats->data, preeditFormats->len));
@@ -65,6 +69,8 @@ static gboolean m_dbus_glib_input_context_adaptor_update_preedit(MDBusGlibInputC
     if (formatListStream.status() == QDataStream::Ok) {
         obj->inputContext->updatePreedit(QString::fromUtf8(string),
                                          formatList,
+                                         replaceStart,
+                                         replaceLength,
                                          cursorPos);
     }
     return TRUE;

@@ -99,17 +99,19 @@ QRect MInputMethodHost::cursorRectangle(bool &valid)
 
 void MInputMethodHost::sendPreeditString(const QString &string,
                                          const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                         int replacementStart, int replacementLength,
                                          int cursorPos)
 {
     if (enabled) {
-        connection->sendPreeditString(string, preeditFormats, cursorPos);
+        connection->sendPreeditString(string, preeditFormats, replacementStart, replacementLength, cursorPos);
     }
 }
 
-void MInputMethodHost::sendCommitString(const QString &string, int cursorPos)
+void MInputMethodHost::sendCommitString(const QString &string, int replaceStart,
+                                        int replaceLength, int cursorPos)
 {
     if (enabled) {
-        connection->sendCommitString(string, cursorPos);
+        connection->sendCommitString(string, replaceStart, replaceLength, cursorPos);
     }
 }
 

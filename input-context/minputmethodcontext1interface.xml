@@ -8,10 +8,14 @@
     <method name="commitString">
       <arg type="s"/>
       <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
     </method>
     <method name="updatePreedit">
       <arg type="s"/>
       <arg type="ay"/>
+      <arg type="i"/>
+      <arg type="i"/>
       <arg type="i"/>
     </method>
     <method name="keyEvent">

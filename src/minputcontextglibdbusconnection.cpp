@@ -476,6 +476,7 @@ QDataStream &operator<<(QDataStream &s, const MInputMethod::PreeditTextFormat &t
 
 void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
                                                         const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                                        int replaceStart, int replaceLength,
                                                         int cursorPos)
 {
     mTimestamp("MInputContextGlibDBusConnection", "start text=" + string);
@@ -489,6 +490,8 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updatePreedit",
                                    G_TYPE_STRING, string.toUtf8().data(),
                                    DBUS_TYPE_G_UCHAR_ARRAY, gdata,
+                                   G_TYPE_INT, replaceStart,
+                                   G_TYPE_INT, replaceLength,
                                    G_TYPE_INT, cursorPos,
                                    G_TYPE_INVALID);
         g_array_unref(gdata);
@@ -497,11 +500,14 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
 }
 
 
-void MInputContextGlibDBusConnection::sendCommitString(const QString &string, int cursorPos)
+void MInputContextGlibDBusConnection::sendCommitString(const QString &string, int replaceStart,
+                                                       int replaceLength, int cursorPos)
 {
     if (activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "commitString",
                                    G_TYPE_STRING, string.toUtf8().data(),
+                                   G_TYPE_INT, replaceStart,
+                                   G_TYPE_INT, replaceLength,
                                    G_TYPE_INT, cursorPos,
                                    G_TYPE_INVALID);
     }

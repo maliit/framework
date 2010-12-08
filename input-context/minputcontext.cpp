@@ -507,7 +507,8 @@ void MInputContext::imInitiatedHide()
 }
 
 
-void MInputContext::commitString(const QString &string, int cursorPos)
+void MInputContext::commitString(const QString &string, int replacementStart,
+                                 int replacementLength, int cursorPos)
 {
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
     mTimestamp("MInputContext", string);
@@ -528,10 +529,11 @@ void MInputContext::commitString(const QString &string, int cursorPos)
         QList<QInputMethodEvent::Attribute> attributes;
         attributes << QInputMethodEvent::Attribute(QInputMethodEvent::Selection, start, 0, QVariant());
         QInputMethodEvent event("", attributes);
+        event.setCommitString(string, replacementStart, replacementLength);
         sendEvent(event);
     } else {
         QInputMethodEvent event;
-        event.setCommitString(string);
+        event.setCommitString(string, replacementStart, replacementLength);
         sendEvent(event);
     }
 }
@@ -539,10 +541,13 @@ void MInputContext::commitString(const QString &string, int cursorPos)
 
 void MInputContext::updatePreedit(const QString &string,
                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
-                                  int cursorPos)
+                                  int replacementStart, int replacementLength, int cursorPos)
 {
     mTimestamp("MInputContext", "start text=" + string);
-    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string << ", cursorPos:" << cursorPos;
+    mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__ << "preedit:" << string
+                            << ", replacementStart:" << replacementStart
+                            << ", replacementLength:" << replacementLength
+                            << ", cursorPos:" << cursorPos;
 
     preedit = string;
 
@@ -589,6 +594,9 @@ void MInputContext::updatePreedit(const QString &string,
     }
 
     QInputMethodEvent event(string, attributes);
+    if (replacementLength) {
+        event.setCommitString("", replacementStart, replacementLength);
+    }
 
     sendEvent(event);
     mTimestamp("MInputContext", "end");
