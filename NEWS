@@ -1,3 +1,13 @@
+0.19.37
+=======
+* API changes
+ - MInputContextConnection was changed. Add new parameters replaceStart and replaceLength
+ in sendPreeditString(). Add new parameters replaceStart, replaceLength and cursorPos in
+ sendCommitString(). Add new pure virtual method setSelection().
+ - MAbstractInputMethodHost was changed. Add new parameters replaceStart and replaceLength
+ in sendPreeditString(). Add new parameters replaceStart, replaceLength and cursorPos in
+ sendCommitString(). Add new pure virtual method setSelection().
+
 0.19.32
 =======
 * API changes
