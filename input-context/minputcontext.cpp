@@ -616,10 +616,18 @@ void MInputContext::setGlobalCorrectionEnabled(bool enabled)
 QRect MInputContext::preeditRectangle(bool &valid) const
 {
     Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(M::PreeditRectangleQuery);
-    QVariant queryResult = focusWidget()->inputMethodQuery(query);
+    QRect rect;
 
-    valid = queryResult.isValid();
-    return queryResult.toRect();
+    if (focusWidget()) {
+        QVariant queryResult = focusWidget()->inputMethodQuery(query);
+
+        valid = queryResult.isValid();
+        rect = queryResult.toRect();
+    } else {
+        valid = false;
+    }
+
+    return rect;
 }
 
 
