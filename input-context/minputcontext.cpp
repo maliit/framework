@@ -228,10 +228,12 @@ void MInputContext::reset()
     // send existing preedit to widget, documentation unclear whether this is
     // allowed, but trolls gave permission to use it. Most of qt's internal
     // input methods do the same thing.
-    QInputMethodEvent event;
-    event.setCommitString(preedit);
-    sendEvent(event);
-    preedit.clear();
+    if (!preedit.isEmpty()) {
+        QInputMethodEvent event;
+        event.setCommitString(preedit);
+        sendEvent(event);
+        preedit.clear();
+    }
 
     // reset input method server
     imServer->reset();

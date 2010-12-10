@@ -495,11 +495,50 @@ void Ut_MInputContext::testEvent()
 
 void Ut_MInputContext::testReset()
 {
+    WidgetStub widget(0);
+    QInputMethodEvent event;
+    QString preeditString("");
+    QList<MInputMethod::PreeditTextFormat> preeditFormats;
+    MInputMethod::PreeditTextFormat preeditFormat;
+
+    preeditFormat.start = 0;
+    preeditFormat.preeditFace = MInputMethod::PreeditDefault;
+    m_subject->setFocusWidget(&widget);
+    gFocusedWidget = &widget;
+
+    // Reset with empty pre-edit
+    preeditFormat.length = preeditString.length();
+    preeditFormats << preeditFormat;
+    m_subject->updatePreedit(preeditString, preeditFormats, -1);
+    widget.resetCounters();
+
     m_subject->reset();
 
     waitAndProcessEvents(500);
 
     QCOMPARE(m_stub->resetCount(), 1);
+    QCOMPARE(widget.inputMethodEventCount(), 0);
+
+    m_stub->resetCallCounts();
+    widget.resetCounters();
+    preeditFormats.clear();
+
+    // Reset with non-empty pre-edit
+    preeditString = "some string";
+    preeditFormat.length = preeditString.length();
+    preeditFormats << preeditFormat;
+    m_subject->updatePreedit(preeditString, preeditFormats, -1);
+    widget.resetCounters();
+
+    m_subject->reset();
+
+    waitAndProcessEvents(500);
+
+    QCOMPARE(m_stub->resetCount(), 1);
+    QCOMPARE(widget.inputMethodEventCount(), 1);
+    event = widget.lastInputMethodEvent();
+    QCOMPARE(event.preeditString(), QString(""));
+    QCOMPARE(event.commitString(),  preeditString);
 }
 
 
