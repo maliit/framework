@@ -149,6 +149,16 @@ private slots:
      */
     void handleCopyAvailabilityChange(bool copyAvailable);
 
+    /*!
+     * \brief Notifies input method server when the QML TextInput element has selected text changes
+     */
+    void handleSelectedTextChange();
+
+    /*!
+     * \brief Notifies input method server when the QLineEdit object's selection changed
+     */
+    void handleSelectionChanged();
+
     //! Notify input method plugin about new \a orientation angle of application's active window.
     void notifyOrientationChange(M::OrientationAngle orientation);
 

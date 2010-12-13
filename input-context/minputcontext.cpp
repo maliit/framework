@@ -353,25 +353,29 @@ void MInputContext::setFocusWidget(QWidget *focused)
     }
 
     if (connectedObject) {
-        disconnect(connectedObject, SIGNAL(copyAvailable(bool)), this, 0);
+        connectedObject->disconnect(this);
         connectedObject = 0;
     }
 
-    const char *signalName = "copyAvailable(bool)";
-
-    if (focusedObject) {
-        mDebug("MInputContext") << __PRETTY_FUNCTION__ << "signal index" << focusedObject
-                                << focusedObject->metaObject()->indexOfSignal(signalName);
-    }
-
-    if (focusedObject && focusedObject->metaObject()
-            && focusedObject->metaObject()->indexOfSignal(signalName) != -1) {
-        connect(focusedObject, SIGNAL(copyAvailable(bool)),
-                this, SLOT(handleCopyAvailabilityChange(bool)));
-        connectedObject = focusedObject;
+    if (focusedObject && focusedObject->metaObject()) {
+        if (focusedObject->metaObject()->indexOfSignal("copyAvailable(bool)") != -1) {
+            // for MTextEdit
+            connect(focusedObject, SIGNAL(copyAvailable(bool)),
+                    this, SLOT(handleCopyAvailabilityChange(bool)));
+            connectedObject = focusedObject;
+        } else if (focusedObject->metaObject()->indexOfSignal("selectedTextChanged()") != -1) {
+            // for QML::TextInput
+            connect(focusedObject, SIGNAL(selectedTextChanged()),
+                    this, SLOT(handleSelectedTextChange()));
+            connectedObject = focusedObject;
+        } else if (focusedObject->metaObject()->indexOfSignal("selectionChanged()") != -1) {
+            // for QLineEdit
+            connect(focusedObject, SIGNAL(selectionChanged()),
+                    this, SLOT(handleSelectedTextChange()));
+            connectedObject = focusedObject;
+        }
     }
 }
-
 
 bool MInputContext::filterEvent(const QEvent *event)
 {
@@ -712,6 +716,22 @@ void MInputContext::onDBusConnection()
             imServer->showInputMethod();
             inputPanelState = InputPanelShown;
         }
+    }
+}
+
+void MInputContext::handleSelectedTextChange()
+{
+    if (connectedObject) {
+        bool hasSelectedText = !connectedObject->property( "selectedText" ).toString().isEmpty();
+        handleCopyAvailabilityChange(hasSelectedText);
+    }
+}
+
+void MInputContext::handleSelectionChanged()
+{
+    if (connectedObject) {
+        bool hasSelectedText = connectedObject->property( "hasSelectedText" ).toBool();
+        handleCopyAvailabilityChange(hasSelectedText);
     }
 }
 
