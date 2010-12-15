@@ -1,9 +1,8 @@
-meego-im-framework (0.19.35~1) unstable; urgency=low
+meego-im-framework (0.19.35-1) unstable; urgency=low
 
-  * [UNRELEASED]
-  * Fixes: NB#208763 - Messaging-UI crashes sometimes after connection change
+  * New release
 
- -- huaming wang <huaming.wang@nokia.com>  Tue, 07 Dec 2010 11:54:01 +0200
+ -- huaming wang <huaming.wang@nokia.com>  Wed, 15 Dec 2010 11:19:56 +0200
 
 meego-im-framework (0.19.34-1) unstable; urgency=low
 
