@@ -790,6 +790,8 @@ void Ut_MInputContext::testCopyPasteState()
 
 void Ut_MInputContext::testSetRedirectKeys()
 {
+    WidgetStub widget(0);
+    m_subject->setFocusWidget(&widget);
     // no redirection should happen
     int count = m_stub->redirectKeyCount();
     QKeyEvent request(QEvent::KeyPress, Qt::Key_Shift, Qt::ShiftModifier, "");
@@ -813,6 +815,7 @@ void Ut_MInputContext::testSetRedirectKeys()
     ret = m_subject->filterEvent(&request);
     QVERIFY(!ret);
     QCOMPARE(m_stub->redirectKeyCount(), count + 1);
+    m_subject->setFocusWidget(0);
 }
 
 void Ut_MInputContext::waitAndProcessEvents(int waitTime)

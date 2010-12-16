@@ -405,6 +405,10 @@ bool MInputContext::filterEvent(const QEvent *event)
 
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
+        if (focusWidget() == 0) {
+            break;  // Don't emit signals without focused widget
+        }
+
         if (event->type() == QEvent::KeyPress) {
             MInputMethodState::instance()->emitKeyPress(*(static_cast<const QKeyEvent*>(event)));
         } else {
