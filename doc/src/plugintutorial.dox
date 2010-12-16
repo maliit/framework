@@ -5,7 +5,7 @@
 This page is a short tutorial about creating your own input method plugin.
 MeeGo Touch Input Method provides a framework which developers can extend the functionality 
 of the input method by providing a new input method user interface. The new input method is implemented as 
-plugin.
+a plugin.
 
 This page shows some excerpts from MeeGo Keyboard source code.
 
@@ -14,52 +14,75 @@ There are two important parts in the plugin making: the user interface of the in
 
 
 @subsection ui User interface
-The UI is loaded and controlled by a MInputMethodBase class. 
+The UI is loaded and controlled by a MAbstractInputMethod class. 
 @code
-class MKeyboardHost: public MInputMethodBase
+class MKeyboardHost: public MAbstractInputMethod
 {
     Q_OBJECT
 
     public:
-        MKeyboardHost(MInputContextConnection *icConnection, QObject *parent = 0);
+        MKeyboardHost(MAbstractInputMethodHost *host, QObject *parent = 0);
             virtual ~MKeyboardHost();
     .....
 @endcode
 
-The MInputMethodBase itself needs to be loaded by the plugin class, which is a MInputMethodPlugin class.
+The MAbstractInputMethod itself needs to be loaded by the plugin class, which is a MInputMethodPlugin class. For the plugin system to work, class must declare proper interface using Q_INTERFACES (in the header file) and export the plugin with Q_EXPORT_PLUGIN2 (in the .cpp file):
+
 @code
-MInputMethodBase *
-MKeyboardPlugin::createInputMethod(MInputContextConnection *icConnection)
+// The header file:
+class MKeyboardPlugin : public QObject, public MInputMethodPlugin
 {
-    MInputMethodBase *inputMethod = new MKeyboardHost(icConnection);
+    Q_OBJECT
+    Q_INTERFACES(MInputMethodPlugin)
+
+public:
+    MKeyboardPlugin();
+    virtual ~MKeyboardPlugin();
+    .....
+@endcode
+@code
+// At the end of the .cpp file:
+Q_EXPORT_PLUGIN2(meego-keyboard, MKeyboardPlugin)
+@endcode
+
+The UI class is created in the createInputMethod method:
+
+@code
+MAbstractInputMethod *
+MKeyboardPlugin::createInputMethod(MAbstractInputMethodHost *host)
+{
+    MAbstractInputMethod *inputMethod = new MKeyboardHost(host);
     return inputMethod;
 }
 @endcode
 
 The whole user interface is shown in an MSceneWindow. MWidget is used to create the actual user interface, and needs to be parented to the scene window.
-The scene window is then put to the root element of the MPlainWindow which is provided in the input method server.
+The scene window is then put to the root element of the MPlainWindow which is provided in the input method server. The UI should be created hidden. Example code from MKeyboardHost constructor:
+
 @code
 sceneWindow = new MSceneWindow;
 sceneWindow->setManagedManually(true); // we want the scene window to remain in origin
 MPlainWindow::instance()->sceneManager()->appearSceneWindowNow(sceneWindow);
 ...
 vkbWidget = new MVirtualKeyboard(LayoutsManager::instance(), vkbStyleContainer, sceneWindow);
+...
+hide();
 @endcode
 
-The interaction between the UI and the application is done by employing functions provided by MInputMethodBase.
+The interaction between the UI and the application is done by employing functions provided by MAbstractInputMethod and MAbstractInputMethodHost.
 
 @subsection settings Settings
 Settings is basically a QGraphicsWidget which holds items to provide user to set some preferences or behaviour of the input method. It is displayed by input method server in a dialog and also displayed in the control panel of the system.
 
-The settings is created by subclassing MInputMethodSettingsBase.
+The settings is created by subclassing MAbstractInputMethodSettings.
 @code
 /*!
  * \brief MKeyboardSettings is the implemetation of meego-keyboard setting.
- * MKeyboardSettings implement MInputMethodSettingsBase and create the meego-keyboard
- * setting. It provides below functionalities: get/set error corretion, get/set
- * installed (selected) keyboards.
+ * MKeyboardSettings implement MAbstractInputMethodSettings and create the meego-keyboard
+ * setting. It provides below functionalities: get/set error corretion, get/set word
+ * completion, get/set installed (selected) keyboards.
  */
-class MKeyboardSettings: public QObject, public MInputMethodSettingsBase
+class MKeyboardSettings: public QObject, public MAbstractInputMethodSettings
 {
     Q_OBJECT
 
@@ -78,15 +101,15 @@ QGraphicsWidget *MKeyboardSettings::createContentWidget(QGraphicsWidget *parent)
 }
 @endcode
 
-Settings widget will appear in a dialog when you ask it by emitting MInputMethodBase::settingsRequested(). Usually, this is invoked when user presses a "Settings" button provided by the plugin.
+Settings widget will appear in a dialog when you ask it by calling MAbstractInputMethodHost::showSettings(). Usually, this is invoked when user presses a "Settings" button provided by the plugin.
 
 <img alt="Settings Dialog" src="settings-dialog.png"></img>
 
 
 @section compilation Compilation
-To use the framework you need to add @c meegoimframework to @c CONFIG variable in your project file.
+To use the framework you need to add @c plugin and @c meegoimframework to @c CONFIG variable in your project file.
 @code
-CONFIG += meegoimframework
+CONFIG += plugin meegoimframework
 @endcode
 
 @section installation Installation
