@@ -25,6 +25,9 @@
     </method>
     <method name="reset">
     </method>
+    <method name="appOrientationAboutToChange">
+      <arg type="i"/>
+    </method>
     <method name="appOrientationChanged">
       <arg type="i"/>
     </method>

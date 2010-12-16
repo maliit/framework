@@ -106,8 +106,12 @@ MInputContext::MInputContext(QObject *parent)
     connectToDBus();
 
     connect(MInputMethodState::instance(),
+            SIGNAL(activeWindowOrientationAngleAboutToChange(M::OrientationAngle)),
+            this, SLOT(notifyOrientationAboutToChange(M::OrientationAngle)));
+
+    connect(MInputMethodState::instance(),
             SIGNAL(activeWindowOrientationAngleChanged(M::OrientationAngle)),
-            this, SLOT(notifyOrientationChange(M::OrientationAngle)));
+            this, SLOT(notifyOrientationChanged(M::OrientationAngle)));
 
     connect(MInputMethodState::instance(),
             SIGNAL(toolbarRegistered(int, QString)),
@@ -305,7 +309,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
             // Notify whatever application's orientation is currently.
             M::OrientationAngle angle
                 = MInputMethodState::instance()->activeWindowOrientationAngle();
-            notifyOrientationChange(angle);
+            notifyOrientationChanged(angle);
         }
 
         imServer->updateWidgetInformation(stateInformation, true);
@@ -785,7 +789,15 @@ void MInputContext::notifyCopyPasteState()
     imServer->setCopyPasteState(copyAvailable && copyAllowed, pasteAvailable);
 }
 
-void MInputContext::notifyOrientationChange(M::OrientationAngle orientation)
+void MInputContext::notifyOrientationAboutToChange(M::OrientationAngle orientation)
+{
+    // can get called from signal so cannot be sure we are really currently active
+    if (active) {
+        imServer->appOrientationAboutToChange(static_cast<int>(orientation));
+    }
+}
+
+void MInputContext::notifyOrientationChanged(M::OrientationAngle orientation)
 {
     // can get called from signal so cannot be sure we are really currently active
     if (active) {

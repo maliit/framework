@@ -183,6 +183,15 @@ m_dbus_glib_ic_connection_reset(MDBusGlibICConnection *obj, GError **/*error*/)
 }
 
 static gboolean
+m_dbus_glib_ic_connection_app_orientation_about_to_change(MDBusGlibICConnection *obj, gint32 angle,
+                                                         GError **/*error*/)
+{
+    obj->icConnection->appOrientationAboutToChange(static_cast<int>(angle));
+    return TRUE;
+}
+
+
+static gboolean
 m_dbus_glib_ic_connection_app_orientation_changed(MDBusGlibICConnection *obj, gint32 angle,
                                                   GError **/*error*/)
 {
@@ -832,11 +841,18 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
     }
 }
 
+void MInputContextGlibDBusConnection::appOrientationAboutToChange(int angle)
+{
+    foreach (MAbstractInputMethod *target, targets()) {
+        target->handleAppOrientationAboutToChange(angle);
+    }
+}
+
 
 void MInputContextGlibDBusConnection::appOrientationChanged(int angle)
 {
     foreach (MAbstractInputMethod *target, targets()) {
-        target->handleAppOrientationChange(angle);
+        target->handleAppOrientationChanged(angle);
     }
 }
 

@@ -635,7 +635,7 @@ void Ut_MInputContext::testUpdatePreedit()
 
 void Ut_MInputContext::testAppOrientationChanged()
 {
-    m_subject->notifyOrientationChange(M::Angle90);
+    m_subject->notifyOrientationChanged(M::Angle90);
 
     // Make sure DBus call gets through
     waitAndProcessEvents(300);

@@ -198,8 +198,12 @@ private slots:
      */
     void handleSelectionChanged();
 
+    //! Notify input method plugin about the application's active window prepare to change to a new \a orientation angle.
+    void notifyOrientationAboutToChange(M::OrientationAngle orientation);
+
     //! Notify input method plugin about new \a orientation angle of application's active window.
-    void notifyOrientationChange(M::OrientationAngle orientation);
+    //! \note this method is called when the orientation change is finished
+    void notifyOrientationChanged(M::OrientationAngle orientation);
 
     //! Notify input method plugin about a new toolbar which is defined in \a fileName and with the unique \a id to be registered.
     void notifyToolbarRegistered(int id, const QString &fileName);

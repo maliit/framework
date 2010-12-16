@@ -56,6 +56,8 @@ public:
 
     void reset();
 
+    void appOrientationAboutToChange(int angle);
+
     void appOrientationChanged(int angle);
 
     void setCopyPasteState(bool copyAvailable, bool pasteAvailable);

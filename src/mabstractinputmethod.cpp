@@ -109,7 +109,13 @@ void MAbstractInputMethod::handleVisualizationPriorityChange(bool priority)
     Q_UNUSED(priority);
 }
 
-void MAbstractInputMethod::handleAppOrientationChange(int angle)
+void MAbstractInputMethod::handleAppOrientationAboutToChange(int angle)
+{
+    // empty default implementation
+    Q_UNUSED(angle);
+}
+
+void MAbstractInputMethod::handleAppOrientationChanged(int angle)
 {
     // empty default implementation
     Q_UNUSED(angle);

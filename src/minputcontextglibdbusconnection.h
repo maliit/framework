@@ -108,7 +108,12 @@ public slots:
     void reset();
 
     /*!
-     * \brief Target application changed orientation
+     * \brief Target application is changing orientation
+     */
+    void appOrientationAboutToChange(int angle);
+
+    /*!
+     * \brief Target application changed orientation (already finished)
      */
     void appOrientationChanged(int angle);
 

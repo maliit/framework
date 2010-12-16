@@ -108,10 +108,15 @@ public:
      */
     virtual void handleVisualizationPriorityChange(bool priority);
 
-    /*! \brief Target application changed orientation. Input method usually changes its
-     *         own orientation according to this.
+    /*! \brief Target application is about to change orientation. Input method usually changes its
+     *  own orientation according to this.
      */
-    virtual void handleAppOrientationChange(int angle);
+    virtual void handleAppOrientationAboutToChange(int angle);
+
+    /*! \brief Target application already finish changing orientation. Input method usually
+     *  changes its own orientation according to this.
+     */
+    virtual void handleAppOrientationChanged(int angle);
 
     /*!
      * \brief Uses a custom toolbar which is defined by given parameter.
