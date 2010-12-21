@@ -1,3 +1,9 @@
+meego-im-framework (0.19.37~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 21 Dec 2010 13:44:07 +0200
+
 meego-im-framework (0.19.36-1) unstable; urgency=low
 
   * Fixes: NB#208770 - Keys under compositor input regions are not getting
