@@ -27,15 +27,16 @@
 #include <X11/extensions/shape.h>
 #endif
 
-MPassThruWindow::MPassThruWindow(bool bypassWMHint, QWidget *p)
+MPassThruWindow::MPassThruWindow(bool bypassWMHint, bool selfComposited, QWidget *p)
     : QWidget(p),
-      raiseOnShow(bypassWMHint) // if bypassing window hint, also do raise to ensure visibility
+      raiseOnShow(bypassWMHint), // if bypassing window hint, also do raise to ensure visibility
+      selfComposited(selfComposited)
 
 {
     setWindowTitle("MInputMethod");
-#ifndef M_IM_DISABLE_TRANSLUCENCY
-    setAttribute(Qt::WA_TranslucentBackground);
-#endif
+
+    if (!selfComposited)
+        setAttribute(Qt::WA_TranslucentBackground);
 
     Display *dpy =  QX11Info::display();
 
@@ -141,8 +142,12 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (isVisible() && region.isEmpty()) {
+        if (selfComposited)
+            mApp->unredirectRemoteWindow();
         hide();
     } else if (!isVisible() && !region.isEmpty()) {
+        if (selfComposited)
+            mApp->redirectRemoteWindow();
         show();
         
         if (raiseOnShow) {

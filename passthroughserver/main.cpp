@@ -54,11 +54,16 @@ namespace {
 int main(int argc, char **argv)
 {
     bool bypassWMHint = false;
+    bool selfComposited = true;
 
     for (int i = 1; i < argc; i++) {
         QString s(argv[i]);
         if (s == "-bypass-wm-hint") {
             bypassWMHint = true;
+        }
+
+        if (s == "-use-system-compositor") {
+            selfComposited = false;
         }
     }
 
@@ -69,7 +74,7 @@ int main(int argc, char **argv)
 
     MIMApplication app(argc, argv);
 
-    MPassThruWindow widget(bypassWMHint);
+    MPassThruWindow widget(bypassWMHint, selfComposited);
     widget.setFocusPolicy(Qt::NoFocus);
     app.setPassThruWindow(&widget);
 
@@ -78,8 +83,9 @@ int main(int argc, char **argv)
     MPlainWindow *view = new MPlainWindow(&widget);
 
 #ifndef M_IM_DISABLE_TRANSLUCENCY
+    if (!selfComposited)
     // enable translucent in hardware rendering
-    view->setTranslucentBackground(!MApplication::softwareRendering());
+        view->setTranslucentBackground(!MApplication::softwareRendering());
 #endif
 
     // No auto fill in software rendering

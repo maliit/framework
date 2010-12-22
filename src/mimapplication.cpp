@@ -19,23 +19,35 @@
 #include <MWindow>
 #include <MDebug>
 
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h> // defines IconicState
+#include "x11wrapper.h"
+
+X11Wrapper::X11Wrapper() 
+    : remoteWindowId(0),
+      remoteWindowXPixmap(0)
+{
+}
 
 MIMApplication::MIMApplication(int &argc, char **argv)
     : MApplication(argc, argv),
-      remoteWinId(0),
-      passThruWindow(0)
-{}
+      passThruWindow(0),
+      x11Wrapper(new X11Wrapper)
+{
+    int damageError;
+
+    XDamageQueryExtension(QX11Info::display(), &damageBase, &damageError);
+
+}
 
 MIMApplication::~MIMApplication()
-{}
+{
+    delete x11Wrapper;
+}
 
 bool MIMApplication::x11EventFilter(XEvent *ev)
 {
     handleMapNotifyEvents(ev);
     handleTransientEvents(ev);
+    handleDamageEvents(ev);
     return MApplication::x11EventFilter(ev);
 }
 
@@ -52,13 +64,14 @@ void MIMApplication::handleMapNotifyEvents(XEvent *ev)
 
 void MIMApplication::handleTransientEvents(XEvent *ev)
 {
-    if (0 == remoteWinId || not passThruWindow) {
+    if (0 == x11Wrapper->remoteWindowId || not passThruWindow) {
         return;
     }
 
     if (wasRemoteWindowIconified(ev) || wasRemoteWindowUnmapped(ev)) {
         mDebug("MIMApplication") << "Remote window was destroyed or iconified - hiding.";
-        remoteWinId = 0;
+        destroyDamage();
+        x11Wrapper->remoteWindowId = 0;
         emit remoteWindowGone();
     }
 }
@@ -69,15 +82,15 @@ void MIMApplication::setTransientHint(int newRemoteWinId)
         return;
     }
 
-    remoteWinId = newRemoteWinId;
+    x11Wrapper->remoteWindowId = newRemoteWinId;
 
     XSetTransientForHint(QX11Info::display(),
                          passThruWindow->effectiveWinId(),
-                         remoteWinId);
+                         x11Wrapper->remoteWindowId);
 
     // Using PropertyChangeMask is a work-around for NB#172722 (a WONTFIX):
     XSelectInput(QX11Info::display(),
-                 remoteWinId,
+                 x11Wrapper->remoteWindowId,
                  StructureNotifyMask | PropertyChangeMask);
 }
 
@@ -109,7 +122,7 @@ bool MIMApplication::wasRemoteWindowIconified(XEvent *ev) const
         unsigned long *state;
         uchar *data = 0;
 
-        int queryResult = XGetWindowProperty(QX11Info::display(), remoteWinId, wmState, 0, 2,
+        int queryResult = XGetWindowProperty(QX11Info::display(), x11Wrapper->remoteWindowId, wmState, 0, 2,
                                              false, AnyPropertyType, &type, &format, &length,
                                              &after, &data);
         state = (unsigned long *) data;
@@ -129,7 +142,7 @@ bool MIMApplication::wasRemoteWindowIconified(XEvent *ev) const
 bool MIMApplication::wasRemoteWindowUnmapped(XEvent *ev) const
 {
     return (UnmapNotify == ev->type &&
-            static_cast<int>(ev->xunmap.event) == remoteWinId);
+            ev->xunmap.event == x11Wrapper->remoteWindowId);
 }
 
 bool MIMApplication::wasPassThruWindowMapped(XEvent *ev) const
@@ -144,4 +157,79 @@ bool MIMApplication::wasPassThruWindowUnmapped(XEvent *ev) const
     return (passThruWindow &&
             UnmapNotify == ev->type &&
             static_cast<WId>(ev->xunmap.event) == passThruWindow->effectiveWinId());
+}
+
+void MIMApplication::setupDamage()
+{
+    if (x11Wrapper->remoteWindowId == 0)
+        return;
+
+    if (x11Wrapper->pixmapDamage != 0)
+        destroyDamage();
+
+    x11Wrapper->pixmapDamage = XDamageCreate(QX11Info::display(), x11Wrapper->remoteWindowId, XDamageReportNonEmpty); 
+}
+
+void MIMApplication::destroyDamage()
+{
+    if (x11Wrapper->pixmapDamage != 0) {
+        XDamageDestroy(QX11Info::display(), x11Wrapper->pixmapDamage);
+        x11Wrapper->pixmapDamage = 0;
+    }
+}
+
+void MIMApplication::handleDamageEvents(XEvent *event)
+{
+    if (x11Wrapper->remoteWindowId == 0 ||
+        x11Wrapper->pixmapDamage == 0)
+        return;
+
+    if (event->type == damageBase + XDamageNotify) {
+        XDamageNotifyEvent *e = reinterpret_cast<XDamageNotifyEvent*>(event);
+
+        if (x11Wrapper->pixmapDamage == e->damage) {
+            XserverRegion parts = XFixesCreateRegion(QX11Info::display(), 0, 0);
+            XDamageSubtract(QX11Info::display(), e->damage, None, parts);
+            XFixesDestroyRegion(QX11Info::display(), parts);
+            // TODO: Replace QRect() with actual damage parts
+            emit remoteWindowUpdated(QRect());
+        }
+    }
+}
+
+void MIMApplication::redirectRemoteWindow()
+{
+    if (x11Wrapper->remoteWindowId != 0) {
+        // TODO: Handle error here
+        XCompositeRedirectWindow(QX11Info::display(), 
+            x11Wrapper->remoteWindowId, 
+            CompositeRedirectAutomatic);
+
+        if (x11Wrapper->remoteWindowXPixmap != 0) {
+            XFreePixmap(QX11Info::display(), x11Wrapper->remoteWindowXPixmap);
+            x11Wrapper->remoteWindowXPixmap = 0;
+        }
+
+        x11Wrapper->remoteWindowXPixmap = XCompositeNameWindowPixmap(QX11Info::display(), x11Wrapper->remoteWindowId);
+        XSync(QX11Info::display(), FALSE);
+        if (x11Wrapper->remoteWindowXPixmap != 0) {
+            x11Wrapper->remoteWindowPixmap = QPixmap::fromX11Pixmap(x11Wrapper->remoteWindowXPixmap, QPixmap::ExplicitlyShared);
+        }
+        setupDamage();
+    }
+}
+
+void MIMApplication::unredirectRemoteWindow()
+{
+    if (x11Wrapper->remoteWindowId != 0) {
+        XCompositeUnredirectWindow(QX11Info::display(), 
+            x11Wrapper->remoteWindowId, 
+            CompositeRedirectAutomatic);
+        destroyDamage();
+    }
+}
+
+QPixmap MIMApplication::remoteWindowPixmap() const
+{
+    return x11Wrapper->remoteWindowPixmap;
 }

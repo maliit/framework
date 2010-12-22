@@ -37,6 +37,7 @@ public slots:
 protected:
     //! \reimp
     virtual bool viewportEvent(QEvent *event);
+    virtual void drawBackground(QPainter * painter, const QRectF & rect);
     //! \reimp_end
 
 private:

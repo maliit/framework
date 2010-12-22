@@ -19,6 +19,8 @@
 
 #include <MApplication>
 
+#include <QPixmap>
+#include <QRect>
 #include <QPointer>
 #include <QX11Info>
 
@@ -27,6 +29,8 @@ class MIMApplication;
 #undef mApp
 #endif
 #define mApp (static_cast<MIMApplication *>(QCoreApplication::instance()))
+
+class X11Wrapper;
 
 //! \internal
 /*! \brief A helper class to filter X11 events
@@ -61,6 +65,11 @@ public:
 
     static MIMApplication *instance();
 
+    void redirectRemoteWindow();
+    void unredirectRemoteWindow();
+    QPixmap remoteWindowPixmap() const;
+
+
 signals:
     //! After a map window request (e.g., via show()) this signal gets emitted
     //! as soon as X mapped our passthru window.
@@ -73,19 +82,25 @@ signals:
     //! This signal is emitted when remote input window is gone or iconified.
     void remoteWindowGone();
 
+    //! This signal is emitted when remote input window is updated.
+    void remoteWindowUpdated(QRect);
 private:
     void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);
+    void handleDamageEvents(XEvent *ev);
+   
+    void setupDamage();
+    void destroyDamage();
 
     bool wasRemoteWindowIconified(XEvent *ev) const;
     bool wasRemoteWindowUnmapped(XEvent *ev) const;
     bool wasPassThruWindowMapped(XEvent *ev) const;
     bool wasPassThruWindowUnmapped(XEvent *ev) const;
 
-    // TODO: Change this type to WId
-    int remoteWinId;
     QPointer<QWidget> passThruWindow;
 
+    X11Wrapper *x11Wrapper;
+    int damageBase;
     friend class Ut_PassthroughServer;
 };
 //! \internal_end

@@ -16,6 +16,7 @@
 
 #include "mplainwindow.h"
 #include "mimscene.h"
+#include "mimapplication.h"
 
 #include <MSceneManager>
 #include <MGConfItem>
@@ -63,6 +64,9 @@ MPlainWindow::MPlainWindow(QWidget *parent) :
     ungrabGesture(Qt::PanGesture);
     ungrabGesture(Qt::SwipeGesture);
     ungrabGesture(Qt::TapGesture);
+
+    setAutoFillBackground(false);
+    connect(mApp, SIGNAL(remoteWindowUpdated(QRect)), this, SLOT(update(QRect)));
 }
 
 MPlainWindow::~MPlainWindow()
@@ -135,3 +139,10 @@ bool MPlainWindow::viewportEvent(QEvent *event)
     return result;
 }
 
+void 
+MPlainWindow::drawBackground(QPainter * painter, const QRectF & rect)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+
+    painter->drawPixmap(0, 0, mApp->remoteWindowPixmap());
+}

@@ -34,7 +34,7 @@ public:
      * \brief Constructor
      * \param p QWidget* parent widget
      */
-    explicit MPassThruWindow(bool bypassWMHint = false, QWidget *p = 0);
+    explicit MPassThruWindow(bool bypassWMHint = false, bool selfComposited = true, QWidget *p = 0);
 
     //! Destructor
     ~MPassThruWindow();
@@ -47,6 +47,7 @@ private:
     Q_DISABLE_COPY(MPassThruWindow);
 
     bool raiseOnShow;
+    bool selfComposited;
 
     friend class Ut_PassthroughServer;
 };
