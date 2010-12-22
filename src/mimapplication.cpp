@@ -203,7 +203,7 @@ void MIMApplication::redirectRemoteWindow()
         // TODO: Handle error here
         XCompositeRedirectWindow(QX11Info::display(), 
             x11Wrapper->remoteWindowId, 
-            CompositeRedirectAutomatic);
+            CompositeRedirectManual);
 
         if (x11Wrapper->remoteWindowXPixmap != 0) {
             XFreePixmap(QX11Info::display(), x11Wrapper->remoteWindowXPixmap);
@@ -216,6 +216,7 @@ void MIMApplication::redirectRemoteWindow()
             x11Wrapper->remoteWindowPixmap = QPixmap::fromX11Pixmap(x11Wrapper->remoteWindowXPixmap, QPixmap::ExplicitlyShared);
         }
         setupDamage();
+        emit remoteWindowUpdated(QRect());
     }
 }
 
@@ -224,7 +225,7 @@ void MIMApplication::unredirectRemoteWindow()
     if (x11Wrapper->remoteWindowId != 0) {
         XCompositeUnredirectWindow(QX11Info::display(), 
             x11Wrapper->remoteWindowId, 
-            CompositeRedirectAutomatic);
+            CompositeRedirectManual);
         destroyDamage();
     }
 }
