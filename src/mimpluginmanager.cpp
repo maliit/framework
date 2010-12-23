@@ -310,6 +310,9 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
     QSharedPointer<const MToolbarData> toolbar =
         MToolbarManager::instance().toolbarData(toolbarId);
     switchedTo->setToolbar(toolbar);
+    // TODO: show/hide from IC matches SIP show/hide requests but here show is used (and
+    // hide in deactivatePlugin) in a sense completely unrelated to SIP requests.  Should
+    // there be separte methods for plugin activation/deactivation?
     switchedTo->show();
     switchedTo->showLanguageNotification();
 }

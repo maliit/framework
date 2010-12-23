@@ -93,6 +93,8 @@ MInputContext::MInputContext(QObject *parent)
 
     sipHideTimer.setSingleShot(true);
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
+    // TODO: sipHideTimer is used not only when focus is lost but also with
+    // CloseSoftwareInputPanel event, so hideOnFocusOut is misleading.
     connect(&sipHideTimer, SIGNAL(timeout()), SLOT(hideOnFocusOut()));
 
     // ensure MComponentData is initialized, normally it should be.
