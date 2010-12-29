@@ -263,15 +263,18 @@ void MInputContext::reset()
     // send existing preedit to widget, documentation unclear whether this is
     // allowed, but trolls gave permission to use it. Most of qt's internal
     // input methods do the same thing.
-    if (!preedit.isEmpty()) {
+    const bool hadPreedit = !preedit.isEmpty();
+    if (hadPreedit) {
         QInputMethodEvent event;
         event.setCommitString(preedit);
         sendEvent(event);
         preedit.clear();
     }
 
-    // reset input method server
-    imServer->reset();
+    // reset input method server, preedit requires synchronization.
+    // rationale: input method might be autocommitting existing preedit without 
+    // user interaction.
+    imServer->reset(hadPreedit);
 }
 
 
@@ -585,6 +588,10 @@ void MInputContext::commitString(const QString &string, int replacementStart,
     mTimestamp("MInputContext", string);
 #endif
 
+    if (imServer->pendingResets()) {
+        return;
+    }
+
     preedit.clear();
 
     int start = -1;
@@ -623,6 +630,10 @@ void MInputContext::updatePreedit(const QString &string,
                                 << ", replacementStart:" << replacementStart
                                 << ", replacementLength:" << replacementLength
                                 << ", cursorPos:" << cursorPos;
+
+    if (imServer->pendingResets()) {
+        return;
+    }
 
     preedit = string;
 

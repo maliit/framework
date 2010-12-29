@@ -81,7 +81,7 @@ void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant
 {
 }
 
-void GlibDBusIMServerProxy::reset()
+void GlibDBusIMServerProxy::reset(bool)
 {
     DBusStub->reset();
 }

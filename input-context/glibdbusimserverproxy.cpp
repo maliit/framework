@@ -53,6 +53,11 @@ GlibDBusIMServerProxy::GlibDBusIMServerProxy(GObject *inputContextAdaptor, const
 GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
 {
     active = false;
+
+    foreach (DBusGProxyCall *callId, pendingResetCalls) {
+        dbus_g_proxy_cancel_call(glibObjectProxy, callId);
+    }
+
     // Proxies should be taken care of automatically
     if (connection) {
         dbus_g_connection_unref(connection);
@@ -110,6 +115,21 @@ void GlibDBusIMServerProxy::onDisconnection()
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
     }
 }
+
+void GlibDBusIMServerProxy::resetNotifyTrampoline(DBusGProxy *proxy, DBusGProxyCall *callId,
+                                                  gpointer userData)
+{
+    static_cast<GlibDBusIMServerProxy *>(userData)->resetNotify(proxy, callId);
+}
+
+void GlibDBusIMServerProxy::resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId)
+{
+    qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+
+    dbus_g_proxy_end_call(proxy, callId, 0, G_TYPE_INVALID);
+    pendingResetCalls.remove(callId);
+}
+
 
 // Remote methods............................................................
 
@@ -191,13 +211,26 @@ void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant
     g_array_unref(serializedState);
 }
 
-void GlibDBusIMServerProxy::reset()
+void GlibDBusIMServerProxy::reset(bool requireSynchronization)
 {
     if (!glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "reset",
-                               G_TYPE_INVALID);
+
+    if (requireSynchronization) {
+        DBusGProxyCall *resetCall = dbus_g_proxy_begin_call(glibObjectProxy, "reset",
+                                                            resetNotifyTrampoline, this,
+                                                            0, G_TYPE_INVALID);
+        pendingResetCalls.insert(resetCall);
+    } else {
+        dbus_g_proxy_call_no_reply(glibObjectProxy, "reset",
+                                   G_TYPE_INVALID);
+    }
+}
+
+bool GlibDBusIMServerProxy::pendingResets()
+{
+    return (pendingResetCalls.size() > 0);
 }
 
 void GlibDBusIMServerProxy::appOrientationAboutToChange(int angle)

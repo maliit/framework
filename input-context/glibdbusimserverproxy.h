@@ -22,6 +22,7 @@
 #include <QEvent>
 #include <Qt>
 #include <QMap>
+#include <QSet>
 
 class QPoint;
 class QRect;
@@ -54,7 +55,8 @@ public:
     void updateWidgetInformation(const QMap<QString, QVariant> &stateInformation,
                                  bool focusChanged);
 
-    void reset();
+    void reset(bool requireSynchronization);
+    bool pendingResets();
 
     void appOrientationAboutToChange(int angle);
 
@@ -88,11 +90,15 @@ private:
     static void onDisconnectionTrampoline(DBusGProxy *proxy, gpointer userData);
     void onDisconnection();
 
+    static void resetNotifyTrampoline(DBusGProxy *proxy, DBusGProxyCall *callId, gpointer userData);
+    void resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId);
+
     DBusGProxy *glibObjectProxy;
     DBusGConnection *connection;
     GObject *inputContextAdaptor;
     QString icAdaptorPath;
     bool active;
+    QSet<DBusGProxyCall *> pendingResetCalls;
 };
 
 #endif
