@@ -53,12 +53,15 @@ public:
     //! Returns true if \a other is not equal to this object
     bool operator!=(const MToolbarId &other) const;
 
+    //! \return service part of the ID, given to constructor
+    QString service() const;
+
 private:
     //! Id given by application
     int id;
 
     //! Unique application identifier
-    QString service;
+    QString m_service;
 
     friend uint qHash(const MToolbarId &id);
 };

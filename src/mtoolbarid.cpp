@@ -31,7 +31,7 @@ MToolbarId::MToolbarId()
 
 MToolbarId::MToolbarId(int id, const QString &service)
     : id(id),
-      service(service)
+      m_service(service)
 {
 }
 
@@ -42,12 +42,12 @@ MToolbarId MToolbarId::standardToolbarId()
 
 bool MToolbarId::isValid() const
 {
-    return id >= 0 && !service.isEmpty();
+    return id >= 0 && !m_service.isEmpty();
 }
 
 bool MToolbarId::operator==(const MToolbarId &other) const
 {
-    return (id == other.id) && (service == other.service);
+    return (id == other.id) && (m_service == other.m_service);
 }
 
 bool MToolbarId::operator!=(const MToolbarId &other) const
@@ -55,8 +55,13 @@ bool MToolbarId::operator!=(const MToolbarId &other) const
     return !operator==(other);
 }
 
+QString MToolbarId::service() const
+{
+    return m_service;
+}
+
 uint qHash(const MToolbarId &id)
 {
-    return qHash(QPair<int, QString>(id.id, id.service));
+    return qHash(QPair<int, QString>(id.id, id.m_service));
 }
 

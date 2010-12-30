@@ -351,6 +351,18 @@ static void handleDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userDa
 
 void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnection *connection)
 {
+    // unregister toolbars registered by the lost connection
+    const QString service(QString::number(connection->connectionNumber));
+    QSet<MToolbarId>::iterator i(toolbarIds.begin());
+    while (i != toolbarIds.end()) {
+        if ((*i).service() == service) {
+            MToolbarManager::instance().unregisterToolbar(*i);
+            i = toolbarIds.erase(i);
+        } else {
+            ++i;
+        }
+    }
+
     g_object_unref(G_OBJECT(connection));
 
     if (activeContext != connection) {
