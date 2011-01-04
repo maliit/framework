@@ -1,9 +1,8 @@
-meego-im-framework (0.19.38~1) unstable; urgency=low
+meego-im-framework (0.19.38-1) unstable; urgency=low
 
   * Fixes: don't leak toolbars when a client connection is closed
-  * [UNRELEASED]
 
- -- huaming wang <huaming.wang@nokia.com>  Wed, 29 Dec 2010 14:27:34 +0200
+ -- huaming wang <huaming.wang@nokia.com>  Tue, 04 Jan 2011 14:09:13 +0200
 
 meego-im-framework (0.19.37-1) unstable; urgency=low
 
