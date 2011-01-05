@@ -115,9 +115,3 @@ mdbusglibicconnectionserviceglue.h.commands = \
     dbus-binding-tool --prefix=m_dbus_glib_ic_connection --mode=glib-server \
         --output=mdbusglibicconnectionserviceglue.h minputmethodserver1interface.xml
 mdbusglibicconnectionserviceglue.h.depends = minputmethodserver1interface.xml
-
-QMAKE_EXTRA_TARGETS += mimsdbusactivaterserviceglue.h
-mimsdbusactivaterserviceglue.h.commands = \
-    dbus-binding-tool --prefix=m_ims_dbus_activater --mode=glib-server \
-        --output=mimsdbusactivaterserviceglue.h minputmethodserveractivationinterface.xml
-mimsdbusactivaterserviceglue.h.depends = minputmethodserveractivationinterface.xml

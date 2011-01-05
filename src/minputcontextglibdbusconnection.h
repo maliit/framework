@@ -165,8 +165,6 @@ private:
     QByteArray socketAddress;
 
     DBusServer *server;
-    DBusGConnection *sessionBusConnection;
-    MIMSDBusActivater *activater;
 
     Q_DISABLE_COPY(MInputContextGlibDBusConnection)
 };

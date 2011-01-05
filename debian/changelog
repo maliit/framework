@@ -1,6 +1,7 @@
 meego-im-framework (0.19.39~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Fixes: NB#194533 - Libminputcontext is creating two DBus connections for each started QT application
 
  -- huaming wang <huaming.wang@nokia.com>  Tue, 04 Jan 2011 14:11:36 +0200
 

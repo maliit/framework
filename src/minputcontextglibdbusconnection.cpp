@@ -27,8 +27,8 @@
 #include <QMap>
 #include <QString>
 #include <QVariant>
-
-#include <stdlib.h>
+#include <QFile>
+#include <QDir>
 
 #include "mabstractinputmethod.h"
 #include "mimapplication.h"
@@ -36,15 +36,12 @@
 
 namespace
 {
-    const char * const SocketDirectoryTemplate = "/tmp/meego-im-uiserver-XXXXXX";
+    const char * const SocketDirectory = "/tmp/meego-im-uiserver";
     const char * const SocketName = "imserver_dbus";
     const char * const DBusPath = "/com/meego/inputmethod/uiserver1";
 
     const char * const DBusClientPath = "/com/meego/inputmethod/inputcontext";
     const char * const DBusClientInterface = "com.meego.inputmethod.inputcontext1";
-
-    const char * const ActivationBusName("com.meego.inputmethod.uiserver1");
-    const char * const ActivationPath("/com/meego/inputmethod/activation");
 
     // attribute names for updateWidgetInformation() map
     const char * const FocusStateAttribute = "focusState";
@@ -61,57 +58,6 @@ namespace
     const char * const ToolbarAttribute = "toolbar";
     const char * const WinId = "winId";
     const char * const CursorRectAttribute = "cursorRectangle";
-}
-
-//! \internal
-//! \brief Class for a mostly dummy object for activating input method server over D-Bus
-//!
-//! The class has only one method, address, which is used to obtain the address of the
-//! private D-Bus server socket.
-struct MIMSDBusActivater
-{
-    GObject parent;
-
-    //! Address of our D-Bus server socket, owned by MInputContextGlibDBusConnection
-    const char *address;
-};
-
-//! \brief MIMSDBusActivater metaclass
-struct MIMSDBusActivaterClass
-{
-    GObjectClass parent;
-};
-//! \internal_end
-
-#define M_TYPE_IMS_DBUS_ACTIVATER              (m_ims_dbus_activater_get_type())
-#define M_IMS_DBUS_ACTIVATER(object)           (G_TYPE_CHECK_INSTANCE_CAST((object), M_TYPE_IMS_DBUS_ACTIVATER, MIMSDBusActivater))
-#define M_IMS_DBUS_ACTIVATER_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass), M_TYPE_IMS_DBUS_ACTIVATER, MIMSDBusActivaterClass))
-#define M_IS_M_IMS_DBUS_ACTIVATER(object)      (G_TYPE_CHECK_INSTANCE_TYPE((object), M_TYPE_IMS_DBUS_ACTIVATER))
-#define M_IS_M_IMS_DBUS_ACTIVATER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE((klass), M_TYPE_IMS_DBUS_ACTIVATER))
-#define M_IMS_DBUS_ACTIVATER_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS((obj), M_TYPE_IMS_DBUS_ACTIVATER, MIMSDBusActivaterClass))
-
-G_DEFINE_TYPE(MIMSDBusActivater, m_ims_dbus_activater, G_TYPE_OBJECT)
-
-static gboolean
-m_ims_dbus_activater_address(MIMSDBusActivater *obj, char **address, GError **/*error*/)
-{
-    *address = g_strdup(obj->address);
-    return TRUE;
-}
-
-
-#include "mimsdbusactivaterserviceglue.h"
-
-static void
-m_ims_dbus_activater_init(MIMSDBusActivater */*obj*/)
-{
-}
-
-static void
-m_ims_dbus_activater_class_init(MIMSDBusActivaterClass */*klass*/)
-{
-    dbus_g_object_type_install_info(M_TYPE_IMS_DBUS_ACTIVATER,
-                                    &dbus_glib_m_ims_dbus_activater_object_info);
 }
 
 //! \internal
@@ -409,19 +355,18 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
 
 MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
     : activeContext(NULL),
-      server(NULL),
-      sessionBusConnection(NULL),
-      activater(NULL)
+      server(NULL)
 {
     dbus_g_thread_init();
     g_type_init();
 
-    socketAddress = SocketDirectoryTemplate;
-    if (!mkdtemp(socketAddress.data())) {
+    if (!QDir().mkpath(SocketDirectory)) {
         qFatal("IMServer: couldn't create directory for D-Bus socket.");
     }
+    socketAddress = SocketDirectory;
     socketAddress.append("/");
     socketAddress.append(SocketName);
+    QFile::remove(socketAddress);
     socketAddress.prepend("unix:path=");
 
     DBusError error;
@@ -434,44 +379,11 @@ MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
 
     dbus_server_setup_with_g_main(server, NULL);
     dbus_server_set_new_connection_function(server, handleNewConnection, this, NULL);
-
-    // Setup service for automatic activation
-
-    GError *gerror = NULL;
-
-    sessionBusConnection = dbus_g_bus_get(DBUS_BUS_SESSION, &gerror);
-    if (!sessionBusConnection) {
-        qWarning("IMServer: unable to create session D-Bus connection: %s", gerror->message);
-        return;
-    }
-
-
-    DBusGProxy *busProxy(dbus_g_proxy_new_for_name(sessionBusConnection, "org.freedesktop.DBus",
-                                                   "/org/freedesktop/DBus",
-                                                   "org.freedesktop.DBus"));
-    guint nameRequestResult;
-    if (!dbus_g_proxy_call(busProxy, "RequestName", &gerror,
-                           G_TYPE_STRING, ActivationBusName,
-                           G_TYPE_UINT, 0,
-                           G_TYPE_INVALID,
-                           G_TYPE_UINT, &nameRequestResult,
-                           G_TYPE_INVALID)) {
-        qWarning("IMServer: failed to acquire activation service name: %s", gerror->message);
-    }
-
-    activater = M_IMS_DBUS_ACTIVATER(g_object_new(M_TYPE_IMS_DBUS_ACTIVATER, NULL));
-    activater->address = socketAddress.constData();
-
-    dbus_g_connection_register_g_object(sessionBusConnection, ActivationPath, G_OBJECT(activater));
 }
 
 
 MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
 {
-    dbus_g_connection_unregister_g_object(sessionBusConnection, G_OBJECT(activater));
-    g_object_unref(G_OBJECT(activater));
-
-    dbus_g_connection_unref(sessionBusConnection);
     dbus_server_disconnect(server);
     dbus_server_unref(server);
 }

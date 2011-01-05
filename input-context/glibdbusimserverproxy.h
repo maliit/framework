@@ -80,7 +80,6 @@ private slots:
     void connectToDBus();
 
 private:
-    void connectToActivationService();
     void setContextObject(const QString &dbusObjectPath);
 
     static GArray* serializeVariant(const QVariant &value);
@@ -92,8 +91,6 @@ private:
     GObject *inputContextAdaptor;
     QString icAdaptorPath;
     bool active;
-    DBusGProxy *activationProxy;
-    DBusGConnection *sessionBusConnection;
 };
 
 #endif
