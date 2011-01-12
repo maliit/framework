@@ -226,6 +226,15 @@ public slots:
      */
     virtual void setOrientationAngleLocked(bool lock) = 0;
 
+public:
+    /*!
+     * \brief returns the position of the selection anchor. 
+     *
+     * This may be less or greater than cursor position, depending on which side of selection 
+     * the cursor is. If there is no selection, it returns the same as cursor position.
+     */
+    virtual int anchorPosition(bool &valid) = 0;
+
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
     Q_DECLARE_PRIVATE(MAbstractInputMethodHost)

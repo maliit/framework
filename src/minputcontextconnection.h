@@ -190,6 +190,14 @@ public:
      */
     virtual void setOrientationAngleLocked(bool lock) = 0;
 
+    /*!
+     * \brief returns the position of the selection anchor.
+     *
+     * This may be less or greater than cursor position, depending on which side of selection
+     * the cursor is. If there is no selection, it returns the same as cursor position.
+     */
+    virtual int anchorPosition(bool &valid) = 0;
+
 public slots:
 
     //! Update \a region covered by virtual keyboard

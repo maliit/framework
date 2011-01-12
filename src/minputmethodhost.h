@@ -83,6 +83,7 @@ public:
     virtual void showSettings();
     virtual void setSelection(int start, int length);
     virtual void setOrientationAngleLocked(bool lock);
+    virtual int anchorPosition(bool &valid);
     // \reimp_end
 
 

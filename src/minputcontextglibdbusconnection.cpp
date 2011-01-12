@@ -50,6 +50,7 @@ namespace
     const char * const PredictionAttribute = "predictionEnabled";
     const char * const AutoCapitalizationAttribute = "autocapitalizationEnabled";
     const char * const SurroundingTextAttribute = "surroundingText";
+    const char * const AnchorPositionAttribute = "anchorPosition";
     const char * const CursorPositionAttribute = "cursorPosition";
     const char * const HasSelectionAttribute = "hasSelection";
     const char * const InputMethodModeAttribute = "inputMethodMode";
@@ -642,6 +643,13 @@ void MInputContextGlibDBusConnection::reset()
     }
 }
 
+
+int MInputContextGlibDBusConnection::anchorPosition(bool &valid)
+{
+    QVariant posVariant = widgetState[AnchorPositionAttribute];
+    valid = posVariant.isValid();
+    return posVariant.toInt();
+}
 
 bool MInputContextGlibDBusConnection::surroundingText(QString &text, int &cursorPosition)
 {

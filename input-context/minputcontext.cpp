@@ -890,6 +890,13 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         stateInformation["cursorPosition"] = queryResult.toInt();
     }
 
+    // anchor pos
+    queryResult = focused->inputMethodQuery(Qt::ImAnchorPosition);
+
+    if (queryResult.isValid()) {
+        stateInformation["anchorPosition"] = queryResult.toInt();
+    }
+
     Qt::InputMethodHints hints = focused->inputMethodHints();
     const QGraphicsView *const graphicsView = qobject_cast<const QGraphicsView *>(focused);
 
