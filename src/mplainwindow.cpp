@@ -15,6 +15,7 @@
  */
 
 #include "mplainwindow.h"
+#include "mimscene.h"
 
 #include <MSceneManager>
 #include <MGConfItem>
@@ -35,7 +36,7 @@ MPlainWindow *MPlainWindow::instance()
 }
 
 MPlainWindow::MPlainWindow(QWidget *parent) :
-    MWindow(parent)
+    MWindow(new MSceneManager(new MImScene), parent)
 {
     if (m_instance)
         qFatal("There can be only one instance of MPlainWindow");
@@ -61,6 +62,8 @@ MPlainWindow::MPlainWindow(QWidget *parent) :
 MPlainWindow::~MPlainWindow()
 {
     m_instance = 0;
+    delete scene();
+    delete sceneManager();
 }
 
 #if defined(M_IM_DISABLE_TRANSLUCENCY) && !defined(M_IM_USE_SHAPE_WINDOW)

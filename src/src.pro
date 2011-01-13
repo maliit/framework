@@ -31,6 +31,7 @@ HEADERS += $$HEADERSINSTALL \
         mimsettingsdialog.h \
         mtoolbarlayout_p.h \
         minputcontextglibdbusconnection.h \
+        mimscene.h \
 
 SOURCES += mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
@@ -48,6 +49,7 @@ SOURCES += mimpluginmanager.cpp \
         mimsettingsdialog.cpp \
         mtoolbarlayout.cpp \
         minputcontextglibdbusconnection.cpp \
+        mimscene.cpp \
 
 CONFIG += meegotouchcore qdbus link_pkgconfig
 QT = core gui xml
