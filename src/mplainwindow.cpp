@@ -57,6 +57,12 @@ MPlainWindow::MPlainWindow(QWidget *parent) :
     if (MGConfItem(MultitouchSettings).value().toBool()) {
         setAttribute(Qt::WA_AcceptTouchEvents);
     }
+
+    ungrabGesture(Qt::TapAndHoldGesture);
+    ungrabGesture(Qt::PinchGesture);
+    ungrabGesture(Qt::PanGesture);
+    ungrabGesture(Qt::SwipeGesture);
+    ungrabGesture(Qt::TapGesture);
 }
 
 MPlainWindow::~MPlainWindow()
