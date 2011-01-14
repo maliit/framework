@@ -490,7 +490,9 @@ QRect MInputContextGlibDBusConnection::preeditRectangle(bool &valid)
     if (!dbus_g_proxy_call(activeContext->inputContextProxy, "preeditRectangle", &error, G_TYPE_INVALID,
                            G_TYPE_BOOLEAN, &gvalidity, G_TYPE_INT, &x, G_TYPE_INT, &y,
                            G_TYPE_INT, &width, G_TYPE_INT, &height, G_TYPE_INVALID)) {
-        g_error_free(error);
+        if (error) { // dbus_g_proxy_call may return FALSE and not set error despite what the doc says
+            g_error_free(error);
+        }
         valid = false;
         return QRect();
     }

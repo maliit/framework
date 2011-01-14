@@ -77,8 +77,10 @@ void GlibDBusIMServerProxy::connectToDBus()
 
     connection = dbus_g_connection_open(SocketPath, &error);
     if (!connection) {
-        qWarning("MInputContext: unable to create D-Bus connection: %s", error->message);
-        g_error_free(error);
+        if (error) {
+            qWarning("MInputContext: unable to create D-Bus connection: %s", error->message);
+            g_error_free(error);
+        }
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
         return;
     }
