@@ -756,7 +756,8 @@ void MInputContext::onDBusConnection()
 void MInputContext::handleSelectedTextChange()
 {
     if (connectedObject) {
-        bool hasSelectedText = !connectedObject->property( "selectedText" ).toString().isEmpty();
+        bool hasSelectedText = (connectedObject->property("selectionStart").toInt()
+                                != connectedObject->property("selectionEnd").toInt());
         handleCopyAvailabilityChange(hasSelectedText);
     }
 }
