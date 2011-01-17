@@ -1,15 +1,19 @@
 include(../common_top.pri)
 
-INCLUDEPATH += ../../input-context ../stubs
-LIBS += -L../../input-context -lminputcontext ../../src/libmeegoimframework.so \
+ICDIR = ../../input-context
+INCLUDEPATH += $$ICDIR ../stubs
+LIBS += -L$$ICDIR -lminputcontext ../../src/libmeegoimframework.so
+DEFINES += M_LIBRARY=
 
 # Input
 HEADERS += \
     ut_minputcontext.h \
     ../stubs/stubbase.h \
+    $$ICDIR/minputcontext.h
 
 SOURCES += \
     ut_minputcontext.cpp \
+    $$ICDIR/minputcontext.cpp
 
 
 CONFIG += plugin meegotouch qdbus link_pkgconfig

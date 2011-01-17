@@ -54,5 +54,8 @@
         <arg type="i"/>
         <arg type="i"/>
     </method>
+    <method name="setOrientationAngleLocked">
+        <arg type="b"/>
+    </method>
   </interface>
 </node>

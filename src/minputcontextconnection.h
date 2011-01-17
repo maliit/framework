@@ -185,6 +185,11 @@ public:
      */
     virtual void setSelection(int start, int length) = 0;
 
+    /*!
+     * \brief Locks application orientation.
+     */
+    virtual void setOrientationAngleLocked(bool lock) = 0;
+
 public slots:
 
     //! Update \a region covered by virtual keyboard

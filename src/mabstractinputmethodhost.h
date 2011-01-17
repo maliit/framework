@@ -216,10 +216,15 @@ public slots:
      */
     virtual void showSettings() = 0;
 
-    /*
+    /*!
      *\brief Sets selection text from \a start with \a length in the application widget.
      */
     virtual void setSelection(int start, int length) = 0;
+
+    /*!
+     * \brief Locks application orientation.
+     */
+    virtual void setOrientationAngleLocked(bool lock) = 0;
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)

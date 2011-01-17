@@ -6,6 +6,7 @@
 #include <QClipboard>
 #include <QGraphicsView>
 
+#include <MWindow>
 #include "mpreeditinjectionevent.h"
 #include "glibdbusimserverproxy.h"
 
@@ -26,6 +27,8 @@ namespace
 {
     QPointer<QWidget> gFocusedWidget = 0;
 }
+
+Q_DECLARE_METATYPE(QList<Ut_MInputContext::OrientationAngleLockOperation>)
 
 QWidget *QApplication::focusWidget()
 {
@@ -405,6 +408,9 @@ void WidgetStub::sendCopyAvailable(bool yes)
 
 void Ut_MInputContext::initTestCase()
 {
+    qRegisterMetaType< QList<OrientationAngleLockOperation> >(
+        "QList<OrientationAngleLockOperation>");
+
     static char *argv[1] = { (char *) "ut_minputcontext" };
     static int argc = 1;
 
@@ -435,6 +441,7 @@ void Ut_MInputContext::init()
 
 void Ut_MInputContext::cleanup()
 {
+    m_subject->setOrientationAngleLocked(false);
 }
 
 void Ut_MInputContext::testAddCoverage()
@@ -836,6 +843,59 @@ void Ut_MInputContext::testInvalidScene()
     m_subject->setFocusWidget(&view);
 
     m_subject->imInitiatedHide();
+}
+
+void Ut_MInputContext::testSetOrientationAngleLocked_data()
+{
+    // Orientation can be locked by someone else than input-context,
+    // referred to as 'user' here.
+
+    typedef QList<OrientationAngleLockOperation > OpList;
+
+    QTest::addColumn< QList<OrientationAngleLockOperation> >("ops");
+    QTest::addColumn<bool>("expectedLockedState");
+
+    QTest::newRow("no change, set unlocked")
+        << (OpList() << UserUnlock << IcUnlock)
+        << false;
+    QTest::newRow("no change, set locked")
+        << (OpList() << UserLock << IcLock)
+        << true;
+    QTest::newRow("lock")
+        << (OpList() << UserUnlock << IcLock)
+        << true;
+    QTest::newRow("unlock")
+        << (OpList() << UserUnlock << IcLock << IcUnlock)
+        << false;
+    QTest::newRow("don't unlock if locked by user")
+        << (OpList() << UserLock << IcUnlock)
+        << true;
+}
+
+void Ut_MInputContext::testSetOrientationAngleLocked()
+{
+    QFETCH(QList<OrientationAngleLockOperation >, ops);
+    QFETCH(bool, expectedLockedState);
+
+    MWindow window;
+
+    foreach (OrientationAngleLockOperation op, ops) {
+        switch (op) {
+        case UserLock:
+            window.setOrientationAngleLocked(true);
+            break;
+        case UserUnlock:
+            window.setOrientationAngleLocked(false);
+            break;
+        case IcLock:
+            m_subject->setOrientationAngleLocked(true);
+            break;
+        case IcUnlock:
+            m_subject->setOrientationAngleLocked(false);
+            break;
+        }
+    }
+    QCOMPARE(window.isOrientationAngleLocked(), expectedLockedState);
 }
 
 QTEST_APPLESS_MAIN(Ut_MInputContext)

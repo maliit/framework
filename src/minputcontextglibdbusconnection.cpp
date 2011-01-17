@@ -543,6 +543,14 @@ void MInputContextGlibDBusConnection::setSelection(int start, int length)
                                G_TYPE_INVALID);
 }
 
+void MInputContextGlibDBusConnection::setOrientationAngleLocked(bool lock)
+{
+    dbus_g_proxy_call_no_reply(activeContext->inputContextProxy,
+                               "setOrientationAngleLocked",
+                               G_TYPE_BOOLEAN, lock,
+                               G_TYPE_INVALID);
+}
+
 void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &region)
 {
     if (activeContext) {

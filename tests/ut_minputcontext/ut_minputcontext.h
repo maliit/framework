@@ -126,6 +126,14 @@ class Ut_MInputContext : public QObject
 {
     Q_OBJECT
 
+public:
+    enum OrientationAngleLockOperation {
+        UserLock,
+        UserUnlock,
+        IcLock,
+        IcUnlock
+    };
+
 private slots:
     void initTestCase();
     void cleanupTestCase();
@@ -159,6 +167,9 @@ private slots:
     void testSetRedirectKeys();
 
     void testInvalidScene();
+
+    void testSetOrientationAngleLocked_data();
+    void testSetOrientationAngleLocked();
 
 private:
     void waitAndProcessEvents(int waitTime);

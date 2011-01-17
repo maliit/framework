@@ -82,6 +82,7 @@ public:
     virtual void setInputMethodArea(const QRegion &region);
     virtual void showSettings();
     virtual void setSelection(int start, int length);
+    virtual void setOrientationAngleLocked(bool lock);
     // \reimp_end
 
 

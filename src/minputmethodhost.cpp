@@ -213,3 +213,10 @@ void MInputMethodHost::setSelection(int start, int length)
         connection->setSelection(start, length);
     }
 }
+
+void MInputMethodHost::setOrientationAngleLocked(bool lock)
+{
+    if (enabled) {
+        connection->setOrientationAngleLocked(lock);
+    }
+}

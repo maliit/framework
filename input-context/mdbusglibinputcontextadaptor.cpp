@@ -157,6 +157,13 @@ static gboolean m_dbus_glib_input_context_adaptor_set_selection(MDBusGlibInputCo
     return TRUE;
 }
 
+static gboolean m_dbus_glib_input_context_adaptor_set_orientation_angle_locked(MDBusGlibInputContextAdaptor *obj,
+                                                                               gboolean lock, GError **/*error*/)
+{
+    obj->inputContext->setOrientationAngleLocked(lock == TRUE);
+    return TRUE;
+}
+
 #include "mdbusglibicconnectionserviceglue.h"
 
 

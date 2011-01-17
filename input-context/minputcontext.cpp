@@ -26,12 +26,14 @@
 #include <QApplication>
 #include <QClipboard>
 
+#include <MApplication>
 #include <MPreeditInjectionEvent>
 #include <MTheme>
 #include <MComponentData>
 #include <MDebug>
 #include <MLibrary>
 #include <MInputMethodState>
+#include <MWindow>
 
 #include "mdbusglibinputcontextadaptor.h"
 #include "glibdbusimserverproxy.h"
@@ -70,7 +72,8 @@ MInputContext::MInputContext(QObject *parent)
       copyAvailable(false),
       copyAllowed(true),
       redirectKeys(false),
-      objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount))
+      objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount)),
+      orientationAngleLockedByServer(false)
 {
     int opcode = -1;
     int xkbEventBase = -1;
@@ -475,11 +478,13 @@ void MInputContext::hideOnFocusOut()
     inputPanelState = InputPanelHidden;
 }
 
-
 void MInputContext::activationLostEvent()
 {
+    // This method is called when activation was gracefully lost.
+    // There is similar cleaning up done in onDBusDisconnection.
     active = false;
     inputPanelState = InputPanelHidden;
+    setOrientationAngleLocked(false);
 }
 
 
@@ -716,6 +721,10 @@ void MInputContext::onDBusDisconnection()
     active = false;
     redirectKeys = false;
     MInputMethodState::instance()->setInputMethodArea(QRect());
+
+    // Make sure disconnected IM server doesn't leave this
+    // application's orientation angle locked.
+    setOrientationAngleLocked(false);
 }
 
 void MInputContext::onDBusConnection()
@@ -970,4 +979,27 @@ void MInputContext::setSelection(int start, int length)
                                                 length, QVariant());
     QInputMethodEvent event("", attributes);
     sendEvent(event);
+}
+
+void MInputContext::setOrientationAngleLocked(bool lock)
+{
+    MApplication *mApp = qobject_cast<MApplication *>(qApp);
+    MWindow *mWindow = mApp ? mApp->activeWindow() : 0;
+    if (!mWindow) {
+        return;
+    }
+
+    // Since we cannot currently keep track if anyone else locks orientation for window
+    // we make assumption that no-one touches the lock in between
+    // MInputContext::setOrientationAngleLocked({true|false}) calls.
+
+    if (lock) {
+        mWindow->setOrientationAngleLocked(true);
+    } else {
+        if (mWindow->isOrientationAngleLocked()
+            && orientationAngleLockedByServer) {
+            mWindow->setOrientationAngleLocked(false);
+        }
+    }
+    orientationAngleLockedByServer = lock;
 }

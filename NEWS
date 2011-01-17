@@ -1,3 +1,9 @@
+0.19.39
+======
+* API changes
+ - New entry setOrientationAngleLocked added to input-context D-Bus interface and 
+   similar method added also to MInputContextConnection and MAbstractInputMethodHost.
+
 0.19.37
 =======
 * API changes
