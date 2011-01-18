@@ -59,6 +59,7 @@ namespace
     const char * const ToolbarAttribute = "toolbar";
     const char * const WinId = "winId";
     const char * const CursorRectAttribute = "cursorRectangle";
+    const char * const HiddenTextAttribute = "hiddenText";
 }
 
 //! \internal
@@ -720,6 +721,13 @@ QRect MInputContextGlibDBusConnection::cursorRectangle(bool &valid)
     QVariant cursorRectVariant = widgetState[CursorRectAttribute];
     valid = cursorRectVariant.isValid();
     return cursorRectVariant.toRect();
+}
+
+bool MInputContextGlibDBusConnection::hiddenText(bool &valid)
+{
+    QVariant hiddenTextVariant = widgetState[HiddenTextAttribute];
+    valid = hiddenTextVariant.isValid();
+    return hiddenTextVariant.toBool();
 }
 
 void

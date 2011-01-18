@@ -71,6 +71,7 @@ public:
     virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
     virtual QRect cursorRectangle(bool &valid);
+    virtual bool hiddenText(bool &valid);
     virtual void setRedirectKeys(bool enabled);
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void copy();

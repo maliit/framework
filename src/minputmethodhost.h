@@ -58,6 +58,7 @@ public:
     virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
     virtual QRect cursorRectangle(bool &valid);
+    virtual bool hiddenText(bool &valid);
     virtual void sendPreeditString(const QString &string,
                                    const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                    int replacementStart = 0, int replacementLength = 0,

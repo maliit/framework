@@ -46,3 +46,8 @@ MAbstractInputMethodHost::~MAbstractInputMethodHost()
     delete d;
 }
 
+bool MAbstractInputMethodHost::hiddenText(bool &valid)
+{
+    valid = false;
+    return false;
+}

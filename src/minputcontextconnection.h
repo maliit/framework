@@ -100,6 +100,11 @@ public:
     virtual QRect cursorRectangle(bool &valid) = 0;
 
     /*!
+     * \brief true if text input is being made hidden, e.g. with password fields
+     */
+    virtual bool hiddenText(bool &valid) = 0;
+
+    /*!
      * \brief Updates pre-edit string in the application widget
      *
      * Implement this method to update the pre-edit string

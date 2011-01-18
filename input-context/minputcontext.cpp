@@ -925,6 +925,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
     stateInformation["predictionEnabled"] = !(hints & Qt::ImhNoPredictiveText);
     stateInformation["autocapitalizationEnabled"] = !(hints & Qt::ImhNoAutoUppercase);
+    stateInformation["hiddenText"] = static_cast<bool>(hints & Qt::ImhHiddenText);
 
     // input method mode
     queryResult = focused->inputMethodQuery(

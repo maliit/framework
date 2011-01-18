@@ -227,6 +227,7 @@ public slots:
     virtual void setOrientationAngleLocked(bool lock) = 0;
 
 public:
+    // TODO: move together with query methods above when ABI break allowed
     /*!
      * \brief returns the position of the selection anchor. 
      *
@@ -234,6 +235,11 @@ public:
      * the cursor is. If there is no selection, it returns the same as cursor position.
      */
     virtual int anchorPosition(bool &valid) = 0;
+
+    /*!
+     * \brief true if text input is being made hidden, e.g. with password fields
+     */
+    virtual bool hiddenText(bool &valid);
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
