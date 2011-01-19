@@ -18,8 +18,6 @@
 
 #include <MWindow>
 
-class MScene;
-class MSceneManager;
 class QRegion;
 
 class MPlainWindow : public MWindow
