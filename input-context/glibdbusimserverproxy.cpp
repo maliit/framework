@@ -47,7 +47,6 @@ GlibDBusIMServerProxy::GlibDBusIMServerProxy(GObject *inputContextAdaptor, const
       active(true)
 {
     dbus_g_thread_init();
-    g_type_init();
 
     connectToDBus();
 }

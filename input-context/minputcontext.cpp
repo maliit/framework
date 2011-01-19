@@ -148,6 +148,7 @@ MInputContext::~MInputContext()
 void MInputContext::connectToDBus()
 {
     qDebug() << __PRETTY_FUNCTION__;
+    g_type_init();
     MDBusGlibInputContextAdaptor *inputContextAdaptor
         = M_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR(
             g_object_new(M_TYPE_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR, NULL));
