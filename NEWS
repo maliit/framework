@@ -3,6 +3,7 @@
 * API changes
  - New entry setOrientationAngleLocked added to input-context D-Bus interface and 
    similar method added also to MInputContextConnection and MAbstractInputMethodHost.
+ - Added MAbstractInputMethodHost::hiddenText()
 
 0.19.37
 =======
