@@ -190,9 +190,21 @@ void MIMApplication::handleDamageEvents(XEvent *event)
         if (x11Wrapper->pixmapDamage == e->damage) {
             XserverRegion parts = XFixesCreateRegion(QX11Info::display(), 0, 0);
             XDamageSubtract(QX11Info::display(), e->damage, None, parts);
+
+            QRegion region;
+
+            int nrects;
+            XRectangle *rects = XFixesFetchRegion (QX11Info::display(), parts, &nrects);
+            if (rects) {
+                for (int i = 0; i < nrects; ++i) {
+                    region += QRect(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
+                }
+            }
+            free(rects);
+
             XFixesDestroyRegion(QX11Info::display(), parts);
             // TODO: Replace QRect() with actual damage parts
-            emit remoteWindowUpdated(QRect());
+            emit remoteWindowUpdated(region);
         }
     }
 }
@@ -216,7 +228,7 @@ void MIMApplication::redirectRemoteWindow()
             x11Wrapper->remoteWindowPixmap = QPixmap::fromX11Pixmap(x11Wrapper->remoteWindowXPixmap, QPixmap::ExplicitlyShared);
         }
         setupDamage();
-        emit remoteWindowUpdated(QRect());
+        emit remoteWindowUpdated(QRegion());
     }
 }
 

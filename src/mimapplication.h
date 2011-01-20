@@ -83,7 +83,7 @@ signals:
     void remoteWindowGone();
 
     //! This signal is emitted when remote input window is updated.
-    void remoteWindowUpdated(QRect);
+    void remoteWindowUpdated(QRegion);
 private:
     void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);

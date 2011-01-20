@@ -66,7 +66,7 @@ MPlainWindow::MPlainWindow(QWidget *parent) :
     ungrabGesture(Qt::TapGesture);
 
     setAutoFillBackground(false);
-    connect(mApp, SIGNAL(remoteWindowUpdated(QRect)), this, SLOT(update(QRect)));
+    connect(mApp, SIGNAL(remoteWindowUpdated(QRegion)), this, SLOT(updateRemoteWindow(QRegion)));
 }
 
 MPlainWindow::~MPlainWindow()
@@ -119,6 +119,15 @@ void MPlainWindow::updatePosition(const QRegion &region)
     }
 }
 #endif
+
+void
+MPlainWindow::updateRemoteWindow(const QRegion &region)
+{
+    if (region.isEmpty())
+        update();
+    else
+        update(region);
+}
 
 bool MPlainWindow::viewportEvent(QEvent *event)
 {

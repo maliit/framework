@@ -33,6 +33,7 @@ public slots:
 #if defined(M_IM_DISABLE_TRANSLUCENCY) && !defined(M_IM_USE_SHAPE_WINDOW)
     void updatePosition(const QRegion &region);
 #endif
+    void updateRemoteWindow(const QRegion &region);
 
 protected:
     //! \reimp
