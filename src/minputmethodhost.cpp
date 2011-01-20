@@ -82,6 +82,11 @@ bool MInputMethodHost::hasSelection(bool &valid)
     return connection->hasSelection(valid);
 }
 
+QString MInputMethodHost::selection(bool &valid)
+{
+    return connection->selection(valid);
+}
+
 int MInputMethodHost::inputMethodMode(bool &valid)
 {
     return connection->inputMethodMode(valid);

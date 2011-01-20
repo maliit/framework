@@ -675,6 +675,32 @@ bool MInputContextGlibDBusConnection::hasSelection(bool &valid)
 }
 
 
+QString MInputContextGlibDBusConnection::selection(bool &valid)
+{
+    GError *error = NULL;
+
+    QString selectionText;
+    gboolean gvalidity = FALSE;
+    gchar *gdata = NULL;
+    if (!dbus_g_proxy_call(activeContext->inputContextProxy, "selection", &error, G_TYPE_INVALID,
+                           G_TYPE_BOOLEAN, &gvalidity,
+                           G_TYPE_STRING, &gdata,
+                           G_TYPE_INVALID)) {
+        if (error) { // dbus_g_proxy_call may return FALSE and not set error despite what the doc says
+            g_error_free(error);
+        }
+        valid = false;
+        return QString();
+    }
+    valid = gvalidity == TRUE;
+    if (gdata) {
+        selectionText = QString::fromUtf8(gdata);
+        g_free(gdata);
+    }
+
+    return selectionText;
+}
+
 int MInputContextGlibDBusConnection::inputMethodMode(bool &valid)
 {
     QVariant modeVariant = widgetState[InputMethodModeAttribute];

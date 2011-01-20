@@ -241,6 +241,11 @@ public:
      */
     virtual bool hiddenText(bool &valid);
 
+    /*!
+     * \brief returns the selecting text
+     */
+    virtual QString selection(bool &valid) = 0;
+
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
     Q_DECLARE_PRIVATE(MAbstractInputMethodHost)

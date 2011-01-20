@@ -57,5 +57,9 @@
     <method name="setOrientationAngleLocked">
         <arg type="b"/>
     </method>
+    <method name="selection">
+      <arg type="b" direction="out"/>
+      <arg type="s" direction="out"/>
+    </method>
   </interface>
 </node>

@@ -164,6 +164,20 @@ static gboolean m_dbus_glib_input_context_adaptor_set_orientation_angle_locked(M
     return TRUE;
 }
 
+static gboolean m_dbus_glib_input_context_adaptor_selection(
+    MDBusGlibInputContextAdaptor *obj, gboolean *valid, gchar **gdata, GError **/*error*/)
+{
+    bool validity;
+    const QString selection(obj->inputContext->selection(validity));
+    *valid = validity ? TRUE : FALSE;
+    *gdata = NULL;
+
+    if (validity && !selection.isEmpty()) {
+        *gdata = g_strdup(selection.toUtf8().data());
+    }
+    return TRUE;
+}
+
 #include "mdbusglibicconnectionserviceglue.h"
 
 

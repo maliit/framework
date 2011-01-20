@@ -169,6 +169,12 @@ public:
      */
     void setOrientationAngleLocked(bool lock);
 
+    /*!
+     * \brief get selecting text
+     * \param valid validity for the return value
+     */
+    QString selection(bool &valid) const;
+
 private slots:
     //! hides input method
     void hideOnFocusOut();

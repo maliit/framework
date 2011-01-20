@@ -671,7 +671,6 @@ QRect MInputContext::preeditRectangle(bool &valid) const
     return rect;
 }
 
-
 void MInputContext::handleClipboardDataChange()
 {
     bool newPasteAvailable = !QApplication::clipboard()->text().isEmpty();
@@ -1016,3 +1015,16 @@ void MInputContext::setOrientationAngleLocked(bool lock)
     }
     orientationAngleLockedByServer = lock;
 }
+
+QString MInputContext::selection(bool &valid) const
+{
+    QString selectionText;
+    valid = false;
+    if (focusWidget()) {
+        QVariant queryResult = focusWidget()->inputMethodQuery(Qt::ImCurrentSelection);
+        valid = queryResult.isValid();
+        selectionText = queryResult.toString();
+    }
+    return selectionText;
+}
+

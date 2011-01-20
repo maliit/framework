@@ -203,6 +203,11 @@ public:
      */
     virtual int anchorPosition(bool &valid) = 0;
 
+    /*!
+     * \brief returns the selecting text
+     */
+    virtual QString selection(bool &valid) = 0;
+
 public slots:
 
     //! Update \a region covered by virtual keyboard
