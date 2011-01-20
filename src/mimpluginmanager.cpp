@@ -58,6 +58,8 @@ namespace
 
     const char * const DBusServiceName = "com.meego.inputmethodpluginmanager1";
     const char * const DBusPath        = "/com/meego/inputmethodpluginmanager1";
+
+    const int MaxPluginHideTransitionTime(2*1000);
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
@@ -80,6 +82,11 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
          i != inputSourceToNameMap.end(); ++i) {
         nameToInputSourceMap[i.value()] = i.key();
     }
+
+    ensureEmptyRegionWhenHiddenTimer.setSingleShot(true);
+    ensureEmptyRegionWhenHiddenTimer.setInterval(MaxPluginHideTransitionTime);
+    QObject::connect(&ensureEmptyRegionWhenHiddenTimer, SIGNAL(timeout()),
+                     parent, SLOT(_q_ensureEmptyRegionWhenHidden()));
 }
 
 
@@ -596,6 +603,16 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
 }
 
 
+void MIMPluginManagerPrivate::_q_ensureEmptyRegionWhenHidden()
+{
+    Q_Q(MIMPluginManager);
+    // Do not accept region updates from hidden plugins. Emit an empty region
+    // update, because we cannot trust that a plugin sends a region update
+    // after it's hidden.
+    acceptRegionUpdates = false;
+    emit q->regionUpdated(QRegion());
+}
+
 void MIMPluginManagerPrivate::loadInputMethodSettings()
 {
     if (!settingsDialog) {
@@ -628,6 +645,9 @@ void MIMPluginManagerPrivate::initActiveSubView()
 
 void MIMPluginManagerPrivate::showActivePlugins()
 {
+    ensureEmptyRegionWhenHiddenTimer.stop();
+    acceptRegionUpdates = true;
+
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         plugins[plugin].inputMethod->show();
     }
@@ -643,6 +663,8 @@ void MIMPluginManagerPrivate::hideActivePlugins()
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         plugins[plugin].inputMethod->hide();
     }
+
+    ensureEmptyRegionWhenHiddenTimer.start();
 }
 
 QMap<QString, QString>
@@ -907,7 +929,6 @@ void MIMPluginManager::showActivePlugins()
 {
     Q_D(MIMPluginManager);
 
-    d->acceptRegionUpdates = true;
     d->showActivePlugins();
 }
 
@@ -916,13 +937,6 @@ void MIMPluginManager::hideActivePlugins()
     Q_D(MIMPluginManager);
 
     d->hideActivePlugins();
-
-    // Do not accept region updates from hidden plugins. Emit an empty region
-    // update, because we cannot assume that a plugin sends a region update
-    // immediately after hiding it. It could play some animation, for example,
-    // and only then send the region update (which would then be ignored).
-    d->acceptRegionUpdates = false;
-    emit regionUpdated(QRegion());
 }
 
 QMap<QString, QString> MIMPluginManager::availableSubViews(const QString &plugin,

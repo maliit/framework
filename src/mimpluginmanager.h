@@ -111,6 +111,7 @@ private:
     Q_DECLARE_PRIVATE(MIMPluginManager)
     Q_PRIVATE_SLOT(d_func(), void _q_syncHandlerMap(int));
     Q_PRIVATE_SLOT(d_func(), void _q_setActiveSubView(const QString &, MInputMethod::HandlerState));
+    Q_PRIVATE_SLOT(d_func(), void _q_ensureEmptyRegionWhenHidden());
 
     friend class Ut_MIMPluginManager;
     friend class Ft_MIMPluginManager;

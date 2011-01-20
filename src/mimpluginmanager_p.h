@@ -23,6 +23,7 @@
 #include <QMap>
 #include <QSet>
 #include <QRegion>
+#include <QTimer>
 
 #include <MGConfItem>
 
@@ -105,6 +106,10 @@ public:
      */
     void _q_setActiveSubView(const QString &, MInputMethod::HandlerState);
 
+    //! Called a moment after hideActivePlugins is called to disable region
+    //! updates and force an empty region in case of badly behaving plugins.
+    void _q_ensureEmptyRegionWhenHidden();
+
     QMap<QString, QString> availableSubViews(const QString &plugin,
                                              MInputMethod::HandlerState state
                                               = MInputMethod::OnScreen) const;
@@ -153,6 +158,7 @@ public:
     MIndicatorServiceClient indicatorService;
 
     MGConfItem lastActiveSubViewConf;
+    QTimer ensureEmptyRegionWhenHiddenTimer;
 };
 
 #endif

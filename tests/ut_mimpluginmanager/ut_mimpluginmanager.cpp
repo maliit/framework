@@ -14,6 +14,8 @@
 #include <QPointer>
 #include <QDBusInterface>
 #include <QDBusReply>
+#include <QTimer>
+#include <QEventLoop>
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
 #include <minputmethodplugin.h>
@@ -45,6 +47,15 @@ namespace
 
     QString Toolbar1 = "/toolbar1.xml";
     QString Toolbar2 = "/toolbar2.xml";
+
+    // Wait for signal or timeout; use SIGNAL macro for signal
+    void waitForSignal(const QObject* object, const char* signal, int timeout)
+    {
+        QEventLoop eventLoop;
+        QObject::connect(object, signal, &eventLoop, SLOT(quit()));
+        QTimer::singleShot(timeout, &eventLoop, SLOT(quit()));
+        eventLoop.exec();
+    }
 }
 
 
@@ -805,8 +816,12 @@ void Ut_MIMPluginManager::testRegionUpdates()
     region = regionUpdates.takeFirst().at(0);
     QVERIFY(!region.value<QRegion>().isEmpty());
 
-    // Now make sure that hiding the plugin also sends an empty region update:
+    // DummyImPlugin3 is a badly behaving plugin that doesn't send an empty region
+    // when it's hidden...
     manager->hideActivePlugins();
+    QCOMPARE(regionUpdates.count(), 0);
+    // ...so make sure the region is sent by the plugin manager after a timeout.
+    waitForSignal(manager, SIGNAL(regionUpdated(QRegion)), 3000);
     QCOMPARE(regionUpdates.count(), 1);
 
     region = regionUpdates.takeFirst().at(0);
