@@ -408,6 +408,9 @@ void WidgetStub::sendCopyAvailable(bool yes)
 
 void Ut_MInputContext::initTestCase()
 {
+    QSKIP("Currently segfaults, reported as NB#220339 - QWidget::create crashes in window-less application",
+          SkipAll);
+
     qRegisterMetaType< QList<OrientationAngleLockOperation> >(
         "QList<OrientationAngleLockOperation>");
 
