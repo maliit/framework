@@ -16,6 +16,7 @@
 
 
 #include "mimscene.h"
+#include <QEvent>
 
 MImScene::MImScene(QObject *parent)
     : MScene(parent)
@@ -24,6 +25,16 @@ MImScene::MImScene(QObject *parent)
 
 bool MImScene::event(QEvent *event)
 {
-    return QGraphicsScene::event(event);
+    // This is another workaround to fix NB#220440
+    // We should only filter the TouchBegin and MousePress
+    // events to QGraphicsScene, other events should be still
+    // sent to MScene.
+    switch (event->type()) {
+    case QEvent::TouchBegin:
+    case QEvent::GraphicsSceneMousePress:
+        return QGraphicsScene::event(event);
+    default:
+        return MScene::event(event);
+    }
 }
 
