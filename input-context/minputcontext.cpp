@@ -64,7 +64,6 @@ MInputContext::MInputContext(QObject *parent)
       active(false),
       inputPanelState(InputPanelHidden),
       imServer(0),
-      ownsMComponentData(false),
       correctionEnabled(false),
       styleContainer(0),
       connectedObject(0),
@@ -97,25 +96,14 @@ MInputContext::MInputContext(QObject *parent)
     // CloseSoftwareInputPanel event, so hideOnFocusOut is misleading.
     connect(&sipHideTimer, SIGNAL(timeout()), SLOT(hideOnFocusOut()));
 
-    // ensure MComponentData is initialized, normally it should be.
-    // NOTE: this can be removed if/when MTheme is better separated from MComponentData
-    if (MComponentData::instance() == 0) {
-        QStringList args = qApp->arguments();
-        int argc = 1;
-        QString appName = (!args.isEmpty()) ? args[0] : QString();
-        char *argv[1];
-        QByteArray appNameArray = appName.toLocal8Bit();
-        argv[0] = appNameArray.data();
-
-        MComponentData::setLoadMInputContext(false);
-        new MComponentData(argc, argv);
-        ownsMComponentData = true;
+    // using theming only when there is MComponentData instance, should be 
+    // there for meegotouch apps (naturally) and for plain qt with meego style plugin
+    if (MComponentData::instance() != 0) {
+        styleContainer = new MPreeditStyleContainer;
+        styleContainer->initialize("DefaultStyle", "MPreeditStyle", 0);
     }
 
     connectToDBus();
-
-    styleContainer = new MPreeditStyleContainer;
-    styleContainer->initialize("DefaultStyle", "MPreeditStyle", 0);
 
     connect(MInputMethodState::instance(),
             SIGNAL(activeWindowOrientationAngleChanged(M::OrientationAngle)),
@@ -140,10 +128,6 @@ MInputContext::~MInputContext()
     delete imServer;
 
     delete styleContainer;
-
-    if (ownsMComponentData) {
-        delete MComponentData::instance();
-    }
 }
 
 
@@ -561,39 +545,56 @@ void MInputContext::updatePreedit(const QString &string,
 
     QList<QInputMethodEvent::Attribute> attributes;
     foreach (const MInputMethod::PreeditTextFormat &preeditFormat, preeditFormats) {
-        // update style mode
-        switch (preeditFormat.preeditFace) {
-        case MInputMethod::PreeditNoCandidates:
-            styleContainer->setModeNoCandidates();
-            break;
-
-        case MInputMethod::PreeditKeyPress:
-            styleContainer->setModeKeyPress();
-            break;
-
-        case MInputMethod::PreeditDefault:
-        default:
-            styleContainer->setModeDefault();
-        }
 
         // set proper formatting
         QTextCharFormat format;
         format.merge(standardFormat(QInputContext::PreeditFormat));
-        format.setUnderlineStyle((*styleContainer)->underline());
-        format.setUnderlineColor((*styleContainer)->underlineColor());
-        QColor color = (*styleContainer)->backgroundColor();
 
-        if (color.isValid()) {
-            format.setBackground(color);
+        // update style mode
+        if (styleContainer) {
+            switch (preeditFormat.preeditFace) {
+            case MInputMethod::PreeditNoCandidates:
+                styleContainer->setModeNoCandidates();
+                break;
+
+            case MInputMethod::PreeditKeyPress:
+                styleContainer->setModeKeyPress();
+                break;
+
+            case MInputMethod::PreeditDefault:
+            default:
+                styleContainer->setModeDefault();
+            }
+
+            format.setUnderlineStyle((*styleContainer)->underline());
+            format.setUnderlineColor((*styleContainer)->underlineColor());
+            QColor color = (*styleContainer)->backgroundColor();
+
+            if (color.isValid()) {
+                format.setBackground(color);
+            }
+
+            color = (*styleContainer)->fontColor();
+
+            if (color.isValid()) {
+                format.setForeground(color);
+            }
+        } else {
+            // hard coded styling:
+            format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+
+            QColor underlineColor;
+            if (preeditFormat.preeditFace == MInputMethod::PreeditNoCandidates) {
+                underlineColor.setRgb(255, 0, 0);
+            } else {
+                underlineColor.setRgb(0, 0, 0);
+            }
+
+            format.setUnderlineColor(QColor());
         }
 
-        color = (*styleContainer)->fontColor();
-
-        if (color.isValid()) {
-            format.setForeground(color);
-        }
-
-        attributes << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, preeditFormat.start,
+        attributes << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,
+                                                   preeditFormat.start,
                                                    preeditFormat.length, format);
     }
 

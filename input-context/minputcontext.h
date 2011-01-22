@@ -244,7 +244,6 @@ private:
     QTimer sipHideTimer;
 
     DBusIMServerProxy *imServer;
-    bool ownsMComponentData;
 
     bool correctionEnabled;
 
