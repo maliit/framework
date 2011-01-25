@@ -92,6 +92,15 @@ int main(int argc, char **argv)
     if (MApplication::softwareRendering())
         view->viewport()->setAutoFillBackground(false);
 
+    if (selfComposited) {
+        widget.setAttribute(Qt::WA_NoSystemBackground);
+        widget.setAttribute(Qt::WA_OpaquePaintEvent);
+        view->setAttribute(Qt::WA_NoSystemBackground);
+        view->setAttribute(Qt::WA_OpaquePaintEvent);
+        view->viewport()->setAttribute(Qt::WA_NoSystemBackground);
+        view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
+    }
+
     QSize sceneSize = view->visibleSceneSize(M::Landscape);
     int w = sceneSize.width();
     int h = sceneSize.height();
@@ -116,3 +125,4 @@ int main(int argc, char **argv)
 
     return app.exec();
 }
+
