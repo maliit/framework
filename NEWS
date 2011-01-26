@@ -1,3 +1,11 @@
+0.19.41
+=======
+* API changes
+- MAbstractInputMethod was changed. The method handleAppOrientationChange() was renamed as
+handleAppOrientationChanged(), which means target application already finish changing
+orientation. And there was a new method handleAppOrientationAboutToChange() says target
+application is about to change orientation.
+
 0.19.39
 ======
 * API changes
