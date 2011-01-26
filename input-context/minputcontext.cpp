@@ -41,8 +41,6 @@
 #include "mtimestamp.h"
 
 #include <X11/XKBlib.h>
-#undef KeyPress
-#undef KeyRelease
 
 M_LIBRARY
 
@@ -50,7 +48,15 @@ namespace
 {
     const int SoftwareInputPanelHideTimer = 500;
     const QString DBusCallbackPath("/com/meego/inputmethod/inputcontext");
+
+    enum {
+        XKeyPress = KeyPress,
+        XKeyRelease = KeyRelease
+    };
 }
+
+#undef KeyPress
+#undef KeyRelease
 
 int MInputContext::connectionCount = -1;
 
@@ -72,7 +78,8 @@ MInputContext::MInputContext(QObject *parent)
       copyAllowed(true),
       redirectKeys(false),
       objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount)),
-      orientationAngleLockedByServer(false)
+      orientationAngleLockedByServer(false),
+      currentKeyEventTime(0)
 {
     int opcode = -1;
     int xkbEventBase = -1;
@@ -371,6 +378,15 @@ void MInputContext::setFocusWidget(QWidget *focused)
     }
 }
 
+bool MInputContext::x11FilterEvent(QWidget */*widget*/, XEvent *event)
+{
+    if ((event->type == XKeyPress || (event->type == XKeyRelease))) {
+        currentKeyEventTime = event->xkey.time;
+    }
+
+    return false;               // let filterEvent() to really handle the event
+}
+
 bool MInputContext::filterEvent(const QEvent *event)
 {
     bool eaten = false;
@@ -418,7 +434,7 @@ bool MInputContext::filterEvent(const QEvent *event)
             imServer->processKeyEvent(key->type(), static_cast<Qt::Key>(key->key()),
                                       key->modifiers(), key->text(), key->isAutoRepeat(),
                                       key->count(), key->nativeScanCode(),
-                                      key->nativeModifiers());
+                                      key->nativeModifiers(), currentKeyEventTime);
             eaten = true;
         }
         break;

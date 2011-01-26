@@ -132,7 +132,7 @@ public slots:
      */
     void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers,
                          const QString &text, bool autoRepeat, int count, quint32 nativeScanCode,
-                         quint32 nativeModifiers);
+                         quint32 nativeModifiers, unsigned long time);
 
     /*!
      * \brief Register an input method toolbar which is defined in \a fileName with the

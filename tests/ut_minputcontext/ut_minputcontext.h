@@ -64,7 +64,8 @@ public slots:
 
     void processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text,
                          bool autoRepeat, int count,
-                         unsigned int nativeScanCode, unsigned int nativeModifiers);
+                         unsigned int nativeScanCode, unsigned int nativeModifiers,
+                         unsigned long time);
 
 private:
     int showInputMethodCallCount;

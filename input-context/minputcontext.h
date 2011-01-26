@@ -63,6 +63,7 @@ public:
     virtual void mouseHandler(int x, QMouseEvent *event);
     virtual void setFocusWidget(QWidget *w); // note: qt marks this as internal
     virtual bool filterEvent(const QEvent *event);
+    virtual bool x11FilterEvent(QWidget *widget, XEvent *event);
     //! \reimp_end
 
     // methods to be used from input method server side:
@@ -270,6 +271,7 @@ private:
     static int connectionCount; //!< Counter to allow multiple IC objects being registered via D-Bus
 
     bool orientationAngleLockedByServer;
+    unsigned long currentKeyEventTime;
 };
 
 #endif

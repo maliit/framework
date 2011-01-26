@@ -212,6 +212,7 @@ m_dbus_glib_ic_connection_process_key_event(MDBusGlibICConnection *obj, gint32 k
                                             gint32 keyCode, gint32 modifiers,
                                             const char *text, gboolean autoRepeat, gint32 count,
                                             guint32 nativeScanCode, guint32 nativeModifiers,
+                                            unsigned long time,
                                             GError **/*error*/)
 {
     obj->icConnection->processKeyEvent(static_cast<QEvent::Type>(keyType),
@@ -219,7 +220,7 @@ m_dbus_glib_ic_connection_process_key_event(MDBusGlibICConnection *obj, gint32 k
                                        static_cast<Qt::KeyboardModifiers>(modifiers),
                                        QString::fromUtf8(text), autoRepeat == TRUE,
                                        static_cast<int>(count), static_cast<quint32>(nativeScanCode),
-                                       static_cast<quint32>(nativeModifiers));
+                                       static_cast<quint32>(nativeModifiers), time);
     return TRUE;
 }
 
@@ -865,11 +866,11 @@ void MInputContextGlibDBusConnection::setCopyPasteState(bool copyAvailable, bool
 
 void MInputContextGlibDBusConnection::processKeyEvent(
     QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers, const QString &text,
-    bool autoRepeat, int count, quint32 nativeScanCode, quint32 nativeModifiers)
+    bool autoRepeat, int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time)
 {
     foreach (MAbstractInputMethod *target, targets()) {
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
-                                nativeScanCode, nativeModifiers);
+                                nativeScanCode, nativeModifiers, time);
     }
 }
 

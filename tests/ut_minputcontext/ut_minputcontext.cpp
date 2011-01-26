@@ -96,10 +96,11 @@ void GlibDBusIMServerProxy::setCopyPasteState(bool copyAvailable, bool pasteAvai
 void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                             Qt::KeyboardModifiers modifiers,
                                             const QString &text, bool autoRepeat, int count,
-                                            quint32 nativeScanCode, quint32 nativeModifiers)
+                                            quint32 nativeScanCode, quint32 nativeModifiers,
+                                            unsigned long time)
 {
     DBusStub->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count, nativeScanCode,
-                              nativeModifiers);
+                              nativeModifiers, time);
 }
 
 void GlibDBusIMServerProxy::registerToolbar(int /*id*/, const QString &/*fileName*/)
@@ -300,7 +301,7 @@ void InputMethodServerDBusStub::setCopyPasteState(bool copyAvailable, bool paste
 void InputMethodServerDBusStub::processKeyEvent(int keyType, int keyCode, int /* modifiers */,
                                                 const QString &text, bool /* autoRepeat */,
                                                 int /* count */, unsigned int /* nativeScanCode */,
-                                                unsigned int /* nativeModifiers */)
+                                                unsigned int /* nativeModifiers */, unsigned long /* time */)
 {
     ++redirectKeyCallCount;
     redirectKeyCallParams.keyType = keyType;

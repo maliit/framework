@@ -235,7 +235,8 @@ void GlibDBusIMServerProxy::setCopyPasteState(bool copyAvailable, bool pasteAvai
 void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                             Qt::KeyboardModifiers modifiers,
                                             const QString &text, bool autoRepeat, int count,
-                                            quint32 nativeScanCode, quint32 nativeModifiers)
+                                            quint32 nativeScanCode, quint32 nativeModifiers,
+                                            unsigned long time)
 {
     if (!glibObjectProxy) {
         return;
@@ -247,6 +248,7 @@ void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCod
                                G_TYPE_STRING, text.toUtf8().data(),
                                G_TYPE_BOOLEAN, autoRepeat, G_TYPE_INT, count,
                                G_TYPE_UINT, nativeScanCode, G_TYPE_UINT, nativeModifiers,
+                               G_TYPE_ULONG, time,
                                G_TYPE_INVALID);
 }
 
