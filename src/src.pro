@@ -80,14 +80,10 @@ install_pkgconfig.files = MeegoImFramework.pc
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = meegoimframework.prf
 
-install_xml.path = /usr/share/meegoimframework/imtoolbars
-install_xml.files = standard.xml
-
 INSTALLS += target \
     headers \
     install_prf \
     install_pkgconfig \
-    install_xml \
 
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml

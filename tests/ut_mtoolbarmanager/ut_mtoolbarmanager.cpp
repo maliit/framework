@@ -84,20 +84,21 @@ void Ut_MToolbarManager::testLoadToolbar()
     // register all toolbars
     for (int i = 0; i < toolbarIds.count(); i++) {
         subject->registerToolbar(toolbarIds.at(i), toolbars.at(i));
-        toolbarCount ++;
+        if (QFile(toolbars.at(i)).exists())
+            toolbarCount ++;
         QTest::qWait(50);
-        // standard toolbar is already registered, so we have one more toolbar
-        QCOMPARE(subject->toolbarList().count(), toolbarCount + 1);
+        QCOMPARE(subject->toolbarList().count(), toolbarCount);
     }
 
     for (int i = 0; i < toolbarIds.count(); i++) {
         QSharedPointer<MToolbarData> toolbar = subject->toolbarData(toolbarIds.at(i));
-        QVERIFY(!toolbar.isNull());
+        if (QFile(toolbars.at(i)).exists())
+            QVERIFY(!toolbar.isNull());
     }
 
     for (int i = toolbarIds.count() - 1; i >= 0; --i) {
         subject->unregisterToolbar(toolbarIds.at(i));
-        QCOMPARE(subject->toolbars.count(), i + 1);
+        QCOMPARE(subject->toolbars.count(), i);
         QVERIFY(!subject->toolbars.contains(toolbarIds.at(i)));
     }
 }
@@ -118,7 +119,7 @@ void Ut_MToolbarManager::testSetItemAttribute()
         subject->registerToolbar(toolbarIds.at(i), toolbars.at(i));
         toolbarCount ++;
         QTest::qWait(50);
-        QCOMPARE(subject->toolbarList().count(), toolbarCount + 1);
+        QCOMPARE(subject->toolbarList().count(), toolbarCount);
     }
 
     subject->setToolbarItemAttribute(id1, "test1", "text", QVariant(QString("some text")));
@@ -141,86 +142,6 @@ void Ut_MToolbarManager::testSetItemAttribute()
     MToolbarId invalidId;
     subject->setToolbarItemAttribute(invalidId, "test1", "text", QVariant(QString("some text")));
     subject->setToolbarItemAttribute(id1, "invalid-item-name", "text", QVariant(QString("some text")));
-}
-
-void Ut_MToolbarManager::testStandardObjects()
-{
-    QVERIFY(subject->standardToolbar != 0);
-    QVERIFY(subject->copyPaste != 0);
-    QVERIFY(subject->close != 0);
-
-    QSharedPointer<const MToolbarLayout> layout = subject->standardToolbar->layout(M::Landscape);
-    QVERIFY(layout);
-    QList<QSharedPointer<MToolbarItem> > items = layout->items();
-    QVERIFY(!items.isEmpty());
-
-    QVERIFY(items.indexOf(subject->copyPaste) > -1);
-    QVERIFY(items.indexOf(subject->close) > -1);
-
-    QCOMPARE(subject->copyPaste->alignment(), Qt::AlignLeft);
-    QCOMPARE(subject->close->alignment(), Qt::AlignRight);
-}
-
-void Ut_MToolbarManager::testSetCopyPaste_data()
-{
-    QTest::addColumn<bool>("copyAvailable");
-    QTest::addColumn<bool>("pasteAvailable");
-    QTest::addColumn<bool>("expectedEnabled");
-    QTest::addColumn<MInputMethod::ActionType>("expectedAction");
-    QTest::addColumn<QString>("expectedTextId");
-
-    QTest::newRow("nothing")    << false << false << false << MInputMethod::ActionUndefined << "qtn_comm_copy";
-    QTest::newRow("copy")       << true  << false << true  << MInputMethod::ActionCopy << "qtn_comm_copy";
-    QTest::newRow("paste")      << false << true  << true  << MInputMethod::ActionPaste << "qtn_comm_paste";
-    QTest::newRow("copy+paste") << true  << true  << true  << MInputMethod::ActionCopy << "qtn_comm_copy";
-}
-
-void Ut_MToolbarManager::testSetCopyPaste()
-{
-    QFETCH(bool, copyAvailable);
-    QFETCH(bool, pasteAvailable);
-    QFETCH(bool, expectedEnabled);
-    QFETCH(MInputMethod::ActionType, expectedAction);
-    QFETCH(QString, expectedTextId);
-
-    subject->setCopyPasteState(copyAvailable, pasteAvailable);
-    QVERIFY(subject->copyPaste->isVisible());
-    QVERIFY(subject->copyPaste->enabled() == expectedEnabled);
-    QVERIFY(!subject->copyPaste->actions().isEmpty());
-    QCOMPARE(int(subject->copyPaste->actions().first()->type()), int(expectedAction));
-    if (!expectedTextId.isEmpty()) {
-        QCOMPARE(subject->copyPaste->textId(), expectedTextId);
-    }
-}
-
-void Ut_MToolbarManager::testHideStandardButton_data()
-{
-    QTest::addColumn<QString>("fileName");
-    QTest::addColumn<bool>("expectClose");
-    QTest::addColumn<bool>("expectCopyPaste");
-
-    QTest::newRow("both")      << Toolbar1 << true  << true;
-    QTest::newRow("copy only") << Toolbar2 << false << true;
-    QTest::newRow("standard")  << Toolbar3 << true  << true;
-}
-
-void Ut_MToolbarManager::testHideStandardButton()
-{
-    QFETCH(QString, fileName);
-    QFETCH(bool, expectClose);
-    QFETCH(bool, expectCopyPaste);
-
-    MToolbarId id(1, "Ut_MToolbarManager");
-    subject->registerToolbar(id, fileName);
-
-    QSharedPointer<MToolbarData> toolbarData = subject->toolbarData(id);
-    QVERIFY(toolbarData);
-    QSharedPointer<const MToolbarLayout> layout = toolbarData->layout(M::Landscape);
-    QVERIFY(layout);
-    QList<QSharedPointer<MToolbarItem> > items = layout->items();
-
-    QVERIFY(items.contains(subject->close) == expectClose);
-    QVERIFY(items.contains(subject->copyPaste) == expectCopyPaste);
 }
 
 QTEST_APPLESS_MAIN(Ut_MToolbarManager);
