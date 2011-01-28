@@ -149,7 +149,7 @@ binary-arch: build install
 #	dh_installinfo
 #	dh_installman
 	dh_link
-	dh_strip --dbg-package=libmeegoimframework0 --dbg-package=meego-im-context
+	dh_strip --dbg-package=libmeegoimframework0 --dbg-package=meego-im-context --dbg-package=meego-im-uiserver
 	dh_compress
 	dh_fixperms
 #	dh_perl

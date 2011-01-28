@@ -12,6 +12,12 @@ Recommends: meego-im-virtualkeyboard
 Description: MeegoTouch Input Method UI Server
  MeegoTouch Input Method UI Server 
 
+Package: meego-im-uiserver-dbg
+Architecture: any
+Depends: meego-im-uiserver (= ${binary:Version})
+Description: MeegoTouch Input Method UI Server debug files
+ Debug files for MeegoTouch Input Method UI Server 
+
 Package: libmeegoimframework0
 Architecture: any
 Depends:  ${misc:Depends}, ${shlibs:Depends}, meego-im-context
