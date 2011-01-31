@@ -27,20 +27,39 @@ X11Wrapper::X11Wrapper()
 {
 }
 
-MIMApplication::MIMApplication(int &argc, char **argv)
+MIMApplication::MIMApplication(int &argc, char **argv, bool useSelfComposite)
     : MApplication(argc, argv),
       passThruWindow(0),
-      x11Wrapper(new X11Wrapper)
+      x11Wrapper(new X11Wrapper),
+      selfComposited(false)
 {
-    int damageError;
-
-    XDamageQueryExtension(QX11Info::display(), &damageBase, &damageError);
-
+    if (useSelfComposite)
+        selfComposited = initializeComposite();
 }
 
 MIMApplication::~MIMApplication()
 {
     delete x11Wrapper;
+}
+
+bool MIMApplication::initializeComposite()
+{
+    int compositeBase, compositeError;
+    if (!XCompositeQueryExtension(QX11Info::display(), &compositeBase, &compositeError))
+        return false;
+
+    int major = 0, minor = 2; // XComposite 0.2 required for XCompositeNameWindowPixmap
+    if (!XCompositeQueryVersion(QX11Info::display(), &major, &minor))
+        return false;
+
+    if (major < 0 || (major == 0 && minor < 2))
+        return false;
+
+    int damageError;
+    if (!XDamageQueryExtension(QX11Info::display(), &damageBase, &damageError))
+        return false;
+
+    return true;
 }
 
 bool MIMApplication::x11EventFilter(XEvent *ev)
@@ -244,4 +263,9 @@ void MIMApplication::unredirectRemoteWindow()
 QPixmap MIMApplication::remoteWindowPixmap() const
 {
     return x11Wrapper->remoteWindowPixmap;
+}
+
+bool MIMApplication::supportsSelfComposite() const
+{
+    return selfComposited;
 }

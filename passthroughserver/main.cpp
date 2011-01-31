@@ -72,7 +72,9 @@ int main(int argc, char **argv)
     // server itself, we absolutely need to prevent that.
     disableMInputContextPlugin();
 
-    MIMApplication app(argc, argv);
+    MIMApplication app(argc, argv, selfComposited);
+
+    selfComposited = app.supportsSelfComposite();
 
     MPassThruWindow widget(bypassWMHint, selfComposited);
     widget.setFocusPolicy(Qt::NoFocus);

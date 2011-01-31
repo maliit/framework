@@ -52,7 +52,7 @@ public:
      * QCoreApplication::arguments(),  in the case of filtered command line
      * arguments).
      */
-    explicit MIMApplication(int &argc, char** argv);
+    explicit MIMApplication(int &argc, char** argv, bool initializeComposite = false);
     virtual ~MIMApplication();
 
     //! Requires a valid remoteWinId and a valid passThruWindow before it'll
@@ -69,7 +69,7 @@ public:
     void unredirectRemoteWindow();
     QPixmap remoteWindowPixmap() const;
 
-
+    bool supportsSelfComposite() const;
 signals:
     //! After a map window request (e.g., via show()) this signal gets emitted
     //! as soon as X mapped our passthru window.
@@ -88,7 +88,9 @@ private:
     void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);
     void handleDamageEvents(XEvent *ev);
-   
+
+    bool initializeComposite();
+
     void setupDamage();
     void destroyDamage();
 
@@ -101,6 +103,7 @@ private:
 
     X11Wrapper *x11Wrapper;
     int damageBase;
+    bool selfComposited;
     friend class Ut_PassthroughServer;
 };
 //! \internal_end
