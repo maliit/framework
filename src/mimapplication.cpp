@@ -203,7 +203,6 @@ void MIMApplication::handleDamageEvents(XEvent *event)
             free(rects);
 
             XFixesDestroyRegion(QX11Info::display(), parts);
-            // TODO: Replace QRect() with actual damage parts
             emit remoteWindowUpdated(region);
         }
     }
