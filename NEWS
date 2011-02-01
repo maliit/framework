@@ -5,6 +5,7 @@
 handleAppOrientationChanged(), which means target application already finish changing
 orientation. And there was a new method handleAppOrientationAboutToChange() says target
 application is about to change orientation.
+- Added X key event time parameter to MAbstractInputMethod::processKeyEvent().
 
 0.19.39
 ======
