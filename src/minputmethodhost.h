@@ -58,7 +58,9 @@ public:
     virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
     virtual QRect cursorRectangle(bool &valid);
+    virtual int anchorPosition(bool &valid);
     virtual bool hiddenText(bool &valid);
+    virtual QString selection(bool &valid);
     virtual void sendPreeditString(const QString &string,
                                    const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                    int replacementStart = 0, int replacementLength = 0,
@@ -84,8 +86,6 @@ public:
     virtual void showSettings();
     virtual void setSelection(int start, int length);
     virtual void setOrientationAngleLocked(bool lock);
-    virtual int anchorPosition(bool &valid);
-    virtual QString selection(bool &valid);
     // \reimp_end
 
 

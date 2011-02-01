@@ -93,6 +93,24 @@ public:
      */
     virtual QRect cursorRectangle(bool &valid) = 0;
 
+    /*!
+     * \brief returns the position of the selection anchor.
+     *
+     * This may be less or greater than cursor position, depending on which side of selection
+     * the cursor is. If there is no selection, it returns the same as cursor position.
+     */
+    virtual int anchorPosition(bool &valid) = 0;
+
+    /*!
+     * \brief true if text input is being made hidden, e.g. with password fields
+     */
+    virtual bool hiddenText(bool &valid);
+
+    /*!
+     * \brief returns the selecting text
+     */
+    virtual QString selection(bool &valid) = 0;
+
 public slots:
     /*!
      * \brief Updates pre-edit string in the application widget
@@ -225,26 +243,6 @@ public slots:
      * \brief Locks application orientation.
      */
     virtual void setOrientationAngleLocked(bool lock) = 0;
-
-public:
-    // TODO: move together with query methods above when ABI break allowed
-    /*!
-     * \brief returns the position of the selection anchor. 
-     *
-     * This may be less or greater than cursor position, depending on which side of selection 
-     * the cursor is. If there is no selection, it returns the same as cursor position.
-     */
-    virtual int anchorPosition(bool &valid) = 0;
-
-    /*!
-     * \brief true if text input is being made hidden, e.g. with password fields
-     */
-    virtual bool hiddenText(bool &valid);
-
-    /*!
-     * \brief returns the selecting text
-     */
-    virtual QString selection(bool &valid) = 0;
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
