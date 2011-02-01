@@ -1,6 +1,7 @@
 meego-im-context-dbg
 meego-im-context
 meego-im-uiserver
+meego-im-uiserver-dbg
 files
 libmeegoimframework-dev
 libmeegoimframework-doc
