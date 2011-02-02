@@ -31,6 +31,7 @@ class MIMApplication;
 #define mApp (static_cast<MIMApplication *>(QCoreApplication::instance()))
 
 class X11Wrapper;
+class MIMXError;
 
 //! \internal
 /*! \brief A helper class to filter X11 events
@@ -70,6 +71,8 @@ public:
     QPixmap remoteWindowPixmap() const;
 
     bool supportsSelfComposite() const;
+
+    MIMXError *xError() const;
 signals:
     //! After a map window request (e.g., via show()) this signal gets emitted
     //! as soon as X mapped our passthru window.
@@ -94,6 +97,9 @@ private:
     void setupDamage();
     void destroyDamage();
 
+    void setupRemotePixmap();
+    void destroyRemotePixmap();
+
     bool wasRemoteWindowIconified(XEvent *ev) const;
     bool wasRemoteWindowUnmapped(XEvent *ev) const;
     bool wasPassThruWindowMapped(XEvent *ev) const;
@@ -102,6 +108,8 @@ private:
     QPointer<QWidget> passThruWindow;
 
     X11Wrapper *x11Wrapper;
+    MIMXError *x11Error;
+    int compositeMajor;
     int damageBase;
     bool selfComposited;
     friend class Ut_PassthroughServer;

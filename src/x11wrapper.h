@@ -34,4 +34,19 @@ public:
  
     Damage pixmapDamage;
 };
+
+class MIMXError {
+public:
+    MIMXError();
+
+    void check(int major, int minor);
+    bool matches(XErrorEvent *e);
+    int result();
+
+    int request_code;
+    int minor_code;
+    int error_code;
+    XErrorHandler oldHandler;
+};
+
 #endif
