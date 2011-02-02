@@ -412,8 +412,15 @@ void Ut_MInputContext::initTestCase()
     qRegisterMetaType< QList<OrientationAngleLockOperation> >(
         "QList<OrientationAngleLockOperation>");
 
-    static char *argv[1] = { (char *) "ut_minputcontext" };
-    static int argc = 1;
+    static char *argv[2] = { (char *) "ut_minputcontext",
+                             (char *) "-software"};
+    static int argc = 2;
+
+    // QInputContext::setFocusWidget seems to require a valid X11 window.
+    // However, the test crashes with MeeGo GS. That's why we set the graphics
+    // system manually. Should be removed once NB#220339 [1] gets fixed.
+    // [1] "QWidget::create crashes in window-less application"
+    QApplication::setGraphicsSystem("raster");
 
     QCoreApplication::setLibraryPaths(QStringList("./inputmethods"));
     MApplication::setLoadMInputContext(false);
