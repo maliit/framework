@@ -2,7 +2,7 @@ meego-im-framework (0.19.41-1) unstable; urgency=low
 
   * Changes: pass X key event times to im server and plugins
 
- -- huaming wang <huaming@wuhan>  Thu, 03 Feb 2011 10:27:23 +0200
+ -- huaming wang <huaming.wang@nokia.com>  Thu, 03 Feb 2011 10:27:23 +0200
 
 meego-im-framework (0.19.40-1) unstable; urgency=low
 
