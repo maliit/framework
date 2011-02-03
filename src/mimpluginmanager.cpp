@@ -22,6 +22,7 @@
 #include "mtoolbarmanager.h"
 #include "mimsettingsdialog.h"
 #include "mabstractinputmethod.h"
+#include "mkeyoverride.h"
 
 #include <MGConfItem>
 #include <MKeyboardStateTracker>
@@ -310,6 +311,11 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
     QSharedPointer<const MToolbarData> toolbar =
         MToolbarManager::instance().toolbarData(toolbarId);
     switchedTo->setToolbar(toolbar);
+
+    QList<QSharedPointer<MKeyOverride> > keyOverrides =
+        MToolbarManager::instance().keyOverrides(toolbarId);
+    switchedTo->setKeyOverrides(keyOverrides);
+
     // TODO: show/hide from IC matches SIP show/hide requests but here show is used (and
     // hide in deactivatePlugin) in a sense completely unrelated to SIP requests.  Should
     // there be separte methods for plugin activation/deactivation?
@@ -928,8 +934,12 @@ void MIMPluginManager::setToolbar(const MToolbarId &id)
     QSharedPointer<const MToolbarData> toolbar =
         MToolbarManager::instance().toolbarData(id);
 
+    QList<QSharedPointer<MKeyOverride> > keyOverrides =
+        MToolbarManager::instance().keyOverrides(id);
+
     foreach (MInputMethodPlugin *plugin, d->activePlugins) {
         d->plugins[plugin].inputMethod->setToolbar(toolbar);
+        d->plugins[plugin].inputMethod->setKeyOverrides(keyOverrides);
     }
 }
 

@@ -16,6 +16,7 @@ HEADERSINSTALL = \
         minputmethodnamespace.h \
         mabstractinputmethodsettings.h \
         mtoolbarlayout.h \
+        mkeyoverride.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
@@ -51,6 +52,7 @@ SOURCES += mimpluginmanager.cpp \
         mtoolbarid.cpp \
         mimsettingsdialog.cpp \
         mtoolbarlayout.cpp \
+        mkeyoverride.cpp \
         minputcontextglibdbusconnection.cpp \
         mimscene.cpp \
         mimremotewindow.cpp \

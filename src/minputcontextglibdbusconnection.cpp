@@ -253,6 +253,35 @@ m_dbus_glib_ic_connection_set_toolbar_item_attribute(MDBusGlibICConnection *obj,
     return TRUE;
 }
 
+static gboolean
+m_dbus_glib_ic_connection_register_widget_data(MDBusGlibICConnection *obj, gint32 id,
+                                               const char *fileName, GError **/*error*/)
+{
+    obj->icConnection->registerWidgetData(obj, static_cast<int>(id), QString::fromUtf8(fileName));
+    return TRUE;
+}
+
+static gboolean
+m_dbus_glib_ic_connection_unregister_widget_data(MDBusGlibICConnection *obj, gint32 id,
+                                                 GError **/*error*/)
+{
+    obj->icConnection->unregisterWidgetData(obj, static_cast<int>(id));
+    return TRUE;
+}
+
+static gboolean
+m_dbus_glib_ic_connection_set_key_attribute(MDBusGlibICConnection *obj, gint32 id,
+                                            const char *keyId, const char *attribute,
+                                            GArray *value, GError **/*error*/)
+{
+    QVariant deserializedValue;
+    if (deserializeVariant(deserializedValue, value, "setKeyAttribute")) {
+        obj->icConnection->setKeyAttribute(obj, static_cast<int>(id), QString::fromUtf8(keyId),
+                                           QString::fromUtf8(attribute), deserializedValue);
+    }
+    return TRUE;
+}
+
 
 #include "mdbusglibicconnectionserviceglue.h"
 
@@ -878,6 +907,7 @@ void MInputContextGlibDBusConnection::processKeyEvent(
 void MInputContextGlibDBusConnection::registerToolbar(MDBusGlibICConnection *connection, int id,
                                                      const QString &toolbar)
 {
+    qWarning() << __PRETTY_FUNCTION__ << "is deprecated. Use registerWidgetData() instead";
     MToolbarId globalId(id, QString::number(connection->connectionNumber));
     if (globalId.isValid() && !toolbarIds.contains(globalId)) {
         MToolbarManager::instance().registerToolbar(globalId, toolbar);
@@ -887,6 +917,7 @@ void MInputContextGlibDBusConnection::registerToolbar(MDBusGlibICConnection *con
 
 void MInputContextGlibDBusConnection::unregisterToolbar(MDBusGlibICConnection *connection, int id)
 {
+    qWarning() << __PRETTY_FUNCTION__ << "is deprecated. Use unregisterWidgetData() instead";
     MToolbarId globalId(id, QString::number(connection->connectionNumber));
     if (globalId.isValid() && toolbarIds.contains(globalId)) {
         MToolbarManager::instance().unregisterToolbar(globalId);
@@ -915,5 +946,36 @@ void MInputContextGlibDBusConnection::updateTransientHint()
         if (app) {
             app->setTransientHint(appWinId);
         }
+    }
+}
+
+void MInputContextGlibDBusConnection::registerWidgetData(MDBusGlibICConnection *connection, int id,
+                                                         const QString &widgetData)
+{
+    //TODO: there should be a new class widgetData, which includes toolbar data and
+    // keyoverride data with one id. The logic should be separated.
+    MToolbarId globalId(id, QString::number(connection->connectionNumber));
+    if (globalId.isValid() && !toolbarIds.contains(globalId)) {
+        MToolbarManager::instance().registerToolbar(globalId, widgetData);
+        toolbarIds.insert(globalId);
+    }
+}
+
+void MInputContextGlibDBusConnection::unregisterWidgetData(MDBusGlibICConnection *connection, int id)
+{
+    MToolbarId globalId(id, QString::number(connection->connectionNumber));
+    if (globalId.isValid() && toolbarIds.contains(globalId)) {
+        MToolbarManager::instance().unregisterToolbar(globalId);
+        toolbarIds.remove(globalId);
+    }
+}
+
+void MInputContextGlibDBusConnection::setKeyAttribute(
+    MDBusGlibICConnection *connection, int id, const QString &keyId, const QString &attribute,
+    const QVariant &value)
+{
+    MToolbarId globalId(id, QString::number(connection->connectionNumber));
+    if (globalId.isValid() && toolbarIds.contains(globalId)) {
+        MToolbarManager::instance().setKeyAttribute(globalId, keyId, attribute, value);
     }
 }

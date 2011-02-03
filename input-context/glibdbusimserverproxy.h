@@ -67,12 +67,15 @@ public:
                          const QString &text, bool autoRepeat, int count,
                          quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
-    void registerToolbar(int id, const QString &fileName);
+    void registerWidgetData(int id, const QString &fileName);
 
-    void unregisterToolbar(int id);
+    void unregisterWidgetData(int id);
 
     void setToolbarItemAttribute(int id, const QString &item,
                                  const QString &attribute, const QVariant &value);
+
+    void setKeyAttribute(int id, const QString &keyId,
+                         const QString &attribute, const QVariant &value);
 
 signals:
     void dbusDisconnected();

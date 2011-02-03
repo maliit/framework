@@ -252,23 +252,23 @@ void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCod
                                G_TYPE_INVALID);
 }
 
-void GlibDBusIMServerProxy::registerToolbar(int id, const QString &fileName)
+void GlibDBusIMServerProxy::registerWidgetData(int id, const QString &fileName)
 {
     if (!glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "registerToolbar",
+    dbus_g_proxy_call_no_reply(glibObjectProxy, "registerWidgetData",
                                G_TYPE_INT, id,
                                G_TYPE_STRING, fileName.toUtf8().data(),
                                G_TYPE_INVALID);
 }
 
-void GlibDBusIMServerProxy::unregisterToolbar(int id)
+void GlibDBusIMServerProxy::unregisterWidgetData(int id)
 {
     if (!glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "unregisterToolbar",
+    dbus_g_proxy_call_no_reply(glibObjectProxy, "unregisterWidgetData",
                                G_TYPE_INT, id,
                                G_TYPE_INVALID);
 }
@@ -284,6 +284,23 @@ void GlibDBusIMServerProxy::setToolbarItemAttribute(int id, const QString &item,
     dbus_g_proxy_call_no_reply(glibObjectProxy, "setToolbarItemAttribute",
                                G_TYPE_INT, id,
                                G_TYPE_STRING, item.toUtf8().data(),
+                               G_TYPE_STRING, attribute.toUtf8().data(),
+                               DBUS_TYPE_G_UCHAR_ARRAY, serializedValue,
+                               G_TYPE_INVALID);
+    g_array_unref(serializedValue);
+}
+
+void GlibDBusIMServerProxy::setKeyAttribute(int id, const QString &keyId,
+                                            const QString &attribute, const QVariant &value)
+{
+    if (!glibObjectProxy) {
+        return;
+    }
+    GArray* serializedValue(serializeVariant(value));
+
+    dbus_g_proxy_call_no_reply(glibObjectProxy, "setKeyAttribute",
+                               G_TYPE_INT, id,
+                               G_TYPE_STRING, keyId.toUtf8().data(),
                                G_TYPE_STRING, attribute.toUtf8().data(),
                                DBUS_TYPE_G_UCHAR_ARRAY, serializedValue,
                                G_TYPE_INVALID);

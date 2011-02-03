@@ -18,6 +18,7 @@
 #include "mtoolbarmanager.h"
 #include "mtoolbarid.h"
 #include "mtoolbarlayout.h"
+#include "mkeyoverride.h"
 
 #include <MLocale>
 #include <QVariant>
@@ -279,3 +280,41 @@ void MToolbarManager::setToolbarItemAttribute(const MToolbarId &id,
     item->setProperty(c_str, value);
 }
 
+QList<QSharedPointer<MKeyOverride> > MToolbarManager::keyOverrides(const MToolbarId &id) const
+{
+    QList<QSharedPointer<MKeyOverride> > overrides;
+    QSharedPointer<MToolbarData> toolbar = toolbarData(id);
+    if (toolbar) {
+        overrides = toolbar->keyOverrides();
+    }
+
+    return overrides;
+}
+
+void MToolbarManager::setKeyAttribute(const MToolbarId &id,
+                                      const QString &keyId,
+                                      const QString &attribute,
+                                      const QVariant &value)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    if (!id.isValid() || attribute.isEmpty() || !value.isValid())
+        return;
+
+    QSharedPointer<MToolbarData> toolbar = toolbarData(id);
+
+    if (!toolbar) {
+        return;
+    }
+
+    // create key override if not exist.
+    toolbar->createKeyOverride(keyId);
+
+    QSharedPointer<MKeyOverride> keyOverride = toolbar->keyOverride(keyId);
+    if (!keyOverride) {
+        return;
+    }
+
+    const QByteArray byteArray = attribute.toLatin1();
+    const char * const c_str = byteArray.data();
+    keyOverride->setProperty(c_str, value);
+}

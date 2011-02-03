@@ -135,6 +135,7 @@ public slots:
                          quint32 nativeModifiers, unsigned long time);
 
     /*!
+     * \deprecated do not use
      * \brief Register an input method toolbar which is defined in \a fileName with the
      * unique identifier \a id.
      *
@@ -144,6 +145,7 @@ public slots:
     void registerToolbar(MDBusGlibICConnection *connection, int id, const QString &fileName);
 
     /*!
+     * \deprecated do not use
      * \brief Unregister an input method \a toolbar which unique identifier is \a id.
      */
     void unregisterToolbar(MDBusGlibICConnection *connection, int id);
@@ -158,6 +160,26 @@ public slots:
      * \brief get the X window id of the active app window
      */
     WId winId(bool &valid);
+
+    /*!
+     * \brief Register an input method custom widget which is defined in \a fileName with the
+     * unique identifier \a id.
+     *
+     *  The \a id should be unique, and the \a fileName is the absolute file name of the
+     *  custom widget.
+     */
+    void registerWidgetData(MDBusGlibICConnection *connection, int id, const QString &fileName);
+
+    /*!
+     * \brief Unregister an input method \a custom widget which unique identifier is \a id.
+     */
+    void unregisterWidgetData(MDBusGlibICConnection *connection, int id);
+
+    /*!
+     * \brief Sets the \a attribute for the \a keyId in the key overrides to \a value.
+     */
+    void setKeyAttribute(MDBusGlibICConnection *connection, int id, const QString &keyId,
+                                 const QString &attribute, const QVariant &value);
 
 private:
     //! Updates the transient hint on the framework side to point to the

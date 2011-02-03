@@ -32,6 +32,7 @@ class QGraphicsScene;
 class MAbstractInputMethodHost;
 class MAbstractInputMethodPrivate;
 class MToolbarData;
+class MKeyOverride;
 
 /*!
  * \brief MAbstractInputMethod is a base class for input method servers.
@@ -184,6 +185,12 @@ public:
 
     //! Show notification informing about current language
     virtual void showLanguageNotification();
+
+    /*!
+     * \brief Uses custom key overrides which is defined by given parameter.
+     * \param overrides Pointer to key override definitions.
+     */
+    virtual void setKeyOverrides(QList<QSharedPointer<MKeyOverride> > overrides);
 
 signals:
     /*!

@@ -121,16 +121,20 @@ MInputContext::MInputContext(QObject *parent)
             this, SLOT(notifyOrientationChanged(M::OrientationAngle)));
 
     connect(MInputMethodState::instance(),
-            SIGNAL(toolbarRegistered(int, QString)),
-            this, SLOT(notifyToolbarRegistered(int, QString)));
+            SIGNAL(widgetDataRegistered(int, QString)),
+            this, SLOT(notifyWidgetDataRegistered(int, QString)));
 
     connect(MInputMethodState::instance(),
-            SIGNAL(toolbarUnregistered(int)),
-            this, SLOT(notifyToolbarUnregistered(int)));
+            SIGNAL(widgetDataUnregistered(int)),
+            this, SLOT(notifyWidgetDataUnregistered(int)));
 
     connect(MInputMethodState::instance(),
             SIGNAL(toolbarItemAttributeChanged(int, QString, QString, QVariant)),
             this, SLOT(notifyToolbarItemAttributeChanged(int, QString, QString, QVariant)));
+
+    connect(MInputMethodState::instance(),
+            SIGNAL(keyAttributeChanged(int, QString, QString, QVariant)),
+            this, SLOT(notifyKeyAttributeChanged(int, QString, QString, QVariant)));
 }
 
 
@@ -765,7 +769,7 @@ void MInputContext::onDBusConnection()
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    registerExistingToolbars();
+    registerExistingWidgetDatas();
 
     // There could already be focused item when the connection to the uiserver is
     // established. Show keyboard immediately in that case.
@@ -833,14 +837,14 @@ void MInputContext::notifyOrientationChanged(M::OrientationAngle orientation)
 }
 
 
-void MInputContext::notifyToolbarRegistered(int id, const QString &fileName)
+void MInputContext::notifyWidgetDataRegistered(int id, const QString &fileName)
 {
-    imServer->registerToolbar(id, fileName);
+    imServer->registerWidgetData(id, fileName);
 }
 
-void MInputContext::notifyToolbarUnregistered(int id)
+void MInputContext::notifyWidgetDataUnregistered(int id)
 {
-    imServer->unregisterToolbar(id);
+    imServer->unregisterWidgetData(id);
 }
 
 void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &item,
@@ -1000,13 +1004,13 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     return stateInformation;
 }
 
-void MInputContext::registerExistingToolbars()
+void MInputContext::registerExistingWidgetDatas()
 {
-    QList<int> ids = MInputMethodState::instance()->toolbarIds();
+    QList<int> ids = MInputMethodState::instance()->widgetDataIds();
 
     foreach (int id, ids) {
-        QString fileName = MInputMethodState::instance()->toolbar(id);
-        imServer->registerToolbar(id, fileName);
+        QString fileName = MInputMethodState::instance()->widgetDataFile(id);
+        imServer->registerWidgetData(id, fileName);
 
         MInputMethodState::ItemAttributeMap itemAttributes
             = MInputMethodState::instance()->toolbarState(id);
@@ -1018,6 +1022,19 @@ void MInputContext::registerExistingToolbars()
                 QVariant value = attributes.value(attributeName);
 
                 imServer->setToolbarItemAttribute(id, itemName, attributeName, value);
+            }
+        }
+
+        MInputMethodState::ItemAttributeMap keyAttributes
+            = MInputMethodState::instance()->keyOverrideState(id);
+
+        foreach (QString keyId, keyAttributes.keys()) {
+            MInputMethodState::AttributeMap attributes = itemAttributes.value(keyId);
+
+            foreach (QString attributeName, attributes.keys()) {
+                QVariant value = attributes.value(attributeName);
+
+                imServer->setKeyAttribute(id, keyId, attributeName, value);
             }
         }
     }

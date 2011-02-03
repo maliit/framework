@@ -184,3 +184,8 @@ void MAbstractInputMethod::showLanguageNotification()
     // empty default implementation
 }
 
+void MAbstractInputMethod::setKeyOverrides(QList<QSharedPointer<MKeyOverride> > overrides)
+{
+    // empty default implementation
+    Q_UNUSED(overrides);
+}

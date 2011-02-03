@@ -93,6 +93,17 @@ public:
      */
     void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
 
+    /*!
+     *\brief Returns key overrides definition for gived \a id.
+     */
+    QList<QSharedPointer<MKeyOverride> > keyOverrides(const MToolbarId &id) const;
+
+    /*!
+     * \brief Sets the \a attribute for the \a keyId in the custom widget which has the unique \a id to \a value.
+     */
+    void setKeyAttribute(const MToolbarId &id, const QString &keyId,
+                         const QString &attribute, const QVariant &value);
+
 private slots:
     //! \brief Handle preferred_domain GConf setting updates.
     void handlePreferredDomainUpdate();

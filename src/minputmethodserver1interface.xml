@@ -59,5 +59,18 @@
       <arg type="s"/>
       <arg type="ay"/>
     </method>
+    <method name="registerWidgetData">
+      <arg type="i"/>
+      <arg type="s"/>
+    </method>
+    <method name="unregisterWidgetData">
+      <arg type="i"/>
+    </method>
+    <method name="setKeyAttribute">
+      <arg type="i"/>
+      <arg type="s"/>
+      <arg type="s"/>
+      <arg type="ay"/>
+    </method>
   </interface>
 </node>
