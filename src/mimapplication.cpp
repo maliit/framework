@@ -114,10 +114,13 @@ bool MIMApplication::wasRemoteWindowIconified(XEvent *ev) const
                                              &after, &data);
         state = (unsigned long *) data;
 
-        if (queryResult == Success && data && format == 32 && *state == IconicState) {
-            XFree((char *)data);
-            return true;
+        bool result = (queryResult == Success && data && format == 32 && *state == IconicState);
+
+        if (data) {
+            XFree(data);
         }
+
+        return result;
     }
 
     return false;
