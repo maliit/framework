@@ -33,6 +33,7 @@
 #include "mimpluginmanager.h"
 #include "mpassthruwindow.h"
 #include "mimapplication.h"
+#include "mimdummyinputcontext.h"
 
 namespace {
     void disableMInputContextPlugin()
@@ -73,6 +74,10 @@ int main(int argc, char **argv)
     disableMInputContextPlugin();
 
     MIMApplication app(argc, argv, selfComposited);
+    // Set a dummy input context so that Qt does not create a default input
+    // context (qimsw-multi) which is expensive and not required by
+    // meego-im-uiserver.
+    app.setInputContext(new MIMDummyInputContext);
 
     selfComposited = app.supportsSelfComposite();
 

@@ -12,9 +12,11 @@ LIBS += ../src/libmeegoimframework.so -lXfixes
 SOURCES += \
            main.cpp \
            mpassthruwindow.cpp \
+           mimdummyinputcontext.cpp
 
 HEADERS += \
            mpassthruwindow.h \
+           mimdummyinputcontext.h
 
 QT += core gui
 CONFIG += meegotouchcore
