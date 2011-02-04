@@ -1,6 +1,7 @@
 meego-im-framework (0.19.42~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Fixes: NB#224974 - Virtual keyboard should be self-composited
 
  -- huaming wang <huaming.wang@nokia.com>  Thu, 03 Feb 2011 10:32:08 +0200
 
