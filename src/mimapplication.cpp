@@ -33,6 +33,7 @@ MIMApplication::MIMApplication(int &argc, char **argv, bool useSelfComposite)
     : MApplication(argc, argv),
       passThruWindow(0),
       x11Wrapper(new X11Wrapper),
+      x11Error(new MIMXError),
       selfComposited(false)
 {
     if (useSelfComposite)
@@ -42,6 +43,7 @@ MIMApplication::MIMApplication(int &argc, char **argv, bool useSelfComposite)
 MIMApplication::~MIMApplication()
 {
     delete x11Wrapper;
+    delete x11Error;
 }
 
 bool MIMApplication::initializeComposite()
