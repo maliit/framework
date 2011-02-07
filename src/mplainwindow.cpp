@@ -149,9 +149,7 @@ bool MPlainWindow::viewportEvent(QEvent *event)
 }
 
 void 
-MPlainWindow::drawBackground(QPainter * painter, const QRectF & rect)
+MPlainWindow::drawBackground(QPainter *painter, const QRectF &)
 {
-    qDebug() << __PRETTY_FUNCTION__;
-
     painter->drawPixmap(0, 0, mApp->remoteWindowPixmap());
 }

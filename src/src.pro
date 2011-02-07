@@ -99,7 +99,7 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
     M_IM_FRAMEWORK_FEATURE -= M_IM_DISABLE_TRANSLUCENCY
 }
 
-LIBS += -lXcomposite
+LIBS += -lXcomposite -lXdamage -lX11 -lXfixes
 
 PRF_FILE = meegoimframework.prf.in
 
