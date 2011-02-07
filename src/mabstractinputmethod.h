@@ -24,6 +24,7 @@
 
 #include "minputmethodnamespace.h"
 
+class QWidget;
 class QRegion;
 class QPoint;
 class QRect;
@@ -59,12 +60,13 @@ public:
         QString subViewTitle;
     };
 
-    /*! Constructor for input method base
-     * \param imHost input method host instace, not owned by input method base
+    /*! Constructor
+     * \param host serves as communication link to framework and application. Managed by framework.
+     * \param mainWindow should be used to install plugin's UI into it. Managed by framework.
      */
-    MAbstractInputMethod(MAbstractInputMethodHost *imHost, QObject *parent = 0);
-
-    ~MAbstractInputMethod();
+    MAbstractInputMethod(MAbstractInputMethodHost *host,
+                         QWidget *mainWindow);
+    virtual ~MAbstractInputMethod();
 
     /*! \brief Returns input method host
      */

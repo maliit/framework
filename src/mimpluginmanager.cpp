@@ -124,19 +124,20 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
         MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
         if (plugin) {
             if (!plugin->supportedStates().isEmpty()) {
-                MInputMethodHost *inputMethodHost = new MInputMethodHost(mICConnection, q,
-                                                                         indicatorService);
-                MAbstractInputMethod *inputMethod = plugin->createInputMethod(inputMethodHost);
+                MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
+                MAbstractInputMethod *im = plugin->createInputMethod(host, mApp->passThruWindow());
 
                 // only add valid plugin descriptions
-                if (inputMethod) {
-                    PluginDescription desc = { load.fileName(), inputMethod, inputMethodHost,
-                                               PluginState(), MInputMethod::SwitchUndefined };
+                if (im) {
+                    PluginDescription desc = { load.fileName(), im, host, PluginState(),
+                                               MInputMethod::SwitchUndefined };
                     plugins[plugin] = desc;
                     val = true;
-                    inputMethodHost->setInputMethod(inputMethod);
+                    host->setInputMethod(im);
                 } else {
-                    delete inputMethodHost;
+                    qWarning() << __PRETTY_FUNCTION__
+                               << "Plugin loading failed:" << fileName;
+                    delete host;
                 }
             } else {
                 qWarning() << __PRETTY_FUNCTION__

@@ -50,7 +50,8 @@ public:
      * this plugin. This function will be only called once and the allocated
      * resources will be owned by the input method server.
      */
-    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host) = 0;
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
+                                                    QWidget *mainWindow) = 0;
 
     /*! \brief Creates and returns the MAbstractInputMethodSettings object for
      * this plugin. This function will be only called once and the allocated

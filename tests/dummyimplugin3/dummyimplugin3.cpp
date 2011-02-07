@@ -21,9 +21,10 @@ QStringList DummyImPlugin3::languages() const
 }
 
 MAbstractInputMethod *
-DummyImPlugin3::createInputMethod(MAbstractInputMethodHost *imHost)
+DummyImPlugin3::createInputMethod(MAbstractInputMethodHost *host,
+                                  QWidget *mainWindow)
 {
-    return new DummyInputMethod3(imHost);
+    return new DummyInputMethod3(host, mainWindow);
 }
 
 MAbstractInputMethodSettings *DummyImPlugin3::createInputMethodSettings()

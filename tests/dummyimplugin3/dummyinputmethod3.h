@@ -3,6 +3,7 @@
 
 #include <mabstractinputmethod.h>
 #include <QSet>
+#include <QWidget>
 
 #include "mtoolbardata.h"
 
@@ -12,7 +13,8 @@ class DummyInputMethod3 : public MAbstractInputMethod
 
 public:
 
-    DummyInputMethod3(MAbstractInputMethodHost *imHost);
+    DummyInputMethod3(MAbstractInputMethodHost *host,
+                      QWidget *mainWindow);
 
     //! \reimp
     virtual void setState(const QSet<MInputMethod::HandlerState> &state);

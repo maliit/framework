@@ -20,6 +20,7 @@
 #include "mimwidget.h"
 
 #include <QKeyEvent>
+#include <QWidget>
 
 class MAbstractInputMethodPrivate
 {
@@ -47,9 +48,10 @@ MAbstractInputMethodPrivate::~MAbstractInputMethodPrivate()
 
 ///////////////
 
-MAbstractInputMethod::MAbstractInputMethod(MAbstractInputMethodHost *imHost, QObject *parent)
-    : QObject(parent),
-      d_ptr(new MAbstractInputMethodPrivate(imHost, this))
+MAbstractInputMethod::MAbstractInputMethod(MAbstractInputMethodHost *host,
+                                           QWidget *mainWindow)
+    : QObject(mainWindow),
+      d_ptr(new MAbstractInputMethodPrivate(host, this))
 {
 }
 

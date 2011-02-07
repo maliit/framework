@@ -2,6 +2,8 @@
 #define DUMMYIMPLUGIN_H
 
 #include <QObject>
+#include <QWidget>
+
 #include "minputmethodplugin.h"
 
 
@@ -20,7 +22,8 @@ public:
 
     virtual QStringList languages() const;
 
-    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *imHost);
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
+                                                    QWidget *mainWindow);
 
     virtual MAbstractInputMethodSettings *createInputMethodSettings();
 
