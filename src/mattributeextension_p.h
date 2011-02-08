@@ -15,30 +15,25 @@
  */
 
 
-#ifndef MKEYOVERRIDE_P_H
-#define MKEYOVERRIDE_P_H
+#ifndef MATTRIBUTEEXTENSION_P_H
+#define MATTRIBUTEEXTENSION_P_H
 
 #include <QSharedPointer>
-
+#include "mattributeextensionid.h"
 class MToolbarData;
-class MWidgetData;
+class MKeyOverrideData;
 
-class MKeyOverridePrivate {
+class MAttributeExtensionPrivate {
 public:
-    Q_DECLARE_PUBLIC(MKeyOverride)
-
-    MKeyOverridePrivate();
-
-    void assign(const MKeyOverridePrivate &other);
-
-    QString keyId;
-    QString label;
-    QString icon;
-    bool highlighted;
-    bool enabled;
+    Q_DECLARE_PUBLIC(MAttributeExtension)
+    MAttributeExtensionPrivate();
 
 private:
-    MKeyOverride *q_ptr;
+    MAttributeExtensionId id;
+    QSharedPointer<MToolbarData> toolbarData;
+    QSharedPointer<MKeyOverrideData> keyOverrideData;
+
+    MAttributeExtension *q_ptr;
 };
 
 #endif

@@ -206,17 +206,17 @@ private slots:
     //! \note this method is called when the orientation change is finished
     void notifyOrientationChanged(M::OrientationAngle orientation);
 
-    //! Notify input method plugin about a new custom widget which is defined in \a fileName and with the unique \a id to be registered.
-    void notifyWidgetDataRegistered(int id, const QString &fileName);
+    //! Notify input method plugin about a new attribute extension which is defined in \a fileName and with the unique \a id to be registered.
+    void notifyAttributeExtensionRegistered(int id, const QString &fileName);
 
-    //! Notify input method plugin about a custom widget which has a unique identifier \a id to be unregistered.
-    void notifyWidgetDataUnregistered(int id);
+    //! Notify input method plugin about an attribute extension which has a unique identifier \a id to be unregistered.
+    void notifyAttributeExtensionUnregistered(int id);
 
     //! Notify input method plugin about the \attribute of the \a item in the custom toolbar which has the unique \a id is changed to \a value.
     void notifyToolbarItemAttributeChanged(int id, const QString &item, const QString &attribute, const QVariant& value);
 
-    //! Notify input method plugin about the \attribute of the \a keyId in the key overrides which has the unique \a id is changed to \a value.
-    void notifyKeyAttributeChanged(int id, const QString &keyId, const QString &attribute, const QVariant& value);
+    //! Notify input method plugin about the \attribute of the \a keyId in the extended attribute which has the unique \a id is changed to \a value.
+    void notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem, const QString &attribute, const QVariant& value);
 
     //! Checks whether there is someting to paste in the clipboard and notifies input method plugin about it.
     void handleClipboardDataChange();
@@ -243,8 +243,8 @@ private:
     //! returns state for currently focused widget, key is attribute name.
     QMap<QString, QVariant> getStateInformation() const;
 
-    //! registers existing widget datas to input method server and updates their state
-    void registerExistingWidgetDatas();
+    //! registers existing attribute extensions to input method server and updates their state
+    void registerExistingAttributeExtensions();
 
     bool active; // is connection active
     InputPanelState inputPanelState; // state for the input method server's software input panel

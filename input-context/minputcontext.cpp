@@ -121,20 +121,20 @@ MInputContext::MInputContext(QObject *parent)
             this, SLOT(notifyOrientationChanged(M::OrientationAngle)));
 
     connect(MInputMethodState::instance(),
-            SIGNAL(widgetDataRegistered(int, QString)),
-            this, SLOT(notifyWidgetDataRegistered(int, QString)));
+            SIGNAL(attributeExtensionRegistered(int, QString)),
+            this, SLOT(notifyAttributeExtensionRegistered(int, QString)));
 
     connect(MInputMethodState::instance(),
-            SIGNAL(widgetDataUnregistered(int)),
-            this, SLOT(notifyWidgetDataUnregistered(int)));
+            SIGNAL(attributeExtensionUnregistered(int)),
+            this, SLOT(notifyAttributeExtensionUnregistered(int)));
 
     connect(MInputMethodState::instance(),
             SIGNAL(toolbarItemAttributeChanged(int, QString, QString, QVariant)),
             this, SLOT(notifyToolbarItemAttributeChanged(int, QString, QString, QVariant)));
 
     connect(MInputMethodState::instance(),
-            SIGNAL(keyAttributeChanged(int, QString, QString, QVariant)),
-            this, SLOT(notifyKeyAttributeChanged(int, QString, QString, QVariant)));
+            SIGNAL(extendedAttributeChanged(int, QString, QString, QString, QVariant)),
+            this, SLOT(notifyExtendedAttributeChanged(int, QString, QString, QString, QVariant)));
 }
 
 
@@ -769,7 +769,7 @@ void MInputContext::onDBusConnection()
 {
     qDebug() << __PRETTY_FUNCTION__;
 
-    registerExistingWidgetDatas();
+    registerExistingAttributeExtensions();
 
     // There could already be focused item when the connection to the uiserver is
     // established. Show keyboard immediately in that case.
@@ -837,14 +837,14 @@ void MInputContext::notifyOrientationChanged(M::OrientationAngle orientation)
 }
 
 
-void MInputContext::notifyWidgetDataRegistered(int id, const QString &fileName)
+void MInputContext::notifyAttributeExtensionRegistered(int id, const QString &fileName)
 {
-    imServer->registerWidgetData(id, fileName);
+    imServer->registerAttributeExtension(id, fileName);
 }
 
-void MInputContext::notifyWidgetDataUnregistered(int id)
+void MInputContext::notifyAttributeExtensionUnregistered(int id)
 {
-    imServer->unregisterWidgetData(id);
+    imServer->unregisterAttributeExtension(id);
 }
 
 void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &item,
@@ -853,6 +853,14 @@ void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &ite
 {
     imServer->setToolbarItemAttribute(id, item,
                                       attribute, value);
+}
+
+void MInputContext::notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem,
+                                                   const QString &attribute, const QVariant& value)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    imServer->setExtendedAttribute(id, target, targetItem,
+                                   attribute, value);
 }
 
 M::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
@@ -1004,13 +1012,13 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     return stateInformation;
 }
 
-void MInputContext::registerExistingWidgetDatas()
+void MInputContext::registerExistingAttributeExtensions()
 {
-    QList<int> ids = MInputMethodState::instance()->widgetDataIds();
+    QList<int> ids = MInputMethodState::instance()->attributeExtensionIds();
 
     foreach (int id, ids) {
-        QString fileName = MInputMethodState::instance()->widgetDataFile(id);
-        imServer->registerWidgetData(id, fileName);
+        QString fileName = MInputMethodState::instance()->attributeExtensionFile(id);
+        imServer->registerAttributeExtension(id, fileName);
 
         MInputMethodState::ItemAttributeMap itemAttributes
             = MInputMethodState::instance()->toolbarState(id);
@@ -1025,16 +1033,17 @@ void MInputContext::registerExistingWidgetDatas()
             }
         }
 
-        MInputMethodState::ItemAttributeMap keyAttributes
-            = MInputMethodState::instance()->keyOverrideState(id);
+        MInputMethodState::ExtendedAttributeMap extendedAttributes
+            = MInputMethodState::instance()->extendedAttributes(id);
 
-        foreach (QString keyId, keyAttributes.keys()) {
-            MInputMethodState::AttributeMap attributes = itemAttributes.value(keyId);
-
-            foreach (QString attributeName, attributes.keys()) {
-                QVariant value = attributes.value(attributeName);
-
-                imServer->setKeyAttribute(id, keyId, attributeName, value);
+        foreach (QString target, extendedAttributes.keys()) {
+            MInputMethodState::ItemAttributeMap items = extendedAttributes.value(target);
+            foreach (QString item, items.keys()) {
+                MInputMethodState::AttributeMap attributes = items.value(item);
+                foreach (QString attributeName, attributes.keys()) {
+                    QVariant value = attributes.value(attributeName);
+                    imServer->setExtendedAttribute(id, target, item, attributeName, value);
+                }
             }
         }
     }

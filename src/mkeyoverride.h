@@ -25,7 +25,6 @@
 #include <QStringList>
 
 #include "minputmethodnamespace.h"
-#include <MNamespace>
 
 class MKeyOverridePrivate;
 
@@ -35,13 +34,21 @@ class MKeyOverridePrivate;
 class MKeyOverride : public QObject
 {
     Q_OBJECT
-
     Q_PROPERTY(QString label  READ label    WRITE setLabel)
     Q_PROPERTY(QString icon   READ icon    WRITE setIcon)
     Q_PROPERTY(bool highlighted   READ highlighted WRITE setHighlighted)
     Q_PROPERTY(bool enabled   READ enabled WRITE setEnabled)
 
 public:
+    //! Defines all the attributes of an key override.
+    enum KeyOverrideAttribute {
+        Label = 0x1,
+        Icon  = 0x2,
+        Highlighted = 0x4,
+        Enabled = 0x8
+    };
+    Q_DECLARE_FLAGS(KeyOverrideAttributes, KeyOverrideAttribute)
+
     /*!
     * \brief Constructor
     */
@@ -100,10 +107,11 @@ public slots:
 
 signals:
     /*!
-     * \brief Emitted when some property is changed
-     * \param propertyName Specifies name of changed property
+     * \brief Emitted when some attributes of the key are changed
+     * \param keyId, the key id.
+     * \param changedAttributes Specifies the chanaged attributes. \sa KeyOverrideAttribute
      */
-    void propertyChanged(const QString &propertyName);
+    void keyAttributesChanged(const QString &keyId, const MKeyOverride::KeyOverrideAttributes changedAttributes);
 
 private:
     Q_DECLARE_PRIVATE(MKeyOverride)

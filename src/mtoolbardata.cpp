@@ -663,28 +663,3 @@ QStringList MToolbarData::refusedNames() const
 
     return d->refusedNames;
 }
-
-QList<QSharedPointer<MKeyOverride> > MToolbarData::keyOverrides() const
-{
-    Q_D(const MToolbarData);
-    return d->keyOverrides.values();
-}
-
-void MToolbarData::createKeyOverride(const QString &keyId)
-{
-    qDebug() << __PRETTY_FUNCTION__;
-    Q_D(MToolbarData);
-
-    if (!d->keyOverrides.contains(keyId)) {
-        QSharedPointer<MKeyOverride> keyOverride;
-        keyOverride = QSharedPointer<MKeyOverride>(new MKeyOverride(keyId));
-        d->keyOverrides.insert(keyId, keyOverride);
-    }
-}
-
-QSharedPointer<MKeyOverride> MToolbarData::keyOverride(const QString &keyId) const
-{
-    Q_D(const MToolbarData);
-
-    return d->keyOverrides.value(keyId);
-}

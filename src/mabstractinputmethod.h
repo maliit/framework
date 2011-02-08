@@ -190,7 +190,7 @@ public:
      * \brief Uses custom key overrides which is defined by given parameter.
      * \param overrides Pointer to key override definitions.
      */
-    virtual void setKeyOverrides(QList<QSharedPointer<MKeyOverride> > overrides);
+    virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
 
 signals:
     /*!

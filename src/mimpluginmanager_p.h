@@ -28,7 +28,7 @@
 #include <MGConfItem>
 
 #include "minputmethodnamespace.h"
-#include "mtoolbarid.h"
+#include "mattributeextensionid.h"
 #include "minputmethodhost.h"
 #include "mindicatorserviceclient.h"
 
@@ -153,7 +153,7 @@ public:
     QMap<MInputMethod::HandlerState, QString> inputSourceToNameMap;
     QMap<QString, MInputMethod::HandlerState> nameToInputSourceMap;
 
-    MToolbarId toolbarId;
+    MAttributeExtensionId toolbarId;
 
     MIndicatorServiceClient indicatorService;
 

@@ -19,7 +19,7 @@
 #include "mimpluginmanageradaptor.h"
 #include "mplainwindow.h"
 #include "minputmethodplugin.h"
-#include "mtoolbarmanager.h"
+#include "mattributeextensionmanager.h"
 #include "mimsettingsdialog.h"
 #include "mabstractinputmethod.h"
 #include "mkeyoverride.h"
@@ -309,11 +309,11 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
     }
     initiator->lastSwitchDirection = direction;
     QSharedPointer<const MToolbarData> toolbar =
-        MToolbarManager::instance().toolbarData(toolbarId);
+        MAttributeExtensionManager::instance().toolbarData(toolbarId);
     switchedTo->setToolbar(toolbar);
 
-    QList<QSharedPointer<MKeyOverride> > keyOverrides =
-        MToolbarManager::instance().keyOverrides(toolbarId);
+    QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
+        MAttributeExtensionManager::instance().keyOverrides(toolbarId);
     switchedTo->setKeyOverrides(keyOverrides);
 
     // TODO: show/hide from IC matches SIP show/hide requests but here show is used (and
@@ -760,10 +760,11 @@ MIMPluginManager::MIMPluginManager()
     connect(d->mICConnection, SIGNAL(hideInputMethodRequest()),
             this, SLOT(hideActivePlugins()));
 
-    connect(d->mICConnection, SIGNAL(toolbarIdChanged(const MToolbarId &)),
-            this, SLOT(setToolbar(const MToolbarId &)));
+    connect(d->mICConnection, SIGNAL(toolbarIdChanged(const MAttributeExtensionId &)),
+            this, SLOT(setToolbar(const MAttributeExtensionId &)));
 
-    MToolbarManager::createInstance();
+    connect(d->mICConnection, SIGNAL(keyOverrideCreated()),
+            this, SLOT(updateKeyOverrides()));
 
     d->paths     = MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist = MGConfItem(MImPluginDisabled).value().toStringList();
@@ -810,7 +811,7 @@ MIMPluginManager::MIMPluginManager()
 MIMPluginManager::~MIMPluginManager()
 {
     Q_D(MIMPluginManager);
-    MToolbarManager::destroyInstance();
+    MAttributeExtensionManager::destroyInstance();
     delete d;
 }
 
@@ -924,18 +925,18 @@ void MIMPluginManager::updateRegion(const QRegion &region)
     }
 }
 
-void MIMPluginManager::setToolbar(const MToolbarId &id)
+void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
 {
     Q_D(MIMPluginManager);
 
-    // Record MToolbarId for switch Plugin
+    // Record MAttributeExtensionId for switch Plugin
     d->toolbarId = id;
 
     QSharedPointer<const MToolbarData> toolbar =
-        MToolbarManager::instance().toolbarData(id);
+        MAttributeExtensionManager::instance().toolbarData(id);
 
-    QList<QSharedPointer<MKeyOverride> > keyOverrides =
-        MToolbarManager::instance().keyOverrides(id);
+    QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
+        MAttributeExtensionManager::instance().keyOverrides(id);
 
     foreach (MInputMethodPlugin *plugin, d->activePlugins) {
         d->plugins[plugin].inputMethod->setToolbar(toolbar);
@@ -986,6 +987,17 @@ bool MIMPluginManager::isDBusConnectionValid() const
 {
     Q_D(const MIMPluginManager);
     return d->connectionValid;
+}
+
+void MIMPluginManager::updateKeyOverrides()
+{
+    Q_D(MIMPluginManager);
+    QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
+        MAttributeExtensionManager::instance().keyOverrides(d->toolbarId);
+
+    foreach (MInputMethodPlugin *plugin, d->activePlugins) {
+        d->plugins[plugin].inputMethod->setKeyOverrides(keyOverrides);
+    }
 }
 
 #include "moc_mimpluginmanager.cpp"

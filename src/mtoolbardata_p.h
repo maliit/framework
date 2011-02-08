@@ -25,7 +25,6 @@
 #include <QString>
 
 #include <mtoolbaritem.h>
-#include "mkeyoverride.h"
 
 class MToolbarData;
 
@@ -180,9 +179,6 @@ public:
 
     typedef QMap<QString, QSharedPointer<MToolbarItem> > Items;
     Items items;
-
-    typedef QMap<QString, QSharedPointer<MKeyOverride> > KeyOverrides;
-    KeyOverrides keyOverrides;
 
     bool visible;
 

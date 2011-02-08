@@ -27,7 +27,6 @@
 
 class MToolbarLayout;
 class MToolbarItem;
-class MKeyOverride;
 
 class QDomElement;
 struct MTBParseParameters;
@@ -73,9 +72,6 @@ public:
      */
     bool isVisible() const;
 
-    //! Return all key overrides.
-    QList<QSharedPointer<MKeyOverride> > keyOverrides() const;
-
 private:
     //! Append given \a item to the given layout.
     //! \param toolbarLayout should point to lanscape or portrait layout of this toolbar.
@@ -94,22 +90,14 @@ private:
      */
     QStringList refusedNames() const;
 
-    /*!
-     * \brief Creates a new key override for given \a keyId
-     */
-    void createKeyOverride(const QString &keyId);
-
-    //! Returns pointer to keyoverride for given \a keyId
-    QSharedPointer<MKeyOverride> keyOverride(const QString &keyId) const;
-
 protected:
     Q_DECLARE_PRIVATE(MToolbarData)
 
     MToolbarDataPrivate *const d_ptr;
-    friend class MToolbarManager;
+    friend class MAttributeExtensionManager;
     friend struct MTBParseStructure;
     friend class Ut_MToolbarData;
-    friend class Ut_MToolbarManager;
+    friend class Ut_MAttributeExtensionManager;
 };
 
 #endif

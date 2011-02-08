@@ -28,7 +28,7 @@ class QKeyEvent;
 
 class MInputContextConnectionPrivate;
 class MAbstractInputMethod;
-class MToolbarId;
+class MAttributeExtensionId;
 
 //! \internal
 /*!
@@ -223,7 +223,10 @@ signals:
     void hideInputMethodRequest();
 
     //! Emitted when set toobar to input method.
-    void toolbarIdChanged(const MToolbarId &id);
+    void toolbarIdChanged(const MAttributeExtensionId &id);
+
+    //! This signal is emited when a new key override is created.
+    void keyOverrideCreated();
     //! \internal_end.
 
 protected:

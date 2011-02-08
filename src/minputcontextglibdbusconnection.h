@@ -18,8 +18,9 @@
 #define MINPUTCONTEXTGLIBDBUSCONNECTION_H
 
 #include "minputcontextconnection.h"
-#include "mtoolbarid.h"
+#include "mattributeextensionid.h"
 
+#include <QWidget>
 #include <QByteArray>
 #include <QMap>
 #include <QSet>
@@ -162,24 +163,24 @@ public slots:
     WId winId(bool &valid);
 
     /*!
-     * \brief Register an input method custom widget which is defined in \a fileName with the
+     * \brief Register an input method attribute extension which is defined in \a fileName with the
      * unique identifier \a id.
      *
      *  The \a id should be unique, and the \a fileName is the absolute file name of the
-     *  custom widget.
+     *  attribute extension.
      */
-    void registerWidgetData(MDBusGlibICConnection *connection, int id, const QString &fileName);
+    void registerAttributeExtension(MDBusGlibICConnection *connection, int id, const QString &fileName);
 
     /*!
-     * \brief Unregister an input method \a custom widget which unique identifier is \a id.
+     * \brief Unregister an input method attribute extension which unique identifier is \a id.
      */
-    void unregisterWidgetData(MDBusGlibICConnection *connection, int id);
+    void unregisterAttributeExtension(MDBusGlibICConnection *connection, int id);
 
     /*!
-     * \brief Sets the \a attribute for the \a keyId in the key overrides to \a value.
+     * \brief Sets the \a attribute for the \a target in the extended attribute which has unique \a id to \a value.
      */
-    void setKeyAttribute(MDBusGlibICConnection *connection, int id, const QString &keyId,
-                                 const QString &attribute, const QVariant &value);
+    void setExtendedAttribute(MDBusGlibICConnection *connection, int id, const QString &target,
+                              const QString &targetItem, const QString &attribute, const QVariant &value);
 
 private:
     //! Updates the transient hint on the framework side to point to the
@@ -191,8 +192,8 @@ private:
     bool globalCorrectionEnabled;
     bool redirectionEnabled;
     bool detectableAutoRepeat;
-    MToolbarId toolbarId; //current toolbar id
-    QSet<MToolbarId> toolbarIds; //all toolbar ids
+    MAttributeExtensionId attributeExtensionId; //current attribute extension id
+    QSet<MAttributeExtensionId> attributeExtensionIds; //all attribute extension ids
     QByteArray socketAddress;
 
     DBusServer *server;

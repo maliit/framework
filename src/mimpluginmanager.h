@@ -24,7 +24,7 @@
 
 class QRegion;
 class MIMPluginManagerPrivate;
-class MToolbarId;
+class MAttributeExtensionId;
 class MAbstractInputMethod;
 
 
@@ -101,7 +101,10 @@ private slots:
     void updateInputSource();
 
     //! Set toolbar to active plugin with given \a id
-    void setToolbar(const MToolbarId &id);
+    void setToolbar(const MAttributeExtensionId &id);
+
+    //! Update the key overrides for active plugin.
+    void updateKeyOverrides();
 
 protected:
     MIMPluginManagerPrivate *const d_ptr;

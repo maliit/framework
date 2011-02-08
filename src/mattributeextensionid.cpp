@@ -15,7 +15,7 @@
  */
 
 
-#include "mtoolbarid.h"
+#include "mattributeextensionid.h"
 
 #include <QHash>
 
@@ -24,43 +24,43 @@ namespace {
     const int StandardId = -2;
 }
 
-MToolbarId::MToolbarId()
+MAttributeExtensionId::MAttributeExtensionId()
     : id(InvalidId)
 {
 }
 
-MToolbarId::MToolbarId(int id, const QString &service)
+MAttributeExtensionId::MAttributeExtensionId(int id, const QString &service)
     : id(id),
       m_service(service)
 {
 }
 
-MToolbarId MToolbarId::standardToolbarId()
+MAttributeExtensionId MAttributeExtensionId::standardAttributeExtensionId()
 {
-    return MToolbarId(StandardId, QString());
+    return MAttributeExtensionId(StandardId, QString());
 }
 
-bool MToolbarId::isValid() const
+bool MAttributeExtensionId::isValid() const
 {
     return id >= 0 && !m_service.isEmpty();
 }
 
-bool MToolbarId::operator==(const MToolbarId &other) const
+bool MAttributeExtensionId::operator==(const MAttributeExtensionId &other) const
 {
     return (id == other.id) && (m_service == other.m_service);
 }
 
-bool MToolbarId::operator!=(const MToolbarId &other) const
+bool MAttributeExtensionId::operator!=(const MAttributeExtensionId &other) const
 {
     return !operator==(other);
 }
 
-QString MToolbarId::service() const
+QString MAttributeExtensionId::service() const
 {
     return m_service;
 }
 
-uint qHash(const MToolbarId &id)
+uint qHash(const MAttributeExtensionId &id)
 {
     return qHash(QPair<int, QString>(id.id, id.m_service));
 }

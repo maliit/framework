@@ -13,10 +13,12 @@ HEADERSINSTALL = \
         mplainwindow.h \
         mtoolbaritem.h \
         mtoolbardata.h \
+        mkeyoverride.h \
+        mkeyoverridedata.h \
+        mattributeextension.h \
         minputmethodnamespace.h \
         mabstractinputmethodsettings.h \
         mtoolbarlayout.h \
-        mkeyoverride.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
@@ -27,8 +29,9 @@ HEADERS += $$HEADERSINSTALL \
         minputmethodhost.h \
         mtoolbardata_p.h \
         mtoolbaritem_p.h \
-        mtoolbarmanager.h \
-        mtoolbarid.h \
+        mkeyoverride_p.h \
+        mattributeextensionmanager.h \
+        mattributeextensionid.h \
         mimsettingsdialog.h \
         mtoolbarlayout_p.h \
         minputcontextglibdbusconnection.h \
@@ -48,11 +51,13 @@ SOURCES += mimpluginmanager.cpp \
         mimapplication.cpp \
         mtoolbaritem.cpp \
         mtoolbardata.cpp \
-        mtoolbarmanager.cpp \
-        mtoolbarid.cpp \
+        mkeyoverride.cpp \
+        mkeyoverridedata.cpp \
+        mattributeextensionmanager.cpp \
+        mattributeextensionid.cpp \
+        mattributeextension.cpp \
         mimsettingsdialog.cpp \
         mtoolbarlayout.cpp \
-        mkeyoverride.cpp \
         minputcontextglibdbusconnection.cpp \
         mimscene.cpp \
         mimremotewindow.cpp \
