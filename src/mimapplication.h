@@ -61,7 +61,7 @@ public:
     //! \sa setTransientHint(), setPassThruWindow();
     bool x11EventFilter(XEvent *ev);
 
-    void setTransientHint(int remoteWinId);
+    void setTransientHint(WId remoteWinId);
     void setPassThruWindow(QWidget *passThruWindow);
 
     static MIMApplication *instance();

@@ -974,7 +974,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         stateInformation["hasSelection"] = !(queryResult.toString().isEmpty());
 
     // window id for transient VKB - it is enough to just query the focused widget here:
-    stateInformation["winId"] = static_cast<int>(focused->effectiveWinId());
+    stateInformation["winId"] = QVariant::fromValue(focused->effectiveWinId());
 
     queryResult = focused->inputMethodQuery(Qt::ImMicroFocus);
     if (queryResult.isValid()) {

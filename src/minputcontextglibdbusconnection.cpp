@@ -717,10 +717,11 @@ int MInputContextGlibDBusConnection::inputMethodMode(bool &valid)
     return modeVariant.toInt(&valid);
 }
 
-int MInputContextGlibDBusConnection::winId(bool &valid)
+WId MInputContextGlibDBusConnection::winId(bool &valid)
 {
     QVariant winIdVariant = widgetState[WinId];
-    return winIdVariant.toInt(&valid);
+    valid = winIdVariant.canConvert<WId>();
+    return winIdVariant.value<WId>();
 }
 int MInputContextGlibDBusConnection::contentType(bool &valid)
 {
@@ -906,7 +907,7 @@ void MInputContextGlibDBusConnection::setToolbarItemAttribute(
 void MInputContextGlibDBusConnection::updateTransientHint()
 {
     bool ok = false;
-    const int appWinId = winId(ok);
+    WId appWinId = winId(ok);
 
     if (ok) {
         MIMApplication *app = MIMApplication::instance();

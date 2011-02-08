@@ -157,7 +157,7 @@ public slots:
     /*!
      * \brief get the X window id of the active app window
      */
-    int winId(bool &valid);
+    WId winId(bool &valid);
 
 private:
     //! Updates the transient hint on the framework side to point to the

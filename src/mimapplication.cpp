@@ -102,7 +102,7 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
     }
 }
 
-void MIMApplication::setTransientHint(int newRemoteWinId)
+void MIMApplication::setTransientHint(WId newRemoteWinId)
 {
     if (0 == newRemoteWinId || not activeWindow()) {
         return;
