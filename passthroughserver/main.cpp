@@ -55,7 +55,7 @@ namespace {
 int main(int argc, char **argv)
 {
     bool bypassWMHint = false;
-    bool selfComposited = true;
+    bool selfComposited = false;
 
     for (int i = 1; i < argc; i++) {
         QString s(argv[i]);
@@ -63,8 +63,8 @@ int main(int argc, char **argv)
             bypassWMHint = true;
         }
 
-        if (s == "-use-system-compositor") {
-            selfComposited = false;
+        if (s == "-use-self-composition") {
+            selfComposited = true;
         }
     }
 
