@@ -111,7 +111,7 @@ void MIMApplication::setTransientHint(WId newRemoteWinId)
     x11Wrapper->remoteWindowId = newRemoteWinId;
 
     XSetTransientForHint(QX11Info::display(),
-                         passThruWindow->effectiveWinId(),
+                         passThruWindow->window()->effectiveWinId(),
                          x11Wrapper->remoteWindowId);
 
     // Using PropertyChangeMask is a work-around for NB#172722 (a WONTFIX):
