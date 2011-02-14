@@ -35,10 +35,9 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, bool selfComposited, QWidget
 {
     setWindowTitle("MInputMethod");
 
-    if (!selfComposited)
+    if (!selfComposited) {
         setAttribute(Qt::WA_TranslucentBackground);
-
-    Display *dpy =  QX11Info::display();
+    }
 
     Qt::WindowFlags windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
 
@@ -48,16 +47,8 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, bool selfComposited, QWidget
 
     setWindowFlags(windowFlags);
 
-    // Hint to the window manager that we don't want input focus
-    // for the inputmethod window
-    XWMHints wmhints;
-    wmhints.flags = InputHint;
-    wmhints.input = False;
-    XSetWMHints(dpy, winId(), &wmhints);
-
-    Atom input = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_INPUT", False);
-    XChangeProperty(dpy, winId(), XInternAtom(dpy, "_NET_WM_WINDOW_TYPE", False), XA_ATOM, 32,
-                    PropModeReplace, (unsigned char *) &input, 1);
+    // We do not want input focus for that window.
+    setAttribute(Qt::WA_X11DoNotAcceptFocus);
 
     connect(MIMApplication::instance(), SIGNAL(remoteWindowGone()),
             this,                       SLOT(inputPassthrough()));
@@ -73,8 +64,15 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
     Display *dpy = QX11Info::display();
 #endif
 
-    qDebug() << __PRETTY_FUNCTION__ << region
-        << "geometry=" << geometry();
+    qDebug() << __PRETTY_FUNCTION__ << "QWidget::effectiveWinId(): " << effectiveWinId();
+
+    // Set _NET_WM_WINDOW_TYPE to _NET_WM_WINDOW_TYPE_INPUT
+    static Atom input = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_INPUT", False);
+    static Atom window_type = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", False);
+    XChangeProperty(QX11Info::display(), effectiveWinId(), window_type, XA_ATOM, 32,
+                    PropModeReplace, (unsigned char *) &input, 1);
+
+    qDebug() << __PRETTY_FUNCTION__ << region << "geometry=" << geometry();
     QVector<QRect> regionRects(region.rects());
     const int size = regionRects.size();
 
@@ -127,12 +125,12 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
         }
 
         const XserverRegion shapeRegion = XFixesCreateRegion(dpy, rects, size);
-        XFixesSetWindowShapeRegion(dpy, winId(), ShapeBounding, 0, 0, 0);
-        XFixesSetWindowShapeRegion(dpy, winId(), ShapeInput, 0, 0, shapeRegion);
+        XFixesSetWindowShapeRegion(dpy, effectiveWinId(), ShapeBounding, 0, 0, 0);
+        XFixesSetWindowShapeRegion(dpy, effectiveWinId(), ShapeInput, 0, 0, shapeRegion);
 
         XFixesDestroyRegion(dpy, shapeRegion);
 
-        XChangeProperty(dpy, winId(), XInternAtom(dpy, "_MEEGOTOUCH_CUSTOM_REGION", False), XA_CARDINAL, 32,
+        XChangeProperty(dpy, effectiveWinId(), XInternAtom(dpy, "_MEEGOTOUCH_CUSTOM_REGION", False), XA_CARDINAL, 32,
                         PropModeReplace, (unsigned char *) customRegion, size * 4);
 
         free(rects);
