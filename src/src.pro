@@ -39,7 +39,8 @@ HEADERS += $$HEADERSINSTALL \
         mimscene.h \
         mimremotewindow.h \
         mimxerrortrap.h \
-        mimxextension.h
+        mimxextension.h \
+        mimsettings.h \
 
 SOURCES += mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
@@ -65,11 +66,12 @@ SOURCES += mimpluginmanager.cpp \
         mimxerrortrap.cpp \
         mimxextension.cpp \
         mimextensionevent.cpp \
+        mimsettings.cpp \
 
 CONFIG += meegotouchcore qdbus link_pkgconfig
 QT = core gui xml
 
-PKGCONFIG += dbus-glib-1 dbus-1
+PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
