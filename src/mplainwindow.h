@@ -19,6 +19,7 @@
 #include <MWindow>
 
 class QRegion;
+class MImRemoteWindow;
 
 class MPlainWindow : public MWindow
 {
@@ -33,7 +34,8 @@ public slots:
 #if defined(M_IM_DISABLE_TRANSLUCENCY) && !defined(M_IM_USE_SHAPE_WINDOW)
     void updatePosition(const QRegion &region);
 #endif
-    void updateRemoteWindow(const QRegion &region);
+    void setRemoteWindow(MImRemoteWindow *newWindow = 0);
+    void update(const QRegion &region);
 
 protected:
     //! \reimp
@@ -43,6 +45,8 @@ protected:
 
 private:
     Q_DISABLE_COPY(MPlainWindow);
+
+    MImRemoteWindow *remoteWindow;
 
     static MPlainWindow *m_instance;
 };

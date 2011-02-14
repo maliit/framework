@@ -34,6 +34,7 @@
 #include "mpassthruwindow.h"
 #include "mimapplication.h"
 #include "mimdummyinputcontext.h"
+#include "mimremotewindow.h"
 
 namespace {
     void disableMInputContextPlugin()
@@ -79,7 +80,9 @@ int main(int argc, char **argv)
     // meego-im-uiserver.
     app.setInputContext(new MIMDummyInputContext);
 
-    selfComposited = app.supportsSelfComposite();
+    selfComposited = app.selfComposited();
+
+    qDebug() << (selfComposited ? "Use self composition" : "Use system compositor");
 
     MPassThruWindow widget(bypassWMHint, selfComposited);
     widget.setFocusPolicy(Qt::NoFocus);
@@ -129,6 +132,12 @@ int main(int argc, char **argv)
     // hide active plugins when remote input window is gone or iconified.
     QObject::connect(&app, SIGNAL(remoteWindowGone()),
                      pluginManager, SLOT(hideActivePlugins()));
+    QObject::connect(&app, SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
+                     &widget, SLOT(setRemoteWindow(MImRemoteWindow *)));
+    QObject::connect(&app, SIGNAL(remoteWindowGone()),
+                     &widget, SLOT(setRemoteWindow()));
+    QObject::connect(&app, SIGNAL(remoteWindowGone()),
+                     &widget, SLOT(inputPassthrough()));
 
     return app.exec();
 }

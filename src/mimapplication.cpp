@@ -19,54 +19,22 @@
 #include <MWindow>
 #include <MDebug>
 
-#include "x11wrapper.h"
+#include "mimremotewindow.h"
 
-X11Wrapper::X11Wrapper() 
-    : remoteWindowId(0),
-      remoteWindowXPixmap(0),
-      remoteWindowPixmap(),
-      pixmapDamage(0)
-{
-}
+#include <X11/Xlib.h>
 
 MIMApplication::MIMApplication(int &argc, char **argv, bool useSelfComposite)
     : MApplication(argc, argv),
       passThruWindow(0),
-      x11Wrapper(new X11Wrapper),
-      x11Error(new MIMXError),
-      selfComposited(false)
+      remoteWindow(0),
+      composite_extension(),
+      damage_extension(),
+      self_composited(useSelfComposite && composite_extension.supported(0, 2) && damage_extension.supported())
 {
-    if (useSelfComposite)
-        selfComposited = initializeComposite();
 }
 
 MIMApplication::~MIMApplication()
 {
-    delete x11Wrapper;
-    delete x11Error;
-}
-
-bool MIMApplication::initializeComposite()
-{
-    int compositeBase, compositeError;
-    if (!XCompositeQueryExtension(QX11Info::display(), &compositeBase, &compositeError))
-        return false;
-
-    if (!XQueryExtension(QX11Info::display(), COMPOSITE_NAME, &compositeMajor, &compositeBase, &compositeError))
-        return false;
-
-    int major = 0, minor = 2; // XComposite 0.2 required for XCompositeNameWindowPixmap
-    if (!XCompositeQueryVersion(QX11Info::display(), &major, &minor))
-        return false;
-
-    if (major < 0 || (major == 0 && minor < 2))
-        return false;
-
-    int damageError;
-    if (!XDamageQueryExtension(QX11Info::display(), &damageBase, &damageError))
-        return false;
-
-    return true;
 }
 
 bool MIMApplication::x11EventFilter(XEvent *ev)
@@ -90,15 +58,15 @@ void MIMApplication::handleMapNotifyEvents(XEvent *ev)
 
 void MIMApplication::handleTransientEvents(XEvent *ev)
 {
-    if (0 == x11Wrapper->remoteWindowId || not passThruWindow) {
+    if (0 == remoteWindow || not passThruWindow) {
         return;
     }
 
-    if (wasRemoteWindowIconified(ev) || wasRemoteWindowUnmapped(ev)) {
+    if (remoteWindow->wasIconified(ev) || remoteWindow->wasUnmapped(ev)) {
         mDebug("MIMApplication") << "Remote window was destroyed or iconified - hiding.";
-        destroyDamage();
-        x11Wrapper->remoteWindowId = 0;
         emit remoteWindowGone();
+        delete remoteWindow;
+        remoteWindow = 0;
     }
 }
 
@@ -108,16 +76,17 @@ void MIMApplication::setTransientHint(WId newRemoteWinId)
         return;
     }
 
-    x11Wrapper->remoteWindowId = newRemoteWinId;
+    if (remoteWindow && remoteWindow->id() == newRemoteWinId) {
+        return;
+    }
 
-    XSetTransientForHint(QX11Info::display(),
-                         passThruWindow->window()->effectiveWinId(),
-                         x11Wrapper->remoteWindowId);
+    MImRemoteWindow *oldWindow = remoteWindow;
 
-    // Using PropertyChangeMask is a work-around for NB#172722 (a WONTFIX):
-    XSelectInput(QX11Info::display(),
-                 x11Wrapper->remoteWindowId,
-                 StructureNotifyMask | PropertyChangeMask);
+    remoteWindow = new MImRemoteWindow(newRemoteWinId, this);
+    remoteWindow->setIMWidget(passThruWindow->window());
+    emit remoteWindowChanged(remoteWindow);
+
+    delete oldWindow;
 }
 
 void MIMApplication::setPassThruWindow(QWidget *newPassThruWindow)
@@ -130,45 +99,6 @@ void MIMApplication::setPassThruWindow(QWidget *newPassThruWindow)
 MIMApplication *MIMApplication::instance()
 {
     return static_cast<MIMApplication *>(QCoreApplication::instance());
-}
-
-bool MIMApplication::wasRemoteWindowIconified(XEvent *ev) const
-{
-    if (PropertyNotify != ev->type) {
-        return false;
-    }
-
-    static const Atom wmState = XInternAtom(QX11Info::display(), "WM_STATE", false);
-
-    if (ev->xproperty.atom == wmState) {
-        Atom type;
-        int format;
-        unsigned long length;
-        unsigned long after;
-        unsigned long *state;
-        uchar *data = 0;
-
-        int queryResult = XGetWindowProperty(QX11Info::display(), x11Wrapper->remoteWindowId, wmState, 0, 2,
-                                             false, AnyPropertyType, &type, &format, &length,
-                                             &after, &data);
-        state = (unsigned long *) data;
-
-        bool result = (queryResult == Success && data && format == 32 && *state == IconicState);
-
-        if (data) {
-            XFree(data);
-        }
-
-        return result;
-    }
-
-    return false;
-}
-
-bool MIMApplication::wasRemoteWindowUnmapped(XEvent *ev) const
-{
-    return (UnmapNotify == ev->type &&
-            ev->xunmap.event == x11Wrapper->remoteWindowId);
 }
 
 bool MIMApplication::wasPassThruWindowMapped(XEvent *ev) const
@@ -185,169 +115,15 @@ bool MIMApplication::wasPassThruWindowUnmapped(XEvent *ev) const
             static_cast<WId>(ev->xunmap.event) == passThruWindow->effectiveWinId());
 }
 
-void MIMApplication::setupDamage()
-{
-    if (x11Wrapper->remoteWindowId == 0)
-        return;
-
-    if (x11Wrapper->pixmapDamage != 0)
-        destroyDamage();
-
-    x11Wrapper->pixmapDamage = XDamageCreate(QX11Info::display(), x11Wrapper->remoteWindowId, XDamageReportNonEmpty); 
-}
-
-void MIMApplication::destroyDamage()
-{
-    if (x11Wrapper->pixmapDamage != 0) {
-        XDamageDestroy(QX11Info::display(), x11Wrapper->pixmapDamage);
-        x11Wrapper->pixmapDamage = 0;
-    }
-}
-
 void MIMApplication::handleDamageEvents(XEvent *event)
 {
-    if (x11Wrapper->remoteWindowId == 0 ||
-        x11Wrapper->pixmapDamage == 0)
+    if (remoteWindow == 0)
         return;
 
-    if (event->type == damageBase + XDamageNotify) {
-        XDamageNotifyEvent *e = reinterpret_cast<XDamageNotifyEvent*>(event);
-
-        if (x11Wrapper->pixmapDamage == e->damage) {
-            XserverRegion parts = XFixesCreateRegion(QX11Info::display(), 0, 0);
-            XDamageSubtract(QX11Info::display(), e->damage, None, parts);
-
-            QRegion region;
-
-            int nrects;
-            XRectangle *rects = XFixesFetchRegion (QX11Info::display(), parts, &nrects);
-            if (rects) {
-                for (int i = 0; i < nrects; ++i) {
-                    region += QRect(rects[i].x, rects[i].y, rects[i].width, rects[i].height);
-                }
-            }
-            free(rects);
-
-            XFixesDestroyRegion(QX11Info::display(), parts);
-
-            // setup remote pixmap when it failed before
-            if (x11Wrapper->remoteWindowPixmap.isNull())
-                setupRemotePixmap();
-
-            emit remoteWindowUpdated(region);
-        }
-    }
+    remoteWindow->handleDamageEvent(event);
 }
 
-void MIMApplication::redirectRemoteWindow()
+bool MIMApplication::selfComposited() const
 {
-    if (x11Wrapper->remoteWindowId != 0) {
-        xError()->check(compositeMajor, X_CompositeRedirectWindow);
-        XCompositeRedirectWindow(QX11Info::display(),
-                                 x11Wrapper->remoteWindowId,
-                                 CompositeRedirectManual);
-        XSync(QX11Info::display(), FALSE);
-        if (xError()->result() == BadAccess)
-            qDebug() << "Window " << x11Wrapper->remoteWindowId << " was already redirected";
-
-        setupRemotePixmap();
-
-        setupDamage();
-        emit remoteWindowUpdated(QRegion());
-    }
-}
-
-void MIMApplication::unredirectRemoteWindow()
-{
-    destroyRemotePixmap();
-    if (x11Wrapper->remoteWindowId != 0) {
-        xError()->check(compositeMajor, X_CompositeUnredirectWindow);
-        XCompositeUnredirectWindow(QX11Info::display(), 
-                                   x11Wrapper->remoteWindowId,
-                                   CompositeRedirectManual);
-        XSync(QX11Info::display(), FALSE);
-        if (xError()->result() == BadAccess)
-            qDebug() << "Window " << x11Wrapper->remoteWindowId << " was not redirected";
-        destroyDamage();
-    }
-}
-
-QPixmap MIMApplication::remoteWindowPixmap() const
-{
-    return x11Wrapper->remoteWindowPixmap;
-}
-
-bool MIMApplication::supportsSelfComposite() const
-{
-    return selfComposited;
-}
-
-void MIMApplication::setupRemotePixmap()
-{
-    destroyRemotePixmap();
-
-    xError()->check(compositeMajor, X_CompositeNameWindowPixmap);
-    x11Wrapper->remoteWindowXPixmap = XCompositeNameWindowPixmap(QX11Info::display(), x11Wrapper->remoteWindowId);
-    XSync(QX11Info::display(), FALSE);
-    if (xError()->result() == BadMatch) {
-        qDebug() << "Cannot get offscreen reference for Window " << x11Wrapper->remoteWindowId;
-        return;
-    }
-
-    if (x11Wrapper->remoteWindowXPixmap != 0) {
-        x11Wrapper->remoteWindowPixmap = QPixmap::fromX11Pixmap(x11Wrapper->remoteWindowXPixmap, QPixmap::ExplicitlyShared);
-    }
-}
-
-void MIMApplication::destroyRemotePixmap()
-{
-    x11Wrapper->remoteWindowPixmap = QPixmap();
-
-    if (x11Wrapper->remoteWindowXPixmap != 0) {
-        XFreePixmap(QX11Info::display(), x11Wrapper->remoteWindowXPixmap);
-        x11Wrapper->remoteWindowXPixmap = 0;
-    }
-}
-
-MIMXError *MIMApplication::xError() const
-{
-    return x11Error;
-}
-
-MIMXError::MIMXError() :
-    request_code(0),
-    minor_code(0),
-    error_code(0),
-    oldHandler(0)
-{}
-
-int xErrorHandler(Display *display, XErrorEvent *e)
-{
-    MIMXError *xerror = MIMApplication::instance()->xError();
-
-    if (xerror->matches(e)) {
-        xerror->error_code = e->error_code;
-        return 0;
-    }
-
-    return xerror->oldHandler(display, e);
-}
-
-void MIMXError::check(int major, int minor)
-{
-    request_code = major;
-    minor_code = minor;
-    error_code = Success;
-    oldHandler = XSetErrorHandler(xErrorHandler);
-}
-
-bool MIMXError::matches(XErrorEvent *e)
-{
-    return e->request_code == request_code && e->minor_code == minor_code;
-}
-
-int MIMXError::result()
-{
-    XSetErrorHandler(oldHandler);
-    return error_code;
+    return self_composited;
 }

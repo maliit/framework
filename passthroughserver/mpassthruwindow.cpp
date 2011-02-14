@@ -16,8 +16,11 @@
 #include "mpassthruwindow.h"
 #include "mplainwindow.h"
 #include "mimapplication.h"
+#include "mimremotewindow.h"
 
+#include <QDebug>
 #include <QX11Info>
+
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
@@ -30,8 +33,8 @@
 MPassThruWindow::MPassThruWindow(bool bypassWMHint, bool selfComposited, QWidget *p)
     : QWidget(p),
       raiseOnShow(bypassWMHint), // if bypassing window hint, also do raise to ensure visibility
-      selfComposited(selfComposited)
-
+      selfComposited(selfComposited),
+      remoteWindow(0)
 {
     setWindowTitle("MInputMethod");
 
@@ -49,9 +52,6 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, bool selfComposited, QWidget
 
     // We do not want input focus for that window.
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
-
-    connect(MIMApplication::instance(), SIGNAL(remoteWindowGone()),
-            this,                       SLOT(inputPassthrough()));
 }
 
 MPassThruWindow::~MPassThruWindow()
@@ -140,12 +140,12 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (isVisible() && region.isEmpty()) {
-        if (selfComposited)
-            mApp->unredirectRemoteWindow();
+        if (selfComposited && remoteWindow)
+            remoteWindow->unredirect();
         hide();
     } else if (!isVisible() && !region.isEmpty()) {
-        if (selfComposited)
-            mApp->redirectRemoteWindow();
+        if (selfComposited && remoteWindow)
+            remoteWindow->redirect();
         show();
         
         if (raiseOnShow) {
@@ -154,3 +154,7 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
     }
 }
 
+void MPassThruWindow::setRemoteWindow(MImRemoteWindow *newWindow)
+{
+    remoteWindow = newWindow;
+}

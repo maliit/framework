@@ -17,6 +17,7 @@
 #include "mplainwindow.h"
 #include "mimscene.h"
 #include "mimapplication.h"
+#include "mimremotewindow.h"
 
 #include <MSceneManager>
 #include <MGConfItem>
@@ -37,7 +38,8 @@ MPlainWindow *MPlainWindow::instance()
 }
 
 MPlainWindow::MPlainWindow(QWidget *parent) :
-    MWindow(new MSceneManager(new MImScene), parent)
+    MWindow(new MSceneManager(new MImScene), parent),
+    remoteWindow(0)
 {
     if (m_instance)
         qFatal("There can be only one instance of MPlainWindow");
@@ -66,7 +68,9 @@ MPlainWindow::MPlainWindow(QWidget *parent) :
     ungrabGesture(Qt::TapGesture);
 
     setAutoFillBackground(false);
-    connect(mApp, SIGNAL(remoteWindowUpdated(QRegion)), this, SLOT(updateRemoteWindow(QRegion)));
+
+    connect(mApp, SIGNAL(remoteWindowChanged(MImRemoteWindow*)), this, SLOT(setRemoteWindow(MImRemoteWindow*)));
+    connect(mApp, SIGNAL(remoteWindowGone()), this, SLOT(setRemoteWindow()));
 }
 
 MPlainWindow::~MPlainWindow()
@@ -120,15 +124,6 @@ void MPlainWindow::updatePosition(const QRegion &region)
 }
 #endif
 
-void
-MPlainWindow::updateRemoteWindow(const QRegion &region)
-{
-    if (region.isEmpty())
-        update();
-    else
-        update(region);
-}
-
 bool MPlainWindow::viewportEvent(QEvent *event)
 {
 #ifdef M_TIMESTAMP
@@ -148,8 +143,23 @@ bool MPlainWindow::viewportEvent(QEvent *event)
     return result;
 }
 
-void 
-MPlainWindow::drawBackground(QPainter *painter, const QRectF &)
+void MPlainWindow::setRemoteWindow(MImRemoteWindow *newWindow)
 {
-    painter->drawPixmap(0, 0, mApp->remoteWindowPixmap());
+    remoteWindow = newWindow;
+
+    if (remoteWindow)
+        connect(remoteWindow, SIGNAL(contentUpdated(QRegion)), this, SLOT(update(const QRegion&)));
+}
+
+void MPlainWindow::update(const QRegion &region)
+{
+    MWindow::update(region);
+}
+
+void MPlainWindow::drawBackground(QPainter *painter, const QRectF &)
+{
+    if (!remoteWindow)
+        return;
+
+    painter->drawPixmap(0, 0, remoteWindow->windowPixmap());
 }

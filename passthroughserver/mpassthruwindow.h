@@ -17,10 +17,9 @@
 #define MPASSTHRUWINDOW_H
 
 #include <QWidget>
-#include <QDebug>
 #include <QRegion>
-#include <QTimer>
-#include <QPointer>
+
+class MImRemoteWindow;
 
 /*!
  * \brief MPassThruWindow uses XFixes to redirect mouse events to VKB
@@ -43,11 +42,15 @@ public slots:
     //! Set window ID for given region
     void inputPassthrough(const QRegion &region = QRegion());
 
+    //! Set the new remote window (application window)
+    void setRemoteWindow(MImRemoteWindow *remoteWindow = 0);
+
 private:
     Q_DISABLE_COPY(MPassThruWindow);
 
     bool raiseOnShow;
     bool selfComposited;
+    MImRemoteWindow *remoteWindow;
 
     friend class Ut_PassthroughServer;
 };

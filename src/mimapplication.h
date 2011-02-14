@@ -19,10 +19,9 @@
 
 #include <MApplication>
 
-#include <QPixmap>
-#include <QRect>
 #include <QPointer>
-#include <QX11Info>
+
+#include "mimxextension.h"
 
 class MIMApplication;
 #if defined(mApp)
@@ -30,8 +29,7 @@ class MIMApplication;
 #endif
 #define mApp (static_cast<MIMApplication *>(QCoreApplication::instance()))
 
-class X11Wrapper;
-class MIMXError;
+class MImRemoteWindow;
 
 //! \internal
 /*! \brief A helper class to filter X11 events
@@ -66,13 +64,10 @@ public:
 
     static MIMApplication *instance();
 
-    void redirectRemoteWindow();
-    void unredirectRemoteWindow();
-    QPixmap remoteWindowPixmap() const;
+    bool selfComposited() const;
 
-    bool supportsSelfComposite() const;
-
-    MIMXError *xError() const;
+    const MImXCompositeExtension& compositeExtension() { return composite_extension; }
+    const MImXDamageExtension& damageExtension() { return damage_extension; }
 signals:
     //! After a map window request (e.g., via show()) this signal gets emitted
     //! as soon as X mapped our passthru window.
@@ -82,11 +77,11 @@ signals:
     //! emitted as soon as X unmapped our passthru window.
     void passThruWindowUnmapped();
 
-    //! This signal is emitted when remote input window is gone or iconified.
-    void remoteWindowGone();
+    //! This signal is emitted when remote window is changed
+    void remoteWindowChanged(MImRemoteWindow *newWindow);
 
-    //! This signal is emitted when remote input window is updated.
-    void remoteWindowUpdated(QRegion);
+    //! This signal is emitted when remote window is gone
+    void remoteWindowGone();
 private:
     void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);
@@ -94,27 +89,16 @@ private:
 
     bool initializeComposite();
 
-    void setupDamage();
-    void destroyDamage();
-
-    void setupRemotePixmap();
-    void destroyRemotePixmap();
-
-    bool wasRemoteWindowIconified(XEvent *ev) const;
-    bool wasRemoteWindowUnmapped(XEvent *ev) const;
     bool wasPassThruWindowMapped(XEvent *ev) const;
     bool wasPassThruWindowUnmapped(XEvent *ev) const;
 
     QPointer<QWidget> passThruWindow;
-
-    X11Wrapper *x11Wrapper;
-    MIMXError *x11Error;
-    int compositeMajor;
-    int damageBase;
-    bool selfComposited;
+    MImRemoteWindow *remoteWindow;
+    MImXCompositeExtension composite_extension;
+    MImXDamageExtension damage_extension;
+    bool self_composited;
     friend class Ut_PassthroughServer;
 };
 //! \internal_end
 
 #endif // MIM_APPLICATION_H
-
