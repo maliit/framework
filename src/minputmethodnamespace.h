@@ -21,6 +21,49 @@
 #include <QSharedPointer>
 
 namespace MInputMethod {
+    /*!
+     * This enum contains values of the orientation angle of windows in the application.
+     *
+     * \sa Orientation
+     */
+    enum OrientationAngle {
+        Angle0   =   0,
+        Angle90  =  90,
+        Angle180 = 180,
+        Angle270 = 270
+    };
+
+    /*!
+     * This enum contains possible values for orientation of windows in the application.
+     *
+     * \sa OrientationAngle
+     */
+    enum Orientation {
+        Portrait, //!< equal to either M::Angle90 or M::Angle270 orientation angles
+        Landscape //!< equal to either M::Angle0 or M::Angle180 orientation angles
+    };
+
+    //! Content type for text entries. Used at least with MTextEdit
+    enum TextContentType {
+        //! all characters allowed
+        FreeTextContentType,
+
+        //! only integer numbers allowed
+        NumberContentType,
+
+        //! allows numbers and certain other characters used in phone numbers
+        PhoneNumberContentType,
+
+        //! allows only characters permitted in email address
+        EmailContentType,
+
+        //! allows only character permitted in URL address
+        UrlContentType,
+
+        //! allows content with user defined format
+        CustomContentType
+    };
+
     //! Type of toolbar widget
     enum ItemType {
         //! Undefined item type
