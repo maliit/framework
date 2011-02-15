@@ -16,6 +16,15 @@ else
 	QMAKE_OPTIONS+=CONFIG+=release
 endif
 
+# Whether to use MeeGo Touch (eg, for MInputContext)
+ifneq (,$(findstring nomeegotouch,$(DEB_BUILD_OPTIONS)))
+	QMAKE_OPTIONS+=CONFIG-=meegotouch
+	QMAKE_OPTIONS+=CONFIG+=nomeegotouch
+else
+	QMAKE_OPTIONS+=CONFIG+=meegotouch
+	QMAKE_OPTIONS+=CONFIG-=nomeegotouch
+endif
+
 # Don't build documentation by setting DEB_BUILD_OPTION=nodocs
 ifeq (,$(findstring nodocs,$(DEB_BUILD_OPTIONS)))
 	QMAKE_OPTIONS+=CONFIG+=docs

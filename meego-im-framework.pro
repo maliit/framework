@@ -2,7 +2,7 @@
 CONFIG += ordered
 TARGET = meego-im-uiserver
 TEMPLATE = subdirs
-SUBDIRS = src passthroughserver input-context tests translations settings-applet
+SUBDIRS = src passthroughserver input-context tests
 
 isEqual( IN_PWD, $${OUT_PWD} ) {
     IS_OUT_OF_SOURCE = 0
@@ -12,6 +12,12 @@ isEqual( IN_PWD, $${OUT_PWD} ) {
 
 CONFIG(docs) {
     include (doc/doc.pri)
+}
+
+contains(CONFIG, nomeegotouch) {
+} else {
+    CONFIG  += meegotouch
+    SUBDIRS += translations settings-applet
 }
 
 QMAKE_EXTRA_TARGETS += check-xml
