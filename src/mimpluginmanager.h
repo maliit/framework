@@ -26,7 +26,7 @@ class QRegion;
 class MIMPluginManagerPrivate;
 class MAttributeExtensionId;
 class MAbstractInputMethod;
-
+class MImRemoteWindow;
 
 //! Note: this class is not considered stable API
 class MIMPluginManager: public QObject

@@ -17,6 +17,12 @@
 #ifndef MIMPLUGINMANAGER_P_H
 #define MIMPLUGINMANAGER_P_H
 
+#include "minputmethodnamespace.h"
+#include "mattributeextensionid.h"
+#include "minputmethodhost.h"
+#include "mindicatorserviceclient.h"
+#include "mimsettings.h"
+
 #include <QObject>
 #include <QList>
 #include <QStringList>
@@ -25,19 +31,11 @@
 #include <QRegion>
 #include <QTimer>
 
-#include <MGConfItem>
-
-#include "minputmethodnamespace.h"
-#include "mattributeextensionid.h"
-#include "minputmethodhost.h"
-#include "mindicatorserviceclient.h"
-
 class MInputMethodPlugin;
 class MInputContextConnection;
 class MIMPluginManager;
-class MGConfItem;
+class MImSettings;
 class MAbstractInputMethod;
-class MIMSettingsDialog;
 class MIMPluginManagerAdaptor;
 
 
@@ -135,13 +133,11 @@ public:
     QStringList blacklist;
     HandlerMap handlerToPlugin;
 
-    QList<MGConfItem *> handlerToPluginConfs;
-    MGConfItem *imAccessoryEnabledConf;
+    QList<MImSettings *> handlerToPluginConfs;
+    MImSettings *imAccessoryEnabledConf;
     QString activeSubViewIdOnScreen;
-
     QRegion activeImRegion;
 
-    MIMSettingsDialog *settingsDialog;
     MIMPluginManagerAdaptor *adaptor;
 
     MIMPluginManager *q_ptr;
@@ -157,7 +153,7 @@ public:
 
     MIndicatorServiceClient indicatorService;
 
-    MGConfItem lastActiveSubViewConf;
+    MImSettings lastActiveSubViewConf;
     QTimer ensureEmptyRegionWhenHiddenTimer;
 };
 

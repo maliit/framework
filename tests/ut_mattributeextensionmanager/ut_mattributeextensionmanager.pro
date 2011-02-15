@@ -5,7 +5,7 @@ INCLUDEPATH += ../stubs \
 # Input
 HEADERS += \
     ut_mattributeextensionmanager.h \
-    ../stubs/mgconfitem_stub.h \
+    ../stubs/mimsettings_stub.h \
     ../stubs/fakegconf.h \
     ../stubs/minputcontextconnection_stub.h \
 

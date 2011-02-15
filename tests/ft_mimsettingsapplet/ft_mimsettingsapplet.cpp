@@ -1,11 +1,16 @@
 #include "ft_mimsettingsapplet.h"
+
+#ifdef HAVE_MEEGOTOUCH
 #include <dcpappletmetadata.h>
 #include <dcpappletplugin.h>
+#endif
+
 #include <QFileInfo>
 #include <QDebug>
 
 void ft_MImSettingsApplet::testAppletIsLoadable()
 {
+#ifdef HAVE_MEEGOTOUCH
     // stub_dcpappletmetadata.cpp gives the real applet file.
     DcpAppletMetadata metadata("/dev/null");
     qDebug()<< "Checking lib at:" <<  metadata.fullBinary();
@@ -19,7 +24,7 @@ void ft_MImSettingsApplet::testAppletIsLoadable()
 
     DcpAppletPlugin loader(&metadata);
     QVERIFY(loader.applet());
+#endif
 }
 
 QTEST_APPLESS_MAIN(ft_MImSettingsApplet)
-

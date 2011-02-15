@@ -23,7 +23,6 @@
 #include <QList>
 
 #include "minputmethodnamespace.h"
-#include <MNamespace>
 
 class MToolbarLayout;
 class MToolbarItem;
@@ -65,7 +64,7 @@ public:
     QList<QSharedPointer<MToolbarItem> > items() const;
 
     //! Returns pointer to layout for given \a orientation.
-    QSharedPointer<const MToolbarLayout> layout(M::Orientation orientation) const;
+    QSharedPointer<const MToolbarLayout> layout(MInputMethod::Orientation orientation) const;
 
     /*!
      * \brief Return true if toolbar should be visible.

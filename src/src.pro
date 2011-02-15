@@ -10,7 +10,6 @@ HEADERSINSTALL = \
         mabstractinputmethod.h \
         mabstractinputmethodhost.h \
         mimpluginmanager.h \
-        mplainwindow.h \
         mtoolbaritem.h \
         mtoolbardata.h \
         mkeyoverride.h \
@@ -33,14 +32,13 @@ HEADERS += $$HEADERSINSTALL \
         mkeyoverride_p.h \
         mattributeextensionmanager.h \
         mattributeextensionid.h \
-        mimsettingsdialog.h \
         mtoolbarlayout_p.h \
         minputcontextglibdbusconnection.h \
-        mimscene.h \
         mimremotewindow.h \
         mimxerrortrap.h \
         mimxextension.h \
         mimsettings.h \
+        mimhwkeyboardtracker.h \
 
 SOURCES += mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
@@ -49,7 +47,6 @@ SOURCES += mimpluginmanager.cpp \
         mabstractinputmethodhost.cpp \
         minputmethodhost.cpp \
         minputcontextconnection.cpp \
-        mplainwindow.cpp \
         mimapplication.cpp \
         mtoolbaritem.cpp \
         mtoolbardata.cpp \
@@ -58,20 +55,25 @@ SOURCES += mimpluginmanager.cpp \
         mattributeextensionmanager.cpp \
         mattributeextensionid.cpp \
         mattributeextension.cpp \
-        mimsettingsdialog.cpp \
         mtoolbarlayout.cpp \
         minputcontextglibdbusconnection.cpp \
-        mimscene.cpp \
         mimremotewindow.cpp \
         mimxerrortrap.cpp \
         mimxextension.cpp \
         mimextensionevent.cpp \
         mimsettings.cpp \
+        mimhwkeyboardtracker.cpp \
 
-CONFIG += meegotouchcore qdbus link_pkgconfig
+CONFIG += qdbus link_pkgconfig
 QT = core gui xml
 
 PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
+
+contains(CONFIG, nomeegotouch) {
+} else {
+    CONFIG  += meegotouchcore
+    DEFINES += HAVE_MEEGOTOUCH
+}
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){

@@ -18,7 +18,6 @@
 #ifndef MTOOLBARITEM_H
 #define MTOOLBARITEM_H
 
-#include <MNamespace>
 #include <QObject>
 #include <QList>
 #include <QString>

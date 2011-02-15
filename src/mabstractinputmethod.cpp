@@ -16,13 +16,16 @@
 
 #include "mabstractinputmethod.h"
 #include "mabstractinputmethodhost.h"
+#include "mimgraphicsview.h"
+#include "mimwidget.h"
 
 #include <QKeyEvent>
 
 class MAbstractInputMethodPrivate
 {
 public:
-    MAbstractInputMethodPrivate(MAbstractInputMethodHost *imHost, MAbstractInputMethod *parent);
+    MAbstractInputMethodPrivate(MAbstractInputMethodHost *imHost,
+                                MAbstractInputMethod *parent);
     ~MAbstractInputMethodPrivate();
 
     MAbstractInputMethodHost *imHost;
@@ -48,7 +51,6 @@ MAbstractInputMethod::MAbstractInputMethod(MAbstractInputMethodHost *imHost, QOb
     : QObject(parent),
       d_ptr(new MAbstractInputMethodPrivate(imHost, this))
 {
-    // nothing
 }
 
 

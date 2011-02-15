@@ -19,11 +19,11 @@
 #ifndef MTOOLBARLAYOUT_H
 #define MTOOLBARLAYOUT_H
 
+#include "mtoolbaritem.h"
+#include "minputmethodnamespace.h"
+
 #include <QList>
 #include <QSharedPointer>
-#include <MNamespace>
-
-#include <mtoolbaritem.h>
 
 class MToolbarLayoutPrivate;
 
@@ -33,7 +33,7 @@ class MToolbarLayoutPrivate;
 class MToolbarLayout {
 public:
     //! Creates empty layout object for given \a orientation
-    explicit MToolbarLayout(M::Orientation orientation = M::Landscape);
+    explicit MToolbarLayout(MInputMethod::Orientation orientation = MInputMethod::Landscape);
 
     //! Destructor.
     virtual ~MToolbarLayout();
@@ -45,7 +45,7 @@ public:
     QList<QSharedPointer<MToolbarItem> > items() const;
 
     //! Return layout's orientation
-    M::Orientation orientation() const;
+    MInputMethod::Orientation orientation() const;
 
 private:
     Q_DISABLE_COPY(MToolbarLayout)

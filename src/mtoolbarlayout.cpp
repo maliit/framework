@@ -18,7 +18,7 @@
 #include "mtoolbarlayout.h"
 #include "mtoolbarlayout_p.h"
 
-MToolbarLayout::MToolbarLayout(M::Orientation orientation)
+MToolbarLayout::MToolbarLayout(MInputMethod::Orientation orientation)
     : d_ptr(new MToolbarLayoutPrivate)
 {
     d_ptr->orientation = orientation;
@@ -48,7 +48,7 @@ QList<QSharedPointer<MToolbarItem> > MToolbarLayout::items() const
     return d->items;
 }
 
-M::Orientation MToolbarLayout::orientation() const
+MInputMethod::Orientation MToolbarLayout::orientation() const
 {
     Q_D(const MToolbarLayout);
 

@@ -27,6 +27,7 @@
 #include <QEvent>
 #include <QString>
 #include <QVariant>
+#include <QWidget>
 #include <glib.h>
 
 #include <dbus/dbus-glib-lowlevel.h>

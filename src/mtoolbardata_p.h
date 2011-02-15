@@ -19,12 +19,13 @@
 #ifndef MTOOLBARDATA_P_H
 #define MTOOLBARDATA_P_H
 
+#include "mtoolbaritem.h"
+#include "minputmethodnamespace.h"
+
 #include <QSharedPointer>
 #include <QMap>
 #include <QStringList>
 #include <QString>
-
-#include <mtoolbaritem.h>
 
 class MToolbarData;
 
@@ -52,7 +53,7 @@ public:
     /*!
     * \brief Translate orientationString to M::Orientation.
     */
-    static M::Orientation orientation(const QString &orientationString);
+    static MInputMethod::Orientation orientation(const QString &orientationString);
 
     /*!
      * \brief Translate visibleTypeString to ToolbarWidget::VisibleType.

@@ -17,8 +17,10 @@
 #ifndef MIM_APPLICATION_H
 #define MIM_APPLICATION_H
 
-#include <MApplication>
-
+#include <QApplication>
+#include <QWidget>
+#include <QPixmap>
+#include <QRect>
 #include <QPointer>
 
 #include "mimxextension.h"
@@ -38,7 +40,7 @@ class MImRemoteWindow;
  *  remote application window.
  */
 class MIMApplication
-    : public MApplication
+    : public QApplication
 {
     Q_OBJECT
 
@@ -53,6 +55,7 @@ public:
      */
     explicit MIMApplication(int &argc, char** argv);
     virtual ~MIMApplication();
+    static MIMApplication *instance();
 
     //! Requires a valid remoteWinId and a valid passThruWindow before it'll
     //! start to work.
@@ -60,13 +63,13 @@ public:
     bool x11EventFilter(XEvent *ev);
 
     void setTransientHint(WId remoteWinId);
-    void setPassThruWindow(QWidget *mPassThruWindow);
-
-    static MIMApplication *instance();
+    void setPassThruWindow(QWidget *passThruWindow);
+    QWidget *passThruWindow() const;
 
     bool selfComposited() const;
     bool manualRedirection() const;
     bool bypassWMHint() const;
+    QPixmap remoteWindowPixmap() const;
 
     const MImXCompositeExtension& compositeExtension() { return mCompositeExtension; }
     const MImXDamageExtension& damageExtension() { return mDamageExtension; }
@@ -97,12 +100,19 @@ private:
     bool wasPassThruWindowUnmapped(XEvent *ev) const;
 
     QPointer<QWidget> mPassThruWindow;
+<<<<<<< HEAD
     MImRemoteWindow *mRemoteWindow;
     MImXCompositeExtension mCompositeExtension;
     MImXDamageExtension mDamageExtension;
     bool mSelfComposited;
     bool mManualRedirection;
     bool mBypassWMHint;
+=======
+    MImRemoteWindow *remoteWindow;
+    MImXCompositeExtension composite_extension;
+    MImXDamageExtension damage_extension;
+    bool self_composited;
+>>>>>>> New: Remove LMT dependencies from public API
 
     friend class Ut_PassthroughServer;
 };

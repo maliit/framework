@@ -1,5 +1,10 @@
 include(../common_top.pri)
 
+contains(CONFIG, nomeegotouch) {
+} else {
+    DEFINES += HAVE_MEEGOTOUCH
+}
+
 # Input
 HEADERS += ft_mimsettingsapplet.h \
 

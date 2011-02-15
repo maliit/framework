@@ -25,6 +25,7 @@
 class QString;
 class QRegion;
 class QKeyEvent;
+class QWidget;
 
 class MToolbarId;
 
@@ -37,7 +38,7 @@ class MAbstractInputMethodHostPrivate;
  * for interacting with the application that is using input method services and
  * the input method framework state itself.
  * Note: this is not meant to be derived by the input method framework users.
- * 
+ *
  */
 class MAbstractInputMethodHost: public QObject
 {

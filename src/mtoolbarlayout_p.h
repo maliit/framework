@@ -19,10 +19,12 @@
 #ifndef MTOOLBARDATA_P_H
 #define MTOOLBARDATA_P_H
 
+#include "mtoolbaritem.h"
+#include "minputmethodnamespace.h"
+
 #include <QSharedPointer>
 #include <QList>
 
-#include <mtoolbaritem.h>
 
 class MToolbarLayoutPrivate
 {
@@ -31,7 +33,7 @@ public:
     QList<QSharedPointer<MToolbarItem> > items;
 
     //! Orientation
-    M::Orientation orientation;
+    MInputMethod::Orientation orientation;
 };
 
 #endif

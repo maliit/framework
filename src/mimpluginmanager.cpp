@@ -17,17 +17,13 @@
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
 #include "mimpluginmanageradaptor.h"
-#include "mplainwindow.h"
 #include "minputmethodplugin.h"
 #include "mattributeextensionmanager.h"
-#include "mimsettingsdialog.h"
 #include "mabstractinputmethod.h"
-#include "mkeyoverride.h"
-
-#include <MGConfItem>
-#include <MKeyboardStateTracker>
-#include <MSceneManager>
-#include <MLocale>
+#include "mimsettings.h"
+#include "mimhwkeyboardtracker.h"
+#include "mimapplication.h"
+#include "mimremotewindow.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -38,6 +34,7 @@
 #include <QDBusAbstractAdaptor>
 #include <QDBusInterface>
 #include <QDBusMetaType>
+#include <QWeakPointer>
 
 #include <QDebug>
 
@@ -68,7 +65,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
     : parent(p),
       mICConnection(connection),
       imAccessoryEnabledConf(0),
-      settingsDialog(0),
       adaptor(0),
       connectionValid(false),
       acceptRegionUpdates(true),
@@ -95,7 +91,6 @@ MIMPluginManagerPrivate::~MIMPluginManagerPrivate()
 {
     qDeleteAll(handlerToPluginConfs);
     delete mICConnection;
-    delete settingsDialog;
 }
 
 
@@ -452,7 +447,7 @@ void MIMPluginManagerPrivate::changeHandlerMap(MInputMethodPlugin *origin,
             // Update gconfitem to record new plugin for handler map.
             // This should be done after real changing the handler map,
             // to prevent _q_syncHandlerMap also being called to change handler map.
-            MGConfItem gconf(PluginRoot + "/" + inputSourceName(state));
+            MImSettings gconf(PluginRoot + "/" + inputSourceName(state));
             gconf.set(replacement->name());
         }
     }
@@ -514,12 +509,12 @@ void MIMPluginManagerPrivate::loadHandlerMap()
     QSignalMapper *signalMapper = new QSignalMapper(q);
     // Queries all children under PluginRoot, each is a gconf entry that maps an
     // input source to a plugin that handles it
-    foreach (const QString &handler, MGConfItem(PluginRoot).listEntries()) {
+    foreach (const QString &handler, MImSettings(PluginRoot).listEntries()) {
         const QStringList path = handler.split("/");
         bool validSource(false);
         const MInputMethod::HandlerState source(inputSourceFromName(path.last(), validSource));
         if (validSource) {
-            MGConfItem *handlerItem = new MGConfItem(handler);
+            MImSettings *handlerItem = new MImSettings(handler);
             handlerToPluginConfs.append(handlerItem);
             const QString pluginName = handlerItem->value().toString();
             addHandlerMap(source, pluginName);
@@ -538,7 +533,7 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
     const MInputMethod::HandlerState source = static_cast<MInputMethod::HandlerState>(state);
 
     MInputMethodPlugin *currentPlugin = activePlugin(source);
-    MGConfItem gconf(PluginRoot + "/" + inputSourceName(source));
+    MImSettings gconf(PluginRoot + "/" + inputSourceName(source));
     const QString pluginName = gconf.value().toString();
 
     // already synchronized.
@@ -604,9 +599,7 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
                 if (adaptor) {
                     emit adaptor->activeSubViewChanged(MInputMethod::OnScreen);
                 }
-                if (settingsDialog) {
-                    settingsDialog->refreshUi();
-                }
+
                 break;
             }
         }
@@ -628,15 +621,7 @@ void MIMPluginManagerPrivate::_q_ensureEmptyRegionWhenHidden()
 }
 
 void MIMPluginManagerPrivate::loadInputMethodSettings()
-{
-    if (!settingsDialog) {
-        MLocale locale;
-        // add text-input-settings catalog for the settings translation.
-        locale.installTrCatalog("text-input-settings");
-        MLocale::setDefault(locale);
-        settingsDialog = new MIMSettingsDialog(this, "", M::NoStandardButton);
-    }
-}
+{}
 
 void MIMPluginManagerPrivate::initActiveSubView()
 {
@@ -649,9 +634,6 @@ void MIMPluginManagerPrivate::initActiveSubView()
             activeSubViewIdOnScreen = inputMethod->activeSubView(MInputMethod::OnScreen);
             if (adaptor) {
                 emit adaptor->activeSubViewChanged(MInputMethod::OnScreen);
-            }
-            if (settingsDialog) {
-                settingsDialog->refreshUi();
             }
         }
     }
@@ -669,11 +651,6 @@ void MIMPluginManagerPrivate::showActivePlugins()
 
 void MIMPluginManagerPrivate::hideActivePlugins()
 {
-    if (settingsDialog) {
-        // disappear the settings dialog without animation before hiding active plugins.
-        MPlainWindow::instance()->sceneManager()->disappearSceneWindowNow(settingsDialog);
-    }
-
     foreach (MInputMethodPlugin *plugin, activePlugins) {
         plugins[plugin].inputMethod->hide();
     }
@@ -715,7 +692,7 @@ QString MIMPluginManagerPrivate::activeSubView(MInputMethod::HandlerState state)
 void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginName,
                                               MInputMethod::HandlerState state)
 {
-    MGConfItem currentPluginConf(PluginRoot + "/" + inputSourceName(state));
+    MImSettings currentPluginConf(PluginRoot + "/" + inputSourceName(state));
     if (!pluginName.isEmpty() && currentPluginConf.value().toString() != pluginName) {
         // check whether the pluginName is valid
         foreach (MInputMethodPlugin *plugin, plugins.keys()) {
@@ -766,18 +743,20 @@ MIMPluginManager::MIMPluginManager()
     connect(d->mICConnection, SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
-    d->paths     = MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
-    d->blacklist = MGConfItem(MImPluginDisabled).value().toStringList();
+    d->paths     = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
+    d->blacklist = MImSettings(MImPluginDisabled).value().toStringList();
 
     d->loadPlugins();
 
     d->loadHandlerMap();
 
-    if (MKeyboardStateTracker::instance()->isPresent()) {
-        connect(MKeyboardStateTracker::instance(), SIGNAL(stateChanged()), this, SLOT(updateInputSource()));
+    if (MImHwKeyboardTracker::instance()->isPresent()) {
+        connect(MImHwKeyboardTracker::instance(), SIGNAL(stateChanged()),
+                this,                             SLOT(updateInputSource()),
+                Qt::UniqueConnection);
     }
 
-    d->imAccessoryEnabledConf = new MGConfItem(MImAccesoryEnabled, this);
+    d->imAccessoryEnabledConf = new MImSettings(MImAccesoryEnabled, this);
     connect(d->imAccessoryEnabledConf, SIGNAL(valueChanged()), this, SLOT(updateInputSource()));
 
     updateInputSource();
@@ -849,7 +828,8 @@ void MIMPluginManager::updateInputSource()
     // Hardware and Accessory can work together.
     // OnScreen is mutually exclusive to Hardware and Accessory.
     QSet<MInputMethod::HandlerState> handlers = d->activeHandlers();
-    if (MKeyboardStateTracker::instance()->isOpen()) {
+
+    if (MImHwKeyboardTracker::instance()->isOpen()) {
         // hw keyboard is on
         handlers.remove(MInputMethod::OnScreen);
         handlers.insert(MInputMethod::Hardware);
@@ -899,14 +879,7 @@ void MIMPluginManager::switchPlugin(const QString &name,
 
 void MIMPluginManager::showInputMethodSettings()
 {
-    Q_D(MIMPluginManager);
-    // require the whole screen area as the keyboard area for setting
-    const QSize visibleSceneSize = MPlainWindow::instance()->visibleSceneSize(M::Landscape);
-    emit regionUpdated(QRegion(0, 0, visibleSceneSize.width(), visibleSceneSize.height()));
-    d->loadInputMethodSettings();
-    MPlainWindow::instance()->sceneManager()->execDialog(d->settingsDialog);
-    // restore the region
-    emit regionUpdated(d->activeImRegion);
+
 }
 
 
@@ -917,10 +890,9 @@ void MIMPluginManager::updateRegion(const QRegion &region)
     // Record input method object's region.
     d->activeImRegion = region;
 
-    // If settings dialog is visible, don't update region. Don't update region
-    // when no region updates from the plugin side are expected.
-    if (d->acceptRegionUpdates &&
-        (!d->settingsDialog || !d->settingsDialog->isVisible())) {
+    // Don't update region when no region updates from the plugin side are
+    // expected.
+    if (d->acceptRegionUpdates) {
         emit regionUpdated(region);
     }
 }

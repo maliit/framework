@@ -25,7 +25,6 @@
 
 #include "minputmethodnamespace.h"
 #include "mkeyoverride.h"
-#include <MNamespace>
 
 
 /*!

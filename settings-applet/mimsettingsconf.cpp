@@ -14,15 +14,15 @@
  * of this file.
  */
 
-#include <MGConfItem>
+#include "minputmethodplugin.h"
+#include "mimsettingsconf.h"
+#include "mimsettings.h"
+
 #include <QDir>
 #include <QPluginLoader>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDebug>
-
-#include "minputmethodplugin.h"
-#include "mimsettingsconf.h"
 
 namespace
 {
@@ -40,8 +40,8 @@ namespace
 MImSettingsConf *MImSettingsConf::imSettingsConfInstance = 0;
 
 MImSettingsConf::MImSettingsConf()
-    : paths(MGConfItem(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList()),
-      blacklist(MGConfItem(MImPluginDisabled).value().toStringList())
+    : paths(MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList()),
+      blacklist(MImSettings(MImPluginDisabled).value().toStringList())
 {
     connectToIMPluginManagerDBus();
 

@@ -23,7 +23,6 @@
 #include <QList>
 
 #include "minputmethodnamespace.h"
-#include <MNamespace>
 
 
 class MAttributeExtensionId;

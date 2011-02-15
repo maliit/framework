@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 
+#include <mreactionmap.h>
 #include <QtDebug>
 #include <QWidget>
 #include <QPalette>
@@ -73,41 +74,9 @@ int main(int argc, char **argv)
     MPassThruWindow widget(app.bypassWMHint(), selfComposited);
     widget.setFocusPolicy(Qt::NoFocus);
     app.setPassThruWindow(&widget);
+    MReactionMap(&widget, app.applicationName());
 
-    // Must be declared after creation of top level window.
-    MReactionMap reactionMap(&widget);
-    MPlainWindow *view = new MPlainWindow(&widget);
-
-#ifndef M_IM_DISABLE_TRANSLUCENCY
-    if (!selfComposited)
-    // enable translucent in hardware rendering
-        view->setTranslucentBackground(!MApplication::softwareRendering());
-#endif
-
-    // No auto fill in software rendering
-    if (MApplication::softwareRendering())
-        view->viewport()->setAutoFillBackground(false);
-
-    if (selfComposited) {
-        widget.setAttribute(Qt::WA_NoSystemBackground);
-        widget.setAttribute(Qt::WA_OpaquePaintEvent);
-        view->setAttribute(Qt::WA_NoSystemBackground);
-        view->setAttribute(Qt::WA_OpaquePaintEvent);
-        view->viewport()->setAttribute(Qt::WA_NoSystemBackground);
-        view->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-    }
-
-    QSize sceneSize = view->visibleSceneSize(M::Landscape);
-    int w = sceneSize.width();
-    int h = sceneSize.height();
-    view->setSceneRect(0, 0, w, h);
-
-    widget.resize(sceneSize);
-
-    view->setMinimumSize(1, 1);
-    view->setMaximumSize(w, h);
-
-    MIMPluginManager *pluginManager = new MIMPluginManager();
+    MIMPluginManager *pluginManager = new MIMPluginManager;
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      &widget, SLOT(inputPassthrough(const QRegion &)));

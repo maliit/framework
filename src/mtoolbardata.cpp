@@ -154,11 +154,11 @@ Qt::Alignment MToolbarDataPrivate::alignment(const QString &alignmentString)
     return align;
 }
 
-M::Orientation MToolbarDataPrivate::orientation(const QString &orientationString)
+MInputMethod::Orientation MToolbarDataPrivate::orientation(const QString &orientationString)
 {
-    M::Orientation orient = M::Portrait;
+    MInputMethod::Orientation orient = MInputMethod::Portrait;
     if (orientationString == ImTagOrientationLandscape)
-        orient = M::Landscape;
+        orient = MInputMethod::Landscape;
     return orient;
 }
 
@@ -271,7 +271,7 @@ void MToolbarDataPrivate::parseTagLayout(const QDomElement &element, MTBParsePar
 {
     Q_Q(MToolbarData);
     const QString attribute = element.attribute(ImTagOrientation, ImTagOrientationDefValue);
-    const M::Orientation orientationData = orientation(attribute);
+    const MInputMethod::Orientation orientationData = orientation(attribute);
     QSharedPointer<MToolbarLayout> layout = q->layout(orientationData).constCast<MToolbarLayout>();
 
     if (layout && layout->orientation() == orientationData) {
@@ -282,10 +282,10 @@ void MToolbarDataPrivate::parseTagLayout(const QDomElement &element, MTBParsePar
 
     layout = QSharedPointer<MToolbarLayout>(new MToolbarLayout(orientationData));
     switch (orientationData) {
-    case M::Landscape:
+    case MInputMethod::Landscape:
         layoutLandscape = layout;
         break;
-    case M::Portrait:
+    case MInputMethod::Portrait:
         layoutPortrait = layout;
         break;
     default:
@@ -604,14 +604,14 @@ QList<QSharedPointer<MToolbarItem> > MToolbarData::items() const
     return d->items.values();
 }
 
-QSharedPointer<const MToolbarLayout> MToolbarData::layout(M::Orientation orientation) const
+QSharedPointer<const MToolbarLayout> MToolbarData::layout(MInputMethod::Orientation orientation) const
 {
     Q_D(const MToolbarData);
 
     switch(orientation) {
-    case M::Landscape:
+    case MInputMethod::Landscape:
         return d->layoutLandscape;
-    case M::Portrait:
+    case MInputMethod::Portrait:
         if (d->layoutPortrait) {
             return d->layoutPortrait;
         }
@@ -637,8 +637,8 @@ bool MToolbarData::append(const QSharedPointer<MToolbarLayout> &toolbarLayout,
         return false;
     }
 
-    if (layout(M::Landscape) != toolbarLayout
-       && layout(M::Portrait) != toolbarLayout) {
+    if (layout(MInputMethod::Landscape) != toolbarLayout
+       && layout(MInputMethod::Portrait) != toolbarLayout) {
         return false;
     }
 

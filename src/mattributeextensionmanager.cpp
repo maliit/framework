@@ -23,7 +23,6 @@
 #include "mkeyoverridedata.h"
 #include "mkeyoverride.h"
 
-#include <MLocale>
 #include <QVariant>
 #include <QFileInfo>
 #include <QFile>
@@ -170,8 +169,8 @@ void MAttributeExtensionManager::addStandardButtons(const QSharedPointer<MToolba
         return;
     }
 
-    QSharedPointer<MToolbarLayout> landscape = toolbarData->layout(M::Landscape).constCast<MToolbarLayout>();
-    QSharedPointer<MToolbarLayout> portrait = toolbarData->layout(M::Portrait).constCast<MToolbarLayout>();
+    QSharedPointer<MToolbarLayout> landscape = toolbarData->layout(MInputMethod::Landscape).constCast<MToolbarLayout>();
+    QSharedPointer<MToolbarLayout> portrait = toolbarData->layout(MInputMethod::Portrait).constCast<MToolbarLayout>();
 
     if (landscape) {
         addStandardButtons(landscape, toolbarData);

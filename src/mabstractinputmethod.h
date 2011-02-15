@@ -21,7 +21,6 @@
 #include <QEvent>
 #include <QVariant>
 #include <QMap>
-#include <MNamespace>
 
 #include "minputmethodnamespace.h"
 
@@ -38,7 +37,7 @@ class MImExtensionEvent;
 
 /*!
  * \brief MAbstractInputMethod is a base class for input method servers.
- * 
+ *
  * It defines the interface which input method framework can use for
  * passing commands received from the applications
  */

@@ -19,7 +19,10 @@
 #include "mimpluginmanager.h"
 #include "mindicatorserviceclient.h"
 #include "mabstractinputmethod.h"
+#include "mimapplication.h"
 
+#include <QWidget>
+#include <QGraphicsView>
 
 MInputMethodHost::MInputMethodHost(MInputContextConnection *inputContextConnection,
                                    MIMPluginManager *pluginManager,
@@ -149,7 +152,7 @@ void MInputMethodHost::copy()
 
 void MInputMethodHost::paste()
 {
-    if (enabled) {        
+    if (enabled) {
         connection->paste();
     }
 }
@@ -183,7 +186,7 @@ void MInputMethodHost::setInputModeIndicator(MInputMethod::InputModeIndicator mo
 }
 
 void MInputMethodHost::switchPlugin(MInputMethod::SwitchDirection direction)
-{    
+{
     if (enabled) {
         pluginManager->switchPlugin(direction, inputMethod);
     }
@@ -235,4 +238,3 @@ int MInputMethodHost::anchorPosition(bool &valid)
 {
     return connection->anchorPosition(valid);
 }
-

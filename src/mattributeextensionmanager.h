@@ -22,12 +22,11 @@
 #include <QHash>
 #include <QPointer>
 
-#include <MGConfItem>
-
 #include "mkeyoverridedata.h"
 #include "mtoolbardata.h"
 #include "mattributeextension.h"
 #include "minputmethodnamespace.h"
+#include "mimsettings.h"
 
 class MAttributeExtensionId;
 
@@ -150,7 +149,7 @@ private:
     typedef QHash<MAttributeExtensionId, QSharedPointer<MAttributeExtension> > AttributeExtensionContainer;
     //! all registered attribute extensions
     AttributeExtensionContainer attributeExtensions;
-    
+
     //! Standard close button
     QSharedPointer<MToolbarItem> close;
 
@@ -164,7 +163,7 @@ private:
     MInputMethod::CopyPasteState copyPasteStatus;
 
     //! Preferred domain for URL and Email toolbar domain buttons.
-    MGConfItem preferredDomainSetting;
+    MImSettings preferredDomainSetting;
 
     //! Singleton instance
     static MAttributeExtensionManager *attributeExtensionMgrInstance;

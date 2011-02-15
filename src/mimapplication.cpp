@@ -15,16 +15,13 @@
  */
 
 #include "mimapplication.h"
-
-#include <MWindow>
-#include <MDebug>
-
 #include "mimremotewindow.h"
 
-#include <X11/Xlib.h>
+#include <QDebug>
+#include <X11/Xlib.h> // must be last include
 
 MIMApplication::MIMApplication(int &argc, char **argv)
-    : MApplication(argc, argv),
+    : QApplication(argc, argv),
       mPassThruWindow(0),
       mRemoteWindow(0),
       mCompositeExtension(),
@@ -60,16 +57,18 @@ bool MIMApplication::x11EventFilter(XEvent *ev)
     handleMapNotifyEvents(ev);
     handleTransientEvents(ev);
     handleDamageEvents(ev);
-    return MApplication::x11EventFilter(ev);
+    return QApplication::x11EventFilter(ev);
 }
 
 void MIMApplication::handleMapNotifyEvents(XEvent *ev)
 {
     if (wasPassThruWindowMapped(ev)) {
-        mDebug("MIMApplication") << "PassThru window was mapped.";
+        qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
+                 << "PassThru window was mapped.";
         emit passThruWindowMapped();
     } else if (wasPassThruWindowUnmapped(ev)) {
-        mDebug("MIMApplication") << "PassThru window was unmapped.";
+        qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
+                 << "PassThru window was unmapped.";
         emit passThruWindowUnmapped();
     }
 }
@@ -81,7 +80,9 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
     }
 
     if (mRemoteWindow->wasIconified(ev) || mRemoteWindow->wasUnmapped(ev)) {
-        mDebug("MIMApplication") << "Remote window was destroyed or iconified - hiding.";
+        qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
+                 << "Remote window was destroyed or iconified - hiding.";
+
         emit remoteWindowGone();
         delete mRemoteWindow;
         mRemoteWindow = 0;
@@ -90,7 +91,7 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
 
 void MIMApplication::setTransientHint(WId newRemoteWinId)
 {
-    if (0 == newRemoteWinId || not activeWindow()) {
+    if (0 == newRemoteWinId || not mPassThruWindow) {
         return;
     }
 
@@ -112,6 +113,11 @@ void MIMApplication::setPassThruWindow(QWidget *newPassThruWindow)
     if (newPassThruWindow != mPassThruWindow) {
         mPassThruWindow = newPassThruWindow;
     }
+}
+
+QWidget *MIMApplication::passThruWindow() const
+{
+    return mPassThruWindow;
 }
 
 MIMApplication *MIMApplication::instance()
@@ -154,4 +160,9 @@ bool MIMApplication::manualRedirection() const
 bool MIMApplication::bypassWMHint() const
 {
     return mBypassWMHint;
+}
+
+QPixmap MIMApplication::remoteWindowPixmap() const
+{
+    return remoteWindow->windowPixmap();
 }
