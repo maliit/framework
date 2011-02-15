@@ -8,8 +8,15 @@ INCLUDEPATH += . ../src
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-STYLE_HEADERS += \
-    mpreeditstyle.h \
+contains(CONFIG, nomeegotouch) {
+} else {
+    CONFIG  += meegotouch
+    DEFINES += HAVE_MEEGOTOUCH
+
+    STYLE_HEADERS += \
+        mpreeditstyle.h \
+
+}
 
 # Input
 HEADERS += minputcontext.h \
@@ -24,7 +31,7 @@ SOURCES += minputcontext.cpp \
     glibdbusimserverproxy.cpp \
 
 QT = core gui
-CONFIG += plugin meegotouch link_pkgconfig
+CONFIG += plugin link_pkgconfig
 
 PKGCONFIG += dbus-glib-1
 

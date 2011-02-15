@@ -24,8 +24,7 @@
 #include <QVariant>
 #include <QTimer>
 #include <QDateTime>
-
-#include <MDebug>
+#include <QDebug>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -65,13 +64,13 @@ GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
 
 void GlibDBusIMServerProxy::onDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userData)
 {
-    mDebug("MInputContext") << __PRETTY_FUNCTION__;
+    qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
     static_cast<GlibDBusIMServerProxy *>(userData)->onDisconnection();
 }
 
 void GlibDBusIMServerProxy::connectToDBus()
 {
-    mDebug("MInputContext") << __PRETTY_FUNCTION__;
+    qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
     GError *error = NULL;
 
     connection = dbus_g_connection_open(SocketPath, &error);
@@ -102,7 +101,7 @@ void GlibDBusIMServerProxy::connectToDBus()
 
 void GlibDBusIMServerProxy::onDisconnection()
 {
-    mDebug("MInputContext") << __PRETTY_FUNCTION__;
+    qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
     glibObjectProxy = 0;
     dbus_g_connection_unref(connection);
     connection = 0;

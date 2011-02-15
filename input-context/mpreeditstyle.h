@@ -18,6 +18,7 @@
 #define MPREEDITSTYLE_H
 
 #include <MStyle>
+
 #include <QColor>
 #include <QString>
 #include <QTextCharFormat>
@@ -25,7 +26,8 @@
 /*!
  * \brief This class provides access to style attributes for MInputContext
  */
-class MPreeditStyle : public MStyle
+class MPreeditStyle
+    : public MStyle
 {
     Q_OBJECT
 
@@ -38,7 +40,8 @@ public:
     M_STYLE_ATTRIBUTE(QColor, backgroundColor, BackgroundColor)
 };
 
-class MPreeditStyleContainer : public MStyleContainer
+class MPreeditStyleContainer
+    : public MStyleContainer
 {
     M_STYLE_CONTAINER(MPreeditStyle)
     M_STYLE_MODE(NoCandidates)

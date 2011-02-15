@@ -17,13 +17,16 @@
 #ifndef MINPUTCONTEXT_H
 #define MINPUTCONTEXT_H
 
+#include "minputmethodnamespace.h"
+
+#ifdef HAVE_MEEGOTOUCH
+#include <MNamespace>
+#endif
+
 #include <QObject>
 #include <QInputContext>
 #include <QTimer>
 #include <QPointer>
-
-#include <mnamespace.h>
-#include <minputmethodnamespace.h>
 
 class MPreeditStyleContainer;
 class GlibDBusIMServerProxy;
@@ -199,12 +202,14 @@ private slots:
      */
     void handleSelectionChanged();
 
+#ifdef HAVE_MEEGOTOUCH
     //! Notify input method plugin about the application's active window prepare to change to a new \a orientation angle.
     void notifyOrientationAboutToChange(M::OrientationAngle orientation);
 
     //! Notify input method plugin about new \a orientation angle of application's active window.
     //! \note this method is called when the orientation change is finished
     void notifyOrientationChanged(M::OrientationAngle orientation);
+#endif
 
     //! Notify input method plugin about a new attribute extension which is defined in \a fileName and with the unique \a id to be registered.
     //! \note empty string for \a fileName is acceptable, it means don't load any content, just register a new id.
@@ -236,7 +241,7 @@ private:
     void notifyCopyPasteState();
 
     //! returns content type corresponding to specified hints
-    M::TextContentType contentType(Qt::InputMethodHints hints) const;
+    MInputMethod::TextContentType contentType(Qt::InputMethodHints hints) const;
 
     //! returns the D-Bus object path for this instance
     QString dbusObjectPath() const;
