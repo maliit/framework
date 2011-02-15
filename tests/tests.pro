@@ -17,7 +17,6 @@ SUBDIRS = \
           ut_mattributeextensionmanager \
           ft_mimsettingsapplet \
           ut_mimsettingsconf \
-          ut_mimsettingsdialog \
           ut_mimapplication \
           ut_mkeyoverride \
 

@@ -1,5 +1,5 @@
 #include "ft_mimpluginmanager.h"
-#include "mgconfitem_stub.h"
+#include "mimsettings_stub.h"
 #include "mkeyboardstatetracker_stub.h"
 #include "minputcontextconnection_stub.h"
 #include "dummyimplugin.h"
@@ -65,16 +65,16 @@ void Ft_MIMPluginManager::cleanupTestCase()
 
 void Ft_MIMPluginManager::init()
 {
-    MGConfItem(MImPluginPaths).set(pluginPath);
-    MGConfItem(MImPluginDisabled).set(QStringList("libdummyimplugin2.so"));
-    MGConfItem(MImPluginActive).set(QStringList("DummyImPlugin"));
+    MImSettings(MImPluginPaths).set(pluginPath);
+    MImSettings(MImPluginDisabled).set(QStringList("libdummyimplugin2.so"));
+    MImSettings(MImPluginActive).set(QStringList("DummyImPlugin"));
 
-    MGConfItem(PluginRoot + "onscreen").set(pluginName);
-    MGConfItem(PluginRoot + "hardware").set(pluginName);
-    MGConfItem(PluginRoot + "accessory").set(pluginName3);
+    MImSettings(PluginRoot + "onscreen").set(pluginName);
+    MImSettings(PluginRoot + "hardware").set(pluginName);
+    MImSettings(PluginRoot + "accessory").set(pluginName3);
 
     gMKeyboardStateTrackerStub->setOpenState(false);
-    MGConfItem(MImAccesoryEnabled).set(QVariant(false));
+    MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
     subject = new MIMPluginManager();
 }
@@ -102,7 +102,7 @@ void Ft_MIMPluginManager::testLoadPlugins()
 
 void Ft_MIMPluginManager::testSwitchPluginState()
 {
-    MGConfItem(MImAccesoryEnabled).set(QVariant(true));
+    MImSettings(MImAccesoryEnabled).set(QVariant(true));
 
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
@@ -117,8 +117,10 @@ void Ft_MIMPluginManager::testSwitchPluginState()
 
 void Ft_MIMPluginManager::testMultiplePlugins()
 {
+    //QSKIP("This test fails to activate > 1 plugins, for unknown reasons.", SkipAll);
+
     gMKeyboardStateTrackerStub->setOpenState(true);
-    MGConfItem(MImAccesoryEnabled).set(QVariant(true));
+    MImSettings(MImAccesoryEnabled).set(QVariant(true));
 
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);

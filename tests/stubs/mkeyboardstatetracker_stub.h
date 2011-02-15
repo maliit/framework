@@ -16,10 +16,10 @@
 #ifndef MKEYBOARDSTATETRACKER_STUB_H
 #define MKEYBOARDSTATETRACKER_STUB_H
 
-#include <MKeyboardStateTracker>
 #include <QDebug>
 
 #include "fakeproperty.h"
+#include "mimhwkeyboardtracker.h"
 
 /**
  * MKeyboardStateTracker stub class.
@@ -28,11 +28,13 @@
  * derived stub class and assign it to gMKeyboardStateTracker
  * global variable.
  */
-class MKeyboardStateTrackerStub
+class MImHwKeyboardTrackerStub
 {
 public:
-    MKeyboardStateTrackerStub();
-    virtual void mKeyboardStateTrackerConstructor(const MKeyboardStateTracker *instance);
+    MImHwKeyboardTrackerStub();
+
+    virtual void mimHwKeyboardTrackerConstructor(const MImHwKeyboardTracker *instance);
+
     virtual bool isPresent();
     virtual bool isOpen();
     virtual void setOpenState(bool state);
@@ -41,58 +43,57 @@ protected:
     FakeProperty openProperty;
 };
 
-MKeyboardStateTrackerStub::MKeyboardStateTrackerStub()
+MImHwKeyboardTrackerStub::MImHwKeyboardTrackerStub()
     : openProperty("/maemo/InternalKeyboard/Open")
 {
 }
 
-void MKeyboardStateTrackerStub::mKeyboardStateTrackerConstructor(const MKeyboardStateTracker *instance)
+void MImHwKeyboardTrackerStub::mimHwKeyboardTrackerConstructor(const MImHwKeyboardTracker *instance)
 {
     openProperty.setValue(QVariant(false));
     QObject::connect(&openProperty, SIGNAL(valueChanged()), instance, SIGNAL(stateChanged()));
 }
 
-bool MKeyboardStateTrackerStub::isPresent()
+bool MImHwKeyboardTrackerStub::isPresent()
 {
     return true;
 }
 
-bool MKeyboardStateTrackerStub::isOpen()
+bool MImHwKeyboardTrackerStub::isOpen()
 {
     return openProperty.value().toBool();
 }
 
-void MKeyboardStateTrackerStub::setOpenState(bool state)
+void MImHwKeyboardTrackerStub::setOpenState(bool state)
 {
     openProperty.setValue(QVariant(state));
 }
 
-MKeyboardStateTrackerStub gDefaultMKeyboardStateTrackerStub;
+MImHwKeyboardTrackerStub gDefaultMKeyboardStateTrackerStub;
 
 /**
  * This is the stub class instance used by the system. If you want to alter behaviour,
  * derive your stub class from MKeyboardStateTrackerStub, implement the methods you want to
  * fake, create an instance of your stub class and assign the instance into this global variable.
  */
-MKeyboardStateTrackerStub *gMKeyboardStateTrackerStub = &gDefaultMKeyboardStateTrackerStub;
+MImHwKeyboardTrackerStub *gMKeyboardStateTrackerStub = &gDefaultMKeyboardStateTrackerStub;
 
 /**
  * These are the proxy method implementations of MKeyboardStateTracker. They will
  * call the stub object methods of the gMKeyboardStateTracker.
  */
 
-MKeyboardStateTracker::MKeyboardStateTracker()
-    : d_ptr(0)
+MImHwKeyboardTracker::MImHwKeyboardTracker()
 {
-    gMKeyboardStateTrackerStub->mKeyboardStateTrackerConstructor(this);
+    gMKeyboardStateTrackerStub->mimHwKeyboardTrackerConstructor(this);
 }
 
-bool MKeyboardStateTracker::isPresent() const
+bool MImHwKeyboardTracker::isPresent() const
 {
     return gMKeyboardStateTrackerStub->isPresent();
 }
 
-bool MKeyboardStateTracker::isOpen() const
+bool MImHwKeyboardTracker::isOpen() const
 {
     return gMKeyboardStateTrackerStub->isOpen();
 }

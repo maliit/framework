@@ -61,7 +61,7 @@ void Ut_MToolbarData::testLoadXML()
     QVERIFY(subject->isVisible() == true);
 
     //test landscape part
-    QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
+    QSharedPointer<const MToolbarLayout> landscape = subject->layout(MInputMethod::Landscape);
     QVERIFY(!landscape.isNull());
     QCOMPARE(landscape->items().count(), 4);
 
@@ -143,7 +143,7 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->actions().at(0)->group(), QString());
 
     // test portrait part
-    QSharedPointer<const MToolbarLayout> portrait = subject->layout(M::Portrait);
+    QSharedPointer<const MToolbarLayout> portrait = subject->layout(MInputMethod::Portrait);
     QVERIFY(!portrait.isNull());
     QCOMPARE(portrait->items().count(), 4);
 
@@ -170,7 +170,7 @@ void Ut_MToolbarData::testLandspaceOnly()
     QVERIFY(subject->isVisible() == false);
 
     //test landscape part
-    QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
+    QSharedPointer<const MToolbarLayout> landscape = subject->layout(MInputMethod::Landscape);
     QVERIFY(!landscape.isNull());
     QCOMPARE(landscape->items().count(), 5);
 
@@ -181,7 +181,7 @@ void Ut_MToolbarData::testLandspaceOnly()
     QCOMPARE(landscape->items().at(3)->type(), MInputMethod::ItemLabel);
     QCOMPARE(landscape->items().at(4)->type(), MInputMethod::ItemButton);
 
-    QVERIFY(subject->layout(M::Landscape) == subject->layout(M::Portrait));
+    QVERIFY(subject->layout(MInputMethod::Landscape) == subject->layout(MInputMethod::Portrait));
 }
 
 void Ut_MToolbarData::testLoadOldXML()
@@ -195,11 +195,11 @@ void Ut_MToolbarData::testLoadOldXML()
     QVERIFY(subject->isVisible() == true);
 
     //test landscape part
-    QSharedPointer<const MToolbarLayout> landscape = subject->layout(M::Landscape);
+    QSharedPointer<const MToolbarLayout> landscape = subject->layout(MInputMethod::Landscape);
     QVERIFY(!landscape.isNull());
     QCOMPARE(landscape->items().count(), 5);
 
-    QVERIFY(subject->layout(M::Landscape) == subject->layout(M::Portrait));
+    QVERIFY(subject->layout(MInputMethod::Landscape) == subject->layout(MInputMethod::Portrait));
 }
 
 void Ut_MToolbarData::testMinimalXML()
@@ -251,7 +251,7 @@ void Ut_MToolbarData::testAddItem()
     ok = subject->loadToolbarXml(Toolbar1);
     QVERIFY2(ok, "toolbar1.xml was not loaded correctly");
 
-    QSharedPointer<MToolbarLayout> landscape = subject->layout(M::Landscape).constCast<MToolbarLayout>();
+    QSharedPointer<MToolbarLayout> landscape = subject->layout(MInputMethod::Landscape).constCast<MToolbarLayout>();
     QVERIFY(!landscape.isNull());
     QVERIFY(!landscape->items().isEmpty());
 
@@ -265,7 +265,7 @@ void Ut_MToolbarData::testAddItem()
     ok = subject->append(QSharedPointer<MToolbarLayout>(), button);
     QVERIFY2(!ok, "Item should not be added to non-existing row");
 
-    QSharedPointer<MToolbarLayout> portrait = subject->layout(M::Portrait).constCast<MToolbarLayout>();
+    QSharedPointer<MToolbarLayout> portrait = subject->layout(MInputMethod::Portrait).constCast<MToolbarLayout>();
     QVERIFY(!portrait.isNull());
     QVERIFY(!portrait->items().isEmpty());
 

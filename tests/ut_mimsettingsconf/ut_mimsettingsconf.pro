@@ -9,7 +9,7 @@ INCLUDEPATH += $$SRC_DIR \
 # Input
 HEADERS += \
     ut_mimsettingsconf.h \
-    ../stubs/mgconfitem_stub.h \
+    ../stubs/mimsettings_stub.h \
     ../stubs/fakegconf.h \
     $$SETTINGSAPPLET_DIR/mimsettingsconf.h \
 
@@ -19,7 +19,7 @@ SOURCES += \
     $$SETTINGSAPPLET_DIR/mimsettingsconf.cpp \
 
 
-CONFIG += plugin meegotouch qdbus
+CONFIG += plugin qdbus
 
 LIBS += \
     ../../src/libmeegoimframework.so.0 \

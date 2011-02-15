@@ -6,8 +6,11 @@
 #include <QClipboard>
 #include <QGraphicsView>
 
+#ifdef HAVE_MEEGOTOUCH
 #include <MWindow>
-#include "mpreeditinjectionevent.h"
+#include <mpreeditinjectionevent.h>
+#endif
+
 #include "glibdbusimserverproxy.h"
 
 
@@ -330,10 +333,12 @@ QVariant WidgetStub::inputMethodQuery(Qt::InputMethodQuery query) const
 {
     m_inputMethodQueryCount++;
 
-    if (static_cast<int>(query) == M::VisualizationPriorityQuery) {
-        return QVariant(visualizationPriority);
-    } else if (query == Qt::ImSurroundingText) {
+    if (query == Qt::ImSurroundingText) {
         return QVariant(WidgetStubSurroundingText);
+#ifdef HAVE_MEEGOTOUCH
+    } else if (static_cast<int>(query) == M::VisualizationPriorityQuery) {
+        return QVariant(visualizationPriority);
+#endif
     } else if (query == Qt::ImCursorPosition) {
         return QVariant(WidgetStubCursorPosition);
     } else if (query == Qt::ImCurrentSelection) {
@@ -423,8 +428,7 @@ void Ut_MInputContext::initTestCase()
     QApplication::setGraphicsSystem("raster");
 
     QCoreApplication::setLibraryPaths(QStringList("./inputmethods"));
-    MApplication::setLoadMInputContext(false);
-    app.reset(new MApplication(argc, argv));
+    app.reset(new QApplication(argc, argv));
 
     m_stub = new InputMethodServerDBusStub(this);
 
@@ -463,6 +467,7 @@ void Ut_MInputContext::testAddCoverage()
 
 void Ut_MInputContext::testEvent()
 {
+#ifdef HAVE_MEEGOTOUCH
     WidgetStub widget(0);
 
     gFocusedWidget = &widget;
@@ -496,6 +501,7 @@ void Ut_MInputContext::testEvent()
 
     delete injectionEvent;
     gFocusedWidget = 0;
+#endif
 }
 
 
@@ -643,6 +649,7 @@ void Ut_MInputContext::testUpdatePreedit()
 
 void Ut_MInputContext::testAppOrientationChanged()
 {
+#ifdef HAVE_MEEGOTOUCH
     m_subject->notifyOrientationChanged(M::Angle90);
 
     // Make sure DBus call gets through
@@ -650,6 +657,7 @@ void Ut_MInputContext::testAppOrientationChanged()
 
     // TODO: can not recieve signal, should check it
     QCOMPARE(m_stub->orientationChangedCount(), 1);
+#endif
 }
 
 void Ut_MInputContext::testNonTextEntryWidget()
@@ -882,6 +890,7 @@ void Ut_MInputContext::testSetOrientationAngleLocked_data()
 
 void Ut_MInputContext::testSetOrientationAngleLocked()
 {
+#ifdef HAVE_MEEGOTOUCH
     QFETCH(QList<OrientationAngleLockOperation >, ops);
     QFETCH(bool, expectedLockedState);
 
@@ -904,6 +913,7 @@ void Ut_MInputContext::testSetOrientationAngleLocked()
         }
     }
     QCOMPARE(window.isOrientationAngleLocked(), expectedLockedState);
+#endif
 }
 
 QTEST_APPLESS_MAIN(Ut_MInputContext)

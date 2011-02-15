@@ -9,7 +9,7 @@ SRC_DIR = ../../src
 # Input
 HEADERS += \
     ft_mimpluginmanager.h \
-    ../stubs/mgconfitem_stub.h \
+    ../stubs/mimsettings_stub.h \
     ../stubs/fakegconf.h \
     ../stubs/fakeproperty.h \
     ../stubs/mkeyboardstatetracker_stub.h \
@@ -22,7 +22,7 @@ SOURCES += \
     ../stubs/minputcontextconnection_stub.cpp \
 
 
-CONFIG += plugin meegotouch qdbus
+CONFIG += plugin qdbus
 
 LIBS += \
     ../../src/libmeegoimframework.so \

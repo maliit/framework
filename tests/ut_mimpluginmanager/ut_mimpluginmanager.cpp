@@ -1,5 +1,5 @@
 #include "ut_mimpluginmanager.h"
-#include "mgconfitem_stub.h"
+#include "mimsettings_stub.h"
 #include "minputcontextconnection_stub.h"
 #include "dummyimplugin.h"
 #include "dummyimplugin3.h"
@@ -98,16 +98,16 @@ void Ut_MIMPluginManager::cleanupTestCase()
 
 void Ut_MIMPluginManager::init()
 {
-    MGConfItem pathConf(MImPluginPaths);
+    MImSettings pathConf(MImPluginPaths);
     pathConf.set(pluginPath);
-    MGConfItem blackListConf(MImPluginDisabled);
+    MImSettings blackListConf(MImPluginDisabled);
 
     QStringList blackList;
     blackList << "libdummyimplugin2.so";
     //ignore the meego-keyboard
     blackList << "libmeego-keyboard.so";
     blackListConf.set(blackList);
-    MGConfItem handlerItem(PluginRoot + "onscreen");
+    MImSettings handlerItem(PluginRoot + "onscreen");
     handlerItem.set(pluginName);
 
     manager = new MIMPluginManager();
@@ -566,7 +566,7 @@ void Ut_MIMPluginManager::checkHandlerMap(int handler, const QString &name)
     const QString key
         = QString(PluginRoot
                   + subject->inputSourceName(static_cast<MInputMethod::HandlerState>(handler)));
-    MGConfItem gconf(key);
+    MImSettings gconf(key);
     QCOMPARE(gconf.value().toString(), name);
 }
 
@@ -647,7 +647,7 @@ void Ut_MIMPluginManager::testSetActivePlugin()
     subject->setActivePlugin(pluginName3, MInputMethod::OnScreen);
 
     // check gconf item
-    MGConfItem handlerItem(PluginRoot + "onscreen");
+    MImSettings handlerItem(PluginRoot + "onscreen");
     QCOMPARE(handlerItem.value().toString(), pluginName3);
 
     QVERIFY(subject->activePlugins.size() == 1);

@@ -6,7 +6,7 @@ INCLUDEPATH += ../../passthroughserver \
 # Input
 HEADERS += \
     ut_mimapplication.h \
-    ../stubs/mgconfitem_stub.h \
+    ../stubs/mimsettings_stub.h \
     ../stubs/fakegconf.h \
     ../stubs/minputcontextconnection_stub.h \
 
@@ -27,9 +27,9 @@ isEqual(code_coverage_option, off) {
 }
 
 
-CONFIG += plugin meegotouch qdbus
+CONFIG += plugin qdbus
 
 LIBS += \
-    ../../src/libmeegoimframework.so.0 \
+    ../../src/libmeegoimframework.so.0 -lXfixes
 
 include(../common_check.pri)

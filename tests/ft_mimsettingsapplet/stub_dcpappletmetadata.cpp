@@ -1,3 +1,4 @@
+#ifdef HAVE_MEEGOTOUCH
 #include <dcpappletmetadata.h>
 #include <QFileInfo>
 
@@ -17,4 +18,4 @@ QString DcpAppletMetadata::fullBinary() const
         return QString("/usr/lib/duicontrolpanel/applets/" + filename);
     }
 }
-
+#endif

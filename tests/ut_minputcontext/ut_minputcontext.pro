@@ -16,7 +16,7 @@ SOURCES += \
     $$ICDIR/minputcontext.cpp
 
 
-CONFIG += plugin meegotouch qdbus link_pkgconfig
+CONFIG += plugin qdbus link_pkgconfig
 
 PKGCONFIG += dbus-glib-1
 

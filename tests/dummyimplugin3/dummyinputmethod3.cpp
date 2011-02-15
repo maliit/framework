@@ -2,6 +2,7 @@
 #include "mabstractinputmethodhost.h"
 
 #include <QDebug>
+#include <QRegion>
 
 DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *imHost)
     : MAbstractInputMethod(imHost),

@@ -5,7 +5,7 @@ INCLUDEPATH += ../stubs \
 # Input
 HEADERS += \
     ut_mtoolbardata.h \
-    ../stubs/mgconfitem_stub.h \
+    ../stubs/mimsettings_stub.h \
     ../stubs/fakegconf.h \
     ../stubs/minputcontextconnection_stub.h \
 
@@ -28,7 +28,7 @@ SOURCES += \
 }
 
 
-CONFIG += plugin meegotouch qdbus
+CONFIG += plugin qdbus
 
 LIBS += \
     ../../src/libmeegoimframework.so.0 \

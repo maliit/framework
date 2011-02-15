@@ -18,7 +18,7 @@
 #include "minputcontextplugin.h"
 
 #include <QInputContext>
-#include <MApplication>
+#include <QApplication>
 
 namespace
 {
@@ -54,7 +54,7 @@ void Ut_MInputContextPlugin::initTestCase()
 
     static int argc = 1;
     static char *argv[1] = { (char *) "ut_minputcontextplugin" };
-    app = new MApplication(argc, argv);
+    app = new QApplication(argc, argv);
 }
 
 void Ut_MInputContextPlugin::cleanupTestCase()

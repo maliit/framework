@@ -1,9 +1,7 @@
 #include "ut_passthroughserver.h"
 #include "mpassthruwindow.h"
-#include "mplainwindow.h"
 #include "mimapplication.h"
 
-#include <MWindow>
 #include <QCommonStyle>
 
 void Ut_PassthroughServer::initTestCase()
@@ -11,17 +9,13 @@ void Ut_PassthroughServer::initTestCase()
     static int argc = 1;
     static char *app_name[1] = { (char *) "ut_passthroughserver" };
 
-    MApplication::setLoadMInputContext(false);
     app = new MIMApplication(argc, app_name);
     app->setStyle(new QCommonStyle);
     app->setTransientHint(1); // remote win id should be non-zero
-
-    new MPlainWindow;
 }
 
 void Ut_PassthroughServer::cleanupTestCase()
 {
-    delete MPlainWindow::instance();
     delete app;
     app = 0;
 }

@@ -6,7 +6,7 @@ INCLUDEPATH += ../stubs \
 # Input
 HEADERS += \
     ut_mimsettingsdialog.h \
-    ../stubs/mgconfitem_stub.h \
+    ../stubs/mimsettings_stub.h \
     ../stubs/fakegconf.h \
     ../stubs/minputcontextconnection_stub.h \
 
@@ -24,7 +24,7 @@ SOURCES += \
     $$SRC_DIR/mimsettingsdialog.cpp \
 }
 
-CONFIG += plugin meegotouch qdbus
+CONFIG += plugin qdbus
 
 LIBS += \
     ../../src/libmeegoimframework.so.0 \

@@ -1,7 +1,6 @@
 #include "ut_mimapplication.h"
 
 #include <mimapplication.h>
-#include <mplainwindow.h>
 #include <mpassthruwindow.h>
 #include <QCoreApplication>
 #include <QSignalSpy>
@@ -10,27 +9,27 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h> // defines IconicState
-            
+
 
 void Ut_MIMApplication::initTestCase()
 {
     static char *argv[1] = { (char *) "ut_mimapplication" };
     static int argc = 1;
 
+#ifdef HAVE_MEEGOTOUCH
     MApplication::setLoadMInputContext(false);
+#endif
+
     app = new MIMApplication(argc, argv);
 
     testWidget = new MPassThruWindow(true);
     testWidget->setFocusPolicy(Qt::NoFocus);
     app->setPassThruWindow(testWidget);
-
-    new MPlainWindow(testWidget);
 }
 
 void Ut_MIMApplication::cleanupTestCase()
 {
     delete testWidget;
-    delete MPlainWindow::instance();
     delete app;
 }
 
