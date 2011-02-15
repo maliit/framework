@@ -14,7 +14,6 @@
  * of this file.
  */
 #include "mpassthruwindow.h"
-#include "mplainwindow.h"
 #include "mimapplication.h"
 #include "mimremotewindow.h"
 
@@ -82,35 +81,6 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
     const int size = regionRects.size();
 
     if (size) {
-#ifdef M_IM_DISABLE_TRANSLUCENCY
-#ifdef M_IM_USE_SHAPE_WINDOW
-        setMask(region);
-#else
-        QPoint newPos(0, 0);
-
-        switch (MPlainWindow::instance()->orientationAngle())
-        {
-        case M::Angle0:
-            newPos.setY(region.boundingRect().top());
-            break;
-        case M::Angle90:
-            newPos.setX(region.boundingRect().width() - width());
-            break;
-        case M::Angle180:
-            newPos.setY(region.boundingRect().height() - height());
-            break;
-        case M::Angle270:
-            newPos.setX(width() - region.boundingRect().width());
-            break;
-        default:
-            Q_ASSERT(0);
-        }
-        move(newPos);
-        newPos.setX(-newPos.x());
-        newPos.setY(-newPos.y());
-#endif
-#else
-
         XRectangle * const rects = (XRectangle*)malloc(sizeof(XRectangle)*(size));
         if (!rects) {
             return;
@@ -140,7 +110,6 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
         free(rects);
         XSync(dpy, False);
-#endif
     }
 
     // selective compositing

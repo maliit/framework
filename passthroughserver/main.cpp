@@ -17,19 +17,18 @@
 
 // Input method overlay window
 
-#include <stdlib.h>
+#include "mimpluginmanager.h"
+#include "mpassthruwindow.h"
+#include "mimapplication.h"
 
 #include <mreactionmap.h>
+#include <QApplication>
 #include <QtDebug>
 #include <QWidget>
+#include <QGraphicsView>
 #include <QPalette>
-
-#include <mreactionmap.h>
-
-#include <MApplication>
-#include <MScene>
-#include <mplainwindow.h>
 #include <QCommonStyle>
+#include <stdlib.h>
 
 #include "mimpluginmanager.h"
 #include "mpassthruwindow.h"
@@ -46,8 +45,6 @@ namespace {
         if (-1 == unsetenv("QT_IM_MODULE")) {
             qWarning("meego-im-uiserver: unable to unset QT_IM_MODULE.");
         }
-
-        MApplication::setLoadMInputContext(false);
 
         // TODO: Check if hardwiring the QStyle can be removed at a later stage.
         QApplication::setStyle(new QCommonStyle);

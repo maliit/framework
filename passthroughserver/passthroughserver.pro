@@ -19,7 +19,6 @@ HEADERS += \
            mimdummyinputcontext.h
 
 QT += core gui
-CONFIG += meegotouchcore
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
@@ -43,7 +42,7 @@ QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml
 check-xml.depends += $$TARGET
 
-QMAKE_EXTRA_TARGETS += check 
+QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.depends += $$TARGET
 
