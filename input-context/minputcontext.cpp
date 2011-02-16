@@ -48,6 +48,7 @@ namespace
 {
     const int SoftwareInputPanelHideTimer = 500;
     const QString DBusCallbackPath("/com/meego/inputmethod/inputcontext");
+    const char * const ToolbarExtension("/toolbar");
 
     enum {
         XKeyPress = KeyPress,
@@ -851,8 +852,8 @@ void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &ite
                                                       const QString &attribute,
                                                       const QVariant& value)
 {
-    imServer->setToolbarItemAttribute(id, item,
-                                      attribute, value);
+    imServer->setExtendedAttribute(id, ToolbarExtension, item,
+                                   attribute, value);
 }
 
 void MInputContext::notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem,
@@ -1019,19 +1020,6 @@ void MInputContext::registerExistingAttributeExtensions()
     foreach (int id, ids) {
         QString fileName = MInputMethodState::instance()->attributeExtensionFile(id);
         imServer->registerAttributeExtension(id, fileName);
-
-        MInputMethodState::ItemAttributeMap itemAttributes
-            = MInputMethodState::instance()->toolbarState(id);
-
-        foreach (QString itemName, itemAttributes.keys()) {
-            MInputMethodState::AttributeMap attributes = itemAttributes.value(itemName);
-
-            foreach (QString attributeName, attributes.keys()) {
-                QVariant value = attributes.value(attributeName);
-
-                imServer->setToolbarItemAttribute(id, itemName, attributeName, value);
-            }
-        }
 
         MInputMethodState::ExtendedAttributeMap extendedAttributes
             = MInputMethodState::instance()->extendedAttributes(id);

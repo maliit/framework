@@ -225,35 +225,6 @@ m_dbus_glib_ic_connection_process_key_event(MDBusGlibICConnection *obj, gint32 k
 }
 
 static gboolean
-m_dbus_glib_ic_connection_register_toolbar(MDBusGlibICConnection *obj, gint32 id,
-                                           const char *fileName, GError **/*error*/)
-{
-    obj->icConnection->registerToolbar(obj, static_cast<int>(id), QString::fromUtf8(fileName));
-    return TRUE;
-}
-
-static gboolean
-m_dbus_glib_ic_connection_unregister_toolbar(MDBusGlibICConnection *obj, gint32 id,
-                                             GError **/*error*/)
-{
-    obj->icConnection->unregisterToolbar(obj, static_cast<int>(id));
-    return TRUE;
-}
-
-static gboolean
-m_dbus_glib_ic_connection_set_toolbar_item_attribute(MDBusGlibICConnection *obj, gint32 id,
-                                                     const char *item, const char *attribute,
-                                                     GArray *value, GError **/*error*/)
-{
-    QVariant deserializedValue;
-    if (deserializeVariant(deserializedValue, value, "setToolbarItemAttribute")) {
-        obj->icConnection->setToolbarItemAttribute(obj, static_cast<int>(id), QString::fromUtf8(item),
-                                                   QString::fromUtf8(attribute), deserializedValue);
-    }
-    return TRUE;
-}
-
-static gboolean
 m_dbus_glib_ic_connection_register_attribute_extension(MDBusGlibICConnection *obj, gint32 id,
                                                        const char *fileName, GError **/*error*/)
 {
@@ -863,7 +834,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
             variant = stateInfo[ToolbarIdAttribute];
             if (variant.isValid()) {
                 const int toolbarLocalId = variant.toInt();
-                registerToolbar(connection, toolbarLocalId, toolbarFile);
+                registerAttributeExtension(connection, toolbarLocalId, toolbarFile);
             }
         }
         emit toolbarIdChanged(newAttributeExtensionId);
@@ -906,37 +877,6 @@ void MInputContextGlibDBusConnection::processKeyEvent(
     foreach (MAbstractInputMethod *target, targets()) {
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
                                 nativeScanCode, nativeModifiers, time);
-    }
-}
-
-void MInputContextGlibDBusConnection::registerToolbar(MDBusGlibICConnection *connection, int id,
-                                                     const QString &toolbar)
-{
-    qWarning() << __PRETTY_FUNCTION__ << "is deprecated. Use registerAttributeExtension() instead";
-    MAttributeExtensionId globalId(id, QString::number(connection->connectionNumber));
-    if (globalId.isValid() && !attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().registerAttributeExtension(globalId, toolbar);
-        attributeExtensionIds.insert(globalId);
-    }
-}
-
-void MInputContextGlibDBusConnection::unregisterToolbar(MDBusGlibICConnection *connection, int id)
-{
-    qWarning() << __PRETTY_FUNCTION__ << "is deprecated. Use unregisterAttributeExtension() instead";
-    MAttributeExtensionId globalId(id, QString::number(connection->connectionNumber));
-    if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().unregisterAttributeExtension(globalId);
-        attributeExtensionIds.remove(globalId);
-    }
-}
-
-void MInputContextGlibDBusConnection::setToolbarItemAttribute(
-    MDBusGlibICConnection *connection, int id, const QString &item, const QString &attribute,
-    const QVariant &value)
-{
-    MAttributeExtensionId globalId(id, QString::number(connection->connectionNumber));
-    if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().setToolbarItemAttribute(globalId, item, attribute, value);
     }
 }
 

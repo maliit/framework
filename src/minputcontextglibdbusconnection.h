@@ -136,28 +136,6 @@ public slots:
                          quint32 nativeModifiers, unsigned long time);
 
     /*!
-     * \deprecated do not use
-     * \brief Register an input method toolbar which is defined in \a fileName with the
-     * unique identifier \a id.
-     *
-     *  The \a id should be unique, and the \a fileName is the absolute file name of the
-     *  custom toolbar.
-     */
-    void registerToolbar(MDBusGlibICConnection *connection, int id, const QString &fileName);
-
-    /*!
-     * \deprecated do not use
-     * \brief Unregister an input method \a toolbar which unique identifier is \a id.
-     */
-    void unregisterToolbar(MDBusGlibICConnection *connection, int id);
-
-    /*!
-     * \brief Sets the \a attribute for the \a item in the custom toolbar to \a value.
-     */
-    void setToolbarItemAttribute(MDBusGlibICConnection *connection, int id, const QString &item,
-                                 const QString &attribute, const QVariant &value);
-
-    /*!
      * \brief get the X window id of the active app window
      */
     WId winId(bool &valid);

@@ -71,9 +71,6 @@ public:
 
     void unregisterAttributeExtension(int id);
 
-    void setToolbarItemAttribute(int id, const QString &item,
-                                 const QString &attribute, const QVariant &value);
-
     void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                               const QString &attribute, const QVariant &value);
 

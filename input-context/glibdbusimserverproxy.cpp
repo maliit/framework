@@ -273,23 +273,6 @@ void GlibDBusIMServerProxy::unregisterAttributeExtension(int id)
                                G_TYPE_INVALID);
 }
 
-void GlibDBusIMServerProxy::setToolbarItemAttribute(int id, const QString &item,
-                                                    const QString &attribute, const QVariant &value)
-{
-    if (!glibObjectProxy) {
-        return;
-    }
-    GArray* serializedValue(serializeVariant(value));
-
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "setToolbarItemAttribute",
-                               G_TYPE_INT, id,
-                               G_TYPE_STRING, item.toUtf8().data(),
-                               G_TYPE_STRING, attribute.toUtf8().data(),
-                               DBUS_TYPE_G_UCHAR_ARRAY, serializedValue,
-                               G_TYPE_INVALID);
-    g_array_unref(serializedValue);
-}
-
 void GlibDBusIMServerProxy::setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                                                  const QString &attribute, const QVariant &value)
 {
