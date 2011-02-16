@@ -14,7 +14,7 @@ SUBDIRS = \
           ft_mimpluginmanager \
           ut_mtoolbardata \
           ut_mtoolbaritem \
-          ut_mtoolbarmanager \
+          ut_mattributeextensionmanager \
           ft_mimsettingsapplet \
           ut_mimsettingsconf \
           ut_mimsettingsdialog \

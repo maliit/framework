@@ -16,12 +16,12 @@
 
 
 
-#include "ut_mtoolbarmanager.h"
-#include <mtoolbarmanager.h>
+#include "ut_mattributeextensionmanager.h"
+#include <mattributeextensionmanager.h>
 #include <mtoolbardata.h>
 #include <mtoolbaritem.h>
 #include <mtoolbarlayout.h>
-#include <mtoolbarid.h>
+#include <mattributeextensionid.h>
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
@@ -34,7 +34,7 @@ namespace {
     QString Toolbar3 = "/toolbar3.xml"; // this file does not exist
 }
 
-void Ut_MToolbarManager::initTestCase()
+void Ut_MAttributeExtensionManager::initTestCase()
 {
     // Avoid waiting if im server is not responding
     // MApplication::setLoadMInputContext(false);
@@ -51,28 +51,28 @@ void Ut_MToolbarManager::initTestCase()
     QVERIFY2(!QFile(Toolbar3).exists(), "toolbar3.xml should not exist");
 }
 
-void Ut_MToolbarManager::cleanupTestCase()
+void Ut_MAttributeExtensionManager::cleanupTestCase()
 {
     delete app;
     app = 0;
 }
 
-void Ut_MToolbarManager::init()
+void Ut_MAttributeExtensionManager::init()
 {
-    subject = new MToolbarManager;
+    subject = new MAttributeExtensionManager;
 }
 
-void Ut_MToolbarManager::cleanup()
+void Ut_MAttributeExtensionManager::cleanup()
 {
     delete subject;
     subject = 0;
 }
 
-void Ut_MToolbarManager::testLoadToolbar()
+void Ut_MAttributeExtensionManager::testLoadToolbar()
 {
-    QList<MToolbarId> toolbarIds;
+    QList<MAttributeExtensionId> toolbarIds;
     for (qlonglong i = 1; i <= 3; i ++) {
-        MToolbarId id(i, "Ut_MToolbarManager");
+        MAttributeExtensionId id(i, "Ut_MAttributeExtensionManager");
         toolbarIds <<  id;
     }
     QStringList toolbars;
@@ -83,11 +83,11 @@ void Ut_MToolbarManager::testLoadToolbar()
     int toolbarCount = 0;
     // register all toolbars
     for (int i = 0; i < toolbarIds.count(); i++) {
-        subject->registerToolbar(toolbarIds.at(i), toolbars.at(i));
-        if (QFile(toolbars.at(i)).exists())
+        subject->registerAttributeExtension(toolbarIds.at(i), toolbars.at(i));
+        if (QFile(toolbars.at(i)).exists()) {
+            QVERIFY(subject->toolbarData(toolbarIds.at(i)));
             toolbarCount ++;
-        QTest::qWait(50);
-        QCOMPARE(subject->toolbarList().count(), toolbarCount);
+        }
     }
 
     for (int i = 0; i < toolbarIds.count(); i++) {
@@ -97,17 +97,17 @@ void Ut_MToolbarManager::testLoadToolbar()
     }
 
     for (int i = toolbarIds.count() - 1; i >= 0; --i) {
-        subject->unregisterToolbar(toolbarIds.at(i));
-        QCOMPARE(subject->toolbars.count(), i);
-        QVERIFY(!subject->toolbars.contains(toolbarIds.at(i)));
+        subject->unregisterAttributeExtension(toolbarIds.at(i));
+        QCOMPARE(subject->attributeExtensionIdList().count(), i);
+        QVERIFY(!subject->attributeExtensionIdList().contains(toolbarIds.at(i)));
     }
 }
 
-void Ut_MToolbarManager::testSetItemAttribute()
+void Ut_MAttributeExtensionManager::testSetItemAttribute()
 {
-    MToolbarId id1(1, "Ut_MToolbarManager");
-    MToolbarId id2(2, "Ut_MToolbarManager");
-    QList<MToolbarId> toolbarIds;
+    MAttributeExtensionId id1(1, "Ut_MAttributeExtensionManager");
+    MAttributeExtensionId id2(2, "Ut_MAttributeExtensionManager");
+    QList<MAttributeExtensionId> toolbarIds;
     toolbarIds <<  id1 << id2;
     QStringList toolbars;
     toolbars << Toolbar1
@@ -116,10 +116,10 @@ void Ut_MToolbarManager::testSetItemAttribute()
     int toolbarCount = 0;
     // register all toolbars
     for (int i = 0; i < toolbarIds.count(); i++) {
-        subject->registerToolbar(toolbarIds.at(i), toolbars.at(i));
+        subject->registerAttributeExtension(toolbarIds.at(i), toolbars.at(i));
         toolbarCount ++;
         QTest::qWait(50);
-        QCOMPARE(subject->toolbarList().count(), toolbarCount);
+        QCOMPARE(subject->attributeExtensionIdList().count(), toolbarCount);
     }
 
     subject->setToolbarItemAttribute(id1, "test1", "text", QVariant(QString("some text")));
@@ -139,10 +139,10 @@ void Ut_MToolbarManager::testSetItemAttribute()
     QVERIFY(item->text() != "some text");
 
     // pass incorrect parameters. Test should not crash here
-    MToolbarId invalidId;
+    MAttributeExtensionId invalidId;
     subject->setToolbarItemAttribute(invalidId, "test1", "text", QVariant(QString("some text")));
     subject->setToolbarItemAttribute(id1, "invalid-item-name", "text", QVariant(QString("some text")));
 }
 
-QTEST_APPLESS_MAIN(Ut_MToolbarManager);
+QTEST_APPLESS_MAIN(Ut_MAttributeExtensionManager);
 

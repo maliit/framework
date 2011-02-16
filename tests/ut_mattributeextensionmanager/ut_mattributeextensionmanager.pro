@@ -4,14 +4,14 @@ INCLUDEPATH += ../stubs \
 
 # Input
 HEADERS += \
-    ut_mtoolbarmanager.h \
+    ut_mattributeextensionmanager.h \
     ../stubs/mgconfitem_stub.h \
     ../stubs/fakegconf.h \
     ../stubs/minputcontextconnection_stub.h \
 
 
 SOURCES += \
-    ut_mtoolbarmanager.cpp \
+    ut_mattributeextensionmanager.cpp \
     ../stubs/fakegconf.cpp \
     ../stubs/minputcontextconnection_stub.cpp \
 
@@ -20,13 +20,13 @@ HEADERS += \
     $$SRC_DIR/mtoolbaritem.h \
     $$SRC_DIR/mtoolbardata.h \
     $$SRC_DIR/minputmethodnamespace.h \
-    $$SRC_DIR/mtoolbarmanager.h \
+    $$SRC_DIR/mattributeextensionmanager.h \
     $$SRC_DIR/mtoolbarlayout.h \
 
 SOURCES += \
     $$SRC_DIR/mtoolbaritem.cpp \
     $$SRC_DIR/mtoolbardata.cpp \
-    $$SRC_DIR/mtoolbarmanager.cpp \
+    $$SRC_DIR/mattributeextensionmanager.cpp \
     $$SRC_DIR/mtoolbarlayout.cpp \
 }
 

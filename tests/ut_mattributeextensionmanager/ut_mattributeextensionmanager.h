@@ -16,16 +16,16 @@
 
 
 
-#ifndef UT_MTOOLBARMANAGER_H
-#define UT_MTOOLBARMANAGER_H
+#ifndef UT_MATTRIBUTEEXTENSIONMANAGER_H
+#define UT_MATTRIBUTEEXTENSIONMANAGER_H
 
 #include <QObject>
 #include <QtTest/QTest>
 
 class QCoreApplication;
-class MToolbarManager;
+class MAttributeExtensionManager;
 
-class Ut_MToolbarManager : public QObject
+class Ut_MAttributeExtensionManager : public QObject
 {
     Q_OBJECT
 
@@ -39,7 +39,7 @@ private slots:
 
 private:
     QCoreApplication *app;
-    MToolbarManager *subject;
+    MAttributeExtensionManager *subject;
 };
 
 #endif
