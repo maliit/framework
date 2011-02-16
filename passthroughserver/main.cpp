@@ -132,12 +132,6 @@ int main(int argc, char **argv)
     // hide active plugins when remote input window is gone or iconified.
     QObject::connect(&app, SIGNAL(remoteWindowGone()),
                      pluginManager, SLOT(hideActivePlugins()));
-    QObject::connect(&app, SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
-                     &widget, SLOT(setRemoteWindow(MImRemoteWindow *)));
-    QObject::connect(&app, SIGNAL(remoteWindowGone()),
-                     &widget, SLOT(setRemoteWindow()));
-    QObject::connect(&app, SIGNAL(remoteWindowGone()),
-                     &widget, SLOT(inputPassthrough()));
 
     return app.exec();
 }

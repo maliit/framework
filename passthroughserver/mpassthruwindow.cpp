@@ -52,6 +52,11 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, bool selfComposited, QWidget
 
     // We do not want input focus for that window.
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
+
+    QObject::connect(mApp, SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
+                     this, SLOT(setRemoteWindow(MImRemoteWindow *)));
+    QObject::connect(mApp, SIGNAL(remoteWindowGone()),
+                     this, SLOT(setRemoteWindow()));
 }
 
 MPassThruWindow::~MPassThruWindow()
@@ -157,4 +162,7 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 void MPassThruWindow::setRemoteWindow(MImRemoteWindow *newWindow)
 {
     remoteWindow = newWindow;
+
+    if (!newWindow)
+        inputPassthrough();
 }
