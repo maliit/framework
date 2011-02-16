@@ -103,16 +103,16 @@ void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCod
                               nativeModifiers, time);
 }
 
-void GlibDBusIMServerProxy::registerToolbar(int /*id*/, const QString &/*fileName*/)
+void GlibDBusIMServerProxy::registerAttributeExtension(int /*id*/, const QString &/*fileName*/)
 {
 }
 
-void GlibDBusIMServerProxy::unregisterToolbar(int /*id*/)
+void GlibDBusIMServerProxy::unregisterAttributeExtension(int /*id*/)
 {
 }
 
-void GlibDBusIMServerProxy::setToolbarItemAttribute(int /*id*/, const QString &/*item*/,
-                                                    const QString &/*attribute*/, const QVariant &/*value*/)
+void GlibDBusIMServerProxy::setExtendedAttribute(int /*id*/, const QString &/*target*/, const QString &/*item*/,
+                                                 const QString &/*attribute*/, const QVariant &/*value*/)
 {
 }
 
