@@ -1,3 +1,48 @@
+0.20.0
+=======
+* Removed MeeGo Touch from public API.
+* Allow to build framework without MeeGo Touch (optional)
+  - Use "$ qmake CONFIG=+nomeegotouch -r ." or
+    "DEB_BUILD_OPTIONS=nomeegotouch".
+* New helper classes:
+  - MImGraphicsView: Use this widget if your input method plugin uses
+    QGraphicsView (or QDeclarative*).
+  - MImWidget: Use this widget if your input method offers a tradtional
+    QWidget-based UI.
+  - Both widgets boost render performance of input method plugins by using the
+    framework's latest self-compositing feature. Check their documentation for
+    subclassing advice. Also, in case you cannot reuse these classes, you need
+    to use MAbstractInputMethodHost::background - if null, it can be ignored.
+    Otherwise, it needs to be drawn into the background of your central widget
+    (assuming full-screen widgets). For QWidgets, this can be done in
+    QWidget::paintEvent. For QGraphicsView, it is required to override
+    QGraphicsView::drawBackground instead.
+  - MImHwKeyboardTracker: Tracks state (open/closed) of HW keyboard (does not
+    provide any functionality yet when framework is build without MeeGo Touch
+    support).
+  - MImSettings: Currently a wrapper for GConf, but supposed to be extended for
+    GConf-less platforms.
+* API changes:
+  - Removed MIMSettingsDialog (use settings applet instead).
+    - Removed MAbstractInputMethodHost::showSettings, too. This means that IM
+      plugins can no longer request the settings dialog.
+  - Removed MPlainWindow.
+  - MAbstractInputMethod:
+    - c'tor now takes an additional QWidget parameter, the
+      main window (top level widget) supplied by the framework. This frees
+      plugins from using MPlainWindow. Plugins can now choose between
+      traditonal QWidget UI's or QGraphicsView UI's (including MeeGo Touch and
+      QML). Make sure to reparent your central widget to the main window.
+    - centralWidget: Returns central widget of your plugin.
+    - setCentralWidget: Sets central widget of your plugin. Important if you
+      want to take advantage of self-composting by using MImGraphicsView or
+      MImWidget.
+  - MInputMethodPlugin:
+    - createInputMethod: Takes an additional QWidget parameter, the main
+      window. Parameter is supplied by framework.
+  - MInputMethod namespace:
+    - added OrientationAngle, Orientation, TextContentType (copied from MeeGo Touch)
+
 0.19.41
 =======
 * API changes
