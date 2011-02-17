@@ -2,7 +2,7 @@ Source: meego-im-framework
 Section: libs
 Priority: extra
 Maintainer: Mohammad Anwari <Mohammad.Anwari@nokia.com> 
-Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.6), doxygen, libqt4-opengl-dev, libgles2-sgx-img-dev [arm armel] | libgles2-dev [arm armel], opengles-sgx-img-common-dev [arm armel], libgl-dev [i386], libgl1 [i386], libxcomposite-dev, libxfixes-dev, libxdamage-dev, libxext-dev, libmeegoreactionmap-dev (>= 0.14.2-1), dbus-1-utils, pkg-config, dpkg-dev, graphviz
+Build-Depends: debhelper (>= 5), libqt4-dev (>= 4.6), libmeegotouch-dev, libduicontrolpanel-dev (>= 0.7.20), libqt4-opengl-dev, libgles2-sgx-img-dev [arm armel] | libgles2-dev [arm armel], opengles-sgx-img-common-dev [arm armel], libgl-dev [i386], libgl1 [i386] | libgl1-mesa-dev [i386], libxcomposite-dev, libxfixes-dev, libxdamage-dev, libxext-dev, libmeegoreactionmap-dev (>= 0.14.2-1), libdbus-glib-1-dev, libgconf2-dev, pkg-config, dpkg-dev, graphviz, doxygen
 Standards-Version: 3.7.2
 
 Package: meego-im-uiserver
@@ -56,8 +56,7 @@ Description: MeegoTouch Input Method Framework Unit Test Suite
 Package: meego-im-context
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}
-Build-Depends: libmeegotouch-dev
+Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Qt input method context for MeegoTouch Framework
 
 Package: meego-im-context-dbg
@@ -68,6 +67,6 @@ Description: Debugging version of Qt input method context for MeegoTouch Framewo
 
 Package: meego-im-settings-applet
 Architecture: any
-Depends: duicontrolpanel (>= 0.7.20), libduicontrolpanel (>= 0.7.20), libmeegoimframework0 (= ${binary:Version}), libmeegotouch-dev
+Depends: ${misc:Depends}, ${shlibs:Depends}, duicontrolpanel (>= 0.7.20), libduicontrolpanel (>= 0.7.20)
 Description: MeegoTouch Text Input Settings Applet
 

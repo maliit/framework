@@ -11,14 +11,13 @@ MOC_DIR = .moc
 LIBS += ../src/libmeegoimframework.so
 
 CONFIG += ordered
-CONFIG += plugin duicontrolpanel
+CONFIG += plugin qdbus
 QT = core gui
 
 contains(CONFIG, nomeegotouch) {
 } else {
-    CONFIG  += meegotouch
+    CONFIG  += meegotouch duicontrolpanel
     DEFINES += HAVE_MEEGOTOUCH
-    LIBS += -lduicontrolpanel
 }
 
 CONFIG += link_pkgconfig
