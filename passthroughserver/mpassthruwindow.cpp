@@ -151,7 +151,7 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
     } else if (!isVisible() && !region.isEmpty()) {
         if (selfComposited && remoteWindow)
             remoteWindow->redirect();
-        show();
+        showFullScreen();
         
         if (raiseOnShow) {
             raise();
