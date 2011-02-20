@@ -23,7 +23,6 @@
 #include "mimdummyinputcontext.h"
 #include "mimremotewindow.h"
 
-#include <mreactionmap.h>
 #include <QApplication>
 #include <QtDebug>
 #include <QWidget>
@@ -67,7 +66,6 @@ int main(int argc, char **argv)
     MPassThruWindow widget(app.bypassWMHint(), selfComposited);
     widget.setFocusPolicy(Qt::NoFocus);
     app.setPassThruWindow(&widget);
-    MReactionMap(&widget, app.applicationName());
 
     MIMPluginManager *pluginManager = new MIMPluginManager;
 
