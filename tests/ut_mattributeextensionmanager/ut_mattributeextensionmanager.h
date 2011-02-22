@@ -36,6 +36,7 @@ private slots:
     void cleanup();
     void testLoadToolbar();
     void testSetItemAttribute();
+    void testSetExtendedAttribute();
 
 private:
     QCoreApplication *app;
