@@ -265,12 +265,13 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
     mDebug("MInputContext") << "in" << __PRETTY_FUNCTION__;
     mDebug("MInputContext") << " event pos: " << event->globalPos() << " cursor pos:" << x;
 
-    if (x < 0) {
+    if (event->type() == QEvent::MouseButtonPress && (x < 0 || x > preedit.length())) {
+        reset();
         return;
     }
 
     // input method server needs to be informed about clicks
-    if (event->type() == QEvent::MouseButtonRelease) {
+    if (event->type() == QEvent::MouseButtonRelease && x >= 0) {
 
         // Query preedit rectangle and pass it to im server if found.
         // In case of plain QT application, null rectangle will be passed.
