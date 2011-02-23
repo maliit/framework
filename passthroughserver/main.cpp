@@ -20,6 +20,8 @@
 #include "mimpluginmanager.h"
 #include "mpassthruwindow.h"
 #include "mimapplication.h"
+#include "mimdummyinputcontext.h"
+#include "mimremotewindow.h"
 
 #include <mreactionmap.h>
 #include <QApplication>
@@ -29,12 +31,6 @@
 #include <QPalette>
 #include <QCommonStyle>
 #include <stdlib.h>
-
-#include "mimpluginmanager.h"
-#include "mpassthruwindow.h"
-#include "mimapplication.h"
-#include "mimdummyinputcontext.h"
-#include "mimremotewindow.h"
 
 namespace {
     void disableMInputContextPlugin()
