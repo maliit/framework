@@ -1,8 +1,10 @@
-meego-im-framework (0.19.44~1) unstable; urgency=low
+meego-im-framework (0.19.44-1) unstable; urgency=low
 
-  * [UNRELEASED]
+  * Fix: small window shown at initial run.
+  * Fixes: NB#215925 - Text input setting can not be opened from Search application
 
- -- huaming wang <huaming.wang@nokia.com>  Thu, 17 Feb 2011 14:41:58 +0200
+
+ -- huaming wang <huaming.wang@nokia.com>  Wed, 23 Feb 2011 11:36:28 +0200
 
 meego-im-framework (0.19.43-1) unstable; urgency=low
 
