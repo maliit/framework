@@ -19,6 +19,7 @@ HEADERSINSTALL = \
         minputmethodnamespace.h \
         mabstractinputmethodsettings.h \
         mtoolbarlayout.h \
+        mimextensionevent.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
@@ -62,7 +63,8 @@ SOURCES += mimpluginmanager.cpp \
         mimscene.cpp \
         mimremotewindow.cpp \
         mimxerrortrap.cpp \
-        mimxextension.cpp
+        mimxextension.cpp \
+        mimextensionevent.cpp \
 
 CONFIG += meegotouchcore qdbus link_pkgconfig
 QT = core gui xml

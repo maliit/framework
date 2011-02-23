@@ -33,6 +33,8 @@ class MAbstractInputMethodHost;
 class MAbstractInputMethodPrivate;
 class MToolbarData;
 class MKeyOverride;
+class MImExtensionEvent;
+
 
 /*!
  * \brief MAbstractInputMethod is a base class for input method servers.
@@ -191,6 +193,14 @@ public:
      * \param overrides Pointer to key override definitions.
      */
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
+
+    /*!
+     * \brief handles extension event not covered by separate method.
+     * \param event event to handle
+     * 
+     * Should return true if event is handled, otherwise false.
+     */
+    virtual bool imExtensionEvent(MImExtensionEvent *event);
 
 signals:
     /*!
