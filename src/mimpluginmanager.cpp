@@ -407,6 +407,11 @@ bool MIMPluginManagerPrivate::doSwitchPlugin(MInputMethod::SwitchDirection direc
         // switch to other plugin if it could handle any state
         // handled by current plugin just now
         if (intersect == source->state) {
+            // if plugin which is to be switched needs to support OnScreen, the subviews should not be empty.
+            if (source->state.contains(MInputMethod::OnScreen)
+                && replacement->inputMethod->subViews(MInputMethod::OnScreen).count() <= 0) {
+                return false;
+            }
             changeHandlerMap(source.key(), replacement.key(), replacement.key()->supportedStates());
             replacePlugin(direction, source, replacement);
             return true;
