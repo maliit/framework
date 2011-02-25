@@ -55,36 +55,22 @@ namespace {
 
 int main(int argc, char **argv)
 {
-    bool bypassWMHint = false;
-    bool selfComposited = false;
-
-    for (int i = 1; i < argc; i++) {
-        QString s(argv[i]);
-        if (s == "-bypass-wm-hint") {
-            bypassWMHint = true;
-        }
-
-        if (s == "-use-self-composition") {
-            selfComposited = true;
-        }
-    }
-
     // QT_IM_MODULE, MApplication and QtMaemo5Style all try to load
     // MInputContext, which is fine for the application. For the passthrough
     // server itself, we absolutely need to prevent that.
     disableMInputContextPlugin();
 
-    MIMApplication app(argc, argv, selfComposited);
+    MIMApplication app(argc, argv);
     // Set a dummy input context so that Qt does not create a default input
     // context (qimsw-multi) which is expensive and not required by
     // meego-im-uiserver.
     app.setInputContext(new MIMDummyInputContext);
 
-    selfComposited = app.selfComposited();
+    bool selfComposited = app.selfComposited();
 
     qDebug() << (selfComposited ? "Use self composition" : "Use system compositor");
 
-    MPassThruWindow widget(bypassWMHint, selfComposited);
+    MPassThruWindow widget(app.bypassWMHint(), selfComposited);
     widget.setFocusPolicy(Qt::NoFocus);
     app.setPassThruWindow(&widget);
 

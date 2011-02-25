@@ -51,7 +51,7 @@ public:
      * QCoreApplication::arguments(),  in the case of filtered command line
      * arguments).
      */
-    explicit MIMApplication(int &argc, char** argv, bool initializeComposite = false);
+    explicit MIMApplication(int &argc, char** argv);
     virtual ~MIMApplication();
 
     //! Requires a valid remoteWinId and a valid passThruWindow before it'll
@@ -60,14 +60,16 @@ public:
     bool x11EventFilter(XEvent *ev);
 
     void setTransientHint(WId remoteWinId);
-    void setPassThruWindow(QWidget *passThruWindow);
+    void setPassThruWindow(QWidget *mPassThruWindow);
 
     static MIMApplication *instance();
 
     bool selfComposited() const;
+    bool manualRedirection() const;
+    bool bypassWMHint() const;
 
-    const MImXCompositeExtension& compositeExtension() { return composite_extension; }
-    const MImXDamageExtension& damageExtension() { return damage_extension; }
+    const MImXCompositeExtension& compositeExtension() { return mCompositeExtension; }
+    const MImXDamageExtension& damageExtension() { return mDamageExtension; }
 signals:
     //! After a map window request (e.g., via show()) this signal gets emitted
     //! as soon as X mapped our passthru window.
@@ -83,6 +85,8 @@ signals:
     //! This signal is emitted when remote window is gone
     void remoteWindowGone();
 private:
+    void parseArguments(int &argc, char** argv);
+
     void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);
     void handleDamageEvents(XEvent *ev);
@@ -92,11 +96,14 @@ private:
     bool wasPassThruWindowMapped(XEvent *ev) const;
     bool wasPassThruWindowUnmapped(XEvent *ev) const;
 
-    QPointer<QWidget> passThruWindow;
-    MImRemoteWindow *remoteWindow;
-    MImXCompositeExtension composite_extension;
-    MImXDamageExtension damage_extension;
-    bool self_composited;
+    QPointer<QWidget> mPassThruWindow;
+    MImRemoteWindow *mRemoteWindow;
+    MImXCompositeExtension mCompositeExtension;
+    MImXDamageExtension mDamageExtension;
+    bool mSelfComposited;
+    bool mManualRedirection;
+    bool mBypassWMHint;
+
     friend class Ut_PassthroughServer;
 };
 //! \internal_end

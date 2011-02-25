@@ -41,7 +41,11 @@ public:
     //! Returns whether the \a event unmapped the remote application window
     bool wasUnmapped(XEvent *event) const;
 
-    //! Enables redirection of the remote application window
+    //! Enables redirection of the remote application window and starts listening
+    //! to damage events.
+    //! By default this function assumes that the window is already redirected by
+    //! the window manager else meego-im-uiserver needs to be started with the
+    //! -manual-redirection option.
     void redirect();
     //! Disables redirection of the remote application window
     void unredirect();
@@ -70,10 +74,13 @@ private:
     void destroyDamage();
 
     WId wid;
+
     Qt::HANDLE xpixmap;
     Qt::HANDLE damage;
 
     QPixmap pixmap;
+
+    bool redirected;
 };
 //! \internal_end
 

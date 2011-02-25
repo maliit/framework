@@ -33,7 +33,8 @@ MImRemoteWindow::MImRemoteWindow(WId window, QObject *parent) :
     wid(window),
     xpixmap(0),
     damage(0),
-    pixmap()
+    pixmap(),
+    redirected(false)
 {
 }
 
@@ -111,12 +112,16 @@ void MImRemoteWindow::destroyDamage()
 
 void MImRemoteWindow::redirect()
 {
-    MImXErrorTrap xerror(MIMApplication::instance()->compositeExtension(), X_CompositeRedirectWindow);
-    XCompositeRedirectWindow(QX11Info::display(),
-                             wid,
-                             CompositeRedirectManual);
-    if (xerror.untrap() == BadAccess)
-        qDebug() << "Window " << wid << " was already redirected";
+    if (MIMApplication::instance()->manualRedirection()) {
+        MImXErrorTrap xerror(MIMApplication::instance()->compositeExtension(), X_CompositeRedirectWindow);
+        XCompositeRedirectWindow(QX11Info::display(),
+                                 wid,
+                                 CompositeRedirectManual);
+        if (xerror.untrap() == BadAccess)
+            qDebug() << "Window " << wid << " was already redirected";
+    }
+
+    redirected = true;
 
     setupPixmap();
     setupDamage();
@@ -126,15 +131,19 @@ void MImRemoteWindow::redirect()
 
 void MImRemoteWindow::unredirect()
 {
+    redirected = false;
+
     destroyDamage();
     destroyPixmap();
 
-    MImXErrorTrap xerror(MIMApplication::instance()->compositeExtension(), X_CompositeUnredirectWindow);
-    XCompositeUnredirectWindow(QX11Info::display(),
-                               wid,
-                               CompositeRedirectManual);
-    if (xerror.untrap() == BadAccess)
-        qDebug() << "Window " << wid << " was not redirected";
+    if (MIMApplication::instance()->manualRedirection()) {
+        MImXErrorTrap xerror(MIMApplication::instance()->compositeExtension(), X_CompositeUnredirectWindow);
+        XCompositeUnredirectWindow(QX11Info::display(),
+                                   wid,
+                                   CompositeRedirectManual);
+        if (xerror.untrap() == BadAccess)
+            qDebug() << "Window " << wid << " was not redirected";
+    }
 }
 
 void MImRemoteWindow::handleDamageEvent(XEvent *event)
@@ -178,6 +187,7 @@ void MImRemoteWindow::setupPixmap()
     xpixmap = XCompositeNameWindowPixmap(QX11Info::display(), wid);
     if (error.untrap() == BadMatch) {
         qDebug() << "Cannot get offscreen reference for Window " << wid;
+        xpixmap = 0;
         return;
     }
 
@@ -198,5 +208,10 @@ void MImRemoteWindow::destroyPixmap()
 
 QPixmap MImRemoteWindow::windowPixmap() const
 {
+    // setup remote pixmap when it failed before
+    if (redirected && pixmap.isNull()) {
+        const_cast<MImRemoteWindow*>(this)->setupPixmap();
+    }
+
     return pixmap;
 }

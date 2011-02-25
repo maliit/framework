@@ -23,18 +23,36 @@
 
 #include <X11/Xlib.h>
 
-MIMApplication::MIMApplication(int &argc, char **argv, bool useSelfComposite)
+MIMApplication::MIMApplication(int &argc, char **argv)
     : MApplication(argc, argv),
-      passThruWindow(0),
-      remoteWindow(0),
-      composite_extension(),
-      damage_extension(),
-      self_composited(useSelfComposite && composite_extension.supported(0, 2) && damage_extension.supported())
+      mPassThruWindow(0),
+      mRemoteWindow(0),
+      mCompositeExtension(),
+      mDamageExtension(),
+      mSelfComposited(false),
+      mManualRedirection(false),
+      mBypassWMHint(false)
 {
+    parseArguments(argc, argv);
 }
 
 MIMApplication::~MIMApplication()
 {
+}
+
+void MIMApplication::parseArguments(int &argc, char** argv)
+{
+    for (int i = 1; i < argc; i++) {
+        QLatin1String arg(argv[i]);
+
+        if (arg == "-manual-redirection") {
+            mManualRedirection = true;
+        } else if (arg == "-bypass-wm-hint") {
+            mBypassWMHint = true;
+        } else if (arg == "-use-self-composition") {
+            mSelfComposited = mCompositeExtension.supported(0, 2) && mDamageExtension.supported();
+        }
+    }
 }
 
 bool MIMApplication::x11EventFilter(XEvent *ev)
@@ -58,15 +76,15 @@ void MIMApplication::handleMapNotifyEvents(XEvent *ev)
 
 void MIMApplication::handleTransientEvents(XEvent *ev)
 {
-    if (0 == remoteWindow || not passThruWindow) {
+    if (0 == mRemoteWindow || not mPassThruWindow) {
         return;
     }
 
-    if (remoteWindow->wasIconified(ev) || remoteWindow->wasUnmapped(ev)) {
+    if (mRemoteWindow->wasIconified(ev) || mRemoteWindow->wasUnmapped(ev)) {
         mDebug("MIMApplication") << "Remote window was destroyed or iconified - hiding.";
         emit remoteWindowGone();
-        delete remoteWindow;
-        remoteWindow = 0;
+        delete mRemoteWindow;
+        mRemoteWindow = 0;
     }
 }
 
@@ -76,23 +94,23 @@ void MIMApplication::setTransientHint(WId newRemoteWinId)
         return;
     }
 
-    if (remoteWindow && remoteWindow->id() == newRemoteWinId) {
+    if (mRemoteWindow && mRemoteWindow->id() == newRemoteWinId) {
         return;
     }
 
-    MImRemoteWindow *oldWindow = remoteWindow;
+    MImRemoteWindow *oldWindow = mRemoteWindow;
 
-    remoteWindow = new MImRemoteWindow(newRemoteWinId, this);
-    remoteWindow->setIMWidget(passThruWindow->window());
-    emit remoteWindowChanged(remoteWindow);
+    mRemoteWindow = new MImRemoteWindow(newRemoteWinId, this);
+    mRemoteWindow->setIMWidget(mPassThruWindow->window());
+    emit remoteWindowChanged(mRemoteWindow);
 
     delete oldWindow;
 }
 
 void MIMApplication::setPassThruWindow(QWidget *newPassThruWindow)
 {
-    if (newPassThruWindow != passThruWindow) {
-        passThruWindow = newPassThruWindow;
+    if (newPassThruWindow != mPassThruWindow) {
+        mPassThruWindow = newPassThruWindow;
     }
 }
 
@@ -103,27 +121,37 @@ MIMApplication *MIMApplication::instance()
 
 bool MIMApplication::wasPassThruWindowMapped(XEvent *ev) const
 {
-    return (passThruWindow &&
+    return (mPassThruWindow &&
             MapNotify == ev->type &&
-            static_cast<WId>(ev->xmap.event) == passThruWindow->effectiveWinId());
+            static_cast<WId>(ev->xmap.event) == mPassThruWindow->effectiveWinId());
 }
 
 bool MIMApplication::wasPassThruWindowUnmapped(XEvent *ev) const
 {
-    return (passThruWindow &&
+    return (mPassThruWindow &&
             UnmapNotify == ev->type &&
-            static_cast<WId>(ev->xunmap.event) == passThruWindow->effectiveWinId());
+            static_cast<WId>(ev->xunmap.event) == mPassThruWindow->effectiveWinId());
 }
 
 void MIMApplication::handleDamageEvents(XEvent *event)
 {
-    if (remoteWindow == 0)
+    if (mRemoteWindow == 0)
         return;
 
-    remoteWindow->handleDamageEvent(event);
+    mRemoteWindow->handleDamageEvent(event);
 }
 
 bool MIMApplication::selfComposited() const
 {
-    return self_composited;
+    return mSelfComposited;
+}
+
+bool MIMApplication::manualRedirection() const
+{
+    return mManualRedirection;
+}
+
+bool MIMApplication::bypassWMHint() const
+{
+    return mBypassWMHint;
 }

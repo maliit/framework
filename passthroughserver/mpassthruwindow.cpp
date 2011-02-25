@@ -145,14 +145,18 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (isVisible() && region.isEmpty()) {
-        if (selfComposited && remoteWindow)
+        if (selfComposited && remoteWindow) {
             remoteWindow->unredirect();
+        }
+
         hide();
     } else if (!isVisible() && !region.isEmpty()) {
-        if (selfComposited && remoteWindow)
+        if (selfComposited && remoteWindow) {
             remoteWindow->redirect();
+        }
+
         showFullScreen();
-        
+
         if (raiseOnShow) {
             raise();
         }
