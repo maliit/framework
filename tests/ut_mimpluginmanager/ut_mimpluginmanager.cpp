@@ -332,7 +332,7 @@ void Ut_MIMPluginManager::testSwitchPluginState()
 }
 
 
-void Ut_MIMPluginManager::testMultilePlugins()
+void Ut_MIMPluginManager::testMultiplePlugins()
 {
     QSet<MInputMethod::HandlerState> actualState;
     DummyImPlugin  *plugin  = 0;

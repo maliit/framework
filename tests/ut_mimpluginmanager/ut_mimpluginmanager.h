@@ -26,7 +26,7 @@ private slots:
     void testConvertAndFilterHandlers_data();
     void testConvertAndFilterHandlers();
     void testSwitchPluginState();
-    void testMultilePlugins();
+    void testMultiplePlugins();
     void testExistInputMethod();
 
     void testPluginSwitcher_data();
