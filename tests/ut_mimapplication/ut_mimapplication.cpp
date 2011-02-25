@@ -10,6 +10,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h> // defines IconicState
 
+namespace {
+    const WId FakeRemoteWId = 1; // must be non-zero to be considered "valid"
+}
 
 void Ut_MIMApplication::initTestCase()
 {
@@ -29,13 +32,12 @@ void Ut_MIMApplication::initTestCase()
 
 void Ut_MIMApplication::cleanupTestCase()
 {
-    delete testWidget;
     delete app;
 }
 
 void Ut_MIMApplication::init()
 {
-    app->setTransientHint(testWidget->effectiveWinId());
+    app->setTransientHint(FakeRemoteWId);
 }
 
 void Ut_MIMApplication::cleanup()
@@ -46,7 +48,7 @@ void Ut_MIMApplication::testHandleTransientEvents()
 {
     XEvent xevent;
     xevent.type = UnmapNotify;
-    xevent.xunmap.event = testWidget->effectiveWinId();
+    xevent.xunmap.event = FakeRemoteWId;
 
     QSignalSpy spy(app, SIGNAL(remoteWindowGone()));
     app->x11EventFilter(&xevent);
