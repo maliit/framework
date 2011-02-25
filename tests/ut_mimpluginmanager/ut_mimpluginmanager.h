@@ -4,7 +4,7 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-
+class MIMApplication;
 class MIMPluginManager;
 class MIMPluginManagerPrivate;
 class QCoreApplication;
@@ -47,7 +47,7 @@ private slots:
 private:
     void handleMessages();
 
-    QCoreApplication *app;
+    MIMApplication *app;
     QString pluginPath;
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;

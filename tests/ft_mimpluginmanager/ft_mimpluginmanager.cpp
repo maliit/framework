@@ -4,6 +4,7 @@
 #include "minputcontextconnection_stub.h"
 #include "dummyimplugin.h"
 #include "dummyinputmethod.h"
+#include "mimapplication.h"
 
 #include <QProcess>
 #include <QGraphicsScene>
@@ -36,7 +37,7 @@ void Ft_MIMPluginManager::initTestCase()
     static char *argv[1] = { (char *) "ut_mimpluginmanager" };
     static int argc = 1;
 
-    app = new QApplication(argc, argv);
+    app = new MIMApplication(argc, argv);
 
     // Use either global test plugin directory or TESTPLUGIN_PATH, if it is
     // set (to local sandbox's plugin directory by makefile, at least).

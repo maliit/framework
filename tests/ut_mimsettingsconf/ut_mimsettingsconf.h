@@ -7,7 +7,7 @@
 
 class MIMPluginManager;
 class MImSettingsConf;
-class QCoreApplication;
+class MIMApplication;
 
 class Ut_MIMSettingsConf : public QObject
 {
@@ -28,7 +28,7 @@ private slots:
 private:
     void handleMessages();
 
-    QCoreApplication *app;
+    MIMApplication *app;
     QString pluginPath;
     MIMPluginManager *manager;
 };

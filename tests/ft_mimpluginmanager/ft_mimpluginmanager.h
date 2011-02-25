@@ -5,7 +5,7 @@
 #include <QObject>
 
 
-class QApplication;
+class MIMApplication;
 class MIMPluginManager;
 class QGraphicsScene;
 
@@ -27,7 +27,7 @@ private slots:
     void testSwitchToSpecifiedPlugin();
 
 private:
-    QApplication *app;
+    MIMApplication *app;
     QString pluginPath;
     MIMPluginManager *subject;
 };

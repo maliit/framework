@@ -2,6 +2,7 @@
 #include "mimsettingsconf.h"
 #include "mimsettings_stub.h"
 #include "fakegconf.h"
+#include "mimapplication.h"
 
 #include <QProcess>
 #include <QRegExp>
@@ -33,7 +34,7 @@ void Ut_MIMSettingsConf::initTestCase()
     static char *argv[1] = { (char *) "ut_mimsettingsconf" };
     static int argc = 1;
 
-    app = new QCoreApplication(argc, argv);
+    app = new MIMApplication(argc, argv);
 
     // Use either global test plugin directory or TESTPLUGIN_PATH, if it is
     // set (to local sandbox's plugin directory by makefile, at least).

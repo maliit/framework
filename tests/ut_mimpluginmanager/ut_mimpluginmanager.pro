@@ -13,13 +13,14 @@ HEADERS += \
     $$SRC_DIR/mimpluginmanager_p.h \
     $$SRC_DIR/minputmethodplugin.h \
     $$SRC_DIR/minputcontextconnection.h \
+    $$SRC_DIR/mimapplication.h \
 
 SOURCES += \
     ut_mimpluginmanager.cpp \
     ../stubs/fakegconf.cpp \
     ../stubs/minputcontextconnection_stub.cpp \
     $$SRC_DIR/minputcontextconnection.cpp \
-
+    $$SRC_DIR/mimapplication.cpp \
 
 CONFIG += plugin qdbus
 
