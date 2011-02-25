@@ -18,14 +18,12 @@
 #ifndef MKEYOVERRIDE_P_H
 #define MKEYOVERRIDE_P_H
 
-#include <QSharedPointer>
-
 class MToolbarData;
 class MWidgetData;
 
 class MKeyOverridePrivate {
 public:
-    Q_DECLARE_PUBLIC(MKeyOverride)
+    Q_DISABLE_COPY(MKeyOverridePrivate)
 
     MKeyOverridePrivate();
 
@@ -36,9 +34,6 @@ public:
     QString icon;
     bool highlighted;
     bool enabled;
-
-private:
-    MKeyOverride *q_ptr;
 };
 
 #endif

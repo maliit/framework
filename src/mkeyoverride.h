@@ -52,7 +52,7 @@ public:
     /*!
     * \brief Constructor
     */
-    MKeyOverride(const QString &keyId);
+    explicit MKeyOverride(const QString &keyId);
 
     /*!
      * \brief Copy constructor
@@ -109,7 +109,7 @@ signals:
     /*!
      * \brief Emitted when some attributes of the key are changed
      * \param keyId, the key id.
-     * \param changedAttributes Specifies the chanaged attributes. \sa KeyOverrideAttribute
+     * \param changedAttributes Specifies the changed attributes. \sa KeyOverrideAttribute
      */
     void keyAttributesChanged(const QString &keyId, const MKeyOverride::KeyOverrideAttributes changedAttributes);
 

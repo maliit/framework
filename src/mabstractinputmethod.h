@@ -187,7 +187,7 @@ public:
     virtual void showLanguageNotification();
 
     /*!
-     * \brief Uses custom key overrides which is defined by given parameter.
+     * \brief Uses custom key overrides which are defined by given parameter.
      * \param overrides Pointer to key override definitions.
      */
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);

@@ -21,7 +21,7 @@
 
 namespace
 {
-    bool keyOverrideLessThan(const QSharedPointer<MKeyOverride> &k1, const QSharedPointer<MKeyOverride> &k2)
+    inline bool keyOverrideLessThan(const QSharedPointer<MKeyOverride> &k1, const QSharedPointer<MKeyOverride> &k2)
     {
         return (k1->keyId() < k2->keyId());
     };

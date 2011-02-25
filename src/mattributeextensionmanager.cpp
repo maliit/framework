@@ -25,9 +25,12 @@
 
 #include <MLocale>
 #include <QVariant>
+#include <QFileInfo>
+#include <QFile>
 #include <QDebug>
 
 namespace {
+    const QString DefaultConfigurationPath   = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/");
     const QString StandardToolbar = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/standard.xml");
     const char * const PreferredDomainSettingName("/meegotouch/inputmethods/preferred_domain");
     const char * const DomainItemName("_domain");
@@ -223,16 +226,22 @@ void MAttributeExtensionManager::registerAttributeExtension(const MAttributeExte
     if (!id.isValid() || attributeExtensions.contains(id))
         return;
 
+    // Only register default extension in the case of empty string.
+    // Don't register extension if user makes a typo in the file name.
+    if (!fileName.isEmpty()) {
+        QString absoluteFileName = fileName;
+        QFileInfo info(absoluteFileName);
+        if (info.isRelative())
+            absoluteFileName = DefaultConfigurationPath + info.fileName();
+        if (!QFile::exists(absoluteFileName))
+            return;
+    }
+
     QSharedPointer<MAttributeExtension> attributeExtension(new MAttributeExtension(id, fileName));
     if (attributeExtension) {
         addStandardButtons(attributeExtension->toolbarData());
         QSharedPointer<MToolbarData> toolbar = attributeExtension->toolbarData();
         updateDomain(toolbar);
-    } else {
-        attributeExtension = standardAttributeExtension;
-    }
-
-    if (attributeExtension) {
         attributeExtensions.insert(id, attributeExtension);
     }
 }
@@ -250,24 +259,8 @@ void MAttributeExtensionManager::setToolbarItemAttribute(const MAttributeExtensi
                                               const QString &attribute,
                                               const QVariant &value)
 {
-    if (!id.isValid() || attribute.isEmpty() || !value.isValid())
-        return;
-
-    QSharedPointer<MToolbarData> toolbar = toolbarData(id);
-
-    if (!toolbar) {
-        return;
-    }
-
-    QSharedPointer<MToolbarItem> item = toolbar->item(itemName);
-
-    if (!item) {
-        return;
-    }
-
-    const QByteArray byteArray = attribute.toLatin1();
-    const char * const c_str = byteArray.data();
-    item->setProperty(c_str, value);
+    setExtendedAttribute(id, ToolbarExtensionString, itemName,
+                         attribute, value);
 }
 
 QMap<QString, QSharedPointer<MKeyOverride> > MAttributeExtensionManager::keyOverrides(
@@ -300,16 +293,16 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
         return;
     }
 
-
     if (target == KeysExtensionString) {
         // create key override if not exist.
         bool newKeyOverrideCreated = extension->keyOverrideData()->createKeyOverride(targetItem);
         QSharedPointer<MKeyOverride> keyOverride = extension->keyOverrideData()->keyOverride(targetItem);
-        if (keyOverride) {
-            const QByteArray byteArray = attribute.toLatin1();
-            const char * const c_str = byteArray.data();
-            keyOverride->setProperty(c_str, value);
-        }
+
+        Q_ASSERT(keyOverride);
+        const QByteArray byteArray = attribute.toLatin1();
+        const char * const c_str = byteArray.data();
+        keyOverride->setProperty(c_str, value);
+
         // emit signal to notify the new key override is created.
         if (newKeyOverrideCreated) {
             emit keyOverrideCreated();
@@ -317,6 +310,7 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
     } else if (target == ToolbarExtensionString) {
         QSharedPointer<MToolbarData> toolbar = extension->toolbarData();
         if (!toolbar) {
+            qWarning() << "Can not find toolbar data!";
             return;
         }
         QSharedPointer<MToolbarItem> item = toolbar->item(targetItem);

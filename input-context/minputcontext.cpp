@@ -48,7 +48,7 @@ namespace
 {
     const int SoftwareInputPanelHideTimer = 500;
     const QString DBusCallbackPath("/com/meego/inputmethod/inputcontext");
-    const char * const ToolbarExtension("/toolbar");
+    const char * const ToolbarTarget("/toolbar");
 
     enum {
         XKeyPress = KeyPress,
@@ -852,7 +852,7 @@ void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &ite
                                                       const QString &attribute,
                                                       const QVariant& value)
 {
-    imServer->setExtendedAttribute(id, ToolbarExtension, item,
+    imServer->setExtendedAttribute(id, ToolbarTarget, item,
                                    attribute, value);
 }
 

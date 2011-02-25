@@ -207,6 +207,7 @@ private slots:
     void notifyOrientationChanged(M::OrientationAngle orientation);
 
     //! Notify input method plugin about a new attribute extension which is defined in \a fileName and with the unique \a id to be registered.
+    //! \note empty string for \a fileName is acceptable, it means don't load any content, just register a new id.
     void notifyAttributeExtensionRegistered(int id, const QString &fileName);
 
     //! Notify input method plugin about an attribute extension which has a unique identifier \a id to be unregistered.

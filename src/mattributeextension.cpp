@@ -22,11 +22,8 @@
 
 #include <QDebug>
 
-namespace
-{
-}
-
 MAttributeExtensionPrivate::MAttributeExtensionPrivate()
+    : id()
 {
 }
 
