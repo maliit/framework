@@ -21,6 +21,7 @@
 
 #include <QRect>
 #include <QObject>
+#include <QPixmap>
 
 class QString;
 class QRegion;
@@ -111,6 +112,12 @@ public:
      * \brief returns the selecting text
      */
     virtual QString selection(bool &valid) = 0;
+
+    /*!
+     * \brief returns a pixmap that needs to be drawn as the background of the
+     *        input method. Pixmap contains the application's window contents.
+     */
+    QPixmap background() const;
 
 public slots:
     /*!

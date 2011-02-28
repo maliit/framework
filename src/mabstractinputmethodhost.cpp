@@ -15,7 +15,7 @@
  */
 
 #include "mabstractinputmethodhost.h"
-
+#include "mimapplication.h"
 
 class MAbstractInputMethodHostPrivate
 {
@@ -51,3 +51,9 @@ bool MAbstractInputMethodHost::hiddenText(bool &valid)
     valid = false;
     return false;
 }
+
+QPixmap MAbstractInputMethodHost::background() const
+{
+    return MIMApplication::remoteWindowPixmap();
+}
+
