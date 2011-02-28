@@ -461,6 +461,16 @@ bool MInputContext::filterEvent(const QEvent *event)
                 const MInputMethod::PreeditTextFormat preeditFormat(
                     0, injectionEvent->preedit().length(), MInputMethod::PreeditDefault);
                 preeditFormats << preeditFormat;
+                // TODO: updatePreedit() below causes update() to be called which
+                // communicates new cursor position (among other things) to the active
+                // input method.  The cursor is at the beginning of the pre-edit but the
+                // input method does not yet know that there is an active pre-edit,
+                // because that is communicated separately by the imServer->setPreedit()
+                // call below.  This means, for example, that if the cursor position is
+                // such that autocapitalization applies, it will have an effect, and once
+                // the setPreedit() below has been called, the effect will be undone.
+                // This causes flickering in vkb/sbox but not on the device, so for now
+                // we'll leave this to be fixed later.  Please refer to NB#226907.
                 updatePreedit(injectionEvent->preedit(), preeditFormats);
                 imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
 
