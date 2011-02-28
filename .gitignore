@@ -9,6 +9,9 @@ doxygen.log*
 *.o
 moc_*
 gen_*
+*.swp
+*~
+*.pro.user
 *.gcov
 *.gcda
 *.gcno
