@@ -45,6 +45,9 @@ public slots:
     //! Set the new remote window (application window)
     void setRemoteWindow(MImRemoteWindow *remoteWindow = 0);
 
+    //! Schedules repainting for widget's background from remote window
+    void updateFromRemoteWindow(const QRegion &region);
+
 private:
     Q_DISABLE_COPY(MPassThruWindow);
 

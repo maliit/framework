@@ -3,6 +3,7 @@ include(../mconfig.pri)
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = meegoimframework
+INCLUDEPATH += ../passthroughserver
 
 # Input
 HEADERSINSTALL = \
@@ -19,6 +20,8 @@ HEADERSINSTALL = \
         mabstractinputmethodsettings.h \
         mtoolbarlayout.h \
         mimextensionevent.h \
+        mimgraphicsview.h \
+        mimwidget.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
@@ -39,6 +42,9 @@ HEADERS += $$HEADERSINSTALL \
         mimxextension.h \
         mimsettings.h \
         mimhwkeyboardtracker.h \
+        mimgraphicsview_p.h \
+        mimwidget_p.h \
+	../passthroughserver/mpassthruwindow.h \
 
 SOURCES += mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
@@ -63,6 +69,9 @@ SOURCES += mimpluginmanager.cpp \
         mimextensionevent.cpp \
         mimsettings.cpp \
         mimhwkeyboardtracker.cpp \
+        mimgraphicsview.cpp \
+        mimwidget.cpp \
+	../passthroughserver/mpassthruwindow.cpp \
 
 CONFIG += qdbus link_pkgconfig
 QT = core gui xml

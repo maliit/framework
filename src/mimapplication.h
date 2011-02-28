@@ -22,7 +22,9 @@
 #include <QPixmap>
 #include <QRect>
 #include <QPointer>
+#include <memory>
 
+#include "mimremotewindow.h"
 #include "mimxextension.h"
 
 class MIMApplication;
@@ -30,8 +32,6 @@ class MIMApplication;
 #undef mApp
 #endif
 #define mApp (static_cast<MIMApplication *>(QCoreApplication::instance()))
-
-class MImRemoteWindow;
 
 //! \internal
 /*! \brief A helper class to filter X11 events
@@ -69,7 +69,12 @@ public:
     bool selfComposited() const;
     bool manualRedirection() const;
     bool bypassWMHint() const;
-    QPixmap remoteWindowPixmap() const;
+
+#ifdef UNIT_TEST
+    MImRemoteWindow *remoteWindow() const;
+#endif
+
+    static const QPixmap &remoteWindowPixmap();
 
     const MImXCompositeExtension& compositeExtension() { return mCompositeExtension; }
     const MImXDamageExtension& damageExtension() { return mDamageExtension; }
@@ -87,6 +92,10 @@ signals:
 
     //! This signal is emitted when remote window is gone
     void remoteWindowGone();
+
+private slots:
+    void updatePassThruWindow(const QRegion &region);
+
 private:
     void parseArguments(int &argc, char** argv);
 
@@ -100,19 +109,12 @@ private:
     bool wasPassThruWindowUnmapped(XEvent *ev) const;
 
     QPointer<QWidget> mPassThruWindow;
-<<<<<<< HEAD
-    MImRemoteWindow *mRemoteWindow;
+    std::auto_ptr<MImRemoteWindow> mRemoteWindow;
     MImXCompositeExtension mCompositeExtension;
     MImXDamageExtension mDamageExtension;
     bool mSelfComposited;
     bool mManualRedirection;
     bool mBypassWMHint;
-=======
-    MImRemoteWindow *remoteWindow;
-    MImXCompositeExtension composite_extension;
-    MImXDamageExtension damage_extension;
-    bool self_composited;
->>>>>>> New: Remove LMT dependencies from public API
 
     friend class Ut_PassthroughServer;
 };

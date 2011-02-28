@@ -18,6 +18,7 @@
 #include "mimremotewindow.h"
 
 #include <QDebug>
+#include <QGraphicsView>
 #include <QX11Info>
 
 #include <X11/Xlib.h>
@@ -138,4 +139,22 @@ void MPassThruWindow::setRemoteWindow(MImRemoteWindow *newWindow)
 
     if (!newWindow)
         inputPassthrough();
+}
+
+void MPassThruWindow::updateFromRemoteWindow(const QRegion &region)
+{
+    const QRectF br(region.boundingRect());
+    QList<QRectF> rects;
+    rects.append(br);
+
+    foreach (QObject *obj, children()) {
+        if  (QGraphicsView *v = qobject_cast<QGraphicsView *>(obj)) {
+            v->invalidateScene(br, QGraphicsScene::BackgroundLayer);
+            v->updateScene(rects);
+            v->update(region);
+        } else
+        if (QWidget *w = qobject_cast<QWidget *>(obj)) {
+            w->update(region);
+        }
+    }
 }
