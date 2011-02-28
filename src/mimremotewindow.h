@@ -54,7 +54,7 @@ public:
     void handleDamageEvent(XEvent *event);
 
     //! Returns the window pixmap while the remote application window is redirected
-    QPixmap windowPixmap() const;
+    virtual const QPixmap &windowPixmap() const;
 
     WId id() const { return wid; }
 
@@ -79,7 +79,6 @@ private:
     Qt::HANDLE damage;
 
     QPixmap pixmap;
-
     bool redirected;
 };
 //! \internal_end

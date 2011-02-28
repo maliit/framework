@@ -198,7 +198,8 @@ void MImRemoteWindow::setupPixmap()
 
 void MImRemoteWindow::destroyPixmap()
 {
-    pixmap = QPixmap();
+    if (mApp)
+        pixmap = QPixmap();
 
     if (xpixmap != 0) {
         XFreePixmap(QX11Info::display(), xpixmap);
@@ -206,7 +207,7 @@ void MImRemoteWindow::destroyPixmap()
     }
 }
 
-QPixmap MImRemoteWindow::windowPixmap() const
+const QPixmap &MImRemoteWindow::windowPixmap() const
 {
     // setup remote pixmap when it failed before
     if (redirected && pixmap.isNull()) {
