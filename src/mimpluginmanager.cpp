@@ -320,6 +320,17 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
     // there be separte methods for plugin activation/deactivation?
     switchedTo->show();
     switchedTo->showLanguageNotification();
+
+    // When switching plugin, there is no activeSubViewChanged signal emitted,
+    // but the active subview for OnScreen is really changed. So we update the recorded
+    // active subview here.
+    if (state.contains(MInputMethod::OnScreen)) {
+        activeSubViewIdOnScreen = switchedTo->activeSubView(MInputMethod::OnScreen);
+        setLastActiveSubView(switchedTo->activeSubView(MInputMethod::OnScreen));
+        if (adaptor) {
+            emit adaptor->activeSubViewChanged(MInputMethod::OnScreen);
+        }
+    }
 }
 
 

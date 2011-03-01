@@ -39,6 +39,7 @@ namespace
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
     const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
+    const QString LastActiveSubView    = "/meegotouch/inputmethods/virtualkeyboard/lastactivesubview";
 
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName2 = "DummyImPlugin2";
@@ -582,6 +583,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     MAbstractInputMethod *abstractInputMethod = 0;
     QPointer<DummyInputMethod > inputMethod  = 0;
     QPointer<DummyInputMethod3> inputMethod3 = 0;
+    MImSettings lastActiveSubviewGconf(LastActiveSubView);
 
     subject->addHandlerMap(MInputMethod::OnScreen, pluginName);
     subject->addHandlerMap(MInputMethod::Hardware, pluginName);
@@ -608,6 +610,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
 
     // nothing should be changed
     subject->switchPlugin(pluginName, inputMethod);
+    QCOMPARE(QString("dummyimsv1"), lastActiveSubviewGconf.value().toString());
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->switchContextCallCount, 0);
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, MInputMethod::SwitchUndefined);
@@ -617,8 +620,10 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
         QVERIFY(handler == plugin);
     }
 
+    QCOMPARE(QString("dummyimsv1"), lastActiveSubviewGconf.value().toString());
     // switch to another plugin
     subject->switchPlugin(pluginName3, inputMethod);
+    QCOMPARE(QString("dummyim3sv1"), lastActiveSubviewGconf.value().toString());
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, MInputMethod::SwitchUndefined);
     QVERIFY(inputMethod != 0);
 
