@@ -24,7 +24,7 @@ private slots:
 private:
     void handleMessages();
 
-    MPassThruWindow *testWidget;
+    MPassThruWindow *subject;
     MIMApplication *app;
 };
 

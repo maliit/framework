@@ -22,15 +22,11 @@ void Ut_PassthroughServer::cleanupTestCase()
 
 void Ut_PassthroughServer::init()
 {
-    subject = new MPassThruWindow;
-    app->setPassThruWindow(subject);
+    subject = static_cast<MPassThruWindow *>(app->passThruWindow());
 }
 
 void Ut_PassthroughServer::cleanup()
-{
-    delete subject;
-    subject = 0;
-}
+{}
 
 void Ut_PassthroughServer::testHideShow()
 {
@@ -65,6 +61,7 @@ void Ut_PassthroughServer::makeVisible()
 
     // Should be shown after non-empty region update
     subject->inputPassthrough(QRegion(0, 0, 100, 100));
+    QTest::qWaitForWindowShown(subject);
 
     QVERIFY(subject->testAttribute(Qt::WA_Mapped) && subject->isVisible());
 

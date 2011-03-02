@@ -24,6 +24,7 @@
 #include <QPointer>
 #include <memory>
 
+#include "mpassthruwindow.h"
 #include "mimremotewindow.h"
 #include "mimxextension.h"
 
@@ -63,7 +64,6 @@ public:
     bool x11EventFilter(XEvent *ev);
 
     void setTransientHint(WId remoteWinId);
-    void setPassThruWindow(QWidget *passThruWindow);
     QWidget *passThruWindow() const;
 
     bool selfComposited() const;
@@ -95,6 +95,7 @@ signals:
 
 private slots:
     void updatePassThruWindow(const QRegion &region);
+    void finalize();
 
 private:
     void parseArguments(int &argc, char** argv);
@@ -108,7 +109,7 @@ private:
     bool wasPassThruWindowMapped(XEvent *ev) const;
     bool wasPassThruWindowUnmapped(XEvent *ev) const;
 
-    QPointer<QWidget> mPassThruWindow;
+    std::auto_ptr<MPassThruWindow> mPassThruWindow;
     std::auto_ptr<MImRemoteWindow> mRemoteWindow;
     MImXCompositeExtension mCompositeExtension;
     MImXDamageExtension mDamageExtension;

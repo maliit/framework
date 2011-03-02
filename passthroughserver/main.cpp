@@ -18,7 +18,6 @@
 // Input method overlay window
 
 #include "mimpluginmanager.h"
-#include "mpassthruwindow.h"
 #include "mimapplication.h"
 #include "mimdummyinputcontext.h"
 #include "mimremotewindow.h"
@@ -59,18 +58,12 @@ int main(int argc, char **argv)
     // meego-im-uiserver.
     app.setInputContext(new MIMDummyInputContext);
 
-    bool selfComposited = app.selfComposited();
-
-    qDebug() << (selfComposited ? "Use self composition" : "Use system compositor");
-
-    MPassThruWindow widget(app.bypassWMHint(), selfComposited);
-    widget.setFocusPolicy(Qt::NoFocus);
-    app.setPassThruWindow(&widget);
+    qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 
     MIMPluginManager *pluginManager = new MIMPluginManager;
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
-                     &widget, SLOT(inputPassthrough(const QRegion &)));
+                     app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
 #if defined(M_IM_DISABLE_TRANSLUCENCY) && !defined(M_IM_USE_SHAPE_WINDOW)
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      view, SLOT(updatePosition(const QRegion &)));

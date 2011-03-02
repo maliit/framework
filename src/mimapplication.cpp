@@ -16,15 +16,12 @@
 
 #include "mimapplication.h"
 #include "mimremotewindow.h"
-#include "mpassthruwindow.h"
 
 #include <QDebug>
 #include <X11/Xlib.h> // must be last include
 
 MIMApplication::MIMApplication(int &argc, char **argv)
     : QApplication(argc, argv),
-      mPassThruWindow(0),
-      mRemoteWindow(0),
       mCompositeExtension(),
       mDamageExtension(),
       mSelfComposited(false),
@@ -32,6 +29,19 @@ MIMApplication::MIMApplication(int &argc, char **argv)
       mBypassWMHint(false)
 {
     parseArguments(argc, argv);
+    mPassThruWindow.reset(new MPassThruWindow(mBypassWMHint, mSelfComposited)),
+
+    connect(this, SIGNAL(aboutToQuit()),
+            this, SLOT(finalize()),
+            Qt::UniqueConnection);
+}
+
+void MIMApplication::finalize()
+{
+    // Cannot destroy QWidgets or QPixmaps during MIMApplication destruction.
+    // Hence the finalize handler that runs before the d'tor.
+    mPassThruWindow.reset();
+    mRemoteWindow.reset();
 }
 
 MIMApplication::~MIMApplication()
@@ -63,17 +73,12 @@ bool MIMApplication::x11EventFilter(XEvent *ev)
 
 void MIMApplication::updatePassThruWindow(const QRegion &region)
 {
-    if (not mPassThruWindow || region.isEmpty() || MIMApplication::remoteWindowPixmap().isNull()) {
+    if (region.isEmpty() || MIMApplication::remoteWindowPixmap().isNull()) {
         qDebug() << "Skipping update request for passthru window.";
         return;
     }
 
-    qDebug() << "MIKHAS" << __PRETTY_FUNCTION__ << region;
-    if (MPassThruWindow *passtru = qobject_cast<MPassThruWindow *>(mPassThruWindow)) {
-        passtru->updateFromRemoteWindow(region);
-    } else {
-        mPassThruWindow->update(region);
-    }
+    mPassThruWindow->updateFromRemoteWindow(region);
 }
 
 void MIMApplication::handleMapNotifyEvents(XEvent *ev)
@@ -91,7 +96,7 @@ void MIMApplication::handleMapNotifyEvents(XEvent *ev)
 
 void MIMApplication::handleTransientEvents(XEvent *ev)
 {
-    if (not mRemoteWindow.get() || not mPassThruWindow) {
+    if (not mRemoteWindow.get()) {
         return;
     }
 
@@ -106,7 +111,7 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
 
 void MIMApplication::setTransientHint(WId newRemoteWinId)
 {
-    if (0 == newRemoteWinId || not mPassThruWindow) {
+    if (0 == newRemoteWinId) {
         return;
     }
 
@@ -123,15 +128,9 @@ void MIMApplication::setTransientHint(WId newRemoteWinId)
     emit remoteWindowChanged(mRemoteWindow.get());
 }
 
-void MIMApplication::setPassThruWindow(QWidget *newPassThruWindow)
-{
-    if (newPassThruWindow != mPassThruWindow)
-        mPassThruWindow = newPassThruWindow;
-}
-
 QWidget *MIMApplication::passThruWindow() const
 {
-    return mPassThruWindow;
+    return mPassThruWindow.get();
 }
 
 MIMApplication *MIMApplication::instance()
@@ -141,15 +140,13 @@ MIMApplication *MIMApplication::instance()
 
 bool MIMApplication::wasPassThruWindowMapped(XEvent *ev) const
 {
-    return (mPassThruWindow &&
-            MapNotify == ev->type &&
+    return (MapNotify == ev->type &&
             static_cast<WId>(ev->xmap.event) == mPassThruWindow->effectiveWinId());
 }
 
 bool MIMApplication::wasPassThruWindowUnmapped(XEvent *ev) const
 {
-    return (mPassThruWindow &&
-            UnmapNotify == ev->type &&
+    return (UnmapNotify == ev->type &&
             static_cast<WId>(ev->xunmap.event) == mPassThruWindow->effectiveWinId());
 }
 

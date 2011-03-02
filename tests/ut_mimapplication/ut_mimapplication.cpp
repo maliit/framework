@@ -24,10 +24,7 @@ void Ut_MIMApplication::initTestCase()
 #endif
 
     app = new MIMApplication(argc, argv);
-
-    testWidget = new MPassThruWindow(true);
-    testWidget->setFocusPolicy(Qt::NoFocus);
-    app->setPassThruWindow(testWidget);
+    subject = static_cast<MPassThruWindow *>(app->passThruWindow());
 }
 
 void Ut_MIMApplication::cleanupTestCase()
@@ -59,14 +56,14 @@ void Ut_MIMApplication::testHandleMapNotifyEvents()
 {
     XEvent xevent;
     xevent.type = MapNotify;
-    xevent.xmap.event = testWidget->effectiveWinId();
+    xevent.xmap.event = subject->effectiveWinId();
 
     QSignalSpy mapSpy(app, SIGNAL(passThruWindowMapped()));
     app->x11EventFilter(&xevent);
     QCOMPARE(mapSpy.count(), 1);
 
     xevent.type = UnmapNotify;
-    xevent.xunmap.event = testWidget->effectiveWinId();
+    xevent.xunmap.event = subject->effectiveWinId();
 
     QSignalSpy unmapSpy(app, SIGNAL(passThruWindowUnmapped()));
     app->x11EventFilter(&xevent);

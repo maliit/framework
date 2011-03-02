@@ -17,7 +17,6 @@
 #include "ut_selfcompositing.h"
 #include "mimgraphicsview.h"
 #include "mimwidget.h"
-#include "mpassthruwindow.h"
 #include "mimapplication.h"
 
 namespace
@@ -80,10 +79,11 @@ Q_DECLARE_METATYPE(WidgetCreator);
 
 void Ut_SelfCompositing::initTestCase()
 {
-    static char *argv[1] = { (char *) "Ut_SelfCompositing" };
-    static int argc = 1;
+    static char *argv[2] = { (char *) "Ut_SelfCompositing",
+                             (char *) "-use-self-composition" };
+    static int argc = 2;
 
-    app = new MIMApplication(argc, argv, true);
+    app = new MIMApplication(argc, argv);
     QVERIFY(app->selfComposited());
 }
 
@@ -112,21 +112,20 @@ void Ut_SelfCompositing::testSelfCompositing()
     Remote remote;
     remote.setGeometry(0, 0, windowSize.width(), windowSize.height());
 
-    MPassThruWindow passthru;
-    passthru.setGeometry(remote.geometry().right() + 10, 0,
-                         windowSize.width(), windowSize.height());
+    QWidget *passthru = app->passThruWindow();
+    passthru->setGeometry(remote.geometry().right() + 10, 0,
+                          windowSize.width(), windowSize.height());
 
-    QWidget *subject = widgetCreator(&passthru);
+    QWidget *subject = widgetCreator(passthru);
 
     remote.show();
-    passthru.show();
+    passthru->show();
     subject->show();
 
     QTest::qWaitForWindowShown(remote.window());
-    QTest::qWaitForWindowShown(passthru.window());
-    passthru.raise();
+    QTest::qWaitForWindowShown(passthru->window());
+    passthru->raise();
 
-    app->setPassThruWindow(&passthru);
     app->setTransientHint(remote.window()->effectiveWinId());
     app->remoteWindow()->redirect();
 

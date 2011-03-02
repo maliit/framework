@@ -37,9 +37,13 @@ MPassThruWindow::MPassThruWindow(bool bypassWMHint, bool selfComposited, QWidget
       remoteWindow(0)
 {
     setWindowTitle("MInputMethod");
+    setFocusPolicy(Qt::NoFocus);
 
     if (!selfComposited) {
         setAttribute(Qt::WA_TranslucentBackground);
+    } else {
+        setAttribute(Qt::WA_OpaquePaintEvent);
+        setAttribute(Qt::WA_NoSystemBackground);
     }
 
     Qt::WindowFlags windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
