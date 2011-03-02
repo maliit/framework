@@ -37,6 +37,7 @@
 #include <QWeakPointer>
 
 #include <QDebug>
+#include <deque>
 
 #include "minputcontextglibdbusconnection.h"
 typedef MInputContextGlibDBusConnection MInputContextConnectionImpl;
@@ -134,6 +135,8 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
                     plugins[plugin] = desc;
                     val = true;
                     host->setInputMethod(im);
+                    MIMPluginManagerPrivate::configureWidgetsForCompositing(mApp->passThruWindow(),
+                                                                            mApp->selfComposited());
                 } else {
                     qWarning() << __PRETTY_FUNCTION__
                                << "Plugin loading failed:" << fileName;
@@ -721,6 +724,41 @@ void MIMPluginManagerPrivate::setLastActiveSubView(const QString &subview)
     lastActiveSubViewConf.set(subview);
 }
 
+void MIMPluginManagerPrivate::configureWidgetsForCompositing(QWidget *mainWindow,
+                                                             bool selfCompositing)
+{
+    std::deque<QWidget *> unvisited;
+    unvisited.push_back(mainWindow);
+
+    // Breadth-first traversal of widget hierarchy, until no more
+    // unvisited widgets remain. Will find viewports of QGraphicsViews,
+    // as QAbstractScrollArea reparents the viewport to itself.
+    while (not unvisited.empty()) {
+        QWidget *current = unvisited.front();
+        unvisited.pop_front();
+
+        // Configure widget attributes:
+        current->setAttribute(Qt::WA_OpaquePaintEvent);
+        current->setAttribute(Qt::WA_NoSystemBackground);
+        current->setAutoFillBackground(false);
+
+        if (not selfCompositing) {
+            // Careful: This flag can trigger a call to
+            // qt_x11_recreateNativeWidgetsRecursive
+            // - which will crash when it tries to get the effective WId
+            // (as none of widgets have been mapped yet).
+            current->setAttribute(Qt::WA_TranslucentBackground);
+        }
+
+        // Mark children of current widget as unvisited:
+        foreach (QObject *obj, current->children()) {
+            if (QWidget *w = qobject_cast<QWidget *>(obj)) {
+                unvisited.push_back(w);
+            }
+        }
+    }
+}
+
 
 ///////////////
 // actual class
@@ -880,9 +918,7 @@ void MIMPluginManager::switchPlugin(const QString &name,
 
 void MIMPluginManager::showInputMethodSettings()
 {
-
 }
-
 
 void MIMPluginManager::updateRegion(const QRegion &region)
 {

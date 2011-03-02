@@ -10,6 +10,8 @@
 
 #include <QProcess>
 #include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QWidget>
 #include <QRegExp>
 #include <QCoreApplication>
 #include <QPointer>
@@ -864,6 +866,36 @@ void Ut_MIMPluginManager::testSetToolbar()
 
     MAttributeExtensionManager::instance().unregisterAttributeExtension(toolbarId1);
     MAttributeExtensionManager::instance().unregisterAttributeExtension(toolbarId2);
+}
+
+void Ut_MIMPluginManager::testConfigureWidgetsForCompositing_data()
+{
+    QTest::addColumn<bool>("selfCompositing");
+    QTest::newRow("selfComposting enabled") << true;
+    QTest::newRow("selfComposting disabled") << false;
+}
+
+void Ut_MIMPluginManager::testConfigureWidgetsForCompositing()
+{
+    QFETCH(bool, selfCompositing);
+
+    QWidget mainWindow;
+    QGraphicsView view(&mainWindow);
+
+    subject->configureWidgetsForCompositing(&mainWindow, selfCompositing);
+
+    QList<QWidget *> widgets;
+    widgets << &mainWindow << &view << view.viewport();
+
+    foreach (QWidget *w, widgets) {
+        QVERIFY(w->testAttribute(Qt::WA_NoSystemBackground)
+                || not selfCompositing);
+        QVERIFY(w->testAttribute(Qt::WA_OpaquePaintEvent)
+                || not selfCompositing);
+        QVERIFY(w->testAttribute(Qt::WA_TranslucentBackground)
+                || selfCompositing);
+        QVERIFY(not w->autoFillBackground());
+    }
 }
 
 void Ut_MIMPluginManager::handleMessages()
