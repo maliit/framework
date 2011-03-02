@@ -33,7 +33,7 @@ public:
      * \brief Constructor
      * \param p QWidget* parent widget
      */
-    explicit MPassThruWindow(bool bypassWMHint = false, bool selfComposited = true, QWidget *p = 0);
+    explicit MPassThruWindow(QWidget *p = 0);
 
     //! Destructor
     ~MPassThruWindow();
@@ -51,11 +51,11 @@ public slots:
 private:
     Q_DISABLE_COPY(MPassThruWindow);
 
-    bool raiseOnShow;
-    bool selfComposited;
     MImRemoteWindow *remoteWindow;
 
+#ifdef UNIT_TEST
     friend class Ut_PassthroughServer;
+#endif
 };
 
 #endif

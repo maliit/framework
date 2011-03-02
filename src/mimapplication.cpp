@@ -29,7 +29,7 @@ MIMApplication::MIMApplication(int &argc, char **argv)
       mBypassWMHint(false)
 {
     parseArguments(argc, argv);
-    mPassThruWindow.reset(new MPassThruWindow(mBypassWMHint, mSelfComposited)),
+    mPassThruWindow.reset(new MPassThruWindow),
 
     connect(this, SIGNAL(aboutToQuit()),
             this, SLOT(finalize()),

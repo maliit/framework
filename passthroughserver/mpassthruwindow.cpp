@@ -30,25 +30,23 @@
 #include <X11/extensions/shape.h>
 #endif
 
-MPassThruWindow::MPassThruWindow(bool bypassWMHint, bool selfComposited, QWidget *p)
+MPassThruWindow::MPassThruWindow(QWidget *p)
     : QWidget(p),
-      raiseOnShow(bypassWMHint), // if bypassing window hint, also do raise to ensure visibility
-      selfComposited(selfComposited),
       remoteWindow(0)
 {
     setWindowTitle("MInputMethod");
     setFocusPolicy(Qt::NoFocus);
 
-    if (!selfComposited) {
-        setAttribute(Qt::WA_TranslucentBackground);
-    } else {
+    if (mApp && mApp->selfComposited()) {
         setAttribute(Qt::WA_OpaquePaintEvent);
         setAttribute(Qt::WA_NoSystemBackground);
+    } else {
+        setAttribute(Qt::WA_TranslucentBackground);
     }
 
     Qt::WindowFlags windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
 
-    if (bypassWMHint) {
+    if (mApp && mApp->bypassWMHint()) {
         windowFlags |= Qt::X11BypassWindowManagerHint;
     }
 
@@ -119,19 +117,21 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (isVisible() && region.isEmpty()) {
-        if (selfComposited && remoteWindow) {
+        if (mApp && mApp->selfComposited() && remoteWindow) {
             remoteWindow->unredirect();
         }
 
         hide();
-    } else if (!isVisible() && !region.isEmpty()) {
-        if (selfComposited && remoteWindow) {
+    } else
+    if (!isVisible() && !region.isEmpty()) {
+        if (mApp && mApp->selfComposited() && remoteWindow) {
             remoteWindow->redirect();
         }
 
         showFullScreen();
 
-        if (raiseOnShow) {
+        // If bypassing window hint, also do raise to ensure visibility:
+        if (mApp && mApp->bypassWMHint()) {
             raise();
         }
     }
