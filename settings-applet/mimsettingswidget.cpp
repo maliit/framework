@@ -20,6 +20,7 @@
 #include <MContentItem>
 #include <MLocale>
 #include <MPopupList>
+#include <MLabel>
 #include <QGraphicsLinearLayout>
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
@@ -40,7 +41,7 @@ namespace {
 
 MImSettingsWidget::MImSettingsWidget()
     : DcpWidget(),
-      activeSubViewContainer(0),
+      headerLabel(0),
       activeSubViewItem(0),
       availableSubViewList(0)
 {
@@ -64,45 +65,62 @@ void MImSettingsWidget::initWidget()
 {
     QGraphicsLinearLayout* mainLayout = new QGraphicsLinearLayout(Qt::Vertical, this);
 
-    activeSubViewContainer = new MContainer("", this);
+    // Header
+    headerLabel = new MLabel(this);
+    headerLabel->setStyleName("CommonXLargeHeaderInverted");
+    mainLayout->addItem(headerLabel);
+    mainLayout->setStretchFactor(headerLabel, 0);
+
+    // Active input method selector
     activeSubViewItem = new MContentItem(MContentItem::TwoTextLabels, this);
     activeSubViewItem->setObjectName(ObjectNameActiveInputMethodWidget);
+    activeSubViewItem->setStyleName("CommonContentItemInverted");
+    mainLayout->addItem(activeSubViewItem);
+    mainLayout->setStretchFactor(activeSubViewItem, 0);
     connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));
-    activeSubViewContainer->setStyleName("CommonLargePanel");
-    activeSubViewContainer->setCentralWidget(activeSubViewItem);
-    mainLayout->addItem(activeSubViewContainer);
 
+    // Plugin settings
     foreach (MAbstractInputMethodSettings *settings, MImSettingsConf::instance().settings()) {
         if (settings) {
             QGraphicsWidget *contentWidget = settings->createContentWidget(this);
             if (contentWidget) {
-                MContainer *container = new MContainer(settings->title(), this);
-                container->setCentralWidget(contentWidget);
+                QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical);
+                MContainer *container = new MContainer(this);
                 container->setStyleName("CommonLargePanel");
+                container->setHeaderVisible(false);
+                container->centralWidget()->setLayout(layout);
+
+                MLabel *header = new MLabel(settings->title(), this);
+                header->setStyleName("CommonGroupHeaderInverted");
                 //TODO: icon for the settings.
+                layout->addItem(header);
+                layout->addItem(contentWidget);
+
                 mainLayout->addItem(container);
-                settingsContainerMap.insert(settings, container);
+                mainLayout->setStretchFactor(container, 0);
+                settingsLabelMap.insert(settings, header);
             }
         }
     }
     setLayout(mainLayout);
+    mainLayout->addStretch();
     retranslateUi();
     connect(&MImSettingsConf::instance(), SIGNAL(activeSubViewChanged()), this, SLOT(syncActiveSubView()));
 }
 
 void MImSettingsWidget::retranslateUi()
 {
-    if (!activeSubViewItem || !activeSubViewContainer)
+    if (!activeSubViewItem || !headerLabel)
         return;
 
     //% "Text input"
-    activeSubViewContainer->setTitle(qtTrId("qtn_txts_text_input"));
+    headerLabel->setText(qtTrId("qtn_txts_text_input"));
     //% "Active input method"
     activeSubViewItem->setTitle(qtTrId("qtn_txts_active_input_method"));
     updateActiveSubViewTitle();
 
-    foreach (MContainer *container, settingsContainerMap.values()) {
-        container->setTitle(settingsContainerMap.key(container)->title());
+    foreach (MLabel *label, settingsLabelMap.values()) {
+        label->setText(settingsLabelMap.key(label)->title());
     }
     if (availableSubViewList) {
         //% "Active input method"

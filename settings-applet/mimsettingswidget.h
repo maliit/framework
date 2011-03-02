@@ -23,7 +23,7 @@
 class MContentItem;
 class MPopupList;
 class MAbstractInputMethodSettings;
-class MContainer;
+class MLabel;
 
 class MImSettingsWidget : public DcpWidget
 {
@@ -55,9 +55,9 @@ private slots:
 private:
     void updateActiveSubViewTitle();
 
-    MContainer *activeSubViewContainer;
+    MLabel *headerLabel;
     MContentItem *activeSubViewItem;
     MPopupList *availableSubViewList;
-    QMap<MAbstractInputMethodSettings *, MContainer *> settingsContainerMap;
+    QMap<MAbstractInputMethodSettings *, MLabel *> settingsLabelMap;
 };
 #endif
