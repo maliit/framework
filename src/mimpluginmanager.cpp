@@ -624,9 +624,6 @@ void MIMPluginManagerPrivate::_q_ensureEmptyRegionWhenHidden()
     emit q->regionUpdated(QRegion());
 }
 
-void MIMPluginManagerPrivate::loadInputMethodSettings()
-{}
-
 void MIMPluginManagerPrivate::initActiveSubView()
 {
     // initialize activeSubViewIdOnScreen
@@ -914,10 +911,6 @@ void MIMPluginManager::switchPlugin(const QString &name,
                        << name << " failed";
         }
     }
-}
-
-void MIMPluginManager::showInputMethodSettings()
-{
 }
 
 void MIMPluginManager::updateRegion(const QRegion &region)

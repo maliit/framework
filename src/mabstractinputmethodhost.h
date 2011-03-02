@@ -238,11 +238,6 @@ public slots:
     virtual void setInputMethodArea(const QRegion &region) = 0;
 
     /*!
-     * Asks environment to show settings.
-     */
-    virtual void showSettings() = 0;
-
-    /*!
      *\brief Sets selection text from \a start with \a length in the application widget.
      */
     virtual void setSelection(int start, int length) = 0;

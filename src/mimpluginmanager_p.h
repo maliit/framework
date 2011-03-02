@@ -86,7 +86,6 @@ public:
     QString activePluginsName(MInputMethod::HandlerState state) const;
     void loadHandlerMap();
     MInputMethodPlugin *activePlugin(MInputMethod::HandlerState state) const;
-    void loadInputMethodSettings();
     void initActiveSubView();
     void hideActivePlugins();
     void showActivePlugins();

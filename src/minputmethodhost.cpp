@@ -213,13 +213,6 @@ void MInputMethodHost::setInputMethodArea(const QRegion &region)
     }
 }
 
-void MInputMethodHost::showSettings()
-{
-    if (enabled) {
-        pluginManager->showInputMethodSettings();
-    }
-}
-
 void MInputMethodHost::setSelection(int start, int length)
 {
     if (enabled) {

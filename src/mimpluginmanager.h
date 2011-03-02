@@ -77,9 +77,6 @@ public:
     //! Switches active plugin to inactive plugin with given \a name
     void switchPlugin(const QString &name, MAbstractInputMethod *initiator);
 
-    //! Shows settings for all loaded inputmethod plugins.
-    void showInputMethodSettings();
-
 signals:
     //!
     // This signal is emitted when the whole painting area of the
