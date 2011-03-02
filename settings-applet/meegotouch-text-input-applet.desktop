@@ -17,7 +17,7 @@ X-Maemo-Fixed-Args=Meegotouch textinput settings
 X-DUIApplet-Applet=libmimsettingsapplet.so
 
 [DCP]
-Category=Language & Keyboard
+Category=Time & Language
 Order=4
 WidgetType=Label
 
