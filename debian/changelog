@@ -1,6 +1,7 @@
 meego-im-framework (0.19.47~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Fixes: NB#223052 - Unreadable fonts in Text input settings (superseeds old fix)
 
  -- Ning Chi <ext-chi.2.ning@nokia.com>  Thu, 03 Mar 2011 09:41:02 +0200
 

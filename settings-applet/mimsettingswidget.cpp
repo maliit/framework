@@ -17,7 +17,7 @@
 #include "mimsettingswidget.h"
 
 #include <MContainer>
-#include <MContentItem>
+#include <MBasicListItem>
 #include <MLocale>
 #include <MPopupList>
 #include <MLabel>
@@ -72,9 +72,11 @@ void MImSettingsWidget::initWidget()
     mainLayout->setStretchFactor(headerLabel, 0);
 
     // Active input method selector
-    activeSubViewItem = new MContentItem(MContentItem::TwoTextLabels, this);
+    // We are using MBasicListItem instead of MContentItem because
+    // the latter is not supported by theme
+    activeSubViewItem = new MBasicListItem(MBasicListItem::TitleWithSubtitle, this);
     activeSubViewItem->setObjectName(ObjectNameActiveInputMethodWidget);
-    activeSubViewItem->setStyleName("CommonContentItemInverted");
+    activeSubViewItem->setStyleName("CommonBasicListItemInverted");
     mainLayout->addItem(activeSubViewItem);
     mainLayout->setStretchFactor(activeSubViewItem, 0);
     connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));

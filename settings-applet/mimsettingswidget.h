@@ -20,10 +20,10 @@
 #include <DcpWidget>
 #include <QModelIndex>
 
-class MContentItem;
 class MPopupList;
 class MAbstractInputMethodSettings;
 class MLabel;
+class MBasicListItem;
 
 class MImSettingsWidget : public DcpWidget
 {
@@ -56,7 +56,7 @@ private:
     void updateActiveSubViewTitle();
 
     MLabel *headerLabel;
-    MContentItem *activeSubViewItem;
+    MBasicListItem *activeSubViewItem;
     MPopupList *availableSubViewList;
     QMap<MAbstractInputMethodSettings *, MLabel *> settingsLabelMap;
 };
