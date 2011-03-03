@@ -1,3 +1,9 @@
+meego-im-framework (0.19.47~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Ning Chi <ext-chi.2.ning@nokia.com>  Thu, 03 Mar 2011 09:41:02 +0200
+
 meego-im-framework (0.19.46-1) unstable; urgency=low
 
   * Fixes: NB#230421 - Settings plugin needs to be moved to Time & language category
