@@ -738,6 +738,9 @@ void MIMPluginManagerPrivate::configureWidgetsForCompositing(QWidget *mainWindow
         current->setAttribute(Qt::WA_OpaquePaintEvent);
         current->setAttribute(Qt::WA_NoSystemBackground);
         current->setAutoFillBackground(false);
+        // Be aware that one cannot verify whether the background role *is*
+        // QPalette::NoRole - see QTBUG-17924.
+        current->setBackgroundRole(QPalette::NoRole);
 
         if (not selfCompositing) {
             // Careful: This flag can trigger a call to
