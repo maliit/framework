@@ -1,6 +1,7 @@
-meego-im-framework (0.19.46~1) unstable; urgency=low
+meego-im-framework (0.19.46-1) unstable; urgency=low
 
-  * [UNRELEASED]
+  * Fixes: NB#230421 - Settings plugin needs to be moved to Time & language category
+  * Fixes: NB#223052 - Unreadable fonts in Text input settings
 
  -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Wed, 02 Mar 2011 13:55:31 +0200
 
