@@ -1,9 +1,10 @@
-meego-im-framework (0.19.47~1) unstable; urgency=low
+meego-im-framework (0.19.47-1) unstable; urgency=low
 
-  * [UNRELEASED]
+  * Implemented attribute extension machinery.
+  * New API: MAbstractInputMethod::setKeyOverrides
   * Fixes: NB#223052 - Unreadable fonts in Text input settings (superseeds old fix)
 
- -- Ning Chi <ext-chi.2.ning@nokia.com>  Thu, 03 Mar 2011 09:41:02 +0200
+ -- Kimmo Surakka <kimmo.surakka@nokia.com>  Fri, 04 Mar 2011 14:01:00 +0200
 
 meego-im-framework (0.19.46-1) unstable; urgency=low
 
