@@ -1,3 +1,9 @@
+meego-im-framework (0.19.48~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Kimmo Surakka <kimmo.surakka@nokia.com>  Fri, 04 Mar 2011 14:20:00 +0200
+
 meego-im-framework (0.19.47-1) unstable; urgency=low
 
   * Implemented attribute extension machinery.
