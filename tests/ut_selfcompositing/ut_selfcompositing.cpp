@@ -83,6 +83,9 @@ void Ut_SelfCompositing::initTestCase()
                              (char *) "-use-self-composition" };
     static int argc = 2;
 
+    // Enforcing raster GS to make test reliable:
+    QApplication::setGraphicsSystem("raster");
+
     app = new MIMApplication(argc, argv);
     QVERIFY(app->selfComposited());
 }
@@ -125,6 +128,7 @@ void Ut_SelfCompositing::testSelfCompositing()
     QTest::qWaitForWindowShown(remote.window());
     QTest::qWaitForWindowShown(passthru->window());
     passthru->raise();
+    QApplication::setActiveWindow(passthru);
 
     app->setTransientHint(remote.window()->effectiveWinId());
     app->remoteWindow()->redirect();
