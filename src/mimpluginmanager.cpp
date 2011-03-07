@@ -68,7 +68,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       imAccessoryEnabledConf(0),
       adaptor(0),
       connectionValid(false),
-      acceptRegionUpdates(true),
+      acceptRegionUpdates(false),
       indicatorService(0),
       lastActiveSubViewConf(LastActiveSubView)
 {
@@ -318,8 +318,10 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
     // TODO: show/hide from IC matches SIP show/hide requests but here show is used (and
     // hide in deactivatePlugin) in a sense completely unrelated to SIP requests.  Should
     // there be separte methods for plugin activation/deactivation?
-    switchedTo->show();
-    switchedTo->showLanguageNotification();
+    if (acceptRegionUpdates) {
+        switchedTo->show();
+        switchedTo->showLanguageNotification();
+    }
 
     // When switching plugin, there is no activeSubViewChanged signal emitted,
     // but the active subview for OnScreen is really changed. So we update the recorded
