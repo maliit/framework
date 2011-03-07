@@ -186,7 +186,7 @@ void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant
     GArray *serializedState(serializeVariant(stateInformation));
     dbus_g_proxy_call_no_reply(glibObjectProxy, "updateWidgetInformation",
                                DBUS_TYPE_G_UCHAR_ARRAY, serializedState,
-                               G_TYPE_BOOLEAN, focusChanged,
+                               G_TYPE_BOOLEAN, focusChanged ? TRUE : FALSE,
                                G_TYPE_INVALID);
     g_array_unref(serializedState);
 }
@@ -226,8 +226,8 @@ void GlibDBusIMServerProxy::setCopyPasteState(bool copyAvailable, bool pasteAvai
         return;
     }
     dbus_g_proxy_call_no_reply(glibObjectProxy, "setCopyPasteState",
-                               G_TYPE_BOOLEAN, copyAvailable,
-                               G_TYPE_BOOLEAN, pasteAvailable,
+                               G_TYPE_BOOLEAN, copyAvailable ? TRUE : FALSE,
+                               G_TYPE_BOOLEAN, pasteAvailable ? TRUE : FALSE,
                                G_TYPE_INVALID);
 }
 
@@ -245,7 +245,7 @@ void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCod
                                G_TYPE_INT, static_cast<int>(keyCode),
                                G_TYPE_INT, static_cast<int>(modifiers),
                                G_TYPE_STRING, text.toUtf8().data(),
-                               G_TYPE_BOOLEAN, autoRepeat, G_TYPE_INT, count,
+                               G_TYPE_BOOLEAN, autoRepeat  ? TRUE : FALSE, G_TYPE_INT, count,
                                G_TYPE_UINT, nativeScanCode, G_TYPE_UINT, nativeModifiers,
                                G_TYPE_ULONG, time,
                                G_TYPE_INVALID);
