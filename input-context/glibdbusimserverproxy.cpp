@@ -245,7 +245,7 @@ void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCod
                                G_TYPE_INT, static_cast<int>(keyCode),
                                G_TYPE_INT, static_cast<int>(modifiers),
                                G_TYPE_STRING, text.toUtf8().data(),
-                               G_TYPE_BOOLEAN, autoRepeat, count,
+                               G_TYPE_BOOLEAN, autoRepeat, G_TYPE_INT, count,
                                G_TYPE_UINT, nativeScanCode, G_TYPE_UINT, nativeModifiers,
                                G_TYPE_ULONG, time,
                                G_TYPE_INVALID);
