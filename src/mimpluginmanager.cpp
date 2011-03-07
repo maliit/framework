@@ -68,6 +68,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
       mICConnection(connection),
       imAccessoryEnabledConf(0),
       adaptor(0),
+      q_ptr(0),
       connectionValid(false),
       acceptRegionUpdates(false),
       indicatorService(0),
