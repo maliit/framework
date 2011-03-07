@@ -187,6 +187,8 @@ private:
 
     DBusServer *server;
 
+    QString preedit;
+
     Q_DISABLE_COPY(MInputContextGlibDBusConnection)
 };
 //! \internal_end
