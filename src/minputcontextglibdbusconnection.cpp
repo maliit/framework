@@ -367,10 +367,10 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
 
 MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
     : activeContext(NULL),
-      server(NULL),
       globalCorrectionEnabled(false),
       redirectionEnabled(false),
-      detectableAutoRepeat(false)
+      detectableAutoRepeat(false),
+      server(NULL)
 {
     dbus_g_thread_init();
     g_type_init();
