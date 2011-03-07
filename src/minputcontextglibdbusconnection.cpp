@@ -468,7 +468,7 @@ void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent,
                                    G_TYPE_INT, key,
                                    G_TYPE_INT, modifiers,
                                    G_TYPE_STRING, keyEvent.text().toUtf8().data(),
-                                   G_TYPE_BOOLEAN, keyEvent.isAutoRepeat() ? TRUE : FALSE,
+                                   G_TYPE_BOOLEAN, keyEvent.isAutoRepeat(),
                                    G_TYPE_INT, keyEvent.count(),
                                    G_TYPE_UCHAR, static_cast<uchar>(requestType),
                                    G_TYPE_INVALID);
@@ -489,7 +489,7 @@ void MInputContextGlibDBusConnection::setGlobalCorrectionEnabled(bool enabled)
 {
     if ((enabled != globalCorrectionEnabled) && activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setGlobalCorrectionEnabled",
-                                   G_TYPE_BOOLEAN, enabled ? TRUE : FALSE,
+                                   G_TYPE_BOOLEAN, enabled,
                                    G_TYPE_INVALID);
     }
 
@@ -531,7 +531,7 @@ void MInputContextGlibDBusConnection::setDetectableAutoRepeat(bool enabled)
 {
     if ((detectableAutoRepeat != enabled) && activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setDetectableAutoRepeat",
-                                   G_TYPE_BOOLEAN, enabled ? TRUE : FALSE,
+                                   G_TYPE_BOOLEAN, enabled,
                                    G_TYPE_INVALID);
     }
     detectableAutoRepeat = enabled;
@@ -564,7 +564,7 @@ void MInputContextGlibDBusConnection::setOrientationAngleLocked(bool lock)
 {
     dbus_g_proxy_call_no_reply(activeContext->inputContextProxy,
                                "setOrientationAngleLocked",
-                               G_TYPE_BOOLEAN, lock ? TRUE : FALSE,
+                               G_TYPE_BOOLEAN, lock,
                                G_TYPE_INVALID);
 }
 
@@ -600,13 +600,13 @@ void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *con
 
     if (activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setGlobalCorrectionEnabled",
-                                   G_TYPE_BOOLEAN, globalCorrectionEnabled ? TRUE : FALSE,
+                                   G_TYPE_BOOLEAN, globalCorrectionEnabled,
                                    G_TYPE_INVALID);
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setRedirectKeys",
-                                   G_TYPE_BOOLEAN, redirectionEnabled ? TRUE : FALSE,
+                                   G_TYPE_BOOLEAN, redirectionEnabled,
                                    G_TYPE_INVALID);
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "detectableAutoRepeat",
-                                   G_TYPE_BOOLEAN, detectableAutoRepeat ? TRUE : FALSE,
+                                   G_TYPE_BOOLEAN, detectableAutoRepeat,
                                    G_TYPE_INVALID);
 
         if ((previousActive != 0) && (previousActive != activeContext)) {
