@@ -432,6 +432,11 @@ void Ut_MInputContext::initTestCase()
 
     m_subject = new MInputContext;
     QVERIFY(m_subject != 0);
+
+    // Overly cautious sanity check, but we do use native C API in
+    // MInputContext and friends:
+    QCOMPARE(TRUE, true);
+    QCOMPARE(FALSE, false);
 }
 
 
