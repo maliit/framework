@@ -1,3 +1,9 @@
+meego-im-framework (0.19.47-2) unstable; urgency=low
+
+  * Fixes: NB#233915 - meego-im-uiserver crashes with latest D-Bus (1.4.6-0maemo3+0m6)
+
+ -- Michael Hasselmann <michaelh@openismus.com>  Mon, 07 Mar 2011 16:24:56 +0100
+
 meego-im-framework (0.19.47-1) unstable; urgency=low
 
   * Implemented attribute extension machinery.
