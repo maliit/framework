@@ -1,8 +1,8 @@
-meego-im-framework (0.20.0~1) unstable; urgency=low
+meego-im-framework (0.20.0-1) unstable; urgency=low
 
-  * [UNRELEASED]
+  * New: Remove LMT dependencies from public API
 
- -- Kimmo Surakka <kimmo.surakka@nokia.com>  Fri, 04 Mar 2011 14:20:00 +0200
+ -- Rakesh Cherian <ext-rakesh.cherian@nokia.com>  Tue, 08 Mar 2011 15:24:00 +0200
 
 meego-im-framework (0.19.47-1) unstable; urgency=low
 
