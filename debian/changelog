@@ -1,3 +1,10 @@
+meego-im-framework (0.19.46-2) unstable; urgency=low
+
+  * Emergency hotfix for 0.19.46
+  * Fixes: NB#233915 meego-im-uiserver crashes with latest D-Bus (1.4.6-0maemo3+0m6)
+
+ -- Mohammad Anwari <Mohammad.Anwari@nokia.com>  Tue, 08 Mar 2011 10:11:49 +0200
+
 meego-im-framework (0.19.46-1) unstable; urgency=low
 
   * Fixes: NB#230421 - Settings plugin needs to be moved to Time & language category
