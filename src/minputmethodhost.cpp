@@ -220,11 +220,9 @@ void MInputMethodHost::setSelection(int start, int length)
     }
 }
 
-void MInputMethodHost::setOrientationAngleLocked(bool lock)
+void MInputMethodHost::setOrientationAngleLocked(bool)
 {
-    if (enabled) {
-        connection->setOrientationAngleLocked(lock);
-    }
+    // NOT implemented.
 }
 
 int MInputMethodHost::anchorPosition(bool &valid)

@@ -84,6 +84,8 @@ public:
     virtual void setScreenRegion(const QRegion &region);
     virtual void setInputMethodArea(const QRegion &region);
     virtual void setSelection(int start, int length);
+
+    //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);
     // \reimp_end
 

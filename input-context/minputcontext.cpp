@@ -98,7 +98,6 @@ MInputContext::MInputContext(QObject *parent)
       copyAllowed(true),
       redirectKeys(false),
       objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount)),
-      orientationAngleLockedByServer(false),
       currentKeyEventTime(0)
 {
     int opcode = -1;
@@ -550,7 +549,6 @@ void MInputContext::activationLostEvent()
     // There is similar cleaning up done in onDBusDisconnection.
     active = false;
     inputPanelState = InputPanelHidden;
-    setOrientationAngleLocked(false);
 }
 
 
@@ -833,10 +831,6 @@ void MInputContext::onDBusDisconnection()
 #ifdef HAVE_MEEGOTOUCH
     MInputMethodState::instance()->setInputMethodArea(QRect());
 #endif
-
-    // Make sure disconnected IM server doesn't leave this
-    // application's orientation angle locked.
-    setOrientationAngleLocked(false);
 }
 
 void MInputContext::onDBusConnection()
@@ -1132,33 +1126,6 @@ void MInputContext::setSelection(int start, int length)
                                                 length, QVariant());
     QInputMethodEvent event("", attributes);
     sendEvent(event);
-}
-
-void MInputContext::setOrientationAngleLocked(bool lock)
-{
-#ifdef HAVE_MEEGOTOUCH
-    MApplication *mApp = qobject_cast<MApplication *>(qApp);
-    MWindow *mWindow = mApp ? mApp->activeWindow() : 0;
-    if (!mWindow) {
-        return;
-    }
-
-    // Since we cannot currently keep track if anyone else locks orientation for window
-    // we make assumption that no-one touches the lock in between
-    // MInputContext::setOrientationAngleLocked({true|false}) calls.
-
-    if (lock) {
-        mWindow->setOrientationAngleLocked(true);
-    } else {
-        if (mWindow->isOrientationAngleLocked()
-            && orientationAngleLockedByServer) {
-            mWindow->setOrientationAngleLocked(false);
-        }
-    }
-    orientationAngleLockedByServer = lock;
-#else
-    Q_UNUSED(lock);
-#endif
 }
 
 QString MInputContext::selection(bool &valid) const

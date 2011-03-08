@@ -191,11 +191,6 @@ public:
     virtual void setSelection(int start, int length) = 0;
 
     /*!
-     * \brief Locks application orientation.
-     */
-    virtual void setOrientationAngleLocked(bool lock) = 0;
-
-    /*!
      * \brief returns the position of the selection anchor.
      *
      * This may be less or greater than cursor position, depending on which side of selection

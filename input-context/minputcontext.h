@@ -169,11 +169,6 @@ public:
     virtual void setSelection(int start, int length);
 
     /*!
-     * \brief Locks application orientation.
-     */
-    void setOrientationAngleLocked(bool lock);
-
-    /*!
      * \brief get selecting text
      * \param valid validity for the return value
      */
@@ -279,7 +274,6 @@ private:
     const QString objectPath; //!< D-Bus object path for this instance.
     static int connectionCount; //!< Counter to allow multiple IC objects being registered via D-Bus
 
-    bool orientationAngleLockedByServer;
     unsigned long currentKeyEventTime;
 };
 

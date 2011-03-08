@@ -244,6 +244,8 @@ public slots:
 
     /*!
      * \brief Locks application orientation.
+     *
+     * \deprecated Not implemented
      */
     virtual void setOrientationAngleLocked(bool lock) = 0;
 

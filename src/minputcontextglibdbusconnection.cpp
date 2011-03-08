@@ -673,17 +673,6 @@ void MInputContextGlibDBusConnection::setSelection(int start, int length)
     }
 }
 
-void MInputContextGlibDBusConnection::setOrientationAngleLocked(bool lock)
-{
-    if (activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy,
-                                   "setOrientationAngleLocked",
-                                   G_TYPE_BOOLEAN, lock,
-                                   G_TYPE_INVALID);
-    }
-}
-
-
 int MInputContextGlibDBusConnection::anchorPosition(bool &valid)
 {
     QVariant posVariant = widgetState[AnchorPositionAttribute];
