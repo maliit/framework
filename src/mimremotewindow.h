@@ -56,6 +56,7 @@ public:
     //! Returns the window pixmap while the remote application window is redirected
     virtual const QPixmap &windowPixmap() const;
 
+    //! Returns the X11 window Id of the redirected window.
     WId id() const { return wid; }
 
 signals:

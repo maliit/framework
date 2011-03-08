@@ -27,6 +27,7 @@ class MIMPluginManagerPrivate;
 class MAttributeExtensionId;
 class MAbstractInputMethod;
 class MImRemoteWindow;
+class MImRotationAnimation;
 
 //! Note: this class is not considered stable API
 class MIMPluginManager: public QObject
@@ -38,7 +39,7 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    MIMPluginManager();
+    explicit MIMPluginManager(MImRotationAnimation* rotationAnimation = 0);
 
     virtual ~MIMPluginManager();
 

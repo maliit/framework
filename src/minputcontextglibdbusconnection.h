@@ -112,12 +112,12 @@ public slots:
     /*!
      * \brief Target application is changing orientation
      */
-    void appOrientationAboutToChange(int angle);
+    void receivedAppOrientationAboutToChange(int angle);
 
     /*!
      * \brief Target application changed orientation (already finished)
      */
-    void appOrientationChanged(int angle);
+    void receivedAppOrientationChanged(int angle);
 
     virtual void updateInputMethodArea(const QRegion &region);
 
@@ -160,6 +160,10 @@ public slots:
      */
     void setExtendedAttribute(MDBusGlibICConnection *connection, int id, const QString &target,
                               const QString &targetItem, const QString &attribute, const QVariant &value);
+
+signals:
+    void appOrientationAboutToChange(int angle);
+    void appOrientationChanged(int angle);
 
 private:
     //! Updates the transient hint on the framework side to point to the

@@ -185,7 +185,7 @@ static gboolean
 m_dbus_glib_ic_connection_app_orientation_about_to_change(MDBusGlibICConnection *obj, gint32 angle,
                                                          GError **/*error*/)
 {
-    obj->icConnection->appOrientationAboutToChange(static_cast<int>(angle));
+    obj->icConnection->receivedAppOrientationAboutToChange(static_cast<int>(angle));
     return TRUE;
 }
 
@@ -194,7 +194,7 @@ static gboolean
 m_dbus_glib_ic_connection_app_orientation_changed(MDBusGlibICConnection *obj, gint32 angle,
                                                   GError **/*error*/)
 {
-    obj->icConnection->appOrientationChanged(static_cast<int>(angle));
+    obj->icConnection->receivedAppOrientationChanged(static_cast<int>(angle));
     return TRUE;
 }
 
@@ -848,16 +848,23 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
     }
 }
 
-void MInputContextGlibDBusConnection::appOrientationAboutToChange(int angle)
+void MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(int angle)
 {
+    // Needs to be passed to the MImRotationAnimation listening
+    // to this signal first before the plugins. This ensures
+    // that the rotation animation can be painted sufficiently early.
+    emit appOrientationAboutToChange(angle);
     foreach (MAbstractInputMethod *target, targets()) {
         target->handleAppOrientationAboutToChange(angle);
     }
 }
 
 
-void MInputContextGlibDBusConnection::appOrientationChanged(int angle)
+void MInputContextGlibDBusConnection::receivedAppOrientationChanged(int angle)
 {
+    // Handle orientation changes through MImRotationAnimation with priority.
+    // That's needed for getting the correct rotated pixmap buffers.
+    emit appOrientationChanged(angle);
     foreach (MAbstractInputMethod *target, targets()) {
         target->handleAppOrientationChanged(angle);
     }

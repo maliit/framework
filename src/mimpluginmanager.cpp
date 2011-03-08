@@ -24,6 +24,7 @@
 #include "mimhwkeyboardtracker.h"
 #include "mimapplication.h"
 #include "mimremotewindow.h"
+#include "mimrotationanimation.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -776,7 +777,7 @@ void MIMPluginManagerPrivate::configureWidgetsForCompositing(QWidget *mainWindow
 ///////////////
 // actual class
 
-MIMPluginManager::MIMPluginManager()
+MIMPluginManager::MIMPluginManager(MImRotationAnimation* rotationAnimation)
     : QObject(),
       d_ptr(new MIMPluginManagerPrivate(new MInputContextConnectionImpl, this))
 {
@@ -794,6 +795,14 @@ MIMPluginManager::MIMPluginManager()
 
     connect(d->mICConnection, SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
+
+    // connect orientation signals
+    if (rotationAnimation) {
+        connect(d->mICConnection, SIGNAL(appOrientationAboutToChange(int)),
+                rotationAnimation, SLOT(appOrientationAboutToChange(int)));
+        connect(d->mICConnection, SIGNAL(appOrientationChanged(int)),
+                rotationAnimation, SLOT(appOrientationChangeFinished(int)));
+    }
 
     d->paths     = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist = MImSettings(MImPluginDisabled).value().toStringList();

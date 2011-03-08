@@ -21,6 +21,8 @@
 #include "mimapplication.h"
 #include "mimdummyinputcontext.h"
 #include "mimremotewindow.h"
+#include "mimrotationanimation.h"
+#include "mpassthruwindow.h"
 
 #include <QApplication>
 #include <QtDebug>
@@ -60,7 +62,12 @@ int main(int argc, char **argv)
 
     qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 
-    MIMPluginManager *pluginManager = new MIMPluginManager;
+    MImRotationAnimation rotationAnimation(app.passThruWindow());
+
+    // Pass the rotationAnimation so that we can receive the orientation
+    // signals from the dbus connection.
+    // TODO: This should probably be done in a cleaner way.
+    MIMPluginManager *pluginManager = new MIMPluginManager(&rotationAnimation);
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
@@ -71,6 +78,10 @@ int main(int argc, char **argv)
     // hide active plugins when remote input window is gone or iconified.
     QObject::connect(&app, SIGNAL(remoteWindowGone()),
                      pluginManager, SLOT(hideActivePlugins()));
+
+    // rotationAnimation needs to know the current MImRemoteWindow for capturing snapshots.
+    QObject::connect(&app, SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
+                     &rotationAnimation, SLOT(remoteWindowChanged(MImRemoteWindow*)));
 
     return app.exec();
 }
