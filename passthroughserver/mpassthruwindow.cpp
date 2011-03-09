@@ -116,14 +116,13 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
     }
 
     // selective compositing
-    if (isVisible() && region.isEmpty()) {
+    if (region.isEmpty()) {
         if (mApp && mApp->selfComposited() && remoteWindow) {
             remoteWindow->unredirect();
         }
 
         hide();
-    } else
-    if (!isVisible() && !region.isEmpty()) {
+    } else {
         if (mApp && mApp->selfComposited() && remoteWindow) {
             remoteWindow->redirect();
         }

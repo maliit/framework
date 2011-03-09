@@ -112,6 +112,9 @@ void MImRemoteWindow::destroyDamage()
 
 void MImRemoteWindow::redirect()
 {
+    if (redirected)
+        return;
+
     if (MIMApplication::instance()->manualRedirection()) {
         MImXErrorTrap xerror(MIMApplication::instance()->compositeExtension(), X_CompositeRedirectWindow);
         XCompositeRedirectWindow(QX11Info::display(),
@@ -131,6 +134,9 @@ void MImRemoteWindow::redirect()
 
 void MImRemoteWindow::unredirect()
 {
+    if (!redirected)
+        return;
+
     redirected = false;
 
     destroyDamage();
