@@ -111,7 +111,7 @@ m_dbus_glib_ic_connection_show_input_method(MDBusGlibICConnection *obj, GError *
 static gboolean
 m_dbus_glib_ic_connection_hide_input_method(MDBusGlibICConnection *obj, GError **/*error*/)
 {
-    obj->icConnection->hideInputMethod();
+    obj->icConnection->hideInputMethod(obj);
     return TRUE;
 }
 
@@ -629,8 +629,12 @@ void MInputContextGlibDBusConnection::showInputMethod()
 }
 
 
-void MInputContextGlibDBusConnection::hideInputMethod()
+void MInputContextGlibDBusConnection::hideInputMethod(MDBusGlibICConnection *connection)
 {
+    // Only allow this call for current active connection.
+    if (activeContext != connection)
+        return;
+
     emit hideInputMethodRequest();
 }
 

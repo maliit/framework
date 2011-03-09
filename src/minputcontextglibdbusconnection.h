@@ -94,7 +94,7 @@ public slots:
     void showInputMethod();
 
     //! ipc method provided to the application, hides input method
-    void hideInputMethod();
+    void hideInputMethod(MDBusGlibICConnection *connection);
 
     //! ipc method provided to the application, signals mouse click on preedit
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
