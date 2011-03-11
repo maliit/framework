@@ -1,3 +1,9 @@
+meego-im-framework (0.20.2~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Rakesh Cherian <ext-rakesh.cherian@nokia.com>  Fri, 11 Mar 2011 11:31:00 +0200
+
 meego-im-framework (0.20.1-1) unstable; urgency=low
 
   * Fixes: NB#231633 - [TASK] Improve Rotation Appearance of VKB
