@@ -82,6 +82,7 @@ public:
     virtual void setOrientationAngleLocked(bool lock);
     virtual int anchorPosition(bool &valid);
     virtual QString selection(bool &valid);
+    virtual void addTarget(MAbstractInputMethod *target);
     //! \reimp_end
 
 public slots:
@@ -180,6 +181,7 @@ private:
     bool globalCorrectionEnabled;
     bool redirectionEnabled;
     bool detectableAutoRepeat;
+    int lastOrientation;
     MAttributeExtensionId attributeExtensionId; //current attribute extension id
     QSet<MAttributeExtensionId> attributeExtensionIds; //all attribute extension ids
     QByteArray socketAddress;

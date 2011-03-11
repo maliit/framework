@@ -372,6 +372,7 @@ MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
       globalCorrectionEnabled(false),
       redirectionEnabled(false),
       detectableAutoRepeat(false),
+      lastOrientation(0),
       server(NULL)
 {
     dbus_g_thread_init();
@@ -585,6 +586,13 @@ QString MInputContextGlibDBusConnection::selection(bool &valid)
     }
 
     return selectionText;
+}
+
+void
+MInputContextGlibDBusConnection::addTarget(MAbstractInputMethod *target)
+{
+    MInputContextConnection::addTarget(target);
+    target->handleAppOrientationChanged(lastOrientation);
 }
 
 int MInputContextGlibDBusConnection::inputMethodMode(bool &valid)
@@ -896,6 +904,7 @@ void MInputContextGlibDBusConnection::receivedAppOrientationChanged(MDBusGlibICC
     foreach (MAbstractInputMethod *target, targets()) {
         target->handleAppOrientationChanged(angle);
     }
+    lastOrientation = angle;
 }
 
 
