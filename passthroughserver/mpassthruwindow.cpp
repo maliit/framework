@@ -127,11 +127,15 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
             remoteWindow->redirect();
         }
 
-        showFullScreen();
+        // Do not call multiple times showFullScreen() because it could
+        // break focus from the activateWindow() call. See QTBUG-18130
+        if (!isVisible()) {
+            showFullScreen();
 
-        // If bypassing window hint, also do raise to ensure visibility:
-        if (mApp && mApp->bypassWMHint()) {
-            raise();
+            // If bypassing window hint, also do raise to ensure visibility:
+            if (mApp && mApp->bypassWMHint()) {
+                raise();
+            }
         }
     }
 }
