@@ -484,6 +484,47 @@ void MInputContextGlibDBusConnection::notifyImInitiatedHiding()
     }
 }
 
+int MInputContextGlibDBusConnection::contentType(bool &valid)
+{
+    QVariant contentTypeVariant = widgetState[ContentTypeAttribute];
+    return contentTypeVariant.toInt(&valid);
+}
+
+bool MInputContextGlibDBusConnection::correctionEnabled(bool &valid)
+{
+    QVariant correctionVariant = widgetState[CorrectionAttribute];
+    valid = correctionVariant.isValid();
+    return correctionVariant.toBool();
+}
+
+
+bool MInputContextGlibDBusConnection::predictionEnabled(bool &valid)
+{
+    QVariant predictionVariant = widgetState[PredictionAttribute];
+    valid = predictionVariant.isValid();
+    return predictionVariant.toBool();
+}
+
+bool MInputContextGlibDBusConnection::autoCapitalizationEnabled(bool &valid)
+{
+    QVariant capitalizationVariant = widgetState[AutoCapitalizationAttribute];
+    valid = capitalizationVariant.isValid();
+    return capitalizationVariant.toBool();
+}
+
+QRect MInputContextGlibDBusConnection::cursorRectangle(bool &valid)
+{
+    QVariant cursorRectVariant = widgetState[CursorRectAttribute];
+    valid = cursorRectVariant.isValid();
+    return cursorRectVariant.toRect();
+}
+
+bool MInputContextGlibDBusConnection::hiddenText(bool &valid)
+{
+    QVariant hiddenTextVariant = widgetState[HiddenTextAttribute];
+    valid = hiddenTextVariant.isValid();
+    return hiddenTextVariant.toBool();
+}
 
 void MInputContextGlibDBusConnection::setGlobalCorrectionEnabled(bool enabled)
 {
@@ -496,6 +537,61 @@ void MInputContextGlibDBusConnection::setGlobalCorrectionEnabled(bool enabled)
     globalCorrectionEnabled = enabled;
 }
 
+bool MInputContextGlibDBusConnection::surroundingText(QString &text, int &cursorPosition)
+{
+    QVariant textVariant = widgetState[SurroundingTextAttribute];
+    QVariant posVariant = widgetState[CursorPositionAttribute];
+
+    if (textVariant.isValid() && posVariant.isValid()) {
+        text = textVariant.toString();
+        cursorPosition = posVariant.toInt();
+        return true;
+    }
+
+    return false;
+}
+
+bool MInputContextGlibDBusConnection::hasSelection(bool &valid)
+{
+    QVariant selectionVariant = widgetState[HasSelectionAttribute];
+    valid = selectionVariant.isValid();
+    return selectionVariant.toBool();
+}
+
+
+QString MInputContextGlibDBusConnection::selection(bool &valid)
+{
+    GError *error = NULL;
+
+    QString selectionText;
+    gboolean gvalidity = FALSE;
+    gchar *gdata = NULL;
+    if (activeContext && dbus_g_proxy_call(activeContext->inputContextProxy, "selection", &error,
+                                           G_TYPE_INVALID,
+                                           G_TYPE_BOOLEAN, &gvalidity,
+                                           G_TYPE_STRING, &gdata,
+                                           G_TYPE_INVALID)) {
+        if (gdata) {
+            selectionText = QString::fromUtf8(gdata);
+            g_free(gdata);
+        }
+        valid = gvalidity == TRUE;
+    } else {
+        if (error) { // dbus_g_proxy_call may return FALSE and not set error despite what the doc says
+            g_error_free(error);
+        }
+        valid = false;
+        return QString();        
+    }
+
+    return selectionText;
+}
+
+int MInputContextGlibDBusConnection::inputMethodMode(bool &valid)
+{
+    QVariant modeVariant = widgetState[InputMethodModeAttribute];
+    return modeVariant.toInt(&valid);
+}
 
 QRect MInputContextGlibDBusConnection::preeditRectangle(bool &valid)
 {
@@ -577,6 +673,14 @@ void MInputContextGlibDBusConnection::setOrientationAngleLocked(bool lock)
                                    G_TYPE_BOOLEAN, lock,
                                    G_TYPE_INVALID);
     }
+}
+
+
+int MInputContextGlibDBusConnection::anchorPosition(bool &valid)
+{
+    QVariant posVariant = widgetState[AnchorPositionAttribute];
+    valid = posVariant.isValid();
+    return posVariant.toInt();
 }
 
 void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &region)
@@ -688,118 +792,11 @@ void MInputContextGlibDBusConnection::reset(MDBusGlibICConnection *sourceConnect
 }
 
 
-int MInputContextGlibDBusConnection::anchorPosition(bool &valid)
-{
-    QVariant posVariant = widgetState[AnchorPositionAttribute];
-    valid = posVariant.isValid();
-    return posVariant.toInt();
-}
-
-bool MInputContextGlibDBusConnection::surroundingText(QString &text, int &cursorPosition)
-{
-    QVariant textVariant = widgetState[SurroundingTextAttribute];
-    QVariant posVariant = widgetState[CursorPositionAttribute];
-
-    if (textVariant.isValid() && posVariant.isValid()) {
-        text = textVariant.toString();
-        cursorPosition = posVariant.toInt();
-        return true;
-    }
-
-    return false;
-}
-
-
-bool MInputContextGlibDBusConnection::hasSelection(bool &valid)
-{
-    QVariant selectionVariant = widgetState[HasSelectionAttribute];
-    valid = selectionVariant.isValid();
-    return selectionVariant.toBool();
-}
-
-
-QString MInputContextGlibDBusConnection::selection(bool &valid)
-{
-    GError *error = NULL;
-
-    QString selectionText;
-    gboolean gvalidity = FALSE;
-    gchar *gdata = NULL;
-    if (activeContext && dbus_g_proxy_call(activeContext->inputContextProxy, "selection", &error,
-                                           G_TYPE_INVALID,
-                                           G_TYPE_BOOLEAN, &gvalidity,
-                                           G_TYPE_STRING, &gdata,
-                                           G_TYPE_INVALID)) {
-        if (gdata) {
-            selectionText = QString::fromUtf8(gdata);
-            g_free(gdata);
-        }
-        valid = gvalidity == TRUE;
-    } else {
-        if (error) { // dbus_g_proxy_call may return FALSE and not set error despite what the doc says
-            g_error_free(error);
-        }
-        valid = false;
-        return QString();        
-    }
-
-    return selectionText;
-}
-
-int MInputContextGlibDBusConnection::inputMethodMode(bool &valid)
-{
-    QVariant modeVariant = widgetState[InputMethodModeAttribute];
-    return modeVariant.toInt(&valid);
-}
-
 WId MInputContextGlibDBusConnection::winId(bool &valid)
 {
     QVariant winIdVariant = widgetState[WinId];
     valid = winIdVariant.canConvert<WId>();
     return winIdVariant.value<WId>();
-}
-int MInputContextGlibDBusConnection::contentType(bool &valid)
-{
-    QVariant contentTypeVariant = widgetState[ContentTypeAttribute];
-    return contentTypeVariant.toInt(&valid);
-}
-
-
-bool MInputContextGlibDBusConnection::correctionEnabled(bool &valid)
-{
-    QVariant correctionVariant = widgetState[CorrectionAttribute];
-    valid = correctionVariant.isValid();
-    return correctionVariant.toBool();
-}
-
-
-bool MInputContextGlibDBusConnection::predictionEnabled(bool &valid)
-{
-    QVariant predictionVariant = widgetState[PredictionAttribute];
-    valid = predictionVariant.isValid();
-    return predictionVariant.toBool();
-}
-
-
-bool MInputContextGlibDBusConnection::autoCapitalizationEnabled(bool &valid)
-{
-    QVariant capitalizationVariant = widgetState[AutoCapitalizationAttribute];
-    valid = capitalizationVariant.isValid();
-    return capitalizationVariant.toBool();
-}
-
-QRect MInputContextGlibDBusConnection::cursorRectangle(bool &valid)
-{
-    QVariant cursorRectVariant = widgetState[CursorRectAttribute];
-    valid = cursorRectVariant.isValid();
-    return cursorRectVariant.toRect();
-}
-
-bool MInputContextGlibDBusConnection::hiddenText(bool &valid)
-{
-    QVariant hiddenTextVariant = widgetState[HiddenTextAttribute];
-    valid = hiddenTextVariant.isValid();
-    return hiddenTextVariant.toBool();
 }
 
 void
@@ -934,20 +931,6 @@ void MInputContextGlibDBusConnection::processKeyEvent(
     }
 }
 
-void MInputContextGlibDBusConnection::updateTransientHint()
-{
-    bool ok = false;
-    WId appWinId = winId(ok);
-
-    if (ok) {
-        MIMApplication *app = MIMApplication::instance();
-
-        if (app) {
-            app->setTransientHint(appWinId);
-        }
-    }
-}
-
 void MInputContextGlibDBusConnection::registerAttributeExtension(MDBusGlibICConnection *connection, int id,
                                                          const QString &attributeExtension)
 {
@@ -975,5 +958,19 @@ void MInputContextGlibDBusConnection::setExtendedAttribute(
     MAttributeExtensionId globalId(id, QString::number(connection->connectionNumber));
     if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
         MAttributeExtensionManager::instance().setExtendedAttribute(globalId, target, targetName, attribute, value);
+    }
+}
+
+void MInputContextGlibDBusConnection::updateTransientHint()
+{
+    bool ok = false;
+    WId appWinId = winId(ok);
+
+    if (ok) {
+        MIMApplication *app = MIMApplication::instance();
+
+        if (app) {
+            app->setTransientHint(appWinId);
+        }
     }
 }

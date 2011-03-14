@@ -87,6 +87,11 @@ public:
 public slots:
     // communication w/ minputcontext
 
+    //! \reimp
+    virtual void updateInputMethodArea(const QRegion &region);
+    //! \reimp_end
+
+public:
     //! sets the input to go to calling connection
     void activateContext(MDBusGlibICConnection *obj);
 
@@ -119,10 +124,6 @@ public slots:
      * \brief Target application changed orientation (already finished)
      */
     void receivedAppOrientationChanged(MDBusGlibICConnection *sourceConnection, int angle);
-
-    //! \reimp
-    virtual void updateInputMethodArea(const QRegion &region);
-    //! \reimp_end
 
     /*! \brief Set copy/paste state for appropriate UI elements in the input method server
      *  \param copyAvailable bool TRUE if text is selected
