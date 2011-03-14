@@ -240,8 +240,7 @@ QString MInputContext::identifierName()
 
 bool MInputContext::isComposing() const
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
-    return true; // FIXME
+    return !preedit.isEmpty();
 }
 
 
