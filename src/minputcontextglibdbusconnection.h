@@ -142,11 +142,6 @@ public:
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
     /*!
-     * \brief get the X window id of the active app window
-     */
-    WId winId(bool &valid);
-
-    /*!
      * \brief Register an input method attribute extension which is defined in \a fileName with the
      * unique identifier \a id.
      *
@@ -174,6 +169,11 @@ private:
     //! Updates the transient hint on the framework side to point to the
     //! current application's window id.
     void updateTransientHint();
+
+    /*!
+     * \brief get the X window id of the active app window
+     */
+    WId winId(bool &valid);
 
     MDBusGlibICConnection *activeContext;
     QMap<QString, QVariant> widgetState;

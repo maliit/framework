@@ -791,14 +791,6 @@ void MInputContextGlibDBusConnection::reset(MDBusGlibICConnection *sourceConnect
     }
 }
 
-
-WId MInputContextGlibDBusConnection::winId(bool &valid)
-{
-    QVariant winIdVariant = widgetState[WinId];
-    valid = winIdVariant.canConvert<WId>();
-    return winIdVariant.value<WId>();
-}
-
 void
 MInputContextGlibDBusConnection::updateWidgetInformation(
     MDBusGlibICConnection *connection, const QMap<QString, QVariant> &stateInfo,
@@ -973,4 +965,11 @@ void MInputContextGlibDBusConnection::updateTransientHint()
             app->setTransientHint(appWinId);
         }
     }
+}
+
+WId MInputContextGlibDBusConnection::winId(bool &valid)
+{
+    QVariant winIdVariant = widgetState[WinId];
+    valid = winIdVariant.canConvert<WId>();
+    return winIdVariant.value<WId>();
 }
