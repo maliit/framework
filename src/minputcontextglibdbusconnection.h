@@ -126,7 +126,7 @@ public slots:
      *  \param copyAvailable bool TRUE if text is selected
      *  \param pasteAvailable bool TRUE if clipboard content is not empty
      */
-    virtual void setCopyPasteState(MDBusGlibICConnection *sourceConnection,
+    void setCopyPasteState(MDBusGlibICConnection *sourceConnection,
                                    bool copyAvailable, bool pasteAvailable);
 
     /*!
