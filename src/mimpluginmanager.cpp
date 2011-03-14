@@ -765,6 +765,13 @@ void MIMPluginManagerPrivate::setLastActiveSubView(const QString &subview)
 void MIMPluginManagerPrivate::configureWidgetsForCompositing(QWidget *mainWindow,
                                                              bool selfCompositing)
 {
+    if (not mainWindow) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "Compositing configuration failed:"
+                   << "Cannot access main window!";
+        return;
+    }
+
     std::deque<QWidget *> unvisited;
     unvisited.push_back(mainWindow);
 
