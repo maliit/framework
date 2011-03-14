@@ -115,6 +115,7 @@ void MIMPluginManagerPrivate::loadPlugins()
 bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
 {
     Q_Q(MIMPluginManager);
+    Q_ASSERT(mApp);
 
     bool val = false;
     QPluginLoader load(fileName);
@@ -127,13 +128,15 @@ bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
         MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
         if (plugin) {
             if (!plugin->supportedStates().isEmpty()) {
+                WeakWidget centralWidget(new QWidget(mApp->passThruWindow()));
+
                 MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
-                MAbstractInputMethod *im = plugin->createInputMethod(host, mApp->passThruWindow());
+                MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
 
                 // only add valid plugin descriptions
                 if (im) {
                     PluginDescription desc = { load.fileName(), im, host, PluginState(),
-                                               MInputMethod::SwitchUndefined };
+                                               MInputMethod::SwitchUndefined, centralWidget };
                     plugins[plugin] = desc;
                     val = true;
                     host->setInputMethod(im);
@@ -321,6 +324,7 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
     // hide in deactivatePlugin) in a sense completely unrelated to SIP requests.  Should
     // there be separte methods for plugin activation/deactivation?
     if (acceptRegionUpdates) {
+        ensureActivePluginsVisible(DontShowInputMethod);
         switchedTo->show();
         switchedTo->showLanguageNotification();
     }
@@ -660,9 +664,7 @@ void MIMPluginManagerPrivate::showActivePlugins()
     ensureEmptyRegionWhenHiddenTimer.stop();
     acceptRegionUpdates = true;
 
-    foreach (MInputMethodPlugin *plugin, activePlugins) {
-        plugins[plugin].inputMethod->show();
-    }
+    ensureActivePluginsVisible(ShowInputMethod);
 }
 
 void MIMPluginManagerPrivate::hideActivePlugins()
@@ -672,6 +674,30 @@ void MIMPluginManagerPrivate::hideActivePlugins()
     }
 
     ensureEmptyRegionWhenHiddenTimer.start();
+}
+
+void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest request)
+{
+    if (not mApp || not mApp->passThruWindow()) {
+        return;
+    }
+
+    foreach (QObject *obj, mApp->passThruWindow()->children()) {
+        if (QWidget *w = qobject_cast<QWidget *>(obj)) {
+            w->hide();
+        }
+    }
+
+    foreach (MInputMethodPlugin *plugin, activePlugins) {
+        const WeakWidget &w = plugins[plugin].centralWidget;
+        if (w) {
+            w.data()->show();
+        }
+
+        if (request == ShowInputMethod) {
+            plugins[plugin].inputMethod->show();
+        }
+    }
 }
 
 QMap<QString, QString>

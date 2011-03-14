@@ -24,6 +24,8 @@
 #include "mimsettings.h"
 
 #include <QObject>
+#include <QWeakPointer>
+#include <QWidget>
 #include <QList>
 #include <QStringList>
 #include <QMap>
@@ -45,13 +47,22 @@ class MIMPluginManagerPrivate
     Q_DECLARE_PUBLIC(MIMPluginManager)
 public:
     typedef QSet<MInputMethod::HandlerState> PluginState;
+    typedef QWeakPointer<QWidget> WeakWidget;
+
+    enum ShowInputMethodRequest {
+        DontShowInputMethod,
+        ShowInputMethod
+    };
+
     struct PluginDescription {
         QString fileName;
         MAbstractInputMethod *inputMethod;
         MInputMethodHost *imHost;
         PluginState state;
         MInputMethod::SwitchDirection lastSwitchDirection;
+        WeakWidget centralWidget;
     };
+
     typedef QMap<MInputMethodPlugin *, PluginDescription> Plugins;
     typedef QSet<MInputMethodPlugin *> ActivePlugins;
     typedef QMap<MInputMethod::HandlerState, MInputMethodPlugin *> HandlerMap;
@@ -89,6 +100,7 @@ public:
     void initActiveSubView();
     void hideActivePlugins();
     void showActivePlugins();
+    void ensureActivePluginsVisible(ShowInputMethodRequest request);
 
     /*!
      * This method is called when one of the gconf about handler map is changed
