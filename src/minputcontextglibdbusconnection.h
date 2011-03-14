@@ -91,33 +91,34 @@ public slots:
     void activateContext(MDBusGlibICConnection *obj);
 
     //! ipc method provided to the application, shows input method
-    void showInputMethod();
+    void showInputMethod(MDBusGlibICConnection *sourceConnection);
 
     //! ipc method provided to the application, hides input method
-    void hideInputMethod(MDBusGlibICConnection *connection);
+    void hideInputMethod(MDBusGlibICConnection *sourceConnection);
 
     //! ipc method provided to the application, signals mouse click on preedit
-    void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
+    void mouseClickedOnPreedit(MDBusGlibICConnection *sourceConnection,
+                               const QPoint &pos, const QRect &preeditRect);
 
     //! ipc method provided to the application, sets preedit
-    void setPreedit(const QString &text, int cursorPos);
+    void setPreedit(MDBusGlibICConnection *sourceConnection, const QString &text, int cursorPos);
 
     void updateWidgetInformation(MDBusGlibICConnection *connection,
                                  const QMap<QString, QVariant> &stateInformation,
                                  bool focusChanged);
 
     //! ipc method provided to the application, resets the input method
-    void reset();
+    void reset(MDBusGlibICConnection *sourceConnection);
 
     /*!
      * \brief Target application is changing orientation
      */
-    void receivedAppOrientationAboutToChange(int angle);
+    void receivedAppOrientationAboutToChange(MDBusGlibICConnection *sourceConnection, int angle);
 
     /*!
      * \brief Target application changed orientation (already finished)
      */
-    void receivedAppOrientationChanged(int angle);
+    void receivedAppOrientationChanged(MDBusGlibICConnection *sourceConnection, int angle);
 
     virtual void updateInputMethodArea(const QRegion &region);
 
@@ -125,16 +126,17 @@ public slots:
      *  \param copyAvailable bool TRUE if text is selected
      *  \param pasteAvailable bool TRUE if clipboard content is not empty
      */
-    virtual void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
+    virtual void setCopyPasteState(MDBusGlibICConnection *sourceConnection,
+                                   bool copyAvailable, bool pasteAvailable);
 
     /*!
      * \brief Process a key event redirected from hardware keyboard to input method plugin(s).
      *
      * This is called only if one has enabled redirection by calling \a setRedirectKeys.
      */
-    void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers,
-                         const QString &text, bool autoRepeat, int count, quint32 nativeScanCode,
-                         quint32 nativeModifiers, unsigned long time);
+    void processKeyEvent(MDBusGlibICConnection *sourceConnection, QEvent::Type keyType, Qt::Key keyCode,
+                         Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
+                         int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
     /*!
      * \brief get the X window id of the active app window

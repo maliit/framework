@@ -104,7 +104,7 @@ m_dbus_glib_ic_connection_activate_context(MDBusGlibICConnection *obj, GError **
 static gboolean
 m_dbus_glib_ic_connection_show_input_method(MDBusGlibICConnection *obj, GError **/*error*/)
 {
-    obj->icConnection->showInputMethod();
+    obj->icConnection->showInputMethod(obj);
     return TRUE;
 }
 
@@ -122,8 +122,8 @@ m_dbus_glib_ic_connection_mouse_clicked_on_preedit(MDBusGlibICConnection *obj,
                                                    gint32 preeditWidth, gint32 preeditHeight,
                                                    GError **/*error*/)
 {
-    obj->icConnection->mouseClickedOnPreedit(QPoint(posX, posY), QRect(preeditX, preeditY,
-                                                                       preeditWidth, preeditHeight));
+    obj->icConnection->mouseClickedOnPreedit(obj, QPoint(posX, posY), QRect(preeditX, preeditY,
+                                                                            preeditWidth, preeditHeight));
     return TRUE;
 }
 
@@ -131,7 +131,7 @@ static gboolean
 m_dbus_glib_ic_connection_set_preedit(MDBusGlibICConnection *obj, const char *text,
                                       gint32 cursorPos, GError **/*error*/)
 {
-    obj->icConnection->setPreedit(QString::fromUtf8(text), cursorPos);
+    obj->icConnection->setPreedit(obj, QString::fromUtf8(text), cursorPos);
     return TRUE;
 }
 
@@ -177,7 +177,7 @@ m_dbus_glib_ic_connection_update_widget_information(MDBusGlibICConnection *obj,
 static gboolean
 m_dbus_glib_ic_connection_reset(MDBusGlibICConnection *obj, GError **/*error*/)
 {
-    obj->icConnection->reset();
+    obj->icConnection->reset(obj);
     return TRUE;
 }
 
@@ -185,7 +185,7 @@ static gboolean
 m_dbus_glib_ic_connection_app_orientation_about_to_change(MDBusGlibICConnection *obj, gint32 angle,
                                                          GError **/*error*/)
 {
-    obj->icConnection->receivedAppOrientationAboutToChange(static_cast<int>(angle));
+    obj->icConnection->receivedAppOrientationAboutToChange(obj, static_cast<int>(angle));
     return TRUE;
 }
 
@@ -194,7 +194,7 @@ static gboolean
 m_dbus_glib_ic_connection_app_orientation_changed(MDBusGlibICConnection *obj, gint32 angle,
                                                   GError **/*error*/)
 {
-    obj->icConnection->receivedAppOrientationChanged(static_cast<int>(angle));
+    obj->icConnection->receivedAppOrientationChanged(obj, static_cast<int>(angle));
     return TRUE;
 }
 
@@ -202,7 +202,7 @@ static gboolean
 m_dbus_glib_ic_connection_set_copy_paste_state(MDBusGlibICConnection *obj, gboolean copyAvailable,
                                                gboolean pasteAvailable, GError **/*error*/)
 {
-    obj->icConnection->setCopyPasteState(copyAvailable == TRUE, pasteAvailable == TRUE);
+    obj->icConnection->setCopyPasteState(obj, copyAvailable == TRUE, pasteAvailable == TRUE);
     return TRUE;
 }
 
@@ -214,7 +214,7 @@ m_dbus_glib_ic_connection_process_key_event(MDBusGlibICConnection *obj, gint32 k
                                             unsigned long time,
                                             GError **/*error*/)
 {
-    obj->icConnection->processKeyEvent(static_cast<QEvent::Type>(keyType),
+    obj->icConnection->processKeyEvent(obj, static_cast<QEvent::Type>(keyType),
                                        static_cast<Qt::Key>(keyCode),
                                        static_cast<Qt::KeyboardModifiers>(modifiers),
                                        QString::fromUtf8(text), autoRepeat == TRUE,
@@ -623,41 +623,54 @@ void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *con
 }
 
 
-void MInputContextGlibDBusConnection::showInputMethod()
+void MInputContextGlibDBusConnection::showInputMethod(MDBusGlibICConnection *sourceConnection)
 {
+    if (activeContext != sourceConnection)
+        return;
+
     emit showInputMethodRequest();
 }
 
 
-void MInputContextGlibDBusConnection::hideInputMethod(MDBusGlibICConnection *connection)
+void MInputContextGlibDBusConnection::hideInputMethod(MDBusGlibICConnection *sourceConnection)
 {
     // Only allow this call for current active connection.
-    if (activeContext != connection)
+    if (activeContext != sourceConnection)
         return;
 
     emit hideInputMethodRequest();
 }
 
 
-void MInputContextGlibDBusConnection::mouseClickedOnPreedit(const QPoint &pos,
-                                                           const QRect &preeditRect)
+void MInputContextGlibDBusConnection::mouseClickedOnPreedit(MDBusGlibICConnection *sourceConnection,
+                                                            const QPoint &pos, const QRect &preeditRect)
 {
+    if (activeContext != sourceConnection)
+        return;
+
     foreach (MAbstractInputMethod *target, targets()) {
         target->handleMouseClickOnPreedit(pos, preeditRect);
     }
 }
 
 
-void MInputContextGlibDBusConnection::setPreedit(const QString &text, int cursorPos)
+void MInputContextGlibDBusConnection::setPreedit(MDBusGlibICConnection *sourceConnection,
+                                                 const QString &text, int cursorPos)
 {
+    if (activeContext != sourceConnection)
+        return;
+
     foreach (MAbstractInputMethod *target, targets()) {
         target->setPreedit(text, cursorPos);
     }
 }
 
 
-void MInputContextGlibDBusConnection::reset()
+void MInputContextGlibDBusConnection::reset(MDBusGlibICConnection *sourceConnection)
 {
+    if (activeContext != sourceConnection)
+        return;
+
     foreach (MAbstractInputMethod *target, targets()) {
         target->reset();
     }
@@ -852,8 +865,13 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
     }
 }
 
-void MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(int angle)
+void
+MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(MDBusGlibICConnection *sourceConnection,
+                                                                     int angle)
 {
+    if (activeContext != sourceConnection)
+        return;
+
     // Needs to be passed to the MImRotationAnimation listening
     // to this signal first before the plugins. This ensures
     // that the rotation animation can be painted sufficiently early.
@@ -864,8 +882,12 @@ void MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(int an
 }
 
 
-void MInputContextGlibDBusConnection::receivedAppOrientationChanged(int angle)
+void MInputContextGlibDBusConnection::receivedAppOrientationChanged(MDBusGlibICConnection *sourceConnection,
+                                                                    int angle)
 {
+    if (activeContext != sourceConnection)
+        return;
+
     // Handle orientation changes through MImRotationAnimation with priority.
     // That's needed for getting the correct rotated pixmap buffers.
     emit appOrientationChanged(angle);
@@ -875,16 +897,24 @@ void MInputContextGlibDBusConnection::receivedAppOrientationChanged(int angle)
 }
 
 
-void MInputContextGlibDBusConnection::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
+void MInputContextGlibDBusConnection::setCopyPasteState(MDBusGlibICConnection *sourceConnection,
+                                                        bool copyAvailable, bool pasteAvailable)
 {
+    if (activeContext != sourceConnection)
+        return;
+
     MAttributeExtensionManager::instance().setCopyPasteState(copyAvailable, pasteAvailable);
 }
 
 
 void MInputContextGlibDBusConnection::processKeyEvent(
-    QEvent::Type keyType, Qt::Key keyCode, Qt::KeyboardModifiers modifiers, const QString &text,
-    bool autoRepeat, int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time)
+    MDBusGlibICConnection *sourceConnection, QEvent::Type keyType, Qt::Key keyCode,
+    Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat, int count,
+    quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time)
 {
+    if (activeContext != sourceConnection)
+        return;
+
     foreach (MAbstractInputMethod *target, targets()) {
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
                                 nativeScanCode, nativeModifiers, time);
