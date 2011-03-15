@@ -64,10 +64,11 @@ MImSettingsWidget::~MImSettingsWidget()
 void MImSettingsWidget::initWidget()
 {
     QGraphicsLinearLayout* mainLayout = new QGraphicsLinearLayout(Qt::Vertical, this);
+    mainLayout->setContentsMargins(0., 0., 0., 0.);
 
     // Header
     headerLabel = new MLabel(this);
-    headerLabel->setStyleName("CommonXLargeHeaderInverted");
+    headerLabel->setStyleName("CommonApplicationHeaderInverted");
     mainLayout->addItem(headerLabel);
     mainLayout->setStretchFactor(headerLabel, 0);
 
