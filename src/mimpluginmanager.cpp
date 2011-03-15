@@ -99,61 +99,73 @@ MIMPluginManagerPrivate::~MIMPluginManagerPrivate()
 
 void MIMPluginManagerPrivate::loadPlugins()
 {
+    MImSettings activeOnScreenGconf(PluginRoot + "/" + inputSourceName(MInputMethod::OnScreen));
+    const QString activeOnScreenPluginName = activeOnScreenGconf.value().toString();
+    QList<MInputMethodPlugin *> pendingPlugins;
     foreach (QString path, paths) {
         QDir pluginsDir(path);
 
-        foreach (const QString &fileName, pluginsDir.entryList(QDir::Files)) {
+        QStringList pluginFiles = pluginsDir.entryList(QDir::Files);
+        foreach (const QString &fileName, pluginFiles) {
             if (blacklist.contains(fileName)) {
                 qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
                 continue;
             }
-            loadPlugin(pluginsDir.absoluteFilePath(fileName));
+
+            QPluginLoader load(pluginsDir.absoluteFilePath(fileName));
+            QObject *pluginInstance = load.instance();
+
+            if (!pluginInstance) {
+                qWarning() << __PRETTY_FUNCTION__ << "Error loading plugin from "
+                           << fileName << load.errorString();
+            } else {
+                MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
+                if (plugin) {
+                    // load default plugin as the first one
+                    if (plugin->name() == activeOnScreenPluginName)
+                        loadPlugin(plugin);
+                    else
+                        pendingPlugins.append(plugin);
+                }
+            }
         } // end foreach file in path
     } // end foreach path in paths
+
+    // load all pending loading plugins
+    foreach(MInputMethodPlugin *plugin, pendingPlugins)
+        loadPlugin(plugin);
 }
 
-bool MIMPluginManagerPrivate::loadPlugin(const QString &fileName)
+bool MIMPluginManagerPrivate::loadPlugin(MInputMethodPlugin *plugin)
 {
     Q_Q(MIMPluginManager);
     Q_ASSERT(mApp);
 
     bool val = false;
-    QPluginLoader load(fileName);
-    QObject *pluginInstance = load.instance();
+    if (plugin) {
+        if (!plugin->supportedStates().isEmpty()) {
+            WeakWidget centralWidget(new QWidget(mApp->passThruWindow()));
 
-    if (!pluginInstance) {
-        qWarning() << __PRETTY_FUNCTION__ << "Error loading plugin from "
-                   << fileName << load.errorString();
-    } else {
-        MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
-        if (plugin) {
-            if (!plugin->supportedStates().isEmpty()) {
-                WeakWidget centralWidget(new QWidget(mApp->passThruWindow()));
+            MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
+            MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
 
-                MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
-                MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
-
-                // only add valid plugin descriptions
-                if (im) {
-                    PluginDescription desc = { load.fileName(), im, host, PluginState(),
-                                               MInputMethod::SwitchUndefined, centralWidget };
-                    plugins[plugin] = desc;
-                    val = true;
-                    host->setInputMethod(im);
-                    MIMPluginManagerPrivate::configureWidgetsForCompositing(mApp->passThruWindow(),
-                                                                            mApp->selfComposited());
-                } else {
-                    qWarning() << __PRETTY_FUNCTION__
-                               << "Plugin loading failed:" << fileName;
-                    delete host;
-                }
+            // only add valid plugin descriptions
+            if (im) {
+                PluginDescription desc = { im, host, PluginState(),
+                                           MInputMethod::SwitchUndefined, centralWidget };
+                plugins[plugin] = desc;
+                val = true;
+                host->setInputMethod(im);
+                MIMPluginManagerPrivate::configureWidgetsForCompositing(mApp->passThruWindow(),
+                                                                        mApp->selfComposited());
             } else {
                 qWarning() << __PRETTY_FUNCTION__
-                           << "Plugin does not support any state: " << fileName;
+                    << "Plugin loading failed:" << plugin->name();
+                delete host;
             }
         } else {
             qWarning() << __PRETTY_FUNCTION__
-                       << "Plugin is not MInputMethodPlugin: " << fileName;
+                << "Plugin does not support any state: " << plugin->name();
         }
     }
     return val;

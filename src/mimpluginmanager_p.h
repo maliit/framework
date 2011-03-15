@@ -55,7 +55,6 @@ public:
     };
 
     struct PluginDescription {
-        QString fileName;
         MAbstractInputMethod *inputMethod;
         MInputMethodHost *imHost;
         PluginState state;
@@ -72,7 +71,7 @@ public:
 
     void activatePlugin(MInputMethodPlugin *plugin);
     void loadPlugins();
-    bool loadPlugin(const QString &fileName);
+    bool loadPlugin(MInputMethodPlugin *plugin);
     void addHandlerMap(MInputMethod::HandlerState state, const QString &pluginName);
     void setActiveHandlers(const QSet<MInputMethod::HandlerState> &states);
     QSet<MInputMethod::HandlerState> activeHandlers() const;
