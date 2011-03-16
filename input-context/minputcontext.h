@@ -174,6 +174,15 @@ public:
      */
     QString selection(bool &valid) const;
 
+Q_SIGNALS:
+    //! \internal
+    /*! 
+     * \brief Emitted when input method area is changed
+     * \param region new input method area
+     */
+    void inputMethodAreaChanged(const QRect &region);
+    //! \internal_end
+
 private slots:
     //! hides input method
     void hideOnFocusOut();
