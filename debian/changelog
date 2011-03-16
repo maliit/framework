@@ -1,9 +1,9 @@
-meego-im-framework (0.20.2~1) unstable; urgency=low
+meego-im-framework (0.20.2-1) unstable; urgency=low
 
-  * [UNRELEASED]
   * Fixes: NB#235678 - Orientation out of sync after rotation, then switching plugins
+  * Fixes: NB#235607 - Text input settings view has too large title font
 
- -- Rakesh Cherian <ext-rakesh.cherian@nokia.com>  Fri, 11 Mar 2011 11:31:00 +0200
+ -- Ning Chi <ext-chi.2.ning@nokia.com>  Wed, 16 Mar 2011 15:37:30 +0200
 
 meego-im-framework (0.20.1-1) unstable; urgency=low
 
