@@ -152,6 +152,26 @@ void MImRemoteWindow::unredirect()
     }
 }
 
+void MImRemoteWindow::handleEvent(XEvent *event)
+{
+    handleConfigureNotifyEvent(event);
+    handleDamageEvent(event);
+}
+
+void MImRemoteWindow::handleConfigureNotifyEvent(XEvent *event)
+{
+    if (event->type != ConfigureNotify)
+        return;
+
+    XConfigureEvent *e = &event->xconfigure;
+
+    if (e->window != wid)
+        return;
+
+    if (redirected)
+        setupPixmap();
+}
+
 void MImRemoteWindow::handleDamageEvent(XEvent *event)
 {
     if (event->type != MIMApplication::instance()->damageExtension().eventBase() + XDamageNotify)

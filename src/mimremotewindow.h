@@ -50,8 +50,8 @@ public:
     //! Disables redirection of the remote application window
     void unredirect();
 
-    //! Handle the damage \a event
-    void handleDamageEvent(XEvent *event);
+    //! Handle the XEvent \a event
+    void handleEvent(XEvent *event);
 
     //! Returns the window pixmap while the remote application window is redirected
     virtual const QPixmap &windowPixmap() const;
@@ -73,6 +73,12 @@ private:
     void setupDamage();
     //! Stops listening for damage events
     void destroyDamage();
+
+    //! Handle the configure \a event
+    void handleConfigureNotifyEvent(XEvent *event);
+
+    //! Handle the damage \a event
+    void handleDamageEvent(XEvent *event);
 
     WId wid;
 

@@ -67,7 +67,7 @@ bool MIMApplication::x11EventFilter(XEvent *ev)
 {
     handleMapNotifyEvents(ev);
     handleTransientEvents(ev);
-    handleDamageEvents(ev);
+    handleRemoteWindowEvents(ev);
     return QApplication::x11EventFilter(ev);
 }
 
@@ -150,13 +150,13 @@ bool MIMApplication::wasPassThruWindowUnmapped(XEvent *ev) const
             static_cast<WId>(ev->xunmap.event) == mPassThruWindow->effectiveWinId());
 }
 
-void MIMApplication::handleDamageEvents(XEvent *event)
+void MIMApplication::handleRemoteWindowEvents(XEvent *event)
 {
     if (not mRemoteWindow.get()) {
         return;
     }
 
-    mRemoteWindow->handleDamageEvent(event);
+    mRemoteWindow->handleEvent(event);
 }
 
 bool MIMApplication::selfComposited() const

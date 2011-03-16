@@ -102,7 +102,7 @@ private:
 
     void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);
-    void handleDamageEvents(XEvent *ev);
+    void handleRemoteWindowEvents(XEvent *ev);
 
     bool initializeComposite();
 
