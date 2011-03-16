@@ -1,3 +1,9 @@
+meego-im-framework (0.20.3~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Ning Chi <ext-chi.2.ning@nokia.com>  Wed, 16 Mar 2011 16:16:03 +0200
+
 meego-im-framework (0.20.2-1) unstable; urgency=low
 
   * Fixes: NB#235678 - Orientation out of sync after rotation, then switching plugins
