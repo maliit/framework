@@ -45,6 +45,74 @@ SnapshotPixmapItem::SnapshotPixmapItem(QPixmap pixmap, QGraphicsItem *parent) :
 
 SnapshotPixmapItem::~SnapshotPixmapItem() {}
 
+
+MImDamageMonitor::MImDamageMonitor(MImRemoteWindow* remoteWin,
+                                   QObject* parent) :
+    QObject(parent),
+    timeoutTimer(),
+    damageDetected(false)
+{
+    timeoutTimer.setInterval(1000);
+    timeoutTimer.setSingleShot(true);
+    connect(&timeoutTimer,SIGNAL(timeout()),
+            this,SLOT(timeoutExpired()));
+
+    remoteWindowChanged(remoteWin);
+}
+
+void
+MImDamageMonitor::remoteWindowChanged(MImRemoteWindow *newRemoteWindow)
+{
+    remoteWindow = newRemoteWindow;
+    if (remoteWindow) {
+        connect(remoteWindow, SIGNAL(contentUpdated(QRegion)),
+                this, SLOT(contentUpdated(QRegion)));
+    }
+}
+
+void
+MImDamageMonitor::activate()
+{
+    damageDetected = false;
+}
+
+void
+MImDamageMonitor::waitForDamage()
+{
+    timeoutTimer.start();
+    if (damageDetected) {
+        qDebug() << __PRETTY_FUNCTION__ << " - damage already received, emitting signal.";
+        cancel();
+        emit damageReceivedOrTimeout();
+    }
+}
+
+void
+MImDamageMonitor::contentUpdated(QRegion)
+{
+    damageDetected = true;
+    // Emit signal only after client called waitForDamage().
+    if (timeoutTimer.isActive()) {
+        qDebug() << __PRETTY_FUNCTION__ << " - damage received, emitting signal.";
+        cancel();
+        emit damageReceivedOrTimeout();
+    }
+}
+
+void
+MImDamageMonitor::cancel()
+{
+    timeoutTimer.stop();
+}
+
+void
+MImDamageMonitor::timeoutExpired()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    cancel();
+    emit damageReceivedOrTimeout();
+}
+
 namespace {
     qreal rotateAngle(int startAngle, int endAngle) {
         // Special cases ensuring shortest rotation angle according to original code from
@@ -68,10 +136,12 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget) :
         snapshotWidget(snapshotWidget),
         remoteWindow(0),
         animationStartPixmapItem(0),
+        animationEndPixmapItem(0),
         startOrientationAngle(0),
         currentOrientationAngle(0),
         aboutToChangeReceived(false),
-        enabled(false)
+        enabled(false),
+        damageMonitor(0)
 {
     // Animation plays on top of a black backround,
     // covering up the underlying application.
@@ -105,6 +175,10 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget) :
     connect(mApp, SIGNAL(passThruWindowUnmapped()),
             this, SLOT(disableAnimation()));
 
+    damageMonitor = new MImDamageMonitor(remoteWindow, this);
+    connect(damageMonitor, SIGNAL(damageReceivedOrTimeout()),
+            this, SLOT(startAnimation()));
+
     hide();
 
     if (mApp) {
@@ -127,6 +201,7 @@ MImRotationAnimation::disableAnimation()
         rotationAnimationGroup.stop();
     }
 
+    damageMonitor->cancel();
     clearScene();
 
     enabled = false;
@@ -182,6 +257,9 @@ MImRotationAnimation::setupAnimation(int fromAngle, int toAngle) {
     qreal hiddenOpacity = 0;
     qreal visibleOpacity = 1.0;
 
+    // See crossfadedorientationanimationstyle.css for the origin of the animation parameters.
+    int duration = 500;
+
     QPropertyAnimation* startAnimations[2];
     QPropertyAnimation* endAnimations[4];
 
@@ -201,7 +279,7 @@ MImRotationAnimation::setupAnimation(int fromAngle, int toAngle) {
         // It stays live if it's used in read-only mode.
         remoteWindowPixmap = remoteWindow->windowPixmap();
     }
-    animationEndPixmapItem = new SnapshotPixmapItem(remoteWindow->windowPixmap());
+    animationEndPixmapItem = new SnapshotPixmapItem(remoteWindowPixmap);
     animationEndPixmapItem->setPos(0,0);
     animationEndPixmapItem->setTransformOriginPoint(240,240);
     animationEndPixmapItem->setRotation(initialRotationOfTarget);
@@ -217,9 +295,6 @@ MImRotationAnimation::setupAnimation(int fromAngle, int toAngle) {
         scene()->addItem(animationEndPixmapItem);
         scene()->addItem(animationEndVkbOverlayItem);
     }
-
-    // See crossfadedorientationanimationstyle.css for the origin of these values.
-    int duration = 500;
 
     startAnimations[0]->setPropertyName("rotation");
     startAnimations[0]->setStartValue(0);
@@ -273,13 +348,15 @@ MImRotationAnimation::setupAnimation(int fromAngle, int toAngle) {
     rotationAnimationGroup.addAnimation(endAnimations[1]);
     rotationAnimationGroup.addAnimation(endAnimations[2]);
     rotationAnimationGroup.addAnimation(endAnimations[3]);
-
 }
 
 MImRotationAnimation::~MImRotationAnimation() {
     QGraphicsScene *myScene = scene();
     setScene(0);
     delete myScene;
+
+    delete damageMonitor;
+    damageMonitor = 0;
 
     rotationAnimationGroup.clear();
 }
@@ -306,6 +383,7 @@ MImRotationAnimation::grabComposited()
 QPixmap
 MImRotationAnimation::grabVkbOnly()
 {
+    mApp->setSuppressBackground(true);
     // We need to work with a QImage here, otherwise we lose the
     // transparency of the see-through part of the keyboard image.
     QImage grabImage(size(),QImage::Format_ARGB32);
@@ -318,12 +396,15 @@ MImRotationAnimation::grabVkbOnly()
     // new QPixmap generated from QImage.
     painter.end();
 
+    mApp->setSuppressBackground(false);
+
     return QPixmap::fromImage(grabImage);
 }
 
 void
 MImRotationAnimation::remoteWindowChanged(MImRemoteWindow* newRemoteWindow) {
     remoteWindow = newRemoteWindow;
+    damageMonitor->remoteWindowChanged(newRemoteWindow);
 }
 
 void
@@ -332,7 +413,7 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
 
     if (!enabled
         || toAngle == currentOrientationAngle
-        || aboutToChangeReceived ) {
+        || aboutToChangeReceived) {
         return;
     }
     startOrientationAngle = currentOrientationAngle;
@@ -355,6 +436,8 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     setupScene();
     showInitial();
 
+    damageMonitor->activate();
+
     // Unfortunately, we need to shield against appOrientationChangeFinishedEvents
     // that come in without a previous "AboutToChange" event.
     aboutToChangeReceived = true;
@@ -374,16 +457,18 @@ MImRotationAnimation::appOrientationChangeFinished(int toAngle) {
     }
 
     setupAnimation(startOrientationAngle, toAngle);
-    startAnimation();
 
-    aboutToChangeReceived = false;
+    damageMonitor->waitForDamage();
 }
 
 
 void
 MImRotationAnimation::startAnimation()
 {
+    qDebug() << __PRETTY_FUNCTION__;
+
     rotationAnimationGroup.start();
+    aboutToChangeReceived = false;
 }
 
 void MImRotationAnimation::clearScene() {

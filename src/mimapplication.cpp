@@ -26,7 +26,8 @@ MIMApplication::MIMApplication(int &argc, char **argv)
       mDamageExtension(),
       mSelfComposited(false),
       mManualRedirection(false),
-      mBypassWMHint(false)
+      mBypassWMHint(false),
+      mBackgroundSuppressed(false)
 {
     parseArguments(argc, argv);
     mPassThruWindow.reset(new MPassThruWindow),
@@ -174,6 +175,11 @@ bool MIMApplication::bypassWMHint() const
     return mBypassWMHint;
 }
 
+void MIMApplication::setSuppressBackground(bool suppress)
+{
+    mBackgroundSuppressed = suppress;
+}
+
 #ifdef UNIT_TEST
 MImRemoteWindow *MIMApplication::remoteWindow() const
 {
@@ -183,7 +189,9 @@ MImRemoteWindow *MIMApplication::remoteWindow() const
 
 const QPixmap &MIMApplication::remoteWindowPixmap()
 {
-    if (not mApp || not mApp->mRemoteWindow.get()) {
+    if (not mApp || not mApp->mRemoteWindow.get()
+        || mApp->mBackgroundSuppressed
+        || not mApp->mSelfComposited) {
         static const QPixmap empty;
         return empty;
     }

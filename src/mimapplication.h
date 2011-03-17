@@ -70,6 +70,11 @@ public:
     bool manualRedirection() const;
     bool bypassWMHint() const;
 
+    //! Flag that is used to sync between MAbstractInputMethodHost and
+    //! rotation animation in order to capture the VKB without
+    //! self-composited background drawn.
+    void setSuppressBackground(bool suppress);
+
 #ifdef UNIT_TEST
     MImRemoteWindow *remoteWindow() const;
 #endif
@@ -116,6 +121,7 @@ private:
     bool mSelfComposited;
     bool mManualRedirection;
     bool mBypassWMHint;
+    bool mBackgroundSuppressed;
 
     friend class Ut_PassthroughServer;
 };

@@ -22,6 +22,7 @@
 #include <QParallelAnimationGroup>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
+#include <QTimer>
 
 /*! \internal
  * \brief Custom QObject'ified PixmapItem that's placed on the scene,
@@ -45,7 +46,35 @@ private:
     Q_DISABLE_COPY(SnapshotPixmapItem)
 };
 
+
 class MImRemoteWindow;
+
+class MImDamageMonitor : public QObject {
+    Q_OBJECT
+
+public:
+    explicit MImDamageMonitor(MImRemoteWindow* remoteWin, QObject* parent = 0);
+    void activate();
+    void waitForDamage();
+    void cancel();
+    void remoteWindowChanged(MImRemoteWindow* newRemoteWindow);
+
+signals:
+    void damageReceivedOrTimeout();
+
+private slots:
+    void contentUpdated(QRegion region);
+    void timeoutExpired();
+
+private:
+    Q_DISABLE_COPY(MImDamageMonitor);
+
+    MImRemoteWindow* remoteWindow;
+    QTimer timeoutTimer;
+    bool damageDetected;
+};
+
+
 /*! \internal
  * \brief Top-level graphics view to superimpose the rotation animation
  * on top of application and keyboard widgets.
@@ -132,6 +161,8 @@ private:
 
     bool aboutToChangeReceived;
     bool enabled;
+
+    MImDamageMonitor* damageMonitor;
 };
 
 #endif // MIMROTATIONANIMATION_H
