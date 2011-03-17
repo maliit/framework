@@ -230,6 +230,11 @@ private:
         InputPanelShown,         // panel showing
         InputPanelHidden         // panel hidden
     };
+    
+    void updatePreeditInternally(const QString &string,
+                                 const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                 int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
+
 
     void connectToDBus();
 

@@ -213,7 +213,7 @@ bool MInputContext::event(QEvent *event)
             MInputMethod::PreeditTextFormat preeditFormat(0, injectionEvent->preedit().length(),
                                                           MInputMethod::PreeditDefault);
             preeditFormats << preeditFormat;
-            updatePreedit(injectionEvent->preedit(), preeditFormats);
+            updatePreeditInternally(injectionEvent->preedit(), preeditFormats);
             imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
 
             event->accept();
@@ -508,7 +508,7 @@ bool MInputContext::filterEvent(const QEvent *event)
                 const MInputMethod::PreeditTextFormat preeditFormat(
                     0, injectionEvent->preedit().length(), MInputMethod::PreeditDefault);
                 preeditFormats << preeditFormat;
-                // TODO: updatePreedit() below causes update() to be called which
+                // TODO: updatePreeditInternally() below causes update() to be called which
                 // communicates new cursor position (among other things) to the active
                 // input method.  The cursor is at the beginning of the pre-edit but the
                 // input method does not yet know that there is an active pre-edit,
@@ -518,7 +518,7 @@ bool MInputContext::filterEvent(const QEvent *event)
                 // the setPreedit() below has been called, the effect will be undone.
                 // This causes flickering in vkb/sbox but not on the device, so for now
                 // we'll leave this to be fixed later.  Please refer to NB#226907.
-                updatePreedit(injectionEvent->preedit(), preeditFormats);
+                updatePreeditInternally(injectionEvent->preedit(), preeditFormats);
                 imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
 
                 eaten = true;
@@ -619,10 +619,6 @@ void MInputContext::updatePreedit(const QString &string,
                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                   int replacementStart, int replacementLength, int cursorPos)
 {
-#ifdef HAVE_MEEGOTOUCH
-    mTimestamp("MInputContext", "start text=" + string);
-#endif
-
     qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__ << "preedit:" << string
                                 << ", replacementStart:" << replacementStart
                                 << ", replacementLength:" << replacementLength
@@ -631,6 +627,17 @@ void MInputContext::updatePreedit(const QString &string,
     if (imServer->pendingResets()) {
         return;
     }
+
+    updatePreeditInternally(string, preeditFormats, replacementStart, replacementLength, cursorPos);
+}
+
+void MInputContext::updatePreeditInternally(const QString &string,
+                                            const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                            int replacementStart, int replacementLength, int cursorPos)
+{
+#ifdef HAVE_MEEGOTOUCH
+    mTimestamp("MInputContext", "start text=" + string);
+#endif
 
     preedit = string;
 
