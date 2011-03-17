@@ -49,8 +49,8 @@ MAbstractInputMethodPrivate::~MAbstractInputMethodPrivate()
 ///////////////
 
 MAbstractInputMethod::MAbstractInputMethod(MAbstractInputMethodHost *host,
-                                           QWidget *mainWindow)
-    : QObject(mainWindow),
+                                           QWidget *)
+    : QObject(0), // MAbstractInputMethod is not deleted by mainWindow
       d_ptr(new MAbstractInputMethodPrivate(host, this))
 {
 }
