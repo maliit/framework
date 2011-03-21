@@ -1,6 +1,6 @@
 meego-im-framework (0.20.3-1) unstable; urgency=low
 
-  * Fixes NB#237804 - Unable to view the entered text in any composer
+  * Fixes: NB#237804 - Unable to view the entered text in any composer
 
  -- Kimmo Surakka <kimmo.surakka@nokia.com>  Mon, 21 Mar 2011 11:39:00 +0200
 
