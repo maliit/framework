@@ -30,7 +30,6 @@
 
 namespace {
     const QString DefaultConfigurationPath   = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/");
-    const QString StandardToolbar = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/standard.xml");
     const char * const PreferredDomainSettingName("/meegotouch/inputmethods/preferred_domain");
     const char * const DomainItemName("_domain");
     const char * const KeysExtensionString("/keys");
@@ -130,9 +129,11 @@ void MAttributeExtensionManager::setCopyPasteState(bool copyAvailable, bool past
 
 void MAttributeExtensionManager::createStandardObjects()
 {
+    // TODO: standard buttons are not used anymore and should be removed
     // This code assumes that StandardToolbar provides exactly two buttons: copy/paste and close.
     // That file is controlled by us, so we can rely on this assertion.
-    standardAttributeExtension = QSharedPointer<MAttributeExtension>(new MAttributeExtension(MAttributeExtensionId::standardAttributeExtensionId(), StandardToolbar));
+    standardAttributeExtension = QSharedPointer<MAttributeExtension>(new MAttributeExtension(MAttributeExtensionId::standardAttributeExtensionId(),
+                                                                                             QString()));
 
     if (standardAttributeExtension && standardAttributeExtension->toolbarData()) {
         attributeExtensions.insert(MAttributeExtensionId::standardAttributeExtensionId(), standardAttributeExtension);

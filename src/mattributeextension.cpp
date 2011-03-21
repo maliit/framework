@@ -32,7 +32,9 @@ MAttributeExtension::MAttributeExtension(const MAttributeExtensionId &id, const 
 {
     Q_D(MAttributeExtension);
     d->id = id;
-    d->toolbarData = createToolbar(fileName);
+    if (!fileName.isEmpty()) {
+        d->toolbarData = createToolbar(fileName);
+    }
     d->keyOverrideData = QSharedPointer<MKeyOverrideData>(new MKeyOverrideData());
 }
 
@@ -55,7 +57,7 @@ QSharedPointer<MToolbarData> MAttributeExtension::createToolbar(const QString &n
     const bool loaded = toolbar->loadToolbarXml(name);
 
     if (!loaded) {
-        qWarning() << "ToolbarsManager: toolbar load error: "
+        qWarning() << "MAttributeExtension toolbar load error: "
                    << name;
         toolbar.clear();
     }

@@ -2,6 +2,7 @@ meego-im-framework (0.20.4~1) unstable; urgency=low
 
   * [UNRELEASED]
   * Fixes: Rotation animation rotates to wrong orientation under high CPU load.
+  * Fixes: NB#235179 - [SSU]:Error seen at 'ToolbarsManager: toolbar load error: "/usr/share/meegoimframework/imtoolbars/standard.xml" '
 
  -- Ning Chi <ext-chi.2.ning@nokia.com>  Wed, 23 Mar 2011 14:27:37 +0200
 
