@@ -983,6 +983,15 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         return stateInformation;
     }
 
+    const QGraphicsView * const graphicsView = qobject_cast<const QGraphicsView *>(focused);
+    const QGraphicsItem *focusedQGraphicsItem = 0;
+
+    if (graphicsView) {
+        const QGraphicsScene * const scene = graphicsView->scene();
+        focusedQGraphicsItem = scene ? scene->focusItem() : 0;
+    }
+
+
      QVariant queryResult;
 #ifdef HAVE_MEEGOTOUCH
     // TODO: Move M::VisualizationPriorityQuery to dedicated IM/LMT extension package.
@@ -1006,6 +1015,17 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     // toolbar file
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarQuery));
+
+    if (!queryResult.isValid()) {
+        // fallback using qgraphicsobject property. Used to bypass qml restrictions 
+        // for qt components / meego. Use elsewhere discouraged and nothing guaranteed.
+        const QGraphicsObject *qgraphicsObject
+            = qgraphicsitem_cast<const QGraphicsObject*>(focusedQGraphicsItem);
+
+        if (qgraphicsObject) {
+            queryResult = qgraphicsObject->property("meego-inputmethod-attribute-extension-id");
+        }
+    }
 
     if (queryResult.isValid()) {
         stateInformation["toolbar"] = queryResult.toString();
@@ -1034,16 +1054,11 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     }
 
     Qt::InputMethodHints hints = focused->inputMethodHints();
-    const QGraphicsView *const graphicsView = qobject_cast<const QGraphicsView *>(focused);
 
-    if (graphicsView) {
+    if (focusedQGraphicsItem) {
         // focused->inputMethodHints() always returns 0
         // therefore we explicitly call inputMethodHints with focused item
-        const QGraphicsScene *const scene = graphicsView->scene();
-        const QGraphicsItem *const focusedObject = scene ? scene->focusItem() : 0;
-        if (focusedObject) {
-            hints = focusedObject->inputMethodHints();
-        }
+        hints = focusedQGraphicsItem->inputMethodHints();
     }
 
     // content type value
