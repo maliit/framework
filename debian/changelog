@@ -1,7 +1,13 @@
+meego-im-framework (0.20.4~1) unstable; urgency=low
+
+  * [UNRELEASED]
+  * Fixes: Rotation animation rotates to wrong orientation under high CPU load.
+
+ -- Ning Chi <ext-chi.2.ning@nokia.com>  Wed, 23 Mar 2011 14:27:37 +0200
+
 meego-im-framework (0.20.3-1) unstable; urgency=low
 
   * Fixes: NB#237804 - Unable to view the entered text in any composer
-  * Fixes: Rotation animation rotates to wrong orientation under high CPU load.
 
  -- Kimmo Surakka <kimmo.surakka@nokia.com>  Mon, 21 Mar 2011 11:39:00 +0200
 
