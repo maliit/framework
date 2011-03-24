@@ -1,3 +1,9 @@
+meego-im-framework (0.20.5~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Rakesh Cherian <ext-rakesh.cherian@nokia.com>  Wed, 24 Mar 2011 12:37:37 +0200
+
 meego-im-framework (0.20.4-1) unstable; urgency=low
 
   * Fixes: Rotation animation rotates to wrong orientation under high CPU load.
