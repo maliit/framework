@@ -19,7 +19,6 @@ private slots:
     void cleanup();
 
     void testHandleTransientEvents();
-    void testHandleMapNotifyEvents();
 
 private:
     void handleMessages();

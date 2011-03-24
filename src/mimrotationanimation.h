@@ -129,9 +129,6 @@ private slots:
     void clearScene();
     void startAnimation();
 
-    void disableAnimation();
-    void enableAnimation();
-
 private:
     void setupAnimation(int fromAngle, int toAngle);
 
@@ -144,12 +141,11 @@ private:
 private:
     Q_DISABLE_COPY(MImRotationAnimation)
 
+    void cancelAnimation();
+
     QWidget* snapshotWidget;
-
     MImRemoteWindow* remoteWindow;
-
     QPixmap compositeWindowStart;
-
     QParallelAnimationGroup rotationAnimationGroup;
 
     SnapshotPixmapItem *animationStartPixmapItem;
@@ -158,9 +154,7 @@ private:
 
     int startOrientationAngle;
     int currentOrientationAngle;
-
     bool aboutToChangeReceived;
-    bool enabled;
 
     MImDamageMonitor* damageMonitor;
 };

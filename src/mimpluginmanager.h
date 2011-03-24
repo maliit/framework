@@ -91,6 +91,9 @@ public slots:
     //! Hide active plugins.
     void hideActivePlugins();
 
+    //! Hide on window gone.
+    void hideActivePluginsIfWindowGone(MImRemoteWindow* window);
+
     //! Updates the whole painting area for input method objects.
     void updateRegion(const QRegion &region);
 

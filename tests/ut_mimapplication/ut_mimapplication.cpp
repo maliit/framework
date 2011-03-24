@@ -47,27 +47,9 @@ void Ut_MIMApplication::testHandleTransientEvents()
     xevent.type = UnmapNotify;
     xevent.xunmap.event = FakeRemoteWId;
 
-    QSignalSpy spy(app, SIGNAL(remoteWindowGone()));
+    QSignalSpy spy(app, SIGNAL(remoteWindowChanged(MImRemoteWindow*)));
     app->x11EventFilter(&xevent);
     QCOMPARE(spy.count(), 1);
-}
-
-void Ut_MIMApplication::testHandleMapNotifyEvents()
-{
-    XEvent xevent;
-    xevent.type = MapNotify;
-    xevent.xmap.event = subject->effectiveWinId();
-
-    QSignalSpy mapSpy(app, SIGNAL(passThruWindowMapped()));
-    app->x11EventFilter(&xevent);
-    QCOMPARE(mapSpy.count(), 1);
-
-    xevent.type = UnmapNotify;
-    xevent.xunmap.event = subject->effectiveWinId();
-
-    QSignalSpy unmapSpy(app, SIGNAL(passThruWindowUnmapped()));
-    app->x11EventFilter(&xevent);
-    QCOMPARE(unmapSpy.count(), 1);
 }
 
 QTEST_APPLESS_MAIN(Ut_MIMApplication)

@@ -57,8 +57,6 @@ MPassThruWindow::MPassThruWindow(QWidget *p)
 
     QObject::connect(mApp, SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
                      this, SLOT(setRemoteWindow(MImRemoteWindow *)));
-    QObject::connect(mApp, SIGNAL(remoteWindowGone()),
-                     this, SLOT(setRemoteWindow()));
 }
 
 MPassThruWindow::~MPassThruWindow()

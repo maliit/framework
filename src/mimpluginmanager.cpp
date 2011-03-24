@@ -1031,6 +1031,13 @@ void MIMPluginManager::hideActivePlugins()
     d->hideActivePlugins();
 }
 
+void MIMPluginManager::hideActivePluginsIfWindowGone(MImRemoteWindow *window)
+{
+    if (not window) {
+        hideActivePlugins();
+    }
+}
+
 QMap<QString, QString> MIMPluginManager::availableSubViews(const QString &plugin,
                                                            MInputMethod::HandlerState state) const
 {

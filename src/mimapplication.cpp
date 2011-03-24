@@ -66,7 +66,6 @@ void MIMApplication::parseArguments(int &argc, char** argv)
 
 bool MIMApplication::x11EventFilter(XEvent *ev)
 {
-    handleMapNotifyEvents(ev);
     handleTransientEvents(ev);
     handleRemoteWindowEvents(ev);
     return QApplication::x11EventFilter(ev);
@@ -82,19 +81,6 @@ void MIMApplication::updatePassThruWindow(const QRegion &region)
     mPassThruWindow->updateFromRemoteWindow(region);
 }
 
-void MIMApplication::handleMapNotifyEvents(XEvent *ev)
-{
-    if (wasPassThruWindowMapped(ev)) {
-        qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
-                 << "PassThru window was mapped.";
-        emit passThruWindowMapped();
-    } else if (wasPassThruWindowUnmapped(ev)) {
-        qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
-                 << "PassThru window was unmapped.";
-        emit passThruWindowUnmapped();
-    }
-}
-
 void MIMApplication::handleTransientEvents(XEvent *ev)
 {
     if (not mRemoteWindow.get()) {
@@ -105,7 +91,7 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
         qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
                  << "Remote window was destroyed or iconified - hiding.";
 
-        emit remoteWindowGone();
+        emit remoteWindowChanged(0);
         mRemoteWindow.reset();
     }
 }
@@ -137,18 +123,6 @@ QWidget *MIMApplication::passThruWindow() const
 MIMApplication *MIMApplication::instance()
 {
     return static_cast<MIMApplication *>(QCoreApplication::instance());
-}
-
-bool MIMApplication::wasPassThruWindowMapped(XEvent *ev) const
-{
-    return (MapNotify == ev->type &&
-            static_cast<WId>(ev->xmap.event) == mPassThruWindow->effectiveWinId());
-}
-
-bool MIMApplication::wasPassThruWindowUnmapped(XEvent *ev) const
-{
-    return (UnmapNotify == ev->type &&
-            static_cast<WId>(ev->xunmap.event) == mPassThruWindow->effectiveWinId());
 }
 
 void MIMApplication::handleRemoteWindowEvents(XEvent *event)

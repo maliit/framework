@@ -18,6 +18,7 @@
 #include "qdebug.h"
 #include "mimremotewindow.h"
 #include "mimapplication.h"
+#include "mpassthruwindow.h"
 
 #include <QBitmap>
 #include <QDesktopWidget>
@@ -64,16 +65,16 @@ void
 MImDamageMonitor::remoteWindowChanged(MImRemoteWindow *newRemoteWindow)
 {
     remoteWindow = newRemoteWindow;
-    if (remoteWindow) {
-        connect(remoteWindow, SIGNAL(contentUpdated(QRegion)),
-                this, SLOT(contentUpdated(QRegion)));
-    }
 }
 
 void
 MImDamageMonitor::activate()
 {
     damageDetected = false;
+    // reset triggers
+    cancel();
+    connect(remoteWindow, SIGNAL(contentUpdated(QRegion)),
+            this, SLOT(contentUpdated(QRegion)));
 }
 
 void
@@ -103,6 +104,10 @@ void
 MImDamageMonitor::cancel()
 {
     timeoutTimer.stop();
+    if (remoteWindow) {
+        disconnect(remoteWindow, SIGNAL(contentUpdated(QRegion)),
+                   this, SLOT(contentUpdated(QRegion)));
+    }
 }
 
 void
@@ -140,7 +145,6 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget) :
         startOrientationAngle(0),
         currentOrientationAngle(0),
         aboutToChangeReceived(false),
-        enabled(false),
         damageMonitor(0)
 {
     // Animation plays on top of a black backround,
@@ -167,13 +171,8 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget) :
     connect(&rotationAnimationGroup, SIGNAL(finished()),
             this, SLOT(clearScene()));
 
-    // Required to avoid playing rotation animation when keyboard
-    // is inactive.
-    connect(mApp, SIGNAL(passThruWindowMapped()),
-            this, SLOT(enableAnimation()));
-
-    connect(mApp, SIGNAL(passThruWindowUnmapped()),
-            this, SLOT(disableAnimation()));
+    connect(mApp, SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
+            this, SLOT(remoteWindowChanged(MImRemoteWindow*)), Qt::UniqueConnection);
 
     damageMonitor = new MImDamageMonitor(remoteWindow, this);
     connect(damageMonitor, SIGNAL(damageReceivedOrTimeout()),
@@ -187,13 +186,7 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget) :
 }
 
 void
-MImRotationAnimation::enableAnimation()
-{
-    enabled = true;
-}
-
-void
-MImRotationAnimation::disableAnimation()
+MImRotationAnimation::cancelAnimation()
 {
     // disableAnimation() slot is connected to passThruWindowUnmapped()
     // So, in order to be on the safe side. We clean the scene.
@@ -204,7 +197,6 @@ MImRotationAnimation::disableAnimation()
     damageMonitor->cancel();
     clearScene();
 
-    enabled = false;
     aboutToChangeReceived = false;
 }
 
@@ -405,13 +397,19 @@ void
 MImRotationAnimation::remoteWindowChanged(MImRemoteWindow* newRemoteWindow) {
     remoteWindow = newRemoteWindow;
     damageMonitor->remoteWindowChanged(newRemoteWindow);
+
+    // Stop playing animations when underlying window is unmapped.
+    if (!remoteWindow) {
+        qDebug() << __PRETTY_FUNCTION__ << " - remote window gone, cancelling animation.";
+        cancelAnimation();
+    }
 }
 
 void
 MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     qDebug() << __PRETTY_FUNCTION__ << " - toAngle: " << toAngle;
 
-    if (!enabled
+    if (!mApp->passThruWindow()->isVisible()
         || toAngle == currentOrientationAngle
         || aboutToChangeReceived) {
         return;
@@ -450,7 +448,7 @@ MImRotationAnimation::appOrientationChangeFinished(int toAngle) {
 
     currentOrientationAngle = toAngle;
 
-    if (!enabled
+    if (!mApp->passThruWindow()->isVisible()
         || toAngle == startOrientationAngle
         || !aboutToChangeReceived) {
         return;

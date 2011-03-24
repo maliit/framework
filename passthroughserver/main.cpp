@@ -76,12 +76,8 @@ int main(int argc, char **argv)
                      view, SLOT(updatePosition(const QRegion &)));
 #endif
     // hide active plugins when remote input window is gone or iconified.
-    QObject::connect(&app, SIGNAL(remoteWindowGone()),
-                     pluginManager, SLOT(hideActivePlugins()));
-
-    // rotationAnimation needs to know the current MImRemoteWindow for capturing snapshots.
     QObject::connect(&app, SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
-                     &rotationAnimation, SLOT(remoteWindowChanged(MImRemoteWindow*)));
+                     pluginManager, SLOT(hideActivePluginsIfWindowGone(MImRemoteWindow*)));
 
     return app.exec();
 }

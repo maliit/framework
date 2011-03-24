@@ -84,19 +84,9 @@ public:
     const MImXCompositeExtension& compositeExtension() { return mCompositeExtension; }
     const MImXDamageExtension& damageExtension() { return mDamageExtension; }
 signals:
-    //! After a map window request (e.g., via show()) this signal gets emitted
-    //! as soon as X mapped our passthru window.
-    void passThruWindowMapped();
-
-    //! After an unmap window request (e.g., via hide()) this signal gets
-    //! emitted as soon as X unmapped our passthru window.
-    void passThruWindowUnmapped();
-
-    //! This signal is emitted when remote window is changed
+    //! This signal is emitted when remote window is changed.
+    //! Parameter can be 0 if window is unmapped.
     void remoteWindowChanged(MImRemoteWindow *newWindow);
-
-    //! This signal is emitted when remote window is gone
-    void remoteWindowGone();
 
 private slots:
     void updatePassThruWindow(const QRegion &region);
@@ -105,14 +95,10 @@ private slots:
 private:
     void parseArguments(int &argc, char** argv);
 
-    void handleMapNotifyEvents(XEvent *ev);
     void handleTransientEvents(XEvent *ev);
     void handleRemoteWindowEvents(XEvent *ev);
 
     bool initializeComposite();
-
-    bool wasPassThruWindowMapped(XEvent *ev) const;
-    bool wasPassThruWindowUnmapped(XEvent *ev) const;
 
     std::auto_ptr<MPassThruWindow> mPassThruWindow;
     std::auto_ptr<MImRemoteWindow> mRemoteWindow;
