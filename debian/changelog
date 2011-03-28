@@ -1,6 +1,7 @@
 meego-im-framework (0.20.5~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Fixes: NB#238370 - <Safety> Invalid read reported in meego-im-uiserver valgrind logs
 
  -- Rakesh Cherian <ext-rakesh.cherian@nokia.com>  Wed, 24 Mar 2011 12:37:37 +0200
 
