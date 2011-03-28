@@ -706,7 +706,7 @@ void MInputContext::updatePreeditInternally(const QString &string,
     }
 
     QInputMethodEvent event(string, attributes);
-    if (replacementLength) {
+    if (replacementStart || replacementLength) {
         event.setCommitString("", replacementStart, replacementLength);
     }
 
