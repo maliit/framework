@@ -1008,14 +1008,6 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarIdQuery));
 
-    if (queryResult.isValid()) {
-        stateInformation["toolbarId"] = queryResult.toInt();
-    }
-
-    // toolbar file
-    queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarQuery));
-
     if (!queryResult.isValid()) {
         // fallback using qgraphicsobject property. Used to bypass qml restrictions 
         // for qt components / meego. Use elsewhere discouraged and nothing guaranteed.
@@ -1026,6 +1018,14 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
             queryResult = qgraphicsObject->property("meego-inputmethod-attribute-extension-id");
         }
     }
+
+    if (queryResult.isValid()) {
+        stateInformation["toolbarId"] = queryResult.toInt();
+    }
+
+    // toolbar file
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarQuery));
 
     if (queryResult.isValid()) {
         stateInformation["toolbar"] = queryResult.toString();
