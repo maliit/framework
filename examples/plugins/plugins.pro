@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = quick
+SUBDIRS = quick standard
