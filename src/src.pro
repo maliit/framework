@@ -22,6 +22,7 @@ HEADERSINSTALL = \
         mimextensionevent.h \
         mimgraphicsview.h \
         mimwidget.h \
+        mimplugindescription.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
@@ -44,8 +45,8 @@ HEADERS += $$HEADERSINSTALL \
         mimhwkeyboardtracker.h \
         mimgraphicsview_p.h \
         mimwidget_p.h \
-	../passthroughserver/mpassthruwindow.h \
-        mimrotationanimation.h
+        ../passthroughserver/mpassthruwindow.h \
+        mimrotationanimation.h \
 
 SOURCES += mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
@@ -72,8 +73,9 @@ SOURCES += mimpluginmanager.cpp \
         mimhwkeyboardtracker.cpp \
         mimgraphicsview.cpp \
         mimwidget.cpp \
-	../passthroughserver/mpassthruwindow.cpp \
-	mimrotationanimation.cpp
+        ../passthroughserver/mpassthruwindow.cpp \
+        mimrotationanimation.cpp \
+        mimplugindescription.cpp \
 
 CONFIG += qdbus link_pkgconfig
 QT = core gui xml
