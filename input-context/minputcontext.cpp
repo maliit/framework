@@ -275,7 +275,7 @@ void MInputContext::reset()
     }
 
     // reset input method server, preedit requires synchronization.
-    // rationale: input method might be autocommitting existing preedit without 
+    // rationale: input method might be autocommitting existing preedit without
     // user interaction.
     imServer->reset(hadPreedit);
 }
@@ -914,20 +914,30 @@ void MInputContext::notifyCopyPasteState()
 #ifdef HAVE_MEEGOTOUCH
 void MInputContext::notifyOrientationAboutToChange(M::OrientationAngle orientation)
 {
-    // can get called from signal so cannot be sure we are really currently active
-    if (active) {
-        imServer->appOrientationAboutToChange(static_cast<int>(orientation));
-    }
+    notifyOrientationAboutToChange(static_cast<MInputMethod::OrientationAngle>(orientation));
 }
 
 void MInputContext::notifyOrientationChanged(M::OrientationAngle orientation)
 {
-    // can get called from signal so cannot be sure we are really currently active
-    if (active) {
-        imServer->appOrientationChanged(static_cast<int>(orientation));
-    }
+    notifyOrientationChanged(static_cast<MInputMethod::OrientationAngle>(orientation));
 }
 #endif
+
+void MInputContext::notifyOrientationAboutToChange(MInputMethod::OrientationAngle angle)
+{
+    // can get called from signal so cannot be sure we are really currently active
+    if (active) {
+        imServer->appOrientationAboutToChange(static_cast<int>(angle));
+    }
+}
+
+void MInputContext::notifyOrientationChanged(MInputMethod::OrientationAngle angle)
+{
+    // can get called from signal so cannot be sure we are really currently active
+    if (active) {
+        imServer->appOrientationChanged(static_cast<int>(angle));
+    }
+}
 
 void MInputContext::notifyAttributeExtensionRegistered(int id, const QString &fileName)
 {
@@ -1026,7 +1036,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarIdQuery));
 
     if (!queryResult.isValid()) {
-        // fallback using qgraphicsobject property. Used to bypass qml restrictions 
+        // fallback using qgraphicsobject property. Used to bypass qml restrictions
         // for qt components / meego. Use elsewhere discouraged and nothing guaranteed.
         const QGraphicsObject *qgraphicsObject
             = qgraphicsitem_cast<const QGraphicsObject*>(focusedQGraphicsItem);

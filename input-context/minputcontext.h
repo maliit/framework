@@ -217,6 +217,13 @@ private slots:
     void notifyOrientationChanged(M::OrientationAngle orientation);
 #endif
 
+    //! Notify input method plugin about the application's active window prepare to change to a new \a orientation angle.
+    void notifyOrientationAboutToChange(MInputMethod::OrientationAngle orientation);
+
+    //! Notify input method plugin about new \a orientation angle of application's active window.
+    //! \note this method is called when the orientation change is finished
+    void notifyOrientationChanged(MInputMethod::OrientationAngle orientation);
+
     //! Notify input method plugin about a new attribute extension which is defined in \a fileName and with the unique \a id to be registered.
     //! \note empty string for \a fileName is acceptable, it means don't load any content, just register a new id.
     void notifyAttributeExtensionRegistered(int id, const QString &fileName);
@@ -241,11 +248,10 @@ private:
         InputPanelShown,         // panel showing
         InputPanelHidden         // panel hidden
     };
-    
+
     void updatePreeditInternally(const QString &string,
                                  const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                  int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
-
 
     void connectToDBus();
 
