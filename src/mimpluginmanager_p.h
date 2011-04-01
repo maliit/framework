@@ -134,10 +134,6 @@ public:
     //! Sets last active subview.
     void setLastActiveSubView(const QString &subview);
 
-    //! Configures a widget (and its widget hierarchy) for (self) compositing.
-    static void configureWidgetsForCompositing(QWidget *mainWindow,
-                                               bool selfCompositing);
-
     MIMPluginManager *parent;
     MInputContextConnection *mICConnection;
 
