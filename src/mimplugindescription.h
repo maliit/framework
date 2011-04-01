@@ -45,6 +45,8 @@ private:
     Q_DECLARE_PRIVATE(MImPluginDescription)
 
     MImPluginDescriptionPrivate * const d_ptr;
+
+    friend class MIMPluginManagerPrivate;
 };
 
 #endif

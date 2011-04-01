@@ -431,7 +431,7 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     subject->addHandlerMap(MInputMethod::Hardware, pluginName);
     subject->addHandlerMap(MInputMethod::Accessory, pluginName);
 
-    // find for loaded plugins
+    // search for loaded plugins
     for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->plugins.begin());
          iterator != subject->plugins.end();
          ++iterator) {
@@ -589,7 +589,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     subject->addHandlerMap(MInputMethod::Hardware, pluginName);
     subject->addHandlerMap(MInputMethod::Accessory, pluginName);
 
-    // find for loaded plugins
+    // search for loaded plugins
     for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->plugins.begin());
          iterator != subject->plugins.end();
          ++iterator) {
@@ -900,6 +900,53 @@ void Ut_MIMPluginManager::testConfigureWidgetsForCompositing()
         QVERIFY(w->testAttribute(Qt::WA_TranslucentBackground)
                 || selfCompositing);
         QVERIFY(not w->autoFillBackground());
+    }
+}
+
+void Ut_MIMPluginManager::testLoadedPluginsInfo_data()
+{
+    QTest::addColumn<QStringList>("expectedPlugins");
+    QTest::addColumn<MInputMethod::HandlerState>("state");
+
+    QTest::newRow("OnScreen") << (QStringList() << pluginName << pluginName3) << MInputMethod::OnScreen;
+
+    QTest::newRow("Hardware") << (QStringList() << pluginName) << MInputMethod::Hardware;
+}
+
+void Ut_MIMPluginManager::testLoadedPluginsInfo()
+{
+    QFETCH(QStringList, expectedPlugins);
+    QFETCH(MInputMethod::HandlerState, state);
+
+    QStringList foundPlugins;
+
+    DummyImPlugin3 *plugin3 = 0;
+    // search for loaded plugins
+    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->plugins.begin());
+         iterator != subject->plugins.end();
+         ++iterator) {
+        if (iterator.key() == 0) {
+            continue;
+        }
+        if (pluginName3 == iterator.key()->name()) {
+            plugin3 = dynamic_cast<DummyImPlugin3 *>(iterator.key());
+        }
+    }
+
+    QVERIFY(plugin3 != 0);
+    plugin3->allowedStates.clear();
+    plugin3->allowedStates << MInputMethod::OnScreen;
+
+    QList<MImPluginDescription> list = subject->pluginDescriptions(state);
+
+    QCOMPARE(list.count(), expectedPlugins.count());
+
+    foreach(const MImPluginDescription &info, list) {
+        QVERIFY(expectedPlugins.contains(info.name()));
+
+        // check for duplicates
+        QVERIFY(!foundPlugins.contains(info.name()));
+        foundPlugins.append(info.name());
     }
 }
 

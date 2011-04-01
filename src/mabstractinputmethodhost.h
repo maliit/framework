@@ -26,10 +26,8 @@
 class QString;
 class QRegion;
 class QKeyEvent;
-class QWidget;
 
-class MToolbarId;
-
+class MImPluginDescription;
 class MAbstractInputMethodHostPrivate;
 
 /*!
@@ -248,6 +246,14 @@ public slots:
      * \deprecated Not implemented
      */
     virtual void setOrientationAngleLocked(bool lock) = 0;
+
+public:
+    /*!
+     * \brief Return information about loaded input method plugins which could work in specified \a state.
+     *
+     * \sa MImPluginDesription
+     */
+    virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const = 0;
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)

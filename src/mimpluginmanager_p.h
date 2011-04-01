@@ -92,6 +92,7 @@ public:
 
     QStringList loadedPluginsNames() const;
     QStringList loadedPluginsNames(MInputMethod::HandlerState state) const;
+    QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState) const;
     QStringList activePluginsNames() const;
     QString activePluginsName(MInputMethod::HandlerState state) const;
     void loadHandlerMap();

@@ -220,6 +220,11 @@ void MInputMethodHost::setSelection(int start, int length)
     }
 }
 
+QList<MImPluginDescription> MInputMethodHost::pluginDescriptions(MInputMethod::HandlerState state) const
+{
+    return pluginManager->pluginDescriptions(state);
+}
+
 void MInputMethodHost::setOrientationAngleLocked(bool)
 {
     // NOT implemented.

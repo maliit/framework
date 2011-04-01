@@ -19,8 +19,10 @@
 
 #include <QObject>
 #include <QMap>
+#include <QList>
 
 #include "minputmethodnamespace.h"
+#include "mimplugindescription.h"
 
 class QRegion;
 class MIMPluginManagerPrivate;
@@ -48,6 +50,9 @@ public:
 
     //! Returns names of loaded plugins which support \a state
     QStringList loadedPluginsNames(MInputMethod::HandlerState state) const;
+
+    //! \brief Return information about loaded input method plugins which could work in specified \a state.
+    QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const;
 
     //! Returns names of activated plugins
     QStringList activePluginsNames() const;

@@ -513,6 +513,20 @@ QStringList MIMPluginManagerPrivate::loadedPluginsNames(MInputMethod::HandlerSta
 }
 
 
+QList<MImPluginDescription> MIMPluginManagerPrivate::pluginDescriptions(MInputMethod::HandlerState state) const
+{
+    QList<MImPluginDescription> result;
+
+    foreach (MInputMethodPlugin *plugin, plugins.keys()) {
+        if (plugin && plugin->supportedStates().contains(state)) {
+            result.append(MImPluginDescription(*plugin));
+        }
+    }
+
+    return result;
+}
+
+
 QStringList MIMPluginManagerPrivate::activePluginsNames() const
 {
     QStringList result;
@@ -915,6 +929,12 @@ QStringList MIMPluginManager::loadedPluginsNames(MInputMethod::HandlerState stat
     return d->loadedPluginsNames(state);
 }
 
+
+QList<MImPluginDescription> MIMPluginManager::pluginDescriptions(MInputMethod::HandlerState state) const
+{
+    Q_D(const MIMPluginManager);
+    return d->pluginDescriptions(state);
+}
 
 QStringList MIMPluginManager::activePluginsNames() const
 {

@@ -48,6 +48,9 @@ private slots:
     void testConfigureWidgetsForCompositing_data();
     void testConfigureWidgetsForCompositing();
 
+    void testLoadedPluginsInfo_data();
+    void testLoadedPluginsInfo();
+
 private:
     void handleMessages();
 

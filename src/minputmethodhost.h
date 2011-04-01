@@ -84,6 +84,7 @@ public:
     virtual void setScreenRegion(const QRegion &region);
     virtual void setInputMethodArea(const QRegion &region);
     virtual void setSelection(int start, int length);
+    virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const;
 
     //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);
