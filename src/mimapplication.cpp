@@ -18,8 +18,36 @@
 #include "mimremotewindow.h"
 #include "mimpluginsproxywidget.h"
 
+#include <deque>
 #include <QDebug>
 #include <X11/Xlib.h> // must be last include
+
+namespace
+{
+    bool configureForCompositing(QWidget *w)
+    {
+        if (not w) {
+            return false;
+        }
+
+        w->setAttribute(Qt::WA_OpaquePaintEvent);
+        w->setAttribute(Qt::WA_NoSystemBackground);
+        w->setAutoFillBackground(false);
+        // Be aware that one cannot verify whether the background role *is*
+        // QPalette::NoRole - see QTBUG-17924.
+        w->setBackgroundRole(QPalette::NoRole);
+
+        if (mApp && not mApp->selfComposited()) {
+            // Careful: This flag can trigger a call to
+            // qt_x11_recreateNativeWidgetsRecursive
+            // - which will crash when it tries to get the effective WId
+            // (as none of widgets have been mapped yet).
+            w->setAttribute(Qt::WA_TranslucentBackground);
+        }
+
+        return true;
+    }
+}
 
 MIMApplication::MIMApplication(int &argc, char **argv)
     : QApplication(argc, argv),
@@ -33,6 +61,7 @@ MIMApplication::MIMApplication(int &argc, char **argv)
     parseArguments(argc, argv);
     mPassThruWindow.reset(new MPassThruWindow);
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
+    configureForCompositing(mPassThruWindow.get());
 
     connect(this, SIGNAL(aboutToQuit()),
             this, SLOT(finalize()),
@@ -184,4 +213,38 @@ const QPixmap &MIMApplication::remoteWindowPixmap()
     }
 
     return mApp->mRemoteWindow->windowPixmap();
+}
+
+void MIMApplication::visitWidgetHierarchy(WidgetVisitor visitor,
+                                          QWidget *widget)
+{
+    if (not mApp) {
+        return;
+    }
+
+    std::deque<QWidget *> unvisited;
+    unvisited.push_back(widget ? widget : mApp->passThruWindow());
+
+    // Breadth-first traversal of widget hierarchy, until no more
+    // unvisited widgets remain. Will find viewports of QGraphicsViews,
+    // as QAbstractScrollArea reparents the viewport to itself.
+    while (not unvisited.empty()) {
+        QWidget *current = unvisited.front();
+        unvisited.pop_front();
+
+        // If true, then continue walking the hiearchy of current widget.
+        if (visitor(current)) {
+            // Mark children of current widget as unvisited:
+            foreach (QObject *obj, current->children()) {
+                if (QWidget *w = qobject_cast<QWidget *>(obj)) {
+                    unvisited.push_back(w);
+                }
+            }
+        }
+    }
+}
+
+void MIMApplication::configureWidgetsForCompositing(QWidget *widget)
+{
+    MIMApplication::visitWidgetHierarchy(configureForCompositing, widget);
 }

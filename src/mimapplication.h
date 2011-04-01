@@ -23,6 +23,7 @@
 #include <QRect>
 #include <QPointer>
 #include <memory>
+#include <tr1/functional>
 
 #include "mpassthruwindow.h"
 #include "mimremotewindow.h"
@@ -46,6 +47,11 @@ class MIMApplication
     Q_OBJECT
 
 public:
+    //! Walks over widget hierarchy, if used with
+    //! MIMApplication::visitWidgetHierarchy. Return true if children of
+    //! current widget shall be visited, too.
+    typedef std::tr1::function<bool (QWidget *)> WidgetVisitor;
+
     /*
      * The command line arguments need to stay valid for the whole life-time of
      * the application.
@@ -84,6 +90,16 @@ public:
 
     const MImXCompositeExtension& compositeExtension() { return mCompositeExtension; }
     const MImXDamageExtension& damageExtension() { return mDamageExtension; }
+
+    //! Visits all widgets in the hierarchy of widget, using visitor.
+    //! Defaults to passthru window, if no widget is specified.
+    static void visitWidgetHierarchy(WidgetVisitor visitor,
+                                     QWidget *widget = 0);
+
+    //! Configures a widget (and its widget hierarchy) for (self) compositing.
+    //! Defaults to passthru window, if no widget is specified.
+    static void configureWidgetsForCompositing(QWidget *widget = 0);
+
 signals:
     //! This signal is emitted when remote window is changed.
     //! Parameter can be 0 if window is unmapped.

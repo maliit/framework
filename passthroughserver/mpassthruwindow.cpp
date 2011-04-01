@@ -30,19 +30,60 @@
 #include <X11/extensions/shape.h>
 #endif
 
+class ForcedWidgetUpdater
+{
+private:
+    const QRect globalBoundingRect;
+
+public:
+    explicit ForcedWidgetUpdater(const QRegion &globalRegion)
+        : globalBoundingRect(globalRegion.boundingRect())
+    {
+    }
+
+    bool operator()(QWidget *w)
+    {
+        if (not w) {
+            return false;
+        }
+
+        const QRect g(w->geometry());
+        const QRect globalWidgetRect(w->mapToGlobal(g.topLeft()),
+                                     w->mapToGlobal(g.bottomRight()));
+        const QRect updateArea(globalBoundingRect.intersect(globalWidgetRect));
+
+        // Check whether there's anything to update for this widget (and its
+        // children):
+        if (updateArea.isEmpty()) {
+            // Assumes that parent widgets fully contain their children.
+            return false;
+        }
+
+        const QRect localWidgetRect(w->mapFromGlobal(updateArea.topLeft()),
+                                    w->mapFromGlobal(updateArea.bottomRight()));
+
+        // QGrapicsView's do not redraw the scene when calling QWidget::update.
+        // However, the widget's background is part of the scene, and we need
+        // to enforce redrawing of the background. Hence the manual
+        // scene invalidation.
+        if  (QGraphicsView *v = qobject_cast<QGraphicsView *>(w)) {
+            v->invalidateScene(localWidgetRect, QGraphicsScene::BackgroundLayer);
+            QList<QRectF> rectList;
+            rectList.append(QRectF(localWidgetRect));
+            v->updateScene(rectList);
+        }
+
+        w->update(localWidgetRect);
+        return true;
+    }
+};
+
 MPassThruWindow::MPassThruWindow(QWidget *p)
     : QWidget(p),
       remoteWindow(0)
 {
     setWindowTitle("MInputMethod");
     setFocusPolicy(Qt::NoFocus);
-
-    if (mApp && mApp->selfComposited()) {
-        setAttribute(Qt::WA_OpaquePaintEvent);
-        setAttribute(Qt::WA_NoSystemBackground);
-    } else {
-        setAttribute(Qt::WA_TranslucentBackground);
-    }
 
     Qt::WindowFlags windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
 
@@ -148,18 +189,5 @@ void MPassThruWindow::setRemoteWindow(MImRemoteWindow *newWindow)
 
 void MPassThruWindow::updateFromRemoteWindow(const QRegion &region)
 {
-    const QRectF br(region.boundingRect());
-    QList<QRectF> rects;
-    rects.append(br);
-
-    foreach (QObject *obj, children()) {
-        if  (QGraphicsView *v = qobject_cast<QGraphicsView *>(obj)) {
-            v->invalidateScene(br, QGraphicsScene::BackgroundLayer);
-            v->updateScene(rects);
-            v->update(region);
-        } else
-        if (QWidget *w = qobject_cast<QWidget *>(obj)) {
-            w->update(region);
-        }
-    }
+    MIMApplication::visitWidgetHierarchy(ForcedWidgetUpdater(region));
 }
