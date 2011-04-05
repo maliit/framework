@@ -451,6 +451,8 @@ MImRotationAnimation::appOrientationChangeFinished(int toAngle) {
     if (!mApp->passThruWindow()->isVisible()
         || toAngle == startOrientationAngle
         || !aboutToChangeReceived) {
+        clearScene();
+        aboutToChangeReceived = false;
         return;
     }
 

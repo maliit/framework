@@ -20,6 +20,7 @@ SUBDIRS = \
           ut_mimapplication \
           ut_mkeyoverride \
           ut_selfcompositing \
+          ut_mimrotationanimation \
 
 target.commands += $$system(touch tests.xml)
 target.path = /usr/share/meego-im-framework-tests
@@ -33,4 +34,3 @@ check-xml.CONFIG = recursive
 QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.CONFIG = recursive
-
