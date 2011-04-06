@@ -1,8 +1,8 @@
-meego-im-framework (0.20.6~1) unstable; urgency=low
+meego-im-framework (0.20.6-1) unstable; urgency=low
 
-  * [UNRELEASED]
+  * Fixes: NB#237663 - <Other><UnitTest> proper debug symbols not available for meego-im-framework-tests
 
- -- huaming wang <huaming.wang@nokia.com>  Wed, 30 Mar 2011 10:37:33 +0300
+ -- Ning Chi <ext-chi.2.ning@nokia.com>  Wed, 06 Apr 2011 14:37:04 +0300
 
 meego-im-framework (0.20.5-1) unstable; urgency=low
 
