@@ -120,7 +120,11 @@ void MImSettingsConf::loadSettings()
     foreach (MInputMethodPlugin *plugin, plugins()) {
         MAbstractInputMethodSettings *settings = plugin->createInputMethodSettings();
         if (settings) {
-            settingList.append(settings);
+            if (plugin->name() == QLatin1String("MeegoKeyboard")) {
+                settingList.push_front(settings);
+            } else {
+                settingList.append(settings);
+            }
         }
     }
 }
