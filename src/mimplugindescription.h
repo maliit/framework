@@ -34,6 +34,9 @@ public:
     //! Destructor.
     virtual ~MImPluginDescription();
 
+    //! Assignment operator
+    void operator=(const MImPluginDescription &other);
+
     //! Return plugin name.
     QString name() const;
 

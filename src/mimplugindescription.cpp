@@ -54,6 +54,11 @@ MImPluginDescription::~MImPluginDescription()
     delete d_ptr;
 }
 
+void MImPluginDescription::operator=(const MImPluginDescription &other)
+{
+    *d_ptr = *other.d_ptr;
+}
+
 QString MImPluginDescription::name() const
 {
     Q_D(const MImPluginDescription);
