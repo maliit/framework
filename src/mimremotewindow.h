@@ -59,6 +59,9 @@ public:
     //! Returns the X11 window Id of the redirected window.
     WId id() const { return wid; }
 
+    //! Returns the current redirection status
+    bool isRedirected() { return redirected; }
+
 signals:
     //! Signals when the content (pixmap) of the remote application window is updated
     void contentUpdated(const QRegion &region);

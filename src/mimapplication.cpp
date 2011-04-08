@@ -106,11 +106,17 @@ void MIMApplication::setTransientHint(WId newRemoteWinId)
         return;
     }
 
+    const bool wasRedirected(mRemoteWindow.get() && mRemoteWindow->isRedirected());
+
     mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId));
     mRemoteWindow->setIMWidget(mPassThruWindow->window());
 
     connect(mRemoteWindow.get(), SIGNAL(contentUpdated(QRegion)),
             this,                SLOT(updatePassThruWindow(QRegion)));
+
+    if (wasRedirected) {
+        mRemoteWindow->redirect();
+    }
 
     emit remoteWindowChanged(mRemoteWindow.get());
 }
