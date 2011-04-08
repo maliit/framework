@@ -392,6 +392,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
     notifyCopyPasteState();
 
     if (inputPanelState == InputPanelShowPending && focused) {
+        sipHideTimer.stop();
         imServer->showInputMethod();
         inputPanelState = InputPanelShown;
     }
@@ -437,7 +438,9 @@ bool MInputContext::filterEvent(const QEvent *event)
     switch (event->type()) {
     case QEvent::RequestSoftwareInputPanel:
         qDebug() << "MInputContext" << "got event" << event->type();
-        sipHideTimer.stop();
+        if (focusWidget() != 0) {
+            sipHideTimer.stop();
+        }
 
         if (!active || focusWidget() == 0) {
             // in case SIP request comes without a properly focused widget, we
