@@ -301,7 +301,16 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
         Q_ASSERT(keyOverride);
         const QByteArray byteArray = attribute.toLatin1();
         const char * const c_str = byteArray.data();
-        keyOverride->setProperty(c_str, value);
+
+        // Ignore l10n lengthvariants in QStrings for labels, always pick longest variant (first)
+        if (attribute == "label") {
+            QString label = value.toString();
+            label = label.split(QChar(0x9c)).first();
+            const QVariant newValue(label);
+            keyOverride->setProperty(c_str, newValue);
+        } else {
+            keyOverride->setProperty(c_str, value);
+        }
 
         // emit signal to notify the new key override is created.
         if (newKeyOverrideCreated) {
