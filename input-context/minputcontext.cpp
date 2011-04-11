@@ -139,10 +139,6 @@ MInputContext::MInputContext(QObject *parent)
             this, SLOT(notifyOrientationAboutToChange(M::OrientationAngle)));
 
     connect(MInputMethodState::instance(),
-            SIGNAL(activeWindowOrientationAngleAboutToChange(M::OrientationAngle)),
-            this, SLOT(notifyOrientationAboutToChange(M::OrientationAngle)));
-
-    connect(MInputMethodState::instance(),
             SIGNAL(activeWindowOrientationAngleChanged(M::OrientationAngle)),
             this, SLOT(notifyOrientationChanged(M::OrientationAngle)));
 
