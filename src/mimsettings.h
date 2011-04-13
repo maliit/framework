@@ -24,6 +24,7 @@
 #include <QStringList>
 #include <QObject>
 
+//! \internal
 
 /*!
 
@@ -141,5 +142,7 @@ private:
 
     void update_value(bool emit_signal);
 };
+
+//! \internal_end
 
 #endif // MIMSETTINGS_H
