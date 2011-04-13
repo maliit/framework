@@ -62,7 +62,7 @@ Plugin is then free to create a QWidget or QGraphicsView or similar.
 The interaction between the UI and the application is done by employing functions provided by MAbstractInputMethod and MAbstractInputMethodHost.
 
 @subsection settings Settings
-Settings is basically a QGraphicsWidget which holds items to provide user to set some preferences or behaviour of the input method. It is displayed by input method server in a dialog and also displayed in the control panel of the system.
+Settings is basically a QGraphicsWidget which holds items to provide user to set some preferences or behaviour of the input method. It is displayed in the control panel of the system.
 
 The settings is created by subclassing MAbstractInputMethodSettings.
 @code
@@ -90,11 +90,6 @@ QGraphicsWidget *MKeyboardSettings::createContentWidget(QGraphicsWidget *parent)
     return new MKeyboardSettingsWidget(this, parent);
 }
 @endcode
-
-Settings widget will appear in a dialog when you ask it by calling MAbstractInputMethodHost::showSettings(). Usually, this is invoked when user presses a "Settings" button provided by the plugin.
-
-<img alt="Settings Dialog" src="settings-dialog.png"></img>
-
 
 @section compilation Compilation
 To use the framework you need to add @c plugin and @c meegoimframework to @c CONFIG variable in your project file.
