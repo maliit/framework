@@ -40,7 +40,6 @@ The following base classes are needed to implement an input method UI plugin:
 - <a href="extensions.html">Extensions to Qt</a>
 - <a href="pluginsystem.html">Plugin System</a>
 - <a href="internals.html">Feature Internals</a>
-- <a href="toolbar.html">Input Method Toolbar</a>
 - <a href="toolbarxml.html">Toolbar Widget XML Specification</a>
 
 
