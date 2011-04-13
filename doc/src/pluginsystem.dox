@@ -40,10 +40,10 @@ When a handler is activated, the following will be carried out:
 
 \subsection Settings Settings
 \subsubsection SettingsHandler Handler 
-Plugin Manager selects the active plugin based on the settings. GConf stores the settings of the plugin names which will be selected whenever the handler or language is changed or run in the first time. The settings hierarchy looks like this:
+Plugin Manager selects the active plugin based on the settings. GConf stores the settings of the plugin names which will be selected whenever the handler or language is changed or run in the first time. The settings hierarchy looks like this, where handler is either onscreen or hardware:
 
 \code
-/M/InputMethods/Plugins/Handler/<HANDLER> : <PLUGIN-NAME>
+/meegotouch/inputmethods/plugins/<HANDLER> = <PLUGIN-NAME>
 \endcode
 
 \subsection PluginMap Plugin Map
