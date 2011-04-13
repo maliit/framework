@@ -828,6 +828,11 @@ void MInputContextGlibDBusConnection::reset(MDBusGlibICConnection *sourceConnect
     foreach (MAbstractInputMethod *target, targets()) {
         target->reset();
     }
+
+    if (!preedit.isEmpty()) {
+        qWarning("Preedit set from InputMethod::reset()!");
+        preedit.clear();
+    }
 }
 
 void
