@@ -21,8 +21,8 @@ class MKeyboardHost: public MAbstractInputMethod
     Q_OBJECT
 
     public:
-        MKeyboardHost(MAbstractInputMethodHost *host, QObject *parent = 0);
-            virtual ~MKeyboardHost();
+        MKeyboardHost(MAbstractInputMethodHost *host, QWidget *mainWindow);
+        virtual ~MKeyboardHost();
     .....
 @endcode
 
@@ -49,25 +49,15 @@ The UI class is created in the createInputMethod method:
 
 @code
 MAbstractInputMethod *
-MKeyboardPlugin::createInputMethod(MAbstractInputMethodHost *host)
+MKeyboardPlugin::createInputMethod(MAbstractInputMethodHost *host, QWidget *mainWindow)
 {
-    MAbstractInputMethod *inputMethod = new MKeyboardHost(host);
+    MAbstractInputMethod *inputMethod = new MKeyboardHost(host, mainWindow);
     return inputMethod;
 }
 @endcode
 
-The whole user interface is shown in an MSceneWindow. MWidget is used to create the actual user interface, and needs to be parented to the scene window.
-The scene window is then put to the root element of the MPlainWindow which is provided in the input method server. The UI should be created hidden. Example code from MKeyboardHost constructor:
-
-@code
-sceneWindow = new MSceneWindow;
-sceneWindow->setManagedManually(true); // we want the scene window to remain in origin
-MPlainWindow::instance()->sceneManager()->appearSceneWindowNow(sceneWindow);
-...
-vkbWidget = new MVirtualKeyboard(LayoutsManager::instance(), vkbStyleContainer, sceneWindow);
-...
-hide();
-@endcode
+The plugin is given a main window that should be used as a parent widget for plugin visualization.
+Plugin is then free to create a QWidget or QGraphicsView or similar. 
 
 The interaction between the UI and the application is done by employing functions provided by MAbstractInputMethod and MAbstractInputMethodHost.
 
