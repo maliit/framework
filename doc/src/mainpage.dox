@@ -29,9 +29,9 @@ MeeGo Touch Input Method UI Framework is an integration framework that provides 
 
 The following base classes are needed to implement an input method UI plugin:
 
-- MInputMethodBase : to interact with the input method server and the application
+- MAbstractInputMethod : to allow input method server to update input method plugin state
 
-- MInputMethodSettingsBase  : to provide settings in control panel
+- MAbstractInputMethodSettings : to provide settings in control panel
 
 - MInputMethodPlugin : to enable the plugin to be loaded by the input method server
 
