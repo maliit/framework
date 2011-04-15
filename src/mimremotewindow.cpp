@@ -40,6 +40,7 @@ MImRemoteWindow::MImRemoteWindow(WId window, QObject *parent) :
 
 MImRemoteWindow::~MImRemoteWindow()
 {
+    XSelectInput(QX11Info::display(), wid, 0);
     unredirect();
 }
 
