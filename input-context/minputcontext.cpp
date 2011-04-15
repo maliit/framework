@@ -517,7 +517,9 @@ bool MInputContext::filterEvent(const QEvent *event)
                 // the setPreedit() below has been called, the effect will be undone.
                 // This causes flickering in vkb/sbox but not on the device, so for now
                 // we'll leave this to be fixed later.  Please refer to NB#226907.
-                updatePreeditInternally(injectionEvent->preedit(), preeditFormats);
+                updatePreeditInternally(injectionEvent->preedit(), preeditFormats,
+                                        injectionEvent->replacementStart(),
+                                        injectionEvent->replacementLength());
                 imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
 
                 eaten = true;
