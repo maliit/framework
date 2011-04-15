@@ -86,7 +86,6 @@ private slots:
 private:
     void setContextObject(const QString &dbusObjectPath);
 
-    static GArray* serializeVariant(const QVariant &value);
     static void onDisconnectionTrampoline(DBusGProxy *proxy, gpointer userData);
     void onDisconnection();
 

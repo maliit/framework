@@ -115,8 +115,8 @@ public:
 
     //!
     // \brief Updates the input method window area
-    // \param rectList  List of rectangles which are part of the input method area
-    virtual void updateInputMethodArea(const QList<QVariant> &rectList);
+    // \param rect Bounding rectangle of the input method area
+    virtual void updateInputMethodArea(const QRect &rect);
 
     /*!
      * \brief set global correction option enable/disable

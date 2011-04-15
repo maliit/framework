@@ -20,7 +20,7 @@
       <arg type="i"/>
     </method>
     <method name="updateWidgetInformation">
-      <arg type="ay"/>
+      <arg type="a{sv}"/>
       <arg type="b"/>
     </method>
     <method name="reset">
@@ -58,7 +58,7 @@
       <arg type="s"/>
       <arg type="s"/>
       <arg type="s"/>
-      <arg type="ay"/>
+      <arg type="v"/>
     </method>
   </interface>
 </node>

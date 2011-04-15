@@ -746,12 +746,8 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
 }
 
 
-void MInputContext::updateInputMethodArea(const QList<QVariant> &data)
+void MInputContext::updateInputMethodArea(const QRect &rect)
 {
-    QRect rect;
-    if (!data.isEmpty())
-        rect = data.at(0).toRect();
-
 #ifdef HAVE_MEEGOTOUCH
     MInputMethodState::instance()->setInputMethodArea(rect);
 #endif

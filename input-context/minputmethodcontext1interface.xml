@@ -13,7 +13,7 @@
     </method>
     <method name="updatePreedit">
       <arg type="s"/>
-      <arg type="ay"/>
+      <arg type="a(iii)"/>
       <arg type="i"/>
       <arg type="i"/>
       <arg type="i"/>
@@ -28,7 +28,10 @@
       <arg type="y"/>
     </method>
     <method name="updateInputMethodArea">
-      <arg type="ay"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
     </method>
     <method name="setGlobalCorrectionEnabled">
       <arg type="b"/>

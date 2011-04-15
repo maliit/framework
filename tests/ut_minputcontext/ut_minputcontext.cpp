@@ -461,7 +461,7 @@ void Ut_MInputContext::testAddCoverage()
     qDebug() << m_subject->identifierName();
     qDebug() << m_subject->isComposing();
     qDebug() << m_subject->language();
-    m_subject->updateInputMethodArea(QList<QVariant>());
+    m_subject->updateInputMethodArea(QRect());
 }
 
 void Ut_MInputContext::testEvent()

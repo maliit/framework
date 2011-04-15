@@ -33,6 +33,8 @@
 #include "mabstractinputmethod.h"
 #include "mimapplication.h"
 
+#include <stdint.h> 
+
 namespace
 {
     const char * const SocketDirectory = "/tmp/meego-im-uiserver";
@@ -135,41 +137,103 @@ m_dbus_glib_ic_connection_set_preedit(MDBusGlibICConnection *obj, const char *te
     return TRUE;
 }
 
-static bool deserializeVariant(QVariant& target, const GArray *data, const char *methodName)
+namespace {
+
+bool variantFromGValue(QVariant *dest, GValue *source, QString *error_message)
 {
-    const QByteArray storageWrapper(QByteArray::fromRawData(data->data, data->len));
-    QDataStream dataStream(storageWrapper);
-    dataStream >> target;
-    if (dataStream.status() != QDataStream::Ok || !target.isValid()) {
-        qWarning("m_dbus_glib_ic_connection: Invalid parameter to %s.", methodName);
-        return false;
+    switch (G_VALUE_TYPE(source)) {
+    case G_TYPE_BOOLEAN:
+        *dest = bool(g_value_get_boolean(source));
+        return true;
+    case G_TYPE_INT:
+        *dest = int(g_value_get_int(source));
+        return true;
+    case G_TYPE_UINT:
+        *dest = uint(g_value_get_uint(source));
+        return true;
+    case G_TYPE_INT64:
+        *dest = int64_t(g_value_get_int64(source));
+        return true;
+    case G_TYPE_UINT64:
+        *dest = uint64_t(g_value_get_uint64(source));
+        return true;
+    case G_TYPE_DOUBLE:
+        *dest = double(g_value_get_double(source));
+        return true;
+    case G_TYPE_STRING:
+        *dest = QString::fromUtf8(g_value_get_string(source));
+        return true;
+    default:
+        // The encoding must to be compatible with QDBusArgument's encoding of types,
+        // because the implementation will be eventually changed to using the QDBus.
+        //
+        // Unfortunately, the QDBusArgument encoding of variants
+        // does not encode information on the type explicitly,
+        // and we have to recover types from structures.
+        //
+        // For instance, (iiii) means QRect.
+        // (QVariant which holds array of four integers cannot be converted to QRect)
+        if (G_VALUE_TYPE(source) == dbus_g_type_get_struct("GValueArray",
+                                                           G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT,
+                                                           G_TYPE_INVALID)) { // QRect
+            int left;
+            int top;
+            int width;
+            int height;
+            if (!dbus_g_type_struct_get(source,
+                                        0, &left, 1, &top, 2, &width, 3, &height,
+                                        G_MAXUINT)) {
+                gchar *contents = g_strdup_value_contents(source);
+                if (error_message != 0)
+                    *error_message = QString(": failed to extract Rect from: ") + contents;
+                g_free(contents);
+                return false;
+            }
+            *dest = QRect(left, top, width, height);
+            return true;
+        } else {
+            if (error_message != 0)
+                *error_message = QString(": unknown data type: ") + G_VALUE_TYPE_NAME(source);
+            return false;
+        }
     }
+}
+
+bool mapFromGHashTable(QMap<QString, QVariant> *dest, GHashTable *source, QString *error_message)
+{
+    dest->clear();
+    GHashTableIter iterator;
+    gchar *keyData;
+    GValue *valueData;
+    g_hash_table_iter_init(&iterator, source);
+    while (g_hash_table_iter_next(&iterator, (void**)(&keyData), (void**)(&valueData))) {
+        QString key = QString::fromUtf8(keyData);
+        QVariant value;
+        if (!variantFromGValue(&value, valueData, error_message)) {
+            if (error_message != 0)
+                *error_message = "[\"" + key + "\"]" + *error_message;
+            return false;
+        }
+
+        dest->insert(key, value);
+    }
+
     return true;
 }
 
-template <typename T>
-static bool deserializeValue(T& target, const GArray *data, const char *methodName)
-{
-    QVariant variant;
-    if (!deserializeVariant(variant, data, methodName)) {
-        return false;
-    }
-    if (!variant.canConvert<T>()) {
-        qWarning("m_dbus_glib_ic_connection: Invalid parameter to %s.", methodName);
-        return false;
-    }
-    target = variant.value<T>();
-    return true;
 }
 
 static gboolean
 m_dbus_glib_ic_connection_update_widget_information(MDBusGlibICConnection *obj,
-                                                    GArray *stateInformation,
+                                                    GHashTable *stateInformation,
                                                     gboolean focusChanged, GError **/*error*/)
 {
     QMap<QString, QVariant> stateMap;
-    if (deserializeValue(stateMap, stateInformation, "updateWidgetInformation")) {
+    QString error_message;
+    if (mapFromGHashTable(&stateMap, stateInformation, &error_message)) {
         obj->icConnection->updateWidgetInformation(obj, stateMap, focusChanged == TRUE);
+    } else {
+        qWarning() << "updateWidgetInformation.arg[0]" + error_message;
     }
     return TRUE;
 }
@@ -242,15 +306,18 @@ m_dbus_glib_ic_connection_unregister_attribute_extension(MDBusGlibICConnection *
 static gboolean
 m_dbus_glib_ic_connection_set_extended_attribute(MDBusGlibICConnection *obj, gint32 id,
                                                  const char *target, const char *targetItem,
-                                                 const char *attribute, GArray *value, GError **/*error*/)
+                                                 const char *attribute, GValue *valueData, GError **/*error*/)
 {
     qDebug() << __PRETTY_FUNCTION__;
-    QVariant deserializedValue;
-    if (deserializeVariant(deserializedValue, value, "setExtendedAttribute")) {
+    QVariant value;
+    QString error_message;
+    if (variantFromGValue(&value, valueData, &error_message)) {
         obj->icConnection->setExtendedAttribute(obj, static_cast<int>(id), QString::fromUtf8(target),
                                                 QString::fromUtf8(targetItem),
                                                 QString::fromUtf8(attribute),
-                                                deserializedValue);
+                                                value);
+    } else {
+        qWarning() << "setExtendedAttribute.arg[4]" + error_message;
     }
     return TRUE;
 }
@@ -418,6 +485,60 @@ QDataStream &operator<<(QDataStream &s, const MInputMethod::PreeditTextFormat &t
     return s;
 }
 
+namespace {
+
+bool encodePreeditFormats(GType *typeDest, GPtrArray **dataDest, const QList<MInputMethod::PreeditTextFormat> &preeditFormats)
+{
+    // dbus datatype is a(iii)
+
+    // type is staightforward, only selection of constructors is not obvious
+    GType itemType = dbus_g_type_get_struct("GValueArray",
+                                            G_TYPE_INT, G_TYPE_INT, G_TYPE_INT,
+                                            G_TYPE_INVALID);
+    *typeDest = dbus_g_type_get_collection("GPtrArray", itemType);
+
+    // representation is:
+    //  QList<PTF>, "a(iii)", GPtrArray with elements
+    //   PTF, "iii", GValueArray with elements
+    //    PTF::start, "i", GValue with type int
+    //    PTF::length, "i", GValue with type int
+    //    PTF::preeditFace, "i", GValue with type int
+    // see also decoding in m_dbus_glib_input_context_adaptor_update_preedit(),
+    // though it is much shorter
+    *dataDest = (GPtrArray*)dbus_g_type_specialized_construct(*typeDest);
+    if (*dataDest == 0) {
+        qWarning() << Q_FUNC_INFO << "failed to initalize PreeditTextFormat container";
+        return false;
+    }
+    foreach (MInputMethod::PreeditTextFormat formatItem, preeditFormats) {
+        GValueArray *itemData = (GValueArray*)dbus_g_type_specialized_construct(itemType);
+        if (itemData == 0) {
+            qWarning() << Q_FUNC_INFO << "failed to initalize PreeditTextFormat item";
+            dbus_g_type_collection_peek_vtable(*typeDest)->base_vtable.free_func(*typeDest, *dataDest);
+            return false;
+        }
+        GValue itemDataWrap =  {0, {{0}, {0}}};
+        g_value_init(&itemDataWrap, itemType);
+        g_value_set_static_boxed(&itemDataWrap, itemData);
+        if (!dbus_g_type_struct_set(&itemDataWrap,
+                                    0, formatItem.start,
+                                    1, formatItem.length,
+                                    2, formatItem.preeditFace,
+                                    G_MAXUINT)) {
+            qWarning() << Q_FUNC_INFO << "failed to fill PreeditTextFormat item";
+            g_value_array_free(itemData);
+            g_value_unset(&itemDataWrap);
+            dbus_g_type_collection_peek_vtable(*typeDest)->base_vtable.free_func(*typeDest, *dataDest);
+            return false;
+        }
+        g_value_reset(&itemDataWrap);
+        g_ptr_array_add(*dataDest, itemData);
+    }
+    return true;
+}
+
+}
+
 void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
                                                         const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                                         int replaceStart, int replaceLength,
@@ -426,20 +547,20 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
     if (activeContext) {
         preedit = string;
 
-        QByteArray temporaryStorage;
-        QDataStream valueStream(&temporaryStorage, QIODevice::WriteOnly);
-        valueStream << preeditFormats;
-        GArray * const gdata(g_array_sized_new(FALSE, FALSE, 1, temporaryStorage.size()));
-        g_array_append_vals(gdata, temporaryStorage.constData(),
-                            temporaryStorage.size());
+        GType preeditFormatsType;
+        GPtrArray *preeditFormatsData;
+        if (!encodePreeditFormats(&preeditFormatsType, &preeditFormatsData, preeditFormats)) {
+            return;
+        }
+
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updatePreedit",
                                    G_TYPE_STRING, string.toUtf8().data(),
-                                   DBUS_TYPE_G_UCHAR_ARRAY, gdata,
+                                   preeditFormatsType, preeditFormatsData,
                                    G_TYPE_INT, replaceStart,
                                    G_TYPE_INT, replaceLength,
                                    G_TYPE_INT, cursorPos,
                                    G_TYPE_INVALID);
-        g_array_unref(gdata);
+        dbus_g_type_collection_peek_vtable(preeditFormatsType)->base_vtable.free_func(preeditFormatsType, preeditFormatsData);
     }
 }
 
@@ -721,21 +842,13 @@ int MInputContextGlibDBusConnection::anchorPosition(bool &valid)
 void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &region)
 {
     if (activeContext) {
-        QList<QVariant> data;
-        data.append(region.boundingRect());
-
-        QByteArray temporaryStorage;
-        QDataStream valueStream(&temporaryStorage, QIODevice::WriteOnly);
-        valueStream << data;
-        GArray * const gdata(g_array_sized_new(FALSE, FALSE, 1, temporaryStorage.size()));
-        g_array_append_vals(gdata, temporaryStorage.constData(),
-                            temporaryStorage.size());
-
+        QRect rect = region.boundingRect();
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updateInputMethodArea",
-                                   DBUS_TYPE_G_UCHAR_ARRAY, gdata,
+                                   G_TYPE_INT, rect.left(),
+                                   G_TYPE_INT, rect.top(),
+                                   G_TYPE_INT, rect.width(),
+                                   G_TYPE_INT, rect.height(),
                                    G_TYPE_INVALID);
-
-        g_array_unref(gdata);
     }
 }
 
@@ -1015,6 +1128,16 @@ void MInputContextGlibDBusConnection::updateTransientHint()
 WId MInputContextGlibDBusConnection::winId(bool &valid)
 {
     QVariant winIdVariant = widgetState[WinId];
-    valid = winIdVariant.canConvert<WId>();
+    // after transfer by dbus type can change
+    switch (winIdVariant.type()) {
+    case QVariant::UInt:
+        valid = (sizeof(uint) >= sizeof(WId));
+        return winIdVariant.toUInt();
+    case QVariant::ULongLong:
+        valid = (sizeof(qulonglong) >= sizeof(WId));
+        return winIdVariant.toULongLong();
+    default:
+        valid = winIdVariant.canConvert<WId>();
+    }
     return winIdVariant.value<WId>();
 }

@@ -18,6 +18,7 @@
 #include "minputcontext.h"
 #include <minputmethodnamespace.h>
 
+#include <QDebug>
 
 G_DEFINE_TYPE(MDBusGlibInputContextAdaptor, m_dbus_glib_input_context_adaptor, G_TYPE_OBJECT)
 
@@ -57,22 +58,25 @@ QDataStream &operator>>(QDataStream &s, MInputMethod::PreeditTextFormat &t)
 
 static gboolean m_dbus_glib_input_context_adaptor_update_preedit(MDBusGlibInputContextAdaptor *obj,
                                                                  const char *string,
-                                                                 GArray *preeditFormats,
+                                                                 GPtrArray *formatListData,
                                                                  gint32 replaceStart,
                                                                  gint32 replaceLength,
                                                                  gint32 cursorPos, GError **/*error*/)
 {
-    const QByteArray storageWrapper(QByteArray::fromRawData(preeditFormats->data, preeditFormats->len));
-    QDataStream formatListStream(storageWrapper);
     QList<MInputMethod::PreeditTextFormat> formatList;
-    formatListStream >> formatList;
-    if (formatListStream.status() == QDataStream::Ok) {
-        obj->inputContext->updatePreedit(QString::fromUtf8(string),
-                                         formatList,
-                                         replaceStart,
-                                         replaceLength,
-                                         cursorPos);
+    for (guint i = 0; i < formatListData->len; ++i) {
+        GValueArray *itemData = ((GValueArray**)formatListData->pdata)[i];
+        formatList.push_back(MInputMethod::PreeditTextFormat(
+                                    g_value_get_int(g_value_array_get_nth(itemData, 0)),
+                                    g_value_get_int(g_value_array_get_nth(itemData, 1)),
+                                    MInputMethod::PreeditFace(
+                                        g_value_get_int(g_value_array_get_nth(itemData, 2)))));
     }
+    obj->inputContext->updatePreedit(QString::fromUtf8(string),
+                                     formatList,
+                                     replaceStart,
+                                     replaceLength,
+                                     cursorPos);
     return TRUE;
 }
 
@@ -87,17 +91,11 @@ static gboolean m_dbus_glib_input_context_adaptor_key_event(
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_update_input_method_area(
-    MDBusGlibInputContextAdaptor *obj, GArray *rectList, GError **/*error*/)
+    MDBusGlibInputContextAdaptor *obj,
+    gint32 left, gint32 top, gint32 width, gint32 height,
+    GError **/*error*/)
 {
-    const QByteArray storageWrapper(QByteArray::fromRawData(rectList->data, rectList->len));
-    QDataStream rectListStream(storageWrapper);
-    QList<QVariant> deserializedRectList;
-    rectListStream >> deserializedRectList;
-    if (rectListStream.status() == QDataStream::Ok) {
-        obj->inputContext->updateInputMethodArea(deserializedRectList);
-    } else {
-        qWarning("MInputContext: Invalid parameter to updateInputMethodArea.");
-    }
+    obj->inputContext->updateInputMethodArea(QRect(left, top, width, height));
     return TRUE;
 }
 
