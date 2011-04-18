@@ -9,6 +9,8 @@ INCLUDEPATH += ../passthroughserver
 HEADERSINSTALL = \
         minputmethodplugin.h \
         mabstractinputmethod.h \
+        minputmethodquickplugin.h \
+        minputmethodquick.h \
         mabstractinputmethodhost.h \
         mimpluginmanager.h \
         mtoolbaritem.h \
@@ -53,6 +55,8 @@ SOURCES += mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
         mindicatorserviceclient.cpp \
         mabstractinputmethod.cpp \
+        minputmethodquickplugin.cpp \
+        minputmethodquick.cpp \
         mabstractinputmethodhost.cpp \
         minputmethodhost.cpp \
         minputcontextconnection.cpp \
@@ -80,7 +84,12 @@ SOURCES += mimpluginmanager.cpp \
         mimpluginsproxywidget.cpp \
 
 CONFIG += qdbus link_pkgconfig
-QT = core gui xml
+QT = core gui xml declarative
+
+# do we really care about this here?
+MEEGO_IM_PLUGINS_DIR=$${DESTDIR}/usr/lib/meego-im-plugins
+MEEGO_QML_DIR=$${MEEGO_IM_PLUGINS_DIR}/meego-keyboard-qml
+DEFINES += "MEEGO_KEYBOARD_QUICK_DIR=$${MEEGO_QML_DIR}"
 
 PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
 
