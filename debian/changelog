@@ -1,3 +1,9 @@
+meego-im-framework (0.20.8~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Mon, 18 Apr 2011 18:20:05 +0300
+
 meego-im-framework (0.20.7-1) unstable; urgency=low
 
   * Fixes: NB#241274 - VKB's self-composition breaks application UI while navigating between two MApplicationWindows
