@@ -1,6 +1,5 @@
-meego-im-framework (0.20.7~1) unstable; urgency=low
+meego-im-framework (0.20.7-1) unstable; urgency=low
 
-  * [UNRELEASED]
   * Fixes: NB#241274 - VKB's self-composition breaks application UI while navigating between two MApplicationWindows
   * Fixes: SIP is open, focus is lost, immediately request SIP => SIP remains open
   * Changes: allow (non-pre-edit) cursor position to be set in pre-edit update
