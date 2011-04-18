@@ -20,6 +20,9 @@ private slots:
 
     void testHandleTransientEvents();
 
+    void testConfigureWidgetsForCompositing_data();
+    void testConfigureWidgetsForCompositing();
+
 private:
     void handleMessages();
 

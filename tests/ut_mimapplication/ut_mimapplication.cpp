@@ -4,6 +4,7 @@
 #include <mpassthruwindow.h>
 #include <QCoreApplication>
 #include <QSignalSpy>
+#include <QGraphicsView>
 #include <QDebug>
 
 #include <X11/X.h>
@@ -50,6 +51,43 @@ void Ut_MIMApplication::testHandleTransientEvents()
     QSignalSpy spy(app, SIGNAL(remoteWindowChanged(MImRemoteWindow*)));
     app->x11EventFilter(&xevent);
     QCOMPARE(spy.count(), 1);
+}
+
+
+void Ut_MIMApplication::testConfigureWidgetsForCompositing_data()
+{
+    QTest::addColumn<bool>("selfCompositing");
+    QTest::newRow("selfComposting enabled") << true;
+    QTest::newRow("selfComposting disabled") << false;
+}
+
+void Ut_MIMApplication::testConfigureWidgetsForCompositing()
+{
+    QFETCH(bool, selfCompositing);
+
+    QWidget mainWindow;
+    QGraphicsView view(&mainWindow);
+
+    MIMApplication::configureWidgetsForCompositing(&mainWindow);
+
+    QList<QWidget *> widgets;
+    widgets << &mainWindow << &view << view.viewport();
+
+    // Test whether we configure passthru window, by default
+    if (mApp && mApp->passThruWindow()) {
+        widgets << mApp->passThruWindow();
+        MIMApplication::configureWidgetsForCompositing();
+    }
+
+    foreach (QWidget *w, widgets) {
+        QVERIFY(w->testAttribute(Qt::WA_NoSystemBackground)
+                || not selfCompositing);
+        QVERIFY(w->testAttribute(Qt::WA_OpaquePaintEvent)
+                || not selfCompositing);
+        QVERIFY(w->testAttribute(Qt::WA_TranslucentBackground)
+                || selfCompositing);
+        QVERIFY(not w->autoFillBackground());
+    }
 }
 
 QTEST_APPLESS_MAIN(Ut_MIMApplication)

@@ -45,9 +45,6 @@ private slots:
     void testRegionUpdates();
     void testSetToolbar();
 
-    void testConfigureWidgetsForCompositing_data();
-    void testConfigureWidgetsForCompositing();
-
     void testLoadedPluginsInfo_data();
     void testLoadedPluginsInfo();
 
