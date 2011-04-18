@@ -47,6 +47,7 @@ HEADERS += $$HEADERSINSTALL \
         mimwidget_p.h \
         ../passthroughserver/mpassthruwindow.h \
         mimrotationanimation.h \
+        mimpluginsproxywidget.h \
 
 SOURCES += mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
@@ -76,6 +77,7 @@ SOURCES += mimpluginmanager.cpp \
         ../passthroughserver/mpassthruwindow.cpp \
         mimrotationanimation.cpp \
         mimplugindescription.cpp \
+        mimpluginsproxywidget.cpp \
 
 CONFIG += qdbus link_pkgconfig
 QT = core gui xml

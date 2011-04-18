@@ -16,6 +16,7 @@
 
 #include "mimapplication.h"
 #include "mimremotewindow.h"
+#include "mimpluginsproxywidget.h"
 
 #include <QDebug>
 #include <X11/Xlib.h> // must be last include
@@ -30,7 +31,8 @@ MIMApplication::MIMApplication(int &argc, char **argv)
       mBackgroundSuppressed(false)
 {
     parseArguments(argc, argv);
-    mPassThruWindow.reset(new MPassThruWindow),
+    mPassThruWindow.reset(new MPassThruWindow);
+    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
 
     connect(this, SIGNAL(aboutToQuit()),
             this, SLOT(finalize()),
@@ -124,6 +126,11 @@ void MIMApplication::setTransientHint(WId newRemoteWinId)
 QWidget *MIMApplication::passThruWindow() const
 {
     return mPassThruWindow.get();
+}
+
+QWidget* MIMApplication::pluginsProxyWidget() const
+{
+    return mPluginsProxyWidget.get();
 }
 
 MIMApplication *MIMApplication::instance()

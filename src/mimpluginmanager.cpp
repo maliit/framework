@@ -23,6 +23,7 @@
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
 #include "mimapplication.h"
+#include "mimpluginsproxywidget.h"
 #include "mimremotewindow.h"
 #include "mimrotationanimation.h"
 
@@ -144,7 +145,7 @@ bool MIMPluginManagerPrivate::loadPlugin(MInputMethodPlugin *plugin)
     bool val = false;
     if (plugin) {
         if (!plugin->supportedStates().isEmpty()) {
-            WeakWidget centralWidget(new QWidget(mApp->passThruWindow()));
+            WeakWidget centralWidget(new QWidget(mApp->pluginsProxyWidget()));
 
             MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
             MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
@@ -704,11 +705,11 @@ void MIMPluginManagerPrivate::hideActivePlugins()
 
 void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest request)
 {
-    if (not mApp || not mApp->passThruWindow()) {
+    if (not mApp || not mApp->passThruWindow() || not mApp->pluginsProxyWidget()) {
         return;
     }
 
-    foreach (QObject *obj, mApp->passThruWindow()->children()) {
+    foreach (QObject *obj, mApp->pluginsProxyWidget()->children()) {
         if (QWidget *w = qobject_cast<QWidget *>(obj)) {
             w->hide();
         }

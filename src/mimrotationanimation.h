@@ -98,7 +98,7 @@ class MImRotationAnimation : public QGraphicsView {
     Q_OBJECT
 
 public:
-    MImRotationAnimation(QWidget* snapshotWidget);
+    explicit MImRotationAnimation(QWidget* snapshotWidget, QWidget* parent = 0);
     virtual ~MImRotationAnimation();
 
 public slots:

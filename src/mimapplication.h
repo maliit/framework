@@ -65,6 +65,7 @@ public:
 
     void setTransientHint(WId remoteWinId);
     QWidget *passThruWindow() const;
+    QWidget* pluginsProxyWidget() const;
 
     bool selfComposited() const;
     bool manualRedirection() const;
@@ -102,6 +103,7 @@ private:
 
     std::auto_ptr<MPassThruWindow> mPassThruWindow;
     std::auto_ptr<MImRemoteWindow> mRemoteWindow;
+    std::auto_ptr<QWidget> mPluginsProxyWidget;
     MImXCompositeExtension mCompositeExtension;
     MImXDamageExtension mDamageExtension;
     bool mSelfComposited;

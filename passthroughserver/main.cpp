@@ -62,7 +62,7 @@ int main(int argc, char **argv)
 
     qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 
-    MImRotationAnimation rotationAnimation(app.passThruWindow());
+    MImRotationAnimation rotationAnimation(app.pluginsProxyWidget(), app.passThruWindow());
 
     // Pass the rotationAnimation so that we can receive the orientation
     // signals from the dbus connection.

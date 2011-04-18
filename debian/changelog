@@ -1,6 +1,7 @@
 meego-im-framework (0.20.8~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Fixes: NB#227268 - [Performance] Virtual keyboard orientation switching is too slow
 
  -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Mon, 18 Apr 2011 18:20:05 +0300
 
