@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <node>
-  <interface name="org.maemo.duiinputmethodserver1">
+  <interface name="com.meego.inputmethod.uiserver1">
     <method name="showInputMethod">
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
@@ -9,19 +9,21 @@
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="mouseClickedOnPreedit">
-      <arg name="pos" type="(ii)" direction="in"/>
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QPoint"/>
-      <arg name="preeditRect" type="(iiii)" direction="in"/>
-      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
     </method>
     <method name="setPreedit">
       <arg name="text" type="s" direction="in"/>
+      <arg type="i"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updateWidgetInformation">
-      <arg name="stateInformation" type="a{sv}" direction="in"/>
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
-      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+      <arg type="ay"/>
+      <arg type="b"/>
     </method>
     <method name="reset">
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
@@ -32,6 +34,9 @@
     </method>
     <method name="activateContext">
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="appOrientationAboutToChange">
+      <arg type="i"/>
     </method>
     <method name="appOrientationChanged">
       <arg name="angle" type="i" direction="in"/>
@@ -49,9 +54,24 @@
       <arg name="text" type="s" direction="in"/>
       <arg name="autoRepeat" type="b" direction="in"/>
       <arg name="count" type="i" direction="in"/>
-      <arg name="nativeScanCode" type="i" direction="in"/>
-      <arg name="nativeModifiers" type="i" direction="in"/>
+      <arg name="nativeScanCode" type="u" direction="in"/>
+      <arg name="nativeModifiers" type="u" direction="in"/>
+      <arg type="u" />
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="registerAttributeExtension">
+      <arg type="i"/>
+      <arg type="s"/>
+    </method>
+    <method name="unregisterAttributeExtension">
+      <arg type="i"/>
+    </method>
+    <method name="setExtendedAttribute">
+      <arg type="i"/>
+      <arg type="s"/>
+      <arg type="s"/>
+      <arg type="s"/>
+      <arg type="ay"/>
     </method>
   </interface>
 </node>

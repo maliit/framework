@@ -288,7 +288,7 @@ meego_imcontext_filter_key_event (GtkIMContext *context, GdkEventKey *event)
 		return FALSE;
 
 	meego_im_proxy_process_key_event(imcontext->proxy, qevent_type, qt_keycode, qt_modifier,
-		text, 0, 1, event->hardware_keycode, event->state);
+					 text, 0, 1, event->hardware_keycode, event->state, event->time);
 
 	return TRUE;
 }

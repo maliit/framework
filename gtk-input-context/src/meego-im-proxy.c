@@ -25,9 +25,9 @@
 
 G_DEFINE_TYPE (MeegoIMProxy, meego_im_proxy, G_TYPE_OBJECT);
 
-#define MEEGO_IM_SERVICE_NAME "org.maemo.duiinputmethodserver1"
-#define MEEGO_IM_OBJECT_PATH "/org/maemo/duiinputmethodserver1"
-#define MEEGO_IM_SERVICE_INTERFACE "org.maemo.duiinputmethodserver1"
+#define MEEGO_IM_SOCKET_PATH "unix:path=/tmp/meego-im-uiserver/imserver_dbus"
+#define MEEGO_IM_OBJECT_PATH "/com/meego/inputmethod/uiserver1"
+#define MEEGO_IM_SERVICE_INTERFACE "com.meego.inputmethod.uiserver1"
 
 static void meego_im_proxy_finalize(GObject *object);
 static void meego_im_proxy_class_init (MeegoIMProxyClass *klass);
@@ -69,19 +69,20 @@ meego_im_proxy_init (MeegoIMProxy *self)
 	DBusGProxy* dbusproxy;
 	GError* error = NULL;
 
-	bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	bus = dbus_g_connection_open (MEEGO_IM_SOCKET_PATH, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
+		g_error_free (error);
+		error = NULL;
 	}
 
-	dbusproxy = dbus_g_proxy_new_for_name(bus,
-			MEEGO_IM_SERVICE_NAME, /* name */
+	dbusproxy = dbus_g_proxy_new_for_peer (bus,
 			MEEGO_IM_OBJECT_PATH, /* obj path */
 			MEEGO_IM_SERVICE_INTERFACE /* interface */);
 
 	if (dbusproxy == NULL) {
-		g_warning("could not create dbus_proxy for %s \n", MEEGO_IM_SERVICE_NAME);
+		g_warning("could not create dbus_proxy\n");
 	}
 
 	self->dbusproxy = dbusproxy;
@@ -98,7 +99,7 @@ meego_im_proxy_activate_context (MeegoIMProxy *proxy)
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_activate_context(proxy->dbusproxy, &error);
+	ret = com_meego_inputmethod_uiserver1_activate_context(proxy->dbusproxy, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -118,7 +119,7 @@ meego_im_proxy_app_orientation_changed (MeegoIMProxy *proxy, const gint angle)
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_app_orientation_changed(proxy->dbusproxy, angle, &error);
+	ret = com_meego_inputmethod_uiserver1_app_orientation_changed(proxy->dbusproxy, angle, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -138,7 +139,7 @@ meego_im_proxy_hide_input_method (MeegoIMProxy *proxy)
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_hide_input_method(proxy->dbusproxy, &error);
+	ret = com_meego_inputmethod_uiserver1_hide_input_method(proxy->dbusproxy, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -161,7 +162,7 @@ meego_im_proxy_mouse_clicked_on_preedit (MeegoIMProxy *proxy, const GValueArray*
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_mouse_clicked_on_preedit(proxy->dbusproxy,
+	ret = com_meego_inputmethod_uiserver1_mouse_clicked_on_preedit(proxy->dbusproxy,
 							pos, preedit_rect, &error);
 
 	if (error != NULL) {
@@ -181,7 +182,7 @@ meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTable *state_
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_update_widget_information(proxy->dbusproxy,
+	ret = com_meego_inputmethod_uiserver1_update_widget_information(proxy->dbusproxy,
 						state_information, &error);
 
 	if (error != NULL) {
@@ -198,8 +199,9 @@ gboolean
 meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gint code,
 					const gint modifiers, const char * text,
 					const gboolean auto_repeat, const gint count,
-					const gint native_scan_code,
-					const gint native_modifiers)
+					const guint native_scan_code,
+					const guint native_modifiers,
+				        const guint time)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -209,9 +211,10 @@ meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gi
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_process_key_event(proxy->dbusproxy,
-					type, code, modifiers, text, auto_repeat,
-					count, native_scan_code, native_modifiers, &error);
+	ret = com_meego_inputmethod_uiserver1_process_key_event(proxy->dbusproxy,
+								type, code, modifiers, text, auto_repeat,
+								count, native_scan_code, native_modifiers,
+								time, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -231,7 +234,7 @@ meego_im_proxy_reset (MeegoIMProxy *proxy)
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_reset(proxy->dbusproxy, &error);
+	ret = com_meego_inputmethod_uiserver1_reset(proxy->dbusproxy, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -251,7 +254,7 @@ meego_im_proxy_set_context_object (MeegoIMProxy *proxy, const char *object_name)
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_set_context_object(proxy->dbusproxy, object_name, &error);
+	ret = com_meego_inputmethod_uiserver1_set_context_object(proxy->dbusproxy, object_name, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -272,7 +275,7 @@ meego_im_proxy_set_copy_paste_state (MeegoIMProxy *proxy, const gboolean copy_av
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_set_copy_paste_state(proxy->dbusproxy,
+	ret = com_meego_inputmethod_uiserver1_set_copy_paste_state(proxy->dbusproxy,
 						copy_available, paste_available, &error);
 
 	if (error != NULL) {
@@ -284,7 +287,7 @@ meego_im_proxy_set_copy_paste_state (MeegoIMProxy *proxy, const gboolean copy_av
 
 
 gboolean
-meego_im_proxy_set_preedit (MeegoIMProxy *proxy, const char *text)
+meego_im_proxy_set_preedit (MeegoIMProxy *proxy, const char *text, gint cursor_pos)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -293,7 +296,7 @@ meego_im_proxy_set_preedit (MeegoIMProxy *proxy, const char *text)
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_set_preedit(proxy->dbusproxy, text, &error);
+	ret = com_meego_inputmethod_uiserver1_set_preedit(proxy->dbusproxy, text, cursor_pos, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -313,7 +316,7 @@ meego_im_proxy_show_input_method (MeegoIMProxy *proxy)
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
-	ret = org_maemo_duiinputmethodserver1_show_input_method(proxy->dbusproxy, &error);
+	ret = com_meego_inputmethod_uiserver1_show_input_method(proxy->dbusproxy, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
