@@ -152,10 +152,10 @@ bool variantFromGValue(QVariant *dest, GValue *source, QString *error_message)
         *dest = uint(g_value_get_uint(source));
         return true;
     case G_TYPE_INT64:
-        *dest = int64_t(g_value_get_int64(source));
+        *dest = static_cast<qlonglong>(g_value_get_int64(source));
         return true;
     case G_TYPE_UINT64:
-        *dest = uint64_t(g_value_get_uint64(source));
+        *dest = static_cast<qulonglong>(g_value_get_uint64(source));
         return true;
     case G_TYPE_DOUBLE:
         *dest = double(g_value_get_double(source));
