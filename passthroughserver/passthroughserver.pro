@@ -7,7 +7,7 @@ DEPENDPATH += .
 INCLUDEPATH += . ../src
 CONFIG += meegoreactionmap
 
-LIBS += ../src/libmeegoimframework.so -lXfixes
+LIBS += ../src/libmeegoimframework.so -lXfixes -lX11
 
 SOURCES += \
            main.cpp \

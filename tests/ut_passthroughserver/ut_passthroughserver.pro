@@ -1,6 +1,6 @@
 include(../common_top.pri)
 
-LIBS += ../../src/libmeegoimframework.so -lXfixes
+LIBS += ../../src/libmeegoimframework.so -lXfixes -lX11
 
 # Input
 HEADERS += \

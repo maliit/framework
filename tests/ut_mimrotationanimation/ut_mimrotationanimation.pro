@@ -1,10 +1,10 @@
 include(../common_top.pri)
 
-LIBS += ../../src/libmeegoimframework.so -lXfixes
+LIBS += ../../src/libmeegoimframework.so -lXfixes -lX11
 
 HEADERS += \
     ut_mimrotationanimation.h \
-    $$SRC_DIR/mimrotatinanimation.h \
+    $$SRC_DIR/mimrotationanimation.h \
 
 SOURCES += \
     ut_mimrotationanimation.cpp \

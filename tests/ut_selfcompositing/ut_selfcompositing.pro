@@ -25,6 +25,6 @@ SOURCES += \
     $$PASSTHRU_DIR/mpassthruwindow.cpp \
 
 LIBS += \
-    $$SRC_DIR/libmeegoimframework.so.0
+    $$SRC_DIR/libmeegoimframework.so.0 -lX11 -lXcomposite -lXdamage -lXfixes
 
 include(../common_check.pri)

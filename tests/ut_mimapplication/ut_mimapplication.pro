@@ -30,6 +30,6 @@ isEqual(code_coverage_option, off) {
 CONFIG += plugin qdbus
 
 LIBS += \
-    ../../src/libmeegoimframework.so.0 -lXfixes
+    ../../src/libmeegoimframework.so.0 -lXfixes -lX11
 
 include(../common_check.pri)
