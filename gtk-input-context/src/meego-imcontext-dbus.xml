@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <node>
-  <interface name="org.maemo.duiinputcontext1">
+  <interface name="com.meego.inputmethod.inputcontext1">
     <method name="activationLostEvent">
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
@@ -10,11 +10,17 @@
     </method>
     <method name="commitString">
       <arg name="string" type="s" direction="in"/>
+      <arg type="i"/>
+      <arg type="i"/>
+      <arg type="i"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updatePreedit">
       <arg name="string" type="s" direction="in"/>
+      <arg type="ay"/>
       <arg name="preeditFace" type="i" direction="in"/>
+      <arg type="i"/>
+      <arg type="i"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="keyEvent">
@@ -24,10 +30,11 @@
       <arg name="text" type="s" direction="in"/>
       <arg name="autoRepeat" type="b" direction="in"/>
       <arg name="count" type="i" direction="in"/>
+      <arg type="y"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updateInputMethodArea">
-      <arg name="data" type="av" direction="in"/>
+      <arg name="data" type="ay" direction="in"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="setGlobalCorrectionEnabled">
@@ -45,8 +52,19 @@
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="preeditRectangle">
-      <arg name="rect" type="(iiii)" direction="out"/>
       <arg name="valid" type="b" direction="out"/>
+      <arg name="rect" type="(iiii)" direction="out"/>
+    </method>
+    <method name="setDetectableAutoRepeat">
+      <arg type="b"/>
+    </method>
+    <method name="setSelection">
+        <arg type="i"/>
+        <arg type="i"/>
+    </method>
+    <method name="selection">
+      <arg type="b" direction="out"/>
+      <arg type="s" direction="out"/>
     </method>
   </interface>
 </node>

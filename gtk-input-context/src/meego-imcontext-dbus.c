@@ -26,15 +26,17 @@
 #include "meego-imcontext-dbus.h"
 #include "debug.h"
 
-#define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX "org.meego.meegoimcontext."
-#define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/org/meego/meegoimcontext"
+#define MEEGO_IM_SOCKET_PATH "unix:path=/tmp/meego-im-uiserver/imserver_dbus"
+#define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/com/meego/inputmethod/inputcontext"
+#define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX "com.meego.inputmethod.inputcontext1"
 
 
 G_DEFINE_TYPE( MeegoIMContextDbusObj, meego_imcontext_dbusobj, G_TYPE_OBJECT);
 
 gboolean meego_imcontext_dbus_activation_lost_event (MeegoIMContextDbusObj *obj, GError **error);
 gboolean meego_imcontext_dbus_im_initiated_hide (MeegoIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_commit_string (MeegoIMContextDbusObj *obj, char *string, GError **error);
+gboolean meego_imcontext_dbus_commit_string (MeegoIMContextDbusObj *obj, char *string, gint replacement_start,
+					     int replacement_length, int cursor_pos, GError **error);
 gboolean meego_imcontext_dbus_update_preedit (MeegoIMContextDbusObj *obj, char *string, int preedit_face, GError **error);
 gboolean meego_imcontext_dbus_key_event (MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count, GError **error);
@@ -81,50 +83,19 @@ MeegoIMContextDbusObj *
 meego_imcontext_dbus_register(void)
 {
 	DBusGConnection *bus = NULL;
-	DBusGProxy *busProxy = NULL;
 	MeegoIMContextDbusObj *dbusobj = NULL;
-	guint result;
+	/* guint result; */
 	GError *error = NULL;
 	gchar *servicename = NULL;
 
-	bus = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+	bus = dbus_g_connection_open (MEEGO_IM_SOCKET_PATH, &error);
 	if (error != NULL) {
-		g_warning("Couldn't connect to session bus\n");
-		return NULL;
-	}
-
-	busProxy = dbus_g_proxy_new_for_name(bus,
-					DBUS_SERVICE_DBUS,
-					DBUS_PATH_DBUS,
-					DBUS_INTERFACE_DBUS);
-
-	if (busProxy == NULL) {
-		DBG("Failed to get a proxy for D-Bus\n");
+		g_warning("Couldn't connect to IM bus\n");
+		g_error_free (error);
 		return NULL;
 	}
 
 	servicename = _generate_dbus_service_name();
-	DBG("Registering the well-known name (%s)\n", servicename);
-
-	/* Attempt to register the well-known name.*/
-	if (!dbus_g_proxy_call(busProxy,
-				"RequestName",
-				&error,
-				G_TYPE_STRING,
-				servicename,
-				G_TYPE_UINT,
-				0,
-				G_TYPE_INVALID,
-				G_TYPE_UINT,
-				&result,
-				G_TYPE_INVALID)) {
-		g_warning("D-Bus.RequestName RPC failed\n");
-	}
-
-	if (result != 1) {
-		g_warning("Failed to get the primary well-known name.\n");
-		goto done;
-	}
 
 	dbusobj = g_object_new(MEEGO_IMCONTEXT_TYPE_DBUSOBJ, NULL);
 
@@ -133,8 +104,9 @@ meego_imcontext_dbus_register(void)
 		goto done;
 	}
 
-	dbus_g_connection_register_g_object(bus, MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
-						G_OBJECT(dbusobj));
+	dbus_g_connection_register_g_object(bus,
+					    MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
+					    G_OBJECT(dbusobj));
 
 done:
 	g_free(servicename);
@@ -170,7 +142,8 @@ meego_imcontext_dbus_im_initiated_hide (MeegoIMContextDbusObj *obj, GError **err
 
 
 gboolean
-meego_imcontext_dbus_commit_string (MeegoIMContextDbusObj *obj, char *string, GError **error)
+meego_imcontext_dbus_commit_string (MeegoIMContextDbusObj *obj, char *string, gint replacement_start,
+				    int replacement_length, int cursor_pos, GError **error)
 {
 	DBG("string is:%s", string);
 	return meego_imcontext_client_commit_string(obj, string);
@@ -245,6 +218,26 @@ meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray**
 	return TRUE;
 }
 
+gboolean
+meego_imcontext_dbus_set_detectable_auto_repeat (MeegoIMContextDbusObj *obj, gboolean b, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+gboolean
+meego_imcontext_dbus_set_selection (MeegoIMContextDbusObj *obj, int from, int to, GError **error)
+{
+	STEP();
+	return TRUE;
+}
+
+gboolean
+meego_imcontext_dbus_selection (MeegoIMContextDbusObj *obj, gboolean b, gchar *string, GError **error)
+{
+	STEP();
+	return TRUE;
+}
 
 gchar *
 meego_imcontext_dbusobj_get_path(MeegoIMContextDbusObj *obj)
