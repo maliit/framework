@@ -66,7 +66,7 @@ M_LIBRARY
 
 namespace
 {
-    const int SoftwareInputPanelHideTimer = 500;
+    const int SoftwareInputPanelHideTimer = 100;
     const QString DBusCallbackPath("/com/meego/inputmethod/inputcontext");
     const char * const ToolbarTarget("/toolbar");
 
