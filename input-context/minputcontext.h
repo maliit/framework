@@ -174,6 +174,8 @@ public:
      */
     QString selection(bool &valid) const;
 
+    static bool debug;
+
 Q_SIGNALS:
     //! \internal
     /*! 

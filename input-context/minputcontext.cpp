@@ -39,6 +39,7 @@ class MPreeditStyleContainer
 #include <QApplication>
 #include <QClipboard>
 #include <QDebug>
+#include <QByteArray>
 
 #ifdef HAVE_MEEGOTOUCH
 #include <MApplication>
@@ -80,6 +81,8 @@ namespace
 
 int MInputContext::connectionCount = -1;
 
+bool MInputContext::debug = false;
+
 // Note: this class can also be used on plain Qt applications.
 // This means that the functionality _can_ _not_ rely on
 // MApplication or classes relying on it being initialized.
@@ -100,6 +103,11 @@ MInputContext::MInputContext(QObject *parent)
       objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount)),
       currentKeyEventTime(0)
 {
+    QByteArray debugEnvVar = qgetenv("MIC_ENABLE_DEBUG");
+    if (!debugEnvVar.isEmpty() && debugEnvVar != "false") {
+        debug = true;
+    }
+
     int opcode = -1;
     int xkbEventBase = -1;
     int xkbErrorBase = -1;
@@ -171,7 +179,8 @@ MInputContext::~MInputContext()
 
 void MInputContext::connectToDBus()
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << __PRETTY_FUNCTION__;
+
     g_type_init();
     MDBusGlibInputContextAdaptor *inputContextAdaptor
         = M_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR(
@@ -196,10 +205,12 @@ bool MInputContext::event(QEvent *event)
                 return false;
             }
 
-            qDebug() << "MInputContext" << __PRETTY_FUNCTION__
-                     << "MInputContext got preedit injection:"
-                     << injectionEvent->preedit()
-                     << ", event cursor pos:" << injectionEvent->eventCursorPosition();
+            if (debug) {
+                qDebug() << "MInputContext" << __PRETTY_FUNCTION__
+                         << "MInputContext got preedit injection:"
+                         << injectionEvent->preedit()
+                         << ", event cursor pos:" << injectionEvent->eventCursorPosition();
+            }
             // send the injected preedit to input method server and back to the widget with proper
             // styling
             // Note: plugin could change the preedit style in imServer->setPreedit().
@@ -215,8 +226,10 @@ bool MInputContext::event(QEvent *event)
             event->accept();
             return true;
         } else {
-            qDebug() << "MInputContext" << __PRETTY_FUNCTION__
-                     << "MInputContext ignored preedit injection because correction is disabled";
+            if (debug) {
+                qDebug() << "MInputContext" << __PRETTY_FUNCTION__
+                         << "MInputContext ignored preedit injection because correction is disabled";
+            }
             return false;
         }
     }
@@ -250,7 +263,7 @@ QString MInputContext::dbusObjectPath() const
 
 void MInputContext::reset()
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
 
     // send existing preedit to widget, documentation unclear whether this is
     // allowed, but trolls gave permission to use it. Most of qt's internal
@@ -272,7 +285,7 @@ void MInputContext::reset()
 
 void MInputContext::update()
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
 
     const QWidget *const focused = focusWidget();
 
@@ -291,8 +304,10 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
 {
     Q_UNUSED(x);
 
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
-    qDebug() << "MInputContext" << " event pos: " << event->globalPos() << " cursor pos:" << x;
+    if (debug) {
+        qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+        qDebug() << "MInputContext" << " event pos: " << event->globalPos() << " cursor pos:" << x;
+    }
 
     if (event->type() == QEvent::MouseButtonPress && (x < 0 || x > preedit.length())) {
         reset();
@@ -325,9 +340,10 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
 
 void MInputContext::setFocusWidget(QWidget *focused)
 {
+    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__ << focused;
+
     QObject *focusedObject = focused;
     QGraphicsItem *focusItem = 0;
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__ << focused;
     QInputContext::setFocusWidget(focused);
 
     // get detailed focus information from inside qgraphicsview
@@ -431,7 +447,8 @@ bool MInputContext::filterEvent(const QEvent *event)
 
     switch (event->type()) {
     case QEvent::RequestSoftwareInputPanel:
-        qDebug() << "MInputContext got RequestSoftwareInputPanel event";
+        if (debug) qDebug() << "MInputContext got RequestSoftwareInputPanel event";
+
         if (focusWidget() != 0) {
             sipHideTimer.stop();
         }
@@ -452,7 +469,8 @@ bool MInputContext::filterEvent(const QEvent *event)
         break;
 
     case QEvent::CloseSoftwareInputPanel:
-        qDebug() << "MInputContext got CloseSoftwareInputPanel event";
+        if (debug) qDebug() << "MInputContext got CloseSoftwareInputPanel event";
+
         sipHideTimer.start();
         eaten = true;
         break;
@@ -493,9 +511,11 @@ bool MInputContext::filterEvent(const QEvent *event)
                     break;
                 }
 
-                qDebug() << "MInputContext" << "MInputContext got preedit injection:"
-                                            << injectionEvent->preedit()
-                                            << ", event cursor pos:" << injectionEvent->eventCursorPosition();
+                if (debug) {
+                    qDebug() << "MInputContext" << "MInputContext got preedit injection:"
+                             << injectionEvent->preedit()
+                             << ", event cursor pos:" << injectionEvent->eventCursorPosition();
+                }
                 // send the injected preedit to input method server and back to the widget with proper
                 // styling
                 // Note: plugin could change the preedit style in imServer->setPreedit().
@@ -522,7 +542,7 @@ bool MInputContext::filterEvent(const QEvent *event)
 
                 eaten = true;
 
-            } else {
+            } else if (debug) {
                 qDebug() << "MInputContext ignored preedit injection because correction is disabled";
             }
         }
@@ -552,7 +572,8 @@ void MInputContext::activationLostEvent()
 
 void MInputContext::imInitiatedHide()
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+
     inputPanelState = InputPanelHidden;
 
     // need to remove focus from the current text entry
@@ -577,7 +598,7 @@ void MInputContext::imInitiatedHide()
 void MInputContext::commitString(const QString &string, int replacementStart,
                                  int replacementLength, int cursorPos)
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
 
 #ifdef HAVE_MEEGOTOUCH
     mTimestamp("MInputContext", string);
@@ -617,10 +638,12 @@ void MInputContext::updatePreedit(const QString &string,
                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                   int replacementStart, int replacementLength, int cursorPos)
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__ << "preedit:" << string
-                                << ", replacementStart:" << replacementStart
-                                << ", replacementLength:" << replacementLength
-                                << ", cursorPos:" << cursorPos;
+    if (debug) {
+        qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__ << "preedit:" << string
+                 << ", replacementStart:" << replacementStart
+                 << ", replacementLength:" << replacementLength
+                 << ", cursorPos:" << cursorPos;
+    }
 
     if (imServer->pendingResets()) {
         return;
@@ -717,7 +740,7 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
                              bool autoRepeat, int count,
                              MInputMethod::EventRequestType requestType)
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
 
     // Construct an event instance out of the parameters.
     QEvent::Type eventType = static_cast<QEvent::Type>(type);
@@ -795,7 +818,7 @@ void MInputContext::copy()
         ok = QMetaObject::invokeMethod(connectedObject, "copy", Qt::DirectConnection);
     }
 
-    qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "result=" << ok;
+    if (debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "result=" << ok;
 
     if (!ok) {
         // send Ctrl-Ckey event because suitable slot was not found
@@ -813,7 +836,7 @@ void MInputContext::paste()
         ok = QMetaObject::invokeMethod(connectedObject, "paste", Qt::DirectConnection);
     }
 
-    qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "result=" << ok;
+    if (debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "result=" << ok;
 
     if (!ok) {
         // send Ctrl-V key event because suitable slot was not found
@@ -825,7 +848,8 @@ void MInputContext::paste()
 
 void MInputContext::onDBusDisconnection()
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << __PRETTY_FUNCTION__;
+
     active = false;
     redirectKeys = false;
 
@@ -836,7 +860,7 @@ void MInputContext::onDBusDisconnection()
 
 void MInputContext::onDBusConnection()
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << __PRETTY_FUNCTION__;
 
     registerExistingAttributeExtensions();
 
@@ -928,7 +952,8 @@ void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &ite
 void MInputContext::notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem,
                                                    const QString &attribute, const QVariant& value)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << __PRETTY_FUNCTION__;
+
     imServer->setExtendedAttribute(id, target, targetItem,
                                    attribute, value);
 }

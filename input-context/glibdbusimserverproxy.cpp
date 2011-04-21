@@ -15,6 +15,7 @@
  */
 
 #include "glibdbusimserverproxy.h"
+#include "minputcontext.h"
 
 #include <QPoint>
 #include <QRect>
@@ -27,6 +28,7 @@
 
 #include <unistd.h>
 #include <sys/types.h>
+
 
 namespace
 {
@@ -68,13 +70,14 @@ GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
 
 void GlibDBusIMServerProxy::onDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userData)
 {
-    qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
     static_cast<GlibDBusIMServerProxy *>(userData)->onDisconnection();
 }
 
 void GlibDBusIMServerProxy::connectToDBus()
 {
-    qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+
     GError *error = NULL;
 
     connection = dbus_g_connection_open(SocketPath, &error);
@@ -105,7 +108,8 @@ void GlibDBusIMServerProxy::connectToDBus()
 
 void GlibDBusIMServerProxy::onDisconnection()
 {
-    qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+
     glibObjectProxy = 0;
     dbus_g_connection_unref(connection);
     connection = 0;
@@ -123,7 +127,7 @@ void GlibDBusIMServerProxy::resetNotifyTrampoline(DBusGProxy *proxy, DBusGProxyC
 
 void GlibDBusIMServerProxy::resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId)
 {
-    qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
     dbus_g_proxy_end_call(proxy, callId, 0, G_TYPE_INVALID);
     pendingResetCalls.remove(callId);
