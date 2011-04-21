@@ -187,7 +187,7 @@ Q_SIGNALS:
 
 private slots:
     //! hides input method
-    void hideOnFocusOut();
+    void hideInputMethod();
 
     void onDBusDisconnection();
     void onDBusConnection();

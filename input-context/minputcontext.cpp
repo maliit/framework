@@ -126,9 +126,7 @@ MInputContext::MInputContext(QObject *parent)
 
     sipHideTimer.setSingleShot(true);
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
-    // TODO: sipHideTimer is used not only when focus is lost but also with
-    // CloseSoftwareInputPanel event, so hideOnFocusOut is misleading.
-    connect(&sipHideTimer, SIGNAL(timeout()), SLOT(hideOnFocusOut()));
+    connect(&sipHideTimer, SIGNAL(timeout()), SLOT(hideInputMethod()));
 
 #ifdef HAVE_MEEGOTOUCH
     // using theming only when there is MComponentData instance, should be
@@ -554,7 +552,7 @@ bool MInputContext::filterEvent(const QEvent *event)
 }
 
 
-void MInputContext::hideOnFocusOut()
+void MInputContext::hideInputMethod()
 {
     imServer->hideInputMethod();
 
