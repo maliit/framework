@@ -19,8 +19,6 @@
 #include <minputcontext.h>
 #include <QString>
 #include <QStringList>
-#include <QDebug>
-
 
 
 MInputContextPlugin::MInputContextPlugin(QObject *parent)
