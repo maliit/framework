@@ -228,7 +228,6 @@ bool MInputContext::event(QEvent *event)
 
 QString MInputContext::identifierName()
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
     return "MInputContext";
 }
 
@@ -241,7 +240,6 @@ bool MInputContext::isComposing() const
 
 QString MInputContext::language()
 {
-    qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
     return "EN"; // FIXME
 }
 
@@ -433,7 +431,7 @@ bool MInputContext::filterEvent(const QEvent *event)
 
     switch (event->type()) {
     case QEvent::RequestSoftwareInputPanel:
-        qDebug() << "MInputContext" << "got event" << event->type();
+        qDebug() << "MInputContext got RequestSoftwareInputPanel event";
         if (focusWidget() != 0) {
             sipHideTimer.stop();
         }
@@ -454,7 +452,7 @@ bool MInputContext::filterEvent(const QEvent *event)
         break;
 
     case QEvent::CloseSoftwareInputPanel:
-        qDebug() << "MInputContext" << "got event" << event->type();
+        qDebug() << "MInputContext got CloseSoftwareInputPanel event";
         sipHideTimer.start();
         eaten = true;
         break;
@@ -525,8 +523,7 @@ bool MInputContext::filterEvent(const QEvent *event)
                 eaten = true;
 
             } else {
-                qDebug() << "MInputContext"
-                         << "MInputContext ignored preedit injection because correction is disabled";
+                qDebug() << "MInputContext ignored preedit injection because correction is disabled";
             }
         }
 #endif
