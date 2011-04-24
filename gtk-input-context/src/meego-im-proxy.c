@@ -65,11 +65,21 @@ meego_im_proxy_class_init (MeegoIMProxyClass *klass)
 static void
 meego_im_proxy_init (MeegoIMProxy *self)
 {
-	DBusGConnection* bus;
+	self->connection = NULL;
+}
+
+void
+meego_im_proxy_set_connection (MeegoIMProxy *proxy, DBusGConnection *connection)
+{
 	DBusGProxy* dbusproxy;
 	GError* error = NULL;
 
-	bus = dbus_g_connection_open (MEEGO_IM_SOCKET_PATH, &error);
+	g_assert (connection != NULL);
+
+	if (proxy->connection != NULL)
+		return;
+
+	proxy->connection = connection;
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -77,17 +87,16 @@ meego_im_proxy_init (MeegoIMProxy *self)
 		error = NULL;
 	}
 
-	dbusproxy = dbus_g_proxy_new_for_peer (bus,
-			MEEGO_IM_OBJECT_PATH, /* obj path */
-			MEEGO_IM_SERVICE_INTERFACE /* interface */);
+	dbusproxy = dbus_g_proxy_new_for_peer (proxy->connection,
+					       MEEGO_IM_OBJECT_PATH, /* obj path */
+					       MEEGO_IM_SERVICE_INTERFACE /* interface */);
 
 	if (dbusproxy == NULL) {
 		g_warning("could not create dbus_proxy\n");
 	}
 
-	self->dbusproxy = dbusproxy;
+	proxy->dbusproxy = dbusproxy;
 }
-
 
 gboolean
 meego_im_proxy_activate_context (MeegoIMProxy *proxy)

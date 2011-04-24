@@ -101,8 +101,11 @@ meego_imcontext_init_dbus (MeegoIMContext *self)
 	static gboolean first_time = TRUE;
 	gboolean ret = TRUE;
 
-	self->proxy = meego_im_proxy_get_singleton();
 	self->dbusobj = meego_imcontext_dbusobj_get_singleton();
+	self->proxy = meego_im_proxy_get_singleton();
+
+	meego_im_proxy_set_connection (self->proxy,
+				       meego_imcontext_dbusobj_get_connection(self->dbusobj));
 
 	if (first_time) {
 		ret = meego_im_proxy_set_context_object(self->proxy,

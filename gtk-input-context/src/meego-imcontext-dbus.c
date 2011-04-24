@@ -21,7 +21,6 @@
 
 #include <stdlib.h>
 #include <glib.h>
-#include <dbus/dbus-glib.h>
 
 #include "meego-imcontext-dbus.h"
 #include "debug.h"
@@ -108,11 +107,17 @@ meego_imcontext_dbus_register(void)
 					    MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
 					    G_OBJECT(dbusobj));
 
+	dbusobj->connection = bus;
 done:
 	g_free(servicename);
 	return dbusobj;
 }
 
+DBusGConnection *
+meego_imcontext_dbusobj_get_connection (MeegoIMContextDbusObj *obj)
+{
+	return obj->connection;
+}
 
 MeegoIMContextDbusObj *
 meego_imcontext_dbusobj_get_singleton (void)
