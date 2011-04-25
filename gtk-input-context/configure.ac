@@ -5,7 +5,7 @@ AC_PREREQ(2.61)
 # even micro numbers indicate released versions
 m4_define(meegotouch_inputmethodbridges_version_major, 0)
 m4_define(meegotouch_inputmethodbridges_version_minor, 2)
-m4_define(meegotouch_inputmethodbridges_version_micro, 2)
+m4_define(meegotouch_inputmethodbridges_version_micro, 3)
 
 m4_define([meegotouch_inputmethodbridges_version],
           [meegotouch_inputmethodbridges_version_major.meegotouch_inputmethodbridges_version_minor.meegotouch_inputmethodbridges_version_micro])
