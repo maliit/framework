@@ -42,12 +42,14 @@ HEADERS += \
     mimsettingsbrief.h \
     mimsettingsconf.h \
     mimsettingswidget.h \
+    mimsubviewmodel.h
 
 SOURCES += \
     mimsettingsapplet.cpp \
     mimsettingsbrief.cpp \
     mimsettingsconf.cpp \
     mimsettingswidget.cpp \
+    mimsubviewmodel.cpp
 
 target.path += $$DCP_APPLET_DIR
 
@@ -71,4 +73,3 @@ check.CONFIG = recursive
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.commands = $$system(true)
 check-xml.CONFIG = recursive
-

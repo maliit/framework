@@ -1,3 +1,16 @@
+0.20.11
+=======
+* Added support for enabling/disabling plguins and subviews.
+  - MAbstractInputMethod::subViews() should return all subviews instead of
+    just the enabled ones now
+  - The new GConf keys :
+    - /meegotouch/inputmethods/onscreen/enabled
+    - /meegotouch/inputmethods/onscreen/active
+    replace the old ones:
+    - /meegotouch/inputmethods/plugins/onscreen
+    - /meegotouch/inputmethods/virtualkeyboard/layouts
+    - /meegotouch/inputmethods/virtualkeyboard/lastactivesubview
+
 0.20.10
 =======
 * Added basic framework support for QML-based plugins:

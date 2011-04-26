@@ -23,9 +23,15 @@ namespace
 
     const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
 
+    const QString EnabledPluginsKey = "/meegotouch/inputmethods/onscreen/enabled";
+    const QString ActivePluginKey = "/meegotouch/inputmethods/onscreen/active";
+
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName2 = "DummyImPlugin2";
     const QString pluginName3 = "DummyImPlugin3";
+    const QString pluginId  = "libdummyimplugin.so";
+    const QString pluginId2 = "libdummyimplugin2.so";
+    const QString pluginId3 = "libdummyimplugin3.so";
 }
 
 
@@ -64,8 +70,19 @@ void Ut_MIMSettingsConf::initTestCase()
     //ignore the meego-keyboard
     blackList << "libmeego-keyboard.so";
     blackListConf.set(blackList);
-    MImSettings handlerItem(PluginRoot + "onscreen");
-    handlerItem.set(pluginName);
+
+    MImSettings enabledPluginsSettings(EnabledPluginsKey);
+    QStringList enabledPlugins;
+    enabledPlugins << pluginId << "dummyimsv1";
+    enabledPlugins << pluginId << "dummyimsv2";
+    enabledPlugins << pluginId3 << "dummyim3sv1";
+    enabledPlugins << pluginId3 << "dummyim3sv2";
+    enabledPluginsSettings.set(enabledPlugins);
+
+    MImSettings activePluginSettings(ActivePluginKey);
+    QStringList activePlugin;
+    activePlugin << pluginId << "dummyimsv1";
+    activePluginSettings.set(activePlugin);
 
     manager = new MIMPluginManager();
     if (!manager->isDBusConnectionValid()) {
@@ -83,10 +100,10 @@ void Ut_MIMSettingsConf::cleanupTestCase()
 void Ut_MIMSettingsConf::init()
 {
     MImSettingsConf::createInstance();
-    MImSettingsConf::instance().setActivePlugin(pluginName);
+    MImSettingsConf::instance().setActivePlugin(pluginId);
     MImSettingsConf::instance().setActiveSubView(QString("dummyimsv1"));
     handleMessages();
-    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginName);
+    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginId);
     QCOMPARE(manager->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
 }
 
@@ -112,20 +129,20 @@ void Ut_MIMSettingsConf::testPlugins()
 void Ut_MIMSettingsConf::testSetActivePlugin()
 {
     QCOMPARE(MImSettingsConf::instance().plugins().size(), 2);
-    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginName);
+    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginId);
 
-    MImSettingsConf::instance().setActivePlugin(pluginName3);
+    MImSettingsConf::instance().setActivePlugin(pluginId3);
     handleMessages();
-    MImSettings handlerItem(PluginRoot + "onscreen");
-    QCOMPARE(handlerItem.value().toString(), pluginName3);
+    MImSettings handlerItem(ActivePluginKey);
+    QCOMPARE(handlerItem.value().toStringList().first(), pluginId3);
     QVERIFY(manager->activePluginsNames().size() == 1);
-    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginName3);
+    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginId3);
 
-    MImSettingsConf::instance().setActivePlugin(pluginName, QString("dummyimsv2"));
+    MImSettingsConf::instance().setActivePlugin(pluginId, QString("dummyimsv2"));
     handleMessages();
-    QCOMPARE(handlerItem.value().toString(), pluginName);
+    QCOMPARE(handlerItem.value().toStringList().first(), pluginId);
     QVERIFY(manager->activePluginsNames().size() == 1);
-    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginName);
+    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginId);
     QCOMPARE(manager->activeSubView(MInputMethod::OnScreen), QString("dummyimsv2"));
 
 }
@@ -149,7 +166,7 @@ void Ut_MIMSettingsConf::testActiveSubView()
     activeSubView = MImSettingsConf::instance().activeSubView();
     QCOMPARE(activeSubView.subViewId, QString("dummyimsv2"));
 
-    MImSettingsConf::instance().setActivePlugin(pluginName3);
+    MImSettingsConf::instance().setActivePlugin(pluginId3);
     handleMessages();
     activeSubView = MImSettingsConf::instance().activeSubView();
     QCOMPARE(activeSubView.subViewId, QString("dummyim3sv1"));

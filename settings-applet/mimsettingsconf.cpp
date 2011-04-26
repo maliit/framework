@@ -26,7 +26,7 @@
 
 namespace
 {
-    const QString DefaultPluginLocation("/usr/lib/meego-im-plugins/");
+    const char * const DefaultPluginLocation(M_IM_PLUGINS_DIR);
 
     const QString ConfigRoot = "/meegotouch/inputmethods/";
     const QString MImPluginPaths = ConfigRoot + "paths";
@@ -120,11 +120,7 @@ void MImSettingsConf::loadSettings()
     foreach (MInputMethodPlugin *plugin, plugins()) {
         MAbstractInputMethodSettings *settings = plugin->createInputMethodSettings();
         if (settings) {
-            if (plugin->name() == QLatin1String("MeegoKeyboard")) {
-                settingList.push_front(settings);
-            } else {
-                settingList.append(settings);
-            }
+            settingList.insert(plugin->name(), settings);
         }
     }
 }
@@ -141,7 +137,7 @@ QList<MInputMethodPlugin *> MImSettingsConf::plugins() const
     return pluginList;
 }
 
-QList<MAbstractInputMethodSettings *> MImSettingsConf::settings() const
+QMap<QString, MAbstractInputMethodSettings *> MImSettingsConf::settings() const
 {
     return settingList;
 }

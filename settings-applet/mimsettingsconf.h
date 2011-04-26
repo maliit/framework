@@ -54,7 +54,7 @@ public:
     /*!
      * \brief Return all input method settings.
      */
-    QList<MAbstractInputMethodSettings *> settings() const;
+    QMap<QString, MAbstractInputMethodSettings *> settings() const;
 
     /*!
      * \brief Set \a pluginName as the active input method plugin, and \a subViewId as the active subView.
@@ -97,7 +97,7 @@ private:
     QMap<MInputMethodPlugin *, QString> imPlugins;
     QStringList paths;
     QStringList blacklist;
-    QList<MAbstractInputMethodSettings *> settingList;
+    QMap<QString, MAbstractInputMethodSettings *> settingList;
     //! Singleton instance
     static MImSettingsConf *imSettingsConfInstance;
 

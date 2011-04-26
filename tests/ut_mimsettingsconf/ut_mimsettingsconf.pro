@@ -18,6 +18,7 @@ SOURCES += \
     ../stubs/fakegconf.cpp \
     $$SETTINGSAPPLET_DIR/mimsettingsconf.cpp \
 
+DEFINES += M_IM_PLUGINS_DIR=\\\"/usr/lib/meego-im-framework-tests/plugins\\\"
 
 CONFIG += plugin qdbus
 

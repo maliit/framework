@@ -21,6 +21,7 @@
 #include "mattributeextensionid.h"
 #include "minputmethodhost.h"
 #include "mindicatorserviceclient.h"
+#include "mimonscreenplugins.h"
 #include "mimsettings.h"
 
 #include <QObject>
@@ -32,6 +33,7 @@
 #include <QSet>
 #include <QRegion>
 #include <QTimer>
+#include <QDir>
 
 class MInputMethodPlugin;
 class MInputContextConnection;
@@ -60,6 +62,7 @@ public:
         PluginState state;
         MInputMethod::SwitchDirection lastSwitchDirection;
         WeakWidget centralWidget;
+        QString pluginId; // the library filename is used as ID
     };
 
     typedef QMap<MInputMethodPlugin *, PluginDescription> Plugins;
@@ -71,7 +74,7 @@ public:
 
     void activatePlugin(MInputMethodPlugin *plugin);
     void loadPlugins();
-    bool loadPlugin(MInputMethodPlugin *plugin);
+    bool loadPlugin(const QDir &dir, const QString &fileName);
     void addHandlerMap(MInputMethod::HandlerState state, const QString &pluginName);
     void setActiveHandlers(const QSet<MInputMethod::HandlerState> &states);
     QSet<MInputMethod::HandlerState> activeHandlers() const;
@@ -79,13 +82,16 @@ public:
     void convertAndFilterHandlers(const QStringList &handlerNames,
                                   QSet<MInputMethod::HandlerState> *handlers);
 
-    void replacePlugin(MInputMethod::SwitchDirection direction, Plugins::iterator initiator,
-                       Plugins::iterator replacement);
+    void replacePlugin(MInputMethod::SwitchDirection direction, MInputMethodPlugin *source,
+                       Plugins::iterator replacement, const QString &subViewId);
     bool switchPlugin(MInputMethod::SwitchDirection direction, MAbstractInputMethod *initiator);
-    bool switchPlugin(const QString &name, MAbstractInputMethod *initiator);
-    bool doSwitchPlugin(MInputMethod::SwitchDirection direction,
-                        Plugins::iterator source,
-                        Plugins::iterator replacement);
+    bool switchPlugin(const QString &name,
+                      MAbstractInputMethod *initiator,
+                      const QString &subViewId = QString());
+    bool trySwitchPlugin(MInputMethod::SwitchDirection direction,
+                         MInputMethodPlugin *source,
+                         Plugins::iterator replacement,
+                         const QString &subViewId = QString());
     void changeHandlerMap(MInputMethodPlugin *origin,
                           MInputMethodPlugin *replacement,
                           QSet<MInputMethod::HandlerState> states);
@@ -97,7 +103,6 @@ public:
     QString activePluginsName(MInputMethod::HandlerState state) const;
     void loadHandlerMap();
     MInputMethodPlugin *activePlugin(MInputMethod::HandlerState state) const;
-    void initActiveSubView();
     void hideActivePlugins();
     void showActivePlugins();
     void ensureActivePluginsVisible(ShowInputMethodRequest request);
@@ -119,6 +124,11 @@ public:
     //! updates and force an empty region in case of badly behaving plugins.
     void _q_ensureEmptyRegionWhenHidden();
 
+    /*!
+     * \brief Called in response to changed active on screen subview key change
+     */
+    void _q_onScreenSubViewChanged();
+
     QMap<QString, QString> availableSubViews(const QString &plugin,
                                              MInputMethod::HandlerState state
                                               = MInputMethod::OnScreen) const;
@@ -126,13 +136,6 @@ public:
     void setActivePlugin(const QString &pluginName, MInputMethod::HandlerState state);
 
     QString inputSourceName(MInputMethod::HandlerState source) const;
-    MInputMethod::HandlerState inputSourceFromName(const QString &name, bool &valid) const;
-
-    //! Returns the string value of the last active subview.
-    QString lastActiveSubView() const;
-
-    //! Sets last active subview.
-    void setLastActiveSubView(const QString &subview);
 
     MIMPluginManager *parent;
     MInputContextConnection *mICConnection;
@@ -157,15 +160,15 @@ public:
     bool acceptRegionUpdates;
 
     typedef QMap<MInputMethod::HandlerState, QString> InputSourceToNameMap;
-    QMap<MInputMethod::HandlerState, QString> inputSourceToNameMap;
-    QMap<QString, MInputMethod::HandlerState> nameToInputSourceMap;
+    InputSourceToNameMap inputSourceToNameMap;
 
     MAttributeExtensionId toolbarId;
 
     MIndicatorServiceClient indicatorService;
 
-    MImSettings lastActiveSubViewConf;
     QTimer ensureEmptyRegionWhenHiddenTimer;
+
+    MImOnScreenPlugins onScreenPlugins;
 };
 
 #endif

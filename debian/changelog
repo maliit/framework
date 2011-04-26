@@ -1,6 +1,7 @@
 meego-im-framework (0.20.11~1) unstable; urgency=low
 
   * [UNRELEASED]
+  * Fixes: NB#250363 - A selection for available Input methods needed in Text input Setting
 
  -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Thu, 12 May 2011 10:08:07 +0300
 

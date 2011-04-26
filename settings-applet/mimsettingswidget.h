@@ -21,10 +21,17 @@
 #include <QModelIndex>
 #include <QWeakPointer>
 
+#include "mimonscreenplugins.h"
+#include "mimsubviewmodel.h"
+
 class MPopupList;
 class MAbstractInputMethodSettings;
+class MDialog;
 class MLabel;
 class MBasicListItem;
+class MList;
+class MContainer;
+class QGraphicsLinearLayout;
 
 class MImSettingsWidget : public DcpWidget
 {
@@ -44,21 +51,36 @@ protected:
 
 private slots:
     void syncActiveSubView();
-
     void showAvailableSubViewList();
-
     void setActiveSubView(const QModelIndex &);
-
     void updateAvailableSubViewModel();
-
     void updateActiveSubViewIndex();
+
+    void showSelectedKeyboardsDialog();
+    void updateSelectedKeyboards(const QModelIndex &index = QModelIndex());
+    void selectKeyboards();
 
 private:
     void updateActiveSubViewTitle();
+    void updateSelectedKeyboardsModel();
+    void updateSelectedKeyboardsSelection();
+    void updateSelectedSubViews();
 
+    void addPluginSettings(const QString &plugin, MAbstractInputMethodSettings *settings);
+
+    QGraphicsLinearLayout* mainLayout;
     MLabel *headerLabel;
     MBasicListItem *activeSubViewItem;
+    MBasicListItem *availableSubViewItem;
+
     QWeakPointer<MPopupList> availableSubViewList;
+    QWeakPointer<MDialog> keyboardDialog;
+    QWeakPointer<MList> keyboardList;
+
+    MImOnScreenPlugins onscreenPlugins;
+    QList<MImSubview> selectedSubViews;
+
     QMap<MAbstractInputMethodSettings *, MLabel *> settingsLabelMap;
+    QMap<QString, MContainer *> settingsContainerMap;
 };
 #endif

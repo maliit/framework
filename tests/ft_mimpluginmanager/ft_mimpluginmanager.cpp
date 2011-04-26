@@ -21,6 +21,11 @@ namespace
 
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName3 = "DummyImPlugin3";
+    const QString pluginId  = "libdummyimplugin.so";
+    const QString pluginId3 = "libdummyimplugin3.so";
+
+    const QString EnabledPluginsKey = "/meegotouch/inputmethods/onscreen/enabled";
+    const QString ActivePluginKey = "/meegotouch/inputmethods/onscreen/active";
 
     const QString ConfigRoot        = "/meegotouch/inputmethods/";
     const QString MImPluginPaths    = ConfigRoot + "paths";
@@ -70,9 +75,21 @@ void Ft_MIMPluginManager::init()
     MImSettings(MImPluginDisabled).set(QStringList("libdummyimplugin2.so"));
     MImSettings(MImPluginActive).set(QStringList("DummyImPlugin"));
 
-    MImSettings(PluginRoot + "onscreen").set(pluginName);
-    MImSettings(PluginRoot + "hardware").set(pluginName);
-    MImSettings(PluginRoot + "accessory").set(pluginName3);
+    MImSettings(PluginRoot + "hardware").set(pluginId);
+    MImSettings(PluginRoot + "accessory").set(pluginId3);
+
+    MImSettings enabledPluginsSettings(EnabledPluginsKey);
+    QStringList enabledPlugins;
+    enabledPlugins << pluginId << "dummyimsv1";
+    enabledPlugins << pluginId << "dummyimsv2";
+    enabledPlugins << pluginId3 << "dummyim3sv1";
+    enabledPlugins << pluginId3 << "dummyim3sv2";
+    enabledPluginsSettings.set(enabledPlugins);
+
+    MImSettings activePluginSettings(ActivePluginKey);
+    QStringList activePlugin;
+    activePlugin << pluginId << "dummyimsv1";
+    activePluginSettings.set(activePlugin);
 
     gMKeyboardStateTrackerStub->setOpenState(false);
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
@@ -92,12 +109,12 @@ void Ft_MIMPluginManager::testLoadPlugins()
 {
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
-    QVERIFY(loadedPlugins.contains(pluginName));
-    QVERIFY(loadedPlugins.contains(pluginName3));
+    QVERIFY(loadedPlugins.contains(pluginId));
+    QVERIFY(loadedPlugins.contains(pluginId3));
 
     QStringList activePlugins = subject->activePluginsNames();
     QCOMPARE(activePlugins.count(), 1);
-    QCOMPARE(activePlugins.first(), pluginName);
+    QCOMPARE(activePlugins.first(), pluginId);
 }
 
 
@@ -107,12 +124,12 @@ void Ft_MIMPluginManager::testSwitchPluginState()
 
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
-    QVERIFY(loadedPlugins.contains(pluginName));
-    QVERIFY(loadedPlugins.contains(pluginName3));
+    QVERIFY(loadedPlugins.contains(pluginId));
+    QVERIFY(loadedPlugins.contains(pluginId3));
 
     QStringList activePlugins = subject->activePluginsNames();
     QCOMPARE(activePlugins.count(), 1);
-    QCOMPARE(activePlugins.first(), pluginName3);
+    QCOMPARE(activePlugins.first(), pluginId3);
 }
 
 
@@ -125,13 +142,13 @@ void Ft_MIMPluginManager::testMultiplePlugins()
 
     QStringList loadedPlugins = subject->loadedPluginsNames();
     QCOMPARE(loadedPlugins.count(), 2);
-    QVERIFY(loadedPlugins.contains(pluginName));
-    QVERIFY(loadedPlugins.contains(pluginName3));
+    QVERIFY(loadedPlugins.contains(pluginId));
+    QVERIFY(loadedPlugins.contains(pluginId3));
 
     QStringList activePlugins = subject->activePluginsNames();
     QCOMPARE(activePlugins.count(), 2);
-    QVERIFY(activePlugins.contains(pluginName));
-    QVERIFY(activePlugins.contains(pluginName3));
+    QVERIFY(activePlugins.contains(pluginId));
+    QVERIFY(activePlugins.contains(pluginId3));
 }
 
 void Ft_MIMPluginManager::testSwitchPluginBySignal()
@@ -155,7 +172,7 @@ void Ft_MIMPluginManager::testSwitchPluginBySignal()
 
     QStringList activePlugins = subject->activePluginsNames();
     QCOMPARE(activePlugins.count(), 1);
-    QVERIFY(activePlugins.contains(pluginName3));
+    QVERIFY(activePlugins.contains(pluginId3));
     QVERIFY(inputMethod != 0);
 }
 
@@ -176,11 +193,11 @@ void Ft_MIMPluginManager::testSwitchToSpecifiedPlugin()
     inputMethod = dynamic_cast<DummyInputMethod *>(subject->d_ptr->plugins[plugin].inputMethod);
     QVERIFY(inputMethod != 0);
 
-    inputMethod->switchMe(pluginName3);
+    inputMethod->switchMe(pluginId3);
 
     QStringList activePlugins = subject->activePluginsNames();
     QCOMPARE(activePlugins.count(), 1);
-    QVERIFY(activePlugins.contains(pluginName3));
+    QVERIFY(activePlugins.contains(pluginId3));
     QVERIFY(inputMethod != 0);
 }
 
