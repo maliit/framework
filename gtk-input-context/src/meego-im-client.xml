@@ -9,21 +9,21 @@
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="mouseClickedOnPreedit">
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
+      <arg name="positionX" type="i"/>
+      <arg name="positionY" type="i"/>
+      <arg name="rectangleX" type="i"/>
+      <arg name="rectangleY" type="i"/>
+      <arg name="rectangleWidth" type="i"/>
+      <arg name="rectangleHeight" type="i"/>
     </method>
     <method name="setPreedit">
       <arg name="text" type="s" direction="in"/>
-      <arg type="i"/>
+      <arg name="cursorPosition" type="i"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updateWidgetInformation">
-      <arg type="ay"/>
-      <arg type="b"/>
+      <arg name="encodedState" type="ay"/>
+      <arg name="focusChanged" type="b"/>
     </method>
     <method name="reset">
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
@@ -36,7 +36,7 @@
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="appOrientationAboutToChange">
-      <arg type="i"/>
+      <arg name="angle" type="i"/>
     </method>
     <method name="appOrientationChanged">
       <arg name="angle" type="i" direction="in"/>
@@ -56,22 +56,22 @@
       <arg name="count" type="i" direction="in"/>
       <arg name="nativeScanCode" type="u" direction="in"/>
       <arg name="nativeModifiers" type="u" direction="in"/>
-      <arg type="u" />
+      <arg name="time" type="u" />
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="registerAttributeExtension">
-      <arg type="i"/>
-      <arg type="s"/>
+      <arg name="id" type="i"/>
+      <arg name="fileName" type="s"/>
     </method>
     <method name="unregisterAttributeExtension">
-      <arg type="i"/>
+      <arg name="id" type="i"/>
     </method>
     <method name="setExtendedAttribute">
-      <arg type="i"/>
-      <arg type="s"/>
-      <arg type="s"/>
-      <arg type="s"/>
-      <arg type="ay"/>
+      <arg name="id" type="i"/>
+      <arg name="target" type="s"/>
+      <arg name="targetItem" type="s"/>
+      <arg name="attribute" type="s"/>
+      <arg name="value" type="ay"/>
     </method>
   </interface>
 </node>

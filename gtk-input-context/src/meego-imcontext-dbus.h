@@ -70,8 +70,8 @@ gboolean meego_imcontext_client_copy (MeegoIMContextDbusObj *obj);
 gboolean meego_imcontext_client_paste (MeegoIMContextDbusObj *obj);
 gboolean meego_imcontext_client_set_redirect_keys (MeegoIMContextDbusObj *obj, gboolean enabled);
 gboolean meego_imcontext_client_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray** rect, gboolean *valid);
-gboolean meego_imcontext_dbus_set_detectable_auto_repeat (MeegoIMContextDbusObj *obj, gboolean b, GError **error);
-gboolean meego_imcontext_dbus_set_selection (MeegoIMContextDbusObj *obj, int from, int to, GError **error);
 gboolean meego_imcontext_dbus_selection (MeegoIMContextDbusObj *obj, gboolean b, gchar *string, GError **error);
+gboolean meego_imcontext_dbus_set_detectable_auto_repeat (MeegoIMContextDbusObj *obj, gboolean enabled, GError **error);
+gboolean meego_imcontext_dbus_set_selection (MeegoIMContextDbusObj *obj, int start, int length, GError **error);
 
 #endif /* _MEEGO_IMCONTEXT_DBUS_H */

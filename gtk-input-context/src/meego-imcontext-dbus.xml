@@ -10,17 +10,17 @@
     </method>
     <method name="commitString">
       <arg name="string" type="s" direction="in"/>
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
+      <arg name="replacementStart" type="i"/>
+      <arg name="replacementLength" type="i"/>
+      <arg name="cursorPosition" type="i"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updatePreedit">
       <arg name="string" type="s" direction="in"/>
-      <arg type="ay"/>
-      <arg name="preeditFace" type="i" direction="in"/>
-      <arg type="i"/>
-      <arg type="i"/>
+      <arg name="formatList" type="ay"/>
+      <arg name="replaceStart" type="i" direction="in"/>
+      <arg name="replaceLength" type="i" direction="in"/>
+      <arg name="cursorPos" type="i" direction="in"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="keyEvent">
@@ -30,7 +30,7 @@
       <arg name="text" type="s" direction="in"/>
       <arg name="autoRepeat" type="b" direction="in"/>
       <arg name="count" type="i" direction="in"/>
-      <arg type="y"/>
+      <arg name="requestType" type="y" direction="in"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updateInputMethodArea">
@@ -56,15 +56,15 @@
       <arg name="rect" type="(iiii)" direction="out"/>
     </method>
     <method name="setDetectableAutoRepeat">
-      <arg type="b"/>
+      <arg name="enabled" type="b"/>
     </method>
     <method name="setSelection">
-        <arg type="i"/>
-        <arg type="i"/>
+      <arg name="start" type="i"/>
+      <arg name="length" type="i"/>
     </method>
     <method name="selection">
-      <arg type="b" direction="out"/>
-      <arg type="s" direction="out"/>
+      <arg name="valid" type="b" direction="out"/>
+      <arg name="gdata" type="s" direction="out"/>
     </method>
   </interface>
 </node>

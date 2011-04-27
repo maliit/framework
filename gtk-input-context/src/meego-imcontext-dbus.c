@@ -224,14 +224,14 @@ meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray**
 }
 
 gboolean
-meego_imcontext_dbus_set_detectable_auto_repeat (MeegoIMContextDbusObj *obj, gboolean b, GError **error)
+meego_imcontext_dbus_set_detectable_auto_repeat (MeegoIMContextDbusObj *obj, gboolean enabled, GError **error)
 {
 	STEP();
 	return TRUE;
 }
 
 gboolean
-meego_imcontext_dbus_set_selection (MeegoIMContextDbusObj *obj, int from, int to, GError **error)
+meego_imcontext_dbus_set_selection (MeegoIMContextDbusObj *obj, int start, int length, GError **error)
 {
 	STEP();
 	return TRUE;
