@@ -45,9 +45,29 @@ Description: Technical documentation of MeegoTouch Input Method Framework
  Technical documentation of MeegoTouch Input Method Framework. 
  Includes API reference and internal documentations.
 
+Package: libmeegoimquick0
+Architecture: any
+Depends:  ${misc:Depends}, ${shlibs:Depends}, libmeegoimframework0
+Description: Meego Input Method Quick library
+ MeeGo Input Method Quick library
+
+Package: libmeegoimquick-dev
+Section: libdevel
+Architecture: all
+Depends: libmeegoimquick0 (>= ${source:Version}), libmeegoimframework-dev, libqt4-dev (>= 4.6)
+Description: MeeGo Input Method Quick development files
+ Development files for MeeGo Input Method Quick
+
+Package: libmeegoimquick0-dbg
+Section: devel
+Architecture: any
+Depends: libmeegoimquick0 (= ${binary:Version})
+Description: MeeGo Input Method Quick debug symbols
+ Debug symbols for MeeGo Input Method Quick library
+
 Package: meego-im-framework-tests
 Architecture: any
-Depends:  testrunner-lite, ci-testing, meego-im-uiserver (= ${binary:Version}), libmeegoimframework0 (= ${binary:Version}), meego-im-settings-applet (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends:  testrunner-lite, ci-testing, meego-im-uiserver (= ${binary:Version}), libmeegoimframework0 (= ${binary:Version}), libmeegoimquick0 (=${binary:Version}), meego-im-settings-applet (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 XB-Maemo-CI-Packages: libmeegoimframework0, meego-im-uiserver
 XB-Maemo-CI-Stage: fast, staging
 Description: MeegoTouch Input Method Framework Unit Test Suite 

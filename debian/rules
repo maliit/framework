@@ -84,6 +84,7 @@ configure-stamp:
 	dh_testdir
 	qmake -r $(QMAKE_OPTIONS)
 	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libmeegoimframework-dev.install < debian/libmeegoimframework-dev.install.in
+	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libmeegoimquick-dev.install < debian/libmeegoimquick-dev.install.in
 	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/meego-im-context.install < debian/meego-im-context.install.in
 
 	touch configure-stamp
