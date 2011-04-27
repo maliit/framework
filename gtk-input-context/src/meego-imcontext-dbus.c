@@ -27,7 +27,6 @@
 
 #define MEEGO_IM_SOCKET_PATH "unix:path=/tmp/meego-im-uiserver/imserver_dbus"
 #define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/com/meego/inputmethod/inputcontext"
-#define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX "com.meego.inputmethod.inputcontext1"
 
 
 G_DEFINE_TYPE( MeegoIMContextDbusObj, meego_imcontext_dbusobj, G_TYPE_OBJECT);
@@ -48,16 +47,6 @@ gboolean meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GVal
 
 
 #include "meego-imcontext-dbus-glue.h"
-
-static gchar *
-_generate_dbus_service_name(void)
-{
-	gchar *name = NULL;
-
-	name = g_strconcat(MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_NAME_REFIX, g_get_prgname(), NULL);
-
-	return name;
-}
 
 
 static void
@@ -83,9 +72,7 @@ meego_imcontext_dbus_register(void)
 {
 	DBusGConnection *bus = NULL;
 	MeegoIMContextDbusObj *dbusobj = NULL;
-	/* guint result; */
 	GError *error = NULL;
-	gchar *servicename = NULL;
 
 	bus = dbus_g_connection_open (MEEGO_IM_SOCKET_PATH, &error);
 	if (error != NULL) {
@@ -93,8 +80,6 @@ meego_imcontext_dbus_register(void)
 		g_error_free (error);
 		return NULL;
 	}
-
-	servicename = _generate_dbus_service_name();
 
 	dbusobj = g_object_new(MEEGO_IMCONTEXT_TYPE_DBUSOBJ, NULL);
 
@@ -109,7 +94,6 @@ meego_imcontext_dbus_register(void)
 
 	dbusobj->connection = bus;
 done:
-	g_free(servicename);
 	return dbusobj;
 }
 
