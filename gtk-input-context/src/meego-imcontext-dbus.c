@@ -238,7 +238,7 @@ meego_imcontext_dbus_set_selection (MeegoIMContextDbusObj *obj, int start, int l
 }
 
 gboolean
-meego_imcontext_dbus_selection (MeegoIMContextDbusObj *obj, gboolean b, gchar *string, GError **error)
+meego_imcontext_dbus_selection (MeegoIMContextDbusObj *obj, gboolean *valid, gchar **gdata, GError **error)
 {
 	STEP();
 	return TRUE;
