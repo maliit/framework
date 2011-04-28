@@ -50,9 +50,6 @@ namespace
 
         return displayRect;
     }
-
-    // FIXME: hack to avoid some Qt property nastiness
-    QRect gInputMethodArea;
 }
 
 //! Helper class to load QML files and set up the declarative view accordingly.
@@ -147,6 +144,7 @@ public:
     QGraphicsScene *const scene;
     QGraphicsView *const view;
     MInputMethodQuickLoader *const loader;
+    QRect inputMethodArea;
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
 
@@ -256,14 +254,17 @@ int MInputMethodQuick::screenWidth() const
 
 QRect MInputMethodQuick::inputMethodArea() const
 {
-    return gInputMethodArea;
+    Q_D(const MInputMethodQuick);
+    return d->inputMethodArea;
 }
 
 void MInputMethodQuick::setInputMethodArea(const QRect &area)
 {
-    if (gInputMethodArea != area) {
-        gInputMethodArea = area;
-        emit inputMethodAreaChanged();
+    Q_D(MInputMethodQuick);
+
+    if (d->inputMethodArea != area) {
+        d->inputMethodArea = area;
+        emit inputMethodAreaChanged(d->inputMethodArea);
     }
 }
 

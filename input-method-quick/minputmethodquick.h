@@ -95,7 +95,7 @@ signals:
     void screenWidthChanged();
 
     //! Emitted when input method area changes.
-    void inputMethodAreaChanged();
+    void inputMethodAreaChanged(const QRect &area);
 
 public slots:
     //! Sends preedit string. Called by QML components.
