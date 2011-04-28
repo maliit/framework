@@ -25,6 +25,8 @@
 #include <QStringList>
 #include <QSet>
 
+class MInputMethodQuickPluginPrivate;
+
 //! \brief Creates an input method plugin that allows to use QML.
 //!
 //! To create a QML-based virtual keyboard or input method plugin, derive from
@@ -54,9 +56,9 @@ public:
     virtual QString qmlFileName() const = 0;
 
 private:
-    // TODO: pimplify (exported class)
-    QStringList m_languages;  // supported languages
-    QSet<MInputMethod::HandlerState> m_supportedStates;
+    Q_DISABLE_COPY(MInputMethodQuickPlugin);
+    Q_DECLARE_PRIVATE(MInputMethodQuickPlugin);
+    MInputMethodQuickPluginPrivate *const d_ptr;
 };
 
 Q_DECLARE_INTERFACE(MInputMethodQuickPlugin,

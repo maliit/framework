@@ -27,6 +27,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 
+class MInputMethodQuickPrivate;
 class MInputMethodQuickLoader;
 
 //! \brief MInputMethodQuick is used for QML-based input method plugins.
@@ -108,19 +109,10 @@ public slots:
     //! Tells the framework to switch plugins. Called by QML components.
     void pluginSwitchRequired(int switchDirection);
 
-private slots:
-    void handleRegionUpdate(const QRegion &region);
-    void handleInputMethodAreaUpdate(const QRegion &region);
-
 private:
-    // TODO: pimplify (exported class)
-    MInputMethodQuick(const MInputMethodQuick &other);
-    MInputMethodQuick& operator=(const MInputMethodQuick &other);
-
-    MAbstractInputMethodHost *const m_host;
-    QGraphicsScene *const m_scene;
-    QGraphicsView *const m_view;
-    MInputMethodQuickLoader *const m_loader;
+    Q_DISABLE_COPY(MInputMethodQuick);
+    Q_DECLARE_PRIVATE(MInputMethodQuick);
+    MInputMethodQuickPrivate *const d_ptr;
 };
 
 #endif // MEEGO_KEYBOARD_QUICK_H

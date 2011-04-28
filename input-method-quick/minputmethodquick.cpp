@@ -140,20 +140,56 @@ public:
     }
 };
 
+class MInputMethodQuickPrivate
+{
+public:
+    MInputMethodQuick *const q_ptr;
+    QGraphicsScene *const scene;
+    QGraphicsView *const view;
+    MInputMethodQuickLoader *const loader;
+
+    Q_DECLARE_PUBLIC(MInputMethodQuick);
+
+    MInputMethodQuickPrivate(QWidget *mainWindow,
+                             MInputMethodQuick *im)
+        : q_ptr(im)
+        , scene(new QGraphicsScene(computeDisplayRect(), im))
+        , view(new MImGraphicsView(scene, mainWindow))
+        , loader(new MInputMethodQuickLoader(scene, im))
+    {}
+
+    ~MInputMethodQuickPrivate()
+    {
+        delete loader;
+        delete view;
+        delete scene;
+    }
+
+    void handleRegionUpdate(MAbstractInputMethodHost *host,
+                            const QRegion &region)
+    {
+        host->setScreenRegion(region);
+    }
+
+    void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
+                                     const QRegion &region)
+    {
+        host->setInputMethodArea(region);
+    }
+
+};
 
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
                                      QWidget *mainWindow,
                                      const QString &qmlFileName)
     : MAbstractInputMethod(host, mainWindow)
-    , m_host(host)
-    , m_scene(new QGraphicsScene(computeDisplayRect(), this))
-    , m_view(new MImGraphicsView(m_scene, mainWindow))
-    , m_loader(new MInputMethodQuickLoader(m_scene, this))
+    , d_ptr(new MInputMethodQuickPrivate(mainWindow, this))
 {
-    m_loader->loadQmlFile(qmlFileName);
-    propagateScreenSize();
+    Q_D(MInputMethodQuick);
 
-    QWidget *p = m_view->viewport();
+    d->loader->loadQmlFile(qmlFileName);
+    propagateScreenSize();
+    QWidget *p = d->view->viewport();
 
     // make sure the window gets displayed:
     if (p->nativeParentWidget()) {
@@ -164,12 +200,12 @@ MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
     // Would need to correctly follow current display of app window
     // (record last mouse event and get display through event's position?).
     const QRect displayRect(computeDisplayRect(p));
-    m_view->resize(displayRect.size());
-    m_view->setSceneRect(displayRect);
-    m_view->show();
-    m_view->setFrameShape(QFrame::NoFrame);
-    m_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    m_view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    d->view->resize(displayRect.size());
+    d->view->setSceneRect(displayRect);
+    d->view->show();
+    d->view->setFrameShape(QFrame::NoFrame);
+    d->view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    d->view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 MInputMethodQuick::~MInputMethodQuick()
@@ -177,25 +213,29 @@ MInputMethodQuick::~MInputMethodQuick()
 
 void MInputMethodQuick::show()
 {
-    m_loader->showUI();
+    Q_D(MInputMethodQuick);
 
+    d->loader->showUI();
     const QRegion r(inputMethodArea());
-    handleRegionUpdate(r);
-    handleInputMethodAreaUpdate(r);
+    d->handleRegionUpdate(inputMethodHost(), r);
+    d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }
 
 void MInputMethodQuick::hide()
 {
-    m_loader->hideUI();
+    Q_D(MInputMethodQuick);
 
+    d->loader->hideUI();
     const QRegion r;
-    handleRegionUpdate(r);
-    handleInputMethodAreaUpdate(r);
+    d->handleRegionUpdate(inputMethodHost(), r);
+    d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }
 
 void MInputMethodQuick::setToolbar(QSharedPointer<const MToolbarData> toolbar)
 {
-    m_loader->setToolbar(toolbar);
+    Q_D(MInputMethodQuick);
+
+    d->loader->setToolbar(toolbar);
 }
 
 void MInputMethodQuick::propagateScreenSize()
@@ -251,14 +291,4 @@ void MInputMethodQuick::pluginSwitchRequired(int switchDirection)
 {
     inputMethodHost()->switchPlugin(
         static_cast<MInputMethod::SwitchDirection>(switchDirection));
-}
-
-void MInputMethodQuick::handleRegionUpdate(const QRegion &region)
-{
-    inputMethodHost()->setScreenRegion(region);
-}
-
-void MInputMethodQuick::handleInputMethodAreaUpdate(const QRegion &region)
-{
-    inputMethodHost()->setInputMethodArea(region);
 }

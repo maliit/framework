@@ -20,23 +20,37 @@
 
 #include <QDeclarativeComponent> // needed for qmlRegisterUncreatableType
 
-MInputMethodQuickPlugin::MInputMethodQuickPlugin()
-    : m_languages()
-    , m_supportedStates()
+class MInputMethodQuickPluginPrivate
 {
-    m_languages << "en" << "fi_FI" << "en_US" << "en_GB" << "ru_RU";
-    m_supportedStates << MInputMethod::OnScreen;
+public:
+    QStringList languages;  // supported languages
+    QSet<MInputMethod::HandlerState> supportedStates;
+
+    MInputMethodQuickPluginPrivate()
+    {
+        languages << "en" << "fi_FI" << "en_US" << "en_GB" << "ru_RU";
+        supportedStates << MInputMethod::OnScreen;
+    }
+};
+
+MInputMethodQuickPlugin::MInputMethodQuickPlugin()
+    : d_ptr(new MInputMethodQuickPluginPrivate)
+{
     qmlRegisterUncreatableType<MInputMethodQuick>
         ( "com.meego.keyboard-quick", 1, 0, "MInputMethodQuick",
           "There's only one controller and it is in the C++ side" );
 }
 
 MInputMethodQuickPlugin::~MInputMethodQuickPlugin()
-{}
+{
+    delete d_ptr;
+}
 
 QStringList MInputMethodQuickPlugin::languages() const
 {
-    return m_languages;
+    Q_D(const MInputMethodQuickPlugin);
+
+    return d->languages;
 }
 
 MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host,
@@ -53,5 +67,7 @@ MAbstractInputMethodSettings *MInputMethodQuickPlugin::createInputMethodSettings
 
 QSet<MInputMethod::HandlerState> MInputMethodQuickPlugin::supportedStates() const
 {
-    return m_supportedStates;
+    Q_D(const MInputMethodQuickPlugin);
+
+    return d->supportedStates;
 }
