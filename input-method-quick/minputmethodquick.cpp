@@ -73,6 +73,9 @@ public:
         , m_content(0)
         , m_controller(newController)
     {
+        Q_ASSERT(m_scene);
+        Q_ASSERT(m_controller);
+
         m_engine->rootContext()->setContextProperty("MeegoKeyboard", m_controller);
     }
 
@@ -82,7 +85,7 @@ public:
     // TODO: rename to showContent?
     void showUI()
     {
-        if(not m_content || not m_controller) {
+        if(not m_content) {
             qWarning() << __PRETTY_FUNCTION__
                        << "Content or controller missing: Cannot show UI.";
             return;
@@ -175,32 +178,25 @@ MInputMethodQuick::~MInputMethodQuick()
 
 void MInputMethodQuick::show()
 {
-    if(m_loader) {
-        m_loader->showUI();
+    m_loader->showUI();
 
-        const QRegion r(inputMethodArea());
-        handleRegionUpdate(r);
-        handleInputMethodAreaUpdate(r);
-    }
-
+    const QRegion r(inputMethodArea());
+    handleRegionUpdate(r);
+    handleInputMethodAreaUpdate(r);
 }
 
 void MInputMethodQuick::hide()
 {
-    if(m_loader) {
-        m_loader->hideUI();
+    m_loader->hideUI();
 
-        const QRegion r;
-        handleRegionUpdate(r);
-        handleInputMethodAreaUpdate(r);
-    }
+    const QRegion r;
+    handleRegionUpdate(r);
+    handleInputMethodAreaUpdate(r);
 }
 
 void MInputMethodQuick::setToolbar(QSharedPointer<const MToolbarData> toolbar)
 {
-    if(m_loader) {
-        m_loader->setToolbar(toolbar);
-    }
+    m_loader->setToolbar(toolbar);
 }
 
 void MInputMethodQuick::propagateScreenSize()
