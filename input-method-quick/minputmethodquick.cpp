@@ -43,17 +43,6 @@
 
 namespace
 {
-#ifndef MEEGO_KEYBOARD_QUICK_DIR
-#error QML directory MEEGO_KEYBOARD_QUICK_DIR not defined!
-    const char * const MeegoKeyboardQuickDirectory = "";
-#else
-#define TO_STR(x) TO_STR2(x)
-#define TO_STR2(x) #x
-    const char * const MeegoKeyboardQuickDirectory = TO_STR(MEEGO_KEYBOARD_QUICK_DIR);
-#endif
-
-    const char * const MeegoKeyboardQuickFile = "meego-keyboard.qml";
-
     const QRect &computeDisplayRect(QWidget *w = 0)
     {
         static const QRect displayRect(w ? qApp->desktop()->screenGeometry(w)
@@ -85,9 +74,6 @@ public:
         , m_controller(newController)
     {
         m_engine->rootContext()->setContextProperty("MeegoKeyboard", m_controller);
-        loadCurrentFile();
-
-        m_controller->propagateScreenSize();
     }
 
     virtual ~MInputMethodQuickLoader()
@@ -119,8 +105,7 @@ public:
         // Not implemented yet.
     }
 
-    // TODO: let it take a filename param instead
-    void loadCurrentFile()
+    void loadQmlFile(const QString &qmlFileName)
     {
         const bool wasContentVisible(m_content ? m_content->isVisible() : false);
 
@@ -128,14 +113,11 @@ public:
             m_controller->hide();
         }
 
-        const QString filename = QString("%1/%2").arg(MeegoKeyboardQuickDirectory)
-                                                 .arg(MeegoKeyboardQuickFile);
-
-        m_component.reset(new QDeclarativeComponent(m_engine, filename));
+        m_component.reset(new QDeclarativeComponent(m_engine, qmlFileName));
 
         if (not m_component->errors().isEmpty()) {
-            qWarning() << "QML errors while loading " << filename
-                   << "\n" << m_component->errors();
+            qWarning() << "QML errors while loading " << qmlFileName << "\n"
+                       << m_component->errors();
         }
 
         // TODO: wrap m_content in auto_ptr?
@@ -157,16 +139,18 @@ public:
 };
 
 
-// TODO: load QML file from supplied filename
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
                                      QWidget *mainWindow,
-                                     const QString &)
+                                     const QString &qmlFileName)
     : MAbstractInputMethod(host, mainWindow)
     , m_host(host)
     , m_scene(new QGraphicsScene(computeDisplayRect(), this))
     , m_view(new MImGraphicsView(m_scene, mainWindow))
     , m_loader(new MInputMethodQuickLoader(m_scene, this))
 {
+    m_loader->loadQmlFile(qmlFileName);
+    propagateScreenSize();
+
     QWidget *p = m_view->viewport();
 
     // make sure the window gets displayed:
