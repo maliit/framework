@@ -10,9 +10,9 @@
     </method>
     <method name="commitString">
       <arg name="string" type="s" direction="in"/>
-      <arg name="replacementStart" type="i"/>
-      <arg name="replacementLength" type="i"/>
-      <arg name="cursorPosition" type="i"/>
+      <arg name="replaceStart" type="i"/>
+      <arg name="replaceLength" type="i"/>
+      <arg name="cursorPos" type="i"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updatePreedit">
@@ -64,7 +64,7 @@
     </method>
     <method name="selection">
       <arg name="valid" type="b" direction="out"/>
-      <arg name="gdata" type="s" direction="out"/>
+      <arg name="selectionText" type="s" direction="out"/>
     </method>
   </interface>
 </node>

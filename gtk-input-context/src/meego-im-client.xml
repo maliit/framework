@@ -9,16 +9,16 @@
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="mouseClickedOnPreedit">
-      <arg name="positionX" type="i"/>
-      <arg name="positionY" type="i"/>
-      <arg name="rectangleX" type="i"/>
-      <arg name="rectangleY" type="i"/>
-      <arg name="rectangleWidth" type="i"/>
-      <arg name="rectangleHeight" type="i"/>
+      <arg name="posX" type="i"/>
+      <arg name="posY" type="i"/>
+      <arg name="preeditX" type="i"/>
+      <arg name="preeditY" type="i"/>
+      <arg name="preeditWidth" type="i"/>
+      <arg name="preeditHeight" type="i"/>
     </method>
     <method name="setPreedit">
       <arg name="text" type="s" direction="in"/>
-      <arg name="cursorPosition" type="i"/>
+      <arg name="cursorPos" type="i"/>
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updateWidgetInformation">
