@@ -19,6 +19,7 @@
 
 #include <DcpWidget>
 #include <QModelIndex>
+#include <QWeakPointer>
 
 class MPopupList;
 class MAbstractInputMethodSettings;
@@ -57,7 +58,7 @@ private:
 
     MLabel *headerLabel;
     MBasicListItem *activeSubViewItem;
-    MPopupList *availableSubViewList;
+    QWeakPointer<MPopupList> availableSubViewList;
     QMap<MAbstractInputMethodSettings *, MLabel *> settingsLabelMap;
 };
 #endif
