@@ -238,8 +238,8 @@ void MInputMethodQuick::setToolbar(QSharedPointer<const MToolbarData> toolbar)
 
 void MInputMethodQuick::propagateScreenSize()
 {
-    emit screenWidthChanged();
-    emit screenHeightChanged();
+    emit screenWidthChanged(computeDisplayRect().width());
+    emit screenHeightChanged(computeDisplayRect().height());
 }
 
 int MInputMethodQuick::screenHeight() const
@@ -268,13 +268,13 @@ void MInputMethodQuick::setInputMethodArea(const QRect &area)
     }
 }
 
-void MInputMethodQuick::preedit(const QString &text)
+void MInputMethodQuick::sendPreedit(const QString &text)
 {
     QList<MInputMethod::PreeditTextFormat> lst;
     inputMethodHost()->sendPreeditString(text, lst, text.length());
 }
 
-void MInputMethodQuick::commit(const QString &text)
+void MInputMethodQuick::sendCommit(const QString &text)
 {
     if (text == "\b") {
         QKeyEvent event(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);

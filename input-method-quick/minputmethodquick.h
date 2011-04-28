@@ -89,10 +89,10 @@ public:
 
 signals:
     //! Emitted when screen height changes.
-    void screenHeightChanged();
+    void screenHeightChanged(int height);
 
     //! Emitted when screen width changes.
-    void screenWidthChanged();
+    void screenWidthChanged(int width);
 
     //! Emitted when input method area changes.
     void inputMethodAreaChanged(const QRect &area);
@@ -100,11 +100,11 @@ signals:
 public slots:
     //! Sends preedit string. Called by QML components.
     //! \param text the preedit string.
-    void preedit(const QString &text);
+    void sendPreedit(const QString &text);
 
     //! Sends commit string. Called by QML components.
     //! \param text the commit string.
-    void commit(const QString &text);
+    void sendCommit(const QString &text);
 
     //! Tells the framework to switch plugins. Called by QML components.
     void pluginSwitchRequired(int switchDirection);
