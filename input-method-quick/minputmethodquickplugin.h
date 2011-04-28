@@ -25,12 +25,23 @@
 #include <QStringList>
 #include <QSet>
 
+//! \brief Creates an input method plugin that allows to use QML.
+//!
+//! To create a QML-based virtual keyboard or input method plugin, derive from
+//! this class and reimplement MInputMethodPlugin::name() and
+//! MInputMethodQuickPlugin::qmlFileName().
+//! The QML components can communicate with the framework through the
+//! MInputMethodQuick context.
+//! If the provided MInputMethodQuick class is not sufficient, then reimplement
+//! MInputMethodQuickPlugin::createInputMethodSettings as well and create a
+//! custom MAbstractInputMethod instance there.
 class MInputMethodQuickPlugin
     : public MInputMethodPlugin
 {
 public:
     MInputMethodQuickPlugin();
     virtual ~MInputMethodQuickPlugin();
+
     //! \reimp
     virtual QStringList languages() const;
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,

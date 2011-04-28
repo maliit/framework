@@ -60,9 +60,9 @@ class MInputMethodQuickLoader
 {
 private:
     QGraphicsScene *const m_scene;
-    QDeclarativeEngine *const m_engine;
+    QDeclarativeEngine *const m_engine; //!< managed by controller
     std::auto_ptr<QDeclarativeComponent> m_component;
-    QGraphicsObject *m_content;
+    QGraphicsObject *m_content; //!< managed by scene
     MInputMethodQuick *const m_controller;
 
 public:
@@ -123,7 +123,6 @@ public:
                        << m_component->errors();
         }
 
-        // TODO: wrap m_content in auto_ptr?
         m_content = qobject_cast<QGraphicsObject *>(m_component->create());
 
         if (not m_content) {
