@@ -76,7 +76,7 @@ public:
         Q_ASSERT(m_scene);
         Q_ASSERT(m_controller);
 
-        m_engine->rootContext()->setContextProperty("MeegoKeyboard", m_controller);
+        m_engine->rootContext()->setContextProperty("MInputMethodQuick", m_controller);
     }
 
     virtual ~MInputMethodQuickLoader()
