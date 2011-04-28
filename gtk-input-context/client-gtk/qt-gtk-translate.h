@@ -21,7 +21,7 @@
 #ifndef _QT_GTK_TRANSLATE_H
 #define _QT_GTK_TRANSLATE_H
 
-#include <gdk/gdk.h>
+#include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 

@@ -36,7 +36,11 @@ GdkEventKey *
 compose_gdk_keyevent(GdkEventType type, guint keyval, guint state, GdkWindow *window)
 {
 	GdkEventKey *event = NULL;
-
+#if GTK_CHECK_VERSION (3, 0, 0)
+	GdkDisplay *display;
+	GdkDeviceManager *device_manager;
+	GdkDevice *client_pointer;
+#endif
 	if ((type != GDK_KEY_PRESS) && (type != GDK_KEY_RELEASE))
 		return NULL;
 
@@ -46,6 +50,16 @@ compose_gdk_keyevent(GdkEventType type, guint keyval, guint state, GdkWindow *wi
 	event->is_modifier = 0;
 	event->time = GDK_CURRENT_TIME;
 	event->state = state;
+
+#if GTK_CHECK_VERSION (3, 0, 0)
+	display = gdk_window_get_display (window);
+	device_manager = gdk_display_get_device_manager (display);
+	client_pointer = gdk_device_manager_get_client_pointer (device_manager);
+
+	gdk_event_set_device ((GdkEvent *)event,
+			      gdk_device_get_associated_device (client_pointer));
+#endif
+
 	if (type == GDK_KEY_RELEASE)
 		event->state |= GDK_RELEASE_MASK;
 	event->keyval = keyval;
