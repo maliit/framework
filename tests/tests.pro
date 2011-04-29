@@ -21,6 +21,7 @@ SUBDIRS = \
           ut_mkeyoverride \
           ut_selfcompositing \
           ut_mimrotationanimation \
+          ut_minputmethodquickplugin \
 
 target.commands += $$system(touch tests.xml)
 target.path = /usr/share/meego-im-framework-tests
