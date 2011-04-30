@@ -65,6 +65,8 @@ ifneq (armel, ${ARCHITECTURE})
         ENABLE_MULTITOUCH = false
 endif
 
+QMAKE_OPTIONS += M_IM_ENABLE_MULTITOUCH=$(ENABLE_MULTITOUCH)
+
 ifneq (,$(filter timestamps,$(TMP_BUILD_OPTS)))
     QMAKE_OPTIONS += DEFINES+=M_TIMESTAMP
 endif
@@ -80,7 +82,6 @@ QT_INSTALL_PLUGINS:=$(shell qmake -query QT_INSTALL_PLUGINS)
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	sed -e 's|ENABLE_MULTITOUCH|${ENABLE_MULTITOUCH}|' > meego-im-framework.schemas < meego-im-framework.schemas.in
 	qmake -r $(QMAKE_OPTIONS)
 	sed -e 's|QT_INSTALL_DATA|${QT_INSTALL_DATA}|' > debian/libmeegoimframework-dev.install < debian/libmeegoimframework-dev.install.in
 	sed -e 's|QT_INSTALL_PLUGINS|${QT_INSTALL_PLUGINS}|' > debian/meego-im-context.install < debian/meego-im-context.install.in
@@ -118,12 +119,6 @@ install: build
 
 	# generate tests.xml
 	cd tests && ./gen-tests-xml.sh > tests.xml
-
-	# To workaround the installation of the .service and .prf files,
-	# qmake needs to run again to generate the service file installation target in the Makefile
-	cd passthroughserver && qmake $(QMAKE_OPTIONS)
-	cd src && qmake $(QMAKE_OPTIONS)
-
 
 	#doc package
 	make  $(PARALLEL_MAKEFLAGS) doc

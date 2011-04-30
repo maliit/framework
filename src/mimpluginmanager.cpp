@@ -47,7 +47,7 @@ typedef MInputContextGlibDBusConnection MInputContextConnectionImpl;
 
 namespace
 {
-    const QString DefaultPluginLocation("/usr/lib/meego-im-plugins/");
+    const QString DefaultPluginLocation(M_IM_PLUGINS_DIR);
 
     const QString ConfigRoot           = "/meegotouch/inputmethods/";
     const QString MImPluginPaths       = ConfigRoot + "paths";

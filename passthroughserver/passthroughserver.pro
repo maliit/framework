@@ -2,7 +2,7 @@ include(../mconfig.pri)
 
 TEMPLATE = app
 TARGET = meego-im-uiserver
-target.path = $$M_INSTALL_BIN
+target.path = $$M_IM_INSTALL_BIN
 DEPENDPATH += .
 INCLUDEPATH += . ../src
 CONFIG += meegoreactionmap
@@ -55,9 +55,10 @@ ACTIVATION_OR_REAL_INTERFACE = com.meego.inputmethod.uiserveractivation
 
 servicefilegenerator.output = minputmethodserver.service
 servicefilegenerator.input = SERVICE_FILE
-servicefilegenerator.commands += sed -e \"s:M_BIN_PATH:$$M_INSTALL_BIN:g\" -e \"s:SOFTWARE:$$SOFTWARE:g\" -e \"s:TARGET:$$TARGETDEVICE:g\" -e \"s:ACTIVATION_OR_REAL_INTERFACE:$$ACTIVATION_OR_REAL_INTERFACE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
+servicefilegenerator.commands += sed -e \"s:M_BIN_PATH:$$M_IM_INSTALL_BIN:g\" -e \"s:SOFTWARE:$$SOFTWARE:g\" -e \"s:TARGET:$$TARGETDEVICE:g\" -e \"s:ACTIVATION_OR_REAL_INTERFACE:$$ACTIVATION_OR_REAL_INTERFACE:g\" ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
 servicefilegenerator.CONFIG = target_predeps no_link
 QMAKE_EXTRA_COMPILERS += servicefilegenerator
 
 servicefiles.path = $$system(pkg-config --variable session_bus_services_dir dbus-1)
 servicefiles.files = minputmethodserver.service
+servicefiles.CONFIG += no_check_exist

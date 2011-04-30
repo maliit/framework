@@ -14,8 +14,7 @@ CONFIG(docs) {
     include (doc/doc.pri)
 }
 
-contains(CONFIG, nomeegotouch) {
-} else {
+!nomeegotouch {
     CONFIG  += meegotouch
     SUBDIRS += translations settings-applet
 }
@@ -28,8 +27,3 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.CONFIG = recursive
 
-GCONF_DATA = meego-im-framework.schemas
-gconf_data.path = /usr/share/gconf/schemas
-gconf_data.files = $$GCONF_DATA
-
-INSTALLS += gconf_data
