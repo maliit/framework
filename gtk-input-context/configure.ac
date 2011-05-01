@@ -32,13 +32,6 @@ PKG_CHECK_MODULES(MT_IM_BRIDGES, glib-2.0
 AC_SUBST(MT_IM_BRIDGES_CFLAGS)
 AC_SUBST(MT_IM_BRIDGES_LIBS)
 
-PKG_CHECK_MODULES(MT_IM_GTK,
-			gtk+-2.0 >= 2.14)
-
-AC_SUBST(MT_IM_GTK_CFLAGS)
-AC_SUBST(MT_IM_GTK_LIBS)
-
-
 PKG_CHECK_MODULES(QT, QtCore
 			QtGui >= 4.6)
 AC_SUBST(QT_CFLAGS)
@@ -47,8 +40,36 @@ AC_SUBST(QT_LIBS)
 DBUS_BINDING_TOOL="dbus-binding-tool"
 AC_SUBST(DBUS_BINDING_TOOL)
 
-gtk_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
-GTK_IM_MODULEDIR="$libdir"/gtk-2.0/$gtk_binary_version/immodules
+
+## GTK+
+AC_MSG_CHECKING([which gtk+ version to compile against])
+AC_ARG_WITH([gtk],
+  [AS_HELP_STRING([--with-gtk=2.0|3.0],[which gtk+ version to compile against (default: 2.0)])],
+  [case "$with_gtk" in
+     2.0|3.0) ;;
+     *) AC_MSG_ERROR([invalid gtk version specified]) ;;
+   esac],
+  [with_gtk=2.0])
+AC_MSG_RESULT([$with_gtk])
+
+case "$with_gtk" in
+  2.0) gtk_api_version=2.0
+	gtk_required_version=2.14
+       ;;
+  3.0) gtk_api_version=3.0
+	gtk_required_version=3.0
+       ;;
+esac
+
+have_gtk="no"
+PKG_CHECK_MODULES(MT_IM_GTK, gtk+-$gtk_api_version >= $gtk_required_version,
+    have_gtk="$gtk_api_version")
+
+AC_SUBST(MT_IM_GTK_CFLAGS)
+AC_SUBST(MT_IM_GTK_LIBS)
+
+gtk_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-$gtk_api_version`
+GTK_IM_MODULEDIR="$libdir"/gtk-$gtk_api_version/$gtk_binary_version/immodules
 AC_SUBST(GTK_IM_MODULEDIR)
 
 ###########################################################
@@ -85,5 +106,6 @@ AC_MSG_RESULT([
 Build options:
   Version                  meegotouch_inputmethodbridges_version
   Install prefix           $prefix
+  GTK+ version             $have_gtk
   Enable debug             $enable_debug
 ])
