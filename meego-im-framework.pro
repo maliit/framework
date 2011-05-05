@@ -2,7 +2,7 @@
 CONFIG += ordered
 TARGET = meego-im-uiserver
 TEMPLATE = subdirs
-SUBDIRS = src passthroughserver input-context input-method-quick demos
+SUBDIRS = src passthroughserver input-context input-method-quick examples
 
 isEqual( IN_PWD, $${OUT_PWD} ) {
     IS_OUT_OF_SOURCE = 0

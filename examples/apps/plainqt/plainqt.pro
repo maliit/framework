@@ -1,5 +1,3 @@
-include(../mconfig.pri)
-
 TEMPLATE = app
 TARGET = plainqt
 target.path = .
