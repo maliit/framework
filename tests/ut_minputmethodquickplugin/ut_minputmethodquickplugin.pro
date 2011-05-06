@@ -8,6 +8,10 @@ INCLUDEPATH += \
 DEFINES += UNIT_TEST
 QT += core gui declarative
 
+TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins/quick
+TEST_PLUGIN_PATH=$$TEST_PLUGIN_DIR/libhelloworldplugin.so
+DEFINES += TEST_PLUGIN_PATH=\\\"$${TEST_PLUGIN_PATH}\\\"
+
 # Input
 HEADERS += \
     ut_minputmethodquickplugin.h \
@@ -28,8 +32,5 @@ SOURCES += \
 LIBS += \
     $$SRC_DIR/libmeegoimframework.so.0 \
     $$QUICK_DIR/libmeegoimquick.so.0 \
-
-RESOURCES = \
-    ut_minputmethodquickplugin.qrc
 
 include(../common_check.pri)

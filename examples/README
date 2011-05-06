@@ -1,0 +1,4 @@
+Note that the examples are compiled as part of the normal build,
+and have simple sanity tests found under tests/
+All newly added examples must contain such a test.
+This is done to prevent bitrot.

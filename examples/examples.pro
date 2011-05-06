@@ -1,2 +1,4 @@
 TEMPLATE = subdirs
-SUBDIRS = apps
+SUBDIRS = apps plugins
+
+BUILD_TYPE = unittest

@@ -23,20 +23,6 @@
 #include <QtCore>
 #include <QtGui>
 
-class TestPlugin
-    : public MInputMethodQuickPlugin
-{
-    QString name() const
-    {
-        return "TestPlugin";
-    }
-
-    QString qmlFileName() const
-    {
-        return "qrc:/test.qml";
-    }
-};
-
 class MIndicatorServiceClient
 {};
 
@@ -83,7 +69,6 @@ void Ut_MInputMethodQuickPlugin::initTestCase()
     QApplication::setGraphicsSystem("raster");
 
     app = new MIMApplication(argc, argv);
-    Q_INIT_RESOURCE(ut_minputmethodquickplugin);
 }
 
 void Ut_MInputMethodQuickPlugin::cleanupTestCase()
@@ -97,17 +82,28 @@ void Ut_MInputMethodQuickPlugin::init()
 void Ut_MInputMethodQuickPlugin::cleanup()
 {}
 
+/* This test currently tests both the qml example found in examples/
+ * and the minputmethodquick interface, since the test is so simple.
+ * If more tests are added, it might make sense to make these two
+ * things tested in separate tests. */
 void Ut_MInputMethodQuickPlugin::testQmlSetup()
 {
     MIndicatorServiceClient fakeService;
-    TestPlugin plugin;
     TestInputMethodHost host(fakeService);
+    QPluginLoader loader(TEST_PLUGIN_PATH);
+
+    QObject *pluginInstance = loader.instance();
+    QVERIFY(pluginInstance != 0);
+
+    MInputMethodPlugin *plugin =  qobject_cast<MInputMethodPlugin *>(pluginInstance);
+    QVERIFY(plugin != 0);
+
     MInputMethodQuick *testee = static_cast<MInputMethodQuick *>(
-        plugin.createInputMethod(&host, new QWidget));
+        plugin->createInputMethod(&host, new QWidget));
 
     QVERIFY(not testee->inputMethodArea().isEmpty());
     QCOMPARE(testee->inputMethodArea(), QRect(0, testee->screenHeight() * 0.5,
-                                              testee->screenWidth() * 0.5, testee->screenHeight() * 0.5));
+                                              testee->screenWidth(), testee->screenHeight() * 0.5));
 
     QCOMPARE(host.lastCommit, QString("Maliit"));
     QCOMPARE(host.sendCommitCount, 1);
