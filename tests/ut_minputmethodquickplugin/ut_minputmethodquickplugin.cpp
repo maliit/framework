@@ -33,7 +33,7 @@ class TestPlugin
 
     QString qmlFileName() const
     {
-        return ":test.qml";
+        return "qrc:/test.qml";
     }
 };
 

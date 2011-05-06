@@ -115,9 +115,7 @@ public:
 
 
 
-        m_component.reset(new QDeclarativeComponent(m_engine,
-                                                    (qmlFileName.startsWith(':') ? QUrl(qmlFileName)
-                                                                                 : qmlFileName)));
+        m_component.reset(new QDeclarativeComponent(m_engine, QUrl(qmlFileName)));
 
         if (not m_component->errors().isEmpty()) {
             qWarning() << "QML errors while loading " << qmlFileName << "\n"
