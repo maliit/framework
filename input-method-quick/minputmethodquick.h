@@ -52,6 +52,10 @@ class MInputMethodQuick
     Q_PROPERTY(int screenHeight READ screenHeight
                                 NOTIFY screenHeightChanged)
 
+    //! Propagates application orientation to QML components.
+    Q_PROPERTY(int appOrientation READ appOrientation
+                                  NOTIFY appOrientationChanged)
+
 public:
     enum KeyEvent { KeyPress = QEvent::KeyPress,
 		    KeyRelease = QEvent::KeyRelease };
@@ -69,6 +73,7 @@ public:
     virtual void show();
     virtual void hide();
     virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
+    virtual void handleAppOrientationChanged(int angle);
     //! \reimp_end
 
     //! Propagates screen size to QML components.
@@ -79,6 +84,9 @@ public:
 
     //! Returns screen width.
     int screenWidth() const;
+
+    //! Returns application orientation.
+    int appOrientation() const;
 
     //! Returns input method area.
     QRect inputMethodArea() const;
@@ -93,6 +101,9 @@ signals:
 
     //! Emitted when screen width changes.
     void screenWidthChanged(int width);
+
+    //! Emitted when application orientation changes.
+    void appOrientationChanged(int angle);
 
     //! Emitted when input method area changes.
     void inputMethodAreaChanged(const QRect &area);

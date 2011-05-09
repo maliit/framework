@@ -147,6 +147,7 @@ public:
     QGraphicsView *const view;
     MInputMethodQuickLoader *const loader;
     QRect inputMethodArea;
+    int appOrientation;
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
 
@@ -156,6 +157,7 @@ public:
         , scene(new QGraphicsScene(computeDisplayRect(), im))
         , view(new MImGraphicsView(scene, mainWindow))
         , loader(new MInputMethodQuickLoader(scene, im))
+        , appOrientation(0)
     {}
 
     ~MInputMethodQuickPrivate()
@@ -238,6 +240,17 @@ void MInputMethodQuick::setToolbar(QSharedPointer<const MToolbarData> toolbar)
     d->loader->setToolbar(toolbar);
 }
 
+void MInputMethodQuick::handleAppOrientationChanged(int angle)
+{
+    Q_D(MInputMethodQuick);
+    MAbstractInputMethod::handleAppOrientationChanged(angle);
+
+    if (d->appOrientation != angle) {
+        d->appOrientation = angle;
+        emit appOrientationChanged(d->appOrientation);
+    }
+}
+
 void MInputMethodQuick::propagateScreenSize()
 {
     emit screenWidthChanged(computeDisplayRect().width());
@@ -252,6 +265,12 @@ int MInputMethodQuick::screenHeight() const
 int MInputMethodQuick::screenWidth() const
 {
     return computeDisplayRect().width();
+}
+
+int MInputMethodQuick::appOrientation() const
+{
+    Q_D(const MInputMethodQuick);
+    return d->appOrientation;
 }
 
 QRect MInputMethodQuick::inputMethodArea() const
