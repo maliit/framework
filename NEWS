@@ -1,3 +1,11 @@
+0.20.10
+=======
+* Added basic framework support for QML-based plugins:
+  - MInputMethodQuick: A MInputMethod implementation that sets up a QML
+    environment and exposes a MInputMethodQuick context to the QML side.
+  - MInputMethodQuickPlugin: A ready-made plugin wrapper, to use it reimplement
+    MInputMethodQuickPlugin::qmlFileName and MInputMethodPlugin::name.
+
 0.20.0
 =======
 * Removed MeeGo Touch from public API.
