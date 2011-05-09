@@ -709,7 +709,7 @@ void MInputContext::updatePreeditInternally(const QString &string,
                 underlineColor.setRgb(0, 0, 0);
             }
 
-            format.setUnderlineColor(QColor());
+            format.setUnderlineColor(underlineColor);
         }
 
         attributes << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,
