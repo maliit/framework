@@ -11,6 +11,10 @@ meego-im-framework-tests
 tmp
 meego-im-context.install
 libmeegoimframework-dev.install
+libmeegoimquick-dev.install
+libmeegoimquick-dev
+libmeegoimquick0
+libmeegoimquick0-dbg
 *.debhelper*
 *.substvars
 meego-im-settings-applet
