@@ -10,7 +10,8 @@ DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *host,
       setStateCount(0),
       switchContextCallCount(0),
       directionParam(MInputMethod::SwitchUndefined),
-      enableAnimationParam(false)
+      enableAnimationParam(false),
+      pluginsChangedSignalCount(0)
 {
     MAbstractInputMethod::MInputMethodSubView sv1;
     sv1.subViewId = "dummyimsv1";
@@ -23,6 +24,9 @@ DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *host,
     sViews.append(sv2);
 
     activeSView = "dummyimsv1";
+
+    connect(host, SIGNAL(pluginsChanged()),
+            this, SLOT(onPluginsChange()));
 }
 
 void DummyInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
@@ -44,6 +48,11 @@ void DummyInputMethod::switchMe(const QString &name)
 {
     qDebug() << __PRETTY_FUNCTION__;
     inputMethodHost()->switchPlugin(name);
+}
+
+void DummyInputMethod::onPluginsChange()
+{
+    ++pluginsChangedSignalCount;
 }
 
 void DummyInputMethod::switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation)

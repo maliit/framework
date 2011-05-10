@@ -128,6 +128,7 @@ void Ut_MIMPluginManager::init()
     QVERIFY(abstractInputMethod != 0);
     inputMethod = dynamic_cast<DummyInputMethod *>(abstractInputMethod);
     QVERIFY(inputMethod != 0);
+    QCOMPARE(inputMethod->pluginsChangedSignalCount, 1);
     inputMethod->setStateCount = 0;
 
     // init dbus client

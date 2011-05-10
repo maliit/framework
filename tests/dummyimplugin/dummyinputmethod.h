@@ -38,9 +38,14 @@ public:
     bool enableAnimationParam;
     QSharedPointer<const MToolbarData> toolbarParam;
 
+    int pluginsChangedSignalCount;
+
 public slots:
     void switchMe();
     void switchMe(const QString &name);
+
+private slots:
+    void onPluginsChange();
 
 private:
     QList<MAbstractInputMethod::MInputMethodSubView> sViews;

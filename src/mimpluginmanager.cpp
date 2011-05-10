@@ -100,6 +100,8 @@ MIMPluginManagerPrivate::~MIMPluginManagerPrivate()
 
 void MIMPluginManagerPrivate::loadPlugins()
 {
+    Q_Q(MIMPluginManager);
+
     MImSettings activeOnScreenGconf(PluginRoot + "/" + inputSourceName(MInputMethod::OnScreen));
     const QString activeOnScreenPluginName = activeOnScreenGconf.value().toString();
     QList<MInputMethodPlugin *> pendingPlugins;
@@ -135,6 +137,8 @@ void MIMPluginManagerPrivate::loadPlugins()
     // load all pending loading plugins
     foreach(MInputMethodPlugin *plugin, pendingPlugins)
         loadPlugin(plugin);
+
+    emit q->pluginsChanged();
 }
 
 bool MIMPluginManagerPrivate::loadPlugin(MInputMethodPlugin *plugin)
@@ -149,6 +153,8 @@ bool MIMPluginManagerPrivate::loadPlugin(MInputMethodPlugin *plugin)
 
             MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
             MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
+
+            QObject::connect(q, SIGNAL(pluginsChanged()), host, SIGNAL(pluginsChanged()));
 
             // only add valid plugin descriptions
             if (im) {
