@@ -157,7 +157,7 @@ bool MIMPluginManagerPrivate::loadPlugin(MInputMethodPlugin *plugin)
                 plugins[plugin] = desc;
                 val = true;
                 host->setInputMethod(im);
-                MIMApplication::configureWidgetsForCompositing(centralWidget.data());
+                MIMApplication::configureWidgetsForCompositing();
             } else {
                 qWarning() << __PRETTY_FUNCTION__
                     << "Plugin loading failed:" << plugin->name();
