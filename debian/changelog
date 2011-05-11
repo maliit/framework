@@ -1,3 +1,9 @@
+meego-im-framework (0.20.10-1) unstable; urgency=low
+
+  * New release
+
+ -- Aapo Kojo <aapo.kojo@nokia.com>  Wed, 11 May 2011 15:49:40 +0300
+
 meego-im-framework (0.20.9-1) unstable; urgency=low
 
   * Fixes: NB#242682 - Text input settings crashes during close if "Active input method" or "Installed keyboard" is being opened
