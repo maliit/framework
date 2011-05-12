@@ -10,9 +10,7 @@ isEqual( IN_PWD, $${OUT_PWD} ) {
     IS_OUT_OF_SOURCE = 1
 }
 
-CONFIG(docs) {
-    include (doc/doc.pri)
-}
+include (doc/doc.pri)
 
 !nomeegotouch {
     CONFIG  += meegotouch

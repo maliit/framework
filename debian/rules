@@ -9,6 +9,8 @@ comma :=,
 empty :=
 space := $(empty) $(empty)
 
+MAKEDOCS = 1
+
 # Set the build type (debug/release)
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	QMAKE_OPTIONS+=CONFIG+=debug
@@ -26,8 +28,9 @@ else
 endif
 
 # Don't build documentation by setting DEB_BUILD_OPTION=nodocs
-ifeq (,$(findstring nodocs,$(DEB_BUILD_OPTIONS)))
-	QMAKE_OPTIONS+=CONFIG+=docs
+ifneq (,$(findstring nodocs,$(DEB_BUILD_OPTIONS)))
+        MAKEDOCS = 0
+        EXCLUSIONS += --no-package=libmeegoimframework-doc
 endif
 
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
@@ -114,7 +117,7 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k
-	dh_installdirs
+	dh_installdirs $(EXCLUSIONS)
 
 	# Add here commands to install the package into debian/tmp
 
@@ -122,7 +125,9 @@ install: build
 	cd tests && ./gen-tests-xml.sh > tests.xml
 
 	#doc package
-	make  $(PARALLEL_MAKEFLAGS) doc
+ifneq (0,$(MAKEDOCS))
+	make $(PARALLEL_MAKEFLAGS) doc
+endif
 
 	# Then proceed to normal installation
 	INSTALL_ROOT=$(CURDIR)/debian/tmp make  $(PARALLEL_MAKEFLAGS) install
@@ -135,12 +140,12 @@ binary-indep: build install
 
 # Build architecture-dependent files here.
 binary-arch: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs
-	dh_installdocs
-	dh_install --sourcedir=debian/tmp -v
-	dh_gconf
+	dh_testdir $(EXCLUSIONS)
+	dh_testroot $(EXCLUSIONS)
+	dh_installchangelogs $(EXCLUSIONS)
+	dh_installdocs $(EXCLUSIONS)
+	dh_install --sourcedir=debian/tmp $(EXCLUSIONS) -v
+	dh_gconf $(EXCLUSIONS)
 #	dh_installexamples
 #	dh_install
 #	dh_installmenu
@@ -153,18 +158,18 @@ binary-arch: build install
 #	dh_installcron
 #	dh_installinfo
 #	dh_installman
-	dh_link
+	dh_link $(EXCLUSIONS)
 	dh_strip --dbg-package=libmeegoimframework0 --dbg-package=meego-im-context --dbg-package=meego-im-uiserver -Xmeego-im-framework-tests
-	dh_compress
-	dh_fixperms
+	dh_compress $(EXCLUSIONS)
+	dh_fixperms $(EXCLUSIONS)
 #	dh_perl
 #	dh_python
-	dh_makeshlibs
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb --destdir=$(DEBDIR)
+	dh_makeshlibs $(EXCLUSIONS)
+	dh_installdeb $(EXCLUSIONS)
+	dh_shlibdeps $(EXCLUSIONS)
+	dh_gencontrol $(EXCLUSIONS)
+	dh_md5sums $(EXCLUSIONS)
+	dh_builddeb --destdir=$(DEBDIR) $(EXCLUSIONS)
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure
