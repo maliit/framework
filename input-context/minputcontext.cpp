@@ -319,18 +319,17 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
 
         // Query preedit rectangle and pass it to im server if found.
         // In case of plain QT application, null rectangle will be passed.
-        QWidget *focused = focusWidget();
         QRect preeditRect;
 
 #ifdef HAVE_MEEGOTOUCH
+        QWidget *focused = focusWidget();
+
         if (focused) {
             // TODO: Move M::PreeditRectangleQuery to MInputMethod
             Qt::InputMethodQuery query
                 = static_cast<Qt::InputMethodQuery>(M::PreeditRectangleQuery);
             preeditRect = focused->inputMethodQuery(query).toRect();
         }
-#else
-        Q_UNUSED(focused);
 #endif
 
         imServer->mouseClickedOnPreedit(event->globalPos(), preeditRect);
