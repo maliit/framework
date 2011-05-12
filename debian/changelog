@@ -1,3 +1,9 @@
+meego-im-framework (0.20.12~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Jan Arne Petersen <jpetersen@openismus.com>  Thu, 12 May 2011 14:27:00 +0300
+
 meego-im-framework (0.20.11-1) unstable; urgency=low
 
   * Fixes: NB#250363 - A selection for available Input methods needed in Text input Setting
