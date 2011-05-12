@@ -300,8 +300,6 @@ void MInputContext::update()
 
 void MInputContext::mouseHandler(int x, QMouseEvent *event)
 {
-    Q_UNUSED(x);
-
     if (debug) {
         qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
         qDebug() << "MInputContext" << " event pos: " << event->globalPos() << " cursor pos:" << x;
