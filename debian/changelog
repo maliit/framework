@@ -1,3 +1,9 @@
+meego-im-framework (0.20.10-2) unstable; urgency=low
+
+  * Fixes: NB#255679 - Virtual keyboard performance regression
+
+ -- Jan Arne Petersen <jpetersen@openismus.com>  Fri, 13 May 2011 14:27:00 +0200
+
 meego-im-framework (0.20.10-1) unstable; urgency=low
 
   * New release
