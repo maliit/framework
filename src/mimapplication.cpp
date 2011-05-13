@@ -19,6 +19,9 @@
 #include "mimpluginsproxywidget.h"
 
 #include <deque>
+
+#include <QtMeeGoGraphicsSystemHelper/QMeeGoGraphicsSystemHelper>
+
 #include <QDebug>
 #include <X11/Xlib.h> // must be last include
 
@@ -59,6 +62,9 @@ MIMApplication::MIMApplication(int &argc, char **argv)
       mBackgroundSuppressed(false)
 {
     parseArguments(argc, argv);
+
+    QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
+
     mPassThruWindow.reset(new MPassThruWindow);
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
     configureForCompositing(mPassThruWindow.get());
