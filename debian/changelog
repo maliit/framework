@@ -1,3 +1,9 @@
+meego-im-framework (0.20.10-4) unstable; urgency=low
+
+  * New release (non armel build)
+
+ -- Jan Arne Petersen <jpetersen@openismus.com>  Fri, 13 May 2011 15:16:00 +0200
+
 meego-im-framework (0.20.10-3) unstable; urgency=low
 
   * New release (build dependency)
