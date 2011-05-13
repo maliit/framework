@@ -65,6 +65,10 @@ ifneq (armel, ${ARCHITECTURE})
         ENABLE_MULTITOUCH = false
 endif
 
+ifeq (armel, ${ARCHITECTURE})
+        QMAKE_OPTIONS += DEFINES+=HAVE_MEEGOGRAPHICSSYSTEM
+endif
+
 QMAKE_OPTIONS += M_IM_ENABLE_MULTITOUCH=$(ENABLE_MULTITOUCH)
 
 ifneq (,$(filter timestamps,$(TMP_BUILD_OPTS)))

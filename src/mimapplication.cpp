@@ -20,7 +20,9 @@
 
 #include <deque>
 
+#ifdef HAVE_MEEGOGRAPHICSSYSTEM
 #include <QtMeeGoGraphicsSystemHelper/QMeeGoGraphicsSystemHelper>
+#endif
 
 #include <QDebug>
 #include <X11/Xlib.h> // must be last include
@@ -63,7 +65,9 @@ MIMApplication::MIMApplication(int &argc, char **argv)
 {
     parseArguments(argc, argv);
 
+#ifdef HAVE_MEEGOGRAPHICSSYSTEM
     QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
+#endif
 
     mPassThruWindow.reset(new MPassThruWindow);
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
