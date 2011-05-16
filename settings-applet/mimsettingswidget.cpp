@@ -48,7 +48,7 @@ namespace {
     const QString StylePluginContainer("CommonLargePanel");
     const QString StylePluginHeader("CommonGroupHeaderInverted");
 
-    const QString DefaultPlugin("MeegoKeyboard");
+    const QString DefaultPlugin("libmeego-keyboard.so");
 };
 
 class MSubViewCellCreator: public MAbstractCellCreator<MContentItem>

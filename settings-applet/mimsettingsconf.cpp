@@ -117,7 +117,7 @@ void MImSettingsConf::loadSettings()
     foreach (MInputMethodPlugin *plugin, plugins()) {
         MAbstractInputMethodSettings *settings = plugin->createInputMethodSettings();
         if (settings) {
-            settingList.insert(plugin->name(), settings);
+            settingList.insert(QFileInfo(imPlugins.value(plugin)).fileName(), settings);
         }
     }
 }
