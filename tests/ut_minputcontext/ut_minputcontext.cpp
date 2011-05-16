@@ -566,6 +566,9 @@ void Ut_MInputContext::testMouseHandler()
                       Qt::LeftButton, Qt::NoModifier);
 
     m_subject->setFocusWidget(&widget);
+    // need to make sure there is really preedit on top of which mouse events happen
+    QList<MInputMethod::PreeditTextFormat> preeditFormats;
+    m_subject->updatePreedit("aaaaaaaaa", preeditFormats);
     m_subject->mouseHandler(x, &event);
 
     waitAndProcessEvents(500);
