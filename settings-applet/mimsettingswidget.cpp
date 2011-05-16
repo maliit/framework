@@ -49,6 +49,7 @@ namespace {
     const QString StylePluginHeader("CommonGroupHeaderInverted");
 
     const QString DefaultPlugin("libmeego-keyboard.so");
+    const int FirstPluginContainerIndex = 3;
 };
 
 class MSubViewCellCreator: public MAbstractCellCreator<MContentItem>
@@ -141,14 +142,8 @@ void MImSettingsWidget::initWidget()
 
     const QMap<QString, MAbstractInputMethodSettings *> &map = MImSettingsConf::instance().settings();
 
-    if (map.contains(DefaultPlugin))
-        addPluginSettings(DefaultPlugin, map[DefaultPlugin]);
-
     QMap<QString, MAbstractInputMethodSettings *>::const_iterator end = map.constEnd();
     for (QMap<QString, MAbstractInputMethodSettings *>::const_iterator iter(map.constBegin()); iter != end; ++iter) {
-        if (iter.key() == DefaultPlugin)
-            continue;
-
         addPluginSettings(iter.key(), iter.value());
     }
 
@@ -404,7 +399,11 @@ void MImSettingsWidget::addPluginSettings(const QString &plugin,
     layout->addItem(header);
     layout->addItem(contentWidget);
 
-    mainLayout->addItem(container);
+    if (plugin == DefaultPlugin) {
+        mainLayout->insertItem(FirstPluginContainerIndex, container);
+    } else {
+        mainLayout->addItem(container);
+    }
     mainLayout->setStretchFactor(container, 0);
 
     settingsLabelMap.insert(settings, header);
