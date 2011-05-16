@@ -45,9 +45,6 @@ MImSettingsConf::MImSettingsConf()
 {
     connectToIMPluginManagerDBus();
 
-    if (impluginMgrIface)
-        connect(impluginMgrIface, SIGNAL(activeSubViewChanged(int)), this, SIGNAL(activeSubViewChanged()));
-
     loadPlugins();
     loadSettings();
 }
@@ -140,45 +137,6 @@ QList<MInputMethodPlugin *> MImSettingsConf::plugins() const
 QMap<QString, MAbstractInputMethodSettings *> MImSettingsConf::settings() const
 {
     return settingList;
-}
-
-void MImSettingsConf::setActivePlugin(const QString &pluginName, const QString &subViewId)
-{
-    if (!pluginName.isEmpty() && impluginMgrIface) {
-        impluginMgrIface->call(QDBus::NoBlock, "setActivePlugin", pluginName,
-                               static_cast<int>(MInputMethod::OnScreen), subViewId);
-    }
-}
-
-void MImSettingsConf::setActiveSubView(const QString &subViewId)
-{
-    if (!subViewId.isEmpty() && impluginMgrIface) {
-        impluginMgrIface->call(QDBus::NoBlock, "setActiveSubView", subViewId,
-                               static_cast<int>(MInputMethod::OnScreen));
-    }
-}
-
-
-MImSettingsConf::MImSubView MImSettingsConf::activeSubView() const
-{
-    MImSubView subView;
-    if (impluginMgrIface) {
-        QDBusReply< QMap<QString, QVariant> > activeSubViewReply
-            = impluginMgrIface->call("queryActiveSubView", MInputMethod::OnScreen);
-        if (activeSubViewReply.isValid() && activeSubViewReply.value().count()) {
-            subView.subViewId = activeSubViewReply.value().keys().at(0);
-            subView.pluginName = activeSubViewReply.value().values().at(0).toString();
-        }
-
-        QDBusReply< QMap<QString, QVariant> > subViewsReply
-            = impluginMgrIface->call("queryAvailableSubViews", subView.pluginName,
-                                     MInputMethod::OnScreen);
-        if (subViewsReply.isValid()) {
-            subView.subViewTitle = subViewsReply.value().value(subView.subViewId).toString();
-        }
-    }
-
-    return subView;
 }
 
 QList<MImSettingsConf::MImSubView> MImSettingsConf::subViews() const

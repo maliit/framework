@@ -21,9 +21,7 @@ private slots:
     void cleanup();
 
     void testPlugins();
-    void testSetActivePlugin();
     void testSubViews();
-    void testActiveSubView();
 
 private:
     void handleMessages();

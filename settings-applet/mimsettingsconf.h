@@ -56,16 +56,6 @@ public:
      */
     QMap<QString, MAbstractInputMethodSettings *> settings() const;
 
-    /*!
-     * \brief Set \a pluginName as the active input method plugin, and \a subViewId as the active subView.
-     */
-    void setActivePlugin(const QString &pluginName, const QString &subViewId = "");
-
-    /*!
-     * \brief Set \a subViewId as the active subView for current input method plugin.
-     */
-    void setActiveSubView(const QString &subViewId);
-
     struct MImSubView {
         QString pluginName;
         QString subViewId;
@@ -73,17 +63,9 @@ public:
     };
 
     /*!
-     * \brief Return current active subView.
-     */
-    MImSubView activeSubView() const;
-
-    /*!
      * \brief Return all available subViews.
      */
     QList<MImSubView> subViews() const;
-
-Q_SIGNALS:
-    void activeSubViewChanged();
 
 protected:
     MImSettingsConf();

@@ -100,8 +100,6 @@ void Ut_MIMSettingsConf::cleanupTestCase()
 void Ut_MIMSettingsConf::init()
 {
     MImSettingsConf::createInstance();
-    MImSettingsConf::instance().setActivePlugin(pluginId);
-    MImSettingsConf::instance().setActiveSubView(QString("dummyimsv1"));
     handleMessages();
     QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginId);
     QCOMPARE(manager->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
@@ -126,55 +124,11 @@ void Ut_MIMSettingsConf::testPlugins()
     }
 }
 
-void Ut_MIMSettingsConf::testSetActivePlugin()
-{
-    QCOMPARE(MImSettingsConf::instance().plugins().size(), 2);
-    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginId);
-
-    MImSettingsConf::instance().setActivePlugin(pluginId3);
-    handleMessages();
-    MImSettings handlerItem(ActivePluginKey);
-    QCOMPARE(handlerItem.value().toStringList().first(), pluginId3);
-    QVERIFY(manager->activePluginsNames().size() == 1);
-    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginId3);
-
-    MImSettingsConf::instance().setActivePlugin(pluginId, QString("dummyimsv2"));
-    handleMessages();
-    QCOMPARE(handlerItem.value().toStringList().first(), pluginId);
-    QVERIFY(manager->activePluginsNames().size() == 1);
-    QCOMPARE(manager->activePluginsName(MInputMethod::OnScreen), pluginId);
-    QCOMPARE(manager->activeSubView(MInputMethod::OnScreen), QString("dummyimsv2"));
-
-}
-
 void Ut_MIMSettingsConf::testSubViews()
 {
     QList<MImSettingsConf::MImSubView> subViews = MImSettingsConf::instance().subViews();
     // only has subviews for OnScreen
     QCOMPARE(subViews.count(), 4);
-}
-
-void Ut_MIMSettingsConf::testActiveSubView()
-{
-    QSKIP("This test fails to activate > 1 plugins, for unknown reasons.", SkipAll);
-
-    MImSettingsConf::MImSubView activeSubView = MImSettingsConf::instance().activeSubView();
-    QCOMPARE(activeSubView.subViewId, QString("dummyimsv1"));
-
-    MImSettingsConf::instance().setActiveSubView(QString("dummyimsv2"));
-    handleMessages();
-    activeSubView = MImSettingsConf::instance().activeSubView();
-    QCOMPARE(activeSubView.subViewId, QString("dummyimsv2"));
-
-    MImSettingsConf::instance().setActivePlugin(pluginId3);
-    handleMessages();
-    activeSubView = MImSettingsConf::instance().activeSubView();
-    QCOMPARE(activeSubView.subViewId, QString("dummyim3sv1"));
-
-    MImSettingsConf::instance().setActiveSubView(QString("dummyim3sv2"));
-    handleMessages();
-    activeSubView = MImSettingsConf::instance().activeSubView();
-    QCOMPARE(activeSubView.subViewId, QString("dummyim3sv2"));
 }
 
 void Ut_MIMSettingsConf::handleMessages()
