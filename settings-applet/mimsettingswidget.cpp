@@ -49,7 +49,7 @@ namespace {
     const QString StylePluginHeader("CommonGroupHeaderInverted");
 
     const QString DefaultPlugin("libmeego-keyboard.so");
-    const int FirstPluginContainerIndex = 3;
+    const int FirstPluginContainerIndex = 3; // After the header and items for active and available keyboards
 };
 
 class MSubViewCellCreator: public MAbstractCellCreator<MContentItem>
@@ -140,6 +140,12 @@ void MImSettingsWidget::initWidget()
     mainLayout->setStretchFactor(availableSubViewItem, 0);
     connect(availableSubViewItem, SIGNAL(clicked()), this, SLOT(showSelectedKeyboardsDialog()));
 
+    // Final strech item
+    QGraphicsWidget *stretchItem = new QGraphicsWidget(this);
+    stretchItem->setPreferredSize(QSizeF());
+    mainLayout->addItem(stretchItem);
+    mainLayout->setStretchFactor(stretchItem, 1);
+
     const QMap<QString, MAbstractInputMethodSettings *> &map = MImSettingsConf::instance().settings();
 
     QMap<QString, MAbstractInputMethodSettings *>::const_iterator end = map.constEnd();
@@ -148,7 +154,6 @@ void MImSettingsWidget::initWidget()
     }
 
     setLayout(mainLayout);
-    mainLayout->addStretch();
     retranslateUi();
     connect(&onscreenPlugins, SIGNAL(activeSubViewChanged()), this, SLOT(syncActiveSubView()));
 }
@@ -378,6 +383,9 @@ void MImSettingsWidget::updateSelectedSubViews()
             selectedSubViews.push_back(MImSubview(subview.subViewId, subview.subViewTitle, subview.pluginName));
         }
     }
+    for (QMap<QString, MContainer *>::const_iterator iter(settingsContainerMap.constBegin()); iter != settingsContainerMap.constEnd(); ++iter) {
+        updatePluginContainerVisibility(iter.key(), iter.value());
+    }
 }
 
 void MImSettingsWidget::addPluginSettings(const QString &plugin,
@@ -399,19 +407,28 @@ void MImSettingsWidget::addPluginSettings(const QString &plugin,
     layout->addItem(header);
     layout->addItem(contentWidget);
 
-    updatePluginContainer(plugin, container);
+    container->setVisible(false);
+    updatePluginContainerVisibility(plugin, container);
 
     settingsLabelMap.insert(settings, header);
     settingsContainerMap.insert(plugin, container);
 }
 
-void MImSettingsWidget::updatePluginContainer(const QString &plugin,
-                                              MContainer *container)
+void MImSettingsWidget::updatePluginContainerVisibility(const QString &plugin,
+                                                        MContainer *container)
 {
-    if (plugin == DefaultPlugin) {
-        mainLayout->insertItem(FirstPluginContainerIndex, container);
+    if (onscreenPlugins.isEnabled(plugin)) {
+        if (!container->isVisible()) {
+            container->setVisible(true);
+            int index = mainLayout->count() - 1; //insert before the final stretch
+            if (plugin == DefaultPlugin) {
+                index = FirstPluginContainerIndex;
+            }
+            mainLayout->insertItem(index, container);
+            mainLayout->setStretchFactor(container, 0);
+        }
     } else {
-        mainLayout->addItem(container);
+        container->setVisible(false);
+        mainLayout->removeItem(container);
     }
-    mainLayout->setStretchFactor(container, 0);
 }
