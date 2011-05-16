@@ -399,14 +399,19 @@ void MImSettingsWidget::addPluginSettings(const QString &plugin,
     layout->addItem(header);
     layout->addItem(contentWidget);
 
+    updatePluginContainer(plugin, container);
+
+    settingsLabelMap.insert(settings, header);
+    settingsContainerMap.insert(plugin, container);
+}
+
+void MImSettingsWidget::updatePluginContainer(const QString &plugin,
+                                              MContainer *container)
+{
     if (plugin == DefaultPlugin) {
         mainLayout->insertItem(FirstPluginContainerIndex, container);
     } else {
         mainLayout->addItem(container);
     }
     mainLayout->setStretchFactor(container, 0);
-
-    settingsLabelMap.insert(settings, header);
-    settingsContainerMap.insert(plugin, container);
 }
-

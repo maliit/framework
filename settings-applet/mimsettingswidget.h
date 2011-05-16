@@ -67,6 +67,7 @@ private:
     void updateSelectedSubViews();
 
     void addPluginSettings(const QString &plugin, MAbstractInputMethodSettings *settings);
+    void updatePluginContainer(const QString &plugin, MContainer *container);
 
     QGraphicsLinearLayout* mainLayout;
     MLabel *headerLabel;
