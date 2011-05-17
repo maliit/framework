@@ -1,4 +1,4 @@
-meego-im-framework (0.20.12—1) unstable; urgency=low
+meego-im-framework (0.20.12-1) unstable; urgency=low
 
   * Fixes: NB#254375 - libmeegoimframework-doc does not contain any documentation
 
