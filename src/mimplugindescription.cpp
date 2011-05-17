@@ -30,12 +30,16 @@ public:
 public:
     //! Plugin name.
     QString pluginName;
+
+    //! Contains true if this plugin is enabled onscreen plugin.
+    bool enabled;
 };
 //! \internal_end
 
 
 MImPluginDescriptionPrivate::MImPluginDescriptionPrivate(const MInputMethodPlugin &plugin)
-    : pluginName(plugin.name())
+    : pluginName(plugin.name()),
+    enabled(true)
 {
 }
 
@@ -64,5 +68,19 @@ QString MImPluginDescription::name() const
     Q_D(const MImPluginDescription);
 
     return d->pluginName;
+}
+
+bool MImPluginDescription::enabled() const
+{
+    Q_D(const MImPluginDescription);
+
+    return d->enabled;
+}
+
+void MImPluginDescription::setEnabled(bool newEnabled)
+{
+    Q_D(MImPluginDescription);
+
+    d->enabled = newEnabled;
 }
 

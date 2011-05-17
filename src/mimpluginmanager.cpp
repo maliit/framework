@@ -560,9 +560,17 @@ QList<MImPluginDescription> MIMPluginManagerPrivate::pluginDescriptions(MInputMe
 {
     QList<MImPluginDescription> result;
 
-    foreach (MInputMethodPlugin *plugin, plugins.keys()) {
+    const Plugins::const_iterator end = plugins.constEnd();
+    for (Plugins::const_iterator iterator(plugins.constBegin());
+         iterator != end;
+         ++iterator) {
+        const MInputMethodPlugin * const plugin = iterator.key();
         if (plugin && plugin->supportedStates().contains(state)) {
             result.append(MImPluginDescription(*plugin));
+
+            if (state == MInputMethod::OnScreen) {
+                result.last().setEnabled(onScreenPlugins.isEnabled(iterator->pluginId));
+            }
         }
     }
 

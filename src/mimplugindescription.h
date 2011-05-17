@@ -40,10 +40,16 @@ public:
     //! Return plugin name.
     QString name() const;
 
+    //! \brief Return true if this plugin is enabled by settings.
+    bool enabled() const;
+
 private:
     //! Constructor
     //! \param plugin Reference to loaded plugin.
     explicit MImPluginDescription(const MInputMethodPlugin &plugin);
+
+    //! Set enabled state to given value.
+    void setEnabled(bool newEnabled);
 
     Q_DECLARE_PRIVATE(MImPluginDescription)
 
