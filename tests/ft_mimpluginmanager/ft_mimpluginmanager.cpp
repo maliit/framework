@@ -34,6 +34,17 @@ namespace
 
     const QString PluginRoot         = "/meegotouch/inputmethods/plugins/";
     const QString MImAccesoryEnabled = "/meegotouch/inputmethods/accessoryenabled";
+
+    const MImPluginDescription* findPluginDescriptions(const QList<MImPluginDescription> &list, const QString &pluginName)
+    {
+        foreach (const MImPluginDescription &desc, list) {
+            if (desc.name() == pluginName) {
+                return &desc;
+            }
+        }
+
+        return 0;
+    }
 }
 
 
@@ -199,6 +210,55 @@ void Ft_MIMPluginManager::testSwitchToSpecifiedPlugin()
     QCOMPARE(activePlugins.count(), 1);
     QVERIFY(activePlugins.contains(pluginId3));
     QVERIFY(inputMethod != 0);
+}
+
+void Ft_MIMPluginManager::testPluginDescriptions()
+{
+    QSignalSpy spy(subject, SIGNAL(pluginsChanged()));
+    QVERIFY(spy.isValid());
+
+    MImSettings enabledPluginsSettings(EnabledPluginsKey);
+    QStringList enabledPlugins;
+    const MImPluginDescription *description = 0;
+
+    enabledPlugins << pluginId << "dummyimsv1";
+    enabledPluginsSettings.set(enabledPlugins);
+    QCOMPARE(spy.count(), 1);
+
+    description = findPluginDescriptions(subject->pluginDescriptions(MInputMethod::OnScreen), pluginName);
+    QVERIFY(description);
+    QVERIFY(description->enabled());
+    description = findPluginDescriptions(subject->pluginDescriptions(MInputMethod::OnScreen), pluginName3);
+    QVERIFY(description);
+    QVERIFY(!description->enabled());
+    description = 0;
+
+    enabledPlugins << pluginId << "dummyimsv2";
+    enabledPluginsSettings.set(enabledPlugins);
+    QCOMPARE(spy.count(), 1);
+
+    description = findPluginDescriptions(subject->pluginDescriptions(MInputMethod::OnScreen), pluginName);
+    QVERIFY(description);
+    QVERIFY(description->enabled());
+    description = findPluginDescriptions(subject->pluginDescriptions(MInputMethod::OnScreen), pluginName3);
+    QVERIFY(description);
+    QVERIFY(!description->enabled());
+    description = 0;
+
+    enabledPlugins << pluginId3 << "dummyim3sv2";
+    enabledPluginsSettings.set(enabledPlugins);
+    QCOMPARE(spy.count(), 2);
+
+    description = findPluginDescriptions(subject->pluginDescriptions(MInputMethod::OnScreen), pluginName);
+    QVERIFY(description);
+    QVERIFY(description->enabled());
+    description = findPluginDescriptions(subject->pluginDescriptions(MInputMethod::OnScreen), pluginName3);
+    QVERIFY(description);
+    QVERIFY(description->enabled());
+    description = 0;
+
+    //at least we should not crash here
+    enabledPluginsSettings.set(QStringList());
 }
 
 QTEST_APPLESS_MAIN(Ft_MIMPluginManager)

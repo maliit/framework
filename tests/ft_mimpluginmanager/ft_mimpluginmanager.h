@@ -25,6 +25,7 @@ private slots:
     void testMultiplePlugins();
     void testSwitchPluginBySignal();
     void testSwitchToSpecifiedPlugin();
+    void testPluginDescriptions();
 
 private:
     MIMApplication *app;
