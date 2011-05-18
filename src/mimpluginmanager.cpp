@@ -930,6 +930,9 @@ MIMPluginManager::MIMPluginManager(MImRotationAnimation* rotationAnimation)
             this, SLOT(_q_onScreenSubViewChanged()));
     d->_q_onScreenSubViewChanged();
 
+    connect(&d->onScreenPlugins, SIGNAL(enabledPluginsChanged()),
+            this, SIGNAL(pluginsChanged()));
+
     if (MImHwKeyboardTracker::instance()->isPresent()) {
         connect(MImHwKeyboardTracker::instance(), SIGNAL(stateChanged()),
                 this,                             SLOT(updateInputSource()),

@@ -21,6 +21,7 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <QSet>
 
 #include "mimsettings.h"
 
@@ -61,6 +62,8 @@ public:
 Q_SIGNALS:
     void activeSubViewChanged();
 
+    void enabledPluginsChanged();
+
 private Q_SLOTS:
     void updateEnabledSubviews();
     void updateActiveSubview();
@@ -71,6 +74,9 @@ private:
 
     MImSettings mEnabledSubViewsSettings;
     MImSettings mActiveSubViewSettings;
+
+    QSet<QString> enabledPlugins; //should be updated when mEnabledSubViews is changed
+
 };
 
 Q_DECLARE_METATYPE(MImOnScreenPlugins::SubView);

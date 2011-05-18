@@ -17,6 +17,7 @@
 #include "mimonscreenplugins.h"
 
 #include <QString>
+#include <QSet>
 #include <QDebug>
 
 #include <algorithm>
@@ -68,6 +69,17 @@ namespace
 
         return result;
     }
+
+    QSet<QString> findEnabledPlugins(const QList<MImOnScreenPlugins::SubView> &enabledSubViews)
+    {
+        QSet<QString> result;
+
+        foreach (const MImOnScreenPlugins::SubView &subView, enabledSubViews) {
+            result.insert(subView.plugin);
+        }
+
+        return result;
+    }
 }
 
 MImOnScreenPlugins::MImOnScreenPlugins():
@@ -112,10 +124,16 @@ void MImOnScreenPlugins::setEnabledSubViews(const QList<MImOnScreenPlugins::SubV
 void MImOnScreenPlugins::updateEnabledSubviews()
 {
     const QStringList &list = mEnabledSubViewsSettings.value().toStringList();
+    const QSet<QString> oldPlugins = enabledPlugins;
     mEnabledSubViews = fromSettings(list);
+    enabledPlugins = findEnabledPlugins(mEnabledSubViews);
 
     if (!isSubViewEnabled(mActiveSubView) && !mEnabledSubViews.empty()) {
         setActiveSubView(mEnabledSubViews.first());
+    }
+
+    if (enabledPlugins != oldPlugins) {
+        emit enabledPluginsChanged();
     }
 }
 

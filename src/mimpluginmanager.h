@@ -89,7 +89,8 @@ signals:
     // widget is changed.
     void regionUpdated(const QRegion &region);
 
-    //! This signal is emitted when input method plugins are loaded or unloaded
+    //! This signal is emitted when input method plugins are loaded, unloaded,
+    //! enabled or disabled
     void pluginsChanged();
 
 public slots:
