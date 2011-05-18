@@ -1,3 +1,9 @@
+meego-im-framework (0.20.13-1) unstable; urgency=low
+
+  * Fixes: NB#255497 - the counterpart setting items should be hidden when the 3rd party plugin is disselected
+
+ -- Aapo Kojo <aapo.kojo@nokia.com>  Wed, 18 May 2011 10:14:00 +0200
+
 meego-im-framework (0.20.12-1) unstable; urgency=low
 
   * Fixes: NB#254375 - libmeegoimframework-doc does not contain any documentation
