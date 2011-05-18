@@ -146,7 +146,9 @@ public slots:
      *  from the start of the preedit string.
      * \param replaceLength The number of characters to be replaced in the preedit string.
      * \param cursorPos The cursor position to be set. the cursorPos is the position relative
-     *  to commit string start. Negative values are used as commit string end position
+     *  to commit string start. Negative values are used as commit string end position.
+     *  Cursor position is applied AFTER committing text. This means the position might be
+     *  different than intended because of active validators etc.
      */
     virtual void sendCommitString(const QString &string, int replaceStart = 0,
                                   int replaceLength = 0, int cursorPos = -1) = 0;

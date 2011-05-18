@@ -613,7 +613,17 @@ void MInputContext::commitString(const QString &string, int replacementStart,
         // obtain the cursor absolute position
         QVariant queryResult = focused->inputMethodQuery(Qt::ImCursorPosition);
         if (queryResult.isValid()) {
-            start = queryResult.toInt() + cursorPos;
+            int absCursorPos = queryResult.toInt();
+
+            // Fetch anchor position too but don't require it.
+            queryResult = focused->inputMethodQuery(Qt::ImAnchorPosition);
+            int absAnchorPos = queryResult.isValid()
+                               ? queryResult.toInt() : absCursorPos;
+
+            // In case of selection, base cursorPos on start of it.
+            start = qMin<int>(absCursorPos, absAnchorPos)
+                    + cursorPos
+                    + replacementStart;
         }
     }
 

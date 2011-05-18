@@ -144,6 +144,7 @@ private slots:
 
     // methods for input method server connection
     void testInputMethodHidden();
+    void testCommitString_data();
     void testCommitString();
     void testUpdatePreedit();
     void testAppOrientationChanged();

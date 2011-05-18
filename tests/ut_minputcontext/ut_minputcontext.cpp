@@ -337,7 +337,8 @@ QVariant WidgetStub::inputMethodQuery(Qt::InputMethodQuery query) const
     } else if (static_cast<int>(query) == M::VisualizationPriorityQuery) {
         return QVariant(visualizationPriority);
 #endif
-    } else if (query == Qt::ImCursorPosition) {
+    } else if (query == Qt::ImCursorPosition
+               || query == Qt::ImAnchorPosition) {
         return QVariant(WidgetStubCursorPosition);
     } else if (query == Qt::ImCurrentSelection) {
         return QVariant(selectedText);
@@ -584,14 +585,32 @@ void Ut_MInputContext::testInputMethodHidden()
     // nothing yet
 }
 
+void Ut_MInputContext::testCommitString_data()
+{
+    QTest::addColumn<int>("cursorPosition");
+    QTest::addColumn<int>("replacementStart");
+
+    for (int cursorPos = -3; cursorPos <= 3; ++cursorPos) {
+        for (int replacementStart = -3; replacementStart <= 3; ++replacementStart) {
+            QString testName(QString("cursor pos %1, replacement start %2").arg(cursorPos).arg(replacementStart));
+            QTest::newRow(testName.toAscii().data())
+                << cursorPos << replacementStart;
+        }
+    }
+}
 
 void Ut_MInputContext::testCommitString()
 {
+    QFETCH(int, cursorPosition);
+    QFETCH(int, replacementStart);
+
     WidgetStub widget(0);
     QString commitString("committed string");
     m_subject->setFocusWidget(&widget);
     gFocusedWidget = &widget;
-    m_subject->commitString(commitString);
+    m_subject->commitString(commitString,
+                            replacementStart,
+                            0, cursorPosition);
 
     waitAndProcessEvents(0);
 
@@ -599,6 +618,17 @@ void Ut_MInputContext::testCommitString()
     QInputMethodEvent event = widget.lastInputMethodEvent();
     QVERIFY(event.preeditString() == ""); // check that event doesn't contain wrong information
     QCOMPARE(event.commitString(), commitString);
+
+    foreach (QInputMethodEvent::Attribute attribute, event.attributes()) {
+        if (attribute.type == QInputMethodEvent::Selection) {
+            // For Selection type, Attribute::start means absolute cursor
+            // position after commit string has been committed.
+            QCOMPARE(attribute.start,
+                     WidgetStubCursorPosition
+                     + replacementStart
+                     + cursorPosition);
+        }
+    }
 
     gFocusedWidget = 0;
 }
