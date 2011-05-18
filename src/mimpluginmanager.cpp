@@ -908,8 +908,8 @@ MIMPluginManager::MIMPluginManager(MImRotationAnimation* rotationAnimation)
     connect(d->mICConnection, SIGNAL(toolbarIdChanged(const MAttributeExtensionId &)),
             this, SLOT(setToolbar(const MAttributeExtensionId &)));
 
-    connect(d->mICConnection, SIGNAL(keyOverrideCreated()),
-            this, SLOT(updateKeyOverrides()));
+    connect(d->mICConnection, SIGNAL(keyOverrideCreated(MAttributeExtensionId)),
+            this, SLOT(updateKeyOverrides(MAttributeExtensionId)));
 
     // connect orientation signals
     if (rotationAnimation) {
@@ -1145,11 +1145,11 @@ bool MIMPluginManager::isDBusConnectionValid() const
     return d->connectionValid;
 }
 
-void MIMPluginManager::updateKeyOverrides()
+void MIMPluginManager::updateKeyOverrides(const MAttributeExtensionId &id)
 {
     Q_D(MIMPluginManager);
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        MAttributeExtensionManager::instance().keyOverrides(d->toolbarId);
+        MAttributeExtensionManager::instance().keyOverrides(id);
 
     foreach (MInputMethodPlugin *plugin, d->activePlugins) {
         d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);

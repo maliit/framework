@@ -23,6 +23,7 @@
 
 #include "minputmethodnamespace.h"
 #include "mimplugindescription.h"
+#include "mattributeextensionid.h"
 
 class QRegion;
 class MIMPluginManagerPrivate;
@@ -114,7 +115,7 @@ private slots:
     void setToolbar(const MAttributeExtensionId &id);
 
     //! Update the key overrides for active plugin.
-    void updateKeyOverrides();
+    void updateKeyOverrides(const MAttributeExtensionId &id);
 
 protected:
     MIMPluginManagerPrivate *const d_ptr;

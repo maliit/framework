@@ -44,7 +44,6 @@ QList<QSharedPointer<MKeyOverride> > MKeyOverrideData::keyOverrides() const
 
 bool MKeyOverrideData::createKeyOverride(const QString &keyId)
 {
-    qDebug() << __PRETTY_FUNCTION__;
     if (!mKeyOverrides.contains(keyId)) {
         QSharedPointer<MKeyOverride> keyOverride;
         keyOverride = QSharedPointer<MKeyOverride>(new MKeyOverride(keyId));
