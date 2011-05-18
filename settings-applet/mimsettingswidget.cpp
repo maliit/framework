@@ -21,6 +21,7 @@
 #include <MLocale>
 #include <MPopupList>
 #include <MLabel>
+#include <MSeparator>
 #include <QGraphicsLinearLayout>
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
@@ -43,10 +44,14 @@ namespace {
     const QString ObjectNameActiveInputMethodWidget("ActiveInputMethodWidget");
     const QString ObjectNameSelectedKeyboardsItem("SelectedKeyboardsItem");
 
-    const QString StyleHeader("CommonApplicationHeaderInverted");
+    const QString StyleHeader("CommonHeaderInverted");
+    const QString StyleHeaderDivider("CommonHeaderDividerInverted");
     const QString StyleBasicListItem("CommonBasicListItemInverted");
     const QString StylePluginContainer("CommonLargePanel");
     const QString StylePluginHeader("CommonGroupHeaderInverted");
+    const QString StylePluginHeaderContainer("CommonGroupHeaderPanelInverted");
+    const QString StylePluginHeaderDivider("CommonGroupHeaderDividerInverted");
+    const QString StyleAvailableDivider("CommonGroupHeaderDividerInverted");
 
     const QString DefaultPlugin("libmeego-keyboard.so");
     const int FirstPluginContainerIndex = 3; // After the header and items for active and available keyboards
@@ -120,6 +125,11 @@ void MImSettingsWidget::initWidget()
     mainLayout->addItem(headerLabel);
     mainLayout->setStretchFactor(headerLabel, 0);
 
+    MSeparator *titleSeparator(new MSeparator(this));
+    titleSeparator->setStyleName(StyleHeaderDivider);
+    titleSeparator->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    mainLayout->addItem(titleSeparator);
+
     // Active input method selector
     // We are using MBasicListItem instead of MContentItem because
     // the latter is not supported by theme
@@ -129,6 +139,11 @@ void MImSettingsWidget::initWidget()
     mainLayout->addItem(activeSubViewItem);
     mainLayout->setStretchFactor(activeSubViewItem, 0);
     connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));
+
+    MSeparator *availableSeparator(new MSeparator(this));
+    availableSeparator->setStyleName(StyleAvailableDivider);
+    availableSeparator->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    mainLayout->addItem(availableSeparator);
 
     // All available subviews.
     availableSubViewItem = new MBasicListItem(MBasicListItem::TitleWithSubtitle, this);
@@ -393,6 +408,8 @@ void MImSettingsWidget::addPluginSettings(const QString &plugin,
         return;
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout(Qt::Vertical);
+    layout->setContentsMargins(0, 0, 0, 0);
+
     MContainer *container = new MContainer(this);
     container->setStyleName(StylePluginContainer);
     container->setHeaderVisible(false);
@@ -400,8 +417,30 @@ void MImSettingsWidget::addPluginSettings(const QString &plugin,
 
     MLabel *header = new MLabel(settings->title(), this);
     header->setStyleName(StylePluginHeader);
+
+    MContainer *headerContainer(new MContainer);
+    headerContainer->setContentsMargins(0, 0, 0, 0);
+    headerContainer->setStyleName(StylePluginHeaderContainer);
+    headerContainer->setHeaderVisible(false);
+
+    MSeparator *headerSeparator(new MSeparator);
+    headerSeparator->setStyleName(StylePluginHeaderDivider);
+
+    QGraphicsLinearLayout *headerLayout(new QGraphicsLinearLayout(Qt::Horizontal));
+    headerLayout->setContentsMargins(0, 0, 0, 0);
+    headerLayout->setSpacing(0);
+
+    headerLayout->addItem(headerSeparator);
+    headerLayout->setStretchFactor(headerSeparator, 2);
+
+    headerLayout->addItem(header);
+    headerLayout->setAlignment(header, Qt::AlignLeft);
+    headerLayout->setStretchFactor(header, 0);
+
+    headerContainer->centralWidget()->setLayout(headerLayout);
+
     //TODO: icon for the settings.
-    layout->addItem(header);
+    layout->addItem(headerContainer);
     layout->addItem(contentWidget);
 
     container->setVisible(false);
