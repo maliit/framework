@@ -1,3 +1,9 @@
+meego-im-framework (0.20.14~1) unstable; urgency=low
+
+  * Fixes: NB#242682 - Text input settings crashes during close if "Active input method" or "Installed keyboard" is being opened
+
+ -- Csaba Kertesz <csaba.kertesz@vincit.fi>  Wed, 18 May 2011 16:54:00 +0200
+
 meego-im-framework (0.20.13-1) unstable; urgency=low
 
   * Fixes: NB#255497 - the counterpart setting items should be hidden when the 3rd party plugin is disselected

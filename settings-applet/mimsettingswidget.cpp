@@ -107,8 +107,6 @@ bool MImSettingsWidget::back()
 
 MImSettingsWidget::~MImSettingsWidget()
 {
-    delete availableSubViewList.data();
-    delete keyboardDialog.data();
 }
 
 void MImSettingsWidget::initWidget()
@@ -236,8 +234,7 @@ void MImSettingsWidget::showSelectedKeyboardsDialog()
     updateSelectedKeyboardsModel();
     updateSelectedKeyboards();
 
-    keyboardDialog.data()->exec();
-    delete keyboardDialog.data();
+    keyboardDialog.data()->appear(MSceneWindow::DestroyWhenDone);
 }
 
 void MImSettingsWidget::updateSelectedKeyboardsModel()
