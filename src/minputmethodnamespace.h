@@ -19,6 +19,7 @@
 #define MINPUTMETHODNAMESPACE_H
 
 #include <QSharedPointer>
+#include <QMetaType>
 
 namespace MInputMethod {
     /*!
@@ -189,6 +190,17 @@ namespace MInputMethod {
         DeadKeyTildeIndicator        //!< Dead key tilde mode
     };
 
+    enum InputMethodMode {
+        //! Normal mode allows to use preedit and error correction
+        InputMethodModeNormal,
+
+        //! Virtual keyboard sends QKeyEvent for every key press or release
+        InputMethodModeDirect,
+
+        //! Used with proxy widget
+        InputMethodModeProxy
+    };
+
     /*!
      * PreeditTextFormat defines the text format for part of the preedit string
      * specified by start and length.
@@ -208,7 +220,9 @@ namespace MInputMethod {
             : start(s), length(l), preeditFace(face)
         {};
     };
-};
+}
+
+Q_DECLARE_METATYPE(MInputMethod::TextContentType)
 
 #endif
 
