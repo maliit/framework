@@ -1,8 +1,9 @@
-meego-im-framework (0.20.15~1) unstable; urgency=low
+meego-im-framework (0.20.15-1) unstable; urgency=low
 
-  * [UNRELEASED]
+  * Fixes: NB#235142
+  * New API to provide information wheter plugin is enabled or not
 
- -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Thu, 19 May 2011 12:02:37 +0300
+ -- Viacheslav Sobolev <ext-viacheslav.sobolev@nokia.com>  Fri, 20 May 2011 10:24:37 +0300
 
 meego-im-framework (0.20.14-1) unstable; urgency=low
 
