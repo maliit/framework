@@ -43,7 +43,7 @@ headers.path += $$M_IM_INSTALL_HEADERS/meegoimquick
 headers.files += $$HEADERSINSTALL
 
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
-install_prf.files = meegoimquick.prf
+install_prf.files = $$OUT_PWD/meegoimquick.prf
 install_prf.CONFIG += no_check_exist
 
 INSTALLS += target \
