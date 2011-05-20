@@ -19,10 +19,12 @@ SOURCES += \
     ut_mimpluginmanager.cpp \
     ../stubs/fakegconf.cpp \
     ../stubs/minputcontextconnection_stub.cpp \
+    ../stubs/minputcontextglibdbusconnection_serverinit_stub.cpp \
     $$SRC_DIR/minputcontextconnection.cpp \
     $$SRC_DIR/mimapplication.cpp \
 
-CONFIG += plugin qdbus
+CONFIG += plugin qdbus link_pkgconfig
+PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
 
 LIBS += \
     ../../src/libmeegoimframework.so.0 \

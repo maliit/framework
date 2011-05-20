@@ -20,6 +20,7 @@ SOURCES += \
     ../stubs/fakegconf.cpp \
     ../stubs/fakeproperty.cpp \
     ../stubs/minputcontextconnection_stub.cpp \
+    ../stubs/minputcontextglibdbusconnection_serverinit_stub.cpp \
 
 
 CONFIG += plugin qdbus link_pkgconfig

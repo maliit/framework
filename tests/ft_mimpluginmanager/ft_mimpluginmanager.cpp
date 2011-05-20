@@ -5,7 +5,6 @@
 #include "dummyimplugin.h"
 #include "dummyinputmethod.h"
 #include "mimapplication.h"
-#include "minputcontextglibdbusconnection.h"
 
 #include <QProcess>
 #include <QGraphicsScene>
@@ -46,27 +45,6 @@ namespace
 
         return 0;
     }
-}
-
-
-// Stubbing..................................................................
-
-// Prevent unit test from deleting running uiserver's /tmp/meego-im-uiserver/imserver_dbus
-// socket file.
-
-MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
-    : activeContext(NULL),
-      globalCorrectionEnabled(false),
-      redirectionEnabled(false),
-      detectableAutoRepeat(false),
-      lastOrientation(0),
-      server(NULL)
-{
-}
-
-
-MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
-{
 }
 
 
