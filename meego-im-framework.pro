@@ -2,7 +2,7 @@
 CONFIG += ordered
 TARGET = meego-im-uiserver
 TEMPLATE = subdirs
-SUBDIRS = src passthroughserver input-context input-method-quick demos tests
+SUBDIRS = src passthroughserver input-context input-method-quick demos
 
 isEqual( IN_PWD, $${OUT_PWD} ) {
     IS_OUT_OF_SOURCE = 0
@@ -14,7 +14,15 @@ include (doc/doc.pri)
 
 !nomeegotouch {
     CONFIG  += meegotouch
-    SUBDIRS += translations settings-applet
+    SUBDIRS += translations
+}
+
+!nomeegotouch:!noduicontrolpanel {
+    SUBDIRS += settings-applet
+}
+
+!notests {
+    SUBDIRS += tests
 }
 
 QMAKE_EXTRA_TARGETS += check-xml
