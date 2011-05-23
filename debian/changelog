@@ -1,3 +1,9 @@
+meego-im-framework (0.20.16-1) unstable; urgency=low
+
+  * Fixes: NB#256039 - Settings layout adjustments needed
+
+ -- Aapo Kojo <aapo.kojo@nokia.com>  Mon, 23 May 2011 12:42:07 +0300
+
 meego-im-framework (0.20.15-1) unstable; urgency=low
 
   * Fixes: NB#235142
