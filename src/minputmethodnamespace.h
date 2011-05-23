@@ -223,6 +223,8 @@ namespace MInputMethod {
 }
 
 Q_DECLARE_METATYPE(MInputMethod::TextContentType)
+Q_DECLARE_METATYPE(MInputMethod::Orientation)
+Q_DECLARE_METATYPE(MInputMethod::OrientationAngle)
 
 #endif
 
