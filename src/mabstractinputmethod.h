@@ -37,10 +37,12 @@ class MImExtensionEvent;
 
 
 /*!
- * \brief MAbstractInputMethod is a base class for input method servers.
+ * \brief MAbstractInputMethod is a base class for input methods.
  *
- * It defines the interface which input method framework can use for
- * passing commands received from the applications
+ * It defines the interface which input method framework uses for
+ * passing commands received from the applications. Communication in the other direction,
+ * from the input method to the framework, is done using the MAbstractInputMethodHost
+ * object returned from inputMethodHost().
  */
 class MAbstractInputMethod: public QObject
 {
@@ -53,7 +55,8 @@ public:
      *
      * The subview is a view which provided by this input method. The view could be a view of one
      * language, or one keyboard, it depends on the input method. Each subview has an identifier
-     * and title.
+     * and title. The subview title will be shown in the input method settings, and
+     * should be a localized string.
      */
     struct MInputMethodSubView {
         QString subViewId;
@@ -61,6 +64,9 @@ public:
     };
 
     /*! Constructor
+     *
+     * Note: Currently the entire widget hierarchy must be built and added to mainWindow here.
+     *
      * \param host serves as communication link to framework and application. Managed by framework.
      * \param mainWindow should be used to install plugin's UI into it. Managed by framework.
      */
@@ -68,62 +74,93 @@ public:
                          QWidget *mainWindow);
     virtual ~MAbstractInputMethod();
 
-    /*! \brief Returns input method host
+    /*! \brief Returns input method host.
      */
     MAbstractInputMethodHost *inputMethodHost() const;
 
-    /*! \brief Shows the input method.
+    /*! \brief Show request.
+     *
+     *  The input method should normally show its UI on this call, unless
+     *  handleVisualizationPriorityChange(bool) was called with a true value.
+     *  \sa handleVisualizationPriorityChange(bool)
      */
     virtual void show();
 
-    /*! \brief Hides the input method
+    /*! \brief Hide request.
+     *
+     *  The input method must hide itself when this is called.
      */
     virtual void hide();
 
-    /*! \brief Sets preedit string of the input method server
+    /*! \brief Notifies input method about predit string changes.
+     *
+     *  This method informs the input method about preedit and the cursor
+     *  position. The input method can fully control the preedit
+     *  and the cursor inside it: whether and where to show
+     *  cursor inside preedit, and how the preedit string should be styled.
+     *  \sa MAbstractInputMethodHost::sendPreeditString()
+     *
      *  \param preeditString preedit string
      *  \param cursorPos the cursor position inside preedit.
-     *
-     *  Note: This method is used by application to initiate the predit and the cursor
-     *  position for input method server. Input method server fully controls the preedit
-     *  and the cursor inside it. (Input method server decides whether and where to show
-     *  cursor inside preedit).
      */
     virtual void setPreedit(const QString &preeditString, int cursorPos);
 
-    /*! \brief Update input method server state
+    /*! \brief State update notification.
+     *
+     *  General update notification. Called in addition to the specific methods.
      */
     virtual void update();
 
-    /*! \brief Resets input method server state
+    /*! \brief Reset notification.
      */
     virtual void reset();
 
-    /*! \brief Notifies input method server about mouse click on the preedit string
+    /*! \brief Notifies input method about mouse click on the preedit string.
+     *
+     * Reimplementing this method is optional. It is used by Meego Keyboard.
      */
     virtual void handleMouseClickOnPreedit(const QPoint &pos, const QRect &preeditRect);
 
-    /*! \brief Notifies input method server about changed focus
+    /*! \brief Notifies input method about focus changes on application side.
+     *
+     *  Reimplementhing this method is optional.
+     *
      *  \param focusIn true - focus has entered a widget, false - focus has left a widget
      */
     virtual void handleFocusChange(bool focusIn);
 
-    /*! \brief Notifies that the focus widget in application changed visualization priority
+    /*! \brief Notifies that the focus widget in application changed visualization priority.
+     *
+     * This method is used by the framework to allow the input method to be dismissed while a widget is focused.
+     * Further calls to show() when priority is true should not show the input method.
+     * When priority is set to false again, and the input method is not in hidden state,
+     * the input method should be shown.
+     *
+     * \param priority If true, the application has priority, and the input method should not be shown.
      */
     virtual void handleVisualizationPriorityChange(bool priority);
 
-    /*! \brief Target application is about to change orientation. Input method usually changes its
-     *  own orientation according to this.
+    /*! \brief Target application is about to change orientation.
+     *
+     * The input method usually changes its own orientation according to this.
+     * Note that this method might not be called when the input method shown for the first time.
+     * \sa handleAppOrientationChanged(int angle)
+     *
+     * \param angle The angle in degrees. Possible values: 0, 90, 180, 270. 0 is the normal orientation of the display server.
      */
     virtual void handleAppOrientationAboutToChange(int angle);
 
-    /*! \brief Target application already finish changing orientation. Input method usually
-     *  changes its own orientation according to this.
+    /*! \brief Target application already finish changing orientation.
+     *
+     * \param angle The angle in degrees. Possible values: 0, 90, 180, 270. 0 is the normal orientation of the display server.
      */
     virtual void handleAppOrientationChanged(int angle);
 
     /*!
      * \brief Uses a custom toolbar which is defined by given parameter.
+     *
+     * Reimplementing this method is optional. It is used by Meego Keyboard.
+     *
      * \param toolbar Pointer to toolbar definition.
      */
     virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
@@ -133,26 +170,37 @@ public:
      *
      * This is called only if one has enabled redirection by calling
      * \a MInputContextConnection::setRedirectKeys.
+     *
+     * Reimplementing this method is optional. It can be used to implement input methods
+     * that handle hardware keyboard.
      */
     virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                  Qt::KeyboardModifiers modifiers, const QString &text,
                                  bool autoRepeat, int count, quint32 nativeScanCode,
                                  quint32 nativeModifiers, unsigned long time);
 
-    /* \brief This method is called to inform about keyboard status changes
+    /*!
+     * \brief This method is called to inform about keyboard status changes
      *
-     * That is, hardware keyboard is opened or closed, BT keyboard is connected or
-     * disconnected
+     * For example: Hardware keyboard is opened or closed, BT keyboard is connected or
+     * disconnected.
+     *
      * \param state set of current states for this plugin
      */
     virtual void setState(const QSet<MInputMethod::HandlerState> &state);
 
-    /*! \brief This method is called when target client is changed.
+    /*! \brief This method is called when target client (application) has changed.
      */
     virtual void handleClientChange();
 
     /*!
      * \brief Switch context to given direction
+     *
+     * If the input method arranges the subviews horizontally (like Meego Keyboard does) it
+     * should first try to change its subviews in the direction indicated. If there are no
+     * more subviews in the given direction, MInputMethodHost::switchPlugin(MInputMethod::SwitchDirection )
+     * should be called.
+     *
      * \param direction Switching direction
      * \param enableAnimation Contains true if swipe should be animated
      */
@@ -161,19 +209,21 @@ public:
     /*! \brief Returns all subviews (IDs and titles) which are supported for \a state.
      *
      * Implement this function to return the subviews which are supported by this input
-     * method for the specified state. The subview titles will be shown in the input method settings.
+     * method for the specified state. An input method must return at least one subview
+     * for a supported state.
      */
     virtual QList<MInputMethodSubView> subViews(MInputMethod::HandlerState state
                                                  = MInputMethod::OnScreen) const;
 
     /*!
      * \brief Sets \a subViewId as the active subview for \a state.
-     * \param subViewId the identifier of subview.
-     * \param state the state which \a subViewId belongs to.
      *
      *  Implement this method to set the active subview. Input method plugins manager will call
      *  this method when active subview for specified state is changed from the input method
      *  settings.
+     *
+     * \param subViewId the identifier of subview.
+     * \param state the state which \a subViewId belongs to.
      */
     virtual void setActiveSubView(const QString &subViewId,
                                   MInputMethod::HandlerState state = MInputMethod::OnScreen);
@@ -186,29 +236,42 @@ public:
      */
     virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
 
-    //! Show notification informing about current language
+    /*! \brief Show notification to user informing about current language/subview
+     *
+     * Reimplementing this method is optional.
+     */
     virtual void showLanguageNotification();
 
     /*!
      * \brief Uses custom key overrides which are defined by given parameter.
+     *
+     * Reimplementing this method is optional. It is used in Meego Keyboard to provide
+     * context aware keys that can be customized from the application side.
+     *
      * \param overrides Pointer to key override definitions.
      */
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
 
     /*!
-     * \brief handles extension event not covered by separate method.
-     * \param event event to handle
+     * \brief handles extension event not covered by a dedicated method.
      * 
-     * Should return true if event is handled, otherwise false.
+     * Must return true if event is handled, otherwise false.
+     * Extensions can be registered on the application side, and will be passed through to
+     * the input method, allowing to add integration points between application and input method.
+     * Reimplementing this method is optional.
+     *
+     * \param event event to handle
      */
     virtual bool imExtensionEvent(MImExtensionEvent *event);
 
 signals:
     /*!
-     * Inform that active subview is changed to \a subViewId for \a state.
+     * \brief Inform that active subview is changed to \a subViewId for \a state.
+     *
+     * Must be emitted when plugin changes the active subview for specified state.
+     *
      * \param subViewId the identifier of the new subview.
      * \param state the state which \a subViewId belongs to.
-     * Emitted when plugin changes the active subview for specified state.
      */
     void activeSubViewChanged(const QString &subViewId,
                               MInputMethod::HandlerState state = MInputMethod::OnScreen);

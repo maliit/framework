@@ -168,7 +168,7 @@ public slots:
                                = MInputMethod::EventRequestBoth) = 0;
 
     /*!
-     * \brief notifies about hiding initiated by the input method server side
+     * \brief Notifies about hiding initiated by the input method.
      */
     virtual void notifyImInitiatedHiding() = 0;
 
