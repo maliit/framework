@@ -55,6 +55,11 @@ namespace {
 
     const QString DefaultPlugin("libmeego-keyboard.so");
     const int FirstPluginContainerIndex = 3; // After the header and items for active and available keyboards
+
+    bool mImSubviewLessThan(const MImSubview &sv1, const MImSubview &sv2)
+    {
+        return sv1.displayName < sv2.displayName;
+    }
 };
 
 class MSubViewCellCreator: public MAbstractCellCreator<MContentItem>
@@ -261,6 +266,10 @@ void MImSettingsWidget::updateSelectedKeyboardsModel()
     foreach (const MImSettingsConf::MImSubView &subview, MImSettingsConf::instance().subViews()) {
         subViews.push_back(MImSubview(subview.subViewId, subview.subViewTitle, subview.pluginName));
     }
+
+    // sort based on subview title
+    qSort(subViews.begin(), subViews.end(), mImSubviewLessThan);
+
     keyboardList.data()->setItemModel(new MImSubviewModel(subViews, keyboardList.data()));
 
     updateSelectedKeyboardsSelection();
