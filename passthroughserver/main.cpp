@@ -62,12 +62,12 @@ int main(int argc, char **argv)
 
     qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 
-    MImRotationAnimation rotationAnimation(app.pluginsProxyWidget(), app.passThruWindow());
+    MImRotationAnimation *rotationAnimation = new MImRotationAnimation(app.pluginsProxyWidget(), app.passThruWindow());
 
     // Pass the rotationAnimation so that we can receive the orientation
     // signals from the dbus connection.
     // TODO: This should probably be done in a cleaner way.
-    MIMPluginManager *pluginManager = new MIMPluginManager(&rotationAnimation);
+    MIMPluginManager *pluginManager = new MIMPluginManager(rotationAnimation);
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
