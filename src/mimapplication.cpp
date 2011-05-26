@@ -82,6 +82,7 @@ void MIMApplication::finalize()
 {
     // Cannot destroy QWidgets or QPixmaps during MIMApplication destruction.
     // Hence the finalize handler that runs before the d'tor.
+    mPluginsProxyWidget.reset();
     mPassThruWindow.reset();
     mRemoteWindow.reset();
 }
