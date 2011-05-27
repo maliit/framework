@@ -1,3 +1,9 @@
+meego-im-framework (0.20.17-1) unstable; urgency=low
+
+  * Fixes: NB#258850 - Keyboard language list is not ordered alphabetically
+
+ -- Aapo Kojo <aapo.kojo@nokia.com>  Fri, 27 May 2011 10:50:52 +0300
+
 meego-im-framework (0.20.16-1) unstable; urgency=low
 
   * Fixes: NB#256039 - Settings layout adjustments needed
