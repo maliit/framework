@@ -1,7 +1,15 @@
 ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST = autogen.sh
-SUBDIRS = src client-gtk
+
+if HAVE_GTK2
+GTK2_DIR = client-gtk
+endif
+if HAVE_GTK3
+GTK3_DIR = client-gtk3
+endif
+
+SUBDIRS = src $(GTK2_DIR) $(GTK3_DIR)
 
 DISTCHECK_CONFIGURE_FLAGS=
 

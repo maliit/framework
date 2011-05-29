@@ -4,7 +4,7 @@ INCLUDES =	-I$(top_builddir) \
 			
 noinst_HEADERS =
 
-moduledir = @GTK_IM_MODULEDIR@
+moduledir = @GTK2_IM_MODULEDIR@
 
 module_LTLIBRARIES = im-meego.la
 
@@ -15,13 +15,13 @@ im_meego_la_SOURCES = \
 		qt-gtk-translate.cpp \
 		qt-gtk-translate.h
 
-im_meego_la_CFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @MT_IM_GTK_CFLAGS@ -Wall -Werror
-im_meego_la_CXXFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @MT_IM_GTK_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
+im_meego_la_CFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @MT_IM_GTK2_CFLAGS@ -Wall -Werror
+im_meego_la_CXXFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @MT_IM_GTK2_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
 
 im_meego_la_LDFLAGS = -rpath $(moduledir) \
 		     -avoid-version -no-undefined \
 		     -module \
-		     @MT_IM_BRIDGES_LIBS@ @MT_IM_GTK_LIBS@ @QT_LIBS@
+		     @MT_IM_BRIDGES_LIBS@ @MT_IM_GTK2_LIBS@ @QT_LIBS@
 
 im_meego_la_LIBADD = $(top_builddir)/src/libmeegoimcommon.la
 

@@ -44,33 +44,50 @@ AC_SUBST(DBUS_BINDING_TOOL)
 ## GTK+
 AC_MSG_CHECKING([which gtk+ version to compile against])
 AC_ARG_WITH([gtk],
-  [AS_HELP_STRING([--with-gtk=2.0|3.0],[which gtk+ version to compile against (default: 2.0)])],
+  [AS_HELP_STRING([--with-gtk=2.0|3.0|both],[which gtk+ version to compile against (default: both)])],
   [case "$with_gtk" in
-     2.0|3.0) ;;
+     2.0|3.0|both) ;;
      *) AC_MSG_ERROR([invalid gtk version specified]) ;;
    esac],
-  [with_gtk=2.0])
+  [with_gtk=both])
 AC_MSG_RESULT([$with_gtk])
 
+have_gtk2="no"
+have_gtk3="no"
+have_gtk="no"
 case "$with_gtk" in
-  2.0) gtk_api_version=2.0
-	gtk_required_version=2.14
-       ;;
-  3.0) gtk_api_version=3.0
-	gtk_required_version=3.0
-       ;;
+  2.0|both) PKG_CHECK_MODULES(MT_IM_GTK2, gtk+-2.0 >= 2.14, 
+	[have_gtk2="yes" have_gtk="yes"], []) ;;
+  *) ;;
 esac
 
-have_gtk="no"
-PKG_CHECK_MODULES(MT_IM_GTK, gtk+-$gtk_api_version >= $gtk_required_version,
-    have_gtk="$gtk_api_version")
+case "$with_gtk" in
+  3.0|both) PKG_CHECK_MODULES(MT_IM_GTK3, gtk+-3.0 >= 3.0,
+	[have_gtk3="yes" have_gtk="yes"], []) ;;
+  *) ;;
+esac
+AM_CONDITIONAL(HAVE_GTK2, test "$have_gtk2" = yes)
+AM_CONDITIONAL(HAVE_GTK3, test "$have_gtk3" = yes)
 
-AC_SUBST(MT_IM_GTK_CFLAGS)
-AC_SUBST(MT_IM_GTK_LIBS)
+# Currently having one of the two GTK libs is mandatory, as without
+# them the code does not do anything useful
+if test "$have_gtk" = no; then
+  AC_MSG_ERROR([GTK libraries not found])
+fi
 
-gtk_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-$gtk_api_version`
-GTK_IM_MODULEDIR="$libdir"/gtk-$gtk_api_version/$gtk_binary_version/immodules
-AC_SUBST(GTK_IM_MODULEDIR)
+AC_SUBST(MT_IM_GTK2_CFLAGS)
+AC_SUBST(MT_IM_GTK2_LIBS)
+
+AC_SUBST(MT_IM_GTK3_CFLAGS)
+AC_SUBST(MT_IM_GTK3_LIBS)
+
+gtk2_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-2.0`
+GTK2_IM_MODULEDIR="$libdir"/gtk-2.0/$gtk2_binary_version/immodules
+AC_SUBST(GTK2_IM_MODULEDIR)
+
+gtk3_binary_version=`$PKG_CONFIG --variable=gtk_binary_version gtk+-3.0`
+GTK3_IM_MODULEDIR="$libdir"/gtk-3.0/$gtk3_binary_version/immodules
+AC_SUBST(GTK3_IM_MODULEDIR)
 
 ###########################################################
 ##             Definiation of compile args.              ##
@@ -100,12 +117,14 @@ fi
 AC_OUTPUT([Makefile
 src/Makefile
 client-gtk/Makefile
+client-gtk3/Makefile
 ])
 
 AC_MSG_RESULT([
 Build options:
   Version                  meegotouch_inputmethodbridges_version
   Install prefix           $prefix
-  GTK+ version             $have_gtk
+  GTK2+                    $have_gtk2
+  GTK3+                    $have_gtk3
   Enable debug             $enable_debug
 ])
