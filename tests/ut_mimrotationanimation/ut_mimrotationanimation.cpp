@@ -19,12 +19,17 @@
 #include "mimapplication.h"
 #include "mimrotationanimation.h"
 
+namespace {
+    const WId FakeRemoteWId = 1; // must be non-zero to be considered "valid"
+}
+
 void Ut_MImRotationAnimation::initTestCase()
 {
     static char *argv[1] = { (char *) "Ut_MImRotationAnimation" };
     static int argc = 1;
 
     app = new MIMApplication(argc, argv);
+    app->setTransientHint(FakeRemoteWId);
 }
 
 void Ut_MImRotationAnimation::cleanupTestCase()

@@ -65,29 +65,37 @@ bool MImRemoteWindow::wasIconified(XEvent *ev) const
     static const Atom wmState = XInternAtom(QX11Info::display(), "WM_STATE", false);
 
     if (ev->xproperty.atom == wmState) {
-        Atom type;
-        int format;
-        unsigned long length;
-        unsigned long after;
-        unsigned long *state;
-        uchar *data = 0;
-
-        int queryResult = XGetWindowProperty(QX11Info::display(), wid, wmState, 0, 2,
-                                             false, AnyPropertyType, &type, &format, &length,
-                                             &after, &data);
-        state = reinterpret_cast<unsigned long *>(data);
-
-        bool result = (queryResult == Success && data && format == 32 && *state == IconicState);
-
-        if (data) {
-            XFree(data);
-        }
-
-        return result;
+        return isIconified();
     }
 
     return false;
 }
+
+bool MImRemoteWindow::isIconified() const
+{
+    static const Atom wmState = XInternAtom(QX11Info::display(), "WM_STATE", false);
+
+    Atom type;
+    int format;
+    unsigned long length;
+    unsigned long after;
+    unsigned long *state;
+    uchar *data = 0;
+
+    int queryResult = XGetWindowProperty(QX11Info::display(), wid, wmState, 0, 2,
+                                         false, AnyPropertyType, &type, &format, &length,
+                                         &after, &data);
+    state = reinterpret_cast<unsigned long *>(data);
+
+    bool result = (queryResult == Success && data && format == 32 && *state == IconicState);
+
+    if (data) {
+        XFree(data);
+    }
+
+    return result;
+}
+
 
 bool MImRemoteWindow::wasUnmapped(XEvent *ev) const
 {

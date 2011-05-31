@@ -167,8 +167,12 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
         }
 
         // Do not call multiple times showFullScreen() because it could
-        // break focus from the activateWindow() call. See QTBUG-18130
-        if (!isVisible()) {
+        // break focus from the activateWindow() call. See QTBUG-18130.
+        // Do not call when no remote window is existent or remote window
+        // is iconified (since the keyboard is transient to the remote
+        // window it could result in the remote window to be shown by calling
+        // showFullScreen)
+        if (!isVisible() && remoteWindow && !remoteWindow->isIconified()) {
             showFullScreen();
 
             // If bypassing window hint, also do raise to ensure visibility:

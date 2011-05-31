@@ -38,6 +38,8 @@ public:
     //! Returns whether the \a event changed the state of the remote application
     //! window to Iconic
     bool wasIconified(XEvent *event) const;
+    //! Returns whether the the state of the remote application window is Iconic
+    bool isIconified() const;
     //! Returns whether the \a event unmapped the remote application window
     bool wasUnmapped(XEvent *event) const;
 
