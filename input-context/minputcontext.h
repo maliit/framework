@@ -30,6 +30,7 @@
 
 class MPreeditStyleContainer;
 class GlibDBusIMServerProxy;
+class QGraphicsItem;
 typedef GlibDBusIMServerProxy DBusIMServerProxy;
 
 /*!
@@ -268,6 +269,9 @@ private:
 
     //! registers existing attribute extensions to input method server and updates their state
     void registerExistingAttributeExtensions();
+
+    //! finds focus scope item for item
+    static QGraphicsItem *findFocusScopeItem(QGraphicsItem *item);
 
     bool active; // is connection active
     InputPanelState inputPanelState; // state for the input method server's software input panel

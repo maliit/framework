@@ -35,6 +35,7 @@ class MPreeditStyleContainer
 #include <QKeyEvent>
 #include <QGraphicsView>
 #include <QGraphicsItem>
+#include <QGraphicsWidget>
 #include <QTextFormat>
 #include <QApplication>
 #include <QClipboard>
@@ -581,8 +582,24 @@ void MInputContext::imInitiatedHide()
             // inside qgraphics we remove the focus from item focused there
             QGraphicsScene *scene = graphicsView->scene();
             QGraphicsItem *item = scene->focusItem();
+
             if (item) {
-                item->clearFocus();
+                QGraphicsItem *focusScopeItem = findFocusScopeItem(item);
+
+                if (focusScopeItem) {
+                    // With focus scope, found from QML, Qt gives focus to parent,
+                    // would break focus handling so working around by stealing
+                    // focus with a dummy item. Also Qt has currently some
+                    // problems with FocusScope. Need to check later if we could
+                    // just remove focus from focus scope item. 
+                    // see http://bugreports.qt.nokia.com/browse/QTBUG-19688
+                    QGraphicsWidget dummyItem;
+                    scene->addItem(&dummyItem);
+                    dummyItem.setFlag(QGraphicsItem::ItemIsFocusable);
+                    dummyItem.setFocus();
+                } else {
+                    item->clearFocus();
+                }
             }
 
         } else {
@@ -591,6 +608,25 @@ void MInputContext::imInitiatedHide()
     }
 }
 
+QGraphicsItem *MInputContext::findFocusScopeItem(QGraphicsItem *item)
+{
+    if (item == 0) {
+        return 0;
+    }
+
+    // Note: ItemIsFocusScope is Qt internal flag used in QML
+    QGraphicsItem *focusScopeItem = 0;
+    QGraphicsItem *parentItem = item->parentItem();
+    while (parentItem) {
+        if (parentItem->flags() & QGraphicsItem::ItemIsFocusScope) {
+            focusScopeItem = parentItem;
+            break;
+        }
+
+        parentItem = parentItem->parentItem();
+    }
+    return focusScopeItem;
+}
 
 void MInputContext::commitString(const QString &string, int replacementStart,
                                  int replacementLength, int cursorPos)
