@@ -5,5 +5,11 @@ DEPENDPATH += .
 
 SOURCES += \
            plainqt.cpp \
+           mainwindow.cpp \
+
+HEADERS += \
+           mainwindow.h \
 
 QT += core gui
+
+
