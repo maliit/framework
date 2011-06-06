@@ -1,3 +1,10 @@
+meego-im-framework (0.20.18-1) unstable; urgency=low
+
+  * Check if remote window is iconic state before showing the passthru window.
+  * Fixes: NB#258518
+
+ -- Aapo Kojo <aapo.kojo@nokia.com>  Mon, 06 Jun 2011 10:14:46 +0300
+
 meego-im-framework (0.20.17-1) unstable; urgency=low
 
   * Fixes: NB#258850 - Keyboard language list is not ordered alphabetically
