@@ -32,6 +32,7 @@ class MBasicListItem;
 class MList;
 class MContainer;
 class QGraphicsLinearLayout;
+class MImSettingsListItem;
 
 class MImSettingsWidget : public DcpWidget
 {
@@ -71,8 +72,8 @@ private:
 
     QGraphicsLinearLayout* mainLayout;
     MLabel *headerLabel;
-    MBasicListItem *activeSubViewItem;
-    MBasicListItem *availableSubViewItem;
+    MImSettingsListItem *activeSubViewItem;
+    MImSettingsListItem *availableSubViewItem;
 
     QWeakPointer<MPopupList> availableSubViewList;
     QWeakPointer<MDialog> keyboardDialog;

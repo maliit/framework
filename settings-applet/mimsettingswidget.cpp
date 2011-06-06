@@ -30,10 +30,12 @@
 #include <MAbstractCellCreator>
 #include <MBanner>
 #include <MContentItem>
+#include <MImageWidget>
 #include <MList>
 
 #include <mabstractinputmethodsettings.h>
 #include <minputmethodplugin.h>
+#include "mimsettingslistitem.h"
 
 #include "mimsubviewmodel.h"
 
@@ -46,7 +48,8 @@ namespace {
 
     const QString StyleHeader("CommonHeaderInverted");
     const QString StyleHeaderDivider("CommonHeaderDividerInverted");
-    const QString StyleBasicListItem("CommonBasicListItemInverted");
+    const QString StyleSettingsListItem("CommonBasicListItemInverted");
+    const QString StyleImageWidget("CommonComboBoxIconInverted");
     const QString StylePluginContainer("CommonLargePanel");
     const QString StylePluginHeader("CommonGroupHeaderInverted");
     const QString StylePluginHeaderContainer("CommonGroupHeaderPanelInverted");
@@ -136,19 +139,23 @@ void MImSettingsWidget::initWidget()
     mainLayout->addItem(titleSeparator);
 
     // Active input method selector
-    // We are using MBasicListItem instead of MContentItem because
-    // the latter is not supported by theme
-    activeSubViewItem = new MBasicListItem(MBasicListItem::TitleWithSubtitle, this);
+    activeSubViewItem = new MImSettingsListItem();
+    MImageWidget *activeSubViewArrow = new MImageWidget();
+    activeSubViewArrow->setStyleName(StyleImageWidget);
+    activeSubViewItem->setImageWidget(activeSubViewArrow);
     activeSubViewItem->setObjectName(ObjectNameActiveInputMethodWidget);
-    activeSubViewItem->setStyleName(StyleBasicListItem);
+    activeSubViewItem->setStyleName(StyleSettingsListItem);
     mainLayout->addItem(activeSubViewItem);
     mainLayout->setStretchFactor(activeSubViewItem, 0);
     connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));
 
     // All available subviews.
-    availableSubViewItem = new MBasicListItem(MBasicListItem::TitleWithSubtitle, this);
+    availableSubViewItem = new MImSettingsListItem();
+    MImageWidget *availableSubViewArrow = new MImageWidget();
+    availableSubViewArrow->setStyleName(StyleImageWidget);
+    availableSubViewItem->setImageWidget(availableSubViewArrow);
     availableSubViewItem->setObjectName(ObjectNameSelectedKeyboardsItem);
-    availableSubViewItem->setStyleName(StyleBasicListItem);
+    availableSubViewItem->setStyleName(StyleSettingsListItem);
     mainLayout->addItem(availableSubViewItem);
     mainLayout->setStretchFactor(availableSubViewItem, 0);
     connect(availableSubViewItem, SIGNAL(clicked()), this, SLOT(showSelectedKeyboardsDialog()));

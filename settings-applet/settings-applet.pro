@@ -42,6 +42,7 @@ HEADERS += \
     mimsettingsbrief.h \
     mimsettingsconf.h \
     mimsettingswidget.h \
+    mimsettingslistitem.h \
     mimsubviewmodel.h
 
 SOURCES += \
@@ -49,6 +50,7 @@ SOURCES += \
     mimsettingsbrief.cpp \
     mimsettingsconf.cpp \
     mimsettingswidget.cpp \
+    mimsettingslistitem.cpp \
     mimsubviewmodel.cpp
 
 target.path += $$DCP_APPLET_DIR
