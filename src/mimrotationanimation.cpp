@@ -425,6 +425,10 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     // Capturing initial snapshot that's used for the beginning of the rotation.
     compositeWindowStart = grabComposited();
 
+    // Do not do anything if no initial snapshot is available
+    if (compositeWindowStart.isNull())
+        return;
+
     // Clean up if we were still in the middle of a previous rotation animation.
     rotationAnimationGroup.stop();
     if (scene()) {
