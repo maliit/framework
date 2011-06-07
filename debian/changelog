@@ -1,3 +1,9 @@
+meego-im-framework (0.20.19-1) unstable; urgency=low
+
+  * Fixes: NB#261125 - blanking and unblanking with pwr key at note view editor's landscape mode results blank screen for movement.
+
+ -- Aapo Kojo <aapo.kojo@nokia.com>  Tue, 07 Jun 2011 14:09:44 +0300
+
 meego-im-framework (0.20.18-1) unstable; urgency=low
 
   * Check if remote window is iconic state before showing the passthru window.
