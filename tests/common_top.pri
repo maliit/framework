@@ -2,6 +2,7 @@ include(../config.pri)
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
+UTILS_DIR = ../utils
 
 CONFIG += debug
 QT += testlib xml
@@ -18,7 +19,14 @@ PASSTHROUGH_DIR = $$TOP_DIR/passthroughserver
 INCLUDEPATH += . \
                $$TOP_DIR \
                $$SRC_DIR \
-               $$PASSTHROUGH_DIR
+               $$PASSTHROUGH_DIR \
+               $$UTILS_DIR \
+
+HEADERS += \
+           $$UTILS_DIR/utils.h \
+
+SOURCES += \
+           $$UTILS_DIR/utils.cpp \
 
 
 code_coverage_option=off
