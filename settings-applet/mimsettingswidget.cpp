@@ -54,7 +54,7 @@ namespace {
     const QString StyleAvailableDivider("CommonGroupHeaderDividerInverted");
 
     const QString DefaultPlugin("libmeego-keyboard.so");
-    const int FirstPluginContainerIndex = 3; // After the header and items for active and available keyboards
+    const int FirstPluginContainerIndex = 4; // After the header and items for active and available keyboards
 
     bool mImSubviewLessThan(const MImSubview &sv1, const MImSubview &sv2)
     {
@@ -144,11 +144,6 @@ void MImSettingsWidget::initWidget()
     mainLayout->addItem(activeSubViewItem);
     mainLayout->setStretchFactor(activeSubViewItem, 0);
     connect(activeSubViewItem, SIGNAL(clicked()), this, SLOT(showAvailableSubViewList()));
-
-    MSeparator *availableSeparator(new MSeparator(this));
-    availableSeparator->setStyleName(StyleAvailableDivider);
-    availableSeparator->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-    mainLayout->addItem(availableSeparator);
 
     // All available subviews.
     availableSubViewItem = new MBasicListItem(MBasicListItem::TitleWithSubtitle, this);
