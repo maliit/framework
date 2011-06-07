@@ -14,6 +14,7 @@
  * of this file.
  */
 
+#include "utils.h"
 #include "ft_exampleplugin.h"
 #include "mimapplication.h"
 

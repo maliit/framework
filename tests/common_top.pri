@@ -2,6 +2,7 @@ include(../config.pri)
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
+UTILS_DIR = ../utils
 
 CONFIG += debug
 QT += testlib xml

@@ -14,43 +14,20 @@
  * of this file.
  */
 
+#include "utils.h"
 #include "ut_minputcontextplugin.h"
 #include "minputcontextplugin.h"
 
 #include <QInputContext>
 #include <QApplication>
 
-namespace
-{
-    const QString TestingInSandboxEnvVariable("TESTING_IN_SANDBOX");
-}
-
-
-
 void Ut_MInputContextPlugin::initTestCase()
 {
     // This is a hack to prevent Qt from loading the plugin from
     // /usr/lib/qt4/plugins/inputmethods/ when we are testing in a
     // sandbox.
-    bool testingInSandbox = false;
-    const QStringList env(QProcess::systemEnvironment());
-    int index = env.indexOf(QRegExp('^' + TestingInSandboxEnvVariable + "=.*", Qt::CaseInsensitive));
-    if (index != -1) {
-        QString statusCandidate = env.at(index);
-        statusCandidate = statusCandidate.remove(
-                              QRegExp('^' + TestingInSandboxEnvVariable + '=', Qt::CaseInsensitive));
-        bool statusOk = false;
-        int status = statusCandidate.toInt(&statusOk);
-        if (statusOk && (status == 0 || status == 1)) {
-            testingInSandbox = (status == 1);
-        } else {
-            qDebug() << "Invalid " << TestingInSandboxEnvVariable << " environment variable.\n";
-            QFAIL("Attempt to execute test incorrectly.");
-        }
-    }
-    if (testingInSandbox)
+    if (isTestingInSandbox())
         QCoreApplication::setLibraryPaths(QStringList("/tmp"));
-
 
     static int argc = 1;
     static char *argv[1] = { (char *) "ut_minputcontextplugin" };
