@@ -42,6 +42,9 @@ contains(BUILD_TYPE, unittest) {
     SRC_DIR = $$TOP_DIR/src
     LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
     INCLUDEPATH += $$SRC_DIR
+
+    target.path += $$MALIIT_TEST_PLUGINS_DIR
+    INSTALLS += target
 }
 
 QMAKE_CLEAN += libexampleplugin.so

@@ -14,6 +14,7 @@
  * of this file.
  */
 
+#include "utils.h"
 #include "ut_minputmethodquickplugin.h"
 #include "mimapplication.h"
 
@@ -88,12 +89,14 @@ void Ut_MInputMethodQuickPlugin::cleanup()
  * things tested in separate tests. */
 void Ut_MInputMethodQuickPlugin::testQmlSetup()
 {
-    QSKIP("Temporarily skipping test due to plugin install path problems.", SkipSingle);
-
     MIndicatorServiceClient fakeService;
     TestInputMethodHost host(fakeService);
-    QPluginLoader loader(TEST_PLUGIN_PATH);
 
+    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR);
+    const QString pluginPath = pluginDir.absoluteFilePath("libhelloworldplugin.so");
+    QVERIFY(pluginDir.exists(pluginPath));
+
+    QPluginLoader loader(pluginPath);
     QObject *pluginInstance = loader.instance();
     QVERIFY(pluginInstance != 0);
 

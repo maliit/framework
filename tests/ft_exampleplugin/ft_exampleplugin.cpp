@@ -23,9 +23,6 @@
 #include <QtCore>
 #include <QtGui>
 
-#define DEFINE_TO_STR(x) DEFINE_TO_STR2(x)
-#define DEFINE_TO_STR2(x) #x
-
 class MIndicatorServiceClient
 {};
 
@@ -86,12 +83,14 @@ void Ft_ExamplePlugin::cleanup()
 
 void Ft_ExamplePlugin::testFunction()
 {
-    QSKIP("Temporarily skipping test due to plugin install path problems.", SkipSingle);
-
     MIndicatorServiceClient fakeService;
     TestInputMethodHost host(fakeService);
-    QPluginLoader loader(TEST_PLUGIN_PATH);
 
+    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR);
+    const QString pluginPath = pluginDir.absoluteFilePath("libexampleplugin.so");
+    QVERIFY(pluginDir.exists(pluginPath));
+
+    QPluginLoader loader(pluginPath);
     QObject *pluginInstance = loader.instance();
     QVERIFY(pluginInstance != 0);
 
