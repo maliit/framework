@@ -8,9 +8,8 @@ INCLUDEPATH += \
 DEFINES += UNIT_TEST
 QT += core gui declarative
 
-TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins/quick
-TEST_PLUGIN_PATH=$$TEST_PLUGIN_DIR/libhelloworldplugin.so
-DEFINES += TEST_PLUGIN_PATH=\\\"$${TEST_PLUGIN_PATH}\\\"
+IN_TREE_TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins/quick
+DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 
 # Input
 HEADERS += \

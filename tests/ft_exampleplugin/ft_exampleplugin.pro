@@ -1,8 +1,7 @@
 include(../common_top.pri)
 
-TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins/standard
-TEST_PLUGIN_PATH=$$TEST_PLUGIN_DIR/libexampleplugin.so
-DEFINES += TEST_PLUGIN_PATH=\\\"$${TEST_PLUGIN_PATH}\\\"
+IN_TREE_TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins/standard
+DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 
 INCLUDEPATH += \
     $$SRC_DIR \
