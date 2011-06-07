@@ -64,6 +64,9 @@ public:
     //! Returns the current redirection status
     bool isRedirected() { return redirected; }
 
+    //! Resets the window pixmap
+    void resetPixmap();
+
 signals:
     //! Signals when the content (pixmap) of the remote application window is updated
     void contentUpdated(const QRegion &region);

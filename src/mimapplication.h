@@ -114,6 +114,7 @@ private:
 
     void handleTransientEvents(XEvent *ev);
     void handleRemoteWindowEvents(XEvent *ev);
+    void handlePassThruMapEvent(XEvent *ev);
 
     bool initializeComposite();
 

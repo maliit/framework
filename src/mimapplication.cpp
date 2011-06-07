@@ -110,6 +110,7 @@ bool MIMApplication::x11EventFilter(XEvent *ev)
 {
     handleTransientEvents(ev);
     handleRemoteWindowEvents(ev);
+    handlePassThruMapEvent(ev);
     return QApplication::x11EventFilter(ev);
 }
 
@@ -136,6 +137,17 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
         emit remoteWindowChanged(0);
         mRemoteWindow.reset();
     }
+}
+
+void MIMApplication::handlePassThruMapEvent(XEvent *ev)
+{
+    if (ev->type != MapNotify)
+        return;
+
+    if (ev->xmap.window != mPassThruWindow->effectiveWinId())
+        return;
+
+    mRemoteWindow->resetPixmap();
 }
 
 void MIMApplication::setTransientHint(WId newRemoteWinId)

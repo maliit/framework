@@ -177,6 +177,11 @@ void MImRemoteWindow::handleConfigureNotifyEvent(XEvent *event)
     if (e->window != wid)
         return;
 
+    resetPixmap();
+}
+
+void MImRemoteWindow::resetPixmap()
+{
     if (redirected)
         setupPixmap();
 }
