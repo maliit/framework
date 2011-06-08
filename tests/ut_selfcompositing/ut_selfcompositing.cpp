@@ -122,16 +122,17 @@ void Ut_SelfCompositing::testSelfCompositing()
     QWidget *subject = widgetCreator(passthru);
 
     remote.show();
-    passthru->show();
-    subject->show();
+    app->setTransientHint(remote.window()->effectiveWinId());
 
+    passthru->show();
     QTest::qWaitForWindowShown(remote.window());
+
+    subject->show();
     QTest::qWaitForWindowShown(passthru->window());
     passthru->raise();
-    QApplication::setActiveWindow(passthru);
-
-    app->setTransientHint(remote.window()->effectiveWinId());
     app->remoteWindow()->redirect();
+
+    QApplication::setActiveWindow(passthru);
 
     remote.update(); // Not strictly required, due to our window attributes.
     QCoreApplication::processEvents();

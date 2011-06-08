@@ -147,6 +147,12 @@ void MIMApplication::handlePassThruMapEvent(XEvent *ev)
     if (ev->xmap.window != mPassThruWindow->effectiveWinId())
         return;
 
+    if (not mRemoteWindow.get()) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "No remote window found, but passthru window was mapped.";
+        return;
+    }
+
     mRemoteWindow->resetPixmap();
 }
 
