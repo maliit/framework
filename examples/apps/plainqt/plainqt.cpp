@@ -22,6 +22,14 @@
 int main(int argc, char** argv)
 {
     QApplication kit(argc, argv);
+
+    /* Explicitly load MInputContext
+    * In order to be able to use its signals/slots */
+    QInputContext *ic = QInputContextFactory::create("MInputContext", 0);
+    if(ic) {
+        kit.setInputContext(ic);
+    }
+
     MainWindow window;
     return kit.exec();
 }

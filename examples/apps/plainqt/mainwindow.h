@@ -16,13 +16,16 @@ public:
 
 private slots:
     void onStartServerClicked();
+    void onRotateKeyboardClicked();
     void onServerError();
     void onServerStateChanged();
 
 private:
     void initUI();
     QProcess *serverProcess;
+    int orientationIndex;
     QPushButton *startServerButton;
+    QPushButton *rotateKeyboardButton;
     QTextEdit *textEdit;
 };
 

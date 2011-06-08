@@ -66,8 +66,10 @@ protected:
 
 MainWindow::MainWindow()
     : QMainWindow()
+    , orientationIndex(0)
     , serverProcess(new QProcess(this))
     , startServerButton(new QPushButton)
+    , rotateKeyboardButton(new QPushButton)
     , textEdit(new QTextEdit)
 {
     serverProcess->setProcessChannelMode(QProcess::ForwardedChannels);
@@ -76,6 +78,8 @@ MainWindow::MainWindow()
 
     connect(startServerButton, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
+    connect(rotateKeyboardButton, SIGNAL(clicked()),
+            this, SLOT(onRotateKeyboardClicked()));
 
     initUI();
     onServerStateChanged();
@@ -93,7 +97,9 @@ void MainWindow::initUI()
 
     QVBoxLayout *vbox = new QVBoxLayout();
 
+    rotateKeyboardButton->setText("Rotate keyboard");
     vbox->addWidget(startServerButton);
+    vbox->addWidget(rotateKeyboardButton);
 
     // Clicking the button will steal focus from the text edit, thus hiding
     // the virtual keyboard:
@@ -130,7 +136,6 @@ void MainWindow::onStartServerClicked()
     }
 }
 
-
 void MainWindow::onServerError()
 {
     textEdit->setText(serverProcess->errorString());
@@ -150,4 +155,25 @@ void MainWindow::onServerStateChanged()
     default:
         break;
     }
+}
+
+// Copied from minputmethodnamespace.h
+namespace MInputMethod {
+    enum OrientationAngle { Angle0=0, Angle90=90, Angle180=180, Angle270=270 };
+}
+
+void MainWindow::onRotateKeyboardClicked()
+{
+    const MInputMethod::OrientationAngle orientations[] = {MInputMethod::Angle0,
+                                                           MInputMethod::Angle90,
+                                                           MInputMethod::Angle180,
+                                                           MInputMethod::Angle270};
+    orientationIndex++;
+    if (orientationIndex >= 4) {
+        orientationIndex = 0;
+    }
+    const MInputMethod::OrientationAngle angle = orientations[orientationIndex];
+
+    QMetaObject::invokeMethod(qApp->inputContext(), "notifyOrientationChanged",
+                              Q_ARG(MInputMethod::OrientationAngle, angle));
 }
