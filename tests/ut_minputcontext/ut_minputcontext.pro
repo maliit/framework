@@ -5,6 +5,11 @@ INCLUDEPATH += $$ICDIR ../stubs
 LIBS += -L$$ICDIR -lminputcontext ../../src/libmeegoimframework.so -lX11
 DEFINES += M_LIBRARY=
 
+nomeegotouch {
+    INCLUDEPATH += ../../maliit
+    LIBS += ../../maliit/libmaliit.so
+}
+
 # Input
 HEADERS += \
     ut_minputcontext.h \

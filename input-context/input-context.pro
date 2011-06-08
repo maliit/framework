@@ -8,14 +8,15 @@ INCLUDEPATH += . ../src
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-contains(CONFIG, nomeegotouch) {
+nomeegotouch {
+    INCLUDEPATH += ../maliit
+    LIBS += ../maliit/libmaliit.so
 } else {
     CONFIG  += meegotouch
     DEFINES += HAVE_MEEGOTOUCH
 
     STYLE_HEADERS += \
         mpreeditstyle.h \
-
 }
 
 # Input

@@ -220,11 +220,25 @@ namespace MInputMethod {
             : start(s), length(l), preeditFace(face)
         {};
     };
+
+    //! extensions for Qt::inputMethodQuery
+    enum InputMethodQueryExtensions {
+        VisualizationPriorityQuery = 10001, //!< Tells if input method widget wants to have high
+        //!< priority for visualization. Input method should
+        //!< honor this and stay out of widgets space.
+        PreeditRectangleQuery,      //!< Retrieve bounding rectangle for current preedit text.
+        ImCorrectionEnabledQuery,   //!< explicit correction enabling for text entries
+        ImModeQuery,                //!< Retrieve mode: normal, direct or proxy
+        InputMethodAttributeExtensionIdQuery, //!< attribute extension identifier for text entry
+        InputMethodAttributeExtensionQuery //!< attribute extension file name for text entry
+    };
 }
 
 Q_DECLARE_METATYPE(MInputMethod::TextContentType)
 Q_DECLARE_METATYPE(MInputMethod::Orientation)
 Q_DECLARE_METATYPE(MInputMethod::OrientationAngle)
+Q_DECLARE_METATYPE(MInputMethod::InputMethodMode)
+Q_DECLARE_METATYPE(MInputMethod::InputMethodQueryExtensions)
 
 #endif
 

@@ -53,6 +53,8 @@ class MPreeditStyleContainer
 #else
 #include <QApplication>
 #include <QGraphicsView>
+#include "minputmethodstate.h"
+#include "mpreeditinjectionevent.h"
 #endif
 
 #ifdef HAVE_MEEGOTOUCH
@@ -148,6 +150,15 @@ MInputContext::MInputContext(QObject *parent)
     connect(MInputMethodState::instance(),
             SIGNAL(activeWindowOrientationAngleChanged(M::OrientationAngle)),
             this, SLOT(notifyOrientationChanged(M::OrientationAngle)));
+#else
+    connect(MInputMethodState::instance(),
+            SIGNAL(activeWindowOrientationAngleAboutToChange(MInputMethod::OrientationAngle)),
+            this, SLOT(notifyOrientationAboutToChange(MInputMethod::OrientationAngle)));
+
+    connect(MInputMethodState::instance(),
+            SIGNAL(activeWindowOrientationAngleChanged(MInputMethod::OrientationAngle)),
+            this, SLOT(notifyOrientationChanged(MInputMethod::OrientationAngle)));
+#endif
 
     connect(MInputMethodState::instance(),
             SIGNAL(attributeExtensionRegistered(int, QString)),
@@ -157,14 +168,15 @@ MInputContext::MInputContext(QObject *parent)
             SIGNAL(attributeExtensionUnregistered(int)),
             this, SLOT(notifyAttributeExtensionUnregistered(int)));
 
+#ifdef HAVE_MEEGOTOUCH
     connect(MInputMethodState::instance(),
             SIGNAL(toolbarItemAttributeChanged(int, QString, QString, QVariant)),
             this, SLOT(notifyToolbarItemAttributeChanged(int, QString, QString, QVariant)));
+#endif
 
     connect(MInputMethodState::instance(),
             SIGNAL(extendedAttributeChanged(int, QString, QString, QString, QVariant)),
             this, SLOT(notifyExtendedAttributeChanged(int, QString, QString, QString, QVariant)));
-#endif
 }
 
 
@@ -194,7 +206,6 @@ void MInputContext::connectToDBus()
 
 bool MInputContext::event(QEvent *event)
 {
-#ifdef HAVE_MEEGOTOUCH
     if (event->type() == MPreeditInjectionEvent::eventNumber()) {
         if (correctionEnabled) {
             MPreeditInjectionEvent *injectionEvent
@@ -232,7 +243,6 @@ bool MInputContext::event(QEvent *event)
             return false;
         }
     }
-#endif
 
     return QInputContext::event(event);
 }
@@ -320,16 +330,18 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
         // In case of plain QT application, null rectangle will be passed.
         QRect preeditRect;
 
-#ifdef HAVE_MEEGOTOUCH
         QWidget *focused = focusWidget();
 
         if (focused) {
-            // TODO: Move M::PreeditRectangleQuery to MInputMethod
+#ifdef HAVE_MEEGOTOUCH
             Qt::InputMethodQuery query
                 = static_cast<Qt::InputMethodQuery>(M::PreeditRectangleQuery);
+#else
+            Qt::InputMethodQuery query
+                = static_cast<Qt::InputMethodQuery>(MInputMethod::PreeditRectangleQuery);
+#endif
             preeditRect = focused->inputMethodQuery(query).toRect();
         }
-#endif
 
         imServer->mouseClickedOnPreedit(event->globalPos(), preeditRect);
     }
@@ -366,8 +378,11 @@ void MInputContext::setFocusWidget(QWidget *focused)
             // Notify whatever application's orientation is currently.
             M::OrientationAngle angle
                 = MInputMethodState::instance()->activeWindowOrientationAngle();
-            notifyOrientationChanged(angle);
+#else
+            MInputMethod::OrientationAngle angle
+                = MInputMethodState::instance()->activeWindowOrientationAngle();
 #endif
+            notifyOrientationChanged(angle);
         }
 
         imServer->updateWidgetInformation(stateInformation, true);
@@ -479,14 +494,11 @@ bool MInputContext::filterEvent(const QEvent *event)
             break;  // Don't emit signals without focused widget
         }
 
-#ifdef HAVE_MEEGOTOUCH
-        // TODO: Move MInputMethodState to IM FW and let LMT include an IM-specific LMT extension?
         if (event->type() == QEvent::KeyPress) {
             MInputMethodState::instance()->emitKeyPress(*(static_cast<const QKeyEvent*>(event)));
         } else {
             MInputMethodState::instance()->emitKeyRelease(*(static_cast<const QKeyEvent*>(event)));
         }
-#endif
 
         if (redirectKeys) {
             const QKeyEvent *key = static_cast<const QKeyEvent *>(event);
@@ -499,7 +511,6 @@ bool MInputContext::filterEvent(const QEvent *event)
         break;
 
     default:
-#ifdef HAVE_MEEGOTOUCH
         if (event->type() == MPreeditInjectionEvent::eventNumber()) {
             if (correctionEnabled) {
                 const MPreeditInjectionEvent *injectionEvent
@@ -544,7 +555,6 @@ bool MInputContext::filterEvent(const QEvent *event)
                 qDebug() << "MInputContext ignored preedit injection because correction is disabled";
             }
         }
-#endif
         break;
     }
 
@@ -791,7 +801,6 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
                     static_cast<Qt::KeyboardModifiers>(modifiers),
                     text, autoRepeat, count);
 
-#ifdef HAVE_MEEGOTOUCH
     if (requestType != MInputMethod::EventRequestEventOnly) {
         if (eventType == QEvent::KeyPress) {
             MInputMethodState::instance()->emitKeyPress(event);
@@ -799,7 +808,6 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
             MInputMethodState::instance()->emitKeyRelease(event);
         }
     }
-#endif
 
     if (focusWidget() != 0 && requestType != MInputMethod::EventRequestSignalOnly) {
         QCoreApplication::sendEvent(focusWidget(), &event);
@@ -809,9 +817,7 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
 
 void MInputContext::updateInputMethodArea(const QRect &rect)
 {
-#ifdef HAVE_MEEGOTOUCH
     MInputMethodState::instance()->setInputMethodArea(rect);
-#endif
 
     emit inputMethodAreaChanged(rect);
 }
@@ -830,6 +836,9 @@ QRect MInputContext::preeditRectangle(bool &valid) const
 
 #ifdef HAVE_MEEGOTOUCH
     Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(M::PreeditRectangleQuery);
+#else
+    Qt::InputMethodQuery query = static_cast<Qt::InputMethodQuery>(MInputMethod::PreeditRectangleQuery);
+#endif
 
     if (focusWidget()) {
         QVariant queryResult = focusWidget()->inputMethodQuery(query);
@@ -837,7 +846,6 @@ QRect MInputContext::preeditRectangle(bool &valid) const
         valid = queryResult.isValid();
         rect = queryResult.toRect();
     }
-#endif
 
     return rect;
 }
@@ -896,9 +904,7 @@ void MInputContext::onDBusDisconnection()
     active = false;
     redirectKeys = false;
 
-#ifdef HAVE_MEEGOTOUCH
     MInputMethodState::instance()->setInputMethodArea(QRect());
-#endif
 }
 
 void MInputContext::onDBusConnection()
@@ -1066,19 +1072,24 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
      QVariant queryResult;
 #ifdef HAVE_MEEGOTOUCH
-    // TODO: Move M::VisualizationPriorityQuery to dedicated IM/LMT extension package.
-    // visualization priority
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(M::VisualizationPriorityQuery));
+#else
+     queryResult = focused->inputMethodQuery(
+         static_cast<Qt::InputMethodQuery>(MInputMethod::VisualizationPriorityQuery));
+#endif
 
     if (queryResult.isValid()) {
         stateInformation["visualizationPriority"] = queryResult.toBool();
     }
 
-    // TODO: Move M::InputMethodToolbar*Query to dedicated IM/LMT extension package.
-    // toolbar id
+#ifdef HAVE_MEEGOTOUCH
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarIdQuery));
+#else
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(MInputMethod::InputMethodAttributeExtensionIdQuery));
+#endif
 
     if (!queryResult.isValid()) {
         // fallback using qgraphicsobject property. Used to bypass qml restrictions
@@ -1096,13 +1107,17 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     }
 
     // toolbar file
+#ifdef HAVE_MEEGOTOUCH
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(M::InputMethodToolbarQuery));
+#else
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(MInputMethod::InputMethodAttributeExtensionQuery));
+#endif
 
     if (queryResult.isValid()) {
         stateInformation["toolbar"] = queryResult.toString();
     }
-#endif
 
     // surrounding text
     queryResult = focused->inputMethodQuery(Qt::ImSurroundingText);
@@ -1137,15 +1152,16 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     stateInformation["contentType"] = contentType(hints);
 
 #ifdef HAVE_MEEGOTOUCH
-    // TODO: Move M::ImCorrectionEnabledQuery to dedicated IM/LMT extension package.
-    // error correction support
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(M::ImCorrectionEnabledQuery));
+#else
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(MInputMethod::ImCorrectionEnabledQuery));
+#endif
 
     if (queryResult.isValid()) {
         stateInformation["correctionEnabled"] = queryResult.toBool();
     }
-#endif
 
     stateInformation["predictionEnabled"] = !(hints & Qt::ImhNoPredictiveText);
     stateInformation["autocapitalizationEnabled"] = !(hints & Qt::ImhNoAutoUppercase);
@@ -1153,8 +1169,6 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
 
 #ifdef HAVE_MEEGOTOUCH
-    // TODO: Move M::InputMethodMode* to dedicated IM/LMT extension package.
-    // input method mode
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(M::ImModeQuery));
 
@@ -1162,8 +1176,16 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     if (queryResult.isValid()) {
         inputMethodMode = static_cast<M::InputMethodMode>(queryResult.toInt());
     }
-    stateInformation["inputMethodMode"] = inputMethodMode;
+#else
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(MInputMethod::ImModeQuery));
+
+    MInputMethod::InputMethodMode inputMethodMode = MInputMethod::InputMethodModeNormal;
+    if (queryResult.isValid()) {
+        inputMethodMode = static_cast<MInputMethod::InputMethodMode>(queryResult.toInt());
+    }
 #endif
+    stateInformation["inputMethodMode"] = inputMethodMode;
 
     // is text selected
     queryResult = focused->inputMethodQuery(Qt::ImCurrentSelection);
@@ -1189,7 +1211,6 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
 void MInputContext::registerExistingAttributeExtensions()
 {
-#ifdef HAVE_MEEGOTOUCH
     QList<int> ids = MInputMethodState::instance()->attributeExtensionIds();
 
     foreach (int id, ids) {
@@ -1210,7 +1231,6 @@ void MInputContext::registerExistingAttributeExtensions()
             }
         }
     }
-#endif
 }
 
 void MInputContext::setSelection(int start, int length)
