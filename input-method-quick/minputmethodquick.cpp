@@ -167,15 +167,14 @@ public:
         delete scene;
     }
 
-    void handleRegionUpdate(MAbstractInputMethodHost *host,
-                            const QRegion &region)
-    {
-        host->setScreenRegion(region);
-    }
-
     void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
                                      const QRegion &region)
     {
+        if (not host) {
+            return;
+        }
+
+        host->setScreenRegion(region);
         host->setInputMethodArea(region);
     }
 
@@ -219,7 +218,6 @@ void MInputMethodQuick::show()
 
     d->loader->showUI();
     const QRegion r(inputMethodArea());
-    d->handleRegionUpdate(inputMethodHost(), r);
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }
 
@@ -229,7 +227,6 @@ void MInputMethodQuick::hide()
 
     d->loader->hideUI();
     const QRegion r;
-    d->handleRegionUpdate(inputMethodHost(), r);
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }
 
@@ -248,6 +245,7 @@ void MInputMethodQuick::handleAppOrientationChanged(int angle)
     if (d->appOrientation != angle) {
         d->appOrientation = angle;
         emit appOrientationChanged(d->appOrientation);
+        d->handleInputMethodAreaUpdate(inputMethodHost(), inputMethodArea());
     }
 }
 
