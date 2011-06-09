@@ -73,8 +73,10 @@ MainWindow::MainWindow()
     , textEdit(new QTextEdit)
 {
     serverProcess->setProcessChannelMode(QProcess::ForwardedChannels);
-    connect(serverProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(onServerError()));
-    connect(serverProcess, SIGNAL(stateChanged(QProcess::ProcessState)), this, SLOT(onServerStateChanged()));
+    connect(serverProcess, SIGNAL(error(QProcess::ProcessError)),
+            this, SLOT(onServerError()));
+    connect(serverProcess, SIGNAL(stateChanged(QProcess::ProcessState)),
+            this, SLOT(onServerStateChanged()));
 
     connect(startServerButton, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
