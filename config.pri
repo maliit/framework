@@ -1,3 +1,9 @@
+!nomeegotouch {
+    include(defines-legacy.pri)
+} else {
+    include(defines.pri)
+}
+
 # Linker optimization for release build
 QMAKE_LFLAGS_RELEASE+=-Wl,--as-needed
 # Compiler warnings are error if the build type is debug
@@ -23,8 +29,7 @@ isEmpty(M_IM_INSTALL_SCHEMAS) {
     M_IM_INSTALL_SCHEMAS = /usr/share/gconf/schemas
 }
 
-M_IM_PLUGINS_DIR = $$M_IM_INSTALL_LIBS/meego-im-plugins
-
+M_IM_PLUGINS_DIR = $$M_IM_INSTALL_LIBS/$$MALIIT_PLUGINS
 DEFINES += M_IM_PLUGINS_DIR=\\\"$$M_IM_PLUGINS_DIR\\\"
 
 isEmpty(M_IM_ENABLE_MULTITOUCH) {
