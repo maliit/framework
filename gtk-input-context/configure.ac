@@ -57,13 +57,13 @@ have_gtk3="no"
 have_gtk="no"
 case "$with_gtk" in
   2.0|both) PKG_CHECK_MODULES(MT_IM_GTK2, gtk+-2.0 >= 2.14, 
-	[have_gtk2="yes" have_gtk="yes"], []) ;;
+	[have_gtk2="yes" have_gtk="yes"], [have_gtk2="no"] ) ;;
   *) ;;
 esac
 
 case "$with_gtk" in
   3.0|both) PKG_CHECK_MODULES(MT_IM_GTK3, gtk+-3.0 >= 3.0,
-	[have_gtk3="yes" have_gtk="yes"], []) ;;
+	[have_gtk3="yes" have_gtk="yes"], [have_gtk3="no"] ) ;;
   *) ;;
 esac
 AM_CONDITIONAL(HAVE_GTK2, test "$have_gtk2" = yes)
