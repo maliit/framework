@@ -1,6 +1,6 @@
 TEMPLATE = app
-TARGET = plainqt
-target.path = .
+TARGET = maliit-exampleapp-plainqt
+target.path = /usr/bin
 DEPENDPATH += .
 
 SOURCES += \
@@ -12,4 +12,5 @@ HEADERS += \
 
 QT += core gui
 
-
+INSTALLS += target
+QMAKE_CLEAN += maliit-exampleapp-plainqt
