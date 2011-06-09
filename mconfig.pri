@@ -31,6 +31,14 @@ isEmpty(M_IM_ENABLE_MULTITOUCH) {
     M_IM_ENABLE_MULTITOUCH=true
 }
 
+!nomeegotouch {
+    M_IM_DEFAULT_PLUGIN = libmeego-keyboard.so
+    M_IM_DEFAULT_SUBVIEW = en_gb.xml
+} else {
+    M_IM_DEFAULT_PLUGIN = libmeego-keyboard-quick.so
+    M_IM_DEFAULT_SUBVIEW = 
+}
+
 mac {
     # Do mac stuff here
     M_BUILD_FEATURES = debug

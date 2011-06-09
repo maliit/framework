@@ -6,7 +6,7 @@
       <applyto>/meegotouch/inputmethods/plugins/hardware</applyto>
       <owner>meegotouch</owner>
       <type>string</type>
-      <default>libmeego-keyboard.so</default>
+      <default>DEFAULT_PLUGIN</default>
       <locale name="C">
         <short>Plugin name for hardware keyboard</short>
         <long>Plugin name for hardware keyboard</long>
@@ -43,7 +43,7 @@
       <owner>meegotouch</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[libmeego-keyboard.so,en_gb.xml]</default>
+      <default>[DEFAULT_PLUGIN,DEFAULT_SUBVIEW]</default>
       <locale name="C">
         <short>A list of enabled onscreen plugin/subviews</short>
         <long>A list of enabled onscreen plugin/subviews as a flattened list of pairs (plugin identifier, subview identifier)</long>
@@ -56,7 +56,7 @@
       <owner>meegotouch</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[libmeego-keyboard.so,en_gb.xml]</default>
+      <default>[DEFAULT_PLUGIN,DEFAULT_SUBVIEW]</default>
       <locale name="C">
         <short>The current active onscreen plugin/subview</short>
         <long>The current active onscreen plugin/subview as a pair of (plugin identifier, subview identifier)</long>

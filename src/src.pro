@@ -156,6 +156,8 @@ infilegenerator.commands += sed -e \"s:@M_IM_FRAMEWORK_FEATURE@:$$M_IM_FRAMEWORK
                                  -e \"s:@M_IM_PLUGINS_DIR@:$$M_IM_PLUGINS_DIR:g\" \
                                  -e \"s:@M_IM_VERSION@:$$M_IM_VERSION:g\" \
                                  -e \"s:ENABLE_MULTITOUCH:$$M_IM_ENABLE_MULTITOUCH:g\" \
+                                 -e \"s:DEFAULT_PLUGIN:$$M_IM_DEFAULT_PLUGIN:g\" \
+                                 -e \"s:DEFAULT_SUBVIEW:$$M_IM_DEFAULT_SUBVIEW:g\" \
                                  ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
 infilegenerator.CONFIG = target_predeps no_link
 infilegenerator.depends += Makefile
