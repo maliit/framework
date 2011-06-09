@@ -66,8 +66,8 @@ protected:
 
 MainWindow::MainWindow()
     : QMainWindow()
-    , orientationIndex(0)
     , serverProcess(new QProcess(this))
+    , orientationIndex(0)
     , startServerButton(new QPushButton)
     , rotateKeyboardButton(new QPushButton)
     , textEdit(new QTextEdit)

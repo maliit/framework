@@ -22,6 +22,7 @@ private slots:
 
 private:
     void initUI();
+
     QProcess *serverProcess;
     int orientationIndex;
     QPushButton *startServerButton;
