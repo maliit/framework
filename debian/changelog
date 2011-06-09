@@ -1,3 +1,9 @@
+meego-im-framework (0.20.20-1) unstable; urgency=low
+
+  * Fixes: NB#256839 - Enter security code-view not updated after security code entered from VKB
+
+ -- Aapo Kojo <aapo.kojo@nokia.com>  Thu, 09 Jun 2011 09:24:56 +0300
+
 meego-im-framework (0.20.19-1) unstable; urgency=low
 
   * Fixes: NB#261125 - blanking and unblanking with pwr key at note view editor's landscape mode results blank screen for movement.
