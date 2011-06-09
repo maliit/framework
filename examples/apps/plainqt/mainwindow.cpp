@@ -107,8 +107,11 @@ void MainWindow::initUI()
     // the virtual keyboard:
     QPushButton *hideVkb = new QPushButton("Hide virtual keyboard");
     vbox->addWidget(hideVkb);
-
     vbox->addWidget(textEdit);
+
+    // But don't want other buttons to steal focus:
+    startServerButton->setFocusProxy(textEdit);
+    rotateKeyboardButton->setFocusProxy(textEdit);
 
     QPushButton *closeApp = new QPushButton("Close application");
     vbox->addWidget(closeApp);
