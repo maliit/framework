@@ -1,4 +1,4 @@
-include(../mconfig.pri)
+include(../config.pri)
 
 TEMPLATE = app
 TARGET = meego-im-uiserver

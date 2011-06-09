@@ -1,4 +1,4 @@
-include(../mconfig.pri)
+include(../config.pri)
 
 VERSION = 0.1.0
 TEMPLATE = lib

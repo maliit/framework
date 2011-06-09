@@ -1,4 +1,4 @@
-include(../mconfig.pri)
+include(../config.pri)
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
