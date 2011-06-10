@@ -85,12 +85,6 @@ MainWindow::MainWindow()
 
     initUI();
     onServerStateChanged();
-
-    const QString &errorMsg(checkForErrors());
-    if (not errorMsg.isEmpty()) {
-        textEdit->setText(errorMsg);
-        qCritical() << "CRITICAL:" << errorMsg;
-    }
 }
 
 void MainWindow::initUI()
