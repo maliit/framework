@@ -36,6 +36,11 @@ namespace {
 
         return errorMsg;
     }
+
+    bool enableFullScreenMode()
+    {
+        return (qApp->arguments().contains("-fullscreen"));
+    }
 }
 
 class MyTextEdit
@@ -114,7 +119,12 @@ void MainWindow::initUI()
 
     setCentralWidget(new QWidget);
     centralWidget()->setLayout(vbox);
-    show();
+
+    if (enableFullScreenMode()) {
+        showFullScreen();
+    } else {
+        show();
+    }
 }
 
 MainWindow::~MainWindow()
@@ -126,7 +136,12 @@ void MainWindow::onStartServerClicked()
 {
     const QString programName("meego-im-uiserver");
     QStringList arguments;
-    arguments << "-use-self-composition" << "-bypass-wm-hint";
+    arguments << "-bypass-wm-hint";
+
+    // Self-compositing is currently only supported in fullscreen mode:
+    if (enableFullScreenMode()) {
+        arguments << "-use-self-composition";
+    }
 
     if (serverProcess->state() != QProcess::NotRunning) {
         serverProcess->terminate();
