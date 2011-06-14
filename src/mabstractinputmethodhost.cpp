@@ -54,6 +54,13 @@ bool MAbstractInputMethodHost::hiddenText(bool &valid)
 
 QPixmap MAbstractInputMethodHost::background() const
 {
-    return MIMApplication::remoteWindowPixmap();
+    // Check whether we are really running a MIMApplication first.
+    // For instance, unit tests in other packages might use !MIMApplication,
+    // as they don't have access to the MIMApplication headers.
+    if (qobject_cast<MIMApplication *>(QCoreApplication::instance())) {
+        return MIMApplication::remoteWindowPixmap();
+    } else {
+        return QPixmap();
+    }
 }
 
