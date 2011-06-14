@@ -19,6 +19,7 @@ SOURCES += \
     ../stubs/minputcontextglibdbusconnection_serverinit_stub.cpp \
     $$SETTINGSAPPLET_DIR/mimsettingsconf.cpp \
 
+DEFINES -= M_IM_PLUGINS_DIR=\\\"$$M_IM_PLUGINS_DIR\\\"
 DEFINES += M_IM_PLUGINS_DIR=\\\"/usr/lib/meego-im-framework-tests/plugins\\\"
 
 CONFIG += plugin qdbus link_pkgconfig

@@ -3,6 +3,9 @@ include(../common_top.pri)
 INCLUDEPATH += ../../input-context
 LIBS += -L../../input-context -lminputcontext
 
+nomeegotouch  {
+LIBS += -L../../maliit -lmaliit
+}
 
 HEADERS += \
     ut_minputcontextplugin.h
