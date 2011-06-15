@@ -72,6 +72,7 @@ defineTest(outputFile) {
                 M_IM_ENABLE_MULTITOUCH \
                 M_IM_DEFAULT_PLUGIN \
                 M_IM_DEFAULT_SUBVIEW \
+                M_IM_QUICK_FEATURE \
 
     command = "sed"
     for(var, variables) {
