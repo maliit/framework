@@ -42,14 +42,22 @@ MOC_DIR = .moc
 headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_QUICK_HEADER
 headers.files += $$HEADERSINSTALL
 
-outputFiles(meegoimquick.prf)
+nomeegotouch {
+    outputFiles(maliit-plugins-quick-$${MALIIT_INTERFACE_VERSION}.pc)
+} else {
+    outputFiles(meegoimquick.prf)
+}
 
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = $$OUT_PWD/meegoimquick.prf
 
+install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
+install_pkgconfig.files = $$OUT_PWD/maliit-plugins-quick-$${MALIIT_INTERFACE_VERSION}.pc
+
 INSTALLS += target \
     headers \
     install_prf \
+    install_pkgconfig \
 
 QMAKE_EXTRA_TARGETS += check
 check.target = check
