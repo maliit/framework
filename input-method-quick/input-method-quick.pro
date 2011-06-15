@@ -2,7 +2,7 @@ include(../config.pri)
 
 VERSION = 0.1.0
 TEMPLATE = lib
-TARGET = meegoimquick
+TARGET = $$MALIIT_PLUGINS_QUICK_LIB
 INCLUDEPATH += ../src
 
 # Input
@@ -39,7 +39,7 @@ target.path += $$M_IM_INSTALL_LIBS
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-headers.path += $$M_IM_INSTALL_HEADERS/meegoimquick
+headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_QUICK_HEADER
 headers.files += $$HEADERSINSTALL
 
 outputFiles(meegoimquick.prf)

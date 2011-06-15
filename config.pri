@@ -77,6 +77,8 @@ defineTest(outputFile) {
                 MALIIT_PLUGINS_HEADER \
                 MALIIT_LIB \
                 MALIIT_HEADER \
+                MALIIT_PLUGINS_QUICK_LIB \
+                MALIIT_PLUGINS_QUICK_HEADER \
 
     command = "sed"
     for(var, variables) {
