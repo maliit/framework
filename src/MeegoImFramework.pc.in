@@ -7,6 +7,6 @@ pluginsdir=@M_IM_PLUGINS_DIR@
 Name: MeegoIMFramework
 Description: Meego Input Method UI Framework
 Version: @M_IM_VERSION@
-Cflags: -I${includedir}/meegoimframework
+Cflags: -I${includedir}/@MALIIT_PLUGINS_HEADER@
 Libs: -L${libdir} -lmeegoimframework
 

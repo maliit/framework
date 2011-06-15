@@ -107,7 +107,7 @@ target.path += $$M_IM_INSTALL_LIBS
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-headers.path += $$M_IM_INSTALL_HEADERS/meegoimframework
+headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
 headers.files += $$HEADERSINSTALL
 
 contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {

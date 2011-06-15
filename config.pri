@@ -73,6 +73,7 @@ defineTest(outputFile) {
                 M_IM_DEFAULT_PLUGIN \
                 M_IM_DEFAULT_SUBVIEW \
                 M_IM_QUICK_FEATURE \
+                MALIIT_PLUGINS_HEADER \
 
     command = "sed"
     for(var, variables) {
