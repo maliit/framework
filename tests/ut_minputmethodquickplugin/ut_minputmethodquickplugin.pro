@@ -30,7 +30,7 @@ SOURCES += \
     $$QUICK_DIR/minputmethodquickplugin.cpp \
 
 LIBS += \
-    $$SRC_DIR/libmeegoimframework.so.0 \
+    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
     $$QUICK_DIR/libmeegoimquick.so.0 \
 
 include(../common_check.pri)

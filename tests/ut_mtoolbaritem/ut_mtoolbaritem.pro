@@ -26,6 +26,6 @@ SOURCES += \
 CONFIG += plugin qdbus
 
 LIBS += \
-    ../../src/libmeegoimframework.so.0 \
+    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
 
 include(../common_check.pri)

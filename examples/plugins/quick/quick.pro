@@ -1,3 +1,5 @@
+include(../../../config.pri)
+
 TEMPLATE = lib
 TARGET = helloworldplugin
 
@@ -26,9 +28,9 @@ contains(BUILD_TYPE, unittest) {
     LIBS += $$QUICK_DIR/libmeegoimquick.so.0
     INCLUDEPATH += $$QUICK_DIR
 
-    FRAMEWORK_DIR = ../../../src
-    LIBS += -L$$FRAMEWORK_DIR -lmeegoimframework
-    INCLUDEPATH += $$FRAMEWORK_DIR
+    SRC_DIR = ../../../src
+    LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
+    INCLUDEPATH += $$SRC_DIR
 }
 
 QMAKE_CLEAN += libhelloworldplugin.so

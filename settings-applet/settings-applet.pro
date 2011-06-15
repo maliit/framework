@@ -8,7 +8,7 @@ include (desktop.pri)
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-LIBS += ../src/libmeegoimframework.so
+LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so
 
 CONFIG += ordered
 CONFIG += plugin qdbus

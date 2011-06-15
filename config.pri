@@ -73,6 +73,7 @@ defineTest(outputFile) {
                 M_IM_DEFAULT_PLUGIN \
                 M_IM_DEFAULT_SUBVIEW \
                 M_IM_QUICK_FEATURE \
+                MALIIT_PLUGINS_LIB \
                 MALIIT_PLUGINS_HEADER \
                 MALIIT_LIB \
                 MALIIT_HEADER \

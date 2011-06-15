@@ -2,7 +2,7 @@ include(../config.pri)
 
 VERSION = 0.1.0
 TEMPLATE = lib
-TARGET = meegoimframework
+TARGET = $$MALIIT_PLUGINS_LIB
 INCLUDEPATH += ../passthroughserver
 
 # Input

@@ -1,3 +1,5 @@
+include(../../../config.pri)
+
 TEMPLATE = lib
 TARGET = exampleplugin
 
@@ -25,9 +27,9 @@ contains(BUILD_TYPE, skeleton) {
 contains(BUILD_TYPE, unittest) {
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
-    FRAMEWORK_DIR = ../../../src
-    LIBS += -L$$FRAMEWORK_DIR -lmeegoimframework
-    INCLUDEPATH += $$FRAMEWORK_DIR
+    SRC_DIR = ../../../src
+    LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
+    INCLUDEPATH += $$SRC_DIR
 }
 
 QMAKE_CLEAN += libexampleplugin.so

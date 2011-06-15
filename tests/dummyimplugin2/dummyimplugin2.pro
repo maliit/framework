@@ -1,8 +1,11 @@
+include(../../config.pri)
+
 TEMPLATE = lib
 TARGET = ../plugins/$$qtLibraryTarget(dummyimplugin2)
 DEPENDPATH += .
-INCLUDEPATH += . ../../src
-LIBS += -L../../src -lmeegoimframework
+SRC_DIR = ../../src
+INCLUDEPATH += . $$SRC_DIR
+LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc

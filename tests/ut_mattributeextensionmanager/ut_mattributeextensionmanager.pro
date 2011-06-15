@@ -33,7 +33,7 @@ SOURCES += \
 CONFIG += plugin meegotouch qdbus
 
 LIBS += \
-    ../../src/libmeegoimframework.so.0 \
+    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
 
 target.files += \
     $$TARGET \

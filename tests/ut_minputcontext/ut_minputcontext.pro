@@ -2,7 +2,7 @@ include(../common_top.pri)
 
 ICDIR = ../../input-context
 INCLUDEPATH += $$ICDIR ../stubs
-LIBS += -L$$ICDIR -lminputcontext ../../src/libmeegoimframework.so -lX11
+LIBS += -L$$ICDIR -lminputcontext $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lX11
 DEFINES += M_LIBRARY=
 
 nomeegotouch {
