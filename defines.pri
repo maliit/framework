@@ -1,3 +1,3 @@
-MALIIT_PLUGINS = maliit/plugins
+MALIIT_PLUGINS = maliit-$${MALIIT_INTERFACE_VERSION}/plugins
 MALIIT_SERVER = maliit-server
 

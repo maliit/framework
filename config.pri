@@ -1,3 +1,5 @@
+MALIIT_INTERFACE_VERSION = 0.20
+
 !nomeegotouch {
     include(defines-legacy.pri)
 } else {
