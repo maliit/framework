@@ -1,3 +1,4 @@
+include(./config.pri)
 
 CONFIG += ordered
 TARGET = meego-im-uiserver

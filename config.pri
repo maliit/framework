@@ -1,3 +1,9 @@
+!enable-meegotouch {
+    CONFIG+=nomeegotouch
+} else {
+    CONFIG-=nomeegotouch
+}
+
 MALIIT_INTERFACE_VERSION = 0.20
 
 !nomeegotouch {
