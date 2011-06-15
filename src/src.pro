@@ -110,9 +110,10 @@ MOC_DIR = .moc
 headers.path += $$M_IM_INSTALL_HEADERS/meegoimframework
 headers.files += $$HEADERSINSTALL
 
+outputFiles(MeegoImFramework.pc)
+
 install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
 install_pkgconfig.files = MeegoImFramework.pc
-install_pkgconfig.CONFIG += no_check_exist
 
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = meegoimframework.prf
@@ -144,7 +145,7 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
 
 LIBS += -lXcomposite -lXdamage -lX11 -lXfixes
 
-IN_FILES = meegoimframework.prf.in MeegoImFramework.pc.in meego-im-framework.schemas.in
+IN_FILES = meegoimframework.prf.in meego-im-framework.schemas.in
 
 infilegenerator.output = ${QMAKE_FILE_BASE}
 infilegenerator.input = IN_FILES
