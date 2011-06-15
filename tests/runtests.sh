@@ -47,7 +47,7 @@ case "$TESTCONTEXT" in
 		# user executes runtests.sh from source tree
 		TMPDIR=.
         #set lib path and plugin path for local running
-        export LD_LIBRARY_PATH=../src/:../input-context/:../maliit/
+        export LD_LIBRARY_PATH=../src/:../input-context/:../maliit/:./plugins/
         export TESTPLUGIN_PATH=./plugins/
         export TESTING_IN_SANDBOX=1
 		if [ -d tests ]; then
