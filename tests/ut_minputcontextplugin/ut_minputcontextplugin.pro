@@ -4,7 +4,7 @@ INCLUDEPATH += ../../input-context
 LIBS += -L../../input-context -lminputcontext
 
 nomeegotouch  {
-LIBS += -L../../maliit -lmaliit
+    LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 }
 
 HEADERS += \

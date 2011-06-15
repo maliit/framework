@@ -2,7 +2,7 @@ include(../config.pri)
 
 VERSION = 0.1.0
 TEMPLATE = lib
-TARGET = maliit
+TARGET = $${MALIIT_LIB}
 
 INCLUDEPATH += . ../src
 
@@ -26,9 +26,15 @@ SOURCES += \
 
 target.path += $$M_IM_INSTALL_LIBS
 
-headers.path += $$M_IM_INSTALL_HEADERS/meegoimframework
+headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER
 headers.files += $$HEADERSINSTALL
+
+outputFiles(maliit-$${MALIIT_INTERFACE_VERSION}.pc)
+
+install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
+install_pkgconfig.files = $$OUT_PWD/maliit-$${MALIIT_INTERFACE_VERSION}.pc
 
 INSTALLS += \
     target \
     headers \
+    install_pkgconfig \

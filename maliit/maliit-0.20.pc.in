@@ -1,0 +1,11 @@
+prefix=@M_IM_PREFIX@
+exec_prefix=@M_IM_PREFIX@
+libdir=@M_IM_INSTALL_LIBS@
+includedir=@M_IM_INSTALL_HEADERS@
+
+Name: Maliit
+Description: Maliit provides a flexible and cross platform input method framework. It is usable on all MeeGo user experiences, and in other GNU/Linux distributions as well.
+Version: @M_IM_VERSION@
+Cflags: -I${includedir}/@MALIIT_HEADER@
+Libs: -L${libdir} -l@MALIIT_LIB@
+

@@ -10,7 +10,7 @@ MOC_DIR = .moc
 
 nomeegotouch {
     INCLUDEPATH += ../maliit
-    LIBS += ../maliit/libmaliit.so
+    LIBS += ../maliit/lib$${MALIIT_LIB}.so
 } else {
     CONFIG  += meegotouch
     DEFINES += HAVE_MEEGOTOUCH

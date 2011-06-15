@@ -7,7 +7,7 @@ DEFINES += M_LIBRARY=
 
 nomeegotouch {
     INCLUDEPATH += ../../maliit
-    LIBS += ../../maliit/libmaliit.so
+    LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 }
 
 # Input
