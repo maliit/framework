@@ -15,7 +15,7 @@ CONFIG += debug plugin
 HEADERS += dummyimplugin2.h
 SOURCES += dummyimplugin2.cpp
 
-target.path += /usr/lib/meego-im-framework-tests/plugins
+target.path += $$MALIIT_TEST_LIBDIR/plugins
 
 INSTALLS += target
 

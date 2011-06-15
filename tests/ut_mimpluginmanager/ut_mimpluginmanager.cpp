@@ -30,7 +30,7 @@ Q_DECLARE_METATYPE(HandlerStates);
 Q_DECLARE_METATYPE(MInputMethod::HandlerState);
 
 namespace {
-    const QString GlobalTestPluginPath("/usr/lib/meego-im-framework-tests/plugins");
+    const QString GlobalTestPluginPath(MALIIT_TEST_PLUGINS_DIR);
     const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
 
     const QString ConfigRoot          = "/meegotouch/inputmethods/";

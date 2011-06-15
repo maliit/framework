@@ -1,3 +1,5 @@
+include(../config.pri)
+
 CONFIG += ordered
 
 TEMPLATE = subdirs
@@ -24,9 +26,12 @@ SUBDIRS = \
           ut_minputmethodquickplugin \
           ft_exampleplugin \
 
-target.commands += $$system(touch tests.xml)
-target.path = /usr/share/meego-im-framework-tests
-target.files += qtestlib2junitxml.xsl runtests.sh tests.xml
+outputFiles(runtests.sh, gen-tests-xml.sh)
+
+target.commands += $$OUT_PWD/gen-tests-xml.sh > $$OUT_PWD/tests.xml
+target.path = $$MALIIT_TEST_DATADIR
+target.files += qtestlib2junitxml.xsl $$OUT_PWD/runtests.sh $$OUT_PWD/tests.xml
+target.depends += $$OUT_PWD/gen-tests-xml.sh
 INSTALLS += target
 
 QMAKE_EXTRA_TARGETS += check-xml

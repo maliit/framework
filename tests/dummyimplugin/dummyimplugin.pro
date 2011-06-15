@@ -1,3 +1,5 @@
+include(../../config.pri)
+
 TEMPLATE = lib
 TARGET = ../plugins/$$qtLibraryTarget(dummyimplugin)
 DEPENDPATH += .
@@ -16,10 +18,10 @@ SOURCES += \
     dummyimplugin.cpp \
     dummyinputmethod.cpp \
 
-target.path += /usr/lib/meego-im-framework-tests/plugins
+target.path += $$MALIIT_TEST_LIBDIR/plugins
 
 INVALIDPLUGINS = ../plugins/libinvalidplugin.so
-invalidplugins.path = /usr/lib/meego-im-framework-tests/plugins
+invalidplugins.path = $$MALIIT_TEST_LIBDIR/plugins
 invalidplugins.files = $$INVALIDPLUGINS
 
 INSTALLS += target invalidplugins

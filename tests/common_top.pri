@@ -8,7 +8,7 @@ QT += testlib xml
 
 QMAKE_CLEAN += *.log *~
 
-target.path = /usr/lib/meego-im-framework-tests/$$TARGET
+target.path = $$MALIIT_TEST_LIBDIR/$$TARGET
 INSTALLS += target
 
 SRC_DIR = ../../src

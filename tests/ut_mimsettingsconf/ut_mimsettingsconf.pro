@@ -20,7 +20,7 @@ SOURCES += \
     $$SETTINGSAPPLET_DIR/mimsettingsconf.cpp \
 
 DEFINES -= M_IM_PLUGINS_DIR=\\\"$$M_IM_PLUGINS_DIR\\\"
-DEFINES += M_IM_PLUGINS_DIR=\\\"/usr/lib/meego-im-framework-tests/plugins\\\"
+DEFINES += M_IM_PLUGINS_DIR=\\\"$$MALIIT_TEST_LIBDIR/plugins\\\"
 
 CONFIG += plugin qdbus link_pkgconfig
 PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0

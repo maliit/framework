@@ -20,7 +20,7 @@ SOURCES += \
     dummyimplugin3.cpp \
     dummyinputmethod3.cpp \
 
-target.path += /usr/lib/meego-im-framework-tests/plugins
+target.path += $$MALIIT_TEST_LIBDIR/plugins
 
 INSTALLS += target
 

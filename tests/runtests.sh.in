@@ -59,8 +59,8 @@ case "$TESTCONTEXT" in
 	;;
 	*)
 		# tests are run automated on TATAM infrastructure
-		TMPDIR=/tmp/meego-im-framework-tests
-		TESTBASE=/usr/share/meego-im-framework-tests/
+		TMPDIR=@MALIIT_TEST_TMPDIR@
+		TESTBASE=@MALIIT_TEST_LIBDIR@
 		rm -fr $TMPDIR && mkdir -p $TMPDIR
 		OUTSTYLE="xml"
 	;;

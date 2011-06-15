@@ -27,8 +27,9 @@ isEmpty(M_IM_INSTALL_LIBS) {
 isEmpty(M_IM_INSTALL_HEADERS) {
     M_IM_INSTALL_HEADERS = $$M_IM_PREFIX/include
 }
+DATADIR = $$M_IM_PREFIX/share
 isEmpty(M_IM_INSTALL_SCHEMAS) {
-    M_IM_INSTALL_SCHEMAS = /usr/share/gconf/schemas
+    M_IM_INSTALL_SCHEMAS = $$DATADIR/gconf/schemas
 }
 
 M_IM_PLUGINS_DIR = $$M_IM_INSTALL_LIBS/$$MALIIT_PLUGINS
@@ -45,6 +46,12 @@ isEmpty(M_IM_ENABLE_MULTITOUCH) {
     M_IM_DEFAULT_PLUGIN = libmeego-keyboard-quick.so
     M_IM_DEFAULT_SUBVIEW = 
 }
+
+MALIIT_TEST_DATADIR = $$DATADIR/$$MALIIT_TEST_SUITE
+MALIIT_TEST_LIBDIR = $$M_IM_INSTALL_LIBS/$$MALIIT_TEST_SUITE
+MALIIT_TEST_TMPDIR = /tmp/$$MALIIT_TEST_SUITE
+
+DEFINES += MALIIT_TEST_PLUGINS_DIR=\\\"$$MALIIT_TEST_LIBDIR/plugins\\\"
 
 mac {
     # Do mac stuff here
@@ -79,6 +86,10 @@ defineTest(outputFile) {
                 MALIIT_HEADER \
                 MALIIT_PLUGINS_QUICK_LIB \
                 MALIIT_PLUGINS_QUICK_HEADER \
+                MALIIT_TEST_SUITE \
+                MALIIT_TEST_DATADIR \
+                MALIIT_TEST_LIBDIR \
+                MALIIT_TEST_TMPDIR \
 
     command = "sed"
     for(var, variables) {
