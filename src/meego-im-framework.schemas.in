@@ -6,7 +6,7 @@
       <applyto>/meegotouch/inputmethods/plugins/hardware</applyto>
       <owner>meegotouch</owner>
       <type>string</type>
-      <default>DEFAULT_PLUGIN</default>
+      <default>@M_IM_DEFAULT_PLUGIN@</default>
       <locale name="C">
         <short>Plugin name for hardware keyboard</short>
         <long>Plugin name for hardware keyboard</long>
@@ -30,7 +30,7 @@
      <applyto>/meegotouch/inputmethods/multitouch/enabled</applyto>
      <owner>meegotouch</owner>
      <type>bool</type>
-     <default>ENABLE_MULTITOUCH</default>
+     <default>@M_IM_ENABLE_MULTITOUCH@</default>
      <locale name="C">
       <short>Whether multitouch is enabled</short>
       <long>Whether multitouch is enabled</long>
@@ -43,7 +43,7 @@
       <owner>meegotouch</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[DEFAULT_PLUGIN,DEFAULT_SUBVIEW]</default>
+      <default>[@M_IM_DEFAULT_PLUGIN@,@M_IM_DEFAULT_SUBVIEW@]</default>
       <locale name="C">
         <short>A list of enabled onscreen plugin/subviews</short>
         <long>A list of enabled onscreen plugin/subviews as a flattened list of pairs (plugin identifier, subview identifier)</long>
@@ -56,7 +56,7 @@
       <owner>meegotouch</owner>
       <type>list</type>
       <list_type>string</list_type>
-      <default>[DEFAULT_PLUGIN,DEFAULT_SUBVIEW]</default>
+      <default>[@M_IM_DEFAULT_PLUGIN@,@M_IM_DEFAULT_SUBVIEW@]</default>
       <locale name="C">
         <short>The current active onscreen plugin/subview</short>
         <long>The current active onscreen plugin/subview as a pair of (plugin identifier, subview identifier)</long>

@@ -110,18 +110,22 @@ MOC_DIR = .moc
 headers.path += $$M_IM_INSTALL_HEADERS/meegoimframework
 headers.files += $$HEADERSINSTALL
 
-outputFiles(MeegoImFramework.pc)
+contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
+    M_IM_FRAMEWORK_FEATURE += M_IM_DISABLE_TRANSLUCENCY
+} else {
+    M_IM_FRAMEWORK_FEATURE -= M_IM_DISABLE_TRANSLUCENCY
+}
+
+outputFiles(MeegoImFramework.pc, meegoimframework.prf, meego-im-framework.schemas)
 
 install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
 install_pkgconfig.files = MeegoImFramework.pc
 
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = meegoimframework.prf
-install_prf.CONFIG += no_check_exist
 
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
 install_schemas.files = meego-im-framework.schemas
-install_schemas.CONFIG += no_check_exist
 
 INSTALLS += target \
     headers \
@@ -137,32 +141,7 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.depends += lib$${TARGET}.so.$${VERSION}
 
-contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
-    M_IM_FRAMEWORK_FEATURE += M_IM_DISABLE_TRANSLUCENCY
-} else {
-    M_IM_FRAMEWORK_FEATURE -= M_IM_DISABLE_TRANSLUCENCY
-}
-
 LIBS += -lXcomposite -lXdamage -lX11 -lXfixes
-
-IN_FILES = meegoimframework.prf.in meego-im-framework.schemas.in
-
-infilegenerator.output = ${QMAKE_FILE_BASE}
-infilegenerator.input = IN_FILES
-infilegenerator.commands += sed -e \"s:@M_IM_FRAMEWORK_FEATURE@:$$M_IM_FRAMEWORK_FEATURE:g\" \
-                                 -e \"s:@M_IM_PREFIX@:$$M_IM_PREFIX:g\" \
-                                 -e \"s:@M_IM_INSTALL_BIN@:$$M_IM_INSTALL_BIN:g\" \
-                                 -e \"s:@M_IM_INSTALL_HEADERS@:$$M_IM_INSTALL_HEADERS:g\" \
-                                 -e \"s:@M_IM_INSTALL_LIBS@:$$M_IM_INSTALL_LIBS:g\" \
-                                 -e \"s:@M_IM_PLUGINS_DIR@:$$M_IM_PLUGINS_DIR:g\" \
-                                 -e \"s:@M_IM_VERSION@:$$M_IM_VERSION:g\" \
-                                 -e \"s:ENABLE_MULTITOUCH:$$M_IM_ENABLE_MULTITOUCH:g\" \
-                                 -e \"s:DEFAULT_PLUGIN:$$M_IM_DEFAULT_PLUGIN:g\" \
-                                 -e \"s:DEFAULT_SUBVIEW:$$M_IM_DEFAULT_SUBVIEW:g\" \
-                                 ${QMAKE_FILE_NAME} > ${QMAKE_FILE_OUT}
-infilegenerator.CONFIG = target_predeps no_link
-infilegenerator.depends += Makefile
-QMAKE_EXTRA_COMPILERS += infilegenerator
 
 QMAKE_EXTRA_TARGETS += mdbusglibicconnectionserviceglue.h
 mdbusglibicconnectionserviceglue.h.commands = \
