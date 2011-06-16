@@ -80,7 +80,8 @@ public:
 
 MPassThruWindow::MPassThruWindow(QWidget *p)
     : QWidget(p),
-      remoteWindow(0)
+      remoteWindow(0),
+      mRegion()
 {
     setWindowTitle("MInputMethod");
     setFocusPolicy(Qt::NoFocus);
@@ -104,55 +105,25 @@ MPassThruWindow::~MPassThruWindow()
 {
 }
 
+bool MPassThruWindow::event(QEvent *e)
+{
+    if (e->type() == QEvent::WinIdChange) {
+        updateWindowType();
+        updateInputRegion();
+    } else if (e->type() == QEvent::Show) {
+        // Qt resets the window type after we get the WinIdChange event.
+        // We need to set it again before the window is mapped.
+        updateWindowType();
+    }
+
+    return QWidget::event(e);
+}
+
 void MPassThruWindow::inputPassthrough(const QRegion &region)
 {
-#ifndef M_IM_DISABLE_TRANSLUCENCY
-    Display *dpy = QX11Info::display();
-#endif
-
-    qDebug() << __PRETTY_FUNCTION__ << "QWidget::effectiveWinId(): " << effectiveWinId();
-
-    // Set _NET_WM_WINDOW_TYPE to _NET_WM_WINDOW_TYPE_INPUT
-    static Atom input = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_INPUT", False);
-    static Atom window_type = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", False);
-    XChangeProperty(QX11Info::display(), effectiveWinId(), window_type, XA_ATOM, 32,
-                    PropModeReplace, (unsigned char *) &input, 1);
-
     qDebug() << __PRETTY_FUNCTION__ << region << "geometry=" << geometry();
-    QVector<QRect> regionRects(region.rects());
-    const int size = regionRects.size();
-
-    if (size) {
-        XRectangle * const rects = (XRectangle*)malloc(sizeof(XRectangle)*(size));
-        if (!rects) {
-            return;
-        }
-
-        quint32 customRegion[size * 4]; // custom region is pack of x, y, w, h
-        XRectangle *rect = rects;
-        for (int i = 0; i < size; ++i, ++rect) {
-            rect->x = regionRects.at(i).x();
-            rect->y = regionRects.at(i).y();
-            rect->width = regionRects.at(i).width();
-            rect->height = regionRects.at(i).height();
-            customRegion[i * 4 + 0] = rect->x;
-            customRegion[i * 4 + 1] = rect->y;
-            customRegion[i * 4 + 2] = rect->width;
-            customRegion[i * 4 + 3] = rect->height;
-        }
-
-        const XserverRegion shapeRegion = XFixesCreateRegion(dpy, rects, size);
-        XFixesSetWindowShapeRegion(dpy, effectiveWinId(), ShapeBounding, 0, 0, 0);
-        XFixesSetWindowShapeRegion(dpy, effectiveWinId(), ShapeInput, 0, 0, shapeRegion);
-
-        XFixesDestroyRegion(dpy, shapeRegion);
-
-        XChangeProperty(dpy, effectiveWinId(), XInternAtom(dpy, "_MEEGOTOUCH_CUSTOM_REGION", False), XA_CARDINAL, 32,
-                        PropModeReplace, (unsigned char *) customRegion, size * 4);
-
-        free(rects);
-        XSync(dpy, False);
-    }
+    mRegion = region;
+    updateInputRegion();
 
     // selective compositing
     if (region.isEmpty()) {
@@ -181,6 +152,62 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
             }
         }
     }
+}
+
+void MPassThruWindow::updateInputRegion()
+{
+    qDebug() << __PRETTY_FUNCTION__ << "QWidget::effectiveWinId(): " << effectiveWinId();
+
+    if (!effectiveWinId())
+        return;
+
+    const QVector<QRect> &regionRects(mRegion.rects());
+    const int size = regionRects.size();
+
+    if (!size)
+        return;
+
+    XRectangle * const rects = new XRectangle[size];
+
+    quint32 customRegion[size * 4]; // custom region is pack of x, y, w, h
+    XRectangle *rect = rects;
+    for (int i = 0; i < size; ++i, ++rect) {
+        rect->x = regionRects.at(i).x();
+        rect->y = regionRects.at(i).y();
+        rect->width = regionRects.at(i).width();
+        rect->height = regionRects.at(i).height();
+        customRegion[i * 4 + 0] = rect->x;
+        customRegion[i * 4 + 1] = rect->y;
+        customRegion[i * 4 + 2] = rect->width;
+        customRegion[i * 4 + 3] = rect->height;
+    }
+
+    const XserverRegion shapeRegion = XFixesCreateRegion(QX11Info::display(), rects, size);
+    XFixesSetWindowShapeRegion(QX11Info::display(), effectiveWinId(), ShapeBounding, 0, 0, 0);
+    XFixesSetWindowShapeRegion(QX11Info::display(), effectiveWinId(), ShapeInput, 0, 0, shapeRegion);
+
+    XFixesDestroyRegion(QX11Info::display(), shapeRegion);
+
+    XChangeProperty(QX11Info::display(), effectiveWinId(),
+                    XInternAtom(QX11Info::display(), "_MEEGOTOUCH_CUSTOM_REGION", False),
+                    XA_CARDINAL, 32, PropModeReplace,
+                    (unsigned char *) customRegion, size * 4);
+
+    delete[] rects;
+}
+
+void MPassThruWindow::updateWindowType()
+{
+    qDebug() << __PRETTY_FUNCTION__ << "QWidget::effectiveWinId(): " << effectiveWinId();
+
+    if (!effectiveWinId())
+        return;
+
+    // Set _NET_WM_WINDOW_TYPE to _NET_WM_WINDOW_TYPE_INPUT
+    static Atom input = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE_INPUT", False);
+    static Atom window_type = XInternAtom(QX11Info::display(), "_NET_WM_WINDOW_TYPE", False);
+    XChangeProperty(QX11Info::display(), effectiveWinId(), window_type, XA_ATOM, 32,
+                    PropModeReplace, (unsigned char *) &input, 1);
 }
 
 void MPassThruWindow::setRemoteWindow(MImRemoteWindow *newWindow)
