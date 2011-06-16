@@ -29,7 +29,7 @@ isEmpty(DOXYGEN_BIN) {
     htmldocs.files = $${OUT_PWD}/doc/html/*
   }
 
-  htmldocs.path = /usr/share/doc/meego-im-framework
+  htmldocs.path = $$M_IM_INSTALL_DOCS/$$MALIIT_PACKAGENAME
   htmldocs.CONFIG += no_check_exist
   INSTALLS += htmldocs
 }
