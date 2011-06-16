@@ -38,6 +38,8 @@ public:
     //! Destructor
     ~MPassThruWindow();
 
+    virtual bool event (QEvent *e);
+
 public slots:
     //! Set window ID for given region
     void inputPassthrough(const QRegion &region = QRegion());
@@ -51,7 +53,11 @@ public slots:
 private:
     Q_DISABLE_COPY(MPassThruWindow);
 
+    void updateInputRegion();
+    void updateWindowType();
+
     MImRemoteWindow *remoteWindow;
+    QRegion mRegion;
 
 #ifdef UNIT_TEST
     friend class Ut_PassthroughServer;
