@@ -117,13 +117,13 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
 }
 
 nomeegotouch {
-    outputFiles(maliit-plugins-$${MALIIT_INTERFACE_VERSION}.pc, maliit-framework.schemas)
+    outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
 } else {
     outputFiles(MeegoImFramework.pc, meegoimframework.prf, meego-im-framework.schemas)
 }
 
 install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
-install_pkgconfig.files = MeegoImFramework.pc maliit-plugins-$${MALIIT_INTERFACE_VERSION}.pc
+install_pkgconfig.files = MeegoImFramework.pc maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc
 
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = meegoimframework.prf
