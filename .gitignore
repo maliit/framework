@@ -15,5 +15,4 @@ gen_*
 *.gcov
 *.gcda
 *.gcno
-doc
 /meego-im-framework.schemas
