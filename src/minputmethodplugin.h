@@ -70,6 +70,6 @@ public:
 
 
 Q_DECLARE_INTERFACE(MInputMethodPlugin,
-                    "org.maliit.maliit-plugins.MInputMethodPlugin/0.20")
+                    "org.maliit.maliit-plugins.MInputMethodPlugin/0.80")
 
 #endif
