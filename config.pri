@@ -81,6 +81,9 @@ defineTest(outputFile) {
         return(false)
     }
 
+    MALIIT_IN_DIR = $$IN_PWD
+    MALIIT_OUT_DIR = $$OUT_PWD
+
     variables = M_IM_FRAMEWORK_FEATURE \
                 M_IM_PREFIX \
                 M_IM_INSTALL_BIN \
@@ -102,6 +105,9 @@ defineTest(outputFile) {
                 MALIIT_TEST_DATADIR \
                 MALIIT_TEST_LIBDIR \
                 MALIIT_TEST_TMPDIR \
+                MALIIT_IN_DIR \
+                MALIIT_OUT_DIR \
+                MALIIT_PACKAGE_BRIEF \
 
     command = "sed"
     for(var, variables) {

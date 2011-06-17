@@ -11,13 +11,9 @@ nomeegotouch {
 
 SUBDIRS += input-context input-method-quick examples
 
-isEqual( IN_PWD, $${OUT_PWD} ) {
-    IS_OUT_OF_SOURCE = 0
-} else {
-    IS_OUT_OF_SOURCE = 1
+!nodoc{
+    SUBDIRS += doc
 }
-
-include (doc/doc.pri)
 
 !nomeegotouch {
     CONFIG  += meegotouch
