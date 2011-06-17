@@ -62,6 +62,6 @@ private:
 };
 
 Q_DECLARE_INTERFACE(MInputMethodQuickPlugin,
-                    "com.meego.meegoimframework.MInputMethodQuickPlugin/1.1")
+                    "org.maliit.maliit-plugins-quick.MInputMethodQuickPlugin/0.20")
 
 #endif // M_INPUT_METHOD_QUICK_PLUGIN
