@@ -26,7 +26,7 @@
 
 namespace
 {
-    const QString ToolbarConfigurationPath   = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/");
+    const QString ToolbarConfigurationPath   = QString::fromLatin1(MALIIT_EXTENSIONS_DIR);
 
     const QString ImTagToolbar               = QString::fromLatin1("toolbar");
     const QString ImTagLocked                = QString::fromLatin1("locked");

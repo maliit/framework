@@ -107,8 +107,8 @@ public Q_SLOTS:
 
     /*!
      * \brief Registers an attribute extension (toolbar contents, keyboard overrides) which is defined in \a fileName, and will be assigned to a text input widget (software input panel).
-     * \param \a fileName is the absolute file name of an attribute extension, or the relative file under
-     *      /usr/share/meegoimframework/imattributeextensions/.
+     * \param \a fileName is the file name of the attribute extension. The filename should be absolute. If the filename is relative, it
+     *      will be looked up in the default directory provided by the framework.
      * \note if \a fileName is an empty string, then it means don't load any content, just get a new id.
      * \return the registered unique identifier of this attribute extension.
      */

@@ -7,3 +7,4 @@ MALIIT_PLUGINS_QUICK_HEADER = meegoimquick
 MALIIT_TEST_SUITE = meego-im-framework-tests
 MALIIT_PACKAGENAME = meego-im-framework
 MALIIT_PACKAGE_BRIEF = Meego Touch Input Method Framework
+MALIIT_ATTRIBUTE_EXTENSIONS = $${MALIIT_PACKAGENAME}/imtoolbars
