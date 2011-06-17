@@ -362,14 +362,14 @@ MImRotationAnimation::grabComposited()
     }
 
     // Explicitly copying here since we want to paint the keyboard on top.
-    QPixmap grabPixmap(remoteWindow->windowPixmap());
+    // Qt is unable to render text into QPixmap, therefore we use QImage here.
+    QImage grabImage(remoteWindow->windowPixmap().toImage());
 
-    // Overlay keyboard, transparency not required, so initializing
-    // QPainter from QPixmap is okay.
-    QPainter painter(&grabPixmap);
+    // Overlay keyboard, transparency not required
+    QPainter painter(&grabImage);
     snapshotWidget->render(&painter,QPoint(0,0),QRect(0,0,width(),height()));
 
-    return grabPixmap;
+    return QPixmap::fromImage(grabImage);
 }
 
 QPixmap

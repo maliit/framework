@@ -132,7 +132,10 @@ private slots:
 private:
     void setupAnimation(int fromAngle, int toAngle);
 
+    //! \brief Grab snapshot of application and plugin into one fullscreen pixmap
     QPixmap grabComposited();
+
+    //! \brief Grab snapshot of plugin only
     QPixmap grabVkbOnly();
 
     void setupScene();
