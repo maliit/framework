@@ -53,9 +53,8 @@ public:
 
     /*!
      * \brief Load a custom toolbar's content from \a fileName xml file.
-     * \a fileName is the xml file name (with ".xml" postfix). And \a fileName could have absolute path.
-     * If no absolute path specified, then it will be taken from the default path
-     * "/usr/share/meegoimframework/imtoolbars/".
+     * \a fileName is the xml file name (with ".xml" postfix). \a fileName should have absolute path.
+     * If no absolute path specified, then it will be looked up in the default path provided by the framework.
      * \param fileName Name of the xml file which contains the content of a custom toolbar.
      */
     bool loadToolbarXml(const QString &fileName);

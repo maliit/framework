@@ -29,7 +29,7 @@
 #include <QDebug>
 
 namespace {
-    const QString DefaultConfigurationPath   = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/");
+    const QString DefaultConfigurationPath = QString::fromLatin1(MALIIT_IM_EXTENSION_DIR);
     const char * const PreferredDomainSettingName("/meegotouch/inputmethods/preferred_domain");
     const char * const DomainItemName("_domain");
     const char * const KeysExtensionString("/keys");
