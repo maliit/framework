@@ -62,6 +62,6 @@ private:
 };
 
 Q_DECLARE_INTERFACE(MInputMethodQuickPlugin,
-                    "org.maliit.maliit-plugins-quick.MInputMethodQuickPlugin/0.20")
+                    "org.maliit.maliit-plugins-quick.MInputMethodQuickPlugin/0.80")
 
 #endif // M_INPUT_METHOD_QUICK_PLUGIN
