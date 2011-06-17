@@ -28,7 +28,7 @@ namespace
 {
     const char * const DefaultPluginLocation(M_IM_PLUGINS_DIR);
 
-    const QString ConfigRoot = "/meegotouch/inputmethods/";
+    const QString ConfigRoot = MALIIT_CONFIG_ROOT;
     const QString MImPluginPaths = ConfigRoot + "paths";
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 

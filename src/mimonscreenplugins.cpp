@@ -27,8 +27,8 @@ using namespace std::tr1::placeholders;
 
 namespace
 {
-    const char * const EnabledSubViews = "/meegotouch/inputmethods/onscreen/enabled";
-    const char * const ActiveSubView   = "/meegotouch/inputmethods/onscreen/active";
+    const char * const EnabledSubViews = MALIIT_CONFIG_ROOT"onscreen/enabled";
+    const char * const ActiveSubView   = MALIIT_CONFIG_ROOT"onscreen/active";
 
     bool equalPlugin(const MImOnScreenPlugins::SubView &subView, const QString &plugin)
     {

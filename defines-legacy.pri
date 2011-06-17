@@ -8,3 +8,4 @@ MALIIT_TEST_SUITE = meego-im-framework-tests
 MALIIT_PACKAGENAME = meego-im-framework
 MALIIT_PACKAGE_BRIEF = Meego Touch Input Method Framework
 MALIIT_ATTRIBUTE_EXTENSIONS = $${MALIIT_PACKAGENAME}/imtoolbars
+MALIIT_CONFIG_ROOT = /meegotouch/inputmethods/

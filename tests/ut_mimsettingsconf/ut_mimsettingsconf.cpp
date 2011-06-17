@@ -17,14 +17,14 @@ namespace
     const QString GlobalTestPluginPath(MALIIT_TEST_PLUGINS_DIR);
     const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
 
-    const QString ConfigRoot          = "/meegotouch/inputmethods/";
+    const QString ConfigRoot          = MALIIT_CONFIG_ROOT;
     const QString MImPluginPaths    = ConfigRoot + "paths";
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
-    const QString PluginRoot          = "/meegotouch/inputmethods/plugins/";
+    const QString PluginRoot          = MALIIT_CONFIG_ROOT"plugins/";
 
-    const QString EnabledPluginsKey = "/meegotouch/inputmethods/onscreen/enabled";
-    const QString ActivePluginKey = "/meegotouch/inputmethods/onscreen/active";
+    const QString EnabledPluginsKey = MALIIT_CONFIG_ROOT"onscreen/enabled";
+    const QString ActivePluginKey = MALIIT_CONFIG_ROOT"onscreen/active";
 
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName2 = "DummyImPlugin2";

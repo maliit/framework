@@ -49,12 +49,12 @@ namespace
 {
     const QString DefaultPluginLocation(M_IM_PLUGINS_DIR);
 
-    const QString ConfigRoot           = "/meegotouch/inputmethods/";
+    const QString ConfigRoot           = MALIIT_CONFIG_ROOT;
     const QString MImPluginPaths       = ConfigRoot + "paths";
     const QString MImPluginDisabled    = ConfigRoot + "disabledpluginfiles";
 
-    const QString PluginRoot           = "/meegotouch/inputmethods/plugins";
-    const QString MImAccesoryEnabled   = "/meegotouch/inputmethods/accessoryenabled";
+    const QString PluginRoot           = MALIIT_CONFIG_ROOT"plugins";
+    const QString MImAccesoryEnabled   = MALIIT_CONFIG_ROOT"accessoryenabled";
 
     const char * const DBusServiceName = "com.meego.inputmethodpluginmanager1";
     const char * const DBusPath        = "/com/meego/inputmethodpluginmanager1";
