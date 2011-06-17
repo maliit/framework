@@ -24,16 +24,16 @@ namespace
     const QString pluginId  = "libdummyimplugin.so";
     const QString pluginId3 = "libdummyimplugin3.so";
 
-    const QString EnabledPluginsKey = "/meegotouch/inputmethods/onscreen/enabled";
-    const QString ActivePluginKey = "/meegotouch/inputmethods/onscreen/active";
+    const QString EnabledPluginsKey = MALIIT_CONFIG_ROOT"onscreen/enabled";
+    const QString ActivePluginKey =   MALIIT_CONFIG_ROOT"onscreen/active";
 
-    const QString ConfigRoot        = "/meegotouch/inputmethods/";
+    const QString ConfigRoot        = MALIIT_CONFIG_ROOT;
     const QString MImPluginPaths    = ConfigRoot + "paths";
     const QString MImPluginActive   = ConfigRoot + "activeplugins";
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
-    const QString PluginRoot         = "/meegotouch/inputmethods/plugins/";
-    const QString MImAccesoryEnabled = "/meegotouch/inputmethods/accessoryenabled";
+    const QString PluginRoot         = MALIIT_CONFIG_ROOT"plugins/";
+    const QString MImAccesoryEnabled = MALIIT_CONFIG_ROOT"accessoryenabled";
 
     const MImPluginDescription* findPluginDescriptions(const QList<MImPluginDescription> &list, const QString &pluginName)
     {

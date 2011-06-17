@@ -30,7 +30,7 @@
 
 namespace {
     const QString DefaultConfigurationPath   = QString::fromLatin1("/usr/share/meegoimframework/imtoolbars/");
-    const char * const PreferredDomainSettingName("/meegotouch/inputmethods/preferred_domain");
+    const char * const PreferredDomainSettingName(MALIIT_CONFIG_ROOT"preferred_domain");
     const char * const DomainItemName("_domain");
     const char * const KeysExtensionString("/keys");
     const char * const ToolbarExtensionString("/toolbar");

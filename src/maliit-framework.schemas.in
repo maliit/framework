@@ -2,8 +2,8 @@
 <gconfschemafile>
   <schemalist>
     <schema>
-      <key>/schemas/meegotouch/inputmethods/plugins/hardware</key>
-      <applyto>/meegotouch/inputmethods/plugins/hardware</applyto>
+      <key>/schemas/maliit/plugins/hardware</key>
+      <applyto>/maliit/plugins/hardware</applyto>
       <owner>meegotouch</owner>
       <type>string</type>
       <default>@M_IM_DEFAULT_PLUGIN@</default>
@@ -14,8 +14,8 @@
     </schema>
 
     <schema>
-      <key>/schemas/meegotouch/inputmethods/accessoryenabled</key>
-      <applyto>/meegotouch/inputmethods/accessoryenabled</applyto>
+      <key>/schemas/maliit/accessoryenabled</key>
+      <applyto>/maliit/accessoryenabled</applyto>
       <owner>meegotouch</owner>
       <type>bool</type>
       <default>false</default>
@@ -26,8 +26,8 @@
     </schema>
 
     <schema>
-     <key>/schemas/meegotouch/inputmethods/multitouch/enabled</key>
-     <applyto>/meegotouch/inputmethods/multitouch/enabled</applyto>
+     <key>/schemas/maliit/multitouch/enabled</key>
+     <applyto>/maliit/multitouch/enabled</applyto>
      <owner>meegotouch</owner>
      <type>bool</type>
      <default>@M_IM_ENABLE_MULTITOUCH@</default>
@@ -38,8 +38,8 @@
     </schema>
 
     <schema>
-      <key>/schemas/meegotouch/inputmethods/onscreen/enabled</key>
-      <applyto>/meegotouch/inputmethods/onscreen/enabled</applyto>
+      <key>/schemas/maliit/onscreen/enabled</key>
+      <applyto>/maliit/onscreen/enabled</applyto>
       <owner>meegotouch</owner>
       <type>list</type>
       <list_type>string</list_type>
@@ -51,8 +51,8 @@
     </schema>
 
     <schema>
-      <key>/schemas/meegotouch/inputmethods/onscreen/active</key>
-      <applyto>/meegotouch/inputmethods/onscreen/active</applyto>
+      <key>/schemas/maliit/onscreen/active</key>
+      <applyto>/maliit/onscreen/active</applyto>
       <owner>meegotouch</owner>
       <type>list</type>
       <list_type>string</list_type>
