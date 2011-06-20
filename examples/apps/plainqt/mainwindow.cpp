@@ -9,7 +9,7 @@ namespace {
     const char * const TextPrompt = "Double-click this text area to invoke virtual keyboard ...";
     const char * const ImModuleEnv = "QT_IM_MODULE";
     const char * const ExpectedImModule = "MInputContext";
-
+    const QString serverName("maliit-server"); //TODO: when maliit and example application is split out, look up in .pc file
 
     QString checkForErrors()
     {
@@ -29,9 +29,9 @@ namespace {
                 errorMsg.append("\n");
             }
 
-            errorMsg.append("No compositing window manager found. You might be able to run the " \
-                            "MeeGo Input Method server in self-compositing mode:\n" \
-                            "$ meego-im-uiserver -use-self-composition -manual-redirection");
+            errorMsg.append(QString("No compositing window manager found. You might be able to run the " \
+                            "Maliit server in self-compositing mode:\n" \
+                            "$ %1 -use-self-composition -manual-redirection").arg(serverName));
         }
 
         return errorMsg;
@@ -134,7 +134,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::onStartServerClicked()
 {
-    const QString programName("meego-im-uiserver");
+
     QStringList arguments;
     arguments << "-bypass-wm-hint";
 
@@ -146,7 +146,7 @@ void MainWindow::onStartServerClicked()
     if (serverProcess->state() != QProcess::NotRunning) {
         serverProcess->terminate();
     } else {
-        serverProcess->start(programName, arguments);
+        serverProcess->start(serverName, arguments);
     }
 }
 
