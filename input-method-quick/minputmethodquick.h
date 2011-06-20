@@ -120,6 +120,9 @@ public slots:
     //! Tells the framework to switch plugins. Called by QML components.
     void pluginSwitchRequired(int switchDirection);
 
+    //! Tells the framework to close keyboard. Called by QML components.
+    void userHide();
+
 private:
     Q_DISABLE_COPY(MInputMethodQuick);
     Q_DECLARE_PRIVATE(MInputMethodQuick);
