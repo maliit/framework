@@ -4,6 +4,7 @@
     CONFIG-=nomeegotouch
 }
 
+MALIIT_VERSION = 0.80
 MALIIT_INTERFACE_VERSION = 0.80
 MALIIT_PLUGINS_INTERFACE_VERSION = 0.80
 MALIIT_PLUGINS_QUICK_INTERFACE_VERSION = 0.80
@@ -20,7 +21,7 @@ QMAKE_LFLAGS_RELEASE+=-Wl,--as-needed
 QMAKE_CXXFLAGS_DEBUG+=-Werror
 
 isEmpty(M_IM_VERSION) {
-    M_IM_VERSION=$$system(sed -e \'/^meego-im-framework/!d\'  -e \'s/^meego-im-framework (\\([^-~]*\\)[-~].*).*$/\\1/\' $$PWD/debian/changelog | head -1)
+    M_IM_VERSION=MALIIT_VERSION
 }
 
 isEmpty(M_IM_PREFIX) {
