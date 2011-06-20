@@ -312,3 +312,9 @@ void MInputMethodQuick::pluginSwitchRequired(int switchDirection)
     inputMethodHost()->switchPlugin(
         static_cast<MInputMethod::SwitchDirection>(switchDirection));
 }
+
+void MInputMethodQuick::userHide()
+{
+    hide();
+    inputMethodHost()->notifyImInitiatedHiding();
+}
