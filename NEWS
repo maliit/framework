@@ -1,3 +1,29 @@
+0.80.0
+======
+
+CHANGES SINCE 0.20.20
+* Maliit rebranding:
+  - Libraries:
+    - libmeegoimframework => libmaliit-plugins
+    - libmeegoimquick => libmaliit-plugins-quick
+  - Binaries:
+    - meego-im-uiserver => maliit-server
+  - Plugins install paths:
+    - /usr/lib/meego-im-plugins => /usr/lib/maliit/plugins-x.y
+* Added library versioning
+  - Allows for parallel installation of different versions
+* Removed internal libmeegotouch dependency
+  - MPreeditInjectionEvent, MInputMethodState added to new experimental
+    libmaliit
+* Improved build infrastructure:
+  - Common defines for install paths, names, etc.
+  - Better pkg-config support (whilst deprecating prf files)
+  - Better install prefix handling through M_IM_PREFIX
+
+BUG FIXES
+* Fixes: BMC#18772 - meego-im-uiserver is changing the window type after it's
+  window is mapped
+
 0.20.11
 =======
 * Added support for enabling/disabling plguins and subviews.
