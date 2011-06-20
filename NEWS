@@ -188,3 +188,124 @@ application is about to change orientation.
  - Source code of MToolbarRow and MToolbarLayout was moved to dedicated files, so you need
    to include mtoolbarrow.h and mtoolbarlayout.h if you want to use that classes.
 
+= 0.18/0.1.22 =
+== New ==
+ * New RPC setComposingTextInput, composingTextInput, and setModifierState to support hardware keyboard key event filtering
+
+== Changed ==
+ * Region given to DuiPassThruWindow::inputPassthrough() is not translated anymore
+ * dui-im-context is now moved back to here
+ * Window's properties are set during the construction of the passtrough window
+
+= 0.1.21 =
+== New ==
+ * DuiIMPluginManager handles different kind of input method
+ * Selective painting is enabled
+
+== Changed ==
+ * DuiIMPluginLoader is renamed into DuiIMPluginManager with new features
+ * DuiIMPluginManager no longer needs scene argument
+
+= 0.1.20 =
+== Changed ==
+ * Compilation in passthroughserver now using the library created in src, and no longer look in /usr/lib
+ * By default now using -software, even for device usage 
+ 
+= 0.1.19 =
+== New ==
+ * Unit tests are now packaged
+ * Server is now launched from a helper script in order to "guarantee" a correct connection with DBus
+ * XSession script is now removed and rely on the DBus service
+
+= 0.1.18 =
+== New ==
+ * inputMethodAreaUpdated signal to announce the changes to the input method area. This is now separated from the area sent to passthrough server.
+  
+== Changed ==
+ * Further changes to reaction maps API
+
+= 0.1.17 =
+== Changed ==
+ * Haptics related class name changed
+ * Support for quering pre-edit rectangle from input-context
+ * No longer use software rendering
+
+== Fixed ==
+ * NB#141431   candidate list rotation is broken
+
+= 0.1.16 =
+== Changed ==
+ * Rendering method (software/hardware accelerated) is now determined in runtime (using -software argument)
+
+= 0.1.15 =
+== Fixed ==
+ * NB#137201   Virtual keyboard is getting closed when typing the first character
+
+= 0.1.14 =
+== new ==
+ * Depends on libdui 0.11
+ * Direct mode input is now supported
+ * Input method server is now also a dbus service
+ * DuiInputContext::WidgetInfo sets default values
+ * Input-context notifies input method when it's application's orientation changes
+
+== Changed ==
+ * input-context is moved to libdui, starting on libdui 0.11
+ * Passthrough window is no longer shown/hidden during the region update, it is always shown all the time.
+
+== Removed ==
+ * Old unused files (css, input-context unit tests)
+
+== Fixed ==
+ * NB#130249   Virtual keyboard uses local instance of theme daemon
+ * NB#137201   Virtual keyboard is getting closed when typing the first character 
+
+= 0.1.13 = 
+== new ==
+ * imInitiatedHide() to notify that im server wants the IM to be hidden.
+ * Remove focus when input method is hidden.
+
+== Changed ==
+ * inputMethodShown() and inputMethodHidden are removed in favor of imInitiatedHide()
+ * QSettings are deprecated in favor of DuiGConfItem.
+
+= 0.1.11 =
+== New ==
+ * inputMethodShown() to hide the navigation bar
+
+== Changed ==
+ * mouseClickedOnPreedit() now includes the rectangle of the preedit
+
+= 0.1.9 =
+== Changed ==
+ * Make dui-im-uiserver have its own reaction map
+
+= 0.1.8 = 
+== New ==
+ * content type support 
+ * error correction information support
+ * word prediction hint support
+ * support for notifying inputmethodbase about widget visualization priority
+ * support for enabling/disabling error correction in input context via dbus
+ * Initial support for selective compositing. 
+
+== Changed ==
+ * preedit style depends on parameters of DuiInputContext::updatePreedit
+
+= 0.1.6 =
+== New ==
+ * send preedit (also with attribute) on preeditinjection event
+
+= 0.1.4 =
+== New ==
+ * Plugin framework now use settings for specifying driver location, activated plugins and blacklisted plugins
+ * Input context supports plain Qt application
+ * Input context supports focus out
+
+== Changed ==
+ * Passthrough server now receives all region updates from the plugins
+
+= 0.1.3 : 2009.02.17 =
+== Changed ==
+ * Input method plugin is refactored
+ * Package now contains the framework, Qt input context, and the UI server
