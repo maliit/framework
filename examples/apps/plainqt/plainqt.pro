@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = maliit-exampleapp-plainqt
-target.path = /usr/bin
+target.path = $${M_IM_INSTALL_BIN}
 DEPENDPATH += .
 
 SOURCES += \
