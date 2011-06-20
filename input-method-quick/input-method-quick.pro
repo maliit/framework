@@ -51,7 +51,7 @@ nomeegotouch {
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = $$OUT_PWD/meegoimquick.prf
 
-install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
+install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc
 
 INSTALLS += target \

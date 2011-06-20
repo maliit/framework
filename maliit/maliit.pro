@@ -31,7 +31,7 @@ headers.files += $$HEADERSINSTALL
 
 outputFiles(maliit-$${MALIIT_INTERFACE_VERSION}.pc)
 
-install_pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
+install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-$${MALIIT_INTERFACE_VERSION}.pc
 
 INSTALLS += \
