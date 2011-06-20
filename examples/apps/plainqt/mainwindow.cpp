@@ -5,11 +5,14 @@
 #include <QtCore>
 #include <QtGui>
 
+#define DEFINE_TO_STR(x) DEFINE_TO_STR2(x)
+#define DEFINE_TO_STR2(x) #x
+
 namespace {
     const char * const TextPrompt = "Double-click this text area to invoke virtual keyboard ...";
     const char * const ImModuleEnv = "QT_IM_MODULE";
     const char * const ExpectedImModule = "MInputContext";
-
+    const char * const MaliitServer = DEFINE_TO_STR(MALIIT_SERVER);
 
     QString checkForErrors()
     {
@@ -134,7 +137,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::onStartServerClicked()
 {
-    const QString programName("meego-im-uiserver");
     QStringList arguments;
     arguments << "-bypass-wm-hint";
 
@@ -146,7 +148,7 @@ void MainWindow::onStartServerClicked()
     if (serverProcess->state() != QProcess::NotRunning) {
         serverProcess->terminate();
     } else {
-        serverProcess->start(programName, arguments);
+        serverProcess->start(MaliitServer, arguments);
     }
 }
 
