@@ -1,2 +1,4 @@
 *.log.xml
 tests.xml
+gen-tests-xml.sh
+runtests.sh
