@@ -174,6 +174,8 @@ binary-arch: build install
 	dh_gencontrol $(EXCLUSIONS)
 	dh_md5sums $(EXCLUSIONS)
 	dh_builddeb --destdir=$(DEBDIR) $(EXCLUSIONS)
+	# aegis deps
+	aegis-deb-util --add-manifest meego-im-uiserver
 
 binary: binary-indep binary-arch
 .PHONY: build clean binary-indep binary-arch binary install configure
