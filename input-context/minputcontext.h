@@ -31,6 +31,7 @@
 class MPreeditStyleContainer;
 class GlibDBusIMServerProxy;
 class QGraphicsItem;
+class QGraphicsView;
 typedef GlibDBusIMServerProxy DBusIMServerProxy;
 
 /*!
@@ -272,6 +273,8 @@ private:
 
     //! finds focus scope item for item
     static QGraphicsItem *findFocusScopeItem(QGraphicsItem *item);
+
+    bool isVisible(const QRect &rect, const QGraphicsView *view, const QGraphicsItem *item) const;
 
     bool active; // is connection active
     InputPanelState inputPanelState; // state for the input method server's software input panel

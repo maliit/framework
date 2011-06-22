@@ -49,6 +49,7 @@ class MPreeditStyleContainer
 #include <MLibrary>
 #include <MInputMethodState>
 #include <MWindow>
+#include <MApplicationPage>
 #include <mtimestamp.h>
 #else
 #include <QApplication>
@@ -1203,10 +1204,62 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         QRect cursorRect = queryResult.toRect();
         cursorRect = QRect(focused->mapToGlobal(cursorRect.topLeft()),
                            focused->mapToGlobal(cursorRect.bottomRight()));
-        stateInformation["cursorRectangle"] = cursorRect;
+        if (isVisible(cursorRect, graphicsView, focusedQGraphicsItem)) {
+            stateInformation["cursorRectangle"] = cursorRect;
+        }
     }
 
     return stateInformation;
+}
+
+// 1. There is a probability, that this will detect cursor visible when it actually is not,
+// we consider this as a lesser evil than the opposite.
+// 2. Overlapping by input objects like virtual keyboard is not considered here,
+// IM software should check it themselves if needed.
+bool MInputContext::isVisible(const QRect &cursorRect, const QGraphicsView *view, const QGraphicsItem *item) const
+{
+    if (view == 0 || item == 0) {
+        return false;
+    }
+    QRect visibleRect(0, 0, view->width(), view->height());
+
+    QGraphicsItem *parent = item->parentItem();
+    while (parent) {
+        QRect widgetClipRect;
+#ifdef HAVE_MEEGOTOUCH
+        // MApplicationPage does not set correctly clipping for its main viewport
+        if (parent->isWidget()) {
+            QGraphicsWidget *parentWidget = static_cast<QGraphicsWidget*>(parent);
+            MSceneWindow *sceneWindow;
+            if ((sceneWindow = qobject_cast<MSceneWindow *>(parentWidget)) != 0) {
+                if (sceneWindow->windowType() == MSceneWindow::ApplicationPage) {
+                    QRectF clipVsItem = static_cast<MApplicationPage *>(sceneWindow)->exposedContentRect();
+                    widgetClipRect = sceneWindow->mapToScene(clipVsItem).boundingRect().toRect();
+                }
+            }
+        }
+#endif
+        if (!widgetClipRect.isValid()
+            && (parent->flags() & QGraphicsItem::ItemClipsChildrenToShape) != 0) {
+            // this heavily relies on wehther the view properly set ItemClipsChildrenToShape
+            // sometimes they are not
+            // (the MApplicationPage above for example)
+            widgetClipRect = parent->sceneBoundingRect().toRect();
+        }
+
+        if (!widgetClipRect.isNull()) {
+            if (!visibleRect.isValid()) {
+                visibleRect = widgetClipRect;
+            } else {
+                visibleRect &= widgetClipRect;
+            }
+        }
+
+        parent = parent->parentItem();
+    }
+    // here would be transition of visibleRect to global coordinates, but they appear to be always the same as scene's
+
+    return visibleRect.isValid() && cursorRect.intersects(visibleRect);
 }
 
 void MInputContext::registerExistingAttributeExtensions()
