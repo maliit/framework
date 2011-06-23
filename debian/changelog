@@ -1,3 +1,9 @@
+meego-im-framework (0.21.0~1) unstable; urgency=low
+
+  * [UNRELEASED]
+
+ -- Pekka Vuorela <pekka.ta.vuorela@nokia.com>  Thu, 23 Jun 2011 14:16:59 +0300
+
 meego-im-framework (0.20.20-1) unstable; urgency=low
 
   * Fixes: NB#256839 - Enter security code-view not updated after security code entered from VKB
