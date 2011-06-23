@@ -18,6 +18,7 @@
 #include "mimpluginmanager_p.h"
 #include "mimpluginmanageradaptor.h"
 #include "minputmethodplugin.h"
+#include "mimabstractpluginfactory.h"
 #include "mattributeextensionmanager.h"
 #include "mabstractinputmethod.h"
 #include "mimsettings.h"
@@ -48,10 +49,12 @@ typedef MInputContextGlibDBusConnection MInputContextConnectionImpl;
 namespace
 {
     const QString DefaultPluginLocation(M_IM_PLUGINS_DIR);
+    const QString DefaultFactoryPluginLocation(M_IM_FACTORY_PLUGINS_DIR);
 
     const QString ConfigRoot           = MALIIT_CONFIG_ROOT;
     const QString MImPluginPaths       = ConfigRoot + "paths";
     const QString MImPluginDisabled    = ConfigRoot + "disabledpluginfiles";
+    const QString MImPluginFactories   = ConfigRoot + "factories";
 
     const QString PluginRoot           = MALIIT_CONFIG_ROOT"plugins";
     const QString MImAccesoryEnabled   = MALIIT_CONFIG_ROOT"accessoryenabled";
@@ -60,6 +63,13 @@ namespace
     const char * const DBusPath        = "/com/meego/inputmethodpluginmanager1";
 
     const int MaxPluginHideTransitionTime(2*1000);
+
+    // this function is used to detect the file suffix used to associate with specific factory
+    static QString getFileMimeType(const QString& fileName)
+    {
+        QFileInfo fi(fileName);
+        return fi.suffix();
+    }
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
@@ -97,6 +107,11 @@ void MIMPluginManagerPrivate::loadPlugins()
 
     MImOnScreenPlugins::SubView activeSubView = onScreenPlugins.activeSubView();
 
+    //load factories
+    const QDir &dir(DefaultFactoryPluginLocation);
+    foreach (QString factoryName, dir.entryList(QDir::Files))
+        loadFactoryPlugin(dir, factoryName);
+
     foreach (QString path, paths) {
         const QDir &dir(path);
 
@@ -109,7 +124,7 @@ void MIMPluginManagerPrivate::loadPlugins()
 
         QStringList pluginFiles = dir.entryList(QDir::Files);
         foreach (const QString &fileName, pluginFiles) {
-            if (fileName == activeSubView.plugin)
+            if  (fileName == activeSubView.plugin)
                 continue;
 
             loadPlugin(dir, fileName);
@@ -117,6 +132,37 @@ void MIMPluginManagerPrivate::loadPlugins()
     } // end foreach path in paths
 
     emit q->pluginsChanged();
+}
+
+bool MIMPluginManagerPrivate::loadFactoryPlugin(const QDir &dir, const QString &fileName)
+{
+    Q_ASSERT(MIMPluginManager);
+    Q_ASSERT(mApp);
+
+    if (blacklist.contains(fileName)) {
+        qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
+        return false;
+    }
+
+    // TODO: skip already loaded plugin ids (fileName)
+    QPluginLoader load(dir.absoluteFilePath(fileName));
+
+    QObject *pluginInstance = load.instance();
+    if (!pluginInstance) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "Error loading factory plugin from" << dir.absoluteFilePath(fileName) << load.errorString();
+        return false;
+    }
+
+    // check if the plugin is a factory
+    MImAbstractPluginFactory *factory = qobject_cast<MImAbstractPluginFactory *>(pluginInstance);
+    if (!factory) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "Could not cast" << pluginInstance->metaObject()->className() << "into MImAbstractPluginFactory.";
+        return false;
+    }
+    factories.insert(factory->fileExtension(), factory);
+    return true;
 }
 
 bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileName)
@@ -129,24 +175,33 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    // TODO: skip already loaded plugin ids (fileName)
+    MInputMethodPlugin *plugin = 0;
 
-    QPluginLoader load(dir.absoluteFilePath(fileName));
+    // Check if we have a specific factory for this plugin
+    QString mimeType = getFileMimeType(fileName);
+    if (factories.contains(mimeType)) {
+        plugin = factories[mimeType]->create(dir.filePath(fileName));
+        if (!plugin) {
+            qWarning() << __PRETTY_FUNCTION__
+                       << "Could not create a plugin for: " << fileName;
+        }
+    } else {
+        // TODO: skip already loaded plugin ids (fileName)
+        QPluginLoader load(dir.absoluteFilePath(fileName));
 
-    QObject *pluginInstance = load.instance();
+        QObject *pluginInstance = load.instance();
+        if (!pluginInstance) {
+            qWarning() << __PRETTY_FUNCTION__
+                       << "Error loading plugin from" << dir.absoluteFilePath(fileName) << load.errorString();
+            return false;
+        }
 
-    if (!pluginInstance) {
-        qWarning() << __PRETTY_FUNCTION__
-                   << "Error loading plugin from" << dir.absoluteFilePath(fileName) << load.errorString();
-        return false;
-    }
-
-    MInputMethodPlugin *plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
-
-    if (!plugin) {
-        qWarning() << __PRETTY_FUNCTION__
-                   << "Could not cast" << pluginInstance->metaObject()->className() << "into MInputMethodPlugin.";
-        return false;
+        plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
+        if (!plugin) {
+            qWarning() << __PRETTY_FUNCTION__
+                       << "Could not cast" << pluginInstance->metaObject()->className() << "into MInputMethodPlugin.";
+            return false;
+        }
     }
 
     if (plugin->supportedStates().isEmpty()) {
@@ -919,8 +974,8 @@ MIMPluginManager::MIMPluginManager(MImRotationAnimation* rotationAnimation)
                 rotationAnimation, SLOT(appOrientationChangeFinished(int)));
     }
 
-    d->paths     = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
-    d->blacklist = MImSettings(MImPluginDisabled).value().toStringList();
+    d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
+    d->blacklist    = MImSettings(MImPluginDisabled).value().toStringList();
 
     d->loadPlugins();
 

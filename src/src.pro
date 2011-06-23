@@ -8,6 +8,7 @@ INCLUDEPATH += .. ../passthroughserver
 # Input
 HEADERSINSTALL = \
         minputmethodplugin.h \
+        mimabstractpluginfactory.h \
         mabstractinputmethod.h \
         mabstractinputmethodhost.h \
         mimpluginmanager.h \

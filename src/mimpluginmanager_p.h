@@ -37,6 +37,7 @@
 #include <QDir>
 
 class MInputMethodPlugin;
+class MImAbstractPluginFactory;
 class MInputContextConnection;
 class MIMPluginManager;
 class MImSettings;
@@ -69,6 +70,7 @@ public:
     typedef QMap<MInputMethodPlugin *, PluginDescription> Plugins;
     typedef QSet<MInputMethodPlugin *> ActivePlugins;
     typedef QMap<MInputMethod::HandlerState, MInputMethodPlugin *> HandlerMap;
+    typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
     MIMPluginManagerPrivate(MInputContextConnection *connection, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
@@ -76,6 +78,7 @@ public:
     void activatePlugin(MInputMethodPlugin *plugin);
     void loadPlugins();
     bool loadPlugin(const QDir &dir, const QString &fileName);
+    bool loadFactoryPlugin(const QDir &dir, const QString &fileName);
     void addHandlerMap(MInputMethod::HandlerState state, const QString &pluginName);
     void setActiveHandlers(const QSet<MInputMethod::HandlerState> &states);
     QSet<MInputMethod::HandlerState> activeHandlers() const;
@@ -143,6 +146,7 @@ public:
 
     Plugins plugins;
     ActivePlugins activePlugins;
+    PluginsFactory factories;
 
     QStringList paths;
     QStringList blacklist;
