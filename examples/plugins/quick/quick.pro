@@ -10,6 +10,7 @@ QT = core gui declarative
 SOURCES += helloworldplugin.cpp
 HEADERS += helloworldplugin.h
 RESOURCES = helloworld.qrc
+target.depends = helloworld.qml
 
 BUILD_TYPE = unittest
 
