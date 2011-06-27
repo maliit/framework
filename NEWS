@@ -1,3 +1,19 @@
+0.80.1
+======
+
+CHANGES SINCE 0.80.0
+* Support for QML plugins to let user hide plugin
+* Legacy mode can be enabled through:
+  $ qmake -r CONFIG+=enable-meegotouch
+
+BUG FIXES
+* Fixes: NB#254635, meego-im-uiserver is missing capabilities
+* Fixes: BMC#15415 - corrupt text-input-settings.qm
+* Fixes: NB#265488 - Word tracker is shown empty when the device is rotated.
+* Fixes: MAbstractInputMethodHost's dependency to MIMApplication
+* Fixes: NB#259910, CommonComboBoxIcons missing from Text input settings
+* Fixes: NB#259600, Order of layout information, non-tapable area and line to be removed from settings.
+
 0.80.0
 ======
 
