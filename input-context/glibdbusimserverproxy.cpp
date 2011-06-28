@@ -16,6 +16,7 @@
 
 #include "glibdbusimserverproxy.h"
 #include "minputcontext.h"
+#include "mdbusglibinputcontextadaptor.h"
 
 #include <QPoint>
 #include <QRect>
@@ -36,6 +37,7 @@ namespace
     const char * const DBusInterface("com.meego.inputmethod.uiserver1");
     const char * const SocketPath = "unix:path=/tmp/meego-im-uiserver/imserver_dbus";
     const int ConnectionRetryInterval(6*1000); // in ms
+    const QString icAdaptorPath("/com/meego/inputmethod/inputcontext");
 
     Maliit::DBusGLib::ConnectionRef toRef(DBusGConnection *connection)
     {
@@ -47,13 +49,21 @@ namespace
     }
 }
 
-GlibDBusIMServerProxy::GlibDBusIMServerProxy(GObject *inputContextAdaptor, const QString &icAdaptorPath)
+GlibDBusIMServerProxy::GlibDBusIMServerProxy(MInputContext *inputContext, QObject *parent)
     : glibObjectProxy(NULL),
       connection(),
       inputContextAdaptor(inputContextAdaptor),
       icAdaptorPath(icAdaptorPath),
       active(true)
 {
+    Q_UNUSED(parent);
+
+    g_type_init();
+    MDBusGlibInputContextAdaptor *inputContextAdaptor
+        = M_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR(
+            g_object_new(M_TYPE_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR, NULL));
+
+    inputContextAdaptor->inputContext = inputContext; // TODO: remove knowledge of inputContext
     dbus_g_thread_init();
 
     connectToDBus();
@@ -105,7 +115,7 @@ void GlibDBusIMServerProxy::connectToDBus()
 
     dbus_g_connection_register_g_object(connection.get(), icAdaptorPath.toAscii().data(), inputContextAdaptor);
 
-    emit dbusConnected();
+    emit connected();
 }
 
 void GlibDBusIMServerProxy::onDisconnection()
@@ -114,7 +124,8 @@ void GlibDBusIMServerProxy::onDisconnection()
 
     glibObjectProxy = 0;
     connection.reset();
-    emit dbusDisconnected();
+    emit disconnected();
+
     if (active) {
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
     }

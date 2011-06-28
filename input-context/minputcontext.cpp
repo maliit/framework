@@ -16,7 +16,6 @@
 
 #include "minputcontext.h"
 
-#include "mdbusglibinputcontextadaptor.h"
 #include "glibdbusimserverproxy.h"
 
 #ifdef HAVE_MEEGOTOUCH
@@ -64,7 +63,6 @@ using Maliit::InputMethod;
 namespace
 {
     const int SoftwareInputPanelHideTimer = 100;
-    const QString DBusCallbackPath("/com/meego/inputmethod/inputcontext");
     const char * const ToolbarTarget("/toolbar");
     const char * const InputContextName(MALIIT_INPUTCONTEXT_NAME);
 
@@ -98,7 +96,6 @@ MInputContext::MInputContext(QObject *parent)
       copyAvailable(false),
       copyAllowed(true),
       redirectKeys(false),
-      objectPath(QString("%1%2").arg(DBusCallbackPath).arg(++connectionCount)),
       currentKeyEventTime(0)
 {
     QByteArray debugEnvVar = qgetenv("MIC_ENABLE_DEBUG");
@@ -193,16 +190,10 @@ void MInputContext::connectToDBus()
 {
     if (debug) qDebug() << __PRETTY_FUNCTION__;
 
-    g_type_init();
-    MDBusGlibInputContextAdaptor *inputContextAdaptor
-        = M_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR(
-            g_object_new(M_TYPE_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR, NULL));
+    imServer = new GlibDBusIMServerProxy(this, 0);
 
-    inputContextAdaptor->inputContext = this;
-    imServer = new GlibDBusIMServerProxy(G_OBJECT(inputContextAdaptor), DBusCallbackPath);
-
-    connect(imServer, SIGNAL(dbusConnected()), this, SLOT(onDBusConnection()));
-    connect(imServer, SIGNAL(dbusDisconnected()), this, SLOT(onDBusDisconnection()));
+    connect(imServer, SIGNAL(connected()), this, SLOT(onDBusConnection()));
+    connect(imServer, SIGNAL(disconnected()), this, SLOT(onDBusDisconnection()));
 }
 
 bool MInputContext::event(QEvent *event)
@@ -306,11 +297,6 @@ void MInputContext::setLanguage(const QString &language)
         m_language = language;
         InputMethod::instance()->setLanguage(language);
     }
-}
-
-QString MInputContext::dbusObjectPath() const
-{
-    return objectPath;
 }
 
 void MInputContext::reset()
