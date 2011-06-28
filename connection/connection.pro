@@ -19,7 +19,20 @@ SOURCES += \
     mimserverconnection.cpp \
     minputcontextconnection.cpp \
 
-# Default to using glib-dbus based connection
+# Default to building direct connection
+CONFIG += direct-connection
+
+direct-connection {
+    SOURCES += \
+        miminputcontextdirectconnection.cpp \
+        mimdirectserverconnection.cpp \
+
+    HEADERS += \
+        miminputcontextdirectconnection.h \
+        mimdirectserverconnection.h \
+}
+
+# Default to building glib-dbus based connection
 CONFIG += glib-dbus-connection
 
 glib-dbus-connection {
