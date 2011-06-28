@@ -18,6 +18,7 @@
 
 #include <QWidget>
 #include <QRegion>
+#include <QCloseEvent>
 
 class MImRemoteWindow;
 
@@ -39,6 +40,7 @@ public:
     ~MPassThruWindow();
 
     virtual bool event(QEvent *e);
+    void closeEvent(QCloseEvent *ev);
 
 public slots:
     //! Set window ID for given region

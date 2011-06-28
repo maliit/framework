@@ -105,6 +105,11 @@ MPassThruWindow::~MPassThruWindow()
 {
 }
 
+void MPassThruWindow::closeEvent(QCloseEvent *ev)
+{
+    ev->ignore(); // We don't want to be closed.
+}
+
 bool MPassThruWindow::event(QEvent *e)
 {
     if (e->type() == QEvent::WinIdChange) {
