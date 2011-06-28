@@ -14,46 +14,21 @@
  * of this file.
  */
 
-#ifndef GLIBDBUSIMSERVERPROXY_H
-#define GLIBDBUSIMSERVERPROXY_H
+#ifndef MIMSERVERCONNECTION_H
+#define MIMSERVERCONNECTION_H
 
-#include <dbus/dbus-glib.h>
-#include <QObject>
-#include <QEvent>
-#include <Qt>
-#include <QMap>
-#include <QSet>
-#include <tr1/memory>
+#include <QtCore>
 
-#include "mimserverconnection.h"
-#include "minputcontext.h"
+class MImServerConnectionPrivate;
 
-namespace Maliit
-{
-    namespace DBusGLib
-    {
-    // std::tr1::shared_ptr allows to specify a deleter. Hiding it behind a typedef,
-    // as we do not really need all the shared pointer semantics here.
-    typedef std::tr1::shared_ptr<DBusGConnection> ConnectionRef;
-    }
-}
-
-/* \brief Glib D-Bus implementation of a connection with the input method server.
- *
- * The input context is exposed over DBus so that the input method server can communicate with it,
- * and methods can be called to communicate with the input method server.
- */
-
-// TODO: rename to MImGlibDBusServerConnection, or similar
-class GlibDBusIMServerProxy: public MImServerConnection
+class MImServerConnection : public QObject
 {
     Q_OBJECT
 
 public:
-    GlibDBusIMServerProxy(MInputContext *inputContext, QObject *parent = 0);
-    virtual ~GlibDBusIMServerProxy();
+    //! \brief Constructor
+    explicit MImServerConnection(QObject *parent = 0);
 
-    //! reimpl
     virtual void activateContext();
 
     virtual void showInputMethod();
@@ -68,7 +43,7 @@ public:
                                  bool focusChanged);
 
     virtual void reset(bool requireSynchronization);
-    virtual bool pendingResets();
+    virtual bool pendingResets(); //FIXME: required?
 
     virtual void appOrientationAboutToChange(int angle);
 
@@ -87,26 +62,18 @@ public:
 
     virtual void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                               const QString &attribute, const QVariant &value);
-    //! reimpl end
+
+
+Q_SIGNALS:
+    void connected();
+    void disconnected();
 
 private slots:
-    void connectToDBus();
 
 private:
-    void setContextObject(const QString &dbusObjectPath);
+    Q_DISABLE_COPY(MImServerConnection)
 
-    static void onDisconnectionTrampoline(DBusGProxy *proxy, gpointer userData);
-    void onDisconnection();
-
-    static void resetNotifyTrampoline(DBusGProxy *proxy, DBusGProxyCall *callId, gpointer userData);
-    void resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId);
-
-    DBusGProxy *glibObjectProxy;
-    Maliit::DBusGLib::ConnectionRef connection;
-    GObject *inputContextAdaptor;
-    QString icAdaptorPath;
-    bool active;
-    QSet<DBusGProxyCall *> pendingResetCalls;
+    MImServerConnectionPrivate *d;
 };
 
 #endif

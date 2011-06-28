@@ -31,11 +31,13 @@ HEADERS += minputcontext.h \
     mdbusglibinputcontextadaptor.h \
     glibdbusimserverproxy.h \
     $$STYLE_HEADERS \
+    mimserverconnection.h \
 
 SOURCES += minputcontext.cpp \
     minputcontextplugin.cpp \
     mdbusglibinputcontextadaptor.cpp \
     glibdbusimserverproxy.cpp \
+    mimserverconnection.cpp \
 
 QT = core gui
 CONFIG += plugin link_pkgconfig

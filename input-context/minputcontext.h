@@ -30,10 +30,9 @@
 #include <QPointer>
 
 class MPreeditStyleContainer;
-class GlibDBusIMServerProxy;
 class QGraphicsItem;
 class QGraphicsView;
-typedef GlibDBusIMServerProxy DBusIMServerProxy;
+class MImServerConnection;
 
 /*!
  * \brief On the application side, MInputContext implements input method
@@ -294,7 +293,7 @@ private:
      */
     QTimer sipHideTimer;
 
-    DBusIMServerProxy *imServer;
+    MImServerConnection *imServer;
 
     bool correctionEnabled;
 
