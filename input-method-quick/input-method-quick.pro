@@ -3,12 +3,13 @@ include(../config.pri)
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_QUICK_LIB
-INCLUDEPATH += .. ../src
+INCLUDEPATH += .. ../src ../maliit
 
 # Input
 HEADERSINSTALL = \
         minputmethodquickplugin.h \
         minputmethodquick.h \
+        maliitquick.h \
 
 HEADERS += $$HEADERSINSTALL \
 
