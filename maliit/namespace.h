@@ -18,10 +18,12 @@
 #ifndef MALIIT_NAMESPACE_H
 #define MALIIT_NAMESPACE_H
 
-#include <QSharedPointer>
 #include <QMetaType>
 
-namespace MInputMethod {
+// Currently minputmethodnamespace.h just includes the whole Maliit namespace into
+// the MInputMethod namespace. Be careful about legacy support when changing.
+
+namespace Maliit {
     /*!
      * This enum contains values of the orientation angle of windows in the application.
      *
@@ -234,11 +236,10 @@ namespace MInputMethod {
     };
 }
 
-Q_DECLARE_METATYPE(MInputMethod::TextContentType)
-Q_DECLARE_METATYPE(MInputMethod::Orientation)
-Q_DECLARE_METATYPE(MInputMethod::OrientationAngle)
-Q_DECLARE_METATYPE(MInputMethod::InputMethodMode)
-Q_DECLARE_METATYPE(MInputMethod::InputMethodQueryExtensions)
+Q_DECLARE_METATYPE(Maliit::TextContentType)
+Q_DECLARE_METATYPE(Maliit::Orientation)
+Q_DECLARE_METATYPE(Maliit::OrientationAngle)
+Q_DECLARE_METATYPE(Maliit::InputMethodMode)
+Q_DECLARE_METATYPE(Maliit::InputMethodQueryExtensions)
 
 #endif
-
