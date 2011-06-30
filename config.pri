@@ -8,6 +8,7 @@ MALIIT_VERSION = 0.80.1
 MALIIT_INTERFACE_VERSION = 0.80
 MALIIT_PLUGINS_INTERFACE_VERSION = 0.80
 MALIIT_PLUGINS_QUICK_INTERFACE_VERSION = 0.80
+MALIIT_FRAMEWORK_INTERFACE_VERSION = 0.80
 
 !nomeegotouch {
     include(defines-legacy.pri)
@@ -115,6 +116,7 @@ defineTest(outputFile) {
                 MALIIT_IN_DIR \
                 MALIIT_OUT_DIR \
                 MALIIT_PACKAGE_BRIEF \
+                MALIIT_FRAMEWORK_HEADER \
 
     command = "sed"
     for(var, variables) {
