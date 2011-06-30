@@ -3,7 +3,7 @@ include(../config.pri)
 TEMPLATE = lib
 TARGET = minputcontext
 DEPENDPATH += .
-INCLUDEPATH += . ../src
+INCLUDEPATH += . .. ../src
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc

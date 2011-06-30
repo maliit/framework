@@ -4,7 +4,7 @@ TEMPLATE = app
 TARGET = $$MALIIT_SERVER
 target.path = $$M_IM_INSTALL_BIN
 DEPENDPATH += .
-INCLUDEPATH += . ../src
+INCLUDEPATH += . .. ../src
 
 LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes -lX11
 
