@@ -17,6 +17,7 @@
 
 #include "minputmethodquickplugin.h"
 #include "minputmethodquick.h"
+#include "maliitquick.h"
 
 #include <QDeclarativeComponent> // needed for qmlRegisterUncreatableType
 
@@ -39,6 +40,9 @@ MInputMethodQuickPlugin::MInputMethodQuickPlugin()
     qmlRegisterUncreatableType<MInputMethodQuick>
         ( "com.meego.keyboard-quick", 1, 0, "MInputMethodQuick",
           "There's only one controller and it is in the C++ side" );
+    qmlRegisterUncreatableType<MaliitQuick>
+        ( "com.meego.maliitquick", 1, 0, "Maliit",
+          "This is the class used to export Maliit Enums" );
 }
 
 MInputMethodQuickPlugin::~MInputMethodQuickPlugin()
