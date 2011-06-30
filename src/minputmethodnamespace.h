@@ -14,10 +14,15 @@
  * of this file.
  */
 
-
 #ifndef MINPUTMETHODNAMESPACE_H
 #define MINPUTMETHODNAMESPACE_H
 
 #include <maliit/namespace.h>
+
+#include <QSharedPointer>
+
+namespace MInputMethod {
+    using namespace Maliit;
+}
 
 #endif
