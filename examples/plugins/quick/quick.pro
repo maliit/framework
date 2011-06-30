@@ -31,13 +31,17 @@ contains(BUILD_TYPE, skeleton-legacy) {
 contains(BUILD_TYPE, unittest) {
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
-    include(../../../config.pri)
+    TOP_DIR = ../../..
 
-    QUICK_DIR = ../../../input-method-quick
+    include($$TOP_DIR/config.pri)
+
+    INCLUDEPATH += $$TOP_DIR
+
+    QUICK_DIR = $$TOP_DIR/input-method-quick
     LIBS += $$QUICK_DIR/lib$${MALIIT_PLUGINS_QUICK_LIB}.so
     INCLUDEPATH += $$QUICK_DIR
 
-    SRC_DIR = ../../../src
+    SRC_DIR = $$TOP_DIR/src
     LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
     INCLUDEPATH += $$SRC_DIR
 }

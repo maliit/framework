@@ -4,7 +4,7 @@ VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $${MALIIT_LIB}
 
-INCLUDEPATH += . ../src
+INCLUDEPATH += . .. ../src
 
 QT = core gui
 
