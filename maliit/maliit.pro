@@ -15,6 +15,7 @@ HEADERSINSTALL = \
     minputmethodstate.h \
     preeditinjectionevent.h \
     inputmethod.h \
+    attributeextension.h \
 
 FRAMEWORKHEADERSINSTALL = \
     namespace.h
@@ -25,11 +26,16 @@ HEADERS += \
     minputmethodstate_p.h \
     preeditinjectionevent_p.h \
     inputmethod_p.h \
+    attributeextension_p.h \
+    attributeextensionregistry_p.h \
+    attributeextensionregistry.h \
 
 SOURCES += \
     minputmethodstate.cpp \
     preeditinjectionevent.cpp \
     inputmethod.cpp \
+    attributeextension.cpp \
+    attributeextensionregistry.cpp \
 
 target.path += $$M_IM_INSTALL_LIBS
 
