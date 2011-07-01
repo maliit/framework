@@ -13,7 +13,7 @@ MOC_DIR = .moc
 
 HEADERSINSTALL = \
     minputmethodstate.h \
-    mpreeditinjectionevent.h \
+    preeditinjectionevent.h \
 
 FRAMEWORKHEADERSINSTALL = \
     namespace.h
@@ -22,11 +22,11 @@ HEADERS += \
     $$HEADERSINSTALL \
     $$FRAMEWORKHEADERSINSTALL \
     minputmethodstate_p.h \
-    mpreeditinjectionevent_p.h \
+    preeditinjectionevent_p.h
 
 SOURCES += \
     minputmethodstate.cpp \
-    mpreeditinjectionevent.cpp \
+    preeditinjectionevent.cpp
 
 target.path += $$M_IM_INSTALL_LIBS
 
