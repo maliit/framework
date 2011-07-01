@@ -17,11 +17,11 @@
 #ifndef MINPUTCONTEXT_H
 #define MINPUTCONTEXT_H
 
-#include "minputmethodnamespace.h"
-
 #ifdef HAVE_MEEGOTOUCH
 #include <MNamespace>
 #endif
+
+#include <minputmethodnamespace.h>
 
 #include <QObject>
 #include <QInputContext>
@@ -220,11 +220,11 @@ private slots:
 #endif
 
     //! Notify input method plugin about the application's active window prepare to change to a new \a orientation angle.
-    void notifyOrientationAboutToChange(MInputMethod::OrientationAngle orientation);
+    void notifyOrientationAboutToChange(Maliit::OrientationAngle orientation);
 
     //! Notify input method plugin about new \a orientation angle of application's active window.
     //! \note this method is called when the orientation change is finished
-    void notifyOrientationChanged(MInputMethod::OrientationAngle orientation);
+    void notifyOrientationChanged(Maliit::OrientationAngle orientation);
 
     //! Notify input method plugin about a new attribute extension which is defined in \a fileName and with the unique \a id to be registered.
     //! \note empty string for \a fileName is acceptable, it means don't load any content, just register a new id.
@@ -238,6 +238,9 @@ private slots:
 
     //! Notify input method plugin about the \attribute of the \a keyId in the extended attribute which has the unique \a id is changed to \a value.
     void notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem, const QString &attribute, const QVariant& value);
+
+    //! Notify input method plugin about the \attribute of the \a key in the extended attribute which has the unique \a id is changed to \a value.
+    void notifyExtendedAttributeChanged(int id, const QString &key, const QVariant& value);
 
     //! Checks whether there is someting to paste in the clipboard and notifies input method plugin about it.
     void handleClipboardDataChange();

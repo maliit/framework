@@ -23,7 +23,6 @@ FRAMEWORKHEADERSINSTALL = \
 HEADERS += \
     $$HEADERSINSTALL \
     $$FRAMEWORKHEADERSINSTALL \
-    minputmethodstate_p.h \
     preeditinjectionevent_p.h \
     inputmethod_p.h \
     attributeextension_p.h \
@@ -31,7 +30,6 @@ HEADERS += \
     attributeextensionregistry.h \
 
 SOURCES += \
-    minputmethodstate.cpp \
     preeditinjectionevent.cpp \
     inputmethod.cpp \
     attributeextension.cpp \
@@ -39,7 +37,7 @@ SOURCES += \
 
 target.path += $$M_IM_INSTALL_LIBS
 
-headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER
+headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER/maliit
 headers.files += $$HEADERSINSTALL
 
 frameworkheaders.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_FRAMEWORK_HEADER/maliit
