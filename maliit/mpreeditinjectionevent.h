@@ -16,26 +16,28 @@
 
 // Based on mpreeditinjectionevent.h from libmeegotouch
 
-#ifndef MPREEDITINJECTIONEVENT_H
-#define MPREEDITINJECTIONEVENT_H
+#ifndef MALIIT_PREEDITINJECTIONEVENT_H
+#define MALIIT_PREEDITINJECTIONEVENT_H
 
 #include <QEvent>
 
-class MPreeditInjectionEventPrivate;
+namespace Maliit {
+
+class PreeditInjectionEventPrivate;
 
 /*!
  * \brief The MPreeditInjectionEvent class provides the information about preedit text.
  *
  * MPreeditInjectionEvent should be sent from text edit to input context and offer the word as preedit.
  */
-class MPreeditInjectionEvent : public QEvent
+class PreeditInjectionEvent : public QEvent
 {
 public:
     /*!
      * \brief Default constructor.
      * \param preedit The word offered as preedit.
      */
-    MPreeditInjectionEvent(const QString &preedit);
+    PreeditInjectionEvent(const QString &preedit);
 
     /*!
      * \brief Constructor.
@@ -43,12 +45,12 @@ public:
      * \param eventCursorPosition The expected cursor position inside preedit. The valid value is from
      * 0 (at the beginning of the preedit) to the length of preedit (at the end of preedit).
      */
-    MPreeditInjectionEvent(const QString &preedit, int eventCursorPosition);
+    PreeditInjectionEvent(const QString &preedit, int eventCursorPosition);
 
     /*!
      *\brief Destructor
      */
-    virtual ~MPreeditInjectionEvent();
+    virtual ~PreeditInjectionEvent();
 
     /*!
      * \brief Returns the offered preedit text.
@@ -83,11 +85,16 @@ public:
     static QEvent::Type eventNumber();
 
 protected:
-    MPreeditInjectionEventPrivate *const d_ptr;
+    PreeditInjectionEventPrivate *const d_ptr;
 
 private:
-    Q_DECLARE_PRIVATE(MPreeditInjectionEvent)
-    Q_DISABLE_COPY(MPreeditInjectionEvent)
+    Q_DECLARE_PRIVATE(PreeditInjectionEvent)
+    Q_DISABLE_COPY(PreeditInjectionEvent)
 };
+
+}
+
+// legacy support:
+typedef Maliit::PreeditInjectionEvent MPreeditInjectionEvent;
 
 #endif

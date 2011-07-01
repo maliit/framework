@@ -22,11 +22,12 @@
 #include "mpreeditinjectionevent.h"
 #include "mpreeditinjectionevent_p.h"
 
-
 static int sPreeditEventNumber = -1;
 static QMutex sPreeditInjectionMutex;
 
-MPreeditInjectionEventPrivate::MPreeditInjectionEventPrivate(const QString &preedit, int eventCursorPos)
+namespace Maliit {
+
+PreeditInjectionEventPrivate::PreeditInjectionEventPrivate(const QString &preedit, int eventCursorPos)
     : preedit(preedit),
       eventCursorPosition(eventCursorPos),
       replacementStart(0),
@@ -36,7 +37,7 @@ MPreeditInjectionEventPrivate::MPreeditInjectionEventPrivate(const QString &pree
 }
 
 
-MPreeditInjectionEventPrivate::~MPreeditInjectionEventPrivate()
+PreeditInjectionEventPrivate::~PreeditInjectionEventPrivate()
 {
     // nothing
 }
@@ -46,60 +47,60 @@ MPreeditInjectionEventPrivate::~MPreeditInjectionEventPrivate()
 // class implementation
 
 
-MPreeditInjectionEvent::MPreeditInjectionEvent(const QString &preedit)
-    : QEvent(MPreeditInjectionEvent::eventNumber()),
-      d_ptr(new MPreeditInjectionEventPrivate(preedit, -1))
+PreeditInjectionEvent::PreeditInjectionEvent(const QString &preedit)
+    : QEvent(PreeditInjectionEvent::eventNumber()),
+      d_ptr(new PreeditInjectionEventPrivate(preedit, -1))
 {
     setAccepted(false);
 }
 
-MPreeditInjectionEvent::MPreeditInjectionEvent(const QString &preedit, int eventCursorPosition)
-    : QEvent(MPreeditInjectionEvent::eventNumber()),
-      d_ptr(new MPreeditInjectionEventPrivate(preedit, eventCursorPosition))
+PreeditInjectionEvent::PreeditInjectionEvent(const QString &preedit, int eventCursorPosition)
+    : QEvent(PreeditInjectionEvent::eventNumber()),
+      d_ptr(new PreeditInjectionEventPrivate(preedit, eventCursorPosition))
 {
     setAccepted(false);
 }
 
-MPreeditInjectionEvent::~MPreeditInjectionEvent()
+PreeditInjectionEvent::~PreeditInjectionEvent()
 {
     delete d_ptr;
 }
 
 
-QString MPreeditInjectionEvent::preedit() const
+QString PreeditInjectionEvent::preedit() const
 {
-    Q_D(const MPreeditInjectionEvent);
+    Q_D(const PreeditInjectionEvent);
     return d->preedit;
 }
 
-int MPreeditInjectionEvent::eventCursorPosition() const
+int PreeditInjectionEvent::eventCursorPosition() const
 {
-    Q_D(const MPreeditInjectionEvent);
+    Q_D(const PreeditInjectionEvent);
     return d->eventCursorPosition;
 }
 
-void MPreeditInjectionEvent::setReplacement(int replacementStart, int replacementLength)
+void PreeditInjectionEvent::setReplacement(int replacementStart, int replacementLength)
 {
-    Q_D(MPreeditInjectionEvent);
+    Q_D(PreeditInjectionEvent);
     d->replacementStart = replacementStart;
     d->replacementLength = replacementLength;
 }
 
-int MPreeditInjectionEvent::replacementStart() const
+int PreeditInjectionEvent::replacementStart() const
 {
-    Q_D(const MPreeditInjectionEvent);
+    Q_D(const PreeditInjectionEvent);
     return d->replacementStart;
 }
 
-int MPreeditInjectionEvent::replacementLength() const
+int PreeditInjectionEvent::replacementLength() const
 {
-    Q_D(const MPreeditInjectionEvent);
+    Q_D(const PreeditInjectionEvent);
     return d->replacementLength;
 }
 
 
 // static
-QEvent::Type MPreeditInjectionEvent::eventNumber()
+QEvent::Type PreeditInjectionEvent::eventNumber()
 {
     if (sPreeditEventNumber < 0) {
         // no event number yet registered, do it now
@@ -113,4 +114,6 @@ QEvent::Type MPreeditInjectionEvent::eventNumber()
     }
 
     return static_cast<QEvent::Type>(sPreeditEventNumber);
+}
+
 }
