@@ -5,6 +5,9 @@
 #include <QtCore>
 #include <QtGui>
 
+#include <maliit/namespace.h>
+#include <maliit/inputmethod.h>
+
 namespace {
     const char * const TextPrompt = "Double-click this text area to invoke virtual keyboard ...";
     const char * const ImModuleEnv = "QT_IM_MODULE";
@@ -171,23 +174,17 @@ void MainWindow::onServerStateChanged()
     }
 }
 
-// Copied from minputmethodnamespace.h
-namespace MInputMethod {
-    enum OrientationAngle { Angle0=0, Angle90=90, Angle180=180, Angle270=270 };
-}
-
 void MainWindow::onRotateKeyboardClicked()
 {
-    const MInputMethod::OrientationAngle orientations[] = {MInputMethod::Angle0,
-                                                           MInputMethod::Angle90,
-                                                           MInputMethod::Angle180,
-                                                           MInputMethod::Angle270};
+    const Maliit::OrientationAngle orientations[] = {Maliit::Angle0,
+                                                     Maliit::Angle90,
+                                                     Maliit::Angle180,
+                                                     Maliit::Angle270};
     orientationIndex++;
     if (orientationIndex >= 4) {
         orientationIndex = 0;
     }
-    const MInputMethod::OrientationAngle angle = orientations[orientationIndex];
+    const Maliit::OrientationAngle angle = orientations[orientationIndex];
 
-    QMetaObject::invokeMethod(qApp->inputContext(), "notifyOrientationChanged",
-                              Q_ARG(MInputMethod::OrientationAngle, angle));
+    Maliit::InputMethod::instance()->setOrientationAngle(angle);
 }
