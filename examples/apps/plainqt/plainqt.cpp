@@ -19,16 +19,14 @@
 #include <QtCore>
 #include <QtGui>
 
+#include <cstdlib>
+
 int main(int argc, char** argv)
 {
-    QApplication kit(argc, argv);
+    // Set input method to MInputContext
+    setenv("QT_IM_MODULE", "MInputContext", 1);
 
-    /* Explicitly load MInputContext
-    * In order to be able to use its signals/slots */
-    QInputContext *ic = QInputContextFactory::create("MInputContext", 0);
-    if(ic) {
-        kit.setInputContext(ic);
-    }
+    QApplication kit(argc, argv);
 
     MainWindow window;
     return kit.exec();
