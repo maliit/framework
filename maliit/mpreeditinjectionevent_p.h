@@ -16,19 +16,23 @@
 
 // Based on mpreeditinjectionevent_p.h from libmeegotouch
 
-#ifndef MPREEDITINJECTIONEVENT_P_H
-#define MPREEDITINJECTIONEVENT_P_H
+#ifndef MALIIT_PREEDITINJECTIONEVENT_P_H
+#define MALIIT_PREEDITINJECTIONEVENT_P_H
 
-class MPreeditInjectionEventPrivate
+namespace Maliit {
+
+class PreeditInjectionEventPrivate
 {
 public:
-    MPreeditInjectionEventPrivate(const QString &preedit, int eventCursorPos);
-    virtual ~MPreeditInjectionEventPrivate();
+    PreeditInjectionEventPrivate(const QString &preedit, int eventCursorPos);
+    virtual ~PreeditInjectionEventPrivate();
 
     QString preedit;
     int eventCursorPosition;
     int replacementStart;
     int replacementLength;
 };
+
+}
 
 #endif
