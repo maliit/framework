@@ -19,8 +19,8 @@
 #include <QString>
 #include <QMutex>
 
-#include "mpreeditinjectionevent.h"
-#include "mpreeditinjectionevent_p.h"
+#include "preeditinjectionevent.h"
+#include "preeditinjectionevent_p.h"
 
 static int sPreeditEventNumber = -1;
 static QMutex sPreeditInjectionMutex;

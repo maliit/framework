@@ -51,15 +51,12 @@ class MPreeditStyleContainer
 #include <MWindow>
 #include <MApplicationPage>
 #include <mtimestamp.h>
+#include <MPreeditInjectionEvent>
 #else
 #include <QApplication>
 #include <QGraphicsView>
 #include "minputmethodstate.h"
-#include "mpreeditinjectionevent.h"
-#endif
-
-#ifdef HAVE_MEEGOTOUCH
-#include <MPreeditInjectionEvent>
+#include "preeditinjectionevent.h"
 #endif
 
 #include <X11/XKBlib.h>
