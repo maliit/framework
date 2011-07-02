@@ -23,6 +23,7 @@
 #include <Qt>
 #include <QMap>
 #include <QSet>
+#include <QSharedPointer>
 
 class QPoint;
 class QRect;
@@ -93,7 +94,7 @@ private:
     void resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId);
 
     DBusGProxy *glibObjectProxy;
-    DBusGConnection *connection;
+    QSharedPointer<DBusGConnection> connection;
     GObject *inputContextAdaptor;
     QString icAdaptorPath;
     bool active;

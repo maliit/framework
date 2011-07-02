@@ -36,12 +36,21 @@ namespace
     const char * const DBusInterface("com.meego.inputmethod.uiserver1");
     const char * const SocketPath = "unix:path=/tmp/meego-im-uiserver/imserver_dbus";
     const int ConnectionRetryInterval(6*1000); // in ms
+
+    struct DBusGConnectionDeleter
+    {
+        static inline void cleanup(DBusGConnection *connection)
+        {
+            if (connection)
+                dbus_g_connection_unref(connection);
+        }
+    };
 }
 
 
 GlibDBusIMServerProxy::GlibDBusIMServerProxy(GObject *inputContextAdaptor, const QString &icAdaptorPath)
     : glibObjectProxy(NULL),
-      connection(NULL),
+      connection(),
       inputContextAdaptor(inputContextAdaptor),
       icAdaptorPath(icAdaptorPath),
       active(true)
@@ -57,11 +66,6 @@ GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
 
     foreach (DBusGProxyCall *callId, pendingResetCalls) {
         dbus_g_proxy_cancel_call(glibObjectProxy, callId);
-    }
-
-    // Proxies should be taken care of automatically
-    if (connection) {
-        dbus_g_connection_unref(connection);
     }
 }
 
@@ -80,7 +84,8 @@ void GlibDBusIMServerProxy::connectToDBus()
 
     GError *error = NULL;
 
-    connection = dbus_g_connection_open(SocketPath, &error);
+    connection = QSharedPointer<DBusGConnection>(dbus_g_connection_open(SocketPath, &error),
+                                                 dbus_g_connection_unref);
     if (!connection) {
         if (error) {
             qWarning("MInputContext: unable to create D-Bus connection: %s", error->message);
@@ -90,18 +95,17 @@ void GlibDBusIMServerProxy::connectToDBus()
         return;
     }
 
-    glibObjectProxy = dbus_g_proxy_new_for_peer(connection, DBusPath, DBusInterface);
+    glibObjectProxy = dbus_g_proxy_new_for_peer(connection.data(), DBusPath, DBusInterface);
     if (!glibObjectProxy) {
         qWarning("MInputContext: unable to find the D-Bus service.");
-        dbus_g_connection_unref(connection);
-        connection = 0;
+        connection.clear();
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
         return;
     }
     g_signal_connect(G_OBJECT(glibObjectProxy), "destroy", G_CALLBACK(onDisconnectionTrampoline),
                      this);
 
-    dbus_g_connection_register_g_object(connection, icAdaptorPath.toAscii().data(), inputContextAdaptor);
+    dbus_g_connection_register_g_object(connection.data(), icAdaptorPath.toAscii().data(), inputContextAdaptor);
 
     emit dbusConnected();
 }
@@ -111,8 +115,7 @@ void GlibDBusIMServerProxy::onDisconnection()
     if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
     glibObjectProxy = 0;
-    dbus_g_connection_unref(connection);
-    connection = 0;
+    connection.clear();
     emit dbusDisconnected();
     if (active) {
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
