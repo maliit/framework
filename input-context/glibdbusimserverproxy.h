@@ -23,6 +23,7 @@
 #include <Qt>
 #include <QMap>
 #include <QSet>
+#include <QSharedPointer>
 
 class QPoint;
 class QRect;
@@ -30,6 +31,15 @@ class QString;
 class QVariant;
 class QRegion;
 
+namespace Maliit
+{
+    namespace DBusGLib
+    {
+    // QSharedPointer allows to specify a deleter. Hiding it behind a typedef,
+    // as we do not really need all the shared pointer semantics here.
+    typedef QSharedPointer<DBusGConnection> ConnectionRef;
+    }
+}
 
 /* \brief Glib D-Bus implementation of a proxy through which input method server
  * methods can be called
@@ -93,7 +103,7 @@ private:
     void resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId);
 
     DBusGProxy *glibObjectProxy;
-    DBusGConnection *connection;
+    Maliit::DBusGLib::ConnectionRef connection;
     GObject *inputContextAdaptor;
     QString icAdaptorPath;
     bool active;
