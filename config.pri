@@ -85,6 +85,10 @@ mac {
     INCLUDEPATH += include/
 }
 
+!nomeegotouch {
+    DEFINES += HAVE_MEEGOTOUCH
+}
+
 defineTest(outputFile) {
     out = $$OUT_PWD/$$1
     in = $$PWD/$${1}.in
