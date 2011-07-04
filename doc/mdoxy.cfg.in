@@ -44,7 +44,7 @@ WARN_LOGFILE          = "doxygen.log"
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 
-FILE_VERSION_FILTER   = "sh @MALIIT_IN_DIR@/versionString.sh @MALIIT_IN_DIR@/.."
+FILE_VERSION_FILTER   = "echo @M_IM_VERSION@"
 INPUT                 = @MALIIT_IN_DIR@/../src/ \
                         @MALIIT_IN_DIR@/src/
 FILE_PATTERNS         = *.cpp *.h *.dox
