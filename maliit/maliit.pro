@@ -12,7 +12,6 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
 HEADERSINSTALL = \
-    minputmethodstate.h \
     preeditinjectionevent.h \
     inputmethod.h \
     attributeextension.h \
