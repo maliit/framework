@@ -3,11 +3,7 @@ include(./config.pri)
 CONFIG += ordered
 TARGET = meego-im-uiserver
 TEMPLATE = subdirs
-SUBDIRS = src passthroughserver
-
-nomeegotouch {
-    SUBDIRS += maliit
-}
+SUBDIRS = src passthroughserver maliit
 
 SUBDIRS += input-context input-method-quick examples
 
