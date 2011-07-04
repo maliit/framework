@@ -21,8 +21,10 @@
 
 #include <QSharedPointer>
 
+#ifndef HAVE_MEEGOTOUCH
 namespace MInputMethod {
     using namespace Maliit;
 }
+#endif
 
 #endif

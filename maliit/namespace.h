@@ -23,7 +23,11 @@
 // Currently minputmethodnamespace.h just includes the whole Maliit namespace into
 // the MInputMethod namespace. Be careful about legacy support when changing.
 
+#ifdef HAVE_MEEGOTOUCH
+namespace MInputMethod {
+#else
 namespace Maliit {
+#endif
     /*!
      * This enum contains values of the orientation angle of windows in the application.
      *
@@ -236,10 +240,22 @@ namespace Maliit {
     };
 }
 
+#ifdef HAVE_MEEGOTOUCH
+Q_DECLARE_METATYPE(MInputMethod::TextContentType)
+Q_DECLARE_METATYPE(MInputMethod::Orientation)
+Q_DECLARE_METATYPE(MInputMethod::OrientationAngle)
+Q_DECLARE_METATYPE(MInputMethod::InputMethodMode)
+Q_DECLARE_METATYPE(MInputMethod::InputMethodQueryExtensions)
+
+namespace Maliit {
+    using namespace MInputMethod;
+}
+#else
 Q_DECLARE_METATYPE(Maliit::TextContentType)
 Q_DECLARE_METATYPE(Maliit::Orientation)
 Q_DECLARE_METATYPE(Maliit::OrientationAngle)
 Q_DECLARE_METATYPE(Maliit::InputMethodMode)
 Q_DECLARE_METATYPE(Maliit::InputMethodQueryExtensions)
+#endif
 
 #endif
