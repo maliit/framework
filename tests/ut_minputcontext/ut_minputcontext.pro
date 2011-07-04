@@ -8,6 +8,8 @@ DEFINES += M_LIBRARY=
 nomeegotouch {
     INCLUDEPATH += ../../maliit
     LIBS += ../../maliit/lib$${MALIIT_LIB}.so
+} else {
+    CONFIG += meegotouch
 }
 
 # Input
