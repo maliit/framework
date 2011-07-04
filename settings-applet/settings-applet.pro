@@ -35,7 +35,7 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 
 QMAKE_CLEAN += *.gcno *.gcda
 
-INCLUDEPATH += . ../src
+INCLUDEPATH += . .. ../src
 
 HEADERS += \
     mimsettingsapplet.h \
