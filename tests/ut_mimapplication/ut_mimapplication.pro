@@ -26,6 +26,9 @@ isEqual(code_coverage_option, off) {
         $$PASSTHROUGH_DIR/mpassthruwindow.o
 }
 
+!nomeegotouch {
+    CONFIG += meegotouch
+}
 
 CONFIG += plugin qdbus
 

@@ -1,9 +1,10 @@
 include(../common_top.pri)
 
-contains(CONFIG, nomeegotouch) {
-} else {
+!nomeegotouch:!noduicontrolpanel {
     DEFINES += HAVE_MEEGOTOUCH
     CONFIG += meegotouch duicontrolpanel
+} else {
+    DEFINES -= HAVE_MEEGOTOUCH
 }
 
 # Input
