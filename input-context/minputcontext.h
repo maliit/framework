@@ -22,6 +22,7 @@
 #endif
 
 #include <minputmethodnamespace.h>
+#include <maliit/namespace.h>
 
 #include <QObject>
 #include <QInputContext>
