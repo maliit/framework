@@ -1003,12 +1003,12 @@ void MInputContext::notifyCopyPasteState()
 #ifdef HAVE_MEEGOTOUCH
 void MInputContext::notifyOrientationAboutToChange(M::OrientationAngle orientation)
 {
-    notifyOrientationAboutToChange(static_cast<MInputMethod::OrientationAngle>(orientation));
+    notifyOrientationAboutToChange(static_cast<Maliit::OrientationAngle>(orientation));
 }
 
 void MInputContext::notifyOrientationChanged(M::OrientationAngle orientation)
 {
-    notifyOrientationChanged(static_cast<MInputMethod::OrientationAngle>(orientation));
+    notifyOrientationChanged(static_cast<Maliit::OrientationAngle>(orientation));
 }
 #endif
 
