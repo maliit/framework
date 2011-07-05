@@ -61,7 +61,12 @@ private:
     MInputMethodQuickPluginPrivate *const d_ptr;
 };
 
+#ifdef HAVE_MEEGOTOUCH
+Q_DECLARE_INTERFACE(MInputMethodQuickPlugin,
+                    "com.meego.meegoimframework.MInputMethodQuickPlugin/1.1")
+#else
 Q_DECLARE_INTERFACE(MInputMethodQuickPlugin,
                     "org.maliit.maliit-plugins-quick.MInputMethodQuickPlugin/0.80")
+#endif // HAVE_MEEGOTOUCH
 
 #endif // M_INPUT_METHOD_QUICK_PLUGIN
