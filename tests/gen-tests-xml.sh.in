@@ -1,5 +1,17 @@
 #!/bin/bash
 
+STARTUP_TEMPLATE="<case name=\"init_testcase\" description=\"stop other components\" requirement=\"\" timeout=\"120\">
+        <step expected_result=\"0\">initctl stop xsession/clipboard</step>
+      </case>
+      "
+UT_STARTUP="${STARTUP_TEMPLATE}"
+
+FINAL_TEMPLATE="<case name=\"zfinal_testcase\" description=\"restart stopped components\" requirement=\"\" timeout=\"120\">
+        <step expected_result=\"0\">initctl start xsession/clipboard</step>
+      </case>
+      "
+UT_FINAL="${FINAL_TEMPLATE}"
+
 UT_TESTCASES=""
 FT_TESTCASES=""
 
@@ -24,7 +36,9 @@ TESTSUITE_TEMPLATE="<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>
         <step expected_result=\"0\">sleep 30</step>
       </case>
 
+      $UT_STARTUP
       $UT_TESTCASES
+      $UT_FINAL
 
       <environments>
         <scratchbox>false</scratchbox>
