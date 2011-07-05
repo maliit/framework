@@ -68,8 +68,12 @@ public:
     virtual QSet<MInputMethod::HandlerState> supportedStates() const = 0;
 };
 
-
+#ifdef HAVE_MEEGOTOUCH
+Q_DECLARE_INTERFACE(MInputMethodPlugin,
+                    "com.meego.meegoimframework.MInputMethodPlugin/1.1")
+#else
 Q_DECLARE_INTERFACE(MInputMethodPlugin,
                     "org.maliit.maliit-plugins.MInputMethodPlugin/0.80")
+#endif // HAVE_MEEGOTOUCH
 
 #endif
