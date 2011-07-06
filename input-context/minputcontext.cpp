@@ -71,6 +71,8 @@ M_LIBRARY
 using Maliit::AttributeExtension;
 using Maliit::AttributeExtensionRegistry;
 using Maliit::InputMethod;
+
+typedef Maliit::PreeditInjectionEvent MPreeditInjectionEvent;
 #endif
 
 namespace

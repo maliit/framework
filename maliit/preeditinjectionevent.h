@@ -94,7 +94,4 @@ private:
 
 }
 
-// legacy support:
-typedef Maliit::PreeditInjectionEvent MPreeditInjectionEvent;
-
 #endif
