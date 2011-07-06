@@ -77,7 +77,7 @@ namespace MInputMethod {
         ItemButton,
 
         //! Item should be visualized as label
-        ItemLabel,
+        ItemLabel
     };
 
     //! Type of visible premiss for toolbar button
@@ -89,7 +89,7 @@ namespace MInputMethod {
         VisibleWhenSelectingText,
 
         //! Item is always visible
-        VisibleAlways,
+        VisibleAlways
     };
 
     //! Type of action
@@ -122,7 +122,7 @@ namespace MInputMethod {
         ActionClose,
 
         //! Standard copy/paste button
-        ActionCopyPaste,
+        ActionCopyPaste
     };
 
     /*!

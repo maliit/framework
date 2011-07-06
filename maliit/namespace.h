@@ -73,7 +73,7 @@ namespace Maliit {
         ItemButton,
 
         //! Item should be visualized as label
-        ItemLabel,
+        ItemLabel
     };
 
     //! Type of visible premiss for toolbar button
@@ -85,7 +85,7 @@ namespace Maliit {
         VisibleWhenSelectingText,
 
         //! Item is always visible
-        VisibleAlways,
+        VisibleAlways
     };
 
     //! Type of action
@@ -118,7 +118,7 @@ namespace Maliit {
         ActionClose,
 
         //! Standard copy/paste button
-        ActionCopyPaste,
+        ActionCopyPaste
     };
 
     /*!
