@@ -20,7 +20,6 @@
 #include <QString>
 #include <QStringList>
 
-
 MInputContextPlugin::MInputContextPlugin(QObject *parent)
     : QInputContextPlugin(parent)
 {
@@ -50,7 +49,7 @@ QString MInputContextPlugin::description(const QString &s)
 {
     Q_UNUSED(s);
 
-    return "MInputContext plugin";
+    return "Maliit input context plugin";
 }
 
 
@@ -59,13 +58,13 @@ QString MInputContextPlugin::displayName(const QString &s)
     Q_UNUSED(s);
 
     // TODO: want this translated?
-    return "input context for meegotouch input method";
+    return "Input context for Maliit input methods";
 }
 
 
 QStringList MInputContextPlugin::keys() const
 {
-    return QStringList("MInputContext");
+    return QStringList(MALIIT_INPUTCONTEXT_NAME);
 }
 
 

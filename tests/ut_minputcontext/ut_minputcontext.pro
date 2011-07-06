@@ -6,9 +6,11 @@ LIBS += -L$$ICDIR -lminputcontext $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lX11
 DEFINES += M_LIBRARY=
 
 nomeegotouch {
+    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\"
     INCLUDEPATH += ../../maliit
     LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 } else {
+    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\"
     CONFIG += meegotouch
 }
 

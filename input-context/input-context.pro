@@ -11,10 +11,11 @@ MOC_DIR = .moc
 nomeegotouch {
     INCLUDEPATH += ../maliit
     LIBS += ../maliit/lib$${MALIIT_LIB}.so
+    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\" 
 } else {
     CONFIG  += meegotouch
     DEFINES += HAVE_MEEGOTOUCH
-
+    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\" 
     STYLE_HEADERS += \
         mpreeditstyle.h \
 }

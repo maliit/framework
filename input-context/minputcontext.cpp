@@ -78,6 +78,7 @@ namespace
     const int SoftwareInputPanelHideTimer = 100;
     const QString DBusCallbackPath("/com/meego/inputmethod/inputcontext");
     const char * const ToolbarTarget("/toolbar");
+    const char * const InputContextName(MALIIT_INPUTCONTEXT_NAME);
 
     enum {
         XKeyPress = KeyPress,
@@ -229,7 +230,7 @@ bool MInputContext::event(QEvent *event)
             }
 
             if (debug) {
-                qDebug() << "MInputContext" << __PRETTY_FUNCTION__
+                qDebug() << InputContextName << __PRETTY_FUNCTION__
                          << "MInputContext got preedit injection:"
                          << injectionEvent->preedit()
                          << ", event cursor pos:" << injectionEvent->eventCursorPosition();
@@ -250,7 +251,7 @@ bool MInputContext::event(QEvent *event)
             return true;
         } else {
             if (debug) {
-                qDebug() << "MInputContext" << __PRETTY_FUNCTION__
+                qDebug() << InputContextName << __PRETTY_FUNCTION__
                          << "MInputContext ignored preedit injection because correction is disabled";
             }
             return false;
@@ -263,7 +264,7 @@ bool MInputContext::event(QEvent *event)
 
 QString MInputContext::identifierName()
 {
-    return "MInputContext";
+    return InputContextName;
 }
 
 
@@ -285,7 +286,7 @@ QString MInputContext::dbusObjectPath() const
 
 void MInputContext::reset()
 {
-    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
     // send existing preedit to widget, documentation unclear whether this is
     // allowed, but trolls gave permission to use it. Most of qt's internal
@@ -307,7 +308,7 @@ void MInputContext::reset()
 
 void MInputContext::update()
 {
-    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
     const QWidget *const focused = focusWidget();
 
@@ -325,8 +326,8 @@ void MInputContext::update()
 void MInputContext::mouseHandler(int x, QMouseEvent *event)
 {
     if (debug) {
-        qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
-        qDebug() << "MInputContext" << " event pos: " << event->globalPos() << " cursor pos:" << x;
+        qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+        qDebug() << InputContextName << " event pos: " << event->globalPos() << " cursor pos:" << x;
     }
 
     if ((event->type() == QEvent::MouseButtonPress
@@ -363,7 +364,7 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
 
 void MInputContext::setFocusWidget(QWidget *focused)
 {
-    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__ << focused;
+    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__ << focused;
 
     QObject *focusedObject = focused;
     QGraphicsItem *focusItem = 0;
@@ -541,7 +542,7 @@ bool MInputContext::filterEvent(const QEvent *event)
                 }
 
                 if (debug) {
-                    qDebug() << "MInputContext" << "MInputContext got preedit injection:"
+                    qDebug() << InputContextName << "MInputContext got preedit injection:"
                              << injectionEvent->preedit()
                              << ", event cursor pos:" << injectionEvent->eventCursorPosition();
                 }
@@ -600,7 +601,7 @@ void MInputContext::activationLostEvent()
 
 void MInputContext::imInitiatedHide()
 {
-    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
     inputPanelState = InputPanelHidden;
 
@@ -661,10 +662,10 @@ QGraphicsItem *MInputContext::findFocusScopeItem(QGraphicsItem *item)
 void MInputContext::commitString(const QString &string, int replacementStart,
                                  int replacementLength, int cursorPos)
 {
-    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
 #ifdef HAVE_MEEGOTOUCH
-    mTimestamp("MInputContext", string);
+    mTimestamp(InputContextName, string);
 #endif
 
     if (imServer->pendingResets()) {
@@ -712,7 +713,7 @@ void MInputContext::updatePreedit(const QString &string,
                                   int replacementStart, int replacementLength, int cursorPos)
 {
     if (debug) {
-        qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__ << "preedit:" << string
+        qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__ << "preedit:" << string
                  << ", replacementStart:" << replacementStart
                  << ", replacementLength:" << replacementLength
                  << ", cursorPos:" << cursorPos;
@@ -730,7 +731,7 @@ void MInputContext::updatePreeditInternally(const QString &string,
                                             int replacementStart, int replacementLength, int cursorPos)
 {
 #ifdef HAVE_MEEGOTOUCH
-    mTimestamp("MInputContext", "start text=" + string);
+    mTimestamp(InputContextName, "start text=" + string);
 #endif
 
     preedit = string;
@@ -804,7 +805,7 @@ void MInputContext::updatePreeditInternally(const QString &string,
     sendEvent(event);
 
 #ifdef HAVE_MEEGOTOUCH
-    mTimestamp("MInputContext", "end");
+    mTimestamp(InputContextName, "end");
 #endif
 }
 
@@ -813,7 +814,7 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
                              bool autoRepeat, int count,
                              MInputMethod::EventRequestType requestType)
 {
-    if (debug) qDebug() << "MInputContext" << "in" << __PRETTY_FUNCTION__;
+    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
     // Construct an event instance out of the parameters.
     QEvent::Type eventType = static_cast<QEvent::Type>(type);
@@ -901,7 +902,7 @@ void MInputContext::copy()
         ok = QMetaObject::invokeMethod(connectedObject, "copy", Qt::DirectConnection);
     }
 
-    if (debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "result=" << ok;
+    if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__ << "result=" << ok;
 
     if (!ok) {
         // send Ctrl-Ckey event because suitable slot was not found
@@ -919,7 +920,7 @@ void MInputContext::paste()
         ok = QMetaObject::invokeMethod(connectedObject, "paste", Qt::DirectConnection);
     }
 
-    if (debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "result=" << ok;
+    if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__ << "result=" << ok;
 
     if (!ok) {
         // send Ctrl-V key event because suitable slot was not found
