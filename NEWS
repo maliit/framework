@@ -1,3 +1,23 @@
+0.80.2
+======
+
+CHANGES SINCE 0.80.1
+* New libmaliit contains additional API for application developers to interact
+  with input methods (besides Qt's input context API):
+  - Maliit::InputMethod: Query input method area and control input method
+    orientation.
+  - Maliit::AttributeExtension: Allows to control input method toolbar and
+    customization of certain virtual keyboard keys.
+  - Maliit::PreeditInjectionEvent: Used by text entries to inject a new preedit
+    into the input context.
+  - Maliit namespace for all input method related enums, superseds MInputMethod
+    namespace.
+
+BUG FIXES
+* Fixes: Settings applet does not compile with enable-meegotouch
+* Fixes: NB#268826
+
+
 0.80.1
 ======
 
