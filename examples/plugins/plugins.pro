@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = quick standard
+SUBDIRS = quick standard cyclekeys
