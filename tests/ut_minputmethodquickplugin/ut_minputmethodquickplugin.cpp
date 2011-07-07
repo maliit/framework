@@ -82,6 +82,15 @@ void Ut_MInputMethodQuickPlugin::init()
 void Ut_MInputMethodQuickPlugin::cleanup()
 {}
 
+void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
+{
+    QTest::addColumn<QString>("testPluginPath");
+    QTest::newRow("Hello world")
+        << TEST_HELLOWORLD_PLUGIN_PATH;
+    QTest::newRow("Cycle keys")
+        << TEST_CYCLEKEYS_PLUGIN_PATH;
+}
+
 /* This test currently tests both the qml example found in examples/
  * and the minputmethodquick interface, since the test is so simple.
  * If more tests are added, it might make sense to make these two
@@ -89,10 +98,11 @@ void Ut_MInputMethodQuickPlugin::cleanup()
 void Ut_MInputMethodQuickPlugin::testQmlSetup()
 {
     QSKIP("Temporarily skipping test due to plugin install path problems.", SkipSingle);
+    QFETCH(QString, testPluginPath);
 
     MIndicatorServiceClient fakeService;
     TestInputMethodHost host(fakeService);
-    QPluginLoader loader(TEST_PLUGIN_PATH);
+    QPluginLoader loader(testPluginPath);
 
     QObject *pluginInstance = loader.instance();
     QVERIFY(pluginInstance != 0);
