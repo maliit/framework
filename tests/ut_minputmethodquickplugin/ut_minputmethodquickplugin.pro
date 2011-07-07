@@ -8,7 +8,7 @@ INCLUDEPATH += \
 DEFINES += UNIT_TEST
 QT += core gui declarative
 
-IN_TREE_TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins/quick
+IN_TREE_TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins
 DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 
 # Input

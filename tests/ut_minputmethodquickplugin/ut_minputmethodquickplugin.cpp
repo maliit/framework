@@ -83,6 +83,15 @@ void Ut_MInputMethodQuickPlugin::init()
 void Ut_MInputMethodQuickPlugin::cleanup()
 {}
 
+void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
+{
+    QTest::addColumn<QString>("testPluginPath");
+    QTest::newRow("Hello world")
+        << "quick/libhelloworldplugin.so";
+    QTest::newRow("Cycle keys")
+        << "cyclekeys/libcyclekeys.so";
+}
+
 /* This test currently tests both the qml example found in examples/
  * and the minputmethodquick interface, since the test is so simple.
  * If more tests are added, it might make sense to make these two
@@ -91,9 +100,10 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
 {
     MIndicatorServiceClient fakeService;
     TestInputMethodHost host(fakeService);
+    QFETCH(QString, testPluginPath);
 
     const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR);
-    const QString pluginPath = pluginDir.absoluteFilePath("libhelloworldplugin.so");
+    const QString pluginPath = pluginDir.absoluteFilePath(testPluginPath);
     QVERIFY(pluginDir.exists(pluginPath));
 
     QPluginLoader loader(pluginPath);

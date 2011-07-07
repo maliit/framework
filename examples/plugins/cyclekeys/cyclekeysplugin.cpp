@@ -1,6 +1,6 @@
 /* * This file is part of meego-im-framework *
  *
- * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
  * Contact: Nokia Corporation (directui@nokia.com)
  *
@@ -14,31 +14,30 @@
  * of this file.
  */
 
-#ifndef UT_MINPUTMETHODQUICKPLUGIN_H
-#define UT_MINPUTMETHODQUICKPLUGIN_H
+#include "cyclekeysplugin.h"
 
-#include <QtTest/QtTest>
-#include <QtCore>
-#include <QtGui>
+#include <minputmethodquickplugin.h>
+#include <QString>
 
-class MIMApplication;
-
-class Ut_MInputMethodQuickPlugin : public QObject
+namespace
 {
-    Q_OBJECT
+    const char * const filePath = "qrc:/main.qml";
+    const char * const pluginName = "CycleKeys";
+}
 
-private slots:
-    void initTestCase();
-    void cleanupTestCase();
+CycleKeys::CycleKeys()
+{
+    Q_INIT_RESOURCE(cyclekeys);
+}
 
-    void init();
-    void cleanup();
+QString CycleKeys::name() const
+{
+    return pluginName;
+}
 
-    void testQmlSetup_data();
-    void testQmlSetup();
+QString CycleKeys::qmlFileName() const
+{
+    return filePath;
+}
 
-private:
-    MIMApplication *app;
-};
-
-#endif // UT_MINPUTMETHODQUICKPLUGIN_H
+Q_EXPORT_PLUGIN2(cyclekeysplugin, CycleKeys)
