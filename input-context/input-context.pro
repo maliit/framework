@@ -8,14 +8,15 @@ INCLUDEPATH += . .. ../src
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
+INCLUDEPATH += ../maliit
+LIBS += ../maliit/lib$${MALIIT_LIB}.so
+
 nomeegotouch {
-    INCLUDEPATH += ../maliit
-    LIBS += ../maliit/lib$${MALIIT_LIB}.so
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\" 
 } else {
-    CONFIG  += meegotouch
-    DEFINES += HAVE_MEEGOTOUCH
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\" 
+
+    CONFIG  += meegotouch
     STYLE_HEADERS += \
         mpreeditstyle.h \
 }
