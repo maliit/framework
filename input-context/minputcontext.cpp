@@ -1058,7 +1058,7 @@ void MInputContext::notifyExtendedAttributeChanged(int id, const QString &target
 
 void MInputContext::notifyExtendedAttributeChanged(int id, const QString &key, const QVariant& value)
 {
-    const QString &target = key.section('/', 1, 1);
+    const QString &target = QString::fromLatin1("/") + key.section('/', 1, 1);
     const QString &targetItem = key.section('/', 2, -2);
     const QString &attribute = key.section('/', -1, -1);
 
