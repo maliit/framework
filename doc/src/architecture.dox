@@ -1,33 +1,34 @@
 /*! \page architecture Architecture 
 \section Overview Overview
 
-MeeGo Input Method Framework ("The Framework") uses a client server architecture. The server hosts a UI for text input. The client receives the text input and displays it in application. The Framework uses D-Bus for IPC (can be replaced with something else by re-implementing the communication class) and Qt's QInputContext API.
+Maliit is an input method framework with a client-server architecture. The server hosts an UI for text input. The client receives the text input and displays it in the application. The Framework uses D-Bus for IPC (can be replaced with something else by re-implementing the communication class) and Qt's input method support, together with a Maliit input context backend.
 
-The server runs in a different process than the application, and there is only one such server instance in the system.
+Server and client (that is, the application) run in different processes. The server runs as a single-instance process for each user session.
 
 \dot
 digraph {
- "Input Method Server" -> "Input Method Plugins" [label="{loads}"];
- "Input Method Plugins" -> "Input Method Engine Plugins" [label="{loads}"];
- "MeeGo Applications" -> "MeeGo Input Context" [label="{loads}"];
- "Input Method Server" -> "MeeGo Input Context" [style=dotted,label="{calls}"];
- "MeeGo Input Context" -> "Input Method Server" [style=dotted,label="{calls}"];
- "MeeGo Compositor";
+ "Maliit Server" -> "Maliit Plugins" [label="{loads}"];
+ "Maliit Plugins" -> "Maliit Engine Plugins" [label="{loads}"];
+ "Qt-based Applications" -> "Maliit Input Context" [label="{loads}"];
+ "Maliit Server" -> "Maliit Input Context" [style=dotted,label="{calls}"];
+ "Maliit Input Context" -> "Maliit Server" [style=dotted,label="{calls}"];
+ "Maliit Server" -> "System Compositor (Optional)" [style=dotted,label="{uses}"];
+ "Maliit Server" -> "Window Manager" [style=dotted,label="{uses}"];
+ "System Compositor (Optional)" -> "Window Manager" [label="{composites for}"];
+ "Qt-based Applications" -> "Window Manager" [style=dotted,label="{uses}"];
 }
 \enddot
 
-Whenever the server handles a client request (eg. when text entry is tapped), the server "owns" the whole area of the screen. It renders its part of the UI and sets the rest with translucent background color. 
+Whenever the server handles a client request (eg. when text entry is tapped, thus becoming the focus widget), the server projects a translucent fullscreen overlay onto the screen, effectivly capturing all input events. Maliit plugins then render their UI into the overlay, propagating the consumed input method area to the server. The fullscreen overlay is transient to the application window, that is, if the application window goes away, so does the fullscreen overlay.
 
-The window compositor - composes the translucent background area with the rendering output of the application UI. Using XFixes extension, the server forwards all mouse  and keyboard events to the window below in the stack.
+The system compositor composes the remaining translucent background area with the application UI's rendering output. Except for touch and mouse events targeting the active plugin's propagated input method area, all input events are forwarded to the underlying application window.
 
-However, there are a couple of alternative implementations which uses shape window (requires the XShape extension) and the other one just move the window around according to the input method window size (controlled via compilation options). These versions does not need a compositor.
+Maliit can run in a self compositing mode, which bypasses the system compositor and instead composes the application UI's rendering output in the Maliit server process. In this mode, no system compositor is required.
 
-In MeeGoTouch, MeeGoCompositor doubles as both compositor and window manager.
+In Harmattan and MeeGo, MCompositor takes the role of a compositing window manager. MCompositor serves as a reference window manager for Maliit.
 
-The Framework provides interfaces which are implemented by the plugins. The plugins provides UI to the input method. An example of a plugin is virtual keyboard plugin. This is the place which user has interaction with. The plugin handles text composition and whenever the text is ready it sends to the application via the server.
+The Framework provides interfaces which are implemented by the plugins. Plugins provide the input method's UI and are also responsible for input method engine integration. A typical plugin use-case is the implementation of a virtual keyboard with error correction and word prediction support. Plugins handle text composition and send the result to the application via the server, using either preedit or commit strings. The latter are considered the final text input, whereas the former can still be modified by plugins. Preedit strings can be used to show the would-be result to users.
 
-The input context is created by the application process and acts a messenger between server and the applications. Every text typed in the input method will be forwarded to the applications by input context. Currently The Framework supports Qt based applications by providing Meego Input Context. Non-Qt input contexts need to implement the D-Bus interface to be able to use The Framework.
-
-MeeGo Input Method Engine Plugins implement the MeeGo Input Method Engine interfaces provided by MeeGo Input Method Engine Framework which is not in scope of this framework.
+Each application creates its own input context, which acts as the application's client that connects to the Maliit server. The input context receives text composed by input methods and forwards it to the application's focus widget (usually a text entry). Maliit's input context backend supports Qt application. Support for GTK+ applications is provided through Maliit's input method bridges.
 
 */
