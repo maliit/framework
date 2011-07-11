@@ -19,7 +19,7 @@
 #define MALIIT_KEYBOARD_QUICK_H
 
 #include <QObject>
-#include "namespace.h"
+#include <maliit/namespace.h>
 
 //! \brief MaliittQuick exposes Maliit enums to QML-based input methods
 class MaliitQuick

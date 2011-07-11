@@ -3,7 +3,7 @@ include(../config.pri)
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_QUICK_LIB
-INCLUDEPATH += .. ../src ../maliit
+INCLUDEPATH += .. ../src
 
 # Input
 HEADERSINSTALL = \
