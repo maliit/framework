@@ -20,6 +20,7 @@
 
 #include "fakeproperty.h"
 #include "mimhwkeyboardtracker.h"
+#include "mimhwkeyboardtracker_p.h"
 
 /**
  * MKeyboardStateTracker stub class.
