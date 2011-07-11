@@ -8,15 +8,13 @@ include (desktop.pri)
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so
-
 CONFIG += ordered
 CONFIG += plugin qdbus
 QT = core gui
 
 contains(CONFIG, nomeegotouch) {
 } else {
-    CONFIG  += meegotouch duicontrolpanel
+    CONFIG  += meegotouch duicontrolpanel meegoimframework
     DEFINES += HAVE_MEEGOTOUCH
 }
 
@@ -35,15 +33,14 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 
 QMAKE_CLEAN += *.gcno *.gcda
 
-INCLUDEPATH += . .. ../src
-
 HEADERS += \
     mimsettingsapplet.h \
     mimsettingsbrief.h \
     mimsettingsconf.h \
     mimsettingswidget.h \
     mimsettingslistitem.h \
-    mimsubviewmodel.h
+    mimsubviewmodel.h \
+    mimonscreenplugins.h \
 
 SOURCES += \
     mimsettingsapplet.cpp \
@@ -51,7 +48,8 @@ SOURCES += \
     mimsettingsconf.cpp \
     mimsettingswidget.cpp \
     mimsettingslistitem.cpp \
-    mimsubviewmodel.cpp
+    mimsubviewmodel.cpp \
+    mimonscreenplugins.cpp \
 
 target.path += $$DCP_APPLET_DIR
 
