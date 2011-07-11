@@ -14,9 +14,10 @@
  * of this file.
  */
 
-#include "minputmethodplugin.h"
 #include "mimsettingsconf.h"
-#include "mimsettings.h"
+
+#include <minputmethodplugin.h>
+#include <mimsettings.h>
 
 #include <QDir>
 #include <QPluginLoader>
