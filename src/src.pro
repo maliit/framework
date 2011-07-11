@@ -23,6 +23,7 @@ HEADERSINSTALL = \
         mimgraphicsview.h \
         mimwidget.h \
         mimplugindescription.h \
+        mimsettings.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
@@ -41,7 +42,6 @@ HEADERS += $$HEADERSINSTALL \
         mimremotewindow.h \
         mimxerrortrap.h \
         mimxextension.h \
-        mimsettings.h \
         mimhwkeyboardtracker.h \
         mimgraphicsview_p.h \
         mimwidget_p.h \

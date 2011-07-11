@@ -20,6 +20,10 @@
 #ifndef MIMSETTINGS_H
 #define MIMSETTINGS_H
 
+#ifndef MALIIT_FRAMEWORK_USE_INTERNAL_API
+#error Internal API only.
+#else
+
 #include <QVariant>
 #include <QStringList>
 #include <QObject>
@@ -144,5 +148,7 @@ private:
 };
 
 //! \internal_end
+
+#endif // MALIIT_FRAMEWORK_USE_INTERNAL_API
 
 #endif // MIMSETTINGS_H
