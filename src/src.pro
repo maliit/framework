@@ -49,6 +49,7 @@ HEADERS += $$HEADERSINSTALL \
         mimrotationanimation.h \
         mimpluginsproxywidget.h \
         mimonscreenplugins.h \
+        mimhwkeyboardtracker_p.h \
 
 SOURCES += mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
@@ -86,10 +87,9 @@ QT = core gui xml
 
 PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
 
-contains(CONFIG, nomeegotouch) {
-} else {
-    CONFIG  += meegotouchcore
-    DEFINES += HAVE_MEEGOTOUCH
+enable-contextkit {
+    PKGCONFIG += contextsubscriber-1.0
+    DEFINES += HAVE_CONTEXTSUBSCRIBER
 }
 
 contains(DEFINES, HAVE_MEEGOGRAPHICSSYSTEM) {

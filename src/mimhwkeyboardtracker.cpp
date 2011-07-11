@@ -1,21 +1,71 @@
-#include "mimhwkeyboardtracker.h"
+/* * This file is part of meego-im-framework *
+ *
+ * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
+ * All rights reserved.
+ * Contact: Nokia Corporation (directui@nokia.com)
+ *
+ * If you have questions regarding the use of this file, please contact
+ * Nokia at directui@nokia.com.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License version 2.1 as published by the Free Software Foundation
+ * and appearing in the file LICENSE.LGPL included in the packaging
+ * of this file.
+ */
 
-#ifdef HAVE_MEEGOTOUCH
-#include <MKeyboardStateTracker>
+// This file is based on mkeyboardstatetracker.cpp from libmeegotouch
+
+#include "mimhwkeyboardtracker.h"
+#include "mimhwkeyboardtracker_p.h"
+
+#include <QCoreApplication>
+
+#ifdef HAVE_CONTEXTSUBSCRIBER
+#include <contextproperty.h>
 #endif
 
-MImHwKeyboardTracker::MImHwKeyboardTracker()
-    : QObject()
+namespace {
+    const QString keyboardPresent("/maemo/InternalKeyboard/Present");
+    const QString keyboardOpen("/maemo/InternalKeyboard/Open");
+}
+
+MImHwKeyboardTrackerPrivate::MImHwKeyboardTrackerPrivate(MImHwKeyboardTracker *q_ptr) :
+#ifdef HAVE_CONTEXTSUBSCRIBER
+    keyboardOpenProperty(),
+#endif
+    present(false)
 {
-#ifdef HAVE_MEEGOTOUCH
-    connect(MKeyboardStateTracker::instance(), SIGNAL(stateChanged()),
-            this,                              SIGNAL(stateChanged()),
-            Qt::UniqueConnection);
+#ifdef HAVE_CONTEXTSUBSCRIBER
+    ContextProperty keyboardPresentProperty(keyboardPresent);
+    keyboardOpenProperty.reset(new ContextProperty(keyboardOpen));
+    keyboardPresentProperty.waitForSubscription(true);
+    keyboardOpenProperty->waitForSubscription(true);
+    present = keyboardPresentProperty.value().toBool();
+    if (present) {
+        QObject::connect(keyboardOpenProperty.data(), SIGNAL(valueChanged()),
+                         q_ptr, SIGNAL(stateChanged()));
+    } else {
+        keyboardOpenProperty.reset();
+    }
+#else
+    Q_UNUSED(q_ptr);
 #endif
 }
 
+MImHwKeyboardTrackerPrivate::~MImHwKeyboardTrackerPrivate()
+{
+}
+
+MImHwKeyboardTracker::MImHwKeyboardTracker()
+    : QObject(QCoreApplication::instance()),
+      d_ptr(new MImHwKeyboardTrackerPrivate(this))
+{
+}
+
 MImHwKeyboardTracker::~MImHwKeyboardTracker()
-{}
+{
+}
 
 MImHwKeyboardTracker *MImHwKeyboardTracker::instance()
 {
@@ -25,17 +75,21 @@ MImHwKeyboardTracker *MImHwKeyboardTracker::instance()
 
 bool MImHwKeyboardTracker::isPresent() const
 {
-#ifdef HAVE_MEEGOTOUCH
-    return MKeyboardStateTracker::instance()->isPresent();
-#else
-    return false;
-#endif
+    Q_D(const MImHwKeyboardTracker);
+
+    return d->present;
 }
 
 bool MImHwKeyboardTracker::isOpen() const
 {
-#ifdef HAVE_MEEGOTOUCH
-    return MKeyboardStateTracker::instance()->isOpen();
+    Q_D(const MImHwKeyboardTracker);
+
+    if (!d->present) {
+        return false;
+    }
+
+#ifdef HAVE_CONTEXTSUBSCRIBER
+    return d->keyboardOpenProperty->value().toBool();
 #else
     return false;
 #endif
