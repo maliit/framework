@@ -17,8 +17,6 @@ SUBDIRS = \
           ut_mtoolbardata \
           ut_mtoolbaritem \
           ut_mattributeextensionmanager \
-          ft_mimsettingsapplet \
-          ut_mimsettingsconf \
           ut_mimapplication \
           ut_mkeyoverride \
           ut_selfcompositing \

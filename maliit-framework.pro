@@ -13,11 +13,6 @@ SUBDIRS += input-context input-method-quick examples
 
 !nomeegotouch {
     CONFIG  += meegotouch
-    SUBDIRS += translations
-}
-
-!nomeegotouch:!noduicontrolpanel {
-    SUBDIRS += settings-applet
 }
 
 !notests {
