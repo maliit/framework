@@ -23,7 +23,7 @@
 #include <Qt>
 #include <QMap>
 #include <QSet>
-#include <QSharedPointer>
+#include <tr1/memory>
 
 class QPoint;
 class QRect;
@@ -35,9 +35,9 @@ namespace Maliit
 {
     namespace DBusGLib
     {
-    // QSharedPointer allows to specify a deleter. Hiding it behind a typedef,
+    // std::tr1::shared_ptr allows to specify a deleter. Hiding it behind a typedef,
     // as we do not really need all the shared pointer semantics here.
-    typedef QSharedPointer<DBusGConnection> ConnectionRef;
+    typedef std::tr1::shared_ptr<DBusGConnection> ConnectionRef;
     }
 }
 
