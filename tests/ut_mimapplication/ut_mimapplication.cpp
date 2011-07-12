@@ -7,10 +7,6 @@
 #include <QGraphicsView>
 #include <QDebug>
 
-#ifdef HAVE_MEEGOTOUCH
-#include <MApplication>
-#endif
-
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h> // defines IconicState
@@ -23,10 +19,6 @@ void Ut_MIMApplication::initTestCase()
 {
     static char *argv[1] = { (char *) "ut_mimapplication" };
     static int argc = 1;
-
-#ifdef HAVE_MEEGOTOUCH
-    MApplication::setLoadMInputContext(false);
-#endif
 
     app = new MIMApplication(argc, argv);
     subject = static_cast<MPassThruWindow *>(app->passThruWindow());
