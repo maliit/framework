@@ -38,8 +38,8 @@ class MImHwKeyboardTracker
     Q_OBJECT
 
 public:
-    //! \brief Returns the singleton instance.
-    static MImHwKeyboardTracker *instance();
+    MImHwKeyboardTracker();
+    virtual ~MImHwKeyboardTracker();
 
     //! \brief Returns whether device has a hardware keyboard.
     bool isPresent() const;
@@ -52,9 +52,6 @@ Q_SIGNALS:
     void stateChanged();
 
 private:
-    MImHwKeyboardTracker();
-    virtual ~MImHwKeyboardTracker();
-
     const QScopedPointer<MImHwKeyboardTrackerPrivate> d_ptr;
 
     Q_DISABLE_COPY(MImHwKeyboardTracker)

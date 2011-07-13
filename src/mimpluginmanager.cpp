@@ -933,9 +933,9 @@ MIMPluginManager::MIMPluginManager(MImRotationAnimation* rotationAnimation)
     connect(&d->onScreenPlugins, SIGNAL(enabledPluginsChanged()),
             this, SIGNAL(pluginsChanged()));
 
-    if (MImHwKeyboardTracker::instance()->isPresent()) {
-        connect(MImHwKeyboardTracker::instance(), SIGNAL(stateChanged()),
-                this,                             SLOT(updateInputSource()),
+    if (d->hwkbTracker.isPresent()) {
+        connect(&d->hwkbTracker, SIGNAL(stateChanged()),
+                this,            SLOT(updateInputSource()),
                 Qt::UniqueConnection);
     }
 
@@ -1012,7 +1012,7 @@ void MIMPluginManager::updateInputSource()
     // OnScreen is mutually exclusive to Hardware and Accessory.
     QSet<MInputMethod::HandlerState> handlers = d->activeHandlers();
 
-    if (MImHwKeyboardTracker::instance()->isOpen()) {
+    if (d->hwkbTracker.isOpen()) {
         // hw keyboard is on
         handlers.remove(MInputMethod::OnScreen);
         handlers.insert(MInputMethod::Hardware);
