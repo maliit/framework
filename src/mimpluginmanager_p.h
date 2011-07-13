@@ -23,6 +23,7 @@
 #include "mindicatorserviceclient.h"
 #include "mimonscreenplugins.h"
 #include "mimsettings.h"
+#include "mimhwkeyboardtracker.h"
 
 #include <QObject>
 #include <QWeakPointer>
@@ -169,6 +170,7 @@ public:
     QTimer ensureEmptyRegionWhenHiddenTimer;
 
     MImOnScreenPlugins onScreenPlugins;
+    MImHwKeyboardTracker hwkbTracker;
 };
 
 #endif

@@ -61,13 +61,6 @@ MImHwKeyboardTracker::~MImHwKeyboardTracker()
 {
 }
 
-// TODO just use a normal instance in the plugin manager instead of singleton
-MImHwKeyboardTracker *MImHwKeyboardTracker::instance()
-{
-    static MImHwKeyboardTracker tracker;
-    return &tracker;
-}
-
 bool MImHwKeyboardTracker::isPresent() const
 {
     Q_D(const MImHwKeyboardTracker);
