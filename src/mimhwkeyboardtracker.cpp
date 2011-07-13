@@ -19,8 +19,6 @@
 #include "mimhwkeyboardtracker.h"
 #include "mimhwkeyboardtracker_p.h"
 
-#include <QCoreApplication>
-
 namespace {
     const char * const keyboardPresent("/maemo/InternalKeyboard/Present");
     const char * const keyboardOpen("/maemo/InternalKeyboard/Open");
@@ -54,7 +52,7 @@ MImHwKeyboardTrackerPrivate::~MImHwKeyboardTrackerPrivate()
 }
 
 MImHwKeyboardTracker::MImHwKeyboardTracker()
-    : QObject(QCoreApplication::instance()),
+    : QObject(),
       d_ptr(new MImHwKeyboardTrackerPrivate(this))
 {
 }
@@ -63,6 +61,7 @@ MImHwKeyboardTracker::~MImHwKeyboardTracker()
 {
 }
 
+// TODO just use a normal instance in the plugin manager instead of singleton
 MImHwKeyboardTracker *MImHwKeyboardTracker::instance()
 {
     static MImHwKeyboardTracker tracker;
