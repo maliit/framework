@@ -39,6 +39,9 @@ namespace
 
     Maliit::DBusGLib::ConnectionRef toRef(DBusGConnection *connection)
     {
+        if (!connection)
+            return Maliit::DBusGLib::ConnectionRef();
+
         return Maliit::DBusGLib::ConnectionRef(connection,
                                                dbus_g_connection_unref);
     }
