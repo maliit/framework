@@ -1,3 +1,13 @@
+0.80.3
+======
+
+CHANGES SINCE 0.80.2
+* Remove Harmattan-specific settings applet
+* Add support for ContextKit keyboard tracker
+
+BUG FIXES
+* Fixes: AttributeExtensions with libmaliit
+
 0.80.2
 ======
 
