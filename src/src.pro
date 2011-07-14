@@ -127,13 +127,13 @@ nomeegotouch {
 }
 
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
-install_pkgconfig.files = MeegoImFramework.pc maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc
+install_pkgconfig.files = $$OUT_PWD/MeegoImFramework.pc $$OUT_PWD/maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc
 
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
-install_prf.files = meegoimframework.prf
+install_prf.files = $$OUT_PWD/meegoimframework.prf
 
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
-install_schemas.files = meego-im-framework.schemas maliit-framework.schemas
+install_schemas.files = $$OUT_PWD/meego-im-framework.schemas $$OUT_PWD/maliit-framework.schemas
 
 INSTALLS += target \
     headers \
