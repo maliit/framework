@@ -1,6 +1,6 @@
 QMAKE_EXTRA_TARGETS += check
 check.target = check
-check.commands = TESTING_IN_SANDBOX=1 TESTPLUGIN_PATH=../plugins LD_LIBRARY_PATH=../../src:../../input-context/:../../passthroughserver/:../plugins:$(LD_LIBRARY_PATH) ./$$TARGET
+check.commands = TESTING_IN_SANDBOX=1 TESTPLUGIN_PATH=../plugins LD_LIBRARY_PATH=../../src:../../input-context/:../../passthroughserver/:../../maliit:../plugins:$(LD_LIBRARY_PATH) ./$$TARGET
 check.depends += $$TARGET
 
 QMAKE_EXTRA_TARGETS += check-xml
