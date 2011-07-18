@@ -23,6 +23,7 @@ SUBDIRS = \
           ut_mimrotationanimation \
           ut_minputmethodquickplugin \
           ft_exampleplugin \
+          ut_maliit_attributeextension \
 
 outputFiles(runtests.sh, gen-tests-xml.sh)
 
