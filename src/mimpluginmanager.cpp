@@ -383,6 +383,10 @@ bool MIMPluginManagerPrivate::switchPlugin(MInputMethod::SwitchDirection directi
         return true; //do nothing for this direction
     }
 
+    if (direction == MInputMethod::SwitchPreparationForward ||
+        direction == MInputMethod::SwitchPreparationBackward) {
+        return true;
+    }
     //Find plugin initiated this switch
     Plugins::iterator iterator(plugins.begin());
 
@@ -405,7 +409,7 @@ bool MIMPluginManagerPrivate::switchPlugin(MInputMethod::SwitchDirection directi
             if (iterator == plugins.end()) {
                 iterator = plugins.begin();
             }
-        } else { // Backward
+        } else if (direction == MInputMethod::SwitchBackward) { // Backward
             if (iterator == plugins.begin()) {
                 iterator = plugins.end();
             }

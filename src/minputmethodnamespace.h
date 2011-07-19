@@ -145,7 +145,10 @@ namespace MInputMethod {
     enum SwitchDirection {
         SwitchUndefined, //!< Special value for uninitialized variables
         SwitchForward, //!< Activate next plugin
-        SwitchBackward //!< Activate previous plugin
+        SwitchBackward, //!< Activate previous plugin
+        SwitchPreparationForward, //!< Prepare to switch to next plugin
+        SwitchPreparationBackward, //!< Prepare to switch to previous plugin
+        SwitchCanceled //!< Previos SwitchPreparation* is canceled, plugin will not be switched
     };
 
     enum PreeditFace {
