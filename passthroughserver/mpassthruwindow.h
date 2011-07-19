@@ -42,6 +42,9 @@ public:
     virtual bool event(QEvent *e);
     void closeEvent(QCloseEvent *ev);
 
+    //! Return region occupied by current plugin
+    const QRegion &region();
+
 public slots:
     //! Set window ID for given region
     void inputPassthrough(const QRegion &region = QRegion());
