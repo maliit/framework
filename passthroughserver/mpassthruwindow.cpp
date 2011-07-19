@@ -227,3 +227,8 @@ void MPassThruWindow::updateFromRemoteWindow(const QRegion &region)
 {
     MIMApplication::visitWidgetHierarchy(ForcedWidgetUpdater(region));
 }
+
+const QRegion & MPassThruWindow::region()
+{
+    return mRegion;
+}
