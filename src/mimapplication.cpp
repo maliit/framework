@@ -24,6 +24,8 @@
 #include <QtMeeGoGraphicsSystemHelper/QMeeGoGraphicsSystemHelper>
 #endif
 
+#include <QPainter>
+
 #include <QDebug>
 #include <X11/Xlib.h> // must be last include
 
@@ -61,7 +63,8 @@ MIMApplication::MIMApplication(int &argc, char **argv)
       mSelfComposited(false),
       mManualRedirection(false),
       mBypassWMHint(false),
-      mBackgroundSuppressed(false)
+      mBackgroundSuppressed(false),
+      mMasked(false)
 {
     parseArguments(argc, argv);
 
@@ -235,10 +238,25 @@ MImRemoteWindow *MIMApplication::remoteWindow() const
 const QPixmap &MIMApplication::remoteWindowPixmap()
 {
     if (not mApp || not mApp->mRemoteWindow.get()
-        || mApp->mBackgroundSuppressed
-        || not mApp->mSelfComposited) {
+            || mApp->mBackgroundSuppressed
+            || (not mApp->mMasked && not mApp->mSelfComposited)) {
         static const QPixmap empty;
         return empty;
+    }
+
+    if (mApp->mMasked) {
+        static QPixmap composited;
+        if (mApp->mSelfComposited) {
+            composited = mApp->mRemoteWindow->windowPixmap();
+        } else {
+            composited = QPixmap(mApp->mPassThruWindow->size());
+            composited.fill(Qt::transparent);
+        }
+        QPainter p(&composited);
+        for (int i = 0; i < mApp->mPassThruWindow.get()->region().rects().size(); ++i) {
+            p.fillRect(mApp->mPassThruWindow.get()->region().rects().at(i), QBrush(Qt::black));
+        }
+        return composited;
     }
 
     return mApp->mRemoteWindow->windowPixmap();
@@ -276,4 +294,9 @@ void MIMApplication::visitWidgetHierarchy(WidgetVisitor visitor,
 void MIMApplication::configureWidgetsForCompositing(QWidget *widget)
 {
     MIMApplication::visitWidgetHierarchy(configureForCompositing, widget);
+}
+
+void MIMApplication::setMasked(bool masked)
+{
+    mMasked = masked;
 }
