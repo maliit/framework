@@ -14,9 +14,9 @@
  * of this file.
  */
 
-#ifndef __UTILS_H__
-#define __UTILS_H__
+#ifndef UTILS_H__
+#define UTILS_H__
 
 bool isTestingInSandbox();
 
-#endif // __UTILS_H__
+#endif // UTILS_H__
