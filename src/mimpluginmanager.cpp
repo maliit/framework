@@ -383,10 +383,17 @@ bool MIMPluginManagerPrivate::switchPlugin(MInputMethod::SwitchDirection directi
         return true; //do nothing for this direction
     }
 
-    if (direction == MInputMethod::SwitchPreparationForward ||
-        direction == MInputMethod::SwitchPreparationBackward) {
+    if (direction == MInputMethod::SwitchDone) {
+        mApp->setMasked(false);
         return true;
     }
+
+    if (direction == MInputMethod::SwitchPreparationForward ||
+        direction == MInputMethod::SwitchPreparationBackward) {
+        mApp->setMasked(true);
+        return true;
+    }
+
     //Find plugin initiated this switch
     Plugins::iterator iterator(plugins.begin());
 

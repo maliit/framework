@@ -100,6 +100,10 @@ public:
     //! Defaults to passthru window, if no widget is specified.
     static void configureWidgetsForCompositing(QWidget *widget = 0);
 
+    //! Flag that is used to mask the plugin region with 
+    //! background
+    void setMasked(bool masked); 
+
 signals:
     //! This signal is emitted when remote window is changed.
     //! Parameter can be 0 if window is unmapped.
@@ -127,6 +131,7 @@ private:
     bool mManualRedirection;
     bool mBypassWMHint;
     bool mBackgroundSuppressed;
+    bool mMasked;
 
     friend class Ut_PassthroughServer;
 };
