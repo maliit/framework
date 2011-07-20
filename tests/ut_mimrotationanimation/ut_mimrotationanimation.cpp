@@ -19,8 +19,10 @@
 #include "mimapplication.h"
 #include "mimrotationanimation.h"
 
+#include "utils.h"
+
 namespace {
-    const WId FakeRemoteWId = 1; // must be non-zero to be considered "valid"
+    const QSize windowSize(200, 200);
 }
 
 void Ut_MImRotationAnimation::initTestCase()
@@ -28,20 +30,28 @@ void Ut_MImRotationAnimation::initTestCase()
     static char *argv[1] = { (char *) "Ut_MImRotationAnimation" };
     static int argc = 1;
 
+    // Enforcing raster GS to make test reliable:
+    QApplication::setGraphicsSystem("raster");
+
     app = new MIMApplication(argc, argv);
-    app->setTransientHint(FakeRemoteWId);
+
+    remote = new MaliitTestUtils::RemoteWindow;
+    remote->setGeometry(0, 0, windowSize.width(), windowSize.height());
+
+    remote->show();
+    QTest::qWaitForWindowShown(remote->window());
 }
 
 void Ut_MImRotationAnimation::cleanupTestCase()
 {
+    delete remote;
     delete app;
 }
 
 void Ut_MImRotationAnimation::testPassthruHiddenDuringRotation()
 {
-    QSKIP("Temporarily skipping test due to changes in remote window handling.", SkipSingle);
-
     MImRotationAnimation subject(app->passThruWindow());
+    app->setTransientHint(remote->window()->effectiveWinId());
 
     subject.appOrientationChangeFinished(0);
 

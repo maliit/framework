@@ -19,6 +19,7 @@
 
 #include <QtTest/QtTest>
 #include <QObject>
+#include "utils.h"
 
 class MIMApplication;
 
@@ -34,6 +35,7 @@ private Q_SLOTS:
 
 private:
     MIMApplication *app;
+    MaliitTestUtils::RemoteWindow *remote;
 };
 
 #endif // UT_MIMROTATIONANIMATION_H
