@@ -18,34 +18,11 @@
 #include "mimgraphicsview.h"
 #include "mimwidget.h"
 #include "mimapplication.h"
+#include "utils.h"
 
 namespace
 {
     const QSize windowSize(200, 200);
-
-    class Remote
-        : public QWidget
-    {
-    public:
-        explicit Remote(QWidget *p = 0,
-                        Qt::WindowFlags f = 0)
-            : QWidget(p, f)
-        {
-            setWindowFlags(Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint);
-        }
-
-        void paintEvent(QPaintEvent *)
-        {
-            QPainter p(this);
-            p.setBrush(QBrush(QColor(Qt::green)));
-            p.drawRect(QRect(QPoint(), size()));
-            QFont f;
-            f.setPointSize(32);
-            p.setFont(f);
-            p.drawText(QRect(QPoint(), size()).adjusted(16, 16, -16, -16),
-                       QString("Maliit"));
-        }
-    };
 
     QWidget *createGraphicsView(QWidget *parent)
     {
@@ -112,7 +89,7 @@ void Ut_SelfCompositing::testSelfCompositing()
 {
     QFETCH(WidgetCreator, widgetCreator);
 
-    Remote remote;
+    MaliitTestUtils::RemoteWindow remote;
     remote.setGeometry(0, 0, windowSize.width(), windowSize.height());
 
     QWidget *passthru = app->passThruWindow();
