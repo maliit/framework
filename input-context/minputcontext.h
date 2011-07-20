@@ -280,6 +280,9 @@ private:
 
     bool isVisible(const QRect &rect, const QGraphicsView *view, const QGraphicsItem *item) const;
 
+    template<typename PreeditInjectionEvent>
+    bool handlePreeditInjectionEvent(const PreeditInjectionEvent *event);
+
     bool active; // is connection active
     InputPanelState inputPanelState; // state for the input method server's software input panel
 
