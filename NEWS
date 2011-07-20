@@ -1,3 +1,20 @@
+0.80.4
+======
+
+CHANGES SINCE 0.80.3
+* Improved legacy support:
+  - Applications that want to integrate with input methods can freely choose
+    whether to use MTF/libmeegotouch or libmaliit
+* Improved unit tests:
+  - Added tests for Maliit::AttributeExtension{, Registry} API
+  - Fixed skipped unit tests
+  - Fix tests for plugin examples
+* Build system:
+  - Fix out-of-tree builds
+
+BUG FIXES
+* None
+
 0.80.3
 ======
 
