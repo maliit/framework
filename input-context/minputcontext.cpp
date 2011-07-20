@@ -72,7 +72,6 @@ using Maliit::AttributeExtension;
 using Maliit::AttributeExtensionRegistry;
 using Maliit::InputMethod;
 
-typedef Maliit::PreeditInjectionEvent MPreeditInjectionEvent;
 #endif
 
 namespace
@@ -222,47 +221,82 @@ void MInputContext::connectToDBus()
 
 bool MInputContext::event(QEvent *event)
 {
+#ifdef HAVE_MEEGOTOUCH
     if (event->type() == MPreeditInjectionEvent::eventNumber()) {
-        if (correctionEnabled) {
-            MPreeditInjectionEvent *injectionEvent
-                = dynamic_cast<MPreeditInjectionEvent *>(event);
+        MPreeditInjectionEvent *injectionEvent = dynamic_cast<MPreeditInjectionEvent *>(event);
+        if (injectionEvent == 0) {
+            return false;
+        }
 
-            if (injectionEvent == 0) {
-                return false;
-            }
-
-            if (debug) {
-                qDebug() << InputContextName << __PRETTY_FUNCTION__
-                         << "MInputContext got preedit injection:"
-                         << injectionEvent->preedit()
-                         << ", event cursor pos:" << injectionEvent->eventCursorPosition();
-            }
-            // send the injected preedit to input method server and back to the widget with proper
-            // styling
-            // Note: plugin could change the preedit style in imServer->setPreedit().
-            // The cursor is hidden for preedit by default. The input method server can decide
-            // whether it needs the cursor.
-            QList<MInputMethod::PreeditTextFormat> preeditFormats;
-            MInputMethod::PreeditTextFormat preeditFormat(0, injectionEvent->preedit().length(),
-                                                          MInputMethod::PreeditDefault);
-            preeditFormats << preeditFormat;
-            updatePreeditInternally(injectionEvent->preedit(), preeditFormats);
-            imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
-
+        if (handlePreeditInjectionEvent(injectionEvent)) {
             event->accept();
             return true;
         } else {
-            if (debug) {
-                qDebug() << InputContextName << __PRETTY_FUNCTION__
-                         << "MInputContext ignored preedit injection because correction is disabled";
-            }
             return false;
         }
     }
+#else
+    if (event->type() == Maliit::PreeditInjectionEvent::eventNumber()) {
+        Maliit::PreeditInjectionEvent *injectionEvent = dynamic_cast<Maliit::PreeditInjectionEvent *>(event);
+        if (injectionEvent == 0) {
+            return false;
+        }
+
+        if (handlePreeditInjectionEvent(injectionEvent)) {
+            event->accept();
+            return true;
+        } else {
+            return false;
+        }
+    }
+#endif
 
     return QInputContext::event(event);
 }
 
+template<typename PreeditInjectionEvent>
+bool MInputContext::handlePreeditInjectionEvent(const PreeditInjectionEvent *event)
+{
+    if (correctionEnabled) {
+        if (debug) {
+            qDebug() << InputContextName << __PRETTY_FUNCTION__
+                     << "MInputContext got preedit injection:"
+                     << event->preedit()
+                     << ", event cursor pos:" << event->eventCursorPosition();
+        }
+        // send the injected preedit to input method server and back to the widget with proper
+        // styling
+        // Note: plugin could change the preedit style in imServer->setPreedit().
+        // The cursor is hidden for preedit by default. The input method server can decide
+        // whether it needs the cursor.
+        QList<MInputMethod::PreeditTextFormat> preeditFormats;
+        MInputMethod::PreeditTextFormat preeditFormat(0, event->preedit().length(),
+                                                      MInputMethod::PreeditDefault);
+        preeditFormats << preeditFormat;
+        // TODO: updatePreeditInternally() below causes update() to be called which
+        // communicates new cursor position (among other things) to the active
+        // input method.  The cursor is at the beginning of the pre-edit but the
+        // input method does not yet know that there is an active pre-edit,
+        // because that is communicated separately by the imServer->setPreedit()
+        // call below.  This means, for example, that if the cursor position is
+        // such that autocapitalization applies, it will have an effect, and once
+        // the setPreedit() below has been called, the effect will be undone.
+        // This causes flickering in vkb/sbox but not on the device, so for now
+        // we'll leave this to be fixed later.  Please refer to NB#226907.
+        updatePreeditInternally(event->preedit(), preeditFormats,
+                                event->replacementStart(),
+                                event->replacementLength());
+        imServer->setPreedit(event->preedit(), event->eventCursorPosition());
+
+        return true;
+    } else {
+        if (debug) {
+            qDebug() << InputContextName << __PRETTY_FUNCTION__
+                     << "MInputContext ignored preedit injection because correction is disabled";
+        }
+        return false;
+    }
+}
 
 QString MInputContext::identifierName()
 {
@@ -534,56 +568,29 @@ bool MInputContext::filterEvent(const QEvent *event)
         break;
 
     default:
+#ifdef HAVE_MEEGOTOUCH
         if (event->type() == MPreeditInjectionEvent::eventNumber()) {
-            if (correctionEnabled) {
-                const MPreeditInjectionEvent *injectionEvent
-                    = dynamic_cast<const MPreeditInjectionEvent *>(event);
-
-                if (injectionEvent == 0) {
-                    break;
-                }
-
-                if (debug) {
-                    qDebug() << InputContextName << "MInputContext got preedit injection:"
-                             << injectionEvent->preedit()
-                             << ", event cursor pos:" << injectionEvent->eventCursorPosition();
-                }
-                // send the injected preedit to input method server and back to the widget with proper
-                // styling
-                // Note: plugin could change the preedit style in imServer->setPreedit().
-                // The cursor is hidden for preedit by default. The input method server can decide
-                // whether it needs the cursor.
-                QList<MInputMethod::PreeditTextFormat> preeditFormats;
-                const MInputMethod::PreeditTextFormat preeditFormat(
-                    0, injectionEvent->preedit().length(), MInputMethod::PreeditDefault);
-                preeditFormats << preeditFormat;
-                // TODO: updatePreeditInternally() below causes update() to be called which
-                // communicates new cursor position (among other things) to the active
-                // input method.  The cursor is at the beginning of the pre-edit but the
-                // input method does not yet know that there is an active pre-edit,
-                // because that is communicated separately by the imServer->setPreedit()
-                // call below.  This means, for example, that if the cursor position is
-                // such that autocapitalization applies, it will have an effect, and once
-                // the setPreedit() below has been called, the effect will be undone.
-                // This causes flickering in vkb/sbox but not on the device, so for now
-                // we'll leave this to be fixed later.  Please refer to NB#226907.
-                updatePreeditInternally(injectionEvent->preedit(), preeditFormats,
-                                        injectionEvent->replacementStart(),
-                                        injectionEvent->replacementLength());
-                imServer->setPreedit(injectionEvent->preedit(), injectionEvent->eventCursorPosition());
-
-                eaten = true;
-
-            } else if (debug) {
-                qDebug() << "MInputContext ignored preedit injection because correction is disabled";
+            const MPreeditInjectionEvent *injectionEvent = dynamic_cast<const MPreeditInjectionEvent *>(event);
+            if (injectionEvent == 0) {
+                return false;
             }
+
+            eaten = handlePreeditInjectionEvent(injectionEvent);
         }
-        break;
+#else
+        if (event->type() == Maliit::PreeditInjectionEvent::eventNumber()) {
+            const Maliit::PreeditInjectionEvent *injectionEvent = dynamic_cast<const Maliit::PreeditInjectionEvent *>(event);
+            if (injectionEvent == 0) {
+                return false;
+            }
+
+            eaten = handlePreeditInjectionEvent(injectionEvent);
+        }
+#endif
     }
 
     return eaten;
 }
-
 
 void MInputContext::hideInputMethod()
 {
