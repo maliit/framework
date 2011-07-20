@@ -45,7 +45,7 @@ contains(BUILD_TYPE, unittest) {
     LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
     INCLUDEPATH += $$SRC_DIR
     
-    target.path += $$MALIIT_TEST_PLUGINS_DIR
+    target.path += $$MALIIT_TEST_PLUGINS_DIR/examples/cyclekeys
     INSTALLS += target
 }
 
