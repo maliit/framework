@@ -102,7 +102,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     TestInputMethodHost host(fakeService);
     QFETCH(QString, testPluginPath);
 
-    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR);
+    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR"/examples");
     const QString pluginPath = pluginDir.absoluteFilePath(testPluginPath);
     QVERIFY(pluginDir.exists(pluginPath));
 

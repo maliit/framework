@@ -86,8 +86,8 @@ void Ft_ExamplePlugin::testFunction()
     MIndicatorServiceClient fakeService;
     TestInputMethodHost host(fakeService);
 
-    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR);
-    const QString pluginPath = pluginDir.absoluteFilePath("libexampleplugin.so");
+    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR"/examples");
+    const QString pluginPath = pluginDir.absoluteFilePath("standard/libexampleplugin.so");
     QVERIFY(pluginDir.exists(pluginPath));
 
     QPluginLoader loader(pluginPath);
