@@ -162,7 +162,7 @@ void Ut_MAttributeExtensionManager::testSetExtendedAttribute()
         QCOMPARE(subject->attributeExtensionIdList().count(), attributteExtentionCount);
     }
 
-    QSignalSpy spy(subject, SIGNAL(keyOverrideCreated()));
+    QSignalSpy spy(subject, SIGNAL(keyOverrideCreated(MAttributeExtensionId)));
     QVERIFY(spy.isValid());
     for (int i = 0; i < idList.count(); i++) {
         QCOMPARE(subject->keyOverrides(idList.at(i)).count(), 0);
