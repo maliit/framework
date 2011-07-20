@@ -43,14 +43,9 @@ class MPreeditStyleContainer
 #include <QByteArray>
 
 #ifdef HAVE_MEEGOTOUCH
-#include <MApplication>
-#include <MTheme>
 #include <MComponentData>
-#include <MLibrary>
-#include <MInputMethodState>
-#include <MWindow>
 #include <MApplicationPage>
-#include <mtimestamp.h>
+#include <MInputMethodState>
 #include <MPreeditInjectionEvent>
 #else
 #include <QApplication>
@@ -62,10 +57,6 @@ class MPreeditStyleContainer
 #endif
 
 #include <X11/XKBlib.h>
-
-#ifdef HAVE_MEEGOTOUCH
-M_LIBRARY
-#endif
 
 #ifndef HAVE_MEEGOTOUCH
 using Maliit::AttributeExtension;
@@ -673,10 +664,6 @@ void MInputContext::commitString(const QString &string, int replacementStart,
 {
     if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
-#ifdef HAVE_MEEGOTOUCH
-    mTimestamp(InputContextName, string);
-#endif
-
     if (imServer->pendingResets()) {
         return;
     }
@@ -739,10 +726,6 @@ void MInputContext::updatePreeditInternally(const QString &string,
                                             const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                             int replacementStart, int replacementLength, int cursorPos)
 {
-#ifdef HAVE_MEEGOTOUCH
-    mTimestamp(InputContextName, "start text=" + string);
-#endif
-
     preedit = string;
 
     QList<QInputMethodEvent::Attribute> attributes;
@@ -812,12 +795,7 @@ void MInputContext::updatePreeditInternally(const QString &string,
     }
 
     sendEvent(event);
-
-#ifdef HAVE_MEEGOTOUCH
-    mTimestamp(InputContextName, "end");
-#endif
 }
-
 
 void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
                              bool autoRepeat, int count,
@@ -1378,4 +1356,3 @@ QString MInputContext::selection(bool &valid) const
     }
     return selectionText;
 }
-
