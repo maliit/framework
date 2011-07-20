@@ -17,8 +17,18 @@
 #ifndef UTILS_H__
 #define UTILS_H__
 
+#include <QWidget>
+
 namespace MaliitTestUtils {
     bool isTestingInSandbox();
+
+    class RemoteWindow : public QWidget
+    {
+    public:
+        explicit RemoteWindow(QWidget *p = 0, Qt::WindowFlags f = 0);
+
+        void paintEvent(QPaintEvent *);
+    };
 }
 
 #endif // UTILS_H__
