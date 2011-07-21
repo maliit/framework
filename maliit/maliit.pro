@@ -52,3 +52,13 @@ INSTALLS += \
     headers \
     frameworkheaders \
     install_pkgconfig \
+
+# coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
+for(OPTION,$$list($$lower($$COV_OPTION))){
+    isEqual(OPTION, on){
+        QMAKE_CXXFLAGS += -ftest-coverage -fprofile-arcs -fno-elide-constructors
+        LIBS += -lgcov
+    }
+}
+
+QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
