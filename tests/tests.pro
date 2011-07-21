@@ -25,6 +25,7 @@ SUBDIRS = \
           ft_exampleplugin \
           ut_maliit_attributeextension \
           ut_maliit_attributeextensionregistry \
+          ut_maliit_inputmethod \
 
 outputFiles(runtests.sh, gen-tests-xml.sh)
 
