@@ -46,7 +46,7 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
     }
 }
 
-QMAKE_CLEAN += *.gcno *.gcda
+QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 
 target.path += $$[QT_INSTALL_PLUGINS]/inputmethods
 INSTALLS    += target \
