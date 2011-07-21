@@ -104,12 +104,12 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
     }
 }
 
-QMAKE_CLEAN += *.gcno *.gcda
-
-target.path += $$M_IM_INSTALL_LIBS
-
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
+
+QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
+
+target.path += $$M_IM_INSTALL_LIBS
 
 headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
 headers.files += $$HEADERSINSTALL

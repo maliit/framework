@@ -15,4 +15,4 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
         LIBS += -lgcov
     }
 }
-QMAKE_CLEAN += *.gcno *.gcda
+QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
