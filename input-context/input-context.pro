@@ -8,8 +8,12 @@ INCLUDEPATH += . .. ../src
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-INCLUDEPATH += ../maliit
-LIBS += ../maliit/lib$${MALIIT_LIB}.so
+external-libmaliit {
+    PKGCONFIG += maliit-1.0
+} else {
+    INCLUDEPATH += ../maliit
+    LIBS += ../maliit/lib$${MALIIT_LIB}.so
+}
 
 nomeegotouch {
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\" 

@@ -16,9 +16,14 @@ contains(BUILD_TYPE, unittest) {
 
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
-    TOP_SRC = ../../..
-    INCLUDEPATH += $$TOP_SRC
-    LIBS += $$TOP_SRC/maliit/lib$${MALIIT_LIB}.so
+    external-libmaliit {
+        CONFIG += link_pkgconfig
+        PKGCONFIG += maliit-1.0
+    } else {
+        TOP_SRC = ../../..
+        INCLUDEPATH += $$TOP_SRC
+        LIBS += $$TOP_SRC/maliit/lib$${MALIIT_LIB}.so
+    }
 }
 
 SOURCES += \

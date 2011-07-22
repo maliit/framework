@@ -3,7 +3,11 @@ include(../common_top.pri)
 INCLUDEPATH += ../../input-context
 LIBS += -L../../input-context -lminputcontext
 
-LIBS += ../../maliit/lib$${MALIIT_LIB}.so
+external-libmaliit {
+    PKGCONFIG += maliit-1.0
+} else {
+    LIBS += ../../maliit/lib$${MALIIT_LIB}.so
+}
 
 nomeegotouch  {
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\"
@@ -18,6 +22,6 @@ SOURCES += \
     ut_minputcontextplugin.cpp
 
 
-CONFIG += meegotouch
+CONFIG += link_pkgconfig
 
 include(../common_check.pri)

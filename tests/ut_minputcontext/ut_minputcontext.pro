@@ -5,8 +5,12 @@ INCLUDEPATH += $$ICDIR ../stubs
 LIBS += -L$$ICDIR -lminputcontext $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lX11
 DEFINES += M_LIBRARY=
 
-INCLUDEPATH += ../../maliit
-LIBS += ../../maliit/lib$${MALIIT_LIB}.so
+external-libmaliit {
+    PKGCONFIG += maliit-1.0
+} else {
+    INCLUDEPATH += ../../maliit
+    LIBS += ../../maliit/lib$${MALIIT_LIB}.so
+}
 
 DEFINES -= HAVE_MEEGOTOUCH
 

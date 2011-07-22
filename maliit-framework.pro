@@ -3,7 +3,13 @@ include(./config.pri)
 CONFIG += ordered
 TARGET = meego-im-uiserver
 TEMPLATE = subdirs
-SUBDIRS = src passthroughserver maliit
+SUBDIRS = src passthroughserver
+
+external-libmaliit {
+    !system(pkg-config --exists maliit-1.0):error("Could not find maliit-1.0")
+} else {
+    SUBDIRS += maliit
+}
 
 SUBDIRS += input-context input-method-quick examples
 
