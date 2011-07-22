@@ -1,28 +1,34 @@
 include(./config.pri)
 
 CONFIG += ordered
-TARGET = meego-im-uiserver
 TEMPLATE = subdirs
-SUBDIRS = src passthroughserver
+
+!only-libmaliit {
+    SUBDIRS = src passthroughserver
+    TARGET = meego-im-uiserver
+}
 
 external-libmaliit {
+    only-libmaliit:error("CONFIG options only-libmaliit and external-libmaliit does not make sense together!")
     !system(pkg-config --exists maliit-1.0):error("Could not find maliit-1.0")
 } else {
     SUBDIRS += maliit
 }
 
-SUBDIRS += input-context input-method-quick examples
+!only-libmaliit {
+    SUBDIRS += input-context input-method-quick examples
 
-!nodoc {
-    SUBDIRS += doc
-}
+    !nodoc {
+        SUBDIRS += doc
+    }
 
-!nomeegotouch {
-    CONFIG  += meegotouch
-}
+    !nomeegotouch {
+        CONFIG  += meegotouch
+    }
 
-!notests {
-    SUBDIRS += tests
+    !notests {
+        SUBDIRS += tests
+    }
 }
 
 !system(pkg-config --exists dbus-glib-1 dbus-1 gconf-2.0):error("Could not find dbus-glib-1 dbus-1 gconf-2.0")
