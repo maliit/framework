@@ -113,6 +113,7 @@ defineTest(outputFile) {
                 M_IM_INSTALL_HEADERS \
                 M_IM_INSTALL_LIBS \
                 M_IM_PLUGINS_DIR \
+                M_IM_FACTORY_PLUGINS_DIR \
                 M_IM_VERSION \
                 M_IM_ENABLE_MULTITOUCH \
                 M_IM_DEFAULT_PLUGIN \
