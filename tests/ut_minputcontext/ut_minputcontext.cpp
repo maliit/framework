@@ -36,90 +36,7 @@ QWidget *QApplication::focusWidget()
     return gFocusedWidget;
 }
 
-InputMethodServerDBusStub* DBusStub;
-
-// Glib DBus stubbing........................................................
-
-void GlibDBusIMServerProxy::connectToDBus()
-{
-}
-
-void GlibDBusIMServerProxy::setContextObject(const QString &inputContextIdentifier)
-{
-    DBusStub->setContextObject(inputContextIdentifier);
-}
-
-void GlibDBusIMServerProxy::activateContext()
-{
-    DBusStub->activateContext();
-}
-
-void GlibDBusIMServerProxy::showInputMethod()
-{
-    DBusStub->showInputMethod();
-}
-
-void GlibDBusIMServerProxy::hideInputMethod()
-{
-    DBusStub->hideInputMethod();
-}
-
-void GlibDBusIMServerProxy::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
-{
-    DBusStub->mouseClickedOnPreedit(pos, preeditRect);
-}
-
-void GlibDBusIMServerProxy::setPreedit(const QString &text, int cursorPos)
-{
-    DBusStub->setPreedit(text, cursorPos);
-}
-
-void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant> &/*stateInformation*/,
-                                                    bool /*focusChanged*/)
-{
-}
-
-void GlibDBusIMServerProxy::reset(bool)
-{
-    DBusStub->reset();
-}
-
-void GlibDBusIMServerProxy::appOrientationChanged(int angle)
-{
-    DBusStub->appOrientationChanged(angle);
-}
-
-void GlibDBusIMServerProxy::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
-{
-    DBusStub->setCopyPasteState(copyAvailable, pasteAvailable);
-}
-
-void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
-                                            Qt::KeyboardModifiers modifiers,
-                                            const QString &text, bool autoRepeat, int count,
-                                            quint32 nativeScanCode, quint32 nativeModifiers,
-                                            unsigned long time)
-{
-    DBusStub->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count, nativeScanCode,
-                              nativeModifiers, time);
-}
-
-void GlibDBusIMServerProxy::registerAttributeExtension(int /*id*/, const QString &/*fileName*/)
-{
-}
-
-void GlibDBusIMServerProxy::unregisterAttributeExtension(int /*id*/)
-{
-}
-
-void GlibDBusIMServerProxy::setExtendedAttribute(int /*id*/, const QString &/*target*/, const QString &/*item*/,
-                                                 const QString &/*attribute*/, const QVariant &/*value*/)
-{
-}
-
-
-// Qt DBus stub class implementation..........................................
-
+/* */
 void InputMethodServerDBusStub::RedirectedKeyParamsStruct::clear()
 {
     keyType = 0;
@@ -133,11 +50,14 @@ InputMethodServerDBusStub::InputMethodServerDBusStub(QObject *object)
     resetCallCounts();
 }
 
-
 InputMethodServerDBusStub::~InputMethodServerDBusStub()
 {
 }
 
+void InputMethodServerDBusStub::emitConnected()
+{
+    Q_EMIT connected();
+}
 
 void InputMethodServerDBusStub::resetCallCounts()
 {
@@ -147,10 +67,8 @@ void InputMethodServerDBusStub::resetCallCounts()
     setPreeditCallCount = 0;
     resetCallCount = 0;
 
-    setContextObjectCallCount = 0;
     activateContextCallCount = 0;
 
-    keyEventCallCount = 0;
     appOrientationChangedCount = 0;
     setCopyPasteStateCallCount = 0;
     redirectKeyCallCount = 0;
@@ -168,39 +86,24 @@ int InputMethodServerDBusStub::hideInputMethodCount()
     return hideInputMethodCallCount;
 }
 
-
 int InputMethodServerDBusStub::mouseClickedOnPreeditCount()
 {
     return mouseClickedOnPreeditCallCount;
 }
-
-
 
 int InputMethodServerDBusStub::setPreeditCount()
 {
     return setPreeditCallCount;
 }
 
-
 int InputMethodServerDBusStub::resetCount()
 {
     return resetCallCount;
 }
 
-
-int InputMethodServerDBusStub::setContextObjectCount()
-{
-    return setContextObjectCallCount;
-}
-
 int InputMethodServerDBusStub::activateContextCount()
 {
     return activateContextCallCount;
-}
-
-int InputMethodServerDBusStub::keyEventCount()
-{
-    return keyEventCallCount;
 }
 
 int InputMethodServerDBusStub::orientationChangedCount()
@@ -231,79 +134,67 @@ InputMethodServerDBusStub::RedirectedKeyParamsStruct &InputMethodServerDBusStub:
 ///////
 void InputMethodServerDBusStub::showInputMethod()
 {
+    MImServerConnection::showInputMethod();
     showInputMethodCallCount++;
 }
 
 
 void InputMethodServerDBusStub::hideInputMethod()
 {
+    MImServerConnection::hideInputMethod();
     hideInputMethodCallCount++;
 }
 
 
 void InputMethodServerDBusStub::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
 {
-    Q_UNUSED(pos);
-    Q_UNUSED(preeditRect);
-
+    MImServerConnection::mouseClickedOnPreedit(pos, preeditRect);
     mouseClickedOnPreeditCallCount++;
 }
 
 
 void InputMethodServerDBusStub::setPreedit(const QString &text, int cursorPos)
 {
-    Q_UNUSED(text);
-    Q_UNUSED(cursorPos);
-
+    MImServerConnection::setPreedit(text, cursorPos);
     setPreeditCallCount++;
 }
 
 
-void InputMethodServerDBusStub::reset()
+void InputMethodServerDBusStub::reset(bool requireSyncronization)
 {
+    MImServerConnection::reset(requireSyncronization);
     resetCallCount++;
 }
 
-
-void InputMethodServerDBusStub::setContextObject(const QString &callbackObject)
-{
-    Q_UNUSED(callbackObject)
-
-    setContextObjectCallCount++;
-}
-
-
 void InputMethodServerDBusStub::activateContext()
 {
+    MImServerConnection::activateContext();
     activateContextCallCount++;
-}
-
-void InputMethodServerDBusStub::sendKeyEvent(const QKeyEvent &keyEvent,
-                                             MInputMethod::EventRequestType requestType)
-{
-    Q_UNUSED(keyEvent);
-    Q_UNUSED(requestType)
-    keyEventCallCount++;
 }
 
 void InputMethodServerDBusStub::appOrientationChanged(int angle)
 {
-    Q_UNUSED(angle);
+    MImServerConnection::appOrientationChanged(angle);
     appOrientationChangedCount++;
 }
 
 void InputMethodServerDBusStub::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
+    MImServerConnection::setCopyPasteState(copyAvailable, pasteAvailable);
     ++setCopyPasteStateCallCount;
     setCopyPasteStateCallParams.append(copyAvailable);
     setCopyPasteStateCallParams.append(pasteAvailable);
 }
 
-void InputMethodServerDBusStub::processKeyEvent(int keyType, int keyCode, int /* modifiers */,
-                                                const QString &text, bool /* autoRepeat */,
-                                                int /* count */, unsigned int /* nativeScanCode */,
-                                                unsigned int /* nativeModifiers */, unsigned long /* time */)
+void InputMethodServerDBusStub::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                                Qt::KeyboardModifiers modifiers,
+                                                const QString &text, bool autoRepeat, int count,
+                                                quint32 nativeScanCode, quint32 nativeModifiers,
+                                                unsigned long time)
 {
+    MImServerConnection::processKeyEvent(keyType, keyCode, modifiers,
+                                         text, autoRepeat, count,
+                                         nativeScanCode, nativeModifiers, time);
     ++redirectKeyCallCount;
     redirectKeyCallParams.keyType = keyType;
     redirectKeyCallParams.keyCode = keyCode;
@@ -426,11 +317,9 @@ void Ut_MInputContext::initTestCase()
     QCoreApplication::setLibraryPaths(QStringList("./inputmethods"));
     app.reset(new QApplication(argc, argv));
 
-    m_stub = new InputMethodServerDBusStub(this);
-
-    DBusStub = m_stub;          // for glib dbus use
-
-    m_subject = new MInputContext;
+    m_stub = new InputMethodServerDBusStub(0);
+    m_subject = new MInputContext(m_stub, 0);
+    m_stub->emitConnected();
     QVERIFY(m_subject != 0);
 
     // Overly cautious sanity check, but we do use native C API in
@@ -704,19 +593,6 @@ void Ut_MInputContext::testNonTextEntryWidget()
     waitAndProcessEvents(1500);
 
     QCOMPARE(m_stub->hideInputMethodCount(), count + 1);
-}
-
-void Ut_MInputContext::testSendKeyEvent()
-{
-    QKeyEvent keyEvent(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
-    m_stub->sendKeyEvent(keyEvent, MInputMethod::EventRequestBoth);
-    QCOMPARE(m_stub->keyEventCount(), 1);
-
-    WidgetStub widget(0);
-    m_subject->setFocusWidget(&widget);
-    m_stub->sendKeyEvent(keyEvent, MInputMethod::EventRequestBoth);
-    QCOMPARE(m_stub->keyEventCount(), 2);
-
 }
 
 void Ut_MInputContext::testKeyEvent()
