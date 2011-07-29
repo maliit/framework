@@ -47,6 +47,97 @@ namespace
         return Maliit::DBusGLib::ConnectionRef(connection,
                                                dbus_g_connection_unref);
     }
+
+    bool encodeVariant(GValue *dest, const QVariant &source)
+    {
+        switch (source.type()) {
+        case QVariant::Bool:
+            g_value_init(dest, G_TYPE_BOOLEAN);
+            g_value_set_boolean(dest, source.toBool());
+            return true;
+        case QVariant::Int:
+            g_value_init(dest, G_TYPE_INT);
+            g_value_set_int(dest, source.toInt());
+            return true;
+        case QVariant::UInt:
+            g_value_init(dest, G_TYPE_UINT);
+            g_value_set_uint(dest, source.toUInt());
+            return true;
+        case QVariant::LongLong:
+            g_value_init(dest, G_TYPE_INT64);
+            g_value_set_int64(dest, source.toLongLong());
+            return true;
+        case QVariant::ULongLong:
+            g_value_init(dest, G_TYPE_UINT64);
+            g_value_set_uint64(dest, source.toULongLong());
+            return true;
+        case QVariant::Double:
+            g_value_init(dest, G_TYPE_DOUBLE);
+            g_value_set_double(dest, source.toDouble());
+            return true;
+        case QVariant::String:
+            g_value_init(dest, G_TYPE_STRING);
+            // string is copied by g_value_set_string
+            g_value_set_string(dest, source.toString().toUtf8().constData());
+            return true;
+        case QVariant::Rect:
+            {
+                // QRect is encoded as (iiii).
+                // This is compatible with QDBusArgument encoding. see more in decoder
+                GType structType = dbus_g_type_get_struct("GValueArray",
+                                                          G_TYPE_INT, G_TYPE_INT,
+                                                          G_TYPE_INT, G_TYPE_INT,
+                                                          G_TYPE_INVALID);
+                g_value_init(dest, structType);
+                GValueArray *array = (GValueArray*)dbus_g_type_specialized_construct(structType);
+                if (!array) {
+                    qWarning() << Q_FUNC_INFO << "failed to initialize Rect instance";
+                }
+                g_value_take_boxed(dest, array);
+                QRect rect = source.toRect();
+                if (!dbus_g_type_struct_set(dest,
+                                        0, rect.left(),
+                                        1, rect.top(),
+                                        2, rect.width(),
+                                        3, rect.height(),
+                                        G_MAXUINT)) {
+                    g_value_unset(dest);
+                    qWarning() << Q_FUNC_INFO << "failed to fill Rect instance";
+                    return false;
+                }
+                return true;
+            }
+        case QMetaType::ULong:
+            g_value_init(dest, G_TYPE_ULONG);
+            g_value_set_ulong(dest, source.value<ulong>());
+            return true;
+        default:
+            qWarning() << Q_FUNC_INFO << "unsupported data:" << source.type() << source;
+            return false;
+        }
+    }
+
+    void destroyGValue(GValue *value)
+    {
+        g_value_unset(value);
+        g_free(value);
+    }
+
+    GHashTable *encodeVariantMap(const QMap<QString, QVariant> &source)
+    {
+        GHashTable* result = g_hash_table_new_full(&g_str_hash, &g_str_equal,
+                                                   &g_free, GDestroyNotify(&destroyGValue));
+        foreach (QString key, source.keys()) {
+            GValue *valueVariant = g_new0(GValue, 1);
+            if (!encodeVariant(valueVariant, source[key])) {
+                g_free(valueVariant);
+                g_hash_table_unref(result);
+                return 0;
+            }
+            g_hash_table_insert(result, g_strdup(key.toUtf8().constData()), valueVariant);
+        }
+        return result;
+    }
 }
 
 GlibDBusIMServerProxy::GlibDBusIMServerProxy(MInputContext *inputContext, QObject *parent)
@@ -201,100 +292,7 @@ void GlibDBusIMServerProxy::setPreedit(const QString &text, int cursorPos)
                                G_TYPE_INVALID);
 }
 
-namespace {
 
-bool encodeVariant(GValue *dest, const QVariant &source)
-{
-    switch (source.type()) {
-    case QVariant::Bool:
-        g_value_init(dest, G_TYPE_BOOLEAN);
-        g_value_set_boolean(dest, source.toBool());
-        return true;
-    case QVariant::Int:
-        g_value_init(dest, G_TYPE_INT);
-        g_value_set_int(dest, source.toInt());
-        return true;
-    case QVariant::UInt:
-        g_value_init(dest, G_TYPE_UINT);
-        g_value_set_uint(dest, source.toUInt());
-        return true;
-    case QVariant::LongLong:
-        g_value_init(dest, G_TYPE_INT64);
-        g_value_set_int64(dest, source.toLongLong());
-        return true;
-    case QVariant::ULongLong:
-        g_value_init(dest, G_TYPE_UINT64);
-        g_value_set_uint64(dest, source.toULongLong());
-        return true;
-    case QVariant::Double:
-        g_value_init(dest, G_TYPE_DOUBLE);
-        g_value_set_double(dest, source.toDouble());
-        return true;
-    case QVariant::String:
-        g_value_init(dest, G_TYPE_STRING);
-        // string is copied by g_value_set_string
-        g_value_set_string(dest, source.toString().toUtf8().constData());
-        return true;
-    case QVariant::Rect:
-        {
-            // QRect is encoded as (iiii).
-            // This is compatible with QDBusArgument encoding. see more in decoder
-            GType structType = dbus_g_type_get_struct("GValueArray",
-                                                      G_TYPE_INT, G_TYPE_INT,
-                                                      G_TYPE_INT, G_TYPE_INT,
-                                                      G_TYPE_INVALID);
-            g_value_init(dest, structType);
-            GValueArray *array = (GValueArray*)dbus_g_type_specialized_construct(structType);
-            if (!array) {
-                qWarning() << Q_FUNC_INFO << "failed to initialize Rect instance";
-            }
-            g_value_take_boxed(dest, array);
-            QRect rect = source.toRect();
-            if (!dbus_g_type_struct_set(dest,
-                                    0, rect.left(),
-                                    1, rect.top(),
-                                    2, rect.width(),
-                                    3, rect.height(),
-                                    G_MAXUINT)) {
-                g_value_unset(dest);
-                qWarning() << Q_FUNC_INFO << "failed to fill Rect instance";
-                return false;
-            }
-            return true;
-        }
-    case QMetaType::ULong:
-        g_value_init(dest, G_TYPE_ULONG);
-        g_value_set_ulong(dest, source.value<ulong>());
-        return true;
-    default:
-        qWarning() << Q_FUNC_INFO << "unsupported data:" << source.type() << source;
-        return false;
-    }
-}
-
-void destroyGValue(GValue *value)
-{
-    g_value_unset(value);
-    g_free(value);
-}
-
-GHashTable *encodeVariantMap(const QMap<QString, QVariant> &source)
-{
-    GHashTable* result = g_hash_table_new_full(&g_str_hash, &g_str_equal,
-                                               &g_free, GDestroyNotify(&destroyGValue));
-    foreach (QString key, source.keys()) {
-        GValue *valueVariant = g_new0(GValue, 1);
-        if (!encodeVariant(valueVariant, source[key])) {
-            g_free(valueVariant);
-            g_hash_table_unref(result);
-            return 0;
-        }
-        g_hash_table_insert(result, g_strdup(key.toUtf8().constData()), valueVariant);
-    }
-    return result;
-}
-
-}
 
 void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant> &stateInformation,
                                                     bool focusChanged)
