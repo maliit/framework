@@ -9,8 +9,9 @@
 #include <QObject>
 
 #include <minputcontext.h>
+#include "mimserverconnection.h"
 
-class InputMethodServerDBusStub: public QObject
+class InputMethodServerDBusStub: public MImServerConnection
 {
     Q_OBJECT
 
@@ -22,11 +23,12 @@ public:
         void clear();
     };
 
-    InputMethodServerDBusStub(QObject *);
+    InputMethodServerDBusStub(QObject *parent = 0);
     virtual ~InputMethodServerDBusStub();
 
     // method calls are counted, this resets counters
     void resetCallCounts();
+    void emitConnected();
 
     // returns counter for specific methods
     int showInputMethodCount();
@@ -35,7 +37,6 @@ public:
     int setPreeditCount();
     int resetCount();
 
-    int setContextObjectCount();
     int activateContextCount();
     int keyEventCount();
     int orientationChangedCount();
@@ -47,25 +48,25 @@ public:
     RedirectedKeyParamsStruct &redirectKeyParams();
 
 public slots:
-    void showInputMethod();
-    void hideInputMethod();
-    void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
-    void setPreedit(const QString &text, int cursorPos);
-    void reset();
+    //! reimpl
+    virtual void showInputMethod();
+    virtual void hideInputMethod();
+    virtual void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
+    virtual void setPreedit(const QString &text, int cursorPos);
+    virtual void reset(bool);
 
-    void setContextObject(const QString &callbackObject);
-    void activateContext();
-    void sendKeyEvent(const QKeyEvent &keyEvent,
-                      MInputMethod::EventRequestType requestType);
+    virtual void activateContext();
 
-    void appOrientationChanged(int angle);
+    virtual void appOrientationChanged(int angle);
 
-    void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
+    virtual void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
 
-    void processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text,
-                         bool autoRepeat, int count,
-                         unsigned int nativeScanCode, unsigned int nativeModifiers,
-                         unsigned long time);
+    virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                                 Qt::KeyboardModifiers modifiers,
+                                 const QString &text, bool autoRepeat, int count,
+                                 quint32 nativeScanCode, quint32 nativeModifiers,
+                                 unsigned long time);
+    //! reimpl end
 
 private:
     int showInputMethodCallCount;
@@ -74,9 +75,7 @@ private:
     int setPreeditCallCount;
     int resetCallCount;
 
-    int setContextObjectCallCount;
     int activateContextCallCount;
-    int keyEventCallCount;
     int appOrientationChangedCount;
 
     int setCopyPasteStateCallCount;
@@ -150,7 +149,6 @@ private slots:
     void testAppOrientationChanged();
 
     void testNonTextEntryWidget();
-    void testSendKeyEvent();
 
     // FIXME: do separate tests for qgraphics based widget stub?
     // FIXME: test non-input enabled widgets?
