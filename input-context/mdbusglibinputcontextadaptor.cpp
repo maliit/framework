@@ -17,6 +17,7 @@
 #include "mdbusglibinputcontextadaptor.h"
 #include "minputcontext.h"
 #include <minputmethodnamespace.h>
+#include "mimserverconnection.h"
 
 #include <QDebug>
 
@@ -26,14 +27,14 @@ G_DEFINE_TYPE(MDBusGlibInputContextAdaptor, m_dbus_glib_input_context_adaptor, G
 static gboolean m_dbus_glib_input_context_adaptor_activation_lost_event(
     MDBusGlibInputContextAdaptor *obj, GError **/*error*/)
 {
-    obj->inputContext->activationLostEvent();
+    Q_EMIT obj->imServerConnection->activationLostEvent();
     return TRUE;
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_im_initiated_hide(
     MDBusGlibInputContextAdaptor *obj, GError **/*error*/)
 {
-    obj->inputContext->imInitiatedHide();
+    Q_EMIT obj->imServerConnection->imInitiatedHide();
     return TRUE;
 }
 
@@ -41,7 +42,7 @@ static gboolean m_dbus_glib_input_context_adaptor_commit_string(
     MDBusGlibInputContextAdaptor *obj, const char *string, gint32 replaceStart,
     gint32 replaceLength, gint32 cursorPos, GError **/*error*/)
 {
-    obj->inputContext->commitString(QString::fromUtf8(string), replaceStart,
+    Q_EMIT obj->imServerConnection->commitString(QString::fromUtf8(string), replaceStart,
                                     replaceLength, cursorPos);
     return TRUE;
 }
@@ -72,7 +73,7 @@ static gboolean m_dbus_glib_input_context_adaptor_update_preedit(MDBusGlibInputC
                                     MInputMethod::PreeditFace(
                                         g_value_get_int(g_value_array_get_nth(itemData, 2)))));
     }
-    obj->inputContext->updatePreedit(QString::fromUtf8(string),
+    Q_EMIT obj->imServerConnection->updatePreedit(QString::fromUtf8(string),
                                      formatList,
                                      replaceStart,
                                      replaceLength,
@@ -84,7 +85,7 @@ static gboolean m_dbus_glib_input_context_adaptor_key_event(
     MDBusGlibInputContextAdaptor *obj, gint32 type, gint32 key, gint32 modifiers, const char *text,
     gboolean autoRepeat, gint32 count, guchar requestType, GError **/*error*/)
 {
-    obj->inputContext->keyEvent(type, key, modifiers, QString::fromUtf8(text),
+    Q_EMIT obj->imServerConnection->keyEvent(type, key, modifiers, QString::fromUtf8(text),
                                 autoRepeat == TRUE, count,
                                 static_cast<MInputMethod::EventRequestType>(requestType));
     return TRUE;
@@ -95,14 +96,14 @@ static gboolean m_dbus_glib_input_context_adaptor_update_input_method_area(
     gint32 left, gint32 top, gint32 width, gint32 height,
     GError **/*error*/)
 {
-    obj->inputContext->updateInputMethodArea(QRect(left, top, width, height));
+    Q_EMIT obj->imServerConnection->updateInputMethodArea(QRect(left, top, width, height));
     return TRUE;
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_set_global_correction_enabled(
     MDBusGlibInputContextAdaptor *obj, gboolean value, GError **/*error*/)
 {
-    obj->inputContext->setGlobalCorrectionEnabled(value == TRUE);
+    Q_EMIT obj->imServerConnection->setGlobalCorrectionEnabled(value == TRUE);
     return TRUE;
 }
 
@@ -111,7 +112,8 @@ static gboolean m_dbus_glib_input_context_adaptor_preedit_rectangle(
     gint *width, gint *height, GError **/*error*/)
 {
     bool deserializedValidity;
-    const QRect rect(obj->inputContext->preeditRectangle(deserializedValidity));
+    QRect rect;
+    Q_EMIT obj->imServerConnection->getPreeditRectangle(rect, deserializedValidity);
     *valid = deserializedValidity ? TRUE : FALSE;
     *x = rect.x();
     *y = rect.y();
@@ -123,35 +125,35 @@ static gboolean m_dbus_glib_input_context_adaptor_preedit_rectangle(
 static gboolean m_dbus_glib_input_context_adaptor_copy(
     MDBusGlibInputContextAdaptor *obj, GError **/*error*/)
 {
-    obj->inputContext->copy();
+    Q_EMIT obj->imServerConnection->copy();
     return TRUE;
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_paste(
     MDBusGlibInputContextAdaptor *obj, GError **/*error*/)
 {
-    obj->inputContext->paste();
+    Q_EMIT obj->imServerConnection->paste();
     return TRUE;
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_set_redirect_keys(
     MDBusGlibInputContextAdaptor *obj, gboolean enabled, GError **/*error*/)
 {
-    obj->inputContext->setRedirectKeys(enabled == TRUE);
+    Q_EMIT obj->imServerConnection->setRedirectKeys(enabled == TRUE);
     return TRUE;
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_set_detectable_auto_repeat(
     MDBusGlibInputContextAdaptor *obj, gboolean enabled, GError **/*error*/)
 {
-    obj->inputContext->setDetectableAutoRepeat(enabled == TRUE);
+    Q_EMIT obj->imServerConnection->setDetectableAutoRepeat(enabled == TRUE);
     return TRUE;
 }
 
 static gboolean m_dbus_glib_input_context_adaptor_set_selection(MDBusGlibInputContextAdaptor *obj,
                                                                 gint32 start, gint32 length, GError **/*error*/)
 {
-    obj->inputContext->setSelection(start,length);
+    Q_EMIT obj->imServerConnection->setSelection(start,length);
     return TRUE;
 }
 
@@ -159,7 +161,8 @@ static gboolean m_dbus_glib_input_context_adaptor_selection(
     MDBusGlibInputContextAdaptor *obj, gboolean *valid, gchar **gdata, GError **/*error*/)
 {
     bool validity;
-    const QString selection(obj->inputContext->selection(validity));
+    QString selection;
+    Q_EMIT obj->imServerConnection->getSelection(selection, validity);
     *valid = validity ? TRUE : FALSE;
     *gdata = NULL;
 
@@ -173,7 +176,7 @@ static gboolean m_dbus_glib_input_context_adaptor_set_language(
     MDBusGlibInputContextAdaptor *obj, const char *string,
     GError **/*error*/)
 {
-    obj->inputContext->setLanguage(QString::fromUtf8(string));
+    Q_EMIT obj->imServerConnection->setLanguage(QString::fromUtf8(string));
     return TRUE;
 }
 

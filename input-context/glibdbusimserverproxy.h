@@ -50,10 +50,13 @@ class GlibDBusIMServerProxy: public MImServerConnection
     Q_OBJECT
 
 public:
-    GlibDBusIMServerProxy(MInputContext *inputContext, QObject *parent = 0);
+    GlibDBusIMServerProxy(QObject *parent = 0);
     virtual ~GlibDBusIMServerProxy();
 
     //! reimpl
+    virtual bool pendingResets();
+
+    /* Outbound communication */
     virtual void activateContext();
 
     virtual void showInputMethod();
@@ -68,7 +71,6 @@ public:
                                  bool focusChanged);
 
     virtual void reset(bool requireSynchronization);
-    virtual bool pendingResets();
 
     virtual void appOrientationAboutToChange(int angle);
 
@@ -104,7 +106,6 @@ private:
     DBusGProxy *glibObjectProxy;
     Maliit::DBusGLib::ConnectionRef connection;
     GObject *inputContextAdaptor;
-    QString icAdaptorPath;
     bool active;
     QSet<DBusGProxyCall *> pendingResetCalls;
 };

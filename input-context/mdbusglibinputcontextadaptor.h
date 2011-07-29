@@ -19,14 +19,14 @@
 
 #include <glib-object.h>
 
-class MInputContext;
+class MImServerConnection;
 
 //! \brief Glib D-Bus version of an adaptor that exposes MInputContext interface
 //! through D-Bus
 struct MDBusGlibInputContextAdaptor
 {
     GObject parent;
-    MInputContext *inputContext;
+    MImServerConnection *imServerConnection;
 };
 
 //! \brief MDBusGlibInputContextAdaptor metaclass

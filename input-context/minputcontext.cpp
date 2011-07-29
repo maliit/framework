@@ -88,7 +88,7 @@ MInputContext::MInputContext(QObject *parent)
     : QInputContext(parent),
       active(false),
       inputPanelState(InputPanelHidden),
-      imServer(0),
+      imServer(new GlibDBusIMServerProxy()),
       correctionEnabled(false),
       styleContainer(0),
       connectedObject(0),
@@ -132,7 +132,18 @@ MInputContext::MInputContext(QObject *parent)
     }
 #endif
 
-    connectToDBus();
+    connectInputMethodServer();
+    connectInputMethodExtension();
+}
+
+MInputContext::~MInputContext()
+{
+    delete imServer;
+    delete styleContainer;
+}
+
+void MInputContext::connectInputMethodExtension()
+{
 
 #ifdef HAVE_MEEGOTOUCH
     connect(MInputMethodState::instance(),
@@ -177,23 +188,61 @@ MInputContext::MInputContext(QObject *parent)
             this, SLOT(notifyExtendedAttributeChanged(int,QString,QVariant)));
 }
 
-
-MInputContext::~MInputContext()
+void MInputContext::connectInputMethodServer()
 {
-    delete imServer;
-
-    delete styleContainer;
-}
-
-
-void MInputContext::connectToDBus()
-{
-    if (debug) qDebug() << __PRETTY_FUNCTION__;
-
-    imServer = new GlibDBusIMServerProxy(this, 0);
-
     connect(imServer, SIGNAL(connected()), this, SLOT(onDBusConnection()));
     connect(imServer, SIGNAL(disconnected()), this, SLOT(onDBusDisconnection()));
+
+    /* Hook up incoming communication from input method server */
+    connect(imServer, SIGNAL(activationLostEvent()), this, SLOT(activationLostEvent()));
+
+    connect(imServer, SIGNAL(imInitiatedHide()), this, SLOT(imInitiatedHide()));
+
+    connect(imServer,
+            SIGNAL(commitString(QString,int,int,int)),
+            this, SLOT(commitString(QString,int,int,int)));
+
+    connect(imServer,
+            SIGNAL(updatePreedit(QString,QList<MInputMethod::PreeditTextFormat>,int,int,int)),
+            this, SLOT(updatePreedit(QString,QList<MInputMethod::PreeditTextFormat>,int,int,int)));
+
+    connect(imServer,
+            SIGNAL(keyEvent(int,int,int,QString,bool,int,MInputMethod::EventRequestType)),
+            this, SLOT(keyEvent(int,int,int,QString,bool,int,MInputMethod::EventRequestType)));
+
+    connect(imServer,
+            SIGNAL(updateInputMethodArea(QRect)),
+            this, SLOT(updateInputMethodArea(QRect)));
+
+    connect(imServer,
+            SIGNAL(setGlobalCorrectionEnabled(bool)),
+            this, SLOT(setGlobalCorrectionEnabled(bool)));
+
+    connect(imServer,
+            SIGNAL(getPreeditRectangle(QRect&,bool&)),
+            this, SLOT(getPreeditRectangle(QRect&,bool&)));
+
+    connect(imServer, SIGNAL(copy()), this, SLOT(copy()));
+
+    connect(imServer, SIGNAL(paste()), this, SLOT(paste()));
+
+    connect(imServer, SIGNAL(setRedirectKeys(bool)), this, SLOT(setRedirectKeys(bool)));
+
+    connect(imServer,
+            SIGNAL(setDetectableAutoRepeat(bool)),
+            this, SLOT(setDetectableAutoRepeat(bool)));
+
+    connect(imServer,
+            SIGNAL(setSelection(int,int)),
+            this, SLOT(setSelection(int,int)));
+
+    connect(imServer,
+            SIGNAL(getSelection(QString&,bool&)),
+            this, SLOT(getSelection(QString&, bool&)));
+
+    connect(imServer,
+            SIGNAL(setLanguage(QString)),
+            this, SLOT(setLanguage(QString)));
 }
 
 bool MInputContext::event(QEvent *event)
@@ -837,7 +886,7 @@ void MInputContext::setGlobalCorrectionEnabled(bool enabled)
 }
 
 
-QRect MInputContext::preeditRectangle(bool &valid) const
+void MInputContext::getPreeditRectangle(QRect &rectangle, bool &valid) const
 {
     QRect rect;
     valid = false;
@@ -851,7 +900,7 @@ QRect MInputContext::preeditRectangle(bool &valid) const
         rect = queryResult.toRect();
     }
 
-    return rect;
+    rectangle = rect; /* Set output */
 }
 
 void MInputContext::handleClipboardDataChange()
@@ -1294,7 +1343,7 @@ void MInputContext::setSelection(int start, int length)
     sendEvent(event);
 }
 
-QString MInputContext::selection(bool &valid) const
+void MInputContext::getSelection(QString &selection, bool &valid) const
 {
     QString selectionText;
     valid = false;
@@ -1303,5 +1352,5 @@ QString MInputContext::selection(bool &valid) const
         valid = queryResult.isValid();
         selectionText = queryResult.toString();
     }
-    return selectionText;
+    selection = selectionText; /* Set output */
 }
