@@ -16,6 +16,8 @@
 
 #include "minputcontextplugin.h"
 
+#include "glibdbusimserverproxy.h"
+
 #include <minputcontext.h>
 #include <QString>
 #include <QStringList>
@@ -39,7 +41,9 @@ QInputContext *MInputContextPlugin::create(const QString &key)
 
     if (!key.isEmpty()) {
         // currently there is only one type of inputcontext
-        ctx = new MInputContext(this);
+        MImServerConnection *imServer = new GlibDBusIMServerProxy(0);
+        ctx = new MInputContext(imServer, this);
+        imServer->setParent(ctx); // Tie lifetime of server connection to the inputcontext
     }
     return ctx;
 }
