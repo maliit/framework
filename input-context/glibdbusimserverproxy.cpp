@@ -140,21 +140,21 @@ namespace
     }
 }
 
-GlibDBusIMServerProxy::GlibDBusIMServerProxy(MInputContext *inputContext, QObject *parent)
+GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
     : glibObjectProxy(NULL),
       connection(),
-      inputContextAdaptor(inputContextAdaptor),
-      icAdaptorPath(icAdaptorPath),
       active(true)
 {
     Q_UNUSED(parent);
 
     g_type_init();
-    MDBusGlibInputContextAdaptor *inputContextAdaptor
-        = M_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR(
-            g_object_new(M_TYPE_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR, NULL));
 
-    inputContextAdaptor->inputContext = inputContext; // TODO: remove knowledge of inputContext
+    MDBusGlibInputContextAdaptor *adaptor = M_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR(
+            g_object_new(M_TYPE_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR, NULL));
+    adaptor->imServerConnection = this;
+
+    inputContextAdaptor = G_OBJECT(adaptor);
+
     dbus_g_thread_init();
 
     connectToDBus();

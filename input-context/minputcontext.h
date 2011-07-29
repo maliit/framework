@@ -71,111 +71,41 @@ public:
     virtual bool x11FilterEvent(QWidget *widget, XEvent *event);
     //! \reimp_end
 
-    // methods to be used from input method server side:
+public Q_SLOTS:
+    /* Hooked up to the input method server.
+     * See MImServerConnection for documentation. */
+    void activationLostEvent();
+    void imInitiatedHide();
 
-    // \brief Notifies about lost activation.
-    virtual void activationLostEvent();
-
-    //! \brief Notifies about hiding initiated by the input method server side
-    virtual void imInitiatedHide();
-
-    /*!
-     * \brief Commits a string to current focus widget, and set cursor position.
-     * \param string    The new string committed
-     * \param replacementStart The position at which characters are to be replaced relative
-     *  from the start of the preedit string.
-     * \param replacementLength The number of characters to be replaced in the preedit string.
-     * \param cursorPos The cursor position to be set. the cursorPos is the position relative
-     *  to commit string start. Negative values are used as commit string end position
-     *
-     * Note: If \a replacementLength is 0, \a replacementStart gives the insertion position
-     * for the inserted \a string.
-     * For example, if the replacement starting at -1 with a length of 2, then application will
-     * remove the last character before the preedit string and the first character afterwards,
-     * and insert the commit string directly before the preedit string.
-     */
-    virtual void commitString(const QString &string, int replacementStart = 0,
+    void commitString(const QString &string, int replacementStart = 0,
                               int replacementLength = 0, int cursorPos = -1);
 
-    /*!
-     * \brief Updates preedit string of the current focus widget
-     * \param string    The new string
-     * \param preeditFormats The formats for each part of preedit.
-     * \param replacementStart The position at which characters are to be replaced relative
-     *  from the start of the preedit string.
-     * \param replacementLength The number of characters to be replaced in the preedit string.
-     * \param cursorPos Cursor position. If it is less than 0, then the cursor will be hidden.
-     *
-     */
-    virtual void updatePreedit(const QString &string, const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+    void updatePreedit(const QString &string, const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
 
-    //! \brief Sends a non-printable key event. Parameters as in QKeyEvent constructor
-    virtual void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
+    void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
                           int count, MInputMethod::EventRequestType requestType
                           = MInputMethod::EventRequestBoth);
 
-    //!
-    // \brief Updates the input method window area
-    // \param rect Bounding rectangle of the input method area
-    virtual void updateInputMethodArea(const QRect &rect);
+    void updateInputMethodArea(const QRect &rect);
 
-    /*!
-     * \brief set global correction option enable/disable
-     */
-    virtual void setGlobalCorrectionEnabled(bool);
+    void setGlobalCorrectionEnabled(bool);
 
-    /*! get rectangle covering preedit
-     * \param valid validity for the return value
-     */
-    virtual QRect preeditRectangle(bool &valid) const;
+    void getPreeditRectangle(QRect &rectangle, bool &valid) const;
 
-    /*!
-     * \brief Sends copy command to text editor.
-     * This method tries to call "copy" slot in the focused widget
-     * and sends QKeyEvent corresponding to Ctrl-C if slot can not be called.
-     */
     void copy();
-
-    /*!
-     * \brief Sends paste command to text editor.
-     * This method tries to call "paste" slot in the focused widget
-     * and sends QKeyEvent corresponding to Ctrl-V if slot can not be called.
-     */
     void paste();
 
-    /*!
-     * \brief Set if the input method wants to process all raw key events
-     * from hardware keyboard (via \a processKeyEvent calls).
-     */
-    virtual void setRedirectKeys(bool enabled);
+    void setRedirectKeys(bool enabled);
 
-    /*!
-     * \brief Set detectable autorepeat for X on/off
-     *
-     * Detectable autorepeat means that instead of press, release, press, release, press,
-     * release... sequence of key events you get press, press, press, release key events
-     * when a key is repeated.  The setting is X client specific.  This is intended to be
-     * used when key event redirection is enabled with \a setRedirectKeys.
-     */
-    virtual void setDetectableAutoRepeat(bool enabled);
+    void setDetectableAutoRepeat(bool enabled);
 
-    /*!
-     * \brief Sets selection which start from \start with \a length in the focus widget.
-     *
-     * \param start the start index
-     * \param length the length of selection
-     * Note: The cursor will be moved after the commit string has been committed, and the
-     * preedit string will be located at the new edit position.
-     */
-    virtual void setSelection(int start, int length);
+    void setSelection(int start, int length);
 
-    /*!
-     * \brief get selecting text
-     * \param valid validity for the return value
-     */
-    QString selection(bool &valid) const;
+    void getSelection(QString &selection, bool &valid) const;
+    /* End input method server connection slots. */
 
+public:
     static bool debug;
 
 Q_SIGNALS:
@@ -258,7 +188,11 @@ private:
                                  const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
                                  int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
 
-    void connectToDBus();
+    /* Hook up signals on the imServer to our slots. Used in constructor. */
+    void connectInputMethodServer();
+    /* Hook up signals and slots on the input method extension instance,
+     * (MInputMethodState and Maliit::InputMethod). Used in constructor. */
+    void connectInputMethodExtension();
 
     void notifyCopyPasteState();
 
