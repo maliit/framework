@@ -84,11 +84,11 @@ bool MInputContext::debug = false;
 // MApplication or classes relying on it being initialized.
 
 
-MInputContext::MInputContext(QObject *parent)
+MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
     : QInputContext(parent),
       active(false),
       inputPanelState(InputPanelHidden),
-      imServer(new GlibDBusIMServerProxy()),
+      imServer(newImServer),
       correctionEnabled(false),
       styleContainer(0),
       connectedObject(0),
@@ -138,7 +138,6 @@ MInputContext::MInputContext(QObject *parent)
 
 MInputContext::~MInputContext()
 {
-    delete imServer;
     delete styleContainer;
 }
 

@@ -53,7 +53,7 @@ class MInputContext : public QInputContext
 
 public:
     //! \brief Constructor
-    explicit MInputContext(QObject *parent = 0);
+    explicit MInputContext(MImServerConnection *imServer, QObject *parent = 0);
 
     //! \brief Destructor
     virtual ~MInputContext();
