@@ -61,6 +61,7 @@ namespace
     const char * const WinId = "winId";
     const char * const CursorRectAttribute = "cursorRectangle";
     const char * const HiddenTextAttribute = "hiddenText";
+    const char * const PreeditClickPosAttribute = "preeditClickPos";
 }
 
 //! \internal
@@ -718,6 +719,12 @@ bool MInputContextGlibDBusConnection::hasSelection(bool &valid)
     return selectionVariant.toBool();
 }
 
+int MInputContextGlibDBusConnection::preeditClickPos(bool &valid) const
+{
+    QVariant selectionVariant = widgetState[PreeditClickPosAttribute];
+    valid = selectionVariant.isValid();
+    return selectionVariant.toInt();
+}
 
 QString MInputContextGlibDBusConnection::selection(bool &valid)
 {

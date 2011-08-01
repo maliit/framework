@@ -208,6 +208,12 @@ public slots:
     //! Update \a region covered by virtual keyboard
     virtual void updateInputMethodArea(const QRegion &region);
 
+public:
+    /*!
+     * \brief returns the current cursor position within the preedit region
+     */
+    virtual int preeditClickPos(bool &valid) const = 0;
+
 signals:
 
     //! \internal

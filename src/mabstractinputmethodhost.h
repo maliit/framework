@@ -261,6 +261,11 @@ public:
      */
     virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const = 0;
 
+    /*!
+     * \brief returns the current cursor position within the preedit region
+     */
+    virtual int preeditClickPos(bool &valid) const { Q_UNUSED(valid); return 0; }
+
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
     Q_DECLARE_PRIVATE(MAbstractInputMethodHost)

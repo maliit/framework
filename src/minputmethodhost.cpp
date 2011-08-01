@@ -90,6 +90,11 @@ QString MInputMethodHost::selection(bool &valid)
     return connection->selection(valid);
 }
 
+int MInputMethodHost::preeditClickPos(bool &valid) const
+{
+    return connection->preeditClickPos(valid);
+}
+
 int MInputMethodHost::inputMethodMode(bool &valid)
 {
     return connection->inputMethodMode(valid);

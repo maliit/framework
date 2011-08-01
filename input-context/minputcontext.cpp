@@ -373,6 +373,13 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
             preeditRect = focused->inputMethodQuery(query).toRect();
         }
 
+        // To preserve the wire protocol, the "x" argument gets
+        // transferred in widget state instead of being an extra
+        // argument to mouseClickedOnPreedit().
+        QMap<QString, QVariant> stateInformation = getStateInformation();
+        stateInformation["preeditClickPos"] = x;
+        imServer->updateWidgetInformation(stateInformation, false);
+
         imServer->mouseClickedOnPreedit(event->globalPos(), preeditRect);
     }
 }

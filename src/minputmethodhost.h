@@ -85,6 +85,7 @@ public:
     virtual void setInputMethodArea(const QRegion &region);
     virtual void setSelection(int start, int length);
     virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const;
+    virtual int preeditClickPos(bool &valid) const;
 
     //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);
