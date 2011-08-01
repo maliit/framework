@@ -151,7 +151,10 @@ namespace MInputMethod {
     enum PreeditFace {
         PreeditDefault,
         PreeditNoCandidates,
-        PreeditKeyPress           //! Used for displaying the hwkbd key just pressed
+        PreeditKeyPress,      //!< Used for displaying the hwkbd key just pressed
+        PreeditUnconvertible, //!< Inactive preedit region, not clickable
+        PreeditActive,        //!< Preedit region with active suggestions
+
     };
 
     enum HandlerState {

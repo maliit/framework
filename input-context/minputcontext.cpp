@@ -759,17 +759,22 @@ void MInputContext::updatePreeditInternally(const QString &string,
             }
 #endif // HAVE_MEEGOTOUCH
         } else {
-            // hard coded styling:
-            format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-
-            QColor underlineColor;
-            if (preeditFormat.preeditFace == MInputMethod::PreeditNoCandidates) {
-                underlineColor.setRgb(255, 0, 0);
-            } else {
-                underlineColor.setRgb(0, 0, 0);
+            switch (preeditFormat.preeditFace) {
+            case MInputMethod::PreeditNoCandidates:
+                format.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+                format.setUnderlineColor(QColor(255, 0, 0));
+                break;
+            case MInputMethod::PreeditUnconvertible:
+                format.setForeground(QBrush(QColor(128, 128, 128)));
+                break;
+            case MInputMethod::PreeditActive:
+                format.setFontWeight(QFont::Bold);
+                break;
+            case MInputMethod::PreeditKeyPress:
+            case MInputMethod::PreeditDefault:
+                format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+                break;
             }
-
-            format.setUnderlineColor(underlineColor);
         }
 
         attributes << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,
