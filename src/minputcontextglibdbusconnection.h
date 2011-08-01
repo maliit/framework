@@ -82,6 +82,7 @@ public:
     virtual int anchorPosition(bool &valid);
     virtual QString selection(bool &valid);
     virtual void addTarget(MAbstractInputMethod *target);
+    virtual int preeditClickPos(bool &valid) const;
     //! \reimp_end
 
 public slots:
