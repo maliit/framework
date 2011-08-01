@@ -1,3 +1,13 @@
+0.80.x
+======
+
+CHANGES SINCE 0.80.4
+* PySide bindings for Maliit Plugin API
+  - Python plugins can now make use of the generic plugin loader found at
+    https://github.com/renatofilho/maliit-python - together with the new plugin
+    factory MImAbstractPluginFactory, the requirement for a Qt/C++ wrapper in
+    the case of Python plugins has been eliminated. 
+
 0.80.4
 ======
 
