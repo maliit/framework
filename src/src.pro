@@ -26,7 +26,8 @@ HEADERSINSTALL = \
         mimplugindescription.h \
         mimsettings.h \
 
-HEADERS += $$HEADERSINSTALL \
+HEADERS += \
+        $$HEADERSINSTALL \
         mimpluginmanager_p.h \
         mimpluginmanageradaptor.h \
         mindicatorserviceclient.h \
@@ -52,7 +53,9 @@ HEADERS += $$HEADERSINSTALL \
         mimonscreenplugins.h \
         mimhwkeyboardtracker_p.h \
 
-SOURCES += mimpluginmanager.cpp \
+SOURCES += \
+        mimabstractpluginfactory.cpp \
+        mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
         mindicatorserviceclient.cpp \
         mabstractinputmethod.cpp \

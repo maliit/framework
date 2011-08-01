@@ -17,11 +17,11 @@
 #ifndef MIABSTRACTPLUGINFACTORY_H
 #define MIABSTRACTPLUGINFACTORY_H
 
-#include <QString>
+#include <QtCore>
 #include <QtPlugin>
 
 class MInputMethodPlugin;
-
+class MImAbstractPluginFactoryPrivate;
 
 /*!
  * \brief MImAbstractPluginFactory is an MInputMethodPlugin factory used for dynamic languages
@@ -31,7 +31,14 @@ class MInputMethodPlugin;
  */
 class MImAbstractPluginFactory
 {
+    Q_DISABLE_COPY(MImAbstractPluginFactory)
+    Q_DECLARE_PRIVATE(MImAbstractPluginFactory)
+
+private:
+    const QScopedPointer<MImAbstractPluginFactoryPrivate> d_ptr;
+
 public:
+    explicit MImAbstractPluginFactory();
     virtual ~MImAbstractPluginFactory() = 0;
 
     //! \brief Implement this function to return the extension of which kind of file this factory can handle
