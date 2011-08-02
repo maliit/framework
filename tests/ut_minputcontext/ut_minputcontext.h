@@ -9,9 +9,9 @@
 #include <QObject>
 
 #include <minputcontext.h>
-#include "mimserverconnection.h"
+#include <mimserverconnection.h>
 
-class InputMethodServerDBusStub: public MImServerConnection
+class InputMethodServerTestConnection: public MImServerConnection
 {
     Q_OBJECT
 
@@ -23,8 +23,8 @@ public:
         void clear();
     };
 
-    InputMethodServerDBusStub(QObject *parent = 0);
-    virtual ~InputMethodServerDBusStub();
+    InputMethodServerTestConnection(QObject *parent = 0);
+    virtual ~InputMethodServerTestConnection();
 
     // method calls are counted, this resets counters
     void resetCallCounts();
@@ -166,7 +166,7 @@ private:
 private:
     std::auto_ptr<QApplication> app;
     QPointer<MInputContext> m_subject;
-    QPointer<InputMethodServerDBusStub> m_stub;
+    QPointer<InputMethodServerTestConnection> m_connection;
 };
 
 
