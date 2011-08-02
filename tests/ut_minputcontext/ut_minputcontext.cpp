@@ -209,6 +209,7 @@ WidgetStub::WidgetStub(QObject *, bool enableVisualizationPriority)
       visualizationPriority(enableVisualizationPriority)
 {
     setAttribute(Qt::WA_InputMethodEnabled);
+    setFocusPolicy(Qt::StrongFocus);
     resetCounters();
 }
 
@@ -768,6 +769,115 @@ void Ut_MInputContext::testInvalidScene()
 
     m_subject->imInitiatedHide();
 }
+
+/* Test that when the input method hides,
+ * the widget is unfocused. */
+void Ut_MInputContext::testImInitiatedHideUnfocusesWidget()
+{
+    WidgetStub widget(0);
+    // If there is no toplevel window mapped, Qt will not actually focus the widget.
+    m_subject->setFocusWidget(&widget);
+    widget.show();
+    widget.setFocus();
+    waitAndProcessEvents(100); // Focus changes is done async via eventloop
+    QVERIFY(widget.hasFocus() == true); // Sanity check
+
+    Q_EMIT m_connection->imInitiatedHide();
+    waitAndProcessEvents(100); // Focus changes is done async via eventloop
+
+    QVERIFY(widget.hasFocus() == false);
+
+    m_subject->setFocusWidget(0);
+}
+
+/* Test that when input method updates inputMethodArea,
+ * the change is propagated to the extended input method interfaces.
+ *
+ * Note: As a side effect, this also tests that the extended input method interfaces
+ * emit the appropriate signals when the input method area changes. */
+void Ut_MInputContext::testImAreaChangePropagation()
+{
+    QRect newInputMethodArea(98, 99, 101, 102);
+    QSignalSpy maliitInputMethodSpy(Maliit::InputMethod::instance(),
+                                    SIGNAL(areaChanged(QRect)));
+#ifdef HAVE_MEEGOTOUCH
+    QSignalSpy mInputMethodStateSpy(MInputMethodState::instance(),
+                                    SIGNAL(inputMethodAreaChanged(QRect)));
+#endif
+
+    Q_EMIT m_connection->updateInputMethodArea(newInputMethodArea);
+
+    QCOMPARE(maliitInputMethodSpy.count(), 1);
+    QCOMPARE(maliitInputMethodSpy.first().at(0).toRect(), newInputMethodArea);
+#ifdef HAVE_MEEGOTOUCH
+    QCOMPARE(mInputMethodStateSpy.count(), 1);
+    QCOMPARE(mInputMethodStateSpy.first().at(0).toRect(), newInputMethodArea);
+#endif
+}
+
+/* Tests that when input method (through IM server) commits a string,
+ * this results in an input method event carrying the commit string to the widget. */
+void Ut_MInputContext::testImCommitStringInjection()
+{
+    QString committedString("Commit1");
+    WidgetStub widget(0);
+    m_subject->setFocusWidget(&widget);
+
+    Q_EMIT m_connection->commitString(committedString);
+
+    QInputMethodEvent event = widget.lastInputMethodEvent();
+    QVERIFY(event.commitString() == committedString);
+
+    m_subject->setFocusWidget(0);
+}
+
+/* Test that when the input method (through IM server) sets a selection,
+ * this results in an input method event carrying the selection indices. */
+void Ut_MInputContext::testImSelectionInjection()
+{
+    const int start = 2;
+    const int length = 4;
+    WidgetStub widget(0);
+    m_subject->setFocusWidget(&widget);
+
+    Q_EMIT m_connection->setSelection(start, length);
+
+    QInputMethodEvent event = widget.lastInputMethodEvent();
+    QList<QInputMethodEvent::Attribute> attributes = event.attributes();
+    QCOMPARE(attributes.count(), 1);
+    QInputMethodEvent::Attribute attribute(attributes.first());
+    QVERIFY(attribute.type == QInputMethodEvent::Selection);
+    QCOMPARE(attribute.start, start);
+    QCOMPARE(attribute.length, length);
+
+    m_subject->setFocusWidget(0);
+}
+
+/* Test that when the input method (through IM server) sets a selection
+ * and then retrieves it, the correct value is returned.
+ *
+ * Note: Uses a real widget, and as a side effect also test whether this widget
+ * responds to QWidget::inputMethodQuery(Qt::ImCurrentSelection) correctly. */
+void Ut_MInputContext::testImGetSelection()
+{
+    const int start = 2;
+    const int length = 8;
+    QLineEdit widget(0);
+    m_subject->setFocusWidget(&widget);
+    widget.setText("xxSelectedxxx");
+    widget.setSelection(start, length);
+    QVERIFY(widget.selectedText() == "Selected"); // Sanity
+    QString selection("init");
+    bool validity = false;
+
+    Q_EMIT m_connection->getSelection(selection, validity);
+
+    QVERIFY(validity);
+    QVERIFY(selection == "Selected");
+
+    m_subject->setFocusWidget(0);
+}
+
 
 QTEST_APPLESS_MAIN(Ut_MInputContext)
 

@@ -141,12 +141,19 @@ private slots:
     void testKeyEvent();
     //void testSetFocusWidget();
 
-    // methods for input method server connection
+    // test outbound input method server communication
     void testInputMethodHidden();
     void testCommitString_data();
     void testCommitString();
     void testUpdatePreedit();
     void testAppOrientationChanged();
+
+    // test inbound input method server communication
+    void testImAreaChangePropagation();
+    void testImInitiatedHideUnfocusesWidget();
+    void testImCommitStringInjection();
+    void testImSelectionInjection();
+    void testImGetSelection();
 
     void testNonTextEntryWidget();
 
