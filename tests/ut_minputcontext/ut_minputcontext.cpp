@@ -5,14 +5,14 @@
 #include <QPointer>
 #include <QClipboard>
 #include <QGraphicsView>
+#include <QLineEdit>
 
 #ifdef HAVE_MEEGOTOUCH
 #include <MWindow>
 #include <mpreeditinjectionevent.h>
 #endif
 
-#include "glibdbusimserverproxy.h"
-
+#include <maliit/inputmethod.h>
 
 namespace
 {
@@ -37,29 +37,29 @@ QWidget *QApplication::focusWidget()
 }
 
 /* */
-void InputMethodServerDBusStub::RedirectedKeyParamsStruct::clear()
+void InputMethodServerTestConnection::RedirectedKeyParamsStruct::clear()
 {
     keyType = 0;
     keyCode = 0;
     text.clear();
 }
 
-InputMethodServerDBusStub::InputMethodServerDBusStub(QObject *object)
+InputMethodServerTestConnection::InputMethodServerTestConnection(QObject *object)
 {
     Q_UNUSED(object);
     resetCallCounts();
 }
 
-InputMethodServerDBusStub::~InputMethodServerDBusStub()
+InputMethodServerTestConnection::~InputMethodServerTestConnection()
 {
 }
 
-void InputMethodServerDBusStub::emitConnected()
+void InputMethodServerTestConnection::emitConnected()
 {
     Q_EMIT connected();
 }
 
-void InputMethodServerDBusStub::resetCallCounts()
+void InputMethodServerTestConnection::resetCallCounts()
 {
     showInputMethodCallCount = 0;
     hideInputMethodCallCount = 0;
@@ -75,110 +75,110 @@ void InputMethodServerDBusStub::resetCallCounts()
 }
 
 
-int InputMethodServerDBusStub::showInputMethodCount()
+int InputMethodServerTestConnection::showInputMethodCount()
 {
     return showInputMethodCallCount;
 }
 
 
-int InputMethodServerDBusStub::hideInputMethodCount()
+int InputMethodServerTestConnection::hideInputMethodCount()
 {
     return hideInputMethodCallCount;
 }
 
-int InputMethodServerDBusStub::mouseClickedOnPreeditCount()
+int InputMethodServerTestConnection::mouseClickedOnPreeditCount()
 {
     return mouseClickedOnPreeditCallCount;
 }
 
-int InputMethodServerDBusStub::setPreeditCount()
+int InputMethodServerTestConnection::setPreeditCount()
 {
     return setPreeditCallCount;
 }
 
-int InputMethodServerDBusStub::resetCount()
+int InputMethodServerTestConnection::resetCount()
 {
     return resetCallCount;
 }
 
-int InputMethodServerDBusStub::activateContextCount()
+int InputMethodServerTestConnection::activateContextCount()
 {
     return activateContextCallCount;
 }
 
-int InputMethodServerDBusStub::orientationChangedCount()
+int InputMethodServerTestConnection::orientationChangedCount()
 {
     return appOrientationChangedCount;
 }
 
-int InputMethodServerDBusStub::setCopyPasteStateCount()
+int InputMethodServerTestConnection::setCopyPasteStateCount()
 {
     return setCopyPasteStateCallCount;
 }
 
-QList<bool>& InputMethodServerDBusStub::setCopyPasteStateParams()
+QList<bool>& InputMethodServerTestConnection::setCopyPasteStateParams()
 {
     return setCopyPasteStateCallParams;
 }
 
-int InputMethodServerDBusStub::redirectKeyCount()
+int InputMethodServerTestConnection::redirectKeyCount()
 {
     return redirectKeyCallCount;
 }
 
-InputMethodServerDBusStub::RedirectedKeyParamsStruct &InputMethodServerDBusStub::redirectKeyParams()
+InputMethodServerTestConnection::RedirectedKeyParamsStruct &InputMethodServerTestConnection::redirectKeyParams()
 {
     return redirectKeyCallParams;
 }
 
 ///////
-void InputMethodServerDBusStub::showInputMethod()
+void InputMethodServerTestConnection::showInputMethod()
 {
     MImServerConnection::showInputMethod();
     showInputMethodCallCount++;
 }
 
 
-void InputMethodServerDBusStub::hideInputMethod()
+void InputMethodServerTestConnection::hideInputMethod()
 {
     MImServerConnection::hideInputMethod();
     hideInputMethodCallCount++;
 }
 
 
-void InputMethodServerDBusStub::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
+void InputMethodServerTestConnection::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
 {
     MImServerConnection::mouseClickedOnPreedit(pos, preeditRect);
     mouseClickedOnPreeditCallCount++;
 }
 
 
-void InputMethodServerDBusStub::setPreedit(const QString &text, int cursorPos)
+void InputMethodServerTestConnection::setPreedit(const QString &text, int cursorPos)
 {
     MImServerConnection::setPreedit(text, cursorPos);
     setPreeditCallCount++;
 }
 
 
-void InputMethodServerDBusStub::reset(bool requireSyncronization)
+void InputMethodServerTestConnection::reset(bool requireSyncronization)
 {
     MImServerConnection::reset(requireSyncronization);
     resetCallCount++;
 }
 
-void InputMethodServerDBusStub::activateContext()
+void InputMethodServerTestConnection::activateContext()
 {
     MImServerConnection::activateContext();
     activateContextCallCount++;
 }
 
-void InputMethodServerDBusStub::appOrientationChanged(int angle)
+void InputMethodServerTestConnection::appOrientationChanged(int angle)
 {
     MImServerConnection::appOrientationChanged(angle);
     appOrientationChangedCount++;
 }
 
-void InputMethodServerDBusStub::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
+void InputMethodServerTestConnection::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
     MImServerConnection::setCopyPasteState(copyAvailable, pasteAvailable);
     ++setCopyPasteStateCallCount;
@@ -186,7 +186,7 @@ void InputMethodServerDBusStub::setCopyPasteState(bool copyAvailable, bool paste
     setCopyPasteStateCallParams.append(pasteAvailable);
 }
 
-void InputMethodServerDBusStub::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+void InputMethodServerTestConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                                 Qt::KeyboardModifiers modifiers,
                                                 const QString &text, bool autoRepeat, int count,
                                                 quint32 nativeScanCode, quint32 nativeModifiers,
@@ -317,9 +317,9 @@ void Ut_MInputContext::initTestCase()
     QCoreApplication::setLibraryPaths(QStringList("./inputmethods"));
     app.reset(new QApplication(argc, argv));
 
-    m_stub = new InputMethodServerDBusStub(0);
-    m_subject = new MInputContext(m_stub, 0);
-    m_stub->emitConnected();
+    m_connection = new InputMethodServerTestConnection(0);
+    m_subject = new MInputContext(m_connection, 0);
+    m_connection->emitConnected();
     QVERIFY(m_subject != 0);
 
     // Overly cautious sanity check, but we do use native C API in
@@ -332,13 +332,13 @@ void Ut_MInputContext::initTestCase()
 void Ut_MInputContext::cleanupTestCase()
 {
     delete m_subject;
-    delete m_stub;
+    delete m_connection;
 }
 
 
 void Ut_MInputContext::init()
 {
-    m_stub->resetCallCounts();
+    m_connection->resetCallCounts();
 }
 
 void Ut_MInputContext::cleanup()
@@ -417,10 +417,10 @@ void Ut_MInputContext::testReset()
 
     waitAndProcessEvents(500);
 
-    QCOMPARE(m_stub->resetCount(), 1);
+    QCOMPARE(m_connection->resetCount(), 1);
     QCOMPARE(widget.inputMethodEventCount(), 0);
 
-    m_stub->resetCallCounts();
+    m_connection->resetCallCounts();
     widget.resetCounters();
     preeditFormats.clear();
 
@@ -435,7 +435,7 @@ void Ut_MInputContext::testReset()
 
     waitAndProcessEvents(500);
 
-    QCOMPARE(m_stub->resetCount(), 1);
+    QCOMPARE(m_connection->resetCount(), 1);
     QCOMPARE(widget.inputMethodEventCount(), 1);
     event = widget.lastInputMethodEvent();
     QCOMPARE(event.preeditString(), QString(""));
@@ -463,7 +463,7 @@ void Ut_MInputContext::testMouseHandler()
 
     waitAndProcessEvents(500);
 
-    QCOMPARE(m_stub->mouseClickedOnPreeditCount(), 1);
+    QCOMPARE(m_connection->mouseClickedOnPreeditCount(), 1);
 
     m_subject->setFocusWidget(0);
 }
@@ -584,7 +584,7 @@ void Ut_MInputContext::testAppOrientationChanged()
 void Ut_MInputContext::testNonTextEntryWidget()
 {
 
-    int count = m_stub->hideInputMethodCount();
+    int count = m_connection->hideInputMethodCount();
     gFocusedWidget = 0;
 
     QEvent close(QEvent::CloseSoftwareInputPanel);
@@ -592,7 +592,7 @@ void Ut_MInputContext::testNonTextEntryWidget()
 
     waitAndProcessEvents(1500);
 
-    QCOMPARE(m_stub->hideInputMethodCount(), count + 1);
+    QCOMPARE(m_connection->hideInputMethodCount(), count + 1);
 }
 
 void Ut_MInputContext::testKeyEvent()
@@ -627,20 +627,20 @@ void Ut_MInputContext::testKeyEvent()
 void Ut_MInputContext::testCopyPasteState()
 {
     WidgetStub widget(0);
-    QList<bool> &params = m_stub->setCopyPasteStateParams();
+    QList<bool> &params = m_connection->setCopyPasteStateParams();
 
     QApplication::clipboard()->clear();
 
     waitAndProcessEvents(100);
 
-    int count = m_stub->setCopyPasteStateCount();
+    int count = m_connection->setCopyPasteStateCount();
     params.clear();
     qDebug() << "No focused widget";
     gFocusedWidget = 0;
     m_subject->setFocusWidget(0);
     waitAndProcessEvents(100);
     ++count;
-    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
@@ -650,7 +650,7 @@ void Ut_MInputContext::testCopyPasteState()
     m_subject->setFocusWidget(&widget);
     waitAndProcessEvents(100);
     ++count;
-    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
@@ -658,7 +658,7 @@ void Ut_MInputContext::testCopyPasteState()
     qDebug() << "Update button state with empty selection";
     widget.sendCopyAvailable(false);
     waitAndProcessEvents(100);
-    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
 
     qDebug() << "Update button state with something selected";
     widget.selectedText = "Some text";
@@ -666,7 +666,7 @@ void Ut_MInputContext::testCopyPasteState()
     qDebug() << "Text was selected";
     waitAndProcessEvents(100);
     ++count;
-    QVERIFY(m_stub->setCopyPasteStateCount() == count);
+    QVERIFY(m_connection->setCopyPasteStateCount() == count);
     QVERIFY(params.count() == 2);
     QCOMPARE(params.takeFirst(), true);
     QCOMPARE(params.takeFirst(), false);
@@ -675,7 +675,7 @@ void Ut_MInputContext::testCopyPasteState()
     QApplication::clipboard()->setText("Some text");
     waitAndProcessEvents(100);
     ++count;
-    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), true);
     QCOMPARE(params.takeFirst(), true);
@@ -684,7 +684,7 @@ void Ut_MInputContext::testCopyPasteState()
     widget.sendCopyAvailable(false);
     waitAndProcessEvents(100);
     ++count;
-    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), true);
@@ -693,7 +693,7 @@ void Ut_MInputContext::testCopyPasteState()
     QApplication::clipboard()->clear();
     waitAndProcessEvents(100);
     ++count;
-    QCOMPARE(m_stub->setCopyPasteStateCount(), count);
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
@@ -703,7 +703,7 @@ void Ut_MInputContext::testCopyPasteState()
     m_subject->setFocusWidget(0);
     waitAndProcessEvents(100);
     ++count;
-    QVERIFY(m_stub->setCopyPasteStateCount() == count);
+    QVERIFY(m_connection->setCopyPasteStateCount() == count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
@@ -711,12 +711,12 @@ void Ut_MInputContext::testCopyPasteState()
     qDebug() << "Set some text to clipboard (simulate paste)";
     QApplication::clipboard()->setText("Some text");
     waitAndProcessEvents(100);
-    QVERIFY(m_stub->setCopyPasteStateCount() == count);
+    QVERIFY(m_connection->setCopyPasteStateCount() == count);
 
     qDebug() << "Clear clipboard";
     QApplication::clipboard()->clear();
     waitAndProcessEvents(100);
-    QVERIFY(m_stub->setCopyPasteStateCount() == count);
+    QVERIFY(m_connection->setCopyPasteStateCount() == count);
 }
 
 void Ut_MInputContext::testSetRedirectKeys()
@@ -724,19 +724,19 @@ void Ut_MInputContext::testSetRedirectKeys()
     WidgetStub widget(0);
     m_subject->setFocusWidget(&widget);
     // no redirection should happen
-    int count = m_stub->redirectKeyCount();
+    int count = m_connection->redirectKeyCount();
     QKeyEvent request(QEvent::KeyPress, Qt::Key_Shift, Qt::ShiftModifier, "");
     bool ret = m_subject->filterEvent(&request);
     QVERIFY(!ret);
-    QCOMPARE(m_stub->redirectKeyCount(), count);
+    QCOMPARE(m_connection->redirectKeyCount(), count);
 
     // redirection should happen
     m_subject->setRedirectKeys(true);
-    InputMethodServerDBusStub::RedirectedKeyParamsStruct &params = m_stub->redirectKeyParams();
+    InputMethodServerTestConnection::RedirectedKeyParamsStruct &params = m_connection->redirectKeyParams();
     params.clear();
     ret = m_subject->filterEvent(&request);
     QVERIFY(ret);
-    QCOMPARE(m_stub->redirectKeyCount(), count + 1);
+    QCOMPARE(m_connection->redirectKeyCount(), count + 1);
     QCOMPARE(params.keyType, static_cast<int>(QEvent::KeyPress));
     QCOMPARE(params.keyCode, static_cast<int>(Qt::Key_Shift));
     QCOMPARE(params.text, QString(""));
@@ -745,7 +745,7 @@ void Ut_MInputContext::testSetRedirectKeys()
     m_subject->setRedirectKeys(false);
     ret = m_subject->filterEvent(&request);
     QVERIFY(!ret);
-    QCOMPARE(m_stub->redirectKeyCount(), count + 1);
+    QCOMPARE(m_connection->redirectKeyCount(), count + 1);
     m_subject->setFocusWidget(0);
 }
 
