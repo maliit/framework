@@ -49,25 +49,6 @@ namespace
     const char * const DBusClientPath = "/com/meego/inputmethod/inputcontext";
     const char * const DBusClientInterface = "com.meego.inputmethod.inputcontext1";
 
-    // attribute names for updateWidgetInformation() map
-    const char * const FocusStateAttribute = "focusState";
-    const char * const ContentTypeAttribute = "contentType";
-    const char * const CorrectionAttribute = "correctionEnabled";
-    const char * const PredictionAttribute = "predictionEnabled";
-    const char * const AutoCapitalizationAttribute = "autocapitalizationEnabled";
-    const char * const SurroundingTextAttribute = "surroundingText";
-    const char * const AnchorPositionAttribute = "anchorPosition";
-    const char * const CursorPositionAttribute = "cursorPosition";
-    const char * const HasSelectionAttribute = "hasSelection";
-    const char * const InputMethodModeAttribute = "inputMethodMode";
-    const char * const VisualizationAttribute = "visualizationPriority";
-    const char * const ToolbarIdAttribute = "toolbarId";
-    const char * const ToolbarAttribute = "toolbar";
-    const char * const WinId = "winId";
-    const char * const CursorRectAttribute = "cursorRectangle";
-    const char * const HiddenTextAttribute = "hiddenText";
-    const char * const PreeditClickPosAttribute = "preeditClickPos";
-
     bool variantFromGValue(QVariant *dest, GValue *source, QString *error_message)
     {
         switch (G_VALUE_TYPE(source)) {
@@ -432,33 +413,9 @@ static void handleDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userDa
 
 void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnection *connectionObj)
 {
-    const unsigned int clientId = connectionObj->connectionNumber;
-
-    // unregister toolbars registered by the lost connection
-    const QString service(QString::number(clientId));
-    QSet<MAttributeExtensionId>::iterator i(attributeExtensionIds.begin());
-    while (i != attributeExtensionIds.end()) {
-        if ((*i).service() == service) {
-            MAttributeExtensionManager::instance().unregisterAttributeExtension(*i);
-            i = attributeExtensionIds.erase(i);
-        } else {
-            ++i;
-        }
-    }
-
+    const unsigned int connectionId = connectionObj->connectionNumber;
+    MInputContextConnection::handleDisconnection(connectionId);
     g_object_unref(G_OBJECT(connectionObj));
-
-    if (mActiveClientId != clientId) {
-        return;
-    }
-
-    mActiveClientId = 0;
-    activeContext = 0;
-
-    // notify plugins
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->handleClientChange();
-    }
 }
 
 static void handleNewConnection(DBusServer */*server*/, DBusConnection *connection, gpointer userData)
@@ -492,13 +449,8 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
 
 
 MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
-    : mActiveClientId(0),
-      activeContext(NULL),
-      globalCorrectionEnabled(false),
-      redirectionEnabled(false),
-      detectableAutoRepeat(false),
-      lastOrientation(0),
-      server(NULL)
+    : activeContext(NULL)
+    , server(NULL)
 {
     dbus_g_thread_init();
     g_type_init();
@@ -522,8 +474,6 @@ MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
 
     dbus_server_setup_with_g_main(server, NULL);
     dbus_server_set_new_connection_function(server, handleNewConnection, this, NULL);
-    connect(&MAttributeExtensionManager::instance(), SIGNAL(keyOverrideCreated()),
-            this,                                    SIGNAL(keyOverrideCreated()));
 }
 
 
@@ -548,8 +498,9 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
                                                         int replaceStart, int replaceLength,
                                                         int cursorPos)
 {
-    if (activeContext) {
-        preedit = string;
+    if (activeConnection) {
+        MInputContextConnection::sendPreeditString(string, preeditFormats,
+                                                   replaceStart, replaceLength, cursorPos);
 
         GType preeditFormatsType;
         GPtrArray *preeditFormatsData;
@@ -572,24 +523,10 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
 void MInputContextGlibDBusConnection::sendCommitString(const QString &string, int replaceStart,
                                                        int replaceLength, int cursorPos)
 {
-    if (activeContext) {
-        const int cursorPosition(widgetState[CursorPositionAttribute].toInt());
-        bool validAnchor(false);
+    if (activeConnection) {
 
-        preedit.clear();
+        MInputContextConnection::sendCommitString(string, replaceStart, replaceLength, cursorPos);
 
-        if (replaceLength == 0  // we don't support replacement
-            // we don't support selections
-            && anchorPosition(validAnchor) == cursorPosition
-            && validAnchor) {
-            const int insertPosition(cursorPosition + replaceStart);
-            if (insertPosition >= 0) {
-                widgetState[SurroundingTextAttribute]
-                    = widgetState[SurroundingTextAttribute].toString().insert(insertPosition, string);
-                widgetState[CursorPositionAttribute] = cursorPos < 0 ? (insertPosition + string.length()) : cursorPos;
-                widgetState[AnchorPositionAttribute] = widgetState[CursorPositionAttribute];
-            }
-        }
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "commitString",
                                    G_TYPE_STRING, string.toUtf8().data(),
                                    G_TYPE_INT, replaceStart,
@@ -603,25 +540,8 @@ void MInputContextGlibDBusConnection::sendCommitString(const QString &string, in
 void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent,
                                                    MInputMethod::EventRequestType requestType)
 {
-    if (activeContext) {
-        if (requestType != MInputMethod::EventRequestSignalOnly
-            && preedit.isEmpty()
-            && keyEvent.key() == Qt::Key_Backspace
-            && keyEvent.type() == QEvent::KeyPress) {
-            QString surrString(widgetState[SurroundingTextAttribute].toString());
-            const int cursorPosition(widgetState[CursorPositionAttribute].toInt());
-            bool validAnchor(false);
-
-            if (!surrString.isEmpty()
-                && cursorPosition > 0
-                // we don't support selections
-                && anchorPosition(validAnchor) == cursorPosition
-                && validAnchor) {
-                widgetState[SurroundingTextAttribute] = surrString.remove(cursorPosition - 1, 1);
-                widgetState[CursorPositionAttribute] = cursorPosition - 1;
-                widgetState[AnchorPositionAttribute] = cursorPosition - 1;
-            }
-        }
+    if (activeConnection) {
+        MInputContextConnection::sendKeyEvent(keyEvent, requestType);
 
         int type = static_cast<int>(keyEvent.type());
         int key = static_cast<int>(keyEvent.key());
@@ -648,85 +568,17 @@ void MInputContextGlibDBusConnection::notifyImInitiatedHiding()
     }
 }
 
-int MInputContextGlibDBusConnection::contentType(bool &valid)
-{
-    QVariant contentTypeVariant = widgetState[ContentTypeAttribute];
-    return contentTypeVariant.toInt(&valid);
-}
 
-bool MInputContextGlibDBusConnection::correctionEnabled(bool &valid)
-{
-    QVariant correctionVariant = widgetState[CorrectionAttribute];
-    valid = correctionVariant.isValid();
-    return correctionVariant.toBool();
-}
-
-
-bool MInputContextGlibDBusConnection::predictionEnabled(bool &valid)
-{
-    QVariant predictionVariant = widgetState[PredictionAttribute];
-    valid = predictionVariant.isValid();
-    return predictionVariant.toBool();
-}
-
-bool MInputContextGlibDBusConnection::autoCapitalizationEnabled(bool &valid)
-{
-    QVariant capitalizationVariant = widgetState[AutoCapitalizationAttribute];
-    valid = capitalizationVariant.isValid();
-    return capitalizationVariant.toBool();
-}
-
-QRect MInputContextGlibDBusConnection::cursorRectangle(bool &valid)
-{
-    QVariant cursorRectVariant = widgetState[CursorRectAttribute];
-    valid = cursorRectVariant.isValid();
-    return cursorRectVariant.toRect();
-}
-
-bool MInputContextGlibDBusConnection::hiddenText(bool &valid)
-{
-    QVariant hiddenTextVariant = widgetState[HiddenTextAttribute];
-    valid = hiddenTextVariant.isValid();
-    return hiddenTextVariant.toBool();
-}
 
 void MInputContextGlibDBusConnection::setGlobalCorrectionEnabled(bool enabled)
 {
-    if ((enabled != globalCorrectionEnabled) && activeContext) {
+    if ((enabled != globalCorrectionEnabled()) && activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setGlobalCorrectionEnabled",
                                    G_TYPE_BOOLEAN, enabled,
                                    G_TYPE_INVALID);
+
+        MInputContextConnection::setGlobalCorrectionEnabled(enabled);
     }
-
-    globalCorrectionEnabled = enabled;
-}
-
-bool MInputContextGlibDBusConnection::surroundingText(QString &text, int &cursorPosition)
-{
-    QVariant textVariant = widgetState[SurroundingTextAttribute];
-    QVariant posVariant = widgetState[CursorPositionAttribute];
-
-    if (textVariant.isValid() && posVariant.isValid()) {
-        text = textVariant.toString();
-        cursorPosition = posVariant.toInt();
-        return true;
-    }
-
-    return false;
-}
-
-bool MInputContextGlibDBusConnection::hasSelection(bool &valid)
-{
-    QVariant selectionVariant = widgetState[HasSelectionAttribute];
-    valid = selectionVariant.isValid();
-    return selectionVariant.toBool();
-}
-
-int MInputContextGlibDBusConnection::preeditClickPos(bool &valid) const
-{
-    QVariant selectionVariant = widgetState[PreeditClickPosAttribute];
-    valid = selectionVariant.isValid();
-    return selectionVariant.toInt();
 }
 
 QString MInputContextGlibDBusConnection::selection(bool &valid)
@@ -766,19 +618,6 @@ void MInputContextGlibDBusConnection::setLanguage(const QString &language)
     }
 }
 
-void
-MInputContextGlibDBusConnection::addTarget(MAbstractInputMethod *target)
-{
-    MInputContextConnection::addTarget(target);
-    target->handleAppOrientationChanged(lastOrientation);
-}
-
-int MInputContextGlibDBusConnection::inputMethodMode(bool &valid)
-{
-    QVariant modeVariant = widgetState[InputMethodModeAttribute];
-    return modeVariant.toInt(&valid);
-}
-
 QRect MInputContextGlibDBusConnection::preeditRectangle(bool &valid)
 {
     GError *error = NULL;
@@ -804,22 +643,24 @@ QRect MInputContextGlibDBusConnection::preeditRectangle(bool &valid)
 
 void MInputContextGlibDBusConnection::setRedirectKeys(bool enabled)
 {
-    if ((redirectionEnabled != enabled) && activeContext) {
+    if ((redirectKeysEnabled() != enabled) && activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setRedirectKeys",
                                    G_TYPE_BOOLEAN, enabled ? TRUE : FALSE,
                                    G_TYPE_INVALID);
+
+        MInputContextConnection::setRedirectKeys(enabled);
     }
-    redirectionEnabled = enabled;
 }
 
 void MInputContextGlibDBusConnection::setDetectableAutoRepeat(bool enabled)
 {
-    if ((detectableAutoRepeat != enabled) && activeContext) {
+    if ((detectableAutoRepeat() != enabled) && activeContext) {
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setDetectableAutoRepeat",
                                    G_TYPE_BOOLEAN, enabled,
                                    G_TYPE_INVALID);
+
+        MInputContextConnection::setDetectableAutoRepeat(enabled);
     }
-    detectableAutoRepeat = enabled;
 }
 
 
@@ -851,13 +692,6 @@ void MInputContextGlibDBusConnection::setSelection(int start, int length)
     }
 }
 
-int MInputContextGlibDBusConnection::anchorPosition(bool &valid)
-{
-    QVariant posVariant = widgetState[AnchorPositionAttribute];
-    valid = posVariant.isValid();
-    return posVariant.toInt();
-}
-
 void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &region)
 {
     if (activeContext) {
@@ -877,20 +711,18 @@ void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &regio
 void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *connectionObj)
 {
     MDBusGlibICConnection *previousActiveContext = activeContext;
-
-    mActiveClientId = connectionObj->connectionNumber;
     activeContext = connectionObj;
 
     if (activeContext) {
         // TODO: call methods on self instead of duplicating the code
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "activeContext->CorrectionEnabled",
-                                   G_TYPE_BOOLEAN, globalCorrectionEnabled,
+                                   G_TYPE_BOOLEAN, globalCorrectionEnabled(),
                                    G_TYPE_INVALID);
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setRedirectKeys",
-                                   G_TYPE_BOOLEAN, redirectionEnabled,
+                                   G_TYPE_BOOLEAN, redirectKeysEnabled(),
                                    G_TYPE_INVALID);
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "detectableAutoRepeat",
-                                   G_TYPE_BOOLEAN, detectableAutoRepeat,
+                                   G_TYPE_BOOLEAN, detectableAutoRepeat(),
                                    G_TYPE_INVALID);
 
         if ((previousActiveContext != 0) && (previousActiveContext != activeContext)) {
@@ -900,265 +732,11 @@ void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *con
         }
     }
 
-    // notify plugins
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->handleClientChange();
-    }
-}
+    MInputContextConnection::handleActivation(connectionObj->connectionNumber);
 
-
-void MInputContextGlibDBusConnection::showInputMethod(unsigned int clientId)
-{
-    if (mActiveClientId != clientId)
+    if (activeContext != connectionObj) {
         return;
-
-    emit showInputMethodRequest();
+    }
+    activeContext = 0;
 }
 
-
-void MInputContextGlibDBusConnection::hideInputMethod(unsigned int clientId)
-{
-    // Only allow this call for current active connection.
-    if (mActiveClientId != clientId)
-        return;
-
-    emit hideInputMethodRequest();
-}
-
-
-void MInputContextGlibDBusConnection::mouseClickedOnPreedit(unsigned int clientId,
-                                                            const QPoint &pos, const QRect &preeditRect)
-{
-    if (mActiveClientId != clientId)
-        return;
-
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->handleMouseClickOnPreedit(pos, preeditRect);
-    }
-}
-
-
-void MInputContextGlibDBusConnection::setPreedit(unsigned int clientId,
-                                                 const QString &text, int cursorPos)
-{
-    if (mActiveClientId != clientId)
-        return;
-
-    preedit = text;
-
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->setPreedit(text, cursorPos);
-    }
-}
-
-
-void MInputContextGlibDBusConnection::reset(unsigned int clientId)
-{
-    if (mActiveClientId != clientId)
-        return;
-
-    preedit.clear();
-
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->reset();
-    }
-
-    if (!preedit.isEmpty()) {
-        qWarning("Preedit set from InputMethod::reset()!");
-        preedit.clear();
-    }
-}
-
-void
-MInputContextGlibDBusConnection::updateWidgetInformation(
-    unsigned int clientId, const QMap<QString, QVariant> &stateInfo,
-    bool focusChanged)
-{
-    // check visualization change
-    bool oldVisualization = false;
-    bool newVisualization = false;
-
-    QVariant variant = widgetState[VisualizationAttribute];
-
-    if (variant.isValid()) {
-        oldVisualization = variant.toBool();
-    }
-
-    variant = stateInfo[VisualizationAttribute];
-    if (variant.isValid()) {
-        newVisualization = variant.toBool();
-    }
-
-    // toolbar change
-    MAttributeExtensionId oldAttributeExtensionId;
-    MAttributeExtensionId newAttributeExtensionId;
-    oldAttributeExtensionId = attributeExtensionId;
-
-    variant = stateInfo[ToolbarIdAttribute];
-    if (variant.isValid()) {
-        // map toolbar id from local to global
-        newAttributeExtensionId = MAttributeExtensionId(variant.toInt(), QString::number(clientId));
-    }
-    if (!newAttributeExtensionId.isValid()) {
-        newAttributeExtensionId = MAttributeExtensionId::standardAttributeExtensionId();
-    }
-
-    // update state
-    widgetState = stateInfo;
-
-    if (focusChanged) {
-        foreach (MAbstractInputMethod *target, targets()) {
-            target->handleFocusChange(stateInfo[FocusStateAttribute].toBool());
-        }
-
-        updateTransientHint();
-    }
-
-    // call notification methods if needed
-    if (oldVisualization != newVisualization) {
-        foreach (MAbstractInputMethod *target, targets()) {
-            target->handleVisualizationPriorityChange(newVisualization);
-        }
-    }
-
-    // compare the toolbar id (global)
-    if (oldAttributeExtensionId != newAttributeExtensionId) {
-        QString toolbarFile = stateInfo[ToolbarAttribute].toString();
-        if (!MAttributeExtensionManager::instance().contains(newAttributeExtensionId) && !toolbarFile.isEmpty()) {
-            // register toolbar if toolbar manager does not contain it but
-            // toolbar file is not empty. This can reload the toolbar data
-            // if im-uiserver crashes.
-            variant = stateInfo[ToolbarIdAttribute];
-            if (variant.isValid()) {
-                const int toolbarLocalId = variant.toInt();
-                registerAttributeExtension(clientId, toolbarLocalId, toolbarFile);
-            }
-        }
-        emit toolbarIdChanged(newAttributeExtensionId);
-        // store the new used toolbar id(global).
-        attributeExtensionId = newAttributeExtensionId;
-    }
-
-    // general notification last
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->update();
-    }
-}
-
-void
-MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(unsigned int clientId,
-                                                                     int angle)
-{
-    if (mActiveClientId != clientId)
-        return;
-
-    // Needs to be passed to the MImRotationAnimation listening
-    // to this signal first before the plugins. This ensures
-    // that the rotation animation can be painted sufficiently early.
-    emit appOrientationAboutToChange(angle);
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->handleAppOrientationAboutToChange(angle);
-    }
-}
-
-
-void MInputContextGlibDBusConnection::receivedAppOrientationChanged(unsigned int clientId,
-                                                                    int angle)
-{
-    if (mActiveClientId != clientId)
-        return;
-
-    // Handle orientation changes through MImRotationAnimation with priority.
-    // That's needed for getting the correct rotated pixmap buffers.
-    emit appOrientationChanged(angle);
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->handleAppOrientationChanged(angle);
-    }
-    lastOrientation = angle;
-}
-
-
-void MInputContextGlibDBusConnection::setCopyPasteState(unsigned int clientId,
-                                                        bool copyAvailable, bool pasteAvailable)
-{
-    if (mActiveClientId != clientId)
-        return;
-
-    MAttributeExtensionManager::instance().setCopyPasteState(copyAvailable, pasteAvailable);
-}
-
-
-void MInputContextGlibDBusConnection::processKeyEvent(
-    unsigned int clientId, QEvent::Type keyType, Qt::Key keyCode,
-    Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat, int count,
-    quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time)
-{
-    if (mActiveClientId != clientId)
-        return;
-
-    foreach (MAbstractInputMethod *target, targets()) {
-        target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
-                                nativeScanCode, nativeModifiers, time);
-    }
-}
-
-void MInputContextGlibDBusConnection::registerAttributeExtension(unsigned int clientId, int id,
-                                                         const QString &attributeExtension)
-{
-    MAttributeExtensionId globalId(id, QString::number(clientId));
-    if (globalId.isValid() && !attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().registerAttributeExtension(globalId, attributeExtension);
-        attributeExtensionIds.insert(globalId);
-    }
-}
-
-void MInputContextGlibDBusConnection::unregisterAttributeExtension(unsigned int clientId, int id)
-{
-    MAttributeExtensionId globalId(id, QString::number(clientId));
-    if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().unregisterAttributeExtension(globalId);
-        attributeExtensionIds.remove(globalId);
-    }
-}
-
-void MInputContextGlibDBusConnection::setExtendedAttribute(
-    unsigned int clientId, int id, const QString &target, const QString &targetName,
-    const QString &attribute, const QVariant &value)
-{
-    qDebug() << __PRETTY_FUNCTION__;
-    MAttributeExtensionId globalId(id, QString::number(clientId));
-    if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().setExtendedAttribute(globalId, target, targetName, attribute, value);
-    }
-}
-
-void MInputContextGlibDBusConnection::updateTransientHint()
-{
-    bool ok = false;
-    WId appWinId = winId(ok);
-
-    if (ok) {
-        MIMApplication *app = MIMApplication::instance();
-
-        if (app) {
-            app->setTransientHint(appWinId);
-        }
-    }
-}
-
-WId MInputContextGlibDBusConnection::winId(bool &valid)
-{
-    QVariant winIdVariant = widgetState[WinId];
-    // after transfer by dbus type can change
-    switch (winIdVariant.type()) {
-    case QVariant::UInt:
-        valid = (sizeof(uint) >= sizeof(WId));
-        return winIdVariant.toUInt();
-    case QVariant::ULongLong:
-        valid = (sizeof(qulonglong) >= sizeof(WId));
-        return winIdVariant.toULongLong();
-    default:
-        valid = winIdVariant.canConvert<WId>();
-    }
-    return winIdVariant.value<WId>();
-}

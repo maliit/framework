@@ -59,27 +59,15 @@ public:
                               MInputMethod::EventRequestType requestType);
     virtual void notifyImInitiatedHiding();
 
-    virtual int contentType(bool &valid);
-    virtual bool correctionEnabled(bool &valid);
-    virtual bool predictionEnabled(bool &valid);
-    virtual bool autoCapitalizationEnabled(bool &valid);
     virtual void setGlobalCorrectionEnabled(bool);
-    virtual bool surroundingText(QString &text, int &cursorPosition);
-    virtual bool hasSelection(bool &valid);
-    virtual int inputMethodMode(bool &valid);
     virtual QRect preeditRectangle(bool &valid);
-    virtual QRect cursorRectangle(bool &valid);
-    virtual bool hiddenText(bool &valid);
     virtual void setRedirectKeys(bool enabled);
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void copy();
     virtual void paste();
     virtual void setSelection(int start, int length);
-    virtual int anchorPosition(bool &valid);
     virtual QString selection(bool &valid);
     virtual void setLanguage(const QString &language);
-    virtual void addTarget(MAbstractInputMethod *target);
-    virtual int preeditClickPos(bool &valid) const;
     //! \reimp_end
 
 public slots:
@@ -93,100 +81,10 @@ public:
     //! sets the input to go to calling connection
     void activateContext(MDBusGlibICConnection *connection);
 
-    //! ipc method provided to the application, shows input method
-    void showInputMethod(unsigned int clientId);
-
-    //! ipc method provided to the application, hides input method
-    void hideInputMethod(unsigned int clientId);
-
-    //! ipc method provided to the application, signals mouse click on preedit
-    void mouseClickedOnPreedit(unsigned int clientId,
-                               const QPoint &pos, const QRect &preeditRect);
-
-    //! ipc method provided to the application, sets preedit
-    void setPreedit(unsigned int clientId, const QString &text, int cursorPos);
-
-    void updateWidgetInformation(unsigned int clientId,
-                                 const QMap<QString, QVariant> &stateInformation,
-                                 bool focusChanged);
-
-    //! ipc method provided to the application, resets the input method
-    void reset(unsigned int clientId);
-
-    /*!
-     * \brief Target application is changing orientation
-     */
-    void receivedAppOrientationAboutToChange(unsigned int clientId, int angle);
-
-    /*!
-     * \brief Target application changed orientation (already finished)
-     */
-    void receivedAppOrientationChanged(unsigned int clientId, int angle);
-
-    /*! \brief Set copy/paste state for appropriate UI elements in the input method server
-     *  \param copyAvailable bool TRUE if text is selected
-     *  \param pasteAvailable bool TRUE if clipboard content is not empty
-     */
-    void setCopyPasteState(unsigned int clientId,
-                                   bool copyAvailable, bool pasteAvailable);
-
-    /*!
-     * \brief Process a key event redirected from hardware keyboard to input method plugin(s).
-     *
-     * This is called only if one has enabled redirection by calling \a setRedirectKeys.
-     */
-    void processKeyEvent(unsigned int clientId, QEvent::Type keyType, Qt::Key keyCode,
-                         Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
-                         int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
-
-    /*!
-     * \brief Register an input method attribute extension which is defined in \a fileName with the
-     * unique identifier \a id.
-     *
-     *  The \a id should be unique, and the \a fileName is the absolute file name of the
-     *  attribute extension.
-     */
-    void registerAttributeExtension(unsigned int clientId, int id, const QString &fileName);
-
-    /*!
-     * \brief Unregister an input method attribute extension which unique identifier is \a id.
-     */
-    void unregisterAttributeExtension(unsigned int clientId, int id);
-
-    /*!
-     * \brief Sets the \a attribute for the \a target in the extended attribute which has unique \a id to \a value.
-     */
-    void setExtendedAttribute(unsigned int clientId, int id, const QString &target,
-                              const QString &targetItem, const QString &attribute, const QVariant &value);
-
-signals:
-    void appOrientationAboutToChange(int angle);
-    void appOrientationChanged(int angle);
-
 private:
-    //! Updates the transient hint on the framework side to point to the
-    //! current application's window id.
-    void updateTransientHint();
-
-    /*!
-     * \brief get the X window id of the active app window
-     */
-    WId winId(bool &valid);
-
-    unsigned int mActiveClientId; // 0 means no active client
     MDBusGlibICConnection *activeContext;
-    QMap<QString, QVariant> widgetState;
-    bool globalCorrectionEnabled;
-    bool redirectionEnabled;
-    bool detectableAutoRepeat;
-    int lastOrientation;
-    MAttributeExtensionId attributeExtensionId; //current attribute extension id
-    QSet<MAttributeExtensionId> attributeExtensionIds; //all attribute extension ids
     QByteArray socketAddress;
-
     DBusServer *server;
-
-    QString preedit;
 
     Q_DISABLE_COPY(MInputContextGlibDBusConnection)
 };
