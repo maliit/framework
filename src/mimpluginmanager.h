@@ -25,6 +25,7 @@
 #include "mimplugindescription.h"
 #include "mattributeextensionid.h"
 #include "mimsubviewdescription.h"
+#include "minputcontextconnection.h"
 
 class QRegion;
 class MIMPluginManagerPrivate;
@@ -43,7 +44,7 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    explicit MIMPluginManager(MImRotationAnimation* rotationAnimation = 0);
+    explicit MIMPluginManager(MInputContextConnection* icConnection);
 
     virtual ~MIMPluginManager();
 

@@ -5,6 +5,7 @@
 #include "dummyimplugin.h"
 #include "dummyinputmethod.h"
 #include "mimapplication.h"
+#include "minputcontextglibdbusconnection.h" // Should be able to use test connection instead
 
 #include <QProcess>
 #include <QGraphicsScene>
@@ -107,7 +108,9 @@ void Ft_MIMPluginManager::init()
     gMKeyboardStateTrackerStub->setOpenState(false);
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
-    subject = new MIMPluginManager();
+    MInputContextConnection *icConnection = new MInputContextGlibDBusConnection();
+    subject = new MIMPluginManager(icConnection);
+    icConnection->setParent(subject);
 }
 
 void Ft_MIMPluginManager::cleanup()

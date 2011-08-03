@@ -30,6 +30,11 @@
 #include <QFile>
 #include <QDir>
 
+#include <glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus.h>
+
 #include "mabstractinputmethod.h"
 #include "mimapplication.h"
 
