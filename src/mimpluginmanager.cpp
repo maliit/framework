@@ -136,7 +136,6 @@ void MIMPluginManagerPrivate::loadPlugins()
 
 bool MIMPluginManagerPrivate::loadFactoryPlugin(const QDir &dir, const QString &fileName)
 {
-    Q_ASSERT(MIMPluginManager);
     Q_ASSERT(mApp);
 
     if (blacklist.contains(fileName)) {
