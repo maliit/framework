@@ -46,7 +46,7 @@ public:
     MInputContextGlibDBusConnection();
     virtual ~MInputContextGlibDBusConnection();
 
-    void handleDBusDisconnection(MDBusGlibICConnection *connection);
+    void handleDBusDisconnection(MDBusGlibICConnection *connectionObj);
 
     //! \reimp
     virtual void sendPreeditString(const QString &string,
@@ -91,43 +91,43 @@ public slots:
 
 public:
     //! sets the input to go to calling connection
-    void activateContext(MDBusGlibICConnection *obj);
+    void activateContext(MDBusGlibICConnection *connection);
 
     //! ipc method provided to the application, shows input method
-    void showInputMethod(MDBusGlibICConnection *sourceConnection);
+    void showInputMethod(unsigned int clientId);
 
     //! ipc method provided to the application, hides input method
-    void hideInputMethod(MDBusGlibICConnection *sourceConnection);
+    void hideInputMethod(unsigned int clientId);
 
     //! ipc method provided to the application, signals mouse click on preedit
-    void mouseClickedOnPreedit(MDBusGlibICConnection *sourceConnection,
+    void mouseClickedOnPreedit(unsigned int clientId,
                                const QPoint &pos, const QRect &preeditRect);
 
     //! ipc method provided to the application, sets preedit
-    void setPreedit(MDBusGlibICConnection *sourceConnection, const QString &text, int cursorPos);
+    void setPreedit(unsigned int clientId, const QString &text, int cursorPos);
 
-    void updateWidgetInformation(MDBusGlibICConnection *connection,
+    void updateWidgetInformation(unsigned int clientId,
                                  const QMap<QString, QVariant> &stateInformation,
                                  bool focusChanged);
 
     //! ipc method provided to the application, resets the input method
-    void reset(MDBusGlibICConnection *sourceConnection);
+    void reset(unsigned int clientId);
 
     /*!
      * \brief Target application is changing orientation
      */
-    void receivedAppOrientationAboutToChange(MDBusGlibICConnection *sourceConnection, int angle);
+    void receivedAppOrientationAboutToChange(unsigned int clientId, int angle);
 
     /*!
      * \brief Target application changed orientation (already finished)
      */
-    void receivedAppOrientationChanged(MDBusGlibICConnection *sourceConnection, int angle);
+    void receivedAppOrientationChanged(unsigned int clientId, int angle);
 
     /*! \brief Set copy/paste state for appropriate UI elements in the input method server
      *  \param copyAvailable bool TRUE if text is selected
      *  \param pasteAvailable bool TRUE if clipboard content is not empty
      */
-    void setCopyPasteState(MDBusGlibICConnection *sourceConnection,
+    void setCopyPasteState(unsigned int clientId,
                                    bool copyAvailable, bool pasteAvailable);
 
     /*!
@@ -135,7 +135,7 @@ public:
      *
      * This is called only if one has enabled redirection by calling \a setRedirectKeys.
      */
-    void processKeyEvent(MDBusGlibICConnection *sourceConnection, QEvent::Type keyType, Qt::Key keyCode,
+    void processKeyEvent(unsigned int clientId, QEvent::Type keyType, Qt::Key keyCode,
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
@@ -146,17 +146,17 @@ public:
      *  The \a id should be unique, and the \a fileName is the absolute file name of the
      *  attribute extension.
      */
-    void registerAttributeExtension(MDBusGlibICConnection *connection, int id, const QString &fileName);
+    void registerAttributeExtension(unsigned int clientId, int id, const QString &fileName);
 
     /*!
      * \brief Unregister an input method attribute extension which unique identifier is \a id.
      */
-    void unregisterAttributeExtension(MDBusGlibICConnection *connection, int id);
+    void unregisterAttributeExtension(unsigned int clientId, int id);
 
     /*!
      * \brief Sets the \a attribute for the \a target in the extended attribute which has unique \a id to \a value.
      */
-    void setExtendedAttribute(MDBusGlibICConnection *connection, int id, const QString &target,
+    void setExtendedAttribute(unsigned int clientId, int id, const QString &target,
                               const QString &targetItem, const QString &attribute, const QVariant &value);
 
 signals:
@@ -173,6 +173,7 @@ private:
      */
     WId winId(bool &valid);
 
+    unsigned int mActiveClientId; // 0 means no active client
     MDBusGlibICConnection *activeContext;
     QMap<QString, QVariant> widgetState;
     bool globalCorrectionEnabled;

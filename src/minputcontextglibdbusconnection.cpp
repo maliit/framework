@@ -245,14 +245,14 @@ m_dbus_glib_ic_connection_activate_context(MDBusGlibICConnection *obj, GError **
 static gboolean
 m_dbus_glib_ic_connection_show_input_method(MDBusGlibICConnection *obj, GError **/*error*/)
 {
-    obj->icConnection->showInputMethod(obj);
+    obj->icConnection->showInputMethod(obj->connectionNumber);
     return TRUE;
 }
 
 static gboolean
 m_dbus_glib_ic_connection_hide_input_method(MDBusGlibICConnection *obj, GError **/*error*/)
 {
-    obj->icConnection->hideInputMethod(obj);
+    obj->icConnection->hideInputMethod(obj->connectionNumber);
     return TRUE;
 }
 
@@ -263,7 +263,7 @@ m_dbus_glib_ic_connection_mouse_clicked_on_preedit(MDBusGlibICConnection *obj,
                                                    gint32 preeditWidth, gint32 preeditHeight,
                                                    GError **/*error*/)
 {
-    obj->icConnection->mouseClickedOnPreedit(obj, QPoint(posX, posY), QRect(preeditX, preeditY,
+    obj->icConnection->mouseClickedOnPreedit(obj->connectionNumber, QPoint(posX, posY), QRect(preeditX, preeditY,
                                                                             preeditWidth, preeditHeight));
     return TRUE;
 }
@@ -272,7 +272,7 @@ static gboolean
 m_dbus_glib_ic_connection_set_preedit(MDBusGlibICConnection *obj, const char *text,
                                       gint32 cursorPos, GError **/*error*/)
 {
-    obj->icConnection->setPreedit(obj, QString::fromUtf8(text), cursorPos);
+    obj->icConnection->setPreedit(obj->connectionNumber, QString::fromUtf8(text), cursorPos);
     return TRUE;
 }
 
@@ -285,7 +285,7 @@ m_dbus_glib_ic_connection_update_widget_information(MDBusGlibICConnection *obj,
     QMap<QString, QVariant> stateMap;
     QString error_message;
     if (mapFromGHashTable(&stateMap, stateInformation, &error_message)) {
-        obj->icConnection->updateWidgetInformation(obj, stateMap, focusChanged == TRUE);
+        obj->icConnection->updateWidgetInformation(obj->connectionNumber, stateMap, focusChanged == TRUE);
     } else {
         qWarning() << "updateWidgetInformation.arg[0]" + error_message;
     }
@@ -295,7 +295,7 @@ m_dbus_glib_ic_connection_update_widget_information(MDBusGlibICConnection *obj,
 static gboolean
 m_dbus_glib_ic_connection_reset(MDBusGlibICConnection *obj, GError **/*error*/)
 {
-    obj->icConnection->reset(obj);
+    obj->icConnection->reset(obj->connectionNumber);
     return TRUE;
 }
 
@@ -303,7 +303,7 @@ static gboolean
 m_dbus_glib_ic_connection_app_orientation_about_to_change(MDBusGlibICConnection *obj, gint32 angle,
                                                          GError **/*error*/)
 {
-    obj->icConnection->receivedAppOrientationAboutToChange(obj, static_cast<int>(angle));
+    obj->icConnection->receivedAppOrientationAboutToChange(obj->connectionNumber, static_cast<int>(angle));
     return TRUE;
 }
 
@@ -312,7 +312,7 @@ static gboolean
 m_dbus_glib_ic_connection_app_orientation_changed(MDBusGlibICConnection *obj, gint32 angle,
                                                   GError **/*error*/)
 {
-    obj->icConnection->receivedAppOrientationChanged(obj, static_cast<int>(angle));
+    obj->icConnection->receivedAppOrientationChanged(obj->connectionNumber, static_cast<int>(angle));
     return TRUE;
 }
 
@@ -320,7 +320,7 @@ static gboolean
 m_dbus_glib_ic_connection_set_copy_paste_state(MDBusGlibICConnection *obj, gboolean copyAvailable,
                                                gboolean pasteAvailable, GError **/*error*/)
 {
-    obj->icConnection->setCopyPasteState(obj, copyAvailable == TRUE, pasteAvailable == TRUE);
+    obj->icConnection->setCopyPasteState(obj->connectionNumber, copyAvailable == TRUE, pasteAvailable == TRUE);
     return TRUE;
 }
 
@@ -332,7 +332,7 @@ m_dbus_glib_ic_connection_process_key_event(MDBusGlibICConnection *obj, gint32 k
                                             unsigned long time,
                                             GError **/*error*/)
 {
-    obj->icConnection->processKeyEvent(obj, static_cast<QEvent::Type>(keyType),
+    obj->icConnection->processKeyEvent(obj->connectionNumber, static_cast<QEvent::Type>(keyType),
                                        static_cast<Qt::Key>(keyCode),
                                        static_cast<Qt::KeyboardModifiers>(modifiers),
                                        QString::fromUtf8(text), autoRepeat == TRUE,
@@ -345,7 +345,7 @@ static gboolean
 m_dbus_glib_ic_connection_register_attribute_extension(MDBusGlibICConnection *obj, gint32 id,
                                                        const char *fileName, GError **/*error*/)
 {
-    obj->icConnection->registerAttributeExtension(obj, static_cast<int>(id), QString::fromUtf8(fileName));
+    obj->icConnection->registerAttributeExtension(obj->connectionNumber, static_cast<int>(id), QString::fromUtf8(fileName));
     return TRUE;
 }
 
@@ -353,7 +353,7 @@ static gboolean
 m_dbus_glib_ic_connection_unregister_attribute_extension(MDBusGlibICConnection *obj, gint32 id,
                                                          GError **/*error*/)
 {
-    obj->icConnection->unregisterAttributeExtension(obj, static_cast<int>(id));
+    obj->icConnection->unregisterAttributeExtension(obj->connectionNumber, static_cast<int>(id));
     return TRUE;
 }
 
@@ -366,7 +366,7 @@ m_dbus_glib_ic_connection_set_extended_attribute(MDBusGlibICConnection *obj, gin
     QVariant value;
     QString error_message;
     if (variantFromGValue(&value, valueData, &error_message)) {
-        obj->icConnection->setExtendedAttribute(obj, static_cast<int>(id), QString::fromUtf8(target),
+        obj->icConnection->setExtendedAttribute(obj->connectionNumber, static_cast<int>(id), QString::fromUtf8(target),
                                                 QString::fromUtf8(targetItem),
                                                 QString::fromUtf8(attribute),
                                                 value);
@@ -430,10 +430,12 @@ static void handleDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userDa
     connection->icConnection->handleDBusDisconnection(connection);
 }
 
-void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnection *connection)
+void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnection *connectionObj)
 {
+    const unsigned int clientId = connectionObj->connectionNumber;
+
     // unregister toolbars registered by the lost connection
-    const QString service(QString::number(connection->connectionNumber));
+    const QString service(QString::number(clientId));
     QSet<MAttributeExtensionId>::iterator i(attributeExtensionIds.begin());
     while (i != attributeExtensionIds.end()) {
         if ((*i).service() == service) {
@@ -444,12 +446,13 @@ void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnect
         }
     }
 
-    g_object_unref(G_OBJECT(connection));
+    g_object_unref(G_OBJECT(connectionObj));
 
-    if (activeContext != connection) {
+    if (mActiveClientId != clientId) {
         return;
     }
 
+    mActiveClientId = 0;
     activeContext = 0;
 
     // notify plugins
@@ -481,7 +484,7 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
     g_signal_connect(G_OBJECT(inputContextProxy), "destroy",
                      G_CALLBACK(handleDisconnectionTrampoline), obj);
 
-    static unsigned int connectionCounter = 0;
+    static unsigned int connectionCounter = 1; // Start at 1 so 0 can be used as a sentinel value
     obj->connectionNumber = connectionCounter++;
 
     dbus_g_connection_register_g_object(obj->dbusConnection, DBusPath, G_OBJECT(obj));
@@ -489,7 +492,8 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
 
 
 MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
-    : activeContext(NULL),
+    : mActiveClientId(0),
+      activeContext(NULL),
       globalCorrectionEnabled(false),
       redirectionEnabled(false),
       detectableAutoRepeat(false),
@@ -870,14 +874,16 @@ void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &regio
 
 // Input context -> server...................................................
 
-void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *connection)
+void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *connectionObj)
 {
-    MDBusGlibICConnection *previousActive = activeContext;
+    MDBusGlibICConnection *previousActiveContext = activeContext;
 
-    activeContext = connection;
+    mActiveClientId = connectionObj->connectionNumber;
+    activeContext = connectionObj;
 
     if (activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setGlobalCorrectionEnabled",
+        // TODO: call methods on self instead of duplicating the code
+        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "activeContext->CorrectionEnabled",
                                    G_TYPE_BOOLEAN, globalCorrectionEnabled,
                                    G_TYPE_INVALID);
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setRedirectKeys",
@@ -887,9 +893,9 @@ void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *con
                                    G_TYPE_BOOLEAN, detectableAutoRepeat,
                                    G_TYPE_INVALID);
 
-        if ((previousActive != 0) && (previousActive != activeContext)) {
+        if ((previousActiveContext != 0) && (previousActiveContext != activeContext)) {
             // TODO: we can't use previousActive here like this
-            dbus_g_proxy_call_no_reply(previousActive->inputContextProxy, "activationLostEvent",
+            dbus_g_proxy_call_no_reply(previousActiveContext->inputContextProxy, "activationLostEvent",
                                        G_TYPE_INVALID);
         }
     }
@@ -901,29 +907,29 @@ void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *con
 }
 
 
-void MInputContextGlibDBusConnection::showInputMethod(MDBusGlibICConnection *sourceConnection)
+void MInputContextGlibDBusConnection::showInputMethod(unsigned int clientId)
 {
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     emit showInputMethodRequest();
 }
 
 
-void MInputContextGlibDBusConnection::hideInputMethod(MDBusGlibICConnection *sourceConnection)
+void MInputContextGlibDBusConnection::hideInputMethod(unsigned int clientId)
 {
     // Only allow this call for current active connection.
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     emit hideInputMethodRequest();
 }
 
 
-void MInputContextGlibDBusConnection::mouseClickedOnPreedit(MDBusGlibICConnection *sourceConnection,
+void MInputContextGlibDBusConnection::mouseClickedOnPreedit(unsigned int clientId,
                                                             const QPoint &pos, const QRect &preeditRect)
 {
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     foreach (MAbstractInputMethod *target, targets()) {
@@ -932,10 +938,10 @@ void MInputContextGlibDBusConnection::mouseClickedOnPreedit(MDBusGlibICConnectio
 }
 
 
-void MInputContextGlibDBusConnection::setPreedit(MDBusGlibICConnection *sourceConnection,
+void MInputContextGlibDBusConnection::setPreedit(unsigned int clientId,
                                                  const QString &text, int cursorPos)
 {
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     preedit = text;
@@ -946,9 +952,9 @@ void MInputContextGlibDBusConnection::setPreedit(MDBusGlibICConnection *sourceCo
 }
 
 
-void MInputContextGlibDBusConnection::reset(MDBusGlibICConnection *sourceConnection)
+void MInputContextGlibDBusConnection::reset(unsigned int clientId)
 {
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     preedit.clear();
@@ -965,7 +971,7 @@ void MInputContextGlibDBusConnection::reset(MDBusGlibICConnection *sourceConnect
 
 void
 MInputContextGlibDBusConnection::updateWidgetInformation(
-    MDBusGlibICConnection *connection, const QMap<QString, QVariant> &stateInfo,
+    unsigned int clientId, const QMap<QString, QVariant> &stateInfo,
     bool focusChanged)
 {
     // check visualization change
@@ -991,7 +997,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
     variant = stateInfo[ToolbarIdAttribute];
     if (variant.isValid()) {
         // map toolbar id from local to global
-        newAttributeExtensionId = MAttributeExtensionId(variant.toInt(), QString::number(connection->connectionNumber));
+        newAttributeExtensionId = MAttributeExtensionId(variant.toInt(), QString::number(clientId));
     }
     if (!newAttributeExtensionId.isValid()) {
         newAttributeExtensionId = MAttributeExtensionId::standardAttributeExtensionId();
@@ -1025,7 +1031,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
             variant = stateInfo[ToolbarIdAttribute];
             if (variant.isValid()) {
                 const int toolbarLocalId = variant.toInt();
-                registerAttributeExtension(connection, toolbarLocalId, toolbarFile);
+                registerAttributeExtension(clientId, toolbarLocalId, toolbarFile);
             }
         }
         emit toolbarIdChanged(newAttributeExtensionId);
@@ -1040,10 +1046,10 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
 }
 
 void
-MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(MDBusGlibICConnection *sourceConnection,
+MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(unsigned int clientId,
                                                                      int angle)
 {
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     // Needs to be passed to the MImRotationAnimation listening
@@ -1056,10 +1062,10 @@ MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(MDBusGlibIC
 }
 
 
-void MInputContextGlibDBusConnection::receivedAppOrientationChanged(MDBusGlibICConnection *sourceConnection,
+void MInputContextGlibDBusConnection::receivedAppOrientationChanged(unsigned int clientId,
                                                                     int angle)
 {
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     // Handle orientation changes through MImRotationAnimation with priority.
@@ -1072,10 +1078,10 @@ void MInputContextGlibDBusConnection::receivedAppOrientationChanged(MDBusGlibICC
 }
 
 
-void MInputContextGlibDBusConnection::setCopyPasteState(MDBusGlibICConnection *sourceConnection,
+void MInputContextGlibDBusConnection::setCopyPasteState(unsigned int clientId,
                                                         bool copyAvailable, bool pasteAvailable)
 {
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     MAttributeExtensionManager::instance().setCopyPasteState(copyAvailable, pasteAvailable);
@@ -1083,11 +1089,11 @@ void MInputContextGlibDBusConnection::setCopyPasteState(MDBusGlibICConnection *s
 
 
 void MInputContextGlibDBusConnection::processKeyEvent(
-    MDBusGlibICConnection *sourceConnection, QEvent::Type keyType, Qt::Key keyCode,
+    unsigned int clientId, QEvent::Type keyType, Qt::Key keyCode,
     Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat, int count,
     quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time)
 {
-    if (activeContext != sourceConnection)
+    if (mActiveClientId != clientId)
         return;
 
     foreach (MAbstractInputMethod *target, targets()) {
@@ -1096,19 +1102,19 @@ void MInputContextGlibDBusConnection::processKeyEvent(
     }
 }
 
-void MInputContextGlibDBusConnection::registerAttributeExtension(MDBusGlibICConnection *connection, int id,
+void MInputContextGlibDBusConnection::registerAttributeExtension(unsigned int clientId, int id,
                                                          const QString &attributeExtension)
 {
-    MAttributeExtensionId globalId(id, QString::number(connection->connectionNumber));
+    MAttributeExtensionId globalId(id, QString::number(clientId));
     if (globalId.isValid() && !attributeExtensionIds.contains(globalId)) {
         MAttributeExtensionManager::instance().registerAttributeExtension(globalId, attributeExtension);
         attributeExtensionIds.insert(globalId);
     }
 }
 
-void MInputContextGlibDBusConnection::unregisterAttributeExtension(MDBusGlibICConnection *connection, int id)
+void MInputContextGlibDBusConnection::unregisterAttributeExtension(unsigned int clientId, int id)
 {
-    MAttributeExtensionId globalId(id, QString::number(connection->connectionNumber));
+    MAttributeExtensionId globalId(id, QString::number(clientId));
     if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
         MAttributeExtensionManager::instance().unregisterAttributeExtension(globalId);
         attributeExtensionIds.remove(globalId);
@@ -1116,11 +1122,11 @@ void MInputContextGlibDBusConnection::unregisterAttributeExtension(MDBusGlibICCo
 }
 
 void MInputContextGlibDBusConnection::setExtendedAttribute(
-    MDBusGlibICConnection *connection, int id, const QString &target, const QString &targetName,
+    unsigned int clientId, int id, const QString &target, const QString &targetName,
     const QString &attribute, const QVariant &value)
 {
     qDebug() << __PRETTY_FUNCTION__;
-    MAttributeExtensionId globalId(id, QString::number(connection->connectionNumber));
+    MAttributeExtensionId globalId(id, QString::number(clientId));
     if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
         MAttributeExtensionManager::instance().setExtendedAttribute(globalId, target, targetName, attribute, value);
     }
