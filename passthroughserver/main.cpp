@@ -23,6 +23,7 @@
 #include "mimremotewindow.h"
 #include "mimrotationanimation.h"
 #include "mpassthruwindow.h"
+#include "minputcontextglibdbusconnection.h"
 
 #include <QApplication>
 #include <QtDebug>
@@ -62,12 +63,20 @@ int main(int argc, char **argv)
 
     qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 
-    MImRotationAnimation *rotationAnimation = new MImRotationAnimation(app.pluginsProxyWidget(), app.passThruWindow());
+    // Input Context Connection
+    MInputContextGlibDBusConnection *icConnection = new MInputContextGlibDBusConnection();
 
-    // Pass the rotationAnimation so that we can receive the orientation
-    // signals from the dbus connection.
-    // TODO: This should probably be done in a cleaner way.
-    MIMPluginManager *pluginManager = new MIMPluginManager(rotationAnimation);
+    // Rotation Animation
+    MImRotationAnimation *rotationAnimation =
+            new MImRotationAnimation(app.pluginsProxyWidget(), app.passThruWindow());
+
+    QObject::connect(icConnection, SIGNAL(appOrientationAboutToChange(int)),
+            rotationAnimation, SLOT(appOrientationAboutToChange(int)));
+    QObject::connect(icConnection, SIGNAL(appOrientationChanged(int)),
+            rotationAnimation, SLOT(appOrientationChangeFinished(int)));
+
+    // PluginManager
+    MIMPluginManager *pluginManager = new MIMPluginManager(icConnection);
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));

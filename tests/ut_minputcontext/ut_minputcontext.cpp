@@ -16,10 +16,6 @@
 
 namespace
 {
-    const QString DBUS_SERVICE_NAME("com.meego.inputmethod.uiserver1");
-    const QString DBUS_PATH("/com/meego/inputmethod/uiserver1");
-    const QString DBUS_INTERFACE("com.meego.inputmethod.uiserver1");
-
     const int WidgetStubCursorPosition(37);
     const QString WidgetStubSurroundingText("surrounding");
     const Qt::KeyboardModifier FnLevelModifier = Qt::GroupSwitchModifier;
@@ -574,7 +570,6 @@ void Ut_MInputContext::testAppOrientationChanged()
 #ifdef HAVE_MEEGOTOUCH
     m_subject->notifyOrientationChanged(M::Angle90);
 
-    // Make sure DBus call gets through
     waitAndProcessEvents(300);
 
     // TODO: can not recieve signal, should check it

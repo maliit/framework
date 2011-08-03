@@ -42,10 +42,6 @@
 #include <QDebug>
 #include <deque>
 
-#include "minputcontextglibdbusconnection.h"
-typedef MInputContextGlibDBusConnection MInputContextConnectionImpl;
-
-
 namespace
 {
     const QString DefaultPluginLocation(M_IM_PLUGINS_DIR);
@@ -1114,9 +1110,9 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 ///////////////
 // actual class
 
-MIMPluginManager::MIMPluginManager(MImRotationAnimation* rotationAnimation)
+MIMPluginManager::MIMPluginManager(MInputContextConnection* icConnection)
     : QObject(),
-      d_ptr(new MIMPluginManagerPrivate(new MInputContextConnectionImpl, this))
+      d_ptr(new MIMPluginManagerPrivate(icConnection, this))
 {
     Q_D(MIMPluginManager);
     d->q_ptr = this;
@@ -1132,14 +1128,6 @@ MIMPluginManager::MIMPluginManager(MImRotationAnimation* rotationAnimation)
 
     connect(d->mICConnection, SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
-
-    // connect orientation signals
-    if (rotationAnimation) {
-        connect(d->mICConnection, SIGNAL(appOrientationAboutToChange(int)),
-                rotationAnimation, SLOT(appOrientationAboutToChange(int)));
-        connect(d->mICConnection, SIGNAL(appOrientationChanged(int)),
-                rotationAnimation, SLOT(appOrientationChangeFinished(int)));
-    }
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist    = MImSettings(MImPluginDisabled).value().toStringList();

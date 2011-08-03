@@ -7,6 +7,7 @@
 #include "dummyinputmethod.h"
 #include "dummyinputmethod3.h"
 #include "fakegconf.h"
+#include "minputcontextglibdbusconnection.h" // Should be able to use test connection instead
 
 #include <QProcess>
 #include <QGraphicsScene>
@@ -130,7 +131,10 @@ void Ut_MIMPluginManager::init()
     activePlugin << pluginId << "dummyimsv1";
     activePluginSettings.set(activePlugin);
 
-    manager = new MIMPluginManager();
+    MInputContextConnection *icConnection = new MInputContextGlibDBusConnection();
+    manager = new MIMPluginManager(icConnection);
+    icConnection->setParent(manager);
+
     subject = manager->d_ptr;
 
     QVERIFY(subject->activePlugins.size() == 1);

@@ -28,16 +28,12 @@
 #include <QString>
 #include <QVariant>
 #include <QWidget>
-#include <glib.h>
-
-#include <dbus/dbus-glib-lowlevel.h>
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus.h>
 
 class QPoint;
 class QRegion;
 struct MDBusGlibICConnection;
 struct MIMSDBusActivater;
+struct DBusServer;
 
 //! \internal
 /*! \brief Peer-to-peer DBus input context connection based on glib dbus bindings
