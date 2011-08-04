@@ -86,6 +86,7 @@ public:
     virtual void setSelection(int start, int length);
     virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const;
     virtual int preeditClickPos(bool &valid) const;
+    virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
 
     //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);

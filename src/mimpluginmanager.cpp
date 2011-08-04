@@ -646,6 +646,142 @@ QList<MImPluginDescription> MIMPluginManagerPrivate::pluginDescriptions(MInputMe
     return result;
 }
 
+MIMPluginManagerPrivate::Plugins::const_iterator
+MIMPluginManagerPrivate::findEnabledPlugin(Plugins::const_iterator current,
+                                           MInputMethod::SwitchDirection direction,
+                                           MInputMethod::HandlerState state) const
+{
+    MIMPluginManagerPrivate::Plugins::const_iterator iterator = current;
+    MIMPluginManagerPrivate::Plugins::const_iterator result = plugins.constEnd();
+
+    for (int n = 0; n < plugins.size() - 1; ++n) {
+        if (direction == MInputMethod::SwitchForward) {
+            ++iterator;
+            if (iterator == plugins.end()) {
+                iterator = plugins.begin();
+            }
+        } else if (direction == MInputMethod::SwitchBackward) { // Backward
+            if (iterator == plugins.begin()) {
+                iterator = plugins.end();
+            }
+            --iterator;
+        }
+
+        MInputMethodPlugin *otherPlugin = iterator.key();
+        Q_ASSERT(otherPlugin);
+        const MIMPluginManagerPrivate::PluginState &supportedStates = otherPlugin->supportedStates();
+        if (!supportedStates.contains(state)) {
+            continue;
+        }
+
+        if (state == MInputMethod::OnScreen
+            && not onScreenPlugins.isEnabled(iterator->pluginId)) {
+            continue;
+        }
+
+        result = iterator;
+        break;
+    }
+
+    return result;
+}
+
+void MIMPluginManagerPrivate::filterEnabledSubViews(QMap<QString, QString> &subViews,
+                                                    const QString &pluginId,
+                                                    MInputMethod::HandlerState state) const
+{
+    QMap<QString, QString>::iterator iterator = subViews.begin();
+    while(iterator != subViews.end()) {
+        MImOnScreenPlugins::SubView subView(pluginId, iterator.key());
+        if (state != MInputMethod::OnScreen || onScreenPlugins.isSubViewEnabled(subView)) {
+            ++iterator;
+        } else {
+            iterator = subViews.erase(iterator);
+        }
+    }
+}
+
+void MIMPluginManagerPrivate::append(QList<MImSubViewDescription> &list,
+                                     const QMap<QString, QString> &map,
+                                     const QString &pluginId) const
+{
+    for(QMap<QString, QString>::const_iterator iterator = map.constBegin();
+        iterator != map.constEnd();
+        ++iterator) {
+        MImSubViewDescription desc(pluginId, iterator.key(), iterator.value());
+
+        list.append(desc);
+    }
+}
+
+QList<MImSubViewDescription>
+MIMPluginManagerPrivate::surroundingSubViewDescriptions(MInputMethod::HandlerState state) const
+{
+    QList<MImSubViewDescription> result;
+    MInputMethodPlugin *plugin = activePlugin(state);
+
+    if (!plugin) {
+        return result;
+    }
+
+    Plugins::const_iterator iterator = plugins.find(plugin);
+    Q_ASSERT(iterator != plugins.constEnd());
+
+    QString pluginId = iterator->pluginId;
+    QString subViewId = iterator->inputMethod->activeSubView(state);
+    QMap<QString, QString> subViews = availableSubViews(pluginId, state);
+    filterEnabledSubViews(subViews, pluginId, state);
+
+    if (plugins.size() == 1 && subViews.size() == 1) {
+        // there is one subview only
+        return result;
+    }
+
+    QList<MImSubViewDescription> enabledSubViews;
+    const Plugins::const_iterator prevPlugin = findEnabledPlugin(iterator,
+                                                                 MInputMethod::SwitchBackward,
+                                                                 state);
+
+    if (prevPlugin != plugins.constEnd()) {
+        QMap<QString, QString> prevSubViews = availableSubViews(prevPlugin->pluginId);
+        filterEnabledSubViews(prevSubViews, prevPlugin->pluginId, state);
+        append(enabledSubViews, prevSubViews, prevPlugin->pluginId);
+    }
+
+    append(enabledSubViews, subViews, pluginId);
+
+    const Plugins::const_iterator nextPlugin = findEnabledPlugin(iterator,
+                                                                 MInputMethod::SwitchForward,
+                                                                 state);
+
+    if (prevPlugin != plugins.constEnd()) {
+        QMap<QString, QString> prevSubViews = availableSubViews(prevPlugin->pluginId);
+        filterEnabledSubViews(prevSubViews, prevPlugin->pluginId, state);
+        append(enabledSubViews, prevSubViews, prevPlugin->pluginId);
+    }
+
+    if (enabledSubViews.size() == 1) {
+        return result; //there is no other enabled subview
+    }
+
+    const QMap<QString, QString>::const_iterator subViewIterator = subViews.find(subViewId);
+    if (subViewIterator == subViews.constEnd()) {
+        return result;
+    }
+
+    MImSubViewDescription current(pluginId, subViewId, *subViewIterator);
+
+    const int index = enabledSubViews.indexOf(current);
+    Q_ASSERT(index >= 0);
+
+    const int prevIndex = index > 0 ? index - 1 : enabledSubViews.size() - 1;
+    result.append(enabledSubViews.at(prevIndex));
+
+    const int nextIndex = index < (enabledSubViews.size() - 1) ? index + 1 : 0;
+    result.append(enabledSubViews.at(nextIndex));
+
+    return result;
+}
 
 QStringList MIMPluginManagerPrivate::activePluginsNames() const
 {
@@ -1059,6 +1195,13 @@ QList<MImPluginDescription> MIMPluginManager::pluginDescriptions(MInputMethod::H
 {
     Q_D(const MIMPluginManager);
     return d->pluginDescriptions(state);
+}
+
+QList<MImSubViewDescription>
+MIMPluginManager::surroundingSubViewDescriptions(MInputMethod::HandlerState state) const
+{
+    Q_D(const MIMPluginManager);
+    return d->surroundingSubViewDescriptions(state);
 }
 
 QStringList MIMPluginManager::activePluginsNames() const

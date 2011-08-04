@@ -28,6 +28,7 @@ class QRegion;
 class QKeyEvent;
 
 class MImPluginDescription;
+class MImSubViewDescription;
 class MAbstractInputMethodHostPrivate;
 
 /*!
@@ -266,6 +267,18 @@ public:
      */
     virtual int preeditClickPos(bool &valid) const { Q_UNUSED(valid); return 0; }
 
+    /*!
+     * \brief Return information about enabled subviews which are neighbors
+     * (previous and next) of current active subview.
+     *
+     * Previous subview is described by first list item, next
+     * subview is defined by last list item.
+     * Returned list is empty if there is exactly one enabled subview.
+     *
+     * \sa MImSubViewDescription
+     */
+    virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
+
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
     Q_DECLARE_PRIVATE(MAbstractInputMethodHost)
@@ -273,5 +286,5 @@ private:
     MAbstractInputMethodHostPrivate *d;
 };
 
-
 #endif
+

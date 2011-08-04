@@ -24,6 +24,7 @@
 #include "minputmethodnamespace.h"
 #include "mimplugindescription.h"
 #include "mattributeextensionid.h"
+#include "mimsubviewdescription.h"
 
 class QRegion;
 class MIMPluginManagerPrivate;
@@ -54,6 +55,11 @@ public:
 
     //! \brief Return information about loaded input method plugins which could work in specified \a state.
     QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const;
+
+    //! \brief Return information about previous, current and next subviews.
+    //!
+    //! \sa MAbstractInputMethodHost::surroundingSubViewDescriptions()
+    QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
 
     //! Returns names of activated plugins
     QStringList activePluginsNames() const;

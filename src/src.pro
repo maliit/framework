@@ -26,6 +26,7 @@ HEADERSINSTALL = \
         mimplugindescription.h \
         mimsettings.h \
         mattributeextensionid.h \
+        mimsubviewdescription.h \
 
 HEADERS += \
         $$HEADERSINSTALL \
@@ -85,6 +86,7 @@ SOURCES += \
         mimplugindescription.cpp \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
+        mimsubviewdescription.cpp \
 
 CONFIG += qdbus link_pkgconfig
 QT = core gui xml

@@ -103,6 +103,16 @@ public:
     QStringList loadedPluginsNames() const;
     QStringList loadedPluginsNames(MInputMethod::HandlerState state) const;
     QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState) const;
+    Plugins::const_iterator findEnabledPlugin(Plugins::const_iterator current,
+                                              MInputMethod::SwitchDirection direction,
+                                              MInputMethod::HandlerState state) const;
+    void filterEnabledSubViews(QMap<QString, QString> &subViews,
+                               const QString &pluginId,
+                               MInputMethod::HandlerState state) const;
+    void append(QList<MImSubViewDescription> &list,
+                const QMap<QString, QString> &map,
+                const QString &pluginId) const;
+    QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
     QStringList activePluginsNames() const;
     QString activePluginsName(MInputMethod::HandlerState state) const;
     void loadHandlerMap();
