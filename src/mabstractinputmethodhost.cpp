@@ -16,6 +16,7 @@
 
 #include "mabstractinputmethodhost.h"
 #include "mimapplication.h"
+#include "mimsubviewdescription.h"
 
 class MAbstractInputMethodHostPrivate
 {
@@ -62,5 +63,11 @@ QPixmap MAbstractInputMethodHost::background() const
     } else {
         return QPixmap();
     }
+}
+
+QList<MImSubViewDescription>
+MAbstractInputMethodHost::surroundingSubViewDescriptions(MInputMethod::HandlerState /*state*/) const
+{
+    return QList<MImSubViewDescription>();
 }
 

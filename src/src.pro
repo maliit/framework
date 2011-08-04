@@ -24,6 +24,7 @@ HEADERSINSTALL = \
         mimwidget.h \
         mimplugindescription.h \
         mimsettings.h \
+        mimsubviewdescription.h \
 
 HEADERS += $$HEADERSINSTALL \
         mimpluginmanager_p.h \
@@ -81,6 +82,7 @@ SOURCES += mimpluginmanager.cpp \
         mimplugindescription.cpp \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
+        mimsubviewdescription.cpp \
 
 CONFIG += qdbus link_pkgconfig
 QT = core gui xml

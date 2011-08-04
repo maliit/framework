@@ -28,6 +28,7 @@ class QRegion;
 class QKeyEvent;
 
 class MImPluginDescription;
+class MImSubViewDescription;
 class MAbstractInputMethodHostPrivate;
 
 /*!
@@ -261,6 +262,15 @@ public:
      */
     virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const = 0;
 
+    /*!
+     * \brief Return information about previous and next available subviews.
+     *
+     * Previous subview is described by first list item, next
+     * subview is defined by last list item.
+     * Returned list is empty if there is exactly one available subview.
+     */
+    virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
+
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
     Q_DECLARE_PRIVATE(MAbstractInputMethodHost)
@@ -268,5 +278,5 @@ private:
     MAbstractInputMethodHostPrivate *d;
 };
 
-
 #endif
+

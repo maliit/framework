@@ -225,6 +225,12 @@ QList<MImPluginDescription> MInputMethodHost::pluginDescriptions(MInputMethod::H
     return pluginManager->pluginDescriptions(state);
 }
 
+QList<MImSubViewDescription>
+MInputMethodHost::surroundingSubViewDescriptions(MInputMethod::HandlerState state) const
+{
+    return pluginManager->surroundingSubViewDescriptions(state);
+}
+
 void MInputMethodHost::setOrientationAngleLocked(bool)
 {
     // NOT implemented.
