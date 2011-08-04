@@ -25,6 +25,7 @@ HEADERSINSTALL = \
         mimwidget.h \
         mimplugindescription.h \
         mimsettings.h \
+        mattributeextensionid.h \
 
 HEADERS += \
         $$HEADERSINSTALL \
@@ -38,7 +39,6 @@ HEADERS += \
         mtoolbaritem_p.h \
         mkeyoverride_p.h \
         mattributeextensionmanager.h \
-        mattributeextensionid.h \
         mtoolbarlayout_p.h \
         minputcontextglibdbusconnection.h \
         mimremotewindow.h \
