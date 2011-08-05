@@ -48,6 +48,9 @@ private slots:
     void testLoadedPluginsInfo_data();
     void testLoadedPluginsInfo();
 
+    void testSubViewsInfo_data();
+    void testSubViewsInfo();
+
 private:
     void handleMessages();
 

@@ -56,6 +56,12 @@ namespace {
     QString Toolbar1 = "/toolbar1.xml";
     QString Toolbar2 = "/toolbar2.xml";
 
+    const QStringList DefaultEnabledPlugins = QStringList()
+                                              << pluginId << "dummyimsv1"
+                                              << pluginId << "dummyimsv2"
+                                              << pluginId3 << "dummyim3sv1"
+                                              << pluginId3 << "dummyim3sv2";
+
     // Wait for signal or timeout; use SIGNAL macro for signal
     void waitForSignal(const QObject* object, const char* signal, int timeout)
     {
@@ -117,12 +123,7 @@ void Ut_MIMPluginManager::init()
     blackListConf.set(blackList);
 
     MImSettings enabledPluginsSettings(EnabledPluginsKey);
-    QStringList enabledPlugins;
-    enabledPlugins << pluginId << "dummyimsv1";
-    enabledPlugins << pluginId << "dummyimsv2";
-    enabledPlugins << pluginId3 << "dummyim3sv1";
-    enabledPlugins << pluginId3 << "dummyim3sv2";
-    enabledPluginsSettings.set(enabledPlugins);
+    enabledPluginsSettings.set(DefaultEnabledPlugins);
 
     MImSettings activePluginSettings(ActivePluginKey);
     QStringList activePlugin;
@@ -690,7 +691,7 @@ void Ut_MIMPluginManager::testSubViews()
         subViews += subject->plugins[plugin].inputMethod->subViews(MInputMethod::OnScreen);
     }
     // only has subviews for MInputMethod::OnScreen
-    QCOMPARE(subViews.count(), 4);
+    QCOMPARE(subViews.count(), 5);
 
     subViews.clear();
     foreach (MInputMethodPlugin *plugin, subject->plugins.keys()) {
@@ -759,7 +760,7 @@ void Ut_MIMPluginManager::testDBusQueryCalls()
     QDBusReply< QMap<QString, QVariant> > subViewsReply
         = m_clientInterface->call("queryAvailableSubViews", pluginId, MInputMethod::OnScreen);
     QVERIFY(subViewsReply.isValid());
-    QCOMPARE(subViewsReply.value().count(), 2);
+    QCOMPARE(subViewsReply.value().count(), 3);
 }
 
 void Ut_MIMPluginManager::testDBusSetCalls()
@@ -936,6 +937,53 @@ void Ut_MIMPluginManager::testLoadedPluginsInfo()
         // check for duplicates
         QVERIFY(!foundPlugins.contains(info.name()));
         foundPlugins.append(info.name());
+    }
+}
+
+void Ut_MIMPluginManager::testSubViewsInfo_data()
+{
+    QTest::addColumn<QStringList>("enabledPlugins");
+    QTest::addColumn<QString>("activeSubView");
+    QTest::addColumn<QStringList>("expectedTitles");
+
+    QTest::newRow("no subviews") << QStringList() // at least we should not crash here
+                                 << "dummyimsv1"
+                                 << QStringList();
+
+    QTest::newRow("one subview") << (QStringList() << pluginId << "dummyimsv1")
+                                 << "dummyimsv1"
+                                 << QStringList();
+
+    QTest::newRow("two subviews") << (QStringList() << pluginId << "dummyimsv1" << pluginId << "dummyimsv2")
+                                  << "dummyimsv1"
+                                  << (QStringList() << "dummyimsv2" << "dummyimsv2");
+
+    QTest::newRow("sv1") << DefaultEnabledPlugins
+                         << "dummyimsv1"
+                         << (QStringList() << "dummyim3sv2" << "dummyimsv2");
+
+    // last test case have to use DefaultEnabledPlugins to restore default settings
+    QTest::newRow("sv2") << DefaultEnabledPlugins
+                         << "dummyimsv2"
+                         << (QStringList() << "dummimysv1" << "dummyim3sv1");
+}
+
+void Ut_MIMPluginManager::testSubViewsInfo()
+{
+    QFETCH(QStringList, enabledPlugins);
+    QFETCH(QString, activeSubView);
+    QFETCH(QStringList, expectedTitles);
+
+    MImSettings enabledPluginsSettings(EnabledPluginsKey);
+    enabledPluginsSettings.set(enabledPlugins);
+
+    subject->_q_setActiveSubView(activeSubView, MInputMethod::OnScreen);
+    QVERIFY(subject->activeSubView(MInputMethod::OnScreen) == activeSubView);
+    QList<MImSubViewDescription> subViewDescriptions = subject->surroundingSubViewDescriptions(MInputMethod::OnScreen);
+
+    QCOMPARE(subViewDescriptions.size(), expectedTitles.size());
+    for(int n = 0; n < subViewDescriptions.size(); ++n) {
+        QCOMPARE(subViewDescriptions.at(n).title(), expectedTitles.at(n));
     }
 }
 

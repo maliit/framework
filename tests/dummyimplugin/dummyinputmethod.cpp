@@ -23,6 +23,11 @@ DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *host,
     sv2.subViewTitle = "dummyimsv2";
     sViews.append(sv2);
 
+    MAbstractInputMethod::MInputMethodSubView sv3;
+    sv3.subViewId = "dummyimsv3";
+    sv3.subViewTitle = "dummyimsv3";
+    sViews.append(sv3);
+
     activeSView = "dummyimsv1";
 
     connect(host, SIGNAL(pluginsChanged()),
