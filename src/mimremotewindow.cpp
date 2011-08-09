@@ -186,6 +186,11 @@ void MImRemoteWindow::resetPixmap()
         setupPixmap();
 }
 
+void MImRemoteWindow::update(const QRegion &region)
+{
+    emit contentUpdated(region);
+}
+
 void MImRemoteWindow::handleDamageEvent(XEvent *event)
 {
     if (event->type != MIMApplication::instance()->damageExtension().eventBase() + XDamageNotify)

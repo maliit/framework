@@ -31,6 +31,9 @@
 
 namespace
 {
+    const QEasingCurve::Type MaskEasingCurve = QEasingCurve::Linear;
+    const int MaskFadeOutDuration = 500;
+
     bool configureForCompositing(QWidget *w)
     {
         if (not w) {
@@ -64,7 +67,10 @@ MIMApplication::MIMApplication(int &argc, char **argv)
       mManualRedirection(false),
       mBypassWMHint(false),
       mBackgroundSuppressed(false),
-      mMasked(false)
+      mMasked(false),
+      mMaskOpacity(1.0f),
+      mMaskAnimation(this, "maskOpacity")
+
 {
     parseArguments(argc, argv);
 
@@ -79,6 +85,11 @@ MIMApplication::MIMApplication(int &argc, char **argv)
     connect(this, SIGNAL(aboutToQuit()),
             this, SLOT(finalize()),
             Qt::UniqueConnection);
+
+    mMaskAnimation.setEasingCurve(MaskEasingCurve);
+    mMaskAnimation.setDuration(MaskFadeOutDuration);
+    mMaskAnimation.setStartValue(qreal(1.0f));
+    mMaskAnimation.setEndValue(qreal(0.0f));
 }
 
 void MIMApplication::finalize()
@@ -253,6 +264,7 @@ const QPixmap &MIMApplication::remoteWindowPixmap()
             composited.fill(Qt::transparent);
         }
         QPainter p(&composited);
+        p.setOpacity(mApp->mMaskOpacity);
         for (int i = 0; i < mApp->mPassThruWindow.get()->region().rects().size(); ++i) {
             p.fillRect(mApp->mPassThruWindow.get()->region().rects().at(i), QBrush(Qt::black));
         }
@@ -296,7 +308,54 @@ void MIMApplication::configureWidgetsForCompositing(QWidget *widget)
     MIMApplication::visitWidgetHierarchy(configureForCompositing, widget);
 }
 
-void MIMApplication::setMasked(bool masked)
+void MIMApplication::enableBackgroundMask()
 {
-    mMasked = masked;
+    if (mMasked || mMaskAnimation.state() == QAbstractAnimation::Running) {
+        return;
+    }
+    mMasked = true;
+    setMaskOpacity(mMaskAnimation.startValue().toReal());
+    mMaskAnimation.stop();
+
+    if (mRemoteWindow.get() && mPassThruWindow.get()) {
+        mRemoteWindow->update(mPassThruWindow->region());
+    }
 }
+
+void MIMApplication::disableBackgroundMask(bool instantly)
+{
+    if (not mMasked) {
+        return;
+    }
+
+    if (instantly) {
+        mMasked = false;
+        setMaskOpacity(mMaskAnimation.endValue().toReal());
+        mMaskAnimation.stop();
+    } else if (mMaskAnimation.state() != QAbstractAnimation::Running){
+        mMaskAnimation.start();
+    }
+
+    if (mRemoteWindow.get() && mPassThruWindow.get()) {
+        mRemoteWindow->update(mPassThruWindow->region());
+    }
+}
+
+qreal MIMApplication::maskOpacity() const
+{
+    return mMaskOpacity;
+}
+
+void MIMApplication::setMaskOpacity(qreal opacity)
+{
+    mMaskOpacity = opacity;
+
+    if (!mMaskOpacity) {
+        mMasked = false;
+    }
+
+    if (mRemoteWindow.get() && mPassThruWindow.get()) {
+        mRemoteWindow->update(mPassThruWindow->region());
+    }
+}
+

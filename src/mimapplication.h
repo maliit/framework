@@ -22,6 +22,7 @@
 #include <QPixmap>
 #include <QRect>
 #include <QPointer>
+#include <QPropertyAnimation>
 #include <memory>
 #include <tr1/functional>
 
@@ -45,6 +46,12 @@ class MIMApplication
     : public QApplication
 {
     Q_OBJECT
+
+   //! \brief Opacity of mask used during cross-plugin panning
+   //!
+   //! Value should be inside range [0.0 ... 1.0].
+   //! Default value is 1.0.
+   Q_PROPERTY(qreal maskOpacity READ maskOpacity WRITE setMaskOpacity)
 
 public:
     //! Walks over widget hierarchy, if used with
@@ -100,9 +107,19 @@ public:
     //! Defaults to passthru window, if no widget is specified.
     static void configureWidgetsForCompositing(QWidget *widget = 0);
 
-    //! Flag that is used to mask the plugin region with 
-    //! background
-    void setMasked(bool masked); 
+    //! Enable mask drawing on the region occupied by plugin.
+    void enableBackgroundMask();
+
+    //! \brief Disable mask drawing.
+    //!
+    //! Mask disappears instantly if correponding parameter is true.
+    void disableBackgroundMask(bool instantly);
+
+    //! Get current mask opacity.
+    qreal maskOpacity() const;
+
+    //! Set mask \a opacity.
+    void setMaskOpacity(qreal opacity);
 
 signals:
     //! This signal is emitted when remote window is changed.
@@ -132,6 +149,8 @@ private:
     bool mBypassWMHint;
     bool mBackgroundSuppressed;
     bool mMasked;
+    qreal mMaskOpacity;
+    QPropertyAnimation mMaskAnimation;
 
     friend class Ut_PassthroughServer;
 };

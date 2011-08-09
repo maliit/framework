@@ -67,6 +67,9 @@ public:
     //! Resets the window pixmap
     void resetPixmap();
 
+    //! Schedules screen update for given \a region.
+    void update(const QRegion &region);
+
 signals:
     //! Signals when the content (pixmap) of the remote application window is updated
     void contentUpdated(const QRegion &region);
