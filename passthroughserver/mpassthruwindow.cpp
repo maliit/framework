@@ -232,3 +232,4 @@ const QRegion & MPassThruWindow::region()
 {
     return mRegion;
 }
+
