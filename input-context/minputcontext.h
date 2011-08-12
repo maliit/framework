@@ -227,6 +227,7 @@ private:
     bool correctionEnabled;
 
     QString preedit;
+    int preeditCursorPos;
 
     QPointer<QObject> connectedObject;
     bool pasteAvailable;

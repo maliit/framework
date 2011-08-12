@@ -81,6 +81,7 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
       inputPanelState(InputPanelHidden),
       imServer(newImServer),
       correctionEnabled(false),
+      preeditCursorPos(-1),
       connectedObject(0),
       pasteAvailable(false),
       copyAvailable(false),
@@ -298,10 +299,21 @@ void MInputContext::reset()
     // input methods do the same thing.
     const bool hadPreedit = !preedit.isEmpty();
     if (hadPreedit) {
-        QInputMethodEvent event;
+        QList<QInputMethodEvent::Attribute> attributes;
+        if (preeditCursorPos >= 0) {
+            bool valid = false;
+            int start = cursorStartPosition(&valid);
+            if (valid) {
+                attributes << QInputMethodEvent::Attribute(QInputMethodEvent::Selection,
+                                                           start + preeditCursorPos, 0, QVariant());
+            }
+        }
+
+        QInputMethodEvent event("", attributes);
         event.setCommitString(preedit);
         sendEvent(event);
         preedit.clear();
+        preeditCursorPos = -1;
     }
 
     // reset input method server, preedit requires synchronization.
@@ -626,6 +638,7 @@ void MInputContext::commitString(const QString &string, int replacementStart,
     }
 
     preedit.clear();
+    preeditCursorPos = -1;
 
     int start = -1;
     if (cursorPos >= 0) {
@@ -673,6 +686,7 @@ void MInputContext::updatePreeditInternally(const QString &string,
                                             int replacementStart, int replacementLength, int cursorPos)
 {
     preedit = string;
+    preeditCursorPos = cursorPos;
 
     QList<QInputMethodEvent::Attribute> attributes;
     Q_FOREACH (const MInputMethod::PreeditTextFormat &preeditFormat, preeditFormats) {
