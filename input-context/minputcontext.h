@@ -304,6 +304,7 @@ private:
 
     MPreeditStyleContainer *styleContainer;
     QString preedit;
+    int preeditCursorPos;
 
     QPointer<QObject> connectedObject;
     bool pasteAvailable;
