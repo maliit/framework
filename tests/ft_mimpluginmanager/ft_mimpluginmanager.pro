@@ -13,15 +13,11 @@ HEADERS += \
     ../stubs/fakegconf.h \
     ../stubs/fakeproperty.h \
     ../stubs/mkeyboardstatetracker_stub.h \
-    ../stubs/minputcontextconnection_stub.h \
 
 SOURCES += \
     ft_mimpluginmanager.cpp \
     ../stubs/fakegconf.cpp \
     ../stubs/fakeproperty.cpp \
-    ../stubs/minputcontextconnection_stub.cpp \
-    ../stubs/minputcontextglibdbusconnection_serverinit_stub.cpp \
-
 
 CONFIG += plugin qdbus link_pkgconfig
 PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
