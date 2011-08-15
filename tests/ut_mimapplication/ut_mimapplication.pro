@@ -8,12 +8,10 @@ HEADERS += \
     ut_mimapplication.h \
     ../stubs/mimsettings_stub.h \
     ../stubs/fakegconf.h \
-    ../stubs/minputcontextconnection_stub.h \
 
 SOURCES += \
     ut_mimapplication.cpp \
     ../stubs/fakegconf.cpp \
-    ../stubs/minputcontextconnection_stub.cpp \
 
 isEqual(code_coverage_option, off) {
     HEADERS += \
