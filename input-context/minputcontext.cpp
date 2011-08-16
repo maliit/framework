@@ -663,22 +663,11 @@ void MInputContext::commitString(const QString &string, int replacementStart,
     preedit.clear();
 
     int start = -1;
-    const QWidget *focused = focusWidget();
-    if (cursorPos >= 0 && focused) {
-        // obtain the cursor absolute position
-        QVariant queryResult = focused->inputMethodQuery(Qt::ImCursorPosition);
-        if (queryResult.isValid()) {
-            int absCursorPos = queryResult.toInt();
-
-            // Fetch anchor position too but don't require it.
-            queryResult = focused->inputMethodQuery(Qt::ImAnchorPosition);
-            int absAnchorPos = queryResult.isValid()
-                               ? queryResult.toInt() : absCursorPos;
-
-            // In case of selection, base cursorPos on start of it.
-            start = qMin<int>(absCursorPos, absAnchorPos)
-                    + cursorPos
-                    + replacementStart;
+    if (cursorPos >= 0) {
+        bool valid = false;
+        int currentStart = cursorStartPosition(&valid);
+        if (valid) {
+            start = cursorPos + currentStart + replacementStart;
         }
     }
 
@@ -1311,3 +1300,32 @@ QString MInputContext::selection(bool &valid) const
     }
     return selectionText;
 }
+
+int MInputContext::cursorStartPosition(bool *valid)
+{
+    int start = -1;
+    if (valid) {
+        *valid = false;
+    }
+
+    const QWidget *focused = focusWidget();
+    if (focused) {
+        // obtain the cursor absolute position
+        QVariant queryResult = focused->inputMethodQuery(Qt::ImCursorPosition);
+        if (queryResult.isValid()) {
+            int absCursorPos = queryResult.toInt();
+
+            // Fetch anchor position too but don't require it.
+            queryResult = focused->inputMethodQuery(Qt::ImAnchorPosition);
+            int absAnchorPos = queryResult.isValid()
+                               ? queryResult.toInt() : absCursorPos;
+
+            // In case of selection, base cursorPos on start of it.
+            start = qMin<int>(absCursorPos, absAnchorPos);
+            *valid = true;
+        }
+    }
+
+    return start;
+}
+
