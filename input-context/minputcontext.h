@@ -207,6 +207,10 @@ private:
     template<typename PreeditInjectionEvent>
     bool handlePreeditInjectionEvent(const PreeditInjectionEvent *event);
 
+    //! Gets cursor start position, relative to widget surrounding text.
+    //! Parameter valid set to false on failure.
+    int cursorStartPosition(bool *valid);
+
     bool active; // is connection active
     InputPanelState inputPanelState; // state for the input method server's software input panel
 
