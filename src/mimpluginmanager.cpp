@@ -393,7 +393,15 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
     switchedTo->setState(state);
     if (state.contains(MInputMethod::OnScreen) && !subViewId.isNull()) {
         switchedTo->setActiveSubView(subViewId);
-    } else if (replacement->lastSwitchDirection == direction) {
+    } else if (replacement->lastSwitchDirection == direction
+               || (replacement->lastSwitchDirection == MInputMethod::SwitchUndefined
+                   && direction == MInputMethod::SwitchBackward)) {
+        // we should enforce plugin to switch context if one of following conditions is true:
+        // 1) if we have plugin A and B, and subviews A.0, A.1, A.2 and B.0, and B.0 is active,
+        // and A.2 was active before B.0, then if we switch forward to plugin A, we want to start with subview A.0, not A.2
+        // 2) if we have plugin A and B, and subviews A.0, A.1, A.2 and B.0, and B.0 is active,
+        // and plugin A was not active since start of meego-im-uiserver,
+        // then if we switch back to plugin A, we want to start with subview A.2, not A.0
         switchedTo->switchContext(direction, false);
     }
     if (source) {
