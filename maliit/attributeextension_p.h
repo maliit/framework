@@ -20,6 +20,7 @@
 #define ATTRIBUTEEXTENSION_P_H
 
 #include "attributeextension.h"
+#include "attributeextensionregistry.h"
 
 namespace Maliit {
 
@@ -38,6 +39,9 @@ public:
 
     //! values
     AttributeExtension::ExtendedAttributeMap values;
+
+    //! weak reference to registry
+    QWeakPointer<AttributeExtensionRegistry> registry;
 };
 
 }

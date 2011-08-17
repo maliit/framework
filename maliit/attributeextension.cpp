@@ -26,7 +26,8 @@ namespace Maliit {
 AttributeExtensionPrivate::AttributeExtensionPrivate(const QString &fileName) :
     id(createId()),
     fileName(fileName),
-    values()
+    values(),
+    registry(AttributeExtensionRegistry::instance())
 {
 }
 
@@ -47,12 +48,20 @@ AttributeExtension::AttributeExtension(const QString &fileName)
     : QObject(),
       d_ptr(new AttributeExtensionPrivate(fileName))
 {
-    AttributeExtensionRegistry::instance()->addExtension(this);
+    Q_D(AttributeExtension);
+
+    if (AttributeExtensionRegistry *r = d->registry.data()) {
+        r->addExtension(this);
+    }
 }
 
 AttributeExtension::~AttributeExtension()
 {
-    AttributeExtensionRegistry::instance()->removeExtension(this);
+    Q_D(AttributeExtension);
+
+    if (AttributeExtensionRegistry *r = d->registry.data()) {
+        r->removeExtension(this);
+    }
 }
 
 AttributeExtension::ExtendedAttributeMap AttributeExtension::attributes() const
@@ -84,7 +93,9 @@ void AttributeExtension::setAttribute(const QString &key, const QVariant &value)
         d->values.value(key) != value)
     {
         d->values.insert(key, value);
-        AttributeExtensionRegistry::instance()->extensionChanged(this, key, value);
+        if (AttributeExtensionRegistry *r = d->registry.data()) {
+            r->extensionChanged(this, key, value);
+        }
     }
 }
 
