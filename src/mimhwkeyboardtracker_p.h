@@ -22,6 +22,10 @@
 #ifdef HAVE_CONTEXTSUBSCRIBER
 #include <QScopedPointer>
 #include <contextproperty.h>
+#else
+# ifdef Q_WS_MAEMO_5
+#  include "mimsettings.h"
+# endif
 #endif
 
 class MImHwKeyboardTracker;
@@ -34,6 +38,10 @@ public:
 
 #ifdef HAVE_CONTEXTSUBSCRIBER
     QScopedPointer<ContextProperty> keyboardOpenProperty;
+#else
+# ifdef Q_WS_MAEMO_5
+    MImSettings keyboardOpenConf;
+# endif
 #endif
 
     bool present;
