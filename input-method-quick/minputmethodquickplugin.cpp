@@ -30,7 +30,7 @@ public:
     MInputMethodQuickPluginPrivate()
     {
         languages << "en" << "fi_FI" << "en_US" << "en_GB" << "ru_RU";
-        supportedStates << MInputMethod::OnScreen;
+        supportedStates << MInputMethod::OnScreen << MInputMethod::Hardware;
     }
 };
 
