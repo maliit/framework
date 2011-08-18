@@ -113,8 +113,6 @@ public:
             m_controller->hide();
         }
 
-
-
         m_component.reset(new QDeclarativeComponent(m_engine, QUrl(qmlFileName)));
 
         if (not m_component->errors().isEmpty()) {
@@ -148,6 +146,15 @@ public:
     MInputMethodQuickLoader *const loader;
     QRect inputMethodArea;
     int appOrientation;
+    bool haveFocus;
+
+    //! current active state
+    MInputMethod::HandlerState activeState;
+
+    //! In practice show() and hide() correspond to application SIP (close)
+    //! requests.  We track the current shown/SIP requested state using these variables.
+    bool sipRequested;
+    bool sipIsInhibited;
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
 
@@ -158,6 +165,11 @@ public:
         , view(new MImGraphicsView(scene, mainWindow))
         , loader(new MInputMethodQuickLoader(scene, im))
         , appOrientation(0)
+        , haveFocus(false)
+	, activeState(MInputMethod::OnScreen)
+	, sipRequested(false)
+        , sipIsInhibited(false)
+
     {}
 
     ~MInputMethodQuickPrivate()
@@ -173,7 +185,6 @@ public:
         if (not host) {
             return;
         }
-
         host->setScreenRegion(region);
         host->setInputMethodArea(region);
     }
@@ -212,19 +223,36 @@ MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
 MInputMethodQuick::~MInputMethodQuick()
 {}
 
+void MInputMethodQuick::handleFocusChange(bool focusIn)
+{
+    Q_D(MInputMethodQuick);
+    d->haveFocus = focusIn;
+}
+
 void MInputMethodQuick::show()
 {
     Q_D(MInputMethodQuick);
+    d->sipRequested = true;
+    if(d->sipIsInhibited) {
+      return;
+    }
 
-    d->loader->showUI();
-    const QRegion r(inputMethodArea());
-    d->handleInputMethodAreaUpdate(inputMethodHost(), r);
+    handleAppOrientationChanged(d->appOrientation);
+    
+    if (d->activeState == MInputMethod::OnScreen) {
+      d->loader->showUI();
+      const QRegion r(inputMethodArea());
+      d->handleInputMethodAreaUpdate(inputMethodHost(), r);
+    }
 }
 
 void MInputMethodQuick::hide()
 {
     Q_D(MInputMethodQuick);
-
+    if (!d->sipRequested) {
+        return;
+    }
+    d->sipRequested = false;
     d->loader->hideUI();
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
@@ -240,14 +268,69 @@ void MInputMethodQuick::setToolbar(QSharedPointer<const MToolbarData> toolbar)
 void MInputMethodQuick::handleAppOrientationChanged(int angle)
 {
     Q_D(MInputMethodQuick);
+
     MAbstractInputMethod::handleAppOrientationChanged(angle);
 
     if (d->appOrientation != angle) {
+
         d->appOrientation = angle;
+        // When emitted, QML Plugin will realice a state
+        // change and update InputMethodArea. Don't propagate those changes except if
+        // VkB is currently showed
         emit appOrientationChanged(d->appOrientation);
-        d->handleInputMethodAreaUpdate(inputMethodHost(), inputMethodArea());
+        if (d->sipRequested && !d->sipIsInhibited) {
+            d->handleInputMethodAreaUpdate(inputMethodHost(), inputMethodArea());
+        }
     }
 }
+
+void MInputMethodQuick::setState(const QSet<MInputMethod::HandlerState> &state)
+{
+    Q_D(MInputMethodQuick);
+
+    if (state.isEmpty()) {
+        return;
+    }
+
+    if (state.contains(MInputMethod::OnScreen)) {
+        if (d->sipRequested && !d->sipIsInhibited) {
+            show(); // Force reparent of client widgets.
+        }
+    } else {
+        d->loader->hideUI();
+        // Allow client to make use of InputMethodArea
+        const QRegion r;
+        d->handleInputMethodAreaUpdate(inputMethodHost(), r);
+    }
+}
+
+void MInputMethodQuick::handleClientChange()
+{
+    Q_D(MInputMethodQuick);
+
+    if (d->sipRequested) {
+        d->loader->hideUI();
+    }
+}
+
+void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
+{
+    Q_D(MInputMethodQuick);
+
+    if (d->sipIsInhibited == inhibitShow) {
+        return;
+    }
+    d->sipIsInhibited = inhibitShow;
+
+    if (d->sipRequested) {
+        if (inhibitShow) {
+            d->loader->hideUI();
+        } else {
+            d->loader->showUI();
+        }
+    }
+}
+
 
 void MInputMethodQuick::propagateScreenSize()
 {
@@ -283,6 +366,7 @@ void MInputMethodQuick::setInputMethodArea(const QRect &area)
 
     if (d->inputMethodArea != area) {
         d->inputMethodArea = area;
+
         emit inputMethodAreaChanged(d->inputMethodArea);
     }
 }

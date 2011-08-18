@@ -72,8 +72,13 @@ public:
     //! \reimp
     virtual void show();
     virtual void hide();
-    virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
+    virtual void handleVisualizationPriorityChange(bool priority);
+    virtual void handleClientChange();
     virtual void handleAppOrientationChanged(int angle);
+    virtual void setState(const QSet<MInputMethod::HandlerState> &state);
+
+    virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
+    virtual void handleFocusChange(bool focusIn);
     //! \reimp_end
 
     //! Propagates screen size to QML components.
