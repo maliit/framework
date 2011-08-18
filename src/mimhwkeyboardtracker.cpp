@@ -27,6 +27,10 @@ namespace {
 MImHwKeyboardTrackerPrivate::MImHwKeyboardTrackerPrivate(MImHwKeyboardTracker *q_ptr) :
 #ifdef HAVE_CONTEXTSUBSCRIBER
     keyboardOpenProperty(),
+#else
+# ifdef Q_WS_MAEMO_5
+    keyboardOpenConf("/system/osso/af/slide-open"),
+# endif
 #endif
     present(false)
 {
@@ -43,7 +47,13 @@ MImHwKeyboardTrackerPrivate::MImHwKeyboardTrackerPrivate(MImHwKeyboardTracker *q
         keyboardOpenProperty.reset();
     }
 #else
+# ifdef Q_WS_MAEMO_5
+    present = true;
+    QObject::connect(&keyboardOpenConf, SIGNAL(valueChanged()),
+                     q_ptr, SIGNAL(stateChanged()));
+# else
     Q_UNUSED(q_ptr);
+# endif
 #endif
 }
 
@@ -79,6 +89,10 @@ bool MImHwKeyboardTracker::isOpen() const
 #ifdef HAVE_CONTEXTSUBSCRIBER
     return d->keyboardOpenProperty->value().toBool();
 #else
+# ifdef Q_WS_MAEMO_5
+    return d->keyboardOpenConf.value().toBool();
+# else
     return false;
+# endif
 #endif
 }
