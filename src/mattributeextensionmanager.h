@@ -25,7 +25,6 @@
 #include "mkeyoverridedata.h"
 #include "mtoolbardata.h"
 #include "mattributeextension.h"
-#include "mattributeextensionid.h"
 #include "minputmethodnamespace.h"
 #include "mimsettings.h"
 
@@ -117,7 +116,7 @@ private slots:
 
 signals:
     //! This signal is emited when a new key override is created.
-    void keyOverrideCreated(const MAttributeExtensionId &id);
+    void keyOverrideCreated();
 
 private:
     /*!

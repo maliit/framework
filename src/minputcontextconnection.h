@@ -227,7 +227,7 @@ signals:
     void toolbarIdChanged(const MAttributeExtensionId &id);
 
     //! This signal is emited when a new key override is created.
-    void keyOverrideCreated(const MAttributeExtensionId &id);
+    void keyOverrideCreated();
     //! \internal_end.
 
 protected:

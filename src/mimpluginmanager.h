@@ -121,7 +121,7 @@ private slots:
     void setToolbar(const MAttributeExtensionId &id);
 
     //! Update the key overrides for active plugin.
-    void updateKeyOverrides(const MAttributeExtensionId &id);
+    void updateKeyOverrides();
 
 protected:
     MIMPluginManagerPrivate *const d_ptr;

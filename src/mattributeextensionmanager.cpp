@@ -16,6 +16,8 @@
 
 
 #include "mattributeextensionmanager.h"
+#include "mattributeextension.h"
+#include "mattributeextensionid.h"
 #include "mtoolbardata.h"
 #include "mtoolbarlayout.h"
 #include "mkeyoverridedata.h"
@@ -312,7 +314,7 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
 
         // emit signal to notify the new key override is created.
         if (newKeyOverrideCreated) {
-            emit keyOverrideCreated(id);
+            emit keyOverrideCreated();
         }
     } else if (target == ToolbarExtensionString) {
         QSharedPointer<MToolbarData> toolbar = extension->toolbarData();

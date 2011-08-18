@@ -465,8 +465,8 @@ MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
 
     dbus_server_setup_with_g_main(server, NULL);
     dbus_server_set_new_connection_function(server, handleNewConnection, this, NULL);
-    connect(&MAttributeExtensionManager::instance(), SIGNAL(keyOverrideCreated(MAttributeExtensionId)),
-            this,                                    SIGNAL(keyOverrideCreated(MAttributeExtensionId)));
+    connect(&MAttributeExtensionManager::instance(), SIGNAL(keyOverrideCreated()),
+            this,                                    SIGNAL(keyOverrideCreated()));
 }
 
 
