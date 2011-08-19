@@ -21,6 +21,7 @@ SUBDIRS += \
           ut_maliit_attributeextensionregistry \
           ut_maliit_inputmethod \
           ut_mimsettings \
+          bbt_connection \
 
 contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \

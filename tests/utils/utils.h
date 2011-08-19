@@ -33,7 +33,7 @@ namespace MaliitTestUtils {
     QString getTestPluginPath();
     QString getTestDataPath();
     void waitForSignal(const QObject* object, const char* signal, int timeout);
-
+    void waitAndProcessEvents(int waitTime);
 
     class RemoteWindow : public QWidget
     {
