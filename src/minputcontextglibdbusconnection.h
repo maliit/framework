@@ -176,6 +176,9 @@ private:
      */
     WId winId(bool &valid);
 
+    //! Invalidates current info/guess on remote widget state.
+    void invalidateWidgetState();
+
     MDBusGlibICConnection *activeContext;
     QMap<QString, QVariant> widgetState;
     bool globalCorrectionEnabled;

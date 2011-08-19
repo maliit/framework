@@ -554,6 +554,8 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
             return;
         }
 
+        invalidateWidgetState();
+
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updatePreedit",
                                    G_TYPE_STRING, string.toUtf8().data(),
                                    preeditFormatsType, preeditFormatsData,
@@ -570,23 +572,10 @@ void MInputContextGlibDBusConnection::sendCommitString(const QString &string, in
                                                        int replaceLength, int cursorPos)
 {
     if (activeContext) {
-        const int cursorPosition(widgetState[CursorPositionAttribute].toInt());
-        bool validAnchor(false);
-
         preedit.clear();
 
-        if (replaceLength == 0  // we don't support replacement
-            // we don't support selections
-            && anchorPosition(validAnchor) == cursorPosition
-            && validAnchor) {
-            const int insertPosition(cursorPosition + replaceStart);
-            if (insertPosition >= 0) {
-                widgetState[SurroundingTextAttribute]
-                    = widgetState[SurroundingTextAttribute].toString().insert(insertPosition, string);
-                widgetState[CursorPositionAttribute] = cursorPos < 0 ? (insertPosition + string.length()) : cursorPos;
-                widgetState[AnchorPositionAttribute] = widgetState[CursorPositionAttribute];
-            }
-        }
+        invalidateWidgetState();
+
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "commitString",
                                    G_TYPE_STRING, string.toUtf8().data(),
                                    G_TYPE_INT, replaceStart,
@@ -601,28 +590,11 @@ void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent,
                                                    MInputMethod::EventRequestType requestType)
 {
     if (activeContext) {
-        if (requestType != MInputMethod::EventRequestSignalOnly
-            && preedit.isEmpty()
-            && keyEvent.key() == Qt::Key_Backspace
-            && keyEvent.type() == QEvent::KeyPress) {
-            QString surrString(widgetState[SurroundingTextAttribute].toString());
-            const int cursorPosition(widgetState[CursorPositionAttribute].toInt());
-            bool validAnchor(false);
-
-            if (!surrString.isEmpty()
-                && cursorPosition > 0
-                // we don't support selections
-                && anchorPosition(validAnchor) == cursorPosition
-                && validAnchor) {
-                widgetState[SurroundingTextAttribute] = surrString.remove(cursorPosition - 1, 1);
-                widgetState[CursorPositionAttribute] = cursorPosition - 1;
-                widgetState[AnchorPositionAttribute] = cursorPosition - 1;
-            }
-        }
-
         int type = static_cast<int>(keyEvent.type());
         int key = static_cast<int>(keyEvent.key());
         int modifiers = static_cast<int>(keyEvent.modifiers());
+
+        invalidateWidgetState();
 
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "keyEvent",
                                    G_TYPE_INT, type,
@@ -823,6 +795,8 @@ void MInputContextGlibDBusConnection::copy()
 void MInputContextGlibDBusConnection::paste()
 {
     if (activeContext) {
+        invalidateWidgetState();
+
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "paste",
                                    G_TYPE_INVALID);
     }
@@ -832,6 +806,8 @@ void MInputContextGlibDBusConnection::paste()
 void MInputContextGlibDBusConnection::setSelection(int start, int length)
 {
     if (activeContext) {
+        invalidateWidgetState();
+
         dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setSelection",
                                    G_TYPE_INT, start,
                                    G_TYPE_INT, length,
@@ -1147,4 +1123,10 @@ WId MInputContextGlibDBusConnection::winId(bool &valid)
         valid = winIdVariant.canConvert<WId>();
     }
     return winIdVariant.value<WId>();
+}
+
+void MInputContextGlibDBusConnection::invalidateWidgetState()
+{
+    widgetState[HasSelectionAttribute].clear();
+    widgetState[SurroundingTextAttribute].clear();
 }
