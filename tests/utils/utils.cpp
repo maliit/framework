@@ -19,6 +19,7 @@
 #include <QtDebug>
 #include <QtCore>
 #include <QtGui>
+#include <QtTest>
 
 namespace {
     const QString TestingInSandboxEnvVariable("TESTING_IN_SANDBOX");
@@ -128,6 +129,14 @@ void waitForSignal(const QObject* object, const char* signal, int timeout)
     eventLoop.exec();
 }
 
+void waitAndProcessEvents(int waitTime)
+{
+    QTest::qWait(waitTime);
+    while (QApplication::instance()->hasPendingEvents()) {
+        QApplication::instance()->processEvents();
+    }
+}
+
 RemoteWindow::RemoteWindow(QWidget *p, Qt::WindowFlags f)
     : QWidget(p, f)
 {
@@ -147,3 +156,4 @@ void RemoteWindow::paintEvent(QPaintEvent *)
 }
 
 }
+
