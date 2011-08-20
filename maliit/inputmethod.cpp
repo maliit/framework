@@ -112,6 +112,21 @@ void InputMethod::emitKeyRelease(const QKeyEvent &event)
     emit keyRelease(event);
 }
 
+void InputMethod::setLanguage(const QString &language)
+{
+    Q_D(InputMethod);
+    if (d->language != language) {
+        d->language = language;
+        emit languageChanged(language);
+    }
+}
+
+const QString &InputMethod::language() const
+{
+    Q_D(const InputMethod);
+    return d->language;
+}
+
 void requestInputMethodPanel()
 {
     QInputContext *inputContext = qApp->inputContext();

@@ -38,6 +38,9 @@ public:
     //! Indicate during rotation changing.
     bool rotationInProgress;
 
+    //! Current language of active input method
+    QString language;
+
 private:
     Q_DISABLE_COPY(InputMethodPrivate)
 };
