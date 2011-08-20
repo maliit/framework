@@ -35,3 +35,4 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.CONFIG = recursive
 
+OTHER_FILES += NEWS README

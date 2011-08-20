@@ -37,6 +37,8 @@ SOURCES += minputcontext.cpp \
     mdbusglibinputcontextadaptor.cpp \
     glibdbusimserverproxy.cpp \
 
+OTHER_FILES += minputmethodcontext1interface.xml
+
 QT = core gui
 CONFIG += plugin link_pkgconfig
 
