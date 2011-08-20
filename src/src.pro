@@ -162,3 +162,5 @@ mdbusglibicconnectionserviceglue.h.commands = \
     dbus-binding-tool --prefix=m_dbus_glib_ic_connection --mode=glib-server \
         --output=mdbusglibicconnectionserviceglue.h minputmethodserver1interface.xml
 mdbusglibicconnectionserviceglue.h.depends = minputmethodserver1interface.xml
+
+OTHER_FILES += minputmethodserver1interface.xml
