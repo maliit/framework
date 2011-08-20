@@ -169,6 +169,14 @@ static gboolean m_dbus_glib_input_context_adaptor_selection(
     return TRUE;
 }
 
+static gboolean m_dbus_glib_input_context_adaptor_set_language(
+    MDBusGlibInputContextAdaptor *obj, const char *string,
+    GError **/*error*/)
+{
+    obj->inputContext->setLanguage(QString::fromUtf8(string));
+    return TRUE;
+}
+
 #include "mdbusglibicconnectionserviceglue.h"
 
 

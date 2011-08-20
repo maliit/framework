@@ -754,6 +754,15 @@ QString MInputContextGlibDBusConnection::selection(bool &valid)
     return selectionText;
 }
 
+void MInputContextGlibDBusConnection::setLanguage(const QString &language)
+{
+    if (activeContext) {
+        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setLanguage",
+                                   G_TYPE_STRING, language.toUtf8().data(),
+                                   G_TYPE_INVALID);
+    }
+}
+
 void
 MInputContextGlibDBusConnection::addTarget(MAbstractInputMethod *target)
 {
