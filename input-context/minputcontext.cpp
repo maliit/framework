@@ -304,6 +304,7 @@ void MInputContext::setLanguage(const QString &language)
 {
     if (m_language != language) {
         m_language = language;
+        InputMethod::instance()->setLanguage(language);
     }
 }
 

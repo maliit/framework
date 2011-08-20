@@ -50,7 +50,11 @@ public:
     //! \internal
     void emitKeyPress(const QKeyEvent &event);
     void emitKeyRelease(const QKeyEvent &event);
+    void setLanguage(const QString &language);
     //! \internal_end
+
+    //! \brief Current language of active input method
+    const QString &language() const;
 
 public Q_SLOTS:
     /*!
@@ -103,6 +107,12 @@ Q_SIGNALS:
 
     //! Can be emitted by input method to notify about raw key release event it receives.
     void keyRelease(const QKeyEvent &);
+
+    /*!
+     * \brief Emitted on input method language change.
+     * \sa language()
+     */
+    void languageChanged(const QString &language);
 
 private:
     InputMethod();
