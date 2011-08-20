@@ -71,3 +71,6 @@ MAbstractInputMethodHost::surroundingSubViewDescriptions(MInputMethod::HandlerSt
     return QList<MImSubViewDescription>();
 }
 
+void MAbstractInputMethodHost::setLanguage(const QString &/*language*/)
+{
+}

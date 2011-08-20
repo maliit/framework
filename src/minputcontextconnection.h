@@ -203,6 +203,12 @@ public:
      */
     virtual QString selection(bool &valid) = 0;
 
+    /*!
+     * \brief Sets current language of active input method.
+     * \param language ICU format locale ID string
+     */
+    virtual void setLanguage(const QString &language) = 0;
+
 public slots:
 
     //! Update \a region covered by virtual keyboard

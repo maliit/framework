@@ -177,6 +177,13 @@ public:
      */
     QString selection(bool &valid) const;
 
+    /*!
+     * \brief Updates current language of active input method in input context.
+     * \param language ICU format locale ID string
+     * \sa QInputContext::language()
+     */
+    void setLanguage(const QString &language);
+
     static bool debug;
 
 Q_SIGNALS:
@@ -311,6 +318,8 @@ private:
     static int connectionCount; //!< Counter to allow multiple IC objects being registered via D-Bus
 
     unsigned long currentKeyEventTime;
+
+    QString m_language;
 };
 
 #endif

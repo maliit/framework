@@ -81,6 +81,7 @@ public:
     virtual void setSelection(int start, int length);
     virtual int anchorPosition(bool &valid);
     virtual QString selection(bool &valid);
+    virtual void setLanguage(const QString &language);
     virtual void addTarget(MAbstractInputMethod *target);
     virtual int preeditClickPos(bool &valid) const;
     //! \reimp_end

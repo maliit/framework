@@ -12,6 +12,9 @@ CHANGES SINCE 0.80.4
     required for new panning gesture to change between plugins/subviews.
 * New MAbstractInputMethodHost::preeditClickPos() API:
   - Forwards the preedit-local coordinate to input method plugins.
+* New MAbstractInputMethodHost::setLanguage(QString) API
+  - New method setLanguage added to D-Bus interface. Through this method plugins
+    can give applications a hint of the language user is going to write.
 
 BUG FIXES
 * Fixes: NB#277834 - libmaliit seg. fault in libmeegotouch unit tests:

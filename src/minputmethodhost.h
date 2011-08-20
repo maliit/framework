@@ -87,11 +87,11 @@ public:
     virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const;
     virtual int preeditClickPos(bool &valid) const;
     virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
+    virtual void setLanguage(const QString &language);
 
     //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);
     // \reimp_end
-
 
 private:
     Q_DISABLE_COPY(MInputMethodHost)

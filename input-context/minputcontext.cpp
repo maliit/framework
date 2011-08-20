@@ -297,7 +297,14 @@ bool MInputContext::isComposing() const
 
 QString MInputContext::language()
 {
-    return "EN"; // FIXME
+    return m_language;
+}
+
+void MInputContext::setLanguage(const QString &language)
+{
+    if (m_language != language) {
+        m_language = language;
+    }
 }
 
 QString MInputContext::dbusObjectPath() const

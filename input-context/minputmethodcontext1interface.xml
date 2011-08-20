@@ -61,5 +61,8 @@
       <arg type="b" direction="out"/>
       <arg type="s" direction="out"/>
     </method>
+    <method name="setLanguage">
+      <arg type="s"/>
+    </method>
   </interface>
 </node>

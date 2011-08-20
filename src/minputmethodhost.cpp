@@ -54,7 +54,6 @@ void MInputMethodHost::setInputMethod(MAbstractInputMethod *inputMethod)
     this->inputMethod = inputMethod;
 }
 
-
 int MInputMethodHost::contentType(bool &valid)
 {
     return connection->contentType(valid);
@@ -234,6 +233,13 @@ QList<MImSubViewDescription>
 MInputMethodHost::surroundingSubViewDescriptions(MInputMethod::HandlerState state) const
 {
     return pluginManager->surroundingSubViewDescriptions(state);
+}
+
+void MInputMethodHost::setLanguage(const QString &language)
+{
+    if (enabled) {
+        connection->setLanguage(language);
+    }
 }
 
 void MInputMethodHost::setOrientationAngleLocked(bool)
