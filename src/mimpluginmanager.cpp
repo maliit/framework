@@ -746,26 +746,28 @@ MIMPluginManagerPrivate::surroundingSubViewDescriptions(MInputMethod::HandlerSta
     }
 
     QList<MImSubViewDescription> enabledSubViews;
-    const Plugins::const_iterator prevPlugin = findEnabledPlugin(iterator,
-                                                                 MInputMethod::SwitchBackward,
-                                                                 state);
 
-    if (prevPlugin != plugins.constEnd()) {
-        QMap<QString, QString> prevSubViews = availableSubViews(prevPlugin->pluginId);
-        filterEnabledSubViews(prevSubViews, prevPlugin->pluginId, state);
-        append(enabledSubViews, prevSubViews, prevPlugin->pluginId);
+    Plugins::const_iterator otherPlugin;
+    otherPlugin = findEnabledPlugin(iterator,
+                                    MInputMethod::SwitchBackward,
+                                    state);
+
+    if (otherPlugin != plugins.constEnd()) {
+        QMap<QString, QString> prevSubViews = availableSubViews(otherPlugin->pluginId);
+        filterEnabledSubViews(prevSubViews, otherPlugin->pluginId, state);
+        append(enabledSubViews, prevSubViews, otherPlugin->pluginId);
     }
 
     append(enabledSubViews, subViews, pluginId);
 
-    const Plugins::const_iterator nextPlugin = findEnabledPlugin(iterator,
-                                                                 MInputMethod::SwitchForward,
-                                                                 state);
+    otherPlugin = findEnabledPlugin(iterator,
+                                    MInputMethod::SwitchForward,
+                                    state);
 
-    if (prevPlugin != plugins.constEnd()) {
-        QMap<QString, QString> prevSubViews = availableSubViews(prevPlugin->pluginId);
-        filterEnabledSubViews(prevSubViews, prevPlugin->pluginId, state);
-        append(enabledSubViews, prevSubViews, prevPlugin->pluginId);
+    if (otherPlugin != plugins.constEnd()) {
+        QMap<QString, QString> prevSubViews = availableSubViews(otherPlugin->pluginId);
+        filterEnabledSubViews(prevSubViews, otherPlugin->pluginId, state);
+        append(enabledSubViews, prevSubViews, otherPlugin->pluginId);
     }
 
     if (enabledSubViews.size() == 1) {
