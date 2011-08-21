@@ -441,19 +441,9 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
 bool MIMPluginManagerPrivate::switchPlugin(MInputMethod::SwitchDirection direction,
                                            MAbstractInputMethod *initiator)
 {
-    if (direction == MInputMethod::SwitchUndefined) {
+    if (direction != MInputMethod::SwitchForward
+        && direction != MInputMethod::SwitchBackward) {
         return true; //do nothing for this direction
-    }
-
-    if (direction == MInputMethod::SwitchCanceled) {
-        mApp->disableBackgroundMask(true);
-        return true;
-    }
-
-    if (direction == MInputMethod::SwitchPreparationForward ||
-        direction == MInputMethod::SwitchPreparationBackward) {
-        mApp->enableBackgroundMask();
-        return true;
     }
 
     //Find plugin initiated this switch
@@ -468,8 +458,6 @@ bool MIMPluginManagerPrivate::switchPlugin(MInputMethod::SwitchDirection directi
     if (iterator == plugins.end()) {
         return false;
     }
-
-    mApp->disableBackgroundMask(false);
 
     Plugins::iterator source = iterator;
 
@@ -516,8 +504,6 @@ bool MIMPluginManagerPrivate::switchPlugin(const QString &pluginId,
             break;
         }
     }
-
-    mApp->disableBackgroundMask(false);
 
     if (iterator == plugins.end()) {
         qWarning() << __PRETTY_FUNCTION__ << pluginId << "could not be found";

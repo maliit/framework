@@ -31,9 +31,6 @@
 
 namespace
 {
-    const QEasingCurve::Type MaskEasingCurve = QEasingCurve::Linear;
-    const int MaskFadeOutDuration = 500;
-
     bool configureForCompositing(QWidget *w)
     {
         if (not w) {
@@ -66,10 +63,7 @@ MIMApplication::MIMApplication(int &argc, char **argv)
       mSelfComposited(false),
       mManualRedirection(false),
       mBypassWMHint(false),
-      mBackgroundSuppressed(false),
-      mMasked(false),
-      mMaskOpacity(1.0f),
-      mMaskAnimation(this, "maskOpacity")
+      mBackgroundSuppressed(false)
 
 {
     parseArguments(argc, argv);
@@ -85,11 +79,6 @@ MIMApplication::MIMApplication(int &argc, char **argv)
     connect(this, SIGNAL(aboutToQuit()),
             this, SLOT(finalize()),
             Qt::UniqueConnection);
-
-    mMaskAnimation.setEasingCurve(MaskEasingCurve);
-    mMaskAnimation.setDuration(MaskFadeOutDuration);
-    mMaskAnimation.setStartValue(qreal(1.0f));
-    mMaskAnimation.setEndValue(qreal(0.0f));
 }
 
 void MIMApplication::finalize()
@@ -249,26 +238,10 @@ MImRemoteWindow *MIMApplication::remoteWindow() const
 const QPixmap &MIMApplication::remoteWindowPixmap()
 {
     if (not mApp || not mApp->mRemoteWindow.get()
-            || mApp->mBackgroundSuppressed
-            || (not mApp->mMasked && not mApp->mSelfComposited)) {
+            || mApp->mBackgroundSuppressed 
+            || not mApp->mSelfComposited) {
         static const QPixmap empty;
         return empty;
-    }
-
-    if (mApp->mMasked) {
-        static QPixmap composited;
-        if (mApp->mSelfComposited) {
-            composited = mApp->mRemoteWindow->windowPixmap();
-        } else {
-            composited = QPixmap(mApp->mPassThruWindow->size());
-            composited.fill(Qt::transparent);
-        }
-        QPainter p(&composited);
-        p.setOpacity(mApp->mMaskOpacity);
-        for (int i = 0; i < mApp->mPassThruWindow.get()->region().rects().size(); ++i) {
-            p.fillRect(mApp->mPassThruWindow.get()->region().rects().at(i), QBrush(Qt::black));
-        }
-        return composited;
     }
 
     return mApp->mRemoteWindow->windowPixmap();
@@ -306,56 +279,5 @@ void MIMApplication::visitWidgetHierarchy(WidgetVisitor visitor,
 void MIMApplication::configureWidgetsForCompositing(QWidget *widget)
 {
     MIMApplication::visitWidgetHierarchy(configureForCompositing, widget);
-}
-
-void MIMApplication::enableBackgroundMask()
-{
-    if (mMasked || mMaskAnimation.state() == QAbstractAnimation::Running) {
-        return;
-    }
-    mMasked = true;
-    setMaskOpacity(mMaskAnimation.startValue().toReal());
-    mMaskAnimation.stop();
-
-    if (mRemoteWindow.get() && mPassThruWindow.get()) {
-        mRemoteWindow->update(mPassThruWindow->region());
-    }
-}
-
-void MIMApplication::disableBackgroundMask(bool instantly)
-{
-    if (not mMasked) {
-        return;
-    }
-
-    if (instantly) {
-        mMasked = false;
-        setMaskOpacity(mMaskAnimation.endValue().toReal());
-        mMaskAnimation.stop();
-    } else if (mMaskAnimation.state() != QAbstractAnimation::Running){
-        mMaskAnimation.start();
-    }
-
-    if (mRemoteWindow.get() && mPassThruWindow.get()) {
-        mRemoteWindow->update(mPassThruWindow->region());
-    }
-}
-
-qreal MIMApplication::maskOpacity() const
-{
-    return mMaskOpacity;
-}
-
-void MIMApplication::setMaskOpacity(qreal opacity)
-{
-    mMaskOpacity = opacity;
-
-    if (!mMaskOpacity) {
-        mMasked = false;
-    }
-
-    if (mRemoteWindow.get() && mPassThruWindow.get()) {
-        mRemoteWindow->update(mPassThruWindow->region());
-    }
 }
 
