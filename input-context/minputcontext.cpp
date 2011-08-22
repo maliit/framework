@@ -733,6 +733,17 @@ void MInputContext::updatePreeditInternally(const QString &string,
             switch (preeditFormat.preeditFace) {
             case MInputMethod::PreeditNoCandidates:
                 styleContainer->setModeNoCandidates();
+                format.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+                format.setUnderlineColor(QColor(255, 0, 0));
+                break;
+
+            case MInputMethod::PreeditUnconvertible:
+                format.setForeground(QBrush(QColor(128, 128, 128)));
+                break;
+
+            case MInputMethod::PreeditActive:
+                format.setForeground(QBrush(QColor(153, 50, 204)));
+                format.setFontWeight(QFont::Bold);
                 break;
 
             case MInputMethod::PreeditKeyPress:
