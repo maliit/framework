@@ -237,7 +237,7 @@ void Ft_MIMPluginManager::testPluginDescriptions()
 
     enabledPlugins << pluginId << "dummyimsv2";
     enabledPluginsSettings.set(enabledPlugins);
-    QCOMPARE(spy.count(), 1);
+    QCOMPARE(spy.count(), 2);
 
     description = findPluginDescriptions(subject->pluginDescriptions(MInputMethod::OnScreen), pluginName);
     QVERIFY(description);
@@ -249,7 +249,7 @@ void Ft_MIMPluginManager::testPluginDescriptions()
 
     enabledPlugins << pluginId3 << "dummyim3sv2";
     enabledPluginsSettings.set(enabledPlugins);
-    QCOMPARE(spy.count(), 2);
+    QCOMPARE(spy.count(), 3);
 
     description = findPluginDescriptions(subject->pluginDescriptions(MInputMethod::OnScreen), pluginName);
     QVERIFY(description);

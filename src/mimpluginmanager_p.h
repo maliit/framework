@@ -146,6 +146,8 @@ public:
     QMap<QString, QString> availableSubViews(const QString &plugin,
                                              MInputMethod::HandlerState state
                                               = MInputMethod::OnScreen) const;
+    QList<MImOnScreenPlugins::SubView> availablePluginsAndSubViews(MInputMethod::HandlerState state
+                                                                    = MInputMethod::OnScreen) const;
     QString activeSubView(MInputMethod::HandlerState state) const;
     void setActivePlugin(const QString &pluginName, MInputMethod::HandlerState state);
 

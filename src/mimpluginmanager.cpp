@@ -131,6 +131,8 @@ void MIMPluginManagerPrivate::loadPlugins()
         } // end foreach file in path
     } // end foreach path in paths
 
+    onScreenPlugins.updateAvailableSubViews(availablePluginsAndSubViews());
+
     emit q->pluginsChanged();
 }
 
@@ -1040,6 +1042,25 @@ MIMPluginManagerPrivate::availableSubViews(const QString &plugin,
         }
     }
     return subViews;
+}
+
+QList<MImOnScreenPlugins::SubView>
+MIMPluginManagerPrivate::availablePluginsAndSubViews(MInputMethod::HandlerState state) const
+{
+    QList<MImOnScreenPlugins::SubView> pluginsAndSubViews;
+    Plugins::const_iterator iterator(plugins.constBegin());
+
+    for (; iterator != plugins.constEnd(); ++iterator) {
+        if (iterator->inputMethod) {
+            const QString plugin = plugins.value(iterator.key()).pluginId;
+            foreach (const MAbstractInputMethod::MInputMethodSubView &subView,
+                     iterator->inputMethod->subViews(state)) {
+                pluginsAndSubViews.append(MImOnScreenPlugins::SubView(plugin, subView.subViewId));
+            }
+        }
+    }
+
+    return pluginsAndSubViews;
 }
 
 QString MIMPluginManagerPrivate::activeSubView(MInputMethod::HandlerState state) const
