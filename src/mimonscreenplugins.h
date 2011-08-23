@@ -56,6 +56,10 @@ public:
     bool isSubViewEnabled(const SubView &subview) const;
     void setEnabledSubViews(const QList<SubView> &subViews);
 
+    void updateAvailableSubViews(const QList<SubView> &availableSubViews);
+    bool isSubViewAvailable(const SubView &subview) const;
+    bool isSubViewUnavailable(const SubView &subview) const;
+
     const SubView activeSubView();
     void setActiveSubView(const SubView &subView);
 
@@ -69,6 +73,7 @@ private Q_SLOTS:
     void updateActiveSubview();
 
 private:
+    QList<SubView> mAvailableSubViews;
     QList<SubView> mEnabledSubViews;
     SubView mActiveSubView;
 

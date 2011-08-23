@@ -84,6 +84,7 @@ namespace
 
 MImOnScreenPlugins::MImOnScreenPlugins():
     QObject(),
+    mAvailableSubViews(),
     mEnabledSubViews(),
     mActiveSubView(),
     mEnabledSubViewsSettings(EnabledSubViews),
@@ -99,8 +100,14 @@ MImOnScreenPlugins::MImOnScreenPlugins():
 
 bool MImOnScreenPlugins::isEnabled(const QString &plugin) const
 {
-    return std::find_if(mEnabledSubViews.begin(), mEnabledSubViews.end(),
-                        std::tr1::bind(equalPlugin, _1, plugin)) != mEnabledSubViews.end();
+    QList<MImOnScreenPlugins::SubView> mEnabledAndAvailableSubViews;
+
+    std::remove_copy_if(mEnabledSubViews.begin(), mEnabledSubViews.end(),
+                        std::back_inserter(mEnabledAndAvailableSubViews),
+                        std::tr1::bind(&MImOnScreenPlugins::isSubViewUnavailable, this, _1));
+
+    return std::find_if(mEnabledAndAvailableSubViews.begin(), mEnabledAndAvailableSubViews.end(),
+                        std::tr1::bind(equalPlugin, _1, plugin)) != mEnabledAndAvailableSubViews.end();
 }
 
 bool MImOnScreenPlugins::isSubViewEnabled(const SubView &subView) const
@@ -121,10 +128,25 @@ void MImOnScreenPlugins::setEnabledSubViews(const QList<MImOnScreenPlugins::SubV
     mEnabledSubViewsSettings.set(QVariant(toSettings(subViews)));
 }
 
+void MImOnScreenPlugins::updateAvailableSubViews(const QList<SubView> &availableSubViews)
+{
+    mAvailableSubViews = availableSubViews;
+}
+
+bool MImOnScreenPlugins::isSubViewAvailable(const SubView &subview) const
+{
+    return mAvailableSubViews.contains(subview);
+}
+
+bool MImOnScreenPlugins::isSubViewUnavailable(const SubView &subview) const
+{
+    return !mAvailableSubViews.contains(subview);
+}
+
 void MImOnScreenPlugins::updateEnabledSubviews()
 {
     const QStringList &list = mEnabledSubViewsSettings.value().toStringList();
-    const QSet<QString> oldPlugins = enabledPlugins;
+    const QList<SubView> oldEnabledSubviews = mEnabledSubViews;
     mEnabledSubViews = fromSettings(list);
     enabledPlugins = findEnabledPlugins(mEnabledSubViews);
 
@@ -132,7 +154,10 @@ void MImOnScreenPlugins::updateEnabledSubviews()
         setActiveSubView(mEnabledSubViews.first());
     }
 
-    if (enabledPlugins != oldPlugins) {
+    // Changed subviews cause emission of enabledPluginsChanged() signal
+    // because some subview from GConf might not really exists and therefore
+    // changed subview might have implications to enabled plugins.
+    if (mEnabledSubViews != oldEnabledSubviews) {
         emit enabledPluginsChanged();
     }
 }
