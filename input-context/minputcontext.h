@@ -195,7 +195,7 @@ Q_SIGNALS:
     void inputMethodAreaChanged(const QRect &region);
     //! \internal_end
 
-private slots:
+private Q_SLOTS:
     //! hides input method
     void hideInputMethod();
 

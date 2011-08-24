@@ -38,7 +38,7 @@ void Ut_PassthroughServer::testEmergencyHide()
 {
     makeVisible();
 
-    emit app->remoteWindowChanged(0);
+    Q_EMIT app->remoteWindowChanged(0);
 
     QVERIFY(!subject->testAttribute(Qt::WA_Mapped) && !subject->isVisible());
 }

@@ -86,7 +86,7 @@ public:
     //! Return true if the key is enabled; otherwise return false.
     bool enabled() const;
 
-public slots:
+public Q_SLOTS:
     //! Sets text for the key
     void setLabel(const QString &label);
 
@@ -105,7 +105,7 @@ public slots:
      */
     void setEnabled(bool enabled);
 
-signals:
+Q_SIGNALS:
     /*!
      * \brief Emitted when some attributes of the key are changed
      * \param keyId, the key id.

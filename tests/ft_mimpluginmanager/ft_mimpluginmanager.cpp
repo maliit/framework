@@ -37,7 +37,7 @@ namespace
 
     const MImPluginDescription* findPluginDescriptions(const QList<MImPluginDescription> &list, const QString &pluginName)
     {
-        foreach (const MImPluginDescription &desc, list) {
+        Q_FOREACH (const MImPluginDescription &desc, list) {
             if (desc.name() == pluginName) {
                 return &desc;
             }

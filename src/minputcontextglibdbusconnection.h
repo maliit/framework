@@ -86,7 +86,7 @@ public:
     virtual int preeditClickPos(bool &valid) const;
     //! \reimp_end
 
-public slots:
+public Q_SLOTS:
     // communication w/ minputcontext
 
     //! \reimp
@@ -163,7 +163,7 @@ public:
     void setExtendedAttribute(MDBusGlibICConnection *connection, int id, const QString &target,
                               const QString &targetItem, const QString &attribute, const QVariant &value);
 
-signals:
+Q_SIGNALS:
     void appOrientationAboutToChange(int angle);
     void appOrientationChanged(int angle);
 

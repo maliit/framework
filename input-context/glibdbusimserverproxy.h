@@ -86,11 +86,11 @@ public:
     void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                               const QString &attribute, const QVariant &value);
 
-signals:
+Q_SIGNALS:
     void dbusDisconnected();
     void dbusConnected();
 
-private slots:
+private Q_SLOTS:
     void connectToDBus();
 
 private:

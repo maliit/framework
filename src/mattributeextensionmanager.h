@@ -110,11 +110,11 @@ public:
                               const QString &targetItem,
                               const QString &attribute,
                               const QVariant &value);
-private slots:
+private Q_SLOTS:
     //! \brief Handle preferred_domain GConf setting updates.
     void handlePreferredDomainUpdate();
 
-signals:
+Q_SIGNALS:
     //! This signal is emited when a new key override is created.
     void keyOverrideCreated();
 

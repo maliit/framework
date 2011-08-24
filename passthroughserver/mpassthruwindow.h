@@ -45,7 +45,7 @@ public:
     //! Return region occupied by current plugin
     const QRegion &region();
 
-public slots:
+public Q_SLOTS:
     //! Set window ID for given region
     void inputPassthrough(const QRegion &region = QRegion());
 

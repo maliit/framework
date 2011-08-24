@@ -44,7 +44,7 @@ namespace
     {
         QStringList result;
 
-        foreach(const MImOnScreenPlugins::SubView &subView, subViews) {
+        Q_FOREACH(const MImOnScreenPlugins::SubView &subView, subViews) {
             result.push_back(subView.plugin);
             result.push_back(subView.id);
         }
@@ -58,7 +58,7 @@ namespace
 
         QString first;
         unsigned int i = 0;
-        foreach (const QString &value, list) {
+        Q_FOREACH (const QString &value, list) {
             if (i % 2 == 0)
                 first = value;
             else {
@@ -74,7 +74,7 @@ namespace
     {
         QSet<QString> result;
 
-        foreach (const MImOnScreenPlugins::SubView &subView, enabledSubViews) {
+        Q_FOREACH (const MImOnScreenPlugins::SubView &subView, enabledSubViews) {
             result.insert(subView.plugin);
         }
 
@@ -158,7 +158,7 @@ void MImOnScreenPlugins::updateEnabledSubviews()
     // because some subview from GConf might not really exists and therefore
     // changed subview might have implications to enabled plugins.
     if (mEnabledSubViews != oldEnabledSubviews) {
-        emit enabledPluginsChanged();
+        Q_EMIT enabledPluginsChanged();
     }
 }
 
@@ -176,7 +176,7 @@ void MImOnScreenPlugins::updateActiveSubview()
     if (mActiveSubView == subView)
         return;
     mActiveSubView = subView;
-    emit activeSubViewChanged();
+    Q_EMIT activeSubViewChanged();
 }
 
 const MImOnScreenPlugins::SubView MImOnScreenPlugins::activeSubView()
@@ -192,5 +192,5 @@ void MImOnScreenPlugins::setActiveSubView(const MImOnScreenPlugins::SubView &sub
     QList<MImOnScreenPlugins::SubView> subViews;
     subViews << subView;
     mActiveSubViewSettings.set(toSettings(subViews));
-    emit activeSubViewChanged();
+    Q_EMIT activeSubViewChanged();
 }

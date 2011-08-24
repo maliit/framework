@@ -100,12 +100,12 @@ public:
     //! Defaults to passthru window, if no widget is specified.
     static void configureWidgetsForCompositing(QWidget *widget = 0);
 
-signals:
+Q_SIGNALS:
     //! This signal is emitted when remote window is changed.
     //! Parameter can be 0 if window is unmapped.
     void remoteWindowChanged(MImRemoteWindow *newWindow);
 
-private slots:
+private Q_SLOTS:
     void updatePassThruWindow(const QRegion &region);
     void finalize();
 

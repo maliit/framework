@@ -138,7 +138,7 @@ void MImRemoteWindow::redirect()
     setupPixmap();
     setupDamage();
 
-    emit contentUpdated(QRegion(QRect(QPoint(), pixmap.size())));
+    Q_EMIT contentUpdated(QRegion(QRect(QPoint(), pixmap.size())));
 }
 
 void MImRemoteWindow::unredirect()
@@ -188,7 +188,7 @@ void MImRemoteWindow::resetPixmap()
 
 void MImRemoteWindow::update(const QRegion &region)
 {
-    emit contentUpdated(region);
+    Q_EMIT contentUpdated(region);
 }
 
 void MImRemoteWindow::handleDamageEvent(XEvent *event)
@@ -221,7 +221,7 @@ void MImRemoteWindow::handleDamageEvent(XEvent *event)
     if (pixmap.isNull())
         setupPixmap();
 
-    emit contentUpdated(region);
+    Q_EMIT contentUpdated(region);
 }
 
 void MImRemoteWindow::setupPixmap()

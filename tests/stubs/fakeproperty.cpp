@@ -38,7 +38,7 @@ void FakeProperty::setValue(const QVariant &value)
     keyValue = value;
 
     if (changed)
-        emit valueChanged();
+        Q_EMIT valueChanged();
 }
 
 QVariant FakeProperty::value()

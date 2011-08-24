@@ -46,7 +46,7 @@ public:
     int redirectKeyCount();
     RedirectedKeyParamsStruct &redirectKeyParams();
 
-public slots:
+public Q_SLOTS:
     void showInputMethod();
     void hideInputMethod();
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
@@ -109,7 +109,7 @@ public:
 
     QString selectedText;
 
-signals:
+Q_SIGNALS:
     void copyAvailable(bool);
 
 private:
@@ -127,7 +127,7 @@ class Ut_MInputContext : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

@@ -90,7 +90,7 @@ public:
     //! Switches active plugin to inactive plugin with given \a name
     void switchPlugin(const QString &name, MAbstractInputMethod *initiator);
 
-signals:
+Q_SIGNALS:
     //!
     // This signal is emitted when the whole painting area of the
     // widget is changed.
@@ -100,7 +100,7 @@ signals:
     //! enabled or disabled
     void pluginsChanged();
 
-public slots:
+public Q_SLOTS:
     //! Show active plugins.
     void showActivePlugins();
 
@@ -113,7 +113,7 @@ public slots:
     //! Updates the whole painting area for input method objects.
     void updateRegion(const QRegion &region);
 
-private slots:
+private Q_SLOTS:
     //! Update and activate input source.
     void updateInputSource();
 

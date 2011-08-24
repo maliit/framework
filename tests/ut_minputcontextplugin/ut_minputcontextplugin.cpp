@@ -55,7 +55,7 @@ void Ut_MInputContextPlugin::testCreate()
     QStringList keys = subject->keys();
     QInputContext *ctx = NULL;
 
-    foreach(QString key, keys) {
+    Q_FOREACH(QString key, keys) {
         ctx = subject->create(key);
         QVERIFY(ctx);
         QCOMPARE(ctx->identifierName(), key);
@@ -80,7 +80,7 @@ void Ut_MInputContextPlugin::testOther()
 
     qDebug() << "description: " << description;
     qDebug() << "display name: " << displayName;
-    foreach(QString lang, languages) {
+    Q_FOREACH(QString lang, languages) {
         qDebug() << "language: " << lang;
     }
 }

@@ -100,7 +100,7 @@ public:
     //! area the area consumed by the QML input method.
     Q_INVOKABLE void setInputMethodArea(const QRect &area);
 
-signals:
+Q_SIGNALS:
     //! Emitted when screen height changes.
     void screenHeightChanged(int height);
 
@@ -113,7 +113,7 @@ signals:
     //! Emitted when input method area changes.
     void inputMethodAreaChanged(const QRect &area);
 
-public slots:
+public Q_SLOTS:
     //! Sends preedit string. Called by QML components.
     //! \param text the preedit string.
     void sendPreedit(const QString &text);

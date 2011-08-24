@@ -82,7 +82,7 @@ void DummyInputMethod::setActiveSubView(const QString &sVId, MInputMethod::Handl
 {
     qDebug() << __PRETTY_FUNCTION__;
     if (state == MInputMethod::OnScreen) {
-        foreach (const MAbstractInputMethod::MInputMethodSubView &sv, sViews) {
+        Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &sv, sViews) {
             if (sv.subViewId == sVId) {
                 activeSView = sVId;
             }

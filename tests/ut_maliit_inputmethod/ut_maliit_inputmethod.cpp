@@ -108,7 +108,7 @@ void Ut_Maliit_InputMethod::testSetArea_data()
     QTest::addColumn<int>("areaChangedCount");
 
     QTest::newRow("change to different area") << TestArea << TestArea << 1;
-    QTest::newRow("change to same area (should not emit a signal)") << DefaultArea << DefaultArea << 0;
+    QTest::newRow("change to same area (should not Q_EMIT a signal)") << DefaultArea << DefaultArea << 0;
 }
 
 void Ut_Maliit_InputMethod::testStartOrientationAngleChange()

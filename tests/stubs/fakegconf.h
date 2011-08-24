@@ -50,7 +50,7 @@ public:
     QVariant value();
     void setValue(const QVariant &value);
 
-signals:
+Q_SIGNALS:
     void valueChanged();
 
 private:

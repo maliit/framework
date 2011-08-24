@@ -138,7 +138,7 @@ void MAttributeExtensionManager::createStandardObjects()
     if (standardAttributeExtension && standardAttributeExtension->toolbarData()) {
         attributeExtensions.insert(MAttributeExtensionId::standardAttributeExtensionId(), standardAttributeExtension);
 
-        foreach (QSharedPointer<MToolbarItem> item, standardAttributeExtension->toolbarData()->items()) {
+        Q_FOREACH (QSharedPointer<MToolbarItem> item, standardAttributeExtension->toolbarData()->items()) {
             item->setCustom(false);
             QList<QSharedPointer<MToolbarItemAction> > actions = item->actions();
             if (actions.isEmpty()) {
@@ -185,7 +185,7 @@ void MAttributeExtensionManager::addStandardButtons(const QSharedPointer<MToolba
 void MAttributeExtensionManager::addStandardButtons(const QSharedPointer<MToolbarLayout> &layout,
                                          const QSharedPointer<MToolbarData> &toolbarData)
 {
-    foreach (const QSharedPointer<MToolbarItem> &item, standardAttributeExtension->toolbarData()->items()) {
+    Q_FOREACH (const QSharedPointer<MToolbarItem> &item, standardAttributeExtension->toolbarData()->items()) {
         if (!toolbarData->refusedNames().contains(item->name())) {
             toolbarData->append(layout, item);
         }
@@ -194,7 +194,7 @@ void MAttributeExtensionManager::addStandardButtons(const QSharedPointer<MToolba
 
 void MAttributeExtensionManager::handlePreferredDomainUpdate()
 {
-    foreach (QSharedPointer<MAttributeExtension> attributeExtension, attributeExtensions.values()) {
+    Q_FOREACH (QSharedPointer<MAttributeExtension> attributeExtension, attributeExtensions.values()) {
         QSharedPointer<MToolbarData> toolbar = attributeExtension->toolbarData();
         updateDomain(toolbar);
     }
@@ -272,7 +272,7 @@ QMap<QString, QSharedPointer<MKeyOverride> > MAttributeExtensionManager::keyOver
         overrides = extension->keyOverrideData()->keyOverrides();
     }
     QMap<QString, QSharedPointer<MKeyOverride> > overridesMap;
-    foreach (const QSharedPointer<MKeyOverride> &override, overrides) {
+    Q_FOREACH (const QSharedPointer<MKeyOverride> &override, overrides) {
         overridesMap.insert(override->keyId(), override);
     }
     return overridesMap;
@@ -312,9 +312,9 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
             keyOverride->setProperty(c_str, value);
         }
 
-        // emit signal to notify the new key override is created.
+        // Q_EMIT signal to notify the new key override is created.
         if (newKeyOverrideCreated) {
-            emit keyOverrideCreated();
+            Q_EMIT keyOverrideCreated();
         }
     } else if (target == ToolbarExtensionString) {
         QSharedPointer<MToolbarData> toolbar = extension->toolbarData();

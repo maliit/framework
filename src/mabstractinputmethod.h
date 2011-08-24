@@ -264,7 +264,7 @@ public:
      */
     virtual bool imExtensionEvent(MImExtensionEvent *event);
 
-signals:
+Q_SIGNALS:
     /*!
      * \brief Inform that active subview is changed to \a subViewId for \a state.
      *

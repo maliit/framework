@@ -184,7 +184,7 @@ void Ut_MIMPluginManager::testLoadPlugins()
     // libinvalidplugin not loaded.  The only "test" for these two is that the
     // test does not crash.  (One may also observe the warning/debug messages
     // concerning loading of those two plugins.)
-    foreach(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+    Q_FOREACH(MInputMethodPlugin * plugin, subject->plugins.keys()) {
         qDebug() << plugin->name();
     }
     QCOMPARE(subject->plugins.size(), 2);
@@ -193,7 +193,7 @@ void Ut_MIMPluginManager::testLoadPlugins()
     QCOMPARE(plugin->name(), pluginName);
     bool dummyImPluginFound = false;
     bool dummyImPlugin3Found = false;
-    foreach(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+    Q_FOREACH(MInputMethodPlugin * plugin, subject->plugins.keys()) {
         if (plugin->name() == "DummyImPlugin") {
             dummyImPluginFound = true;
         } else if (plugin->name() == "DummyImPlugin3") {
@@ -217,7 +217,7 @@ void Ut_MIMPluginManager::testLoadPlugins()
     QVERIFY(subject->activePlugins.size() == 2);
     dummyImPluginFound = false;
     dummyImPlugin3Found = false;
-    foreach(plugin, subject->plugins.keys()) {
+    Q_FOREACH(plugin, subject->plugins.keys()) {
         if (plugin->name() == "DummyImPlugin") {
             dummyImPluginFound = true;
         } else if (plugin->name() == "DummyImPlugin3") {
@@ -370,7 +370,7 @@ void Ut_MIMPluginManager::testMultiplePlugins()
     actualState << MInputMethod::Accessory << MInputMethod::Hardware;
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 2);
-    foreach(MInputMethodPlugin * p, subject->activePlugins) {
+    Q_FOREACH(MInputMethodPlugin * p, subject->activePlugins) {
         plugin3 = dynamic_cast<DummyImPlugin3 *>(p);
         if (plugin3 != 0) {
             ++plugin3Count;
@@ -635,7 +635,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, MInputMethod::SwitchUndefined);
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin == *subject->activePlugins.begin());
-    foreach (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
+    Q_FOREACH (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
         QVERIFY(handler == plugin);
     }
 
@@ -658,7 +658,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     inputMethod3->setStateCount = 0;
     QCOMPARE(inputMethod3->setStateParam.size(), 1);
     QCOMPARE(*inputMethod3->setStateParam.begin(), state);
-    foreach (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
+    Q_FOREACH (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
         qDebug() << handler << plugin3;
         QVERIFY(handler == plugin3);
     }
@@ -687,14 +687,14 @@ void Ut_MIMPluginManager::testSetActivePlugin()
 void Ut_MIMPluginManager::testSubViews()
 {
     QList<MAbstractInputMethod::MInputMethodSubView> subViews;
-    foreach (MInputMethodPlugin *plugin, subject->plugins.keys()) {
+    Q_FOREACH (MInputMethodPlugin *plugin, subject->plugins.keys()) {
         subViews += subject->plugins[plugin].inputMethod->subViews(MInputMethod::OnScreen);
     }
     // only has subviews for MInputMethod::OnScreen
     QCOMPARE(subViews.count(), 5);
 
     subViews.clear();
-    foreach (MInputMethodPlugin *plugin, subject->plugins.keys()) {
+    Q_FOREACH (MInputMethodPlugin *plugin, subject->plugins.keys()) {
         subViews += subject->plugins[plugin].inputMethod->subViews(MInputMethod::Hardware);
     }
     // doesn't have subviews for Hardware
@@ -827,7 +827,7 @@ void Ut_MIMPluginManager::testRegionUpdates()
     QList<QVariant> regionUpdatesSignal;
     QVariant region;
 
-    foreach(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+    Q_FOREACH(MInputMethodPlugin * plugin, subject->plugins.keys()) {
         if (plugin->name() == "DummyImPlugin3") {
             plugin3 = plugin;
         }
@@ -859,7 +859,7 @@ void Ut_MIMPluginManager::testRegionUpdates()
 void Ut_MIMPluginManager::testSetToolbar()
 {
     MInputMethodPlugin *plugin1 = 0;
-    foreach(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+    Q_FOREACH(MInputMethodPlugin * plugin, subject->plugins.keys()) {
         if (plugin->name() == "DummyImPlugin") {
             plugin1 = plugin;
         }
@@ -931,7 +931,7 @@ void Ut_MIMPluginManager::testLoadedPluginsInfo()
 
     QCOMPARE(list.count(), expectedPlugins.count());
 
-    foreach(const MImPluginDescription &info, list) {
+    Q_FOREACH(const MImPluginDescription &info, list) {
         QVERIFY(expectedPlugins.contains(info.name()));
 
         // check for duplicates

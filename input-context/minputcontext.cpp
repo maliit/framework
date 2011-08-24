@@ -534,7 +534,7 @@ bool MInputContext::filterEvent(const QEvent *event)
     case QEvent::KeyPress:
     case QEvent::KeyRelease:
         if (focusWidget() == 0) {
-            break;  // Don't emit signals without focused widget
+            break;  // Don't Q_EMIT signals without focused widget
         }
 
         if (event->type() == QEvent::KeyPress) {
@@ -729,7 +729,7 @@ void MInputContext::updatePreeditInternally(const QString &string,
     preedit = string;
 
     QList<QInputMethodEvent::Attribute> attributes;
-    foreach (const MInputMethod::PreeditTextFormat &preeditFormat, preeditFormats) {
+    Q_FOREACH (const MInputMethod::PreeditTextFormat &preeditFormat, preeditFormats) {
 
         // set proper formatting
         QTextCharFormat format;
@@ -841,7 +841,7 @@ void MInputContext::updateInputMethodArea(const QRect &rect)
 #endif
     InputMethod::instance()->setArea(rect);
 
-    emit inputMethodAreaChanged(rect);
+    Q_EMIT inputMethodAreaChanged(rect);
 }
 
 
@@ -1263,18 +1263,18 @@ void MInputContext::registerExistingAttributeExtensions()
 #ifdef HAVE_MEEGOTOUCH
     QList<int> ids = MInputMethodState::instance()->attributeExtensionIds();
 
-    foreach (int id, ids) {
+    Q_FOREACH (int id, ids) {
         QString fileName = MInputMethodState::instance()->attributeExtensionFile(id);
         imServer->registerAttributeExtension(id, fileName);
 
         MInputMethodState::ExtendedAttributeMap extendedAttributes
             = MInputMethodState::instance()->extendedAttributes(id);
 
-        foreach (QString target, extendedAttributes.keys()) {
+        Q_FOREACH (QString target, extendedAttributes.keys()) {
             MInputMethodState::ItemAttributeMap items = extendedAttributes.value(target);
-            foreach (QString item, items.keys()) {
+            Q_FOREACH (QString item, items.keys()) {
                 MInputMethodState::AttributeMap attributes = items.value(item);
-                foreach (QString attributeName, attributes.keys()) {
+                Q_FOREACH (QString attributeName, attributes.keys()) {
                     QVariant value = attributes.value(attributeName);
                     imServer->setExtendedAttribute(id, target, item, attributeName, value);
                 }
@@ -1284,7 +1284,7 @@ void MInputContext::registerExistingAttributeExtensions()
 #endif
     const Maliit::ExtensionList &extensions = AttributeExtensionRegistry::instance()->extensions();
 
-    foreach (const QWeakPointer<AttributeExtension> &extensionRef, extensions) {
+    Q_FOREACH (const QWeakPointer<AttributeExtension> &extensionRef, extensions) {
         AttributeExtension *extension = extensionRef.data();
         if (!extension)
             continue;
