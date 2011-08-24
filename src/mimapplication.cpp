@@ -137,7 +137,7 @@ void MIMApplication::handleTransientEvents(XEvent *ev)
         qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
                  << "Remote window was destroyed or iconified - hiding.";
 
-        emit remoteWindowChanged(0);
+        Q_EMIT remoteWindowChanged(0);
         mRemoteWindow.reset();
     }
 }
@@ -181,7 +181,7 @@ void MIMApplication::setTransientHint(WId newRemoteWinId)
         mRemoteWindow->redirect();
     }
 
-    emit remoteWindowChanged(mRemoteWindow.get());
+    Q_EMIT remoteWindowChanged(mRemoteWindow.get());
 }
 
 QWidget *MIMApplication::passThruWindow() const
@@ -267,7 +267,7 @@ void MIMApplication::visitWidgetHierarchy(WidgetVisitor visitor,
         // If true, then continue walking the hiearchy of current widget.
         if (visitor(current)) {
             // Mark children of current widget as unvisited:
-            foreach (QObject *obj, current->children()) {
+            Q_FOREACH (QObject *obj, current->children()) {
                 if (QWidget *w = qobject_cast<QWidget *>(obj)) {
                     unvisited.push_back(w);
                 }

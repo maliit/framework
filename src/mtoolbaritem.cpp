@@ -207,7 +207,7 @@ void MToolbarItem::setVisible(bool newVisible, bool explicitly)
 
     if (d->visible != newVisible) {
         d->visible = newVisible;
-        emit propertyChanged("visible");
+        Q_EMIT propertyChanged("visible");
     }
 }
 
@@ -229,7 +229,7 @@ void MToolbarItem::setText(const QString &text)
 
     if (d->text != text) {
         d->text = text;
-        emit propertyChanged("text");
+        Q_EMIT propertyChanged("text");
     }
 }
 
@@ -245,7 +245,7 @@ void MToolbarItem::setTextId(const QString &textId)
     Q_D(MToolbarItem);
     if (d->textId != textId) {
         d->textId = textId;
-        emit propertyChanged("textId");
+        Q_EMIT propertyChanged("textId");
     }
 }
 
@@ -262,7 +262,7 @@ void MToolbarItem::setToggle(bool toggle)
 
     if (d->toggle != toggle) {
         d->toggle = toggle;
-        emit propertyChanged("toggle");
+        Q_EMIT propertyChanged("toggle");
     }
 }
 
@@ -279,7 +279,7 @@ void MToolbarItem::setPressed(bool pressed)
 
     if (d->pressed != pressed) {
         d->pressed = pressed;
-        emit propertyChanged("pressed");
+        Q_EMIT propertyChanged("pressed");
     }
 }
 
@@ -289,7 +289,7 @@ void MToolbarItem::setHighlighted(bool highlighted)
 
     if (d->highlighted != highlighted) {
         d->highlighted = highlighted;
-        emit propertyChanged("highlighted");
+        Q_EMIT propertyChanged("highlighted");
     }
 }
 
@@ -299,7 +299,7 @@ void MToolbarItem::setEnabled(bool enabled)
 
     if (d->enabled != enabled) {
         d->enabled = enabled;
-        emit propertyChanged("enabled");
+        Q_EMIT propertyChanged("enabled");
     }
 }
 
@@ -316,7 +316,7 @@ void MToolbarItem::setIcon(const QString &icon)
 
     if (d->icon != icon) {
         d->icon = icon;
-        emit propertyChanged("icon");
+        Q_EMIT propertyChanged("icon");
     }
 }
 
@@ -333,7 +333,7 @@ void MToolbarItem::setIconId(const QString &iconId)
 
     if (d->iconId != iconId) {
         d->iconId = iconId;
-        emit propertyChanged("iconId");
+        Q_EMIT propertyChanged("iconId");
     }
 }
 
@@ -350,7 +350,7 @@ MToolbarItem::actions() const
     Q_D(const MToolbarItem);
     QList<QSharedPointer<const MToolbarItemAction> > result;
 
-    foreach (const QSharedPointer<const MToolbarItemAction> action, d->actions) {
+    Q_FOREACH (const QSharedPointer<const MToolbarItemAction> action, d->actions) {
         result.append(action);
     }
     return result;
@@ -419,7 +419,7 @@ void MToolbarItem::setSize(int size)
 
     if (d->size != size) {
         d->size = size;
-        emit propertyChanged("size");
+        Q_EMIT propertyChanged("size");
     }
 }
 
@@ -443,7 +443,7 @@ void MToolbarItem::setCustom(bool custom)
 
     if (d->custom != custom) {
         d->custom = custom;
-        emit propertyChanged("custom");
+        Q_EMIT propertyChanged("custom");
     }
 }
 

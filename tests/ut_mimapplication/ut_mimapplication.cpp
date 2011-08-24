@@ -75,7 +75,7 @@ void Ut_MIMApplication::testConfigureWidgetsForCompositing()
         MIMApplication::configureWidgetsForCompositing();
     }
 
-    foreach (QWidget *w, widgets) {
+    Q_FOREACH (QWidget *w, widgets) {
         QVERIFY(w->testAttribute(Qt::WA_NoSystemBackground)
                 || not selfCompositing);
         QVERIFY(w->testAttribute(Qt::WA_OpaquePaintEvent)

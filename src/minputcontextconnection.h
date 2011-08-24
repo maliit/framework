@@ -209,7 +209,7 @@ public:
      */
     virtual void setLanguage(const QString &language) = 0;
 
-public slots:
+public Q_SLOTS:
 
     //! Update \a region covered by virtual keyboard
     virtual void updateInputMethodArea(const QRegion &region);
@@ -220,7 +220,7 @@ public:
      */
     virtual int preeditClickPos(bool &valid) const = 0;
 
-signals:
+Q_SIGNALS:
 
     //! \internal
     //! Emitted when input method request to be shown.

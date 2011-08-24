@@ -71,7 +71,7 @@ public:
     */
     //! \reimp_end
 
-private slots:
+private Q_SLOTS:
     void handleButtonClicked();
 
 private:

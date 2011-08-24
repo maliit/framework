@@ -14,7 +14,7 @@ public:
     explicit MainWindow();
     ~MainWindow();
 
-private slots:
+private Q_SLOTS:
     void onStartServerClicked();
     void onRotateKeyboardClicked();
     void onServerError();

@@ -41,7 +41,7 @@ public:
 
     void setInputModeIndicator(MInputMethod::InputModeIndicator mode);
 
-private slots:
+private Q_SLOTS:
     void handleIndicatorServiceChanged(const QString &serviceName, const QString &oldOwner,
                                        const QString &newOwner);
 private:

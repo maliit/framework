@@ -84,6 +84,10 @@ DEFINES += MALIIT_CONFIG_ROOT=\\\"$$MALIIT_CONFIG_ROOT\\\"
 
 DEFINES += MALIIT_FRAMEWORK_USE_INTERNAL_API
 
+# Do not define keywords signals, slots, emit and foreach because of
+# conflicts with 3rd party libraries.
+CONFIG += no_keywords
+
 mac {
     # Do mac stuff here
     M_BUILD_FEATURES = debug

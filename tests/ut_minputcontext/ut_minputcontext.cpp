@@ -295,7 +295,7 @@ QKeyEvent WidgetStub::lastKeyEvent()
 
 void WidgetStub::sendCopyAvailable(bool yes)
 {
-    emit copyAvailable(yes);
+    Q_EMIT copyAvailable(yes);
 }
 
 
@@ -509,7 +509,7 @@ void Ut_MInputContext::testCommitString()
     QVERIFY(event.preeditString() == ""); // check that event doesn't contain wrong information
     QCOMPARE(event.commitString(), commitString);
 
-    foreach (QInputMethodEvent::Attribute attribute, event.attributes()) {
+    Q_FOREACH (QInputMethodEvent::Attribute attribute, event.attributes()) {
         if (attribute.type == QInputMethodEvent::Selection) {
             // For Selection type, Attribute::start means absolute cursor
             // position after commit string has been committed.

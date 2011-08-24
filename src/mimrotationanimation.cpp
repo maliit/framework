@@ -84,7 +84,7 @@ MImDamageMonitor::waitForDamage()
     if (damageDetected) {
         qDebug() << __PRETTY_FUNCTION__ << " - damage already received, emitting signal.";
         cancel();
-        emit damageReceivedOrTimeout();
+        Q_EMIT damageReceivedOrTimeout();
     }
 }
 
@@ -96,7 +96,7 @@ MImDamageMonitor::contentUpdated(QRegion)
     if (timeoutTimer.isActive()) {
         qDebug() << __PRETTY_FUNCTION__ << " - damage received, emitting signal.";
         cancel();
-        emit damageReceivedOrTimeout();
+        Q_EMIT damageReceivedOrTimeout();
     }
 }
 
@@ -115,7 +115,7 @@ MImDamageMonitor::timeoutExpired()
 {
     qDebug() << __PRETTY_FUNCTION__;
     cancel();
-    emit damageReceivedOrTimeout();
+    Q_EMIT damageReceivedOrTimeout();
 }
 
 namespace {

@@ -40,11 +40,11 @@ public:
 
     int pluginsChangedSignalCount;
 
-public slots:
+public Q_SLOTS:
     void switchMe();
     void switchMe(const QString &name);
 
-private slots:
+private Q_SLOTS:
     void onPluginsChange();
 
 private:

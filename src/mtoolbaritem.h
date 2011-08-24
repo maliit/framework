@@ -214,7 +214,7 @@ public:
     //! Return true if item is enabled; otherwise return false.
     bool enabled() const;
 
-public slots:
+public Q_SLOTS:
     //! Sets new text for item
     void setText(const QString &text);
 
@@ -247,7 +247,7 @@ public slots:
      */
     void setVisible(bool newVisible);
 
-signals:
+Q_SIGNALS:
     /*!
      * \brief Emitted when some property is changed
      * \param propertyName Specifies name of changed property

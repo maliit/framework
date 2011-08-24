@@ -36,7 +36,7 @@ public:
     explicit MIMPluginManagerAdaptor(MIMPluginManager *parent);
     virtual ~MIMPluginManagerAdaptor();
 
-public slots:
+public Q_SLOTS:
     QStringList queryAvailablePlugins();
     QStringList queryAvailablePlugins(int state);
     QString queryActivePlugin(int state);
@@ -50,7 +50,7 @@ public slots:
                                    const QString &subviewId = QString());
     Q_NOREPLY void setActiveSubView(const QString &subViewId, int state);
 
-signals:
+Q_SIGNALS:
     //! This signal is emitted when the active subview of \a state is changed.
     void activeSubViewChanged(int state);
 

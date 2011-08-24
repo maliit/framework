@@ -127,7 +127,7 @@ namespace
     {
         GHashTable* result = g_hash_table_new_full(&g_str_hash, &g_str_equal,
                                                    &g_free, GDestroyNotify(&destroyGValue));
-        foreach (QString key, source.keys()) {
+        Q_FOREACH (QString key, source.keys()) {
             GValue *valueVariant = g_new0(GValue, 1);
             if (!encodeVariant(valueVariant, source[key])) {
                 g_free(valueVariant);
@@ -164,7 +164,7 @@ GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
 {
     active = false;
 
-    foreach (DBusGProxyCall *callId, pendingResetCalls) {
+    Q_FOREACH (DBusGProxyCall *callId, pendingResetCalls) {
         dbus_g_proxy_cancel_call(glibObjectProxy, callId);
     }
 }
@@ -206,7 +206,7 @@ void GlibDBusIMServerProxy::connectToDBus()
 
     dbus_g_connection_register_g_object(connection.get(), icAdaptorPath.toAscii().data(), inputContextAdaptor);
 
-    emit connected();
+    Q_EMIT connected();
 }
 
 void GlibDBusIMServerProxy::onDisconnection()
@@ -215,7 +215,7 @@ void GlibDBusIMServerProxy::onDisconnection()
 
     glibObjectProxy = 0;
     connection.reset();
-    emit disconnected();
+    Q_EMIT disconnected();
 
     if (active) {
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
@@ -291,8 +291,6 @@ void GlibDBusIMServerProxy::setPreedit(const QString &text, int cursorPos)
                                G_TYPE_INT, cursorPos,
                                G_TYPE_INVALID);
 }
-
-
 
 void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant> &stateInformation,
                                                     bool focusChanged)

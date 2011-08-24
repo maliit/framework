@@ -91,7 +91,7 @@ public:
                               const QString &attribute, const QVariant &value);
     //! reimpl end
 
-private slots:
+private Q_SLOTS:
     void connectToDBus();
 
 private:

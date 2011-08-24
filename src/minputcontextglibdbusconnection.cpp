@@ -400,7 +400,7 @@ void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnect
     activeContext = 0;
 
     // notify plugins
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->handleClientChange();
     }
 }
@@ -511,7 +511,7 @@ bool encodePreeditFormats(GType *typeDest, GPtrArray **dataDest, const QList<MIn
         qWarning() << Q_FUNC_INFO << "failed to initalize PreeditTextFormat container";
         return false;
     }
-    foreach (MInputMethod::PreeditTextFormat formatItem, preeditFormats) {
+    Q_FOREACH (MInputMethod::PreeditTextFormat formatItem, preeditFormats) {
         GValueArray *itemData = (GValueArray*)dbus_g_type_specialized_construct(itemType);
         if (itemData == 0) {
             qWarning() << Q_FUNC_INFO << "failed to initalize PreeditTextFormat item";
@@ -896,7 +896,7 @@ void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *con
     }
 
     // notify plugins
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->handleClientChange();
     }
 }
@@ -907,7 +907,7 @@ void MInputContextGlibDBusConnection::showInputMethod(MDBusGlibICConnection *sou
     if (activeContext != sourceConnection)
         return;
 
-    emit showInputMethodRequest();
+    Q_EMIT showInputMethodRequest();
 }
 
 
@@ -917,7 +917,7 @@ void MInputContextGlibDBusConnection::hideInputMethod(MDBusGlibICConnection *sou
     if (activeContext != sourceConnection)
         return;
 
-    emit hideInputMethodRequest();
+    Q_EMIT hideInputMethodRequest();
 }
 
 
@@ -927,7 +927,7 @@ void MInputContextGlibDBusConnection::mouseClickedOnPreedit(MDBusGlibICConnectio
     if (activeContext != sourceConnection)
         return;
 
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->handleMouseClickOnPreedit(pos, preeditRect);
     }
 }
@@ -941,7 +941,7 @@ void MInputContextGlibDBusConnection::setPreedit(MDBusGlibICConnection *sourceCo
 
     preedit = text;
 
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->setPreedit(text, cursorPos);
     }
 }
@@ -954,7 +954,7 @@ void MInputContextGlibDBusConnection::reset(MDBusGlibICConnection *sourceConnect
 
     preedit.clear();
 
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->reset();
     }
 
@@ -1002,7 +1002,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
     widgetState = stateInfo;
 
     if (focusChanged) {
-        foreach (MAbstractInputMethod *target, targets()) {
+        Q_FOREACH (MAbstractInputMethod *target, targets()) {
             target->handleFocusChange(stateInfo[FocusStateAttribute].toBool());
         }
 
@@ -1011,7 +1011,7 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
 
     // call notification methods if needed
     if (oldVisualization != newVisualization) {
-        foreach (MAbstractInputMethod *target, targets()) {
+        Q_FOREACH (MAbstractInputMethod *target, targets()) {
             target->handleVisualizationPriorityChange(newVisualization);
         }
     }
@@ -1029,13 +1029,13 @@ MInputContextGlibDBusConnection::updateWidgetInformation(
                 registerAttributeExtension(connection, toolbarLocalId, toolbarFile);
             }
         }
-        emit toolbarIdChanged(newAttributeExtensionId);
+        Q_EMIT toolbarIdChanged(newAttributeExtensionId);
         // store the new used toolbar id(global).
         attributeExtensionId = newAttributeExtensionId;
     }
 
     // general notification last
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->update();
     }
 }
@@ -1050,8 +1050,8 @@ MInputContextGlibDBusConnection::receivedAppOrientationAboutToChange(MDBusGlibIC
     // Needs to be passed to the MImRotationAnimation listening
     // to this signal first before the plugins. This ensures
     // that the rotation animation can be painted sufficiently early.
-    emit appOrientationAboutToChange(angle);
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_EMIT appOrientationAboutToChange(angle);
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->handleAppOrientationAboutToChange(angle);
     }
 }
@@ -1065,8 +1065,8 @@ void MInputContextGlibDBusConnection::receivedAppOrientationChanged(MDBusGlibICC
 
     // Handle orientation changes through MImRotationAnimation with priority.
     // That's needed for getting the correct rotated pixmap buffers.
-    emit appOrientationChanged(angle);
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_EMIT appOrientationChanged(angle);
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->handleAppOrientationChanged(angle);
     }
     lastOrientation = angle;
@@ -1091,7 +1091,7 @@ void MInputContextGlibDBusConnection::processKeyEvent(
     if (activeContext != sourceConnection)
         return;
 
-    foreach (MAbstractInputMethod *target, targets()) {
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
                                 nativeScanCode, nativeModifiers, time);
     }

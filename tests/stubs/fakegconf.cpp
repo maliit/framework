@@ -30,7 +30,7 @@ FakeGConfItem *FakeGConf::initKey(const QString &key)
 {
     QStringList path = key.split("/", QString::SkipEmptyParts);
     FakeGConfItem *item = &root;
-    foreach(QString keyName, path) {
+    Q_FOREACH(QString keyName, path) {
         FakeGConfItem *child = item->findChild(keyName);
         if (child == NULL) {
             child = new FakeGConfItem(item, keyName);
@@ -56,7 +56,7 @@ QStringList FakeGConf::listDirs(const QString &key)
     QStringList dirs;
 
     // Get every child that has children, i.e. it is called "directory"
-    foreach(FakeGConfItem * child, children) {
+    Q_FOREACH(FakeGConfItem * child, children) {
         if (child->hasChildren())
             dirs << child->name();
     }
@@ -69,7 +69,7 @@ QStringList FakeGConf::listEntries(const QString &key)
     QStringList entries;
 
     // Get every child that has value
-    foreach(FakeGConfItem * child, children) {
+    Q_FOREACH(FakeGConfItem * child, children) {
         if (child->hasValueSet()) {
             QString fullPath = key + "/" + child->name();
             entries << fullPath;
@@ -96,7 +96,7 @@ FakeGConfItem::~FakeGConfItem()
 FakeGConfItem *FakeGConfItem::findChild(const QString &childName)
 {
     FakeGConfItem *result = 0;
-    foreach(FakeGConfItem * child, childList) {
+    Q_FOREACH(FakeGConfItem * child, childList) {
         if (child->keyName == childName) {
             result = child;
             break;
@@ -140,5 +140,5 @@ void FakeGConfItem::setValue(const QVariant &value)
     keyValue = value;
 
     if (changed)
-        emit valueChanged();
+        Q_EMIT valueChanged();
 }

@@ -47,7 +47,7 @@ public:
     int redirectKeyCount();
     RedirectedKeyParamsStruct &redirectKeyParams();
 
-public slots:
+public Q_SLOTS:
     //! reimpl
     virtual void showInputMethod();
     virtual void hideInputMethod();
@@ -108,7 +108,7 @@ public:
 
     QString selectedText;
 
-signals:
+Q_SIGNALS:
     void copyAvailable(bool);
 
 private:
@@ -126,7 +126,7 @@ class Ut_MInputContext : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     void initTestCase();
     void cleanupTestCase();
 

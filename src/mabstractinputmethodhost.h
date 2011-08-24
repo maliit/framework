@@ -118,11 +118,11 @@ public:
      */
     QPixmap background() const;
 
-signals:
+Q_SIGNALS:
     //! This signal is emitted when input method plugins are loaded or unloaded
     void pluginsChanged();
 
-public slots:
+public Q_SLOTS:
     /*!
      * \brief Updates pre-edit string in the application widget
      *

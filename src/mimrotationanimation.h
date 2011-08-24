@@ -59,10 +59,10 @@ public:
     void cancel();
     void remoteWindowChanged(MImRemoteWindow* newRemoteWindow);
 
-signals:
+Q_SIGNALS:
     void damageReceivedOrTimeout();
 
-private slots:
+private Q_SLOTS:
     void contentUpdated(QRegion region);
     void timeoutExpired();
 
@@ -101,7 +101,7 @@ public:
     explicit MImRotationAnimation(QWidget* snapshotWidget, QWidget* parent = 0);
     virtual ~MImRotationAnimation();
 
-public slots:
+public Q_SLOTS:
     /*! Slot for receiving information about the underlying
      * application's orientation status. This triggers preparations
      * for starting the rotation animation, e.g. capturing the starting
@@ -125,7 +125,7 @@ protected:
     virtual void resizeEvent(QResizeEvent *event);
     virtual void showEvent(QShowEvent *event);
 
-private slots:
+private Q_SLOTS:
     void clearScene();
     void startAnimation();
 

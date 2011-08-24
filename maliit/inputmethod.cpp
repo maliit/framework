@@ -65,7 +65,7 @@ void InputMethod::setArea(const QRect &newArea)
 
     if (d->area != newArea) {
         d->area = newArea;
-        emit areaChanged(d->area);
+        Q_EMIT areaChanged(d->area);
     }
 }
 
@@ -76,7 +76,7 @@ void InputMethod::startOrientationAngleChange(OrientationAngle newOrientationAng
     if (d->orientationAngle != newOrientationAngle) {
         d->orientationAngle = newOrientationAngle;
         d->rotationInProgress = true;
-        emit orientationAngleAboutToChange(d->orientationAngle);
+        Q_EMIT orientationAngleAboutToChange(d->orientationAngle);
     }
 }
 
@@ -91,7 +91,7 @@ void InputMethod::setOrientationAngle(OrientationAngle newOrientationAngle)
 
     if (d->rotationInProgress) {
         d->rotationInProgress = false;
-        emit orientationAngleChanged(d->orientationAngle);
+        Q_EMIT orientationAngleChanged(d->orientationAngle);
     }
 }
 
@@ -104,12 +104,12 @@ OrientationAngle InputMethod::orientationAngle() const
 
 void InputMethod::emitKeyPress(const QKeyEvent &event)
 {
-    emit keyPress(event);
+    Q_EMIT keyPress(event);
 }
 
 void InputMethod::emitKeyRelease(const QKeyEvent &event)
 {
-    emit keyRelease(event);
+    Q_EMIT keyRelease(event);
 }
 
 void InputMethod::setLanguage(const QString &language)
@@ -117,7 +117,7 @@ void InputMethod::setLanguage(const QString &language)
     Q_D(InputMethod);
     if (d->language != language) {
         d->language = language;
-        emit languageChanged(language);
+        Q_EMIT languageChanged(language);
     }
 }
 

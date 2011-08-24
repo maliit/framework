@@ -150,7 +150,7 @@ static GConfValueType uniformType(const QList<QVariant> &list)
 {
     GConfValueType result = GCONF_VALUE_INVALID;
 
-    foreach(const QVariant & elt, list) {
+    Q_FOREACH(const QVariant & elt, list) {
         GConfValueType elt_type = primitiveType(elt);
 
         if (elt_type == GCONF_VALUE_INVALID)
@@ -195,7 +195,7 @@ static int convertValue(const QVariant &src, GConfValue **valp)
         GSList *elts = NULL;
         v = gconf_value_new(GCONF_VALUE_LIST);
         gconf_value_set_list_type(v, GCONF_VALUE_STRING);
-        foreach(const QString & str, src.toStringList())
+        Q_FOREACH(const QString & str, src.toStringList())
         elts = g_slist_prepend(elts, convertString(str));
         gconf_value_set_list_nocopy(v, g_slist_reverse(elts));
         break;
@@ -208,7 +208,7 @@ static int convertValue(const QVariant &src, GConfValue **valp)
             GSList *elts = NULL;
             v = gconf_value_new(GCONF_VALUE_LIST);
             gconf_value_set_list_type(v, elt_type);
-            foreach(const QVariant & elt, src.toList()) {
+            Q_FOREACH(const QVariant & elt, src.toList()) {
                 GConfValue *val = NULL;
                 convertValue(elt, &val);  // guaranteed to succeed.
                 elts = g_slist_prepend(elts, val);
@@ -257,7 +257,7 @@ void MImSettings::update_value(bool emit_signal)
     if (new_value != priv->value) {
         priv->value = new_value;
         if (emit_signal)
-            emit valueChanged();
+            Q_EMIT valueChanged();
     }
 }
 
@@ -299,7 +299,7 @@ void MImSettings::set(const QVariant &val)
                 g_error_free(error);
             } else if (priv->value != val) {
                 priv->value = val;
-                emit valueChanged();
+                Q_EMIT valueChanged();
             }
 
         } else

@@ -277,7 +277,7 @@ void MInputMethodQuick::handleAppOrientationChanged(int angle)
         // When emitted, QML Plugin will realice a state
         // change and update InputMethodArea. Don't propagate those changes except if
         // VkB is currently showed
-        emit appOrientationChanged(d->appOrientation);
+        Q_EMIT appOrientationChanged(d->appOrientation);
         if (d->sipRequested && !d->sipIsInhibited) {
             d->handleInputMethodAreaUpdate(inputMethodHost(), inputMethodArea());
         }
@@ -334,8 +334,8 @@ void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
 
 void MInputMethodQuick::propagateScreenSize()
 {
-    emit screenWidthChanged(computeDisplayRect().width());
-    emit screenHeightChanged(computeDisplayRect().height());
+    Q_EMIT screenWidthChanged(computeDisplayRect().width());
+    Q_EMIT screenHeightChanged(computeDisplayRect().height());
 }
 
 int MInputMethodQuick::screenHeight() const
@@ -367,7 +367,7 @@ void MInputMethodQuick::setInputMethodArea(const QRect &area)
     if (d->inputMethodArea != area) {
         d->inputMethodArea = area;
 
-        emit inputMethodAreaChanged(d->inputMethodArea);
+        Q_EMIT inputMethodAreaChanged(d->inputMethodArea);
     }
 }
 
