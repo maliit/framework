@@ -1,5 +1,29 @@
 include(./config.pri)
 
+!isEmpty(HELP) {
+    # Output help
+    help_string = \
+        Important build options: \
+        \\n\\t M_IM_PREFIX : Install prefix (default: /usr) \
+        \\n\\t M_IM_INSTALL_{BIN,LIBS,HEADERS,SCHEMAS,DOCS} : Install prefix for specific types of files \
+        \\nRecognised CONFIG flags: \
+        \\n\\t enable-meegotouch : Build in legacy mode (for meego-im ABI/API compatability) \
+        \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
+        \\n\\t notests : Do not build tests \
+        \\n\\t nodoc : Do not build documentation \
+        \\n\\t only-libmaliit : Only build libmaliit \
+        \\n\\t external-libmaliit : Use external libmaliit (do not build libmaliit) \
+        \\nExamples: \
+        \\n\\t qmake \
+        \\n\\t qmake M_IM_PREFIX=/usr M_IM_INSTALL_LIBS=/usr/lib64 CONFIG+=enable-meegotouch CONFIG+=notests
+
+    system(echo -e \"$$help_string\")
+} else {
+    config_string = Tip: Run qmake HELP=1 for a list of all supported build options
+
+    system(echo -e \"$$config_string\")
+}
+
 CONFIG += ordered
 TEMPLATE = subdirs
 
