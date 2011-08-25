@@ -65,8 +65,18 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.depends += lib$${TARGET}.so
 
-QMAKE_EXTRA_TARGETS += mdbusglibicconnectionserviceglue.h
-mdbusglibicconnectionserviceglue.h.commands = \
+# Generate dbus glue
+QMAKE_EXTRA_TARGETS += dbus_glue
+dbus_glue.target = $$OUT_PWD/mdbusglibicconnectionserviceglue.h
+dbus_glue.commands = \
     dbus-binding-tool --prefix=m_dbus_glib_input_context_adaptor --mode=glib-server \
-        --output=mdbusglibicconnectionserviceglue.h minputmethodcontext1interface.xml
-mdbusglibicconnectionserviceglue.h.depends = minputmethodcontext1interface.xml
+        --output=$$OUT_PWD/mdbusglibicconnectionserviceglue.h $$IN_PWD/minputmethodcontext1interface.xml
+dbus_glue.output = $$OUT_PWD/mdbusglibicconnectionserviceglue.h
+dbus_glue.depends = $$IN_PWD/minputmethodcontext1interface.xml
+
+# Use to work around the fact that qmake looks up the target for the generated header wrong
+QMAKE_EXTRA_TARGETS += fake_dbus_glue
+fake_dbus_glue.target = mdbusglibicconnectionserviceglue.h
+fake_dbus_glue.depends = dbus_glue
+
+OTHER_FILES += minputmethodcontext1interface.xml
