@@ -138,8 +138,12 @@ install_pkgconfig.files = $$OUT_PWD/MeegoImFramework.pc $$OUT_PWD/maliit-plugins
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = $$OUT_PWD/meegoimframework.prf
 
+nomeegotouch {
+    install_schemas.files = $$OUT_PWD/maliit-framework.schemas
+} else {
+    install_schemas.files = $$OUT_PWD/meego-im-framework.schemas
+}
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
-install_schemas.files = $$OUT_PWD/meego-im-framework.schemas $$OUT_PWD/maliit-framework.schemas
 
 INSTALLS += target \
     headers \
@@ -147,6 +151,19 @@ INSTALLS += target \
     install_pkgconfig \
     install_schemas \
 
+# Registering the GConf schemas in the gconf database
+gconftool = gconftool-2
+gconf_config_source = $$system(echo $GCONF_CONFIG_SOURCE)
+isEmpty(gconf_config_source) {
+    gconf_config_source = $$system(gconftool-2 --get-default-source)
+}
+
+QMAKE_EXTRA_TARGETS += register_schemas
+register_schemas.target = register_schemas
+register_schemas.commands += GCONF_CONFIG_SOURCE=$$gconf_config_source $$gconftool --makefile-install-rule $$install_schemas.files
+install_schemas.depends += register_schemas
+
+# Check targets
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml
 check-xml.depends += lib$${TARGET}.so.$${VERSION}
