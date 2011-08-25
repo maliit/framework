@@ -13,15 +13,17 @@ include(./config.pri)
         \\n\\t nodoc : Do not build documentation \
         \\n\\t only-libmaliit : Only build libmaliit \
         \\n\\t external-libmaliit : Use external libmaliit (do not build libmaliit) \
+        \\nInfluential environment variables: \
+        \\n\\t GCONF_CONFIG_SOURCE : Specify custom gconf source2 \
         \\nExamples: \
         \\n\\t qmake \
-        \\n\\t qmake M_IM_PREFIX=/usr M_IM_INSTALL_LIBS=/usr/lib64 CONFIG+=enable-meegotouch CONFIG+=notests
+        \\n\\t qmake M_IM_PREFIX=/usr M_IM_INSTALL_LIBS=/usr/lib64 CONFIG+=enable-meegotouch CONFIG+=notests \
 
-    system(echo -e \"$$help_string\")
+    !build_pass:system(echo -e \"$$help_string\")
 } else {
     config_string = Tip: Run qmake HELP=1 for a list of all supported build options
 
-    system(echo -e \"$$config_string\")
+    !build_pass:system(echo -e \"$$config_string\")
 }
 
 CONFIG += ordered
