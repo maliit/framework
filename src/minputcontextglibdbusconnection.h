@@ -50,6 +50,7 @@ public:
     MInputContextGlibDBusConnection();
     virtual ~MInputContextGlibDBusConnection();
 
+    void handleNewDBusConnectionReady(MDBusGlibICConnection *connection);
     void handleDBusDisconnection(MDBusGlibICConnection *connection);
 
     //! \reimp
@@ -172,6 +173,10 @@ private:
     //! current application's window id.
     void updateTransientHint();
 
+    //! Helper method for setLanguage(QString) to use it for other than active connection.
+    void setLanguage(MDBusGlibICConnection *targetIcConnection,
+                     const QString &language);
+
     /*!
      * \brief get the X window id of the active app window
      */
@@ -190,6 +195,9 @@ private:
     DBusServer *server;
 
     QString preedit;
+
+    //! Cached values to be sent from server to new input contexts.
+    QString lastLanguage;
 
     Q_DISABLE_COPY(MInputContextGlibDBusConnection)
 };
