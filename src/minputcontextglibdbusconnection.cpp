@@ -405,6 +405,13 @@ void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnect
     }
 }
 
+void MInputContextGlibDBusConnection::handleNewDBusConnectionReady(MDBusGlibICConnection *connection)
+{
+    // For newly connected applications, input language should be sent because
+    // applications may need the information even before plugin is actually showed.
+    setLanguage(connection, lastLanguage);
+}
+
 static void handleNewConnection(DBusServer */*server*/, DBusConnection *connection, gpointer userData)
 {
     qDebug() << __PRETTY_FUNCTION__;
@@ -432,8 +439,9 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
     obj->connectionNumber = connectionCounter++;
 
     dbus_g_connection_register_g_object(obj->dbusConnection, DBusPath, G_OBJECT(obj));
-}
 
+    obj->icConnection->handleNewDBusConnectionReady(obj);
+}
 
 MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
     : activeContext(NULL),
@@ -756,12 +764,20 @@ QString MInputContextGlibDBusConnection::selection(bool &valid)
 
 void MInputContextGlibDBusConnection::setLanguage(const QString &language)
 {
-    if (activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setLanguage",
+    lastLanguage = language;
+    setLanguage(activeContext, language);
+}
+
+void MInputContextGlibDBusConnection::setLanguage(MDBusGlibICConnection *targetIcConnection,
+                                                  const QString &language)
+{
+    if (targetIcConnection) {
+        dbus_g_proxy_call_no_reply(targetIcConnection->inputContextProxy, "setLanguage",
                                    G_TYPE_STRING, language.toUtf8().data(),
                                    G_TYPE_INVALID);
     }
 }
+
 
 void
 MInputContextGlibDBusConnection::addTarget(MAbstractInputMethod *target)
