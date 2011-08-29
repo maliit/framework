@@ -9,7 +9,6 @@ HEADERS += \
 SOURCES += \
     ut_mimrotationanimation.cpp \
 
-CONFIG += meegotouch
 QT += testlib
 
 include(../common_check.pri)

@@ -12,8 +12,6 @@ external-libmaliit {
     LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 }
 
-DEFINES -= HAVE_MEEGOTOUCH
-
 nomeegotouch {
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\"
 } else {

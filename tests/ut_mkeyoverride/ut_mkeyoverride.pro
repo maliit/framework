@@ -21,7 +21,7 @@ SOURCES += \
     $$SRC_DIR/mkeyoverride.cpp \
 }
 
-CONFIG += plugin meegotouch qdbus
+CONFIG += plugin qdbus
 
 LIBS += \
     $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \

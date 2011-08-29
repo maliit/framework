@@ -7,12 +7,8 @@
 #include <QGraphicsView>
 #include <QLineEdit>
 
-#ifdef HAVE_MEEGOTOUCH
-#include <MWindow>
-#include <mpreeditinjectionevent.h>
-#endif
-
 #include <maliit/inputmethod.h>
+#include <maliit/preeditinjectionevent.h>
 
 namespace
 {
@@ -225,10 +221,8 @@ QVariant WidgetStub::inputMethodQuery(Qt::InputMethodQuery query) const
 
     if (query == Qt::ImSurroundingText) {
         return QVariant(WidgetStubSurroundingText);
-#ifdef HAVE_MEEGOTOUCH
-    } else if (static_cast<int>(query) == M::VisualizationPriorityQuery) {
+    } else if (static_cast<int>(query) == Maliit::VisualizationPriorityQuery) {
         return QVariant(visualizationPriority);
-#endif
     } else if (query == Qt::ImCursorPosition
                || query == Qt::ImAnchorPosition) {
         return QVariant(WidgetStubCursorPosition);
@@ -357,28 +351,27 @@ void Ut_MInputContext::testAddCoverage()
 
 void Ut_MInputContext::testEvent()
 {
-#ifdef HAVE_MEEGOTOUCH
     WidgetStub widget(0);
 
     gFocusedWidget = &widget;
     // test that input context accepts
     m_subject->setGlobalCorrectionEnabled(true);
-    MPreeditInjectionEvent *injectionEvent = new MPreeditInjectionEvent("preedit");
+    Maliit::PreeditInjectionEvent *injectionEvent = new Maliit::PreeditInjectionEvent("preedit");
     bool accepted = QCoreApplication::sendEvent(m_subject, injectionEvent);
     QVERIFY(accepted == true);
 
     waitAndProcessEvents(500);
 
     // This event claims to be pre-edit injection event but it's not.
-    QEvent fakeInjectionEvent((QEvent::Type)MPreeditInjectionEvent::eventNumber());
+    QEvent fakeInjectionEvent((QEvent::Type)Maliit::PreeditInjectionEvent::eventNumber());
     accepted = QCoreApplication::sendEvent(m_subject, &fakeInjectionEvent);
     QVERIFY(accepted == false);
 
     waitAndProcessEvents(500);
 
-    QCOMPARE(m_stub->setPreeditCount(), 1);
+    QCOMPARE(m_connection->setPreeditCount(), 1);
 
-    m_stub->resetCallCounts();
+    m_connection->resetCallCounts();
     m_subject->setGlobalCorrectionEnabled(false);
     injectionEvent->setAccepted(false);
     accepted = QCoreApplication::sendEvent(m_subject, injectionEvent);
@@ -387,11 +380,10 @@ void Ut_MInputContext::testEvent()
     waitAndProcessEvents(500);
 
     //won't call setPreedit if global error correction is off
-    QCOMPARE(m_stub->setPreeditCount(), 0);
+    QCOMPARE(m_connection->setPreeditCount(), 0);
 
     delete injectionEvent;
     gFocusedWidget = 0;
-#endif
 }
 
 
@@ -571,15 +563,13 @@ void Ut_MInputContext::testUpdatePreedit()
 
 void Ut_MInputContext::testAppOrientationChanged()
 {
-#ifdef HAVE_MEEGOTOUCH
-    m_subject->notifyOrientationChanged(M::Angle90);
+    m_subject->notifyOrientationChanged(Maliit::Angle90);
 
     // Make sure DBus call gets through
     waitAndProcessEvents(300);
 
     // TODO: can not recieve signal, should check it
-    QCOMPARE(m_stub->orientationChangedCount(), 1);
-#endif
+    QCOMPARE(m_connection->orientationChangedCount(), 1);
 }
 
 void Ut_MInputContext::testNonTextEntryWidget()
@@ -804,19 +794,11 @@ void Ut_MInputContext::testImAreaChangePropagation()
     QRect newInputMethodArea(98, 99, 101, 102);
     QSignalSpy maliitInputMethodSpy(Maliit::InputMethod::instance(),
                                     SIGNAL(areaChanged(QRect)));
-#ifdef HAVE_MEEGOTOUCH
-    QSignalSpy mInputMethodStateSpy(MInputMethodState::instance(),
-                                    SIGNAL(inputMethodAreaChanged(QRect)));
-#endif
 
     Q_EMIT m_connection->updateInputMethodArea(newInputMethodArea);
 
     QCOMPARE(maliitInputMethodSpy.count(), 1);
     QCOMPARE(maliitInputMethodSpy.first().at(0).toRect(), newInputMethodArea);
-#ifdef HAVE_MEEGOTOUCH
-    QCOMPARE(mInputMethodStateSpy.count(), 1);
-    QCOMPARE(mInputMethodStateSpy.first().at(0).toRect(), newInputMethodArea);
-#endif
 }
 
 /* Tests that when input method (through IM server) commits a string,
