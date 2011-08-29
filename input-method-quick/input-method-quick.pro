@@ -37,7 +37,7 @@ QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_QUICK_HEADER
 headers.files += $$HEADERSINSTALL
 
-nomeegotouch {
+!enable-legacy {
     outputFiles(maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc)
 } else {
     outputFiles(meegoimquick.prf)

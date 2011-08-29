@@ -9,7 +9,7 @@ external-libmaliit {
     LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 }
 
-nomeegotouch  {
+!enable-legacy  {
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\"
 } else {
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\"

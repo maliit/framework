@@ -7,6 +7,9 @@ CHANGES SINCE 0.80.5
     can give applications a hint of the language user is going to write.
 * Removed deprecated support for integrating with input methods via
   LMT/meegotouch directly. LMT/meegotouch uses libmaliit for that now.
+* Legacy mode config option changed to enable-legacy instead of
+  enable-meegotouch. Enable with:
+  $ qmake -r CONFIG+=enable-legacy
 
 0.80.5
 ======
