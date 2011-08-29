@@ -19,12 +19,6 @@ SOURCES += \
 
 QT = core gui xml declarative
 
-contains(CONFIG, nomeegotouch) {
-} else {
-    CONFIG  += meegotouchcore
-    DEFINES += HAVE_MEEGOTOUCH
-}
-
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
     isEqual(OPTION, on){

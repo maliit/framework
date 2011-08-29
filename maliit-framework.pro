@@ -48,10 +48,6 @@ external-libmaliit {
         SUBDIRS += doc
     }
 
-    !nomeegotouch {
-        CONFIG  += meegotouch
-    }
-
     !notests {
         SUBDIRS += tests
     }
