@@ -21,8 +21,6 @@ nomeegotouch {
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\" 
 
     CONFIG  += meegotouch
-    STYLE_HEADERS += \
-        mpreeditstyle.h \
 }
 
 # Input
@@ -30,7 +28,6 @@ HEADERS += minputcontext.h \
     minputcontextplugin.h \
     mdbusglibinputcontextadaptor.h \
     glibdbusimserverproxy.h \
-    $$STYLE_HEADERS \
     mimserverconnection.h \
 
 SOURCES += minputcontext.cpp \

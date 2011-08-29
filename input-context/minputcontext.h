@@ -29,7 +29,6 @@
 #include <QTimer>
 #include <QPointer>
 
-class MPreeditStyleContainer;
 class QGraphicsItem;
 class QGraphicsView;
 class MImServerConnection;
@@ -233,7 +232,6 @@ private:
 
     bool correctionEnabled;
 
-    MPreeditStyleContainer *styleContainer;
     QString preedit;
 
     QPointer<QObject> connectedObject;

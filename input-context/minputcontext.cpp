@@ -18,16 +18,6 @@
 
 #include "glibdbusimserverproxy.h"
 
-#ifdef HAVE_MEEGOTOUCH
-#include "mpreeditstyle.h"
-#else
-class MPreeditStyle
-{};
-
-class MPreeditStyleContainer
-{};
-#endif
-
 #include <QApplication>
 #include <QX11Info>
 #include <QInputContext>
@@ -43,7 +33,6 @@ class MPreeditStyleContainer
 #include <QByteArray>
 
 #ifdef HAVE_MEEGOTOUCH
-#include <MComponentData>
 #include <MApplicationPage>
 #include <MInputMethodState>
 #include <MPreeditInjectionEvent>
@@ -90,7 +79,6 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
       inputPanelState(InputPanelHidden),
       imServer(newImServer),
       correctionEnabled(false),
-      styleContainer(0),
       connectedObject(0),
       pasteAvailable(false),
       copyAvailable(false),
@@ -123,22 +111,12 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
     connect(&sipHideTimer, SIGNAL(timeout()), SLOT(hideInputMethod()));
 
-#ifdef HAVE_MEEGOTOUCH
-    // using theming only when there is MComponentData instance, should be
-    // there for meegotouch apps (naturally) and for plain qt with meego style plugin
-    if (MComponentData::instance() != 0) {
-        styleContainer = new MPreeditStyleContainer;
-        styleContainer->initialize("DefaultStyle", "MPreeditStyle", 0);
-    }
-#endif
-
     connectInputMethodServer();
     connectInputMethodExtension();
 }
 
 MInputContext::~MInputContext()
 {
-    delete styleContainer;
 }
 
 void MInputContext::connectInputMethodExtension()
@@ -770,53 +748,23 @@ void MInputContext::updatePreeditInternally(const QString &string,
         format.merge(standardFormat(QInputContext::PreeditFormat));
 
         // update style mode
-        if (styleContainer) {
-#ifdef HAVE_MEEGOTOUCH
-            switch (preeditFormat.preeditFace) {
-            case MInputMethod::PreeditNoCandidates:
-                styleContainer->setModeNoCandidates();
-                break;
-
-            case MInputMethod::PreeditKeyPress:
-                styleContainer->setModeKeyPress();
-                break;
-
-            case MInputMethod::PreeditDefault:
-            default:
-                styleContainer->setModeDefault();
-            }
-
-            format.setUnderlineStyle((*styleContainer)->underline());
-            format.setUnderlineColor((*styleContainer)->underlineColor());
-            QColor color = (*styleContainer)->backgroundColor();
-
-            if (color.isValid()) {
-                format.setBackground(color);
-            }
-
-            color = (*styleContainer)->fontColor();
-
-            if (color.isValid()) {
-                format.setForeground(color);
-            }
-#endif // HAVE_MEEGOTOUCH
-        } else {
-            switch (preeditFormat.preeditFace) {
-            case MInputMethod::PreeditNoCandidates:
-                format.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
-                format.setUnderlineColor(QColor(255, 0, 0));
-                break;
-            case MInputMethod::PreeditUnconvertible:
-                format.setForeground(QBrush(QColor(128, 128, 128)));
-                break;
-            case MInputMethod::PreeditActive:
-                format.setFontWeight(QFont::Bold);
-                break;
-            case MInputMethod::PreeditKeyPress:
-            case MInputMethod::PreeditDefault:
-                format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-                break;
-            }
+        switch (preeditFormat.preeditFace) {
+        case MInputMethod::PreeditNoCandidates:
+            format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+            format.setUnderlineColor(QColor(255, 0, 0));
+            break;
+        case MInputMethod::PreeditUnconvertible:
+            format.setForeground(QBrush(QColor(128, 128, 128)));
+            break;
+        case MInputMethod::PreeditActive:
+            format.setForeground(QBrush(QColor(153, 50, 204)));
+            format.setFontWeight(QFont::Bold);
+            break;
+        case MInputMethod::PreeditKeyPress:
+        case MInputMethod::PreeditDefault:
+            format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+            format.setUnderlineColor(QColor(0, 0, 0));
+            break;
         }
 
         attributes << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,
