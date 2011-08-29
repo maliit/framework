@@ -17,10 +17,6 @@
 #ifndef MINPUTCONTEXT_H
 #define MINPUTCONTEXT_H
 
-#ifdef HAVE_MEEGOTOUCH
-#include <MNamespace>
-#endif
-
 #include <minputmethodnamespace.h>
 #include <maliit/namespace.h>
 
@@ -140,15 +136,6 @@ private Q_SLOTS:
      * \brief Notifies input method server when the QLineEdit object's selection changed
      */
     void handleSelectionChanged();
-
-#ifdef HAVE_MEEGOTOUCH
-    //! Notify input method plugin about the application's active window prepare to change to a new \a orientation angle.
-    void notifyOrientationAboutToChange(M::OrientationAngle orientation);
-
-    //! Notify input method plugin about new \a orientation angle of application's active window.
-    //! \note this method is called when the orientation change is finished
-    void notifyOrientationChanged(M::OrientationAngle orientation);
-#endif
 
     //! Notify input method plugin about the application's active window prepare to change to a new \a orientation angle.
     void notifyOrientationAboutToChange(Maliit::OrientationAngle orientation);

@@ -34,8 +34,6 @@
 
 #ifdef HAVE_MEEGOTOUCH
 #include <MApplicationPage>
-#include <MInputMethodState>
-#include <MPreeditInjectionEvent>
 #endif
 
 #include <maliit/inputmethod.h>
@@ -122,31 +120,6 @@ MInputContext::~MInputContext()
 void MInputContext::connectInputMethodExtension()
 {
 
-#ifdef HAVE_MEEGOTOUCH
-    connect(MInputMethodState::instance(),
-            SIGNAL(activeWindowOrientationAngleAboutToChange(M::OrientationAngle)),
-            this, SLOT(notifyOrientationAboutToChange(M::OrientationAngle)));
-
-    connect(MInputMethodState::instance(),
-            SIGNAL(activeWindowOrientationAngleChanged(M::OrientationAngle)),
-            this, SLOT(notifyOrientationChanged(M::OrientationAngle)));
-
-    connect(MInputMethodState::instance(),
-            SIGNAL(attributeExtensionRegistered(int, QString)),
-            this, SLOT(notifyAttributeExtensionRegistered(int, QString)));
-
-    connect(MInputMethodState::instance(),
-            SIGNAL(attributeExtensionUnregistered(int)),
-            this, SLOT(notifyAttributeExtensionUnregistered(int)));
-
-    connect(MInputMethodState::instance(),
-            SIGNAL(toolbarItemAttributeChanged(int, QString, QString, QVariant)),
-            this, SLOT(notifyToolbarItemAttributeChanged(int, QString, QString, QVariant)));
-
-    connect(MInputMethodState::instance(),
-            SIGNAL(extendedAttributeChanged(int, QString, QString, QString, QVariant)),
-            this, SLOT(notifyExtendedAttributeChanged(int, QString, QString, QString, QVariant)));
-#endif
     connect(InputMethod::instance(),
             SIGNAL(orientationAngleAboutToChange(Maliit::OrientationAngle)),
             this, SLOT(notifyOrientationAboutToChange(Maliit::OrientationAngle)));
@@ -224,21 +197,6 @@ void MInputContext::connectInputMethodServer()
 
 bool MInputContext::event(QEvent *event)
 {
-#ifdef HAVE_MEEGOTOUCH
-    if (event->type() == MPreeditInjectionEvent::eventNumber()) {
-        MPreeditInjectionEvent *injectionEvent = dynamic_cast<MPreeditInjectionEvent *>(event);
-        if (injectionEvent == 0) {
-            return false;
-        }
-
-        if (handlePreeditInjectionEvent(injectionEvent)) {
-            event->accept();
-            return true;
-        } else {
-            return false;
-        }
-    }
-#endif
     if (event->type() == Maliit::PreeditInjectionEvent::eventNumber()) {
         Maliit::PreeditInjectionEvent *injectionEvent = dynamic_cast<Maliit::PreeditInjectionEvent *>(event);
         if (injectionEvent == 0) {
@@ -432,11 +390,6 @@ void MInputContext::setFocusWidget(QWidget *focused)
             active = true;
 
             Maliit::OrientationAngle angle = InputMethod::instance()->orientationAngle();
-#ifdef HAVE_MEEGOTOUCH
-            if (angle == Maliit::Angle0) {
-                angle = static_cast<Maliit::OrientationAngle>(MInputMethodState::instance()->activeWindowOrientationAngle());
-            }
-#endif
             notifyOrientationChanged(angle);
         }
 
@@ -550,14 +503,8 @@ bool MInputContext::filterEvent(const QEvent *event)
         }
 
         if (event->type() == QEvent::KeyPress) {
-#ifdef HAVE_MEEGOTOUCH
-            MInputMethodState::instance()->emitKeyPress(*(static_cast<const QKeyEvent*>(event)));
-#endif
             InputMethod::instance()->emitKeyPress(*static_cast<const QKeyEvent*>(event));
         } else {
-#ifdef HAVE_MEEGOTOUCH
-            MInputMethodState::instance()->emitKeyRelease(*(static_cast<const QKeyEvent*>(event)));
-#endif
             InputMethod::instance()->emitKeyRelease(*static_cast<const QKeyEvent*>(event));
         }
 
@@ -572,16 +519,6 @@ bool MInputContext::filterEvent(const QEvent *event)
         break;
 
     default:
-#ifdef HAVE_MEEGOTOUCH
-        if (event->type() == MPreeditInjectionEvent::eventNumber()) {
-            const MPreeditInjectionEvent *injectionEvent = dynamic_cast<const MPreeditInjectionEvent *>(event);
-            if (injectionEvent == 0) {
-                return false;
-            }
-
-            eaten = handlePreeditInjectionEvent(injectionEvent);
-        }
-#endif
         if (event->type() == Maliit::PreeditInjectionEvent::eventNumber()) {
             const Maliit::PreeditInjectionEvent *injectionEvent = dynamic_cast<const Maliit::PreeditInjectionEvent *>(event);
             if (injectionEvent == 0) {
@@ -798,14 +735,8 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
 
     if (requestType != MInputMethod::EventRequestEventOnly) {
         if (eventType == QEvent::KeyPress) {
-#ifdef HAVE_MEEGOTOUCH
-            MInputMethodState::instance()->emitKeyPress(event);
-#endif
             InputMethod::instance()->emitKeyPress(event);
         } else if (eventType == QEvent::KeyRelease) {
-#ifdef HAVE_MEEGOTOUCH
-            MInputMethodState::instance()->emitKeyRelease(event);
-#endif
             InputMethod::instance()->emitKeyRelease(event);
         }
     }
@@ -818,9 +749,6 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
 
 void MInputContext::updateInputMethodArea(const QRect &rect)
 {
-#ifdef HAVE_MEEGOTOUCH
-    MInputMethodState::instance()->setInputMethodArea(rect);
-#endif
     InputMethod::instance()->setArea(rect);
 
     Q_EMIT inputMethodAreaChanged(rect);
@@ -961,18 +889,6 @@ void MInputContext::notifyCopyPasteState()
 {
     imServer->setCopyPasteState(copyAvailable && copyAllowed, pasteAvailable);
 }
-
-#ifdef HAVE_MEEGOTOUCH
-void MInputContext::notifyOrientationAboutToChange(M::OrientationAngle orientation)
-{
-    notifyOrientationAboutToChange(static_cast<Maliit::OrientationAngle>(orientation));
-}
-
-void MInputContext::notifyOrientationChanged(M::OrientationAngle orientation)
-{
-    notifyOrientationChanged(static_cast<Maliit::OrientationAngle>(orientation));
-}
-#endif
 
 void MInputContext::notifyOrientationAboutToChange(Maliit::OrientationAngle angle)
 {
@@ -1242,28 +1158,6 @@ bool MInputContext::isVisible(const QRect &cursorRect, const QGraphicsView *view
 
 void MInputContext::registerExistingAttributeExtensions()
 {
-#ifdef HAVE_MEEGOTOUCH
-    QList<int> ids = MInputMethodState::instance()->attributeExtensionIds();
-
-    Q_FOREACH (int id, ids) {
-        QString fileName = MInputMethodState::instance()->attributeExtensionFile(id);
-        imServer->registerAttributeExtension(id, fileName);
-
-        MInputMethodState::ExtendedAttributeMap extendedAttributes
-            = MInputMethodState::instance()->extendedAttributes(id);
-
-        Q_FOREACH (QString target, extendedAttributes.keys()) {
-            MInputMethodState::ItemAttributeMap items = extendedAttributes.value(target);
-            Q_FOREACH (QString item, items.keys()) {
-                MInputMethodState::AttributeMap attributes = items.value(item);
-                Q_FOREACH (QString attributeName, attributes.keys()) {
-                    QVariant value = attributes.value(attributeName);
-                    imServer->setExtendedAttribute(id, target, item, attributeName, value);
-                }
-            }
-        }
-    }
-#endif
     const Maliit::ExtensionList &extensions = AttributeExtensionRegistry::instance()->extensions();
 
     Q_FOREACH (const QWeakPointer<AttributeExtension> &extensionRef, extensions) {

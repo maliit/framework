@@ -5,6 +5,8 @@ CHANGES SINCE 0.80.5
 * New MAbstractInputMethodHost::setLanguage(QString) API
   - New method setLanguage added to D-Bus interface. Through this method plugins
     can give applications a hint of the language user is going to write.
+* Removed deprecated support for integrating with input methods via
+  LMT/meegotouch directly. LMT/meegotouch uses libmaliit for that now.
 
 0.80.5
 ======

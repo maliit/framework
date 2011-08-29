@@ -19,8 +19,12 @@ nomeegotouch {
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\" 
 } else {
     DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\" 
+}
 
+enable-meegotouch {
     CONFIG  += meegotouch
+
+    DEFINES += HAVE_MEEGOTOUCH
 }
 
 # Input
