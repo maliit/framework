@@ -1,9 +1,3 @@
-!enable-meegotouch {
-    CONFIG+=nomeegotouch
-} else {
-    CONFIG-=nomeegotouch
-}
-
 MALIIT_VERSION = 0.80.5
 MALIIT_INTERFACE_VERSION = 1.0
 MALIIT_PLUGINS_INTERFACE_VERSION = 0.80
@@ -15,7 +9,7 @@ MALIIT_LIB = maliit-$${MALIIT_INTERFACE_VERSION}
 MALIIT_HEADER = maliit/maliit-$${MALIIT_INTERFACE_VERSION}
 MALIIT_FRAMEWORK_HEADER = maliit/framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}
 
-!nomeegotouch {
+enable-legacy {
     include(defines-legacy.pri)
 } else {
     include(defines.pri)
@@ -65,7 +59,7 @@ isEmpty(M_IM_ENABLE_MULTITOUCH) {
 MALIIT_EXTENSIONS_DIR = $$DATADIR/$$MALIIT_ATTRIBUTE_EXTENSIONS/
 DEFINES += MALIIT_EXTENSIONS_DIR=\\\"$$MALIIT_EXTENSIONS_DIR\\\"
 
-!nomeegotouch {
+enable-legacy {
     M_IM_DEFAULT_PLUGIN = libmeego-keyboard.so
     M_IM_DEFAULT_SUBVIEW = en_gb.xml
 } else {
@@ -91,8 +85,8 @@ mac {
     INCLUDEPATH += include/
 }
 
-!nomeegotouch {
-    DEFINES += HAVE_MEEGOTOUCH
+enable-legacy {
+    DEFINES += HAVE_LEGACY_NAMES
 }
 
 defineTest(outputFile) {

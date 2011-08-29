@@ -126,7 +126,7 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
     M_IM_FRAMEWORK_FEATURE -= M_IM_DISABLE_TRANSLUCENCY
 }
 
-nomeegotouch {
+!enable-legacy {
     outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
 } else {
     outputFiles(MeegoImFramework.pc, meegoimframework.prf, meego-im-framework.schemas)
@@ -138,7 +138,7 @@ install_pkgconfig.files = $$OUT_PWD/MeegoImFramework.pc $$OUT_PWD/maliit-plugins
 install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
 install_prf.files = $$OUT_PWD/meegoimframework.prf
 
-nomeegotouch {
+!enable-legacy {
     install_schemas.files = $$OUT_PWD/maliit-framework.schemas
 } else {
     install_schemas.files = $$OUT_PWD/meego-im-framework.schemas
