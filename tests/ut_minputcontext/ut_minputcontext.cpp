@@ -771,7 +771,11 @@ void Ut_MInputContext::testInvalidScene()
 }
 
 /* Test that when the input method hides,
- * the widget is unfocused. */
+ * the widget is unfocused.
+ *
+ * Warning: Due to using the windowing system, it is vunerable to race conditions
+ * The time it takes for the shown widget/window to become active and get focus may wary.
+ */
 void Ut_MInputContext::testImInitiatedHideUnfocusesWidget()
 {
     WidgetStub widget(0);
@@ -779,11 +783,11 @@ void Ut_MInputContext::testImInitiatedHideUnfocusesWidget()
     m_subject->setFocusWidget(&widget);
     widget.show();
     widget.setFocus();
-    waitAndProcessEvents(100); // Focus changes is done async via eventloop
+    waitAndProcessEvents(1000); // Focus changes is done async via eventloop
     QVERIFY(widget.hasFocus() == true); // Sanity check
 
     Q_EMIT m_connection->imInitiatedHide();
-    waitAndProcessEvents(100); // Focus changes is done async via eventloop
+    waitAndProcessEvents(1000); // Focus changes is done async via eventloop
 
     QVERIFY(widget.hasFocus() == false);
 
