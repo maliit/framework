@@ -557,9 +557,29 @@ void MInputContextConnection::handleDisconnection(unsigned int connectionId)
     }
 }
 
-void MInputContextConnection::handleActivation(unsigned int connectionId)
+void MInputContextConnection::activateContext(unsigned int connectionId)
 {
+    if (connectionId == activeConnection) {
+        return;
+    }
+
+    /* Notify current/previously active context that it is no longer active */
+    sendActivationLostEvent();
+
     activeConnection = connectionId;
+
+    /* Notify new input context about state/settings stored in the IM server */
+    if (activeConnection) {
+        /* Hack: Circumvent if(newValue == oldValue) return; guards */
+        mGlobalCorrectionEnabled = !mGlobalCorrectionEnabled;
+        setGlobalCorrectionEnabled(!mGlobalCorrectionEnabled);
+
+        mRedirectionEnabled = !mRedirectionEnabled;
+        setRedirectKeys(!mRedirectionEnabled);
+
+        mDetectableAutoRepeat = !mDetectableAutoRepeat;
+        setDetectableAutoRepeat(!mDetectableAutoRepeat);
+    }
 
     // notify plugins
     foreach (MAbstractInputMethod *target, targets()) {
@@ -611,3 +631,6 @@ void MInputContextConnection::setLanguage(const QString &language)
 {
     Q_UNUSED(language);
 }
+
+void MInputContextConnection::sendActivationLostEvent()
+{}

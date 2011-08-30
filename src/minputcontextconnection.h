@@ -65,7 +65,7 @@ public:
     virtual bool correctionEnabled(bool &valid);
 
     /*!
-     * \brief returns input method word prediction hint if output parameter valid is true.
+     * \brief returns input methoContextd word prediction hint if output parameter valid is true.
      */
     virtual bool predictionEnabled(bool &valid);
 
@@ -214,7 +214,12 @@ public:
      */
     virtual void setLanguage(const QString &language);
 
+    virtual void sendActivationLostEvent();
+
 public: // Inbound communication handlers
+    //! ipc method provided to application, makes the application the active one
+    void activateContext(unsigned int connectionId);
+
     //! ipc method provided to the application, shows input method
     void showInputMethod(unsigned int connectionId);
 

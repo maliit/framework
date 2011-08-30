@@ -20,17 +20,9 @@
 #include "minputcontextconnection.h"
 #include "mattributeextensionid.h"
 
-#include <QWidget>
-#include <QByteArray>
-#include <QMap>
-#include <QSet>
-#include <QEvent>
-#include <QString>
-#include <QVariant>
-#include <QWidget>
+#include <QtCore>
+#include <QtGui>
 
-class QPoint;
-class QRegion;
 struct MDBusGlibICConnection;
 struct MIMSDBusActivater;
 struct DBusServer;
@@ -46,7 +38,9 @@ public:
     MInputContextGlibDBusConnection();
     virtual ~MInputContextGlibDBusConnection();
 
-    void handleDBusDisconnection(MDBusGlibICConnection *connectionObj);
+    /* Public so they can be called from plain C callbacks */
+    void handleDisconnection(unsigned int connectionId);
+    void insertNewConnection(unsigned int connectionId, MDBusGlibICConnection *connectionObj);
 
     //! \reimp
     virtual void sendPreeditString(const QString &string,
@@ -68,6 +62,7 @@ public:
     virtual void setSelection(int start, int length);
     virtual QString selection(bool &valid);
     virtual void setLanguage(const QString &language);
+    virtual void sendActivationLostEvent();
     //! \reimp_end
 
 public slots:
@@ -77,14 +72,16 @@ public slots:
     virtual void updateInputMethodArea(const QRegion &region);
     //! \reimp_end
 
-public:
-    //! sets the input to go to calling connection
-    void activateContext(MDBusGlibICConnection *connection);
+private:
+    MDBusGlibICConnection *activeContext();
+    MDBusGlibICConnection *connectionObj(unsigned int connectionId);
 
 private:
-    MDBusGlibICConnection *activeContext;
     QByteArray socketAddress;
     DBusServer *server;
+    /* Used to maintain a mapping between the connection identifiers
+    and the object we actually use to handle communication for the given ID. */
+    QMap<unsigned int,MDBusGlibICConnection *>mConnections;
 
     Q_DISABLE_COPY(MInputContextGlibDBusConnection)
 };
