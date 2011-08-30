@@ -28,6 +28,16 @@
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/Xdamage.h>
 
+#ifdef Q_WS_MAEMO_5
+// MB doesn't update WM_STATE when window is iconified, so, as a
+// workaround, we monitor _MB_CURRENT_APP_WINDOW. This points to wid
+// when on FullScreen/Active
+# include <X11/Xatom.h>
+# define ICONIFIED_ATOM_NAME "_MB_CURRENT_APP_WINDOW"
+#else
+# define ICONIFIED_ATOM_NAME "WM_STATE"
+#endif
+
 MImRemoteWindow::MImRemoteWindow(WId window, MImXApplication *application) :
     QObject(0),
     wid(window),
@@ -63,7 +73,7 @@ bool MImRemoteWindow::wasIconified(XEvent *ev) const
         return false;
     }
 
-    static const Atom wmState = XInternAtom(QX11Info::display(), "WM_STATE", false);
+    static const Atom wmState = XInternAtom(QX11Info::display(), ICONIFIED_ATOM_NAME, false);
 
     if (ev->xproperty.atom == wmState) {
         return isIconified();
@@ -74,7 +84,7 @@ bool MImRemoteWindow::wasIconified(XEvent *ev) const
 
 bool MImRemoteWindow::isIconified() const
 {
-    static const Atom wmState = XInternAtom(QX11Info::display(), "WM_STATE", false);
+    static const Atom wmState = XInternAtom(QX11Info::display(), ICONIFIED_ATOM_NAME, false);
 
     Atom type;
     int format;
@@ -83,12 +93,20 @@ bool MImRemoteWindow::isIconified() const
     unsigned long *state;
     uchar *data = 0;
 
+#ifdef Q_WS_MAEMO_5
+# define REAL_ATOM XA_WINDOW
+# define IS_ICONIFIED(_X) _X != wid
+#else
+# define REAL_ATOM AnyPropertyType
+# define IS_ICONIFIED(_X) _X == IconicState
+#endif
+
     int queryResult = XGetWindowProperty(QX11Info::display(), wid, wmState, 0, 2,
-                                         false, AnyPropertyType, &type, &format, &length,
+                                         false, REAL_ATOM, &type, &format, &length,
                                          &after, &data);
     state = reinterpret_cast<unsigned long *>(data);
 
-    bool result = (queryResult == Success && data && format == 32 && *state == IconicState);
+    bool result = (queryResult == Success && data && format == 32 && IS_ICONIFIED(*state));
 
     if (data) {
         XFree(data);
