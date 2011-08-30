@@ -219,7 +219,7 @@ G_DEFINE_TYPE(MDBusGlibICConnection, m_dbus_glib_ic_connection, G_TYPE_OBJECT)
 static gboolean
 m_dbus_glib_ic_connection_activate_context(MDBusGlibICConnection *obj, GError **/*error*/)
 {
-    obj->icConnection->activateContext(obj);
+    obj->icConnection->activateContext(obj->connectionNumber);
     return TRUE;
 }
 
@@ -408,14 +408,19 @@ static void handleDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userDa
     qDebug() << __PRETTY_FUNCTION__;
 
     MDBusGlibICConnection *connection(M_DBUS_GLIB_IC_CONNECTION(userData));
-    connection->icConnection->handleDBusDisconnection(connection);
+    connection->icConnection->handleDisconnection(connection->connectionNumber);
 }
 
-void MInputContextGlibDBusConnection::handleDBusDisconnection(MDBusGlibICConnection *connectionObj)
+void MInputContextGlibDBusConnection::handleDisconnection(unsigned int connectionId)
 {
-    const unsigned int connectionId = connectionObj->connectionNumber;
     MInputContextConnection::handleDisconnection(connectionId);
-    g_object_unref(G_OBJECT(connectionObj));}
+
+    MDBusGlibICConnection *connection = connectionObj(connectionId);
+    if (connection) {
+        g_object_unref(G_OBJECT(connection));
+        mConnections.remove(connectionId);
+    }
+}
 
 void MInputContextGlibDBusConnection::handleNewDBusConnectionReady(MDBusGlibICConnection *connectionObj)
 {
@@ -433,8 +438,10 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
     MDBusGlibICConnection *obj = M_DBUS_GLIB_IC_CONNECTION(
         g_object_new(M_TYPE_DBUS_GLIB_IC_CONNECTION, NULL));
 
+    MInputContextGlibDBusConnection *icConnection = static_cast<MInputContextGlibDBusConnection *>(userData);;
+
     obj->dbusConnection = dbus_connection_get_g_connection(connection);
-    obj->icConnection = static_cast<MInputContextGlibDBusConnection *>(userData);
+    obj->icConnection = icConnection;
 
     // Proxy for calling input context methods
     DBusGProxy *inputContextProxy = dbus_g_proxy_new_for_peer(
@@ -450,14 +457,21 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
     static unsigned int connectionCounter = 1; // Start at 1 so 0 can be used as a sentinel value
     obj->connectionNumber = connectionCounter++;
 
+    icConnection->insertNewConnection(obj->connectionNumber, obj);
+
     dbus_g_connection_register_g_object(obj->dbusConnection, DBusPath, G_OBJECT(obj));
 
     obj->icConnection->handleNewDBusConnectionReady(obj);
 }
 
+void MInputContextGlibDBusConnection::insertNewConnection(unsigned int connectionId,
+                                                          MDBusGlibICConnection *connectionObj)
+{
+    mConnections.insert(connectionId, connectionObj);
+}
+
 MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
-    : activeContext(NULL)
-    , server(NULL)
+    : server(NULL)
 {
     dbus_g_thread_init();
     g_type_init();
@@ -490,6 +504,22 @@ MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
     dbus_server_unref(server);
 }
 
+MDBusGlibICConnection *MInputContextGlibDBusConnection::activeContext()
+{
+    return connectionObj(activeConnection);
+}
+MDBusGlibICConnection *MInputContextGlibDBusConnection::connectionObj(unsigned int connectionId)
+{
+    if (!connectionId) {
+        return 0;
+    }
+
+    MDBusGlibICConnection *context = mConnections.value(connectionId, 0);
+    if (!context) {
+        qCritical() << "Could not find connection object for connection ID " << connectionId;
+    }
+    return context;
+}
 
 // Server -> input context...................................................
 
@@ -515,7 +545,7 @@ void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
             return;
         }
 
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updatePreedit",
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "updatePreedit",
                                    G_TYPE_STRING, string.toUtf8().data(),
                                    preeditFormatsType, preeditFormatsData,
                                    G_TYPE_INT, replaceStart,
@@ -534,7 +564,7 @@ void MInputContextGlibDBusConnection::sendCommitString(const QString &string, in
 
         MInputContextConnection::sendCommitString(string, replaceStart, replaceLength, cursorPos);
 
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "commitString",
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "commitString",
                                    G_TYPE_STRING, string.toUtf8().data(),
                                    G_TYPE_INT, replaceStart,
                                    G_TYPE_INT, replaceLength,
@@ -554,7 +584,7 @@ void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent,
         int key = static_cast<int>(keyEvent.key());
         int modifiers = static_cast<int>(keyEvent.modifiers());
 
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "keyEvent",
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "keyEvent",
                                    G_TYPE_INT, type,
                                    G_TYPE_INT, key,
                                    G_TYPE_INT, modifiers,
@@ -569,8 +599,8 @@ void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent,
 
 void MInputContextGlibDBusConnection::notifyImInitiatedHiding()
 {
-    if (activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "imInitiatedHide",
+    if (activeContext()) {
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "imInitiatedHide",
                                    G_TYPE_INVALID);
     }
 }
@@ -579,8 +609,8 @@ void MInputContextGlibDBusConnection::notifyImInitiatedHiding()
 
 void MInputContextGlibDBusConnection::setGlobalCorrectionEnabled(bool enabled)
 {
-    if ((enabled != globalCorrectionEnabled()) && activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setGlobalCorrectionEnabled",
+    if ((enabled != globalCorrectionEnabled()) && activeContext()) {
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "setGlobalCorrectionEnabled",
                                    G_TYPE_BOOLEAN, enabled,
                                    G_TYPE_INVALID);
 
@@ -595,7 +625,7 @@ QString MInputContextGlibDBusConnection::selection(bool &valid)
     QString selectionText;
     gboolean gvalidity = FALSE;
     gchar *gdata = NULL;
-    if (activeContext && dbus_g_proxy_call(activeContext->inputContextProxy, "selection", &error,
+    if (activeContext() && dbus_g_proxy_call(activeContext()->inputContextProxy, "selection", &error,
                                            G_TYPE_INVALID,
                                            G_TYPE_BOOLEAN, &gvalidity,
                                            G_TYPE_STRING, &gdata,
@@ -619,7 +649,7 @@ QString MInputContextGlibDBusConnection::selection(bool &valid)
 void MInputContextGlibDBusConnection::setLanguage(const QString &language)
 {
     lastLanguage = language;
-    setLanguage(activeContext, language);
+    setLanguage(activeContext(), language);
 }
 
 void MInputContextGlibDBusConnection::setLanguage(MDBusGlibICConnection *targetIcConnection,
@@ -639,8 +669,8 @@ QRect MInputContextGlibDBusConnection::preeditRectangle(bool &valid)
     gboolean gvalidity;
     gint32 x, y, width, height;
 
-    if (activeContext &&
-        dbus_g_proxy_call(activeContext->inputContextProxy, "preeditRectangle", &error, G_TYPE_INVALID,
+    if (activeContext() &&
+        dbus_g_proxy_call(activeContext()->inputContextProxy, "preeditRectangle", &error, G_TYPE_INVALID,
                           G_TYPE_BOOLEAN, &gvalidity, G_TYPE_INT, &x, G_TYPE_INT, &y,
                           G_TYPE_INT, &width, G_TYPE_INT, &height, G_TYPE_INVALID)) {
         valid = gvalidity == TRUE;
@@ -657,8 +687,8 @@ QRect MInputContextGlibDBusConnection::preeditRectangle(bool &valid)
 
 void MInputContextGlibDBusConnection::setRedirectKeys(bool enabled)
 {
-    if ((redirectKeysEnabled() != enabled) && activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setRedirectKeys",
+    if ((redirectKeysEnabled() != enabled) && activeContext()) {
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "setRedirectKeys",
                                    G_TYPE_BOOLEAN, enabled ? TRUE : FALSE,
                                    G_TYPE_INVALID);
 
@@ -668,8 +698,8 @@ void MInputContextGlibDBusConnection::setRedirectKeys(bool enabled)
 
 void MInputContextGlibDBusConnection::setDetectableAutoRepeat(bool enabled)
 {
-    if ((detectableAutoRepeat() != enabled) && activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setDetectableAutoRepeat",
+    if ((detectableAutoRepeat() != enabled) && activeContext()) {
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "setDetectableAutoRepeat",
                                    G_TYPE_BOOLEAN, enabled,
                                    G_TYPE_INVALID);
 
@@ -680,8 +710,8 @@ void MInputContextGlibDBusConnection::setDetectableAutoRepeat(bool enabled)
 
 void MInputContextGlibDBusConnection::copy()
 {
-    if (activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "copy",
+    if (activeContext()) {
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "copy",
                                    G_TYPE_INVALID);
     }
 }
@@ -689,8 +719,8 @@ void MInputContextGlibDBusConnection::copy()
 
 void MInputContextGlibDBusConnection::paste()
 {
-    if (activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "paste",
+    if (activeContext()) {
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "paste",
                                    G_TYPE_INVALID);
     }
 }
@@ -698,8 +728,8 @@ void MInputContextGlibDBusConnection::paste()
 
 void MInputContextGlibDBusConnection::setSelection(int start, int length)
 {
-    if (activeContext) {
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setSelection",
+    if (activeContext()) {
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "setSelection",
                                    G_TYPE_INT, start,
                                    G_TYPE_INT, length,
                                    G_TYPE_INVALID);
@@ -708,9 +738,9 @@ void MInputContextGlibDBusConnection::setSelection(int start, int length)
 
 void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &region)
 {
-    if (activeContext) {
+    if (activeContext()) {
         QRect rect = region.boundingRect();
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "updateInputMethodArea",
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "updateInputMethodArea",
                                    G_TYPE_INT, rect.left(),
                                    G_TYPE_INT, rect.top(),
                                    G_TYPE_INT, rect.width(),
@@ -719,33 +749,10 @@ void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &regio
     }
 }
 
-
-// Input context -> server...................................................
-
-void MInputContextGlibDBusConnection::activateContext(MDBusGlibICConnection *connectionObj)
+void MInputContextGlibDBusConnection::sendActivationLostEvent()
 {
-    MDBusGlibICConnection *previousActiveContext = activeContext;
-    activeContext = connectionObj;
-
-    if (activeContext) {
-        // TODO: call methods on self instead of duplicating the code
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "activeContext ->CorrectionEnabled",
-                                   G_TYPE_BOOLEAN, globalCorrectionEnabled(),
+    if (activeContext()) {
+        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "activationLostEvent",
                                    G_TYPE_INVALID);
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "setRedirectKeys",
-                                   G_TYPE_BOOLEAN, redirectKeysEnabled(),
-                                   G_TYPE_INVALID);
-        dbus_g_proxy_call_no_reply(activeContext->inputContextProxy, "detectableAutoRepeat",
-                                   G_TYPE_BOOLEAN, detectableAutoRepeat(),
-                                   G_TYPE_INVALID);
-
-        if ((previousActiveContext != 0) && (previousActiveContext != activeContext)) {
-            // TODO: we can't use previousActive here like this
-            dbus_g_proxy_call_no_reply(previousActiveContext->inputContextProxy, "activationLostEvent",
-                                       G_TYPE_INVALID);
-        }
     }
-
-    activeContext = 0;
 }
-
