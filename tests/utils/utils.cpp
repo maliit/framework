@@ -22,6 +22,9 @@
 
 namespace {
     const QString TestingInSandboxEnvVariable("TESTING_IN_SANDBOX");
+
+    const QString GlobalTestPluginPath(MALIIT_TEST_PLUGINS_DIR);
+    const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
 }
 
 namespace MaliitTestUtils {
@@ -46,6 +49,43 @@ bool isTestingInSandbox()
         }
     }
     return testingInSandbox;
+}
+
+// Use either global test plugin directory or TESTPLUGIN_PATH, if it is
+// set (to local sandbox's plugin directory by makefile, at least).
+//
+// Returns a null QString on failure
+QString getTestPluginPath()
+{
+    QString pluginPath = GlobalTestPluginPath;
+
+    const QStringList env(QProcess::systemEnvironment());
+    int index = env.indexOf(QRegExp('^' + TestPluginPathEnvVariable + "=.*", Qt::CaseInsensitive));
+    if (index != -1) {
+        QString pathCandidate = env.at(index);
+        pathCandidate = pathCandidate.remove(
+                            QRegExp('^' + TestPluginPathEnvVariable + '=', Qt::CaseInsensitive));
+        if (!pathCandidate.isEmpty()) {
+            pluginPath = pathCandidate;
+        } else {
+            qCritical() << "Invalid " << TestPluginPathEnvVariable << " environment variable.\n";
+            return QString();
+        }
+    }
+    if (!QDir(pluginPath).exists()) {
+        qCritical("Test plugin directory does not exist.");
+        return QString();
+    }
+    return pluginPath;
+}
+
+// Wait for signal or timeout; use SIGNAL macro for signal
+void waitForSignal(const QObject* object, const char* signal, int timeout)
+{
+    QEventLoop eventLoop;
+    QObject::connect(object, signal, &eventLoop, SLOT(quit()));
+    QTimer::singleShot(timeout, &eventLoop, SLOT(quit()));
+    eventLoop.exec();
 }
 
 RemoteWindow::RemoteWindow(QWidget *p, Qt::WindowFlags f)

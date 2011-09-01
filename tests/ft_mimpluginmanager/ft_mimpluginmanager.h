@@ -29,7 +29,6 @@ private Q_SLOTS:
 
 private:
     MIMApplication *app;
-    QString pluginPath;
     MIMPluginManager *subject;
 };
 

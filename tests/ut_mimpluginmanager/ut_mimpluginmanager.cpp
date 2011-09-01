@@ -8,6 +8,8 @@
 #include "fakegconf.h"
 #include "minputcontextconnection.h"
 
+#include "utils.h"
+
 #include <QProcess>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -30,9 +32,6 @@ Q_DECLARE_METATYPE(HandlerStates);
 Q_DECLARE_METATYPE(MInputMethod::HandlerState);
 
 namespace {
-    const QString GlobalTestPluginPath(MALIIT_TEST_PLUGINS_DIR);
-    const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
-
     const QString ConfigRoot          = MALIIT_CONFIG_ROOT;
     const QString MImPluginPaths    = ConfigRoot + "paths";
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
@@ -61,15 +60,6 @@ namespace {
                                               << pluginId << "dummyimsv2"
                                               << pluginId3 << "dummyim3sv1"
                                               << pluginId3 << "dummyim3sv2";
-
-    // Wait for signal or timeout; use SIGNAL macro for signal
-    void waitForSignal(const QObject* object, const char* signal, int timeout)
-    {
-        QEventLoop eventLoop;
-        QObject::connect(object, signal, &eventLoop, SLOT(quit()));
-        QTimer::singleShot(timeout, &eventLoop, SLOT(quit()));
-        eventLoop.exec();
-    }
 }
 
 
@@ -84,25 +74,6 @@ void Ut_MIMPluginManager::initTestCase()
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
     Toolbar2 = QCoreApplication::applicationDirPath() + Toolbar2;
     QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
-
-    // Use either global test plugin directory or TESTPLUGIN_PATH, if it is
-    // set (to local sandbox's plugin directory by makefile, at least).
-    pluginPath = GlobalTestPluginPath;
-
-    const QStringList env(QProcess::systemEnvironment());
-    int index = env.indexOf(QRegExp('^' + TestPluginPathEnvVariable + "=.*", Qt::CaseInsensitive));
-    if (index != -1) {
-        QString pathCandidate = env.at(index);
-        pathCandidate = pathCandidate.remove(
-                            QRegExp('^' + TestPluginPathEnvVariable + '=', Qt::CaseInsensitive));
-        if (!pathCandidate.isEmpty()) {
-            pluginPath = pathCandidate;
-        } else {
-            qDebug() << "Invalid " << TestPluginPathEnvVariable << " environment variable.\n";
-            QFAIL("Attempt to execute test incorrectly.");
-        }
-    }
-    QVERIFY2(QDir(pluginPath).exists(), "Test plugin directory does not exist.");
 }
 
 void Ut_MIMPluginManager::cleanupTestCase()
@@ -113,7 +84,7 @@ void Ut_MIMPluginManager::cleanupTestCase()
 void Ut_MIMPluginManager::init()
 {
     MImSettings pathConf(MImPluginPaths);
-    pathConf.set(pluginPath);
+    pathConf.set(MaliitTestUtils::getTestPluginPath());
     MImSettings blackListConf(MImPluginDisabled);
 
     QStringList blackList;
@@ -852,7 +823,7 @@ void Ut_MIMPluginManager::testRegionUpdates()
     manager->hideActivePlugins();
     QCOMPARE(regionUpdates.count(), 0);
     // ...so make sure the region is sent by the plugin manager after a timeout.
-    waitForSignal(manager, SIGNAL(regionUpdated(QRegion)), 3000);
+    MaliitTestUtils::waitForSignal(manager, SIGNAL(regionUpdated(QRegion)), 3000);
     QCOMPARE(regionUpdates.count(), 1);
 
     region = regionUpdates.takeFirst().at(0);
