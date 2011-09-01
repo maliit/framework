@@ -6,6 +6,8 @@
 #include "mimapplication.h"
 #include "minputcontextconnection.h"
 
+#include "utils.h"
+
 #include <QProcess>
 #include <QGraphicsScene>
 #include <QRegExp>
@@ -16,9 +18,6 @@
 
 namespace
 {
-    const QString GlobalTestPluginPath(MALIIT_TEST_PLUGINS_DIR);
-    const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
-
     const QString pluginName  = "DummyImPlugin";
     const QString pluginName3 = "DummyImPlugin3";
     const QString pluginId  = "libdummyimplugin.so";
@@ -56,25 +55,6 @@ void Ft_MIMPluginManager::initTestCase()
     static int argc = 1;
 
     app = new MIMApplication(argc, argv);
-
-    // Use either global test plugin directory or TESTPLUGIN_PATH, if it is
-    // set (to local sandbox's plugin directory by makefile, at least).
-    pluginPath = GlobalTestPluginPath;
-
-    const QStringList env(QProcess::systemEnvironment());
-    int index = env.indexOf(QRegExp('^' + TestPluginPathEnvVariable + "=.*", Qt::CaseInsensitive));
-    if (index != -1) {
-        QString pathCandidate = env.at(index);
-        pathCandidate = pathCandidate.remove(
-                            QRegExp('^' + TestPluginPathEnvVariable + '=', Qt::CaseInsensitive));
-        if (!pathCandidate.isEmpty()) {
-            pluginPath = pathCandidate;
-        } else {
-            qDebug() << "Invalid " << TestPluginPathEnvVariable << " environment variable.\n";
-            QFAIL("Attempt to execute test incorrectly.");
-        }
-    }
-    QVERIFY2(QDir(pluginPath).exists(), "Test plugin directory does not exist.");
 }
 
 void Ft_MIMPluginManager::cleanupTestCase()
@@ -84,7 +64,7 @@ void Ft_MIMPluginManager::cleanupTestCase()
 
 void Ft_MIMPluginManager::init()
 {
-    MImSettings(MImPluginPaths).set(pluginPath);
+    MImSettings(MImPluginPaths).set(MaliitTestUtils::getTestPluginPath());
     MImSettings(MImPluginDisabled).set(QStringList("libdummyimplugin2.so"));
     MImSettings(MImPluginActive).set(QStringList("DummyImPlugin"));
 

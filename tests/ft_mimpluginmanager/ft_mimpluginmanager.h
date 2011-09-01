@@ -29,7 +29,6 @@ private slots:
 
 private:
     MIMApplication *app;
-    QString pluginPath;
     MIMPluginManager *subject;
 };
 

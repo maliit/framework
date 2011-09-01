@@ -24,7 +24,10 @@
 #include <vector>
 
 namespace MaliitTestUtils {
+
     bool isTestingInSandbox();
+    QString getTestPluginPath();
+    void waitForSignal(const QObject* object, const char* signal, int timeout);
 
     class RemoteWindow : public QWidget
     {
