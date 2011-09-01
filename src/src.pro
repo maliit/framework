@@ -172,7 +172,7 @@ QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.depends += lib$${TARGET}.so.$${VERSION}
 
-LIBS += -lXcomposite -lXdamage -lX11 -lXfixes
+LIBS += -lXcomposite -lXdamage -lXfixes
 
 # Generate dbus glue
 QMAKE_EXTRA_TARGETS += dbus_glue
