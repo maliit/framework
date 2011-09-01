@@ -1,6 +1,6 @@
 include(../common_top.pri)
 
-LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes -lX11
+LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
 
 HEADERS += \
     ut_mimrotationanimation.h \

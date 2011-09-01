@@ -89,6 +89,11 @@ mac {
     INCLUDEPATH += include/
 }
 
+# Use x11 on unix systems without lighthouse (qpa)
+unix:!qpa: {
+    CONFIG += x11
+}
+
 enable-legacy {
     DEFINES += HAVE_LEGACY_NAMES
 }

@@ -25,6 +25,6 @@ SOURCES += \
     $$PASSTHRU_DIR/mpassthruwindow.cpp \
 
 LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lX11 -lXcomposite -lXdamage -lXfixes
+    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXcomposite -lXdamage -lXfixes
 
 include(../common_check.pri)

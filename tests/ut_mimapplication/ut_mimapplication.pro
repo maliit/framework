@@ -27,6 +27,6 @@ isEqual(code_coverage_option, off) {
 CONFIG += plugin qdbus
 
 LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes -lX11
+    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
 
 include(../common_check.pri)
