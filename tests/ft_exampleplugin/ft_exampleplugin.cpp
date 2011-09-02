@@ -20,43 +20,12 @@
 
 #include <minputmethodhost.h>
 #include <minputmethodplugin.h>
+#include <minputcontextconnection.h>
 #include <QtCore>
 #include <QtGui>
 
 class MIndicatorServiceClient
 {};
-
-class TestInputMethodHost
-    : public MInputMethodHost
-{
-public:
-    QString lastCommit;
-    int sendCommitCount;
-
-    QString lastPreedit;
-    int sendPreeditCount;
-
-    TestInputMethodHost(MIndicatorServiceClient &client)
-        : MInputMethodHost(0, 0, client, 0)
-        , sendCommitCount(0)
-        , sendPreeditCount(0)
-    {}
-
-    void sendCommitString(const QString &string,
-                          int, int, int)
-    {
-        lastCommit = string;
-        ++sendCommitCount;
-    }
-
-    void sendPreeditString(const QString &string,
-                           const QList<MInputMethod::PreeditTextFormat> &,
-                           int , int , int)
-    {
-        lastPreedit = string;
-        ++sendPreeditCount;
-    }
-};
 
 void Ft_ExamplePlugin::initTestCase()
 {
@@ -84,7 +53,7 @@ void Ft_ExamplePlugin::cleanup()
 void Ft_ExamplePlugin::testFunction()
 {
     MIndicatorServiceClient fakeService;
-    TestInputMethodHost host(fakeService);
+    MaliitTestUtils::TestInputMethodHost host(fakeService);
 
     const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR"/examples");
     const QString pluginPath = pluginDir.absoluteFilePath("standard/libexampleplugin.so");

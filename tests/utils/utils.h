@@ -23,11 +23,16 @@
 #include <tr1/functional>
 #include <vector>
 
+#include <minputmethodhost.h>
+#include <minputcontextconnection.h>
+
+
 namespace MaliitTestUtils {
 
     bool isTestingInSandbox();
     QString getTestPluginPath();
     void waitForSignal(const QObject* object, const char* signal, int timeout);
+
 
     class RemoteWindow : public QWidget
     {
@@ -59,6 +64,42 @@ namespace MaliitTestUtils {
     private:
         const TransformFunction transform;
     };
+
+
+    class TestInputMethodHost
+        : public MInputMethodHost
+    {
+    public:
+        QString lastCommit;
+        int sendCommitCount;
+
+        QString lastPreedit;
+        int sendPreeditCount;
+
+        TestInputMethodHost(MIndicatorServiceClient &client)
+            : MInputMethodHost(0, 0, client, 0)
+            , sendCommitCount(0)
+            , sendPreeditCount(0)
+        {}
+
+        void sendCommitString(const QString &string,
+                              int start, int length, int cursorPos)
+        {
+            lastCommit = string;
+            ++sendCommitCount;
+            MInputMethodHost::sendCommitString(string, start, length, cursorPos);
+        }
+
+        void sendPreeditString(const QString &string,
+                               const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                               int start, int length, int cursorPos)
+        {
+            lastPreedit = string;
+            ++sendPreeditCount;
+            MInputMethodHost::sendPreeditString(string, preeditFormats, start, length, cursorPos);
+        }
+    };
+
 }
 
 #endif // UTILS_H__
