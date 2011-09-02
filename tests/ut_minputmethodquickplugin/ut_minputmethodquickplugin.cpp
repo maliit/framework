@@ -24,42 +24,6 @@
 #include <QtCore>
 #include <QtGui>
 
-class MIndicatorServiceClient
-{};
-
-class TestInputMethodHost
-    : public MInputMethodHost
-{
-public:
-    QString lastCommit;
-    int sendCommitCount;
-
-    QString lastPreedit;
-    int sendPreeditCount;
-
-    TestInputMethodHost(MIndicatorServiceClient &client)
-        : MInputMethodHost(0, 0, client, 0)
-        , sendCommitCount(0)
-        , sendPreeditCount(0)
-    {}
-
-    void sendCommitString(const QString &string,
-                          int, int, int)
-    {
-        lastCommit = string;
-        ++sendCommitCount;
-    }
-
-    void sendPreeditString(const QString &string,
-                           const QList<MInputMethod::PreeditTextFormat> &,
-                           int , int , int)
-    {
-        lastPreedit = string;
-        ++sendPreeditCount;
-    }
-};
-
-
 void Ut_MInputMethodQuickPlugin::initTestCase()
 {
     static char *argv[2] = { (char *) "Ut_MInputMethodQuickPlugin",
@@ -99,7 +63,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
 void Ut_MInputMethodQuickPlugin::testQmlSetup()
 {
     MIndicatorServiceClient fakeService;
-    TestInputMethodHost host(fakeService);
+    MaliitTestUtils::TestInputMethodHost host(fakeService);
     QFETCH(QString, testPluginPath);
 
     const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR"/examples");
