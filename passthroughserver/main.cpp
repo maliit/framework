@@ -33,6 +33,8 @@
 #include <QCommonStyle>
 #include <stdlib.h>
 
+using namespace std::tr1;
+
 namespace {
     void disableMInputContextPlugin()
     {
@@ -64,15 +66,15 @@ int main(int argc, char **argv)
     qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 
     // Input Context Connection
-    MInputContextGlibDBusConnection *icConnection = new MInputContextGlibDBusConnection();
+    shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
 
     // Rotation Animation
     MImRotationAnimation *rotationAnimation =
             new MImRotationAnimation(app.pluginsProxyWidget(), app.passThruWindow());
 
-    QObject::connect(icConnection, SIGNAL(appOrientationAboutToChange(int)),
+    QObject::connect(icConnection.get(), SIGNAL(appOrientationAboutToChange(int)),
             rotationAnimation, SLOT(appOrientationAboutToChange(int)));
-    QObject::connect(icConnection, SIGNAL(appOrientationChanged(int)),
+    QObject::connect(icConnection.get(), SIGNAL(appOrientationChanged(int)),
             rotationAnimation, SLOT(appOrientationChangeFinished(int)));
 
     // PluginManager

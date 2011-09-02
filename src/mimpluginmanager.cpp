@@ -42,6 +42,8 @@
 #include <QDebug>
 #include <deque>
 
+using namespace std::tr1;
+
 namespace
 {
     const QString DefaultPluginLocation(M_IM_PLUGINS_DIR);
@@ -68,7 +70,7 @@ namespace
     }
 }
 
-MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connection,
+MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection,
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
@@ -93,7 +95,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(MInputContextConnection *connec
 MIMPluginManagerPrivate::~MIMPluginManagerPrivate()
 {
     qDeleteAll(handlerToPluginConfs);
-    delete mICConnection;
 }
 
 
@@ -1110,23 +1111,23 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 ///////////////
 // actual class
 
-MIMPluginManager::MIMPluginManager(MInputContextConnection* icConnection)
+MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnection)
     : QObject(),
       d_ptr(new MIMPluginManagerPrivate(icConnection, this))
 {
     Q_D(MIMPluginManager);
     d->q_ptr = this;
 
-    connect(d->mICConnection, SIGNAL(showInputMethodRequest()),
+    connect(d->mICConnection.get(), SIGNAL(showInputMethodRequest()),
             this, SLOT(showActivePlugins()));
 
-    connect(d->mICConnection, SIGNAL(hideInputMethodRequest()),
+    connect(d->mICConnection.get(), SIGNAL(hideInputMethodRequest()),
             this, SLOT(hideActivePlugins()));
 
-    connect(d->mICConnection, SIGNAL(toolbarIdChanged(const MAttributeExtensionId &)),
+    connect(d->mICConnection.get(), SIGNAL(toolbarIdChanged(const MAttributeExtensionId &)),
             this, SLOT(setToolbar(const MAttributeExtensionId &)));
 
-    connect(d->mICConnection, SIGNAL(keyOverrideCreated()),
+    connect(d->mICConnection.get(), SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();

@@ -25,16 +25,8 @@
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
 
-#include <QObject>
-#include <QWeakPointer>
-#include <QWidget>
-#include <QList>
-#include <QStringList>
-#include <QMap>
-#include <QSet>
-#include <QRegion>
-#include <QTimer>
-#include <QDir>
+#include <QtCore>
+#include <tr1/memory>
 
 class MInputMethodPlugin;
 class MImAbstractPluginFactory;
@@ -44,6 +36,7 @@ class MImSettings;
 class MAbstractInputMethod;
 class MIMPluginManagerAdaptor;
 
+using namespace std::tr1;
 
 /* Internal class only! Interfaces here change, internal developers only*/
 class MIMPluginManagerPrivate
@@ -72,7 +65,7 @@ public:
     typedef QMap<MInputMethod::HandlerState, MInputMethodPlugin *> HandlerMap;
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
-    MIMPluginManagerPrivate(MInputContextConnection *connection, MIMPluginManager *p);
+    MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
     void activatePlugin(MInputMethodPlugin *plugin);
@@ -154,7 +147,7 @@ public:
     QString inputSourceName(MInputMethod::HandlerState source) const;
 
     MIMPluginManager *parent;
-    MInputContextConnection *mICConnection;
+    shared_ptr<MInputContextConnection> mICConnection;
 
     Plugins plugins;
     ActivePlugins activePlugins;

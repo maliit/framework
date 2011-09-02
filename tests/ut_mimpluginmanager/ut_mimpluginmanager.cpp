@@ -27,6 +27,8 @@
 
 #include "mattributeextensionmanager.h"
 
+using namespace std::tr1;
+
 typedef QSet<MInputMethod::HandlerState> HandlerStates;
 Q_DECLARE_METATYPE(HandlerStates);
 Q_DECLARE_METATYPE(MInputMethod::HandlerState);
@@ -101,9 +103,8 @@ void Ut_MIMPluginManager::init()
     activePlugin << pluginId << "dummyimsv1";
     activePluginSettings.set(activePlugin);
 
-    MInputContextConnection *icConnection = new MInputContextConnection();
+    shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
     manager = new MIMPluginManager(icConnection);
-    icConnection->setParent(manager);
 
     subject = manager->d_ptr;
 

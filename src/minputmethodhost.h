@@ -19,6 +19,8 @@
 
 #include "mabstractinputmethodhost.h"
 
+#include <tr1/memory>
+
 class MInputContextConnection;
 class MIMPluginManager;
 class MIndicatorServiceClient;
@@ -26,6 +28,7 @@ class MAbstractInputMethod;
 
 class QRegion;
 
+using namespace std::tr1;
 
 //! \internal
 /*!
@@ -36,7 +39,7 @@ class MInputMethodHost: public MAbstractInputMethodHost
     Q_OBJECT
 
 public:
-    MInputMethodHost(MInputContextConnection *inputContextConnection,
+    MInputMethodHost(shared_ptr<MInputContextConnection> inputContextConnection,
                      MIMPluginManager *pluginManager, MIndicatorServiceClient &indicatorService,
                      QObject *parent = 0);
     virtual ~MInputMethodHost();
@@ -96,7 +99,7 @@ public:
 private:
     Q_DISABLE_COPY(MInputMethodHost)
 
-    MInputContextConnection *connection;
+    shared_ptr<MInputContextConnection> connection;
     MIMPluginManager *pluginManager;
     MAbstractInputMethod *inputMethod;
     bool enabled;
