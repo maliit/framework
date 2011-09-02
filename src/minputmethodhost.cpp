@@ -24,7 +24,7 @@
 #include <QWidget>
 #include <QGraphicsView>
 
-MInputMethodHost::MInputMethodHost(MInputContextConnection *inputContextConnection,
+MInputMethodHost::MInputMethodHost(shared_ptr<MInputContextConnection> inputContextConnection,
                                    MIMPluginManager *pluginManager,
                                    MIndicatorServiceClient &indicatorService, QObject *parent)
     : MAbstractInputMethodHost(parent),

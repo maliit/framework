@@ -79,7 +79,7 @@ namespace MaliitTestUtils {
         int sendPreeditCount;
 
         TestInputMethodHost(MIndicatorServiceClient &client)
-            : MInputMethodHost(0, 0, client, 0)
+            : MInputMethodHost(std::tr1::shared_ptr<MInputContextConnection>(new MInputContextConnection), 0, client, 0)
             , sendCommitCount(0)
             , sendPreeditCount(0)
         {}

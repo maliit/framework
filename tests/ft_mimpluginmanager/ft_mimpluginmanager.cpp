@@ -16,6 +16,8 @@
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
 
+using namespace std::tr1;
+
 namespace
 {
     const QString pluginName  = "DummyImPlugin";
@@ -87,9 +89,8 @@ void Ft_MIMPluginManager::init()
     gMKeyboardStateTrackerStub->setOpenState(false);
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
-    MInputContextConnection *icConnection = new MInputContextConnection();
+    shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
     subject = new MIMPluginManager(icConnection);
-    icConnection->setParent(subject);
 }
 
 void Ft_MIMPluginManager::cleanup()
