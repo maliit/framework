@@ -996,7 +996,7 @@ void MIMPluginManagerPrivate::hideActivePlugins()
 
 void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest request)
 {
-    if (not MIMApplication::instance() || not MIMApplication::instance()->passThruWindow() || not MIMApplication::instance()->pluginsProxyWidget()) {
+    if (not MIMApplication::instance() || not MIMApplication::instance()->toplevel() || not MIMApplication::instance()->pluginsProxyWidget()) {
         return;
     }
 

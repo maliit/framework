@@ -16,7 +16,7 @@
 
 #include "ut_mimrotationanimation.h"
 
-#include "mimapplication.h"
+#include "mimxapplication.h"
 #include "mimrotationanimation.h"
 
 #include "utils.h"
@@ -33,7 +33,7 @@ void Ut_MImRotationAnimation::initTestCase()
     // Enforcing raster GS to make test reliable:
     QApplication::setGraphicsSystem("raster");
 
-    app = new MIMApplication(argc, argv);
+    app = new MImXApplication(argc, argv);
 
     remote = new MaliitTestUtils::RemoteWindow;
     remote->setGeometry(0, 0, windowSize.width(), windowSize.height());

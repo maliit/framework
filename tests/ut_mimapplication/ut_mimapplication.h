@@ -5,7 +5,7 @@
 #include <QObject>
 
 class MPassThruWindow;
-class MIMApplication;
+class MImXApplication;
 
 class Ut_MIMApplication : public QObject
 {
@@ -27,7 +27,7 @@ private:
     void handleMessages();
 
     MPassThruWindow *subject;
-    MIMApplication *app;
+    MImXApplication *app;
 };
 
 #endif

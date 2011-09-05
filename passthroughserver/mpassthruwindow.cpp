@@ -14,7 +14,7 @@
  * of this file.
  */
 #include "mpassthruwindow.h"
-#include "mimapplication.h"
+#include "mimxapplication.h"
 #include "mimremotewindow.h"
 
 #include <QDebug>
@@ -88,7 +88,7 @@ MPassThruWindow::MPassThruWindow(QWidget *p)
 
     Qt::WindowFlags windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
 
-    if (MIMApplication::instance() && MIMApplication::instance()->bypassWMHint()) {
+    if (MImXApplication::instance() && MImXApplication::instance()->bypassWMHint()) {
         windowFlags |= Qt::X11BypassWindowManagerHint;
     }
 
@@ -97,7 +97,7 @@ MPassThruWindow::MPassThruWindow(QWidget *p)
     // We do not want input focus for that window.
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
 
-    QObject::connect(MIMApplication::instance(), SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
+    QObject::connect(MImXApplication::instance(), SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
                      this, SLOT(setRemoteWindow(MImRemoteWindow *)));
 }
 
@@ -132,13 +132,13 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (region.isEmpty()) {
-        if (MIMApplication::instance() && MIMApplication::instance()->selfComposited() && remoteWindow) {
+        if (MImXApplication::instance() && MImXApplication::instance()->selfComposited() && remoteWindow) {
             remoteWindow->unredirect();
         }
 
         hide();
     } else {
-        if (MIMApplication::instance() && MIMApplication::instance()->selfComposited() && remoteWindow) {
+        if (MImXApplication::instance() && MImXApplication::instance()->selfComposited() && remoteWindow) {
             remoteWindow->redirect();
         }
 
@@ -152,7 +152,7 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
             showFullScreen();
 
             // If bypassing window hint, also do raise to ensure visibility:
-            if (MIMApplication::instance() && MIMApplication::instance()->bypassWMHint()) {
+            if (MImXApplication::instance() && MImXApplication::instance()->bypassWMHint()) {
                 raise();
             }
         }

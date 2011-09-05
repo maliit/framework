@@ -21,7 +21,7 @@
 #include <QtCore>
 #include <QtGui>
 
-class MIMApplication;
+class MImXApplication;
 
 class Ut_SelfCompositing : public QObject
 {
@@ -38,7 +38,7 @@ private Q_SLOTS:
     void testSelfCompositing();
 
 private:
-    MIMApplication *app;
+    MImXApplication *app;
 };
 
 #endif // UT_SELFCOMPOSITING_H

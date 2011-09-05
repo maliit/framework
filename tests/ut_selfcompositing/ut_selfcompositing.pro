@@ -10,6 +10,7 @@ DEFINES += UNIT_TEST
 # Input
 HEADERS += \
     ut_selfcompositing.h \
+    $$SRC_DIR/mimxapplication.h \
     $$SRC_DIR/mimapplication.h \
     $$SRC_DIR/mimremotewindow.h \
     $$SRC_DIR/mimwidget.h \ 
@@ -19,7 +20,8 @@ HEADERS += \
 SOURCES += \
     ut_selfcompositing.cpp \
     $$SRC_DIR/mimapplication.cpp \
-    $$SRC_DIR/mimremotewindow.cpp \ 
+    $$SRC_DIR/mimxapplication.cpp \
+    $$SRC_DIR/mimremotewindow.cpp \
     $$SRC_DIR/mimwidget.cpp \ 
     $$SRC_DIR/mimgraphicsview.cpp \
     $$PASSTHRU_DIR/mpassthruwindow.cpp \

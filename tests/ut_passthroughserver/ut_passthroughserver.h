@@ -5,7 +5,7 @@
 #include <QObject>
 
 class MWindow;
-class MIMApplication;
+class MImXApplication;
 class MPassThruWindow;
 
 class Ut_PassthroughServer : public QObject
@@ -32,7 +32,7 @@ private:
     void makeVisible();
     void makeInvisible();
 
-    MIMApplication *app;
+    MImXApplication *app;
     MPassThruWindow *subject;
 };
 

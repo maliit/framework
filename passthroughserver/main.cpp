@@ -18,7 +18,7 @@
 // Input method overlay window
 
 #include "mimpluginmanager.h"
-#include "mimapplication.h"
+#include "mimxapplication.h"
 #include "mimdummyinputcontext.h"
 #include "mimremotewindow.h"
 #include "mimrotationanimation.h"
@@ -57,7 +57,7 @@ int main(int argc, char **argv)
     // server itself, we absolutely need to prevent that.
     disableMInputContextPlugin();
 
-    MIMApplication app(argc, argv);
+    MImXApplication app(argc, argv);
     // Set a dummy input context so that Qt does not create a default input
     // context (qimsw-multi) which is expensive and not required by
     // meego-im-uiserver.
@@ -82,13 +82,9 @@ int main(int argc, char **argv)
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
-#if defined(M_IM_DISABLE_TRANSLUCENCY) && !defined(M_IM_USE_SHAPE_WINDOW)
-    QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
-                     view, SLOT(updatePosition(const QRegion &)));
-#endif
     // hide active plugins when remote input window is gone or iconified.
-    QObject::connect(&app, SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
-                     pluginManager, SLOT(hideActivePluginsIfWindowGone(MImRemoteWindow*)));
+    QObject::connect(&app, SIGNAL(applicationWindowGone()),
+                     pluginManager, SLOT(hideActivePlugins()));
 
     return app.exec();
 }

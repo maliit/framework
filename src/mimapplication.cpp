@@ -15,19 +15,10 @@
  */
 
 #include "mimapplication.h"
-#include "mimremotewindow.h"
-#include "mimpluginsproxywidget.h"
-
-#include <deque>
-
-#ifdef HAVE_MEEGOGRAPHICSSYSTEM
-#include <QtMeeGoGraphicsSystemHelper/QMeeGoGraphicsSystemHelper>
-#endif
-
-#include <QPainter>
 
 #include <QDebug>
-#include <X11/Xlib.h> // must be last include
+
+#include <deque>
 
 namespace
 {
@@ -57,142 +48,34 @@ namespace
 }
 
 MIMApplication::MIMApplication(int &argc, char **argv)
-    : QApplication(argc, argv),
-      mCompositeExtension(),
-      mDamageExtension(),
-      mSelfComposited(false),
-      mManualRedirection(false),
-      mBypassWMHint(false),
-      mBackgroundSuppressed(false)
+    : QApplication(argc, argv)
 
 {
-    parseArguments(argc, argv);
-
-#ifdef HAVE_MEEGOGRAPHICSSYSTEM
-    QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
-#endif
-
-    mPassThruWindow.reset(new MPassThruWindow);
-    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
-    configureForCompositing(mPassThruWindow.get());
-
     connect(this, SIGNAL(aboutToQuit()),
             this, SLOT(finalize()),
             Qt::UniqueConnection);
-}
-
-void MIMApplication::finalize()
-{
-    // Cannot destroy QWidgets or QPixmaps during MIMApplication destruction.
-    // Hence the finalize handler that runs before the d'tor.
-    mPluginsProxyWidget.reset();
-    mPassThruWindow.reset();
-    mRemoteWindow.reset();
 }
 
 MIMApplication::~MIMApplication()
 {
 }
 
-void MIMApplication::parseArguments(int &argc, char** argv)
+void MIMApplication::finalize()
 {
-    for (int i = 1; i < argc; i++) {
-        QLatin1String arg(argv[i]);
-
-        if (arg == "-manual-redirection") {
-            mManualRedirection = true;
-        } else if (arg == "-bypass-wm-hint") {
-            mBypassWMHint = true;
-        } else if (arg == "-use-self-composition") {
-            mSelfComposited = mCompositeExtension.supported(0, 2) && mDamageExtension.supported();
-        }
-    }
 }
 
-bool MIMApplication::x11EventFilter(XEvent *ev)
+void MIMApplication::setTransientHint(WId)
 {
-    handleTransientEvents(ev);
-    handleRemoteWindowEvents(ev);
-    handlePassThruMapEvent(ev);
-    return QApplication::x11EventFilter(ev);
 }
 
-void MIMApplication::updatePassThruWindow(const QRegion &region)
+QWidget* MIMApplication::toplevel() const
 {
-    if (region.isEmpty() || MIMApplication::remoteWindowPixmap().isNull()) {
-        qDebug() << "Skipping update request for passthru window.";
-        return;
-    }
-
-    mPassThruWindow->updateFromRemoteWindow(region);
-}
-
-void MIMApplication::handleTransientEvents(XEvent *ev)
-{
-    if (not mRemoteWindow.get()) {
-        return;
-    }
-
-    if (mRemoteWindow->wasIconified(ev) || mRemoteWindow->wasUnmapped(ev)) {
-        qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
-                 << "Remote window was destroyed or iconified - hiding.";
-
-        Q_EMIT remoteWindowChanged(0);
-        Q_EMIT applicationWindowGone();
-        mRemoteWindow.reset();
-    }
-}
-
-void MIMApplication::handlePassThruMapEvent(XEvent *ev)
-{
-    if (ev->type != MapNotify)
-        return;
-
-    if (ev->xmap.window != mPassThruWindow->effectiveWinId())
-        return;
-
-    if (not mRemoteWindow.get()) {
-        qWarning() << __PRETTY_FUNCTION__
-                   << "No remote window found, but passthru window was mapped.";
-        return;
-    }
-
-    mRemoteWindow->resetPixmap();
-}
-
-void MIMApplication::setTransientHint(WId newRemoteWinId)
-{
-    if (0 == newRemoteWinId) {
-        return;
-    }
-
-    if (mRemoteWindow.get() && mRemoteWindow->id() == newRemoteWinId) {
-        return;
-    }
-
-    const bool wasRedirected(mRemoteWindow.get() && mRemoteWindow->isRedirected());
-
-    mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId));
-    mRemoteWindow->setIMWidget(mPassThruWindow->window());
-
-    connect(mRemoteWindow.get(), SIGNAL(contentUpdated(QRegion)),
-            this,                SLOT(updatePassThruWindow(QRegion)));
-
-    if (wasRedirected) {
-        mRemoteWindow->redirect();
-    }
-
-    Q_EMIT remoteWindowChanged(mRemoteWindow.get());
-}
-
-QWidget *MIMApplication::passThruWindow() const
-{
-    return mPassThruWindow.get();
+    return 0;
 }
 
 QWidget* MIMApplication::pluginsProxyWidget() const
 {
-    return mPluginsProxyWidget.get();
+    return 0;
 }
 
 MIMApplication *MIMApplication::instance()
@@ -200,53 +83,15 @@ MIMApplication *MIMApplication::instance()
     return static_cast<MIMApplication *>(QCoreApplication::instance());
 }
 
-void MIMApplication::handleRemoteWindowEvents(XEvent *event)
-{
-    if (not mRemoteWindow.get()) {
-        return;
-    }
-
-    mRemoteWindow->handleEvent(event);
-}
-
 bool MIMApplication::selfComposited() const
 {
-    return mSelfComposited;
+    return false;
 }
-
-bool MIMApplication::manualRedirection() const
-{
-    return mManualRedirection;
-}
-
-bool MIMApplication::bypassWMHint() const
-{
-    return mBypassWMHint;
-}
-
-void MIMApplication::setSuppressBackground(bool suppress)
-{
-    mBackgroundSuppressed = suppress;
-}
-
-#ifdef UNIT_TEST
-MImRemoteWindow *MIMApplication::remoteWindow() const
-{
-    return mRemoteWindow.get();
-}
-#endif
 
 const QPixmap &MIMApplication::remoteWindowPixmap()
 {
-    if (not MIMApplication::instance()
-            || not MIMApplication::instance()->mRemoteWindow.get()
-            || MIMApplication::instance()->mBackgroundSuppressed
-            || not MIMApplication::instance()->mSelfComposited) {
-        static const QPixmap empty;
-        return empty;
-    }
-
-    return MIMApplication::instance()->mRemoteWindow->windowPixmap();
+    static const QPixmap empty;
+    return empty;
 }
 
 void MIMApplication::visitWidgetHierarchy(WidgetVisitor visitor,
@@ -257,7 +102,7 @@ void MIMApplication::visitWidgetHierarchy(WidgetVisitor visitor,
     }
 
     std::deque<QWidget *> unvisited;
-    unvisited.push_back(widget ? widget : MIMApplication::instance()->passThruWindow());
+    unvisited.push_back(widget ? widget : MIMApplication::instance()->toplevel());
 
     // Breadth-first traversal of widget hierarchy, until no more
     // unvisited widgets remain. Will find viewports of QGraphicsViews,

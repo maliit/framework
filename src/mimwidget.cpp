@@ -68,7 +68,7 @@ void MImWidget::paintEvent(QPaintEvent *ev)
         return;
     }
 
-    const QPixmap &bg(MIMApplication::remoteWindowPixmap());
+    const QPixmap &bg(MIMApplication::instance()->remoteWindowPixmap());
     if (not bg.isNull()) {
         QPainter p(this);
         p.drawPixmap(ev->rect(), bg, ev->rect());

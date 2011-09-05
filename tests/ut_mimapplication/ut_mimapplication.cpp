@@ -1,6 +1,6 @@
 #include "ut_mimapplication.h"
 
-#include <mimapplication.h>
+#include <mimxapplication.h>
 #include <mpassthruwindow.h>
 #include <QCoreApplication>
 #include <QSignalSpy>
@@ -20,7 +20,7 @@ void Ut_MIMApplication::initTestCase()
     static char *argv[1] = { (char *) "ut_mimapplication" };
     static int argc = 1;
 
-    app = new MIMApplication(argc, argv);
+    app = new MImXApplication(argc, argv);
     subject = static_cast<MPassThruWindow *>(app->passThruWindow());
 }
 
