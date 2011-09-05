@@ -20,14 +20,9 @@
 #include <QApplication>
 #include <QWidget>
 #include <QPixmap>
-#include <QRect>
-#include <QPointer>
+
 #include <memory>
 #include <tr1/functional>
-
-#include "mpassthruwindow.h"
-#include "mimremotewindow.h"
-#include "mimxextension.h"
 
 //! \internal
 /*! \brief A helper class to filter X11 events
@@ -58,32 +53,14 @@ public:
     virtual ~MIMApplication();
     static MIMApplication *instance();
 
-    //! Requires a valid remoteWinId and a valid passThruWindow before it'll
-    //! start to work.
-    //! \sa setTransientHint(), setPassThruWindow();
-    bool x11EventFilter(XEvent *ev);
+    virtual void setTransientHint(WId remoteWinId);
 
-    void setTransientHint(WId remoteWinId);
-    QWidget *passThruWindow() const;
-    QWidget* pluginsProxyWidget() const;
+    virtual QWidget *toplevel() const;
+    virtual QWidget *pluginsProxyWidget() const;
 
-    bool selfComposited() const;
-    bool manualRedirection() const;
-    bool bypassWMHint() const;
+    virtual bool selfComposited() const;
 
-    //! Flag that is used to sync between MAbstractInputMethodHost and
-    //! rotation animation in order to capture the VKB without
-    //! self-composited background drawn.
-    void setSuppressBackground(bool suppress);
-
-#ifdef UNIT_TEST
-    MImRemoteWindow *remoteWindow() const;
-#endif
-
-    static const QPixmap &remoteWindowPixmap();
-
-    const MImXCompositeExtension& compositeExtension() { return mCompositeExtension; }
-    const MImXDamageExtension& damageExtension() { return mDamageExtension; }
+    virtual const QPixmap &remoteWindowPixmap();
 
     //! Visits all widgets in the hierarchy of widget, using visitor.
     //! Defaults to passthru window, if no widget is specified.
@@ -95,35 +72,13 @@ public:
     static void configureWidgetsForCompositing(QWidget *widget = 0);
 
 Q_SIGNALS:
-    //! This signal is emitted when remote window is changed.
-    //! Parameter can be 0 if window is unmapped.
-    void remoteWindowChanged(MImRemoteWindow *newWindow);
     void applicationWindowGone();
 
 private Q_SLOTS:
-    void updatePassThruWindow(const QRegion &region);
-    void finalize();
+    virtual void finalize();
 
 private:
-    void parseArguments(int &argc, char** argv);
-
-    void handleTransientEvents(XEvent *ev);
-    void handleRemoteWindowEvents(XEvent *ev);
-    void handlePassThruMapEvent(XEvent *ev);
-
     bool initializeComposite();
-
-    std::auto_ptr<MPassThruWindow> mPassThruWindow;
-    std::auto_ptr<MImRemoteWindow> mRemoteWindow;
-    std::auto_ptr<QWidget> mPluginsProxyWidget;
-    MImXCompositeExtension mCompositeExtension;
-    MImXDamageExtension mDamageExtension;
-    bool mSelfComposited;
-    bool mManualRedirection;
-    bool mBypassWMHint;
-    bool mBackgroundSuppressed;
-
-    friend class Ut_PassthroughServer;
 };
 //! \internal_end
 

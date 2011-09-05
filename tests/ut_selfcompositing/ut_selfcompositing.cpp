@@ -17,7 +17,7 @@
 #include "ut_selfcompositing.h"
 #include "mimgraphicsview.h"
 #include "mimwidget.h"
-#include "mimapplication.h"
+#include "mimxapplication.h"
 #include "utils.h"
 
 namespace
@@ -63,7 +63,7 @@ void Ut_SelfCompositing::initTestCase()
     // Enforcing raster GS to make test reliable:
     QApplication::setGraphicsSystem("raster");
 
-    app = new MIMApplication(argc, argv);
+    app = new MImXApplication(argc, argv);
     QVERIFY(app->selfComposited());
 }
 

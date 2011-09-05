@@ -21,6 +21,8 @@
 #include "mattributeextensionid.h"
 #include "mimapplication.h" // For the MIMApplication singelton
 
+#include <QKeyEvent>
+
 namespace {
     // attribute names for updateWidgetInformation() map
     const char * const FocusStateAttribute = "focusState";

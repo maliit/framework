@@ -59,7 +59,7 @@ QPixmap MAbstractInputMethodHost::background() const
     // For instance, unit tests in other packages might use !MIMApplication,
     // as they don't have access to the MIMApplication headers.
     if (qobject_cast<MIMApplication *>(QCoreApplication::instance())) {
-        return MIMApplication::remoteWindowPixmap();
+        return MIMApplication::instance()->remoteWindowPixmap();
     } else {
         return QPixmap();
     }

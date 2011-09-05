@@ -53,6 +53,7 @@ HEADERS += \
         mimpluginsproxywidget.h \
         mimonscreenplugins.h \
         mimhwkeyboardtracker_p.h \
+        mimxapplication.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -87,6 +88,7 @@ SOURCES += \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
         mimsubviewdescription.cpp \
+        mimxapplication.cpp \
 
 CONFIG += qdbus link_pkgconfig
 QT = core gui xml

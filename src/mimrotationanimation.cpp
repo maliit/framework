@@ -17,7 +17,7 @@
 #include "mimrotationanimation.h"
 #include "qdebug.h"
 #include "mimremotewindow.h"
-#include "mimapplication.h"
+#include "mimxapplication.h"
 #include "mpassthruwindow.h"
 
 #include <QBitmap>
@@ -375,7 +375,7 @@ MImRotationAnimation::grabComposited()
 QPixmap
 MImRotationAnimation::grabVkbOnly()
 {
-    MIMApplication::instance()->setSuppressBackground(true);
+    MImXApplication::instance()->setSuppressBackground(true);
     // We need to work with a QImage here, otherwise we lose the
     // transparency of the see-through part of the keyboard image.
     QImage grabImage(size(),QImage::Format_ARGB32);
@@ -388,7 +388,7 @@ MImRotationAnimation::grabVkbOnly()
     // new QPixmap generated from QImage.
     painter.end();
 
-    MIMApplication::instance()->setSuppressBackground(false);
+    MImXApplication::instance()->setSuppressBackground(false);
 
     return QPixmap::fromImage(grabImage);
 }
@@ -409,7 +409,7 @@ void
 MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     qDebug() << __PRETTY_FUNCTION__ << " - toAngle: " << toAngle;
 
-    if (!MIMApplication::instance()->passThruWindow()->isVisible()
+    if (!MIMApplication::instance()->toplevel()->isVisible()
         || toAngle == currentOrientationAngle
         || aboutToChangeReceived) {
         return;
@@ -452,7 +452,7 @@ MImRotationAnimation::appOrientationChangeFinished(int toAngle) {
 
     currentOrientationAngle = toAngle;
 
-    if (!MIMApplication::instance()->passThruWindow()->isVisible()
+    if (!MIMApplication::instance()->toplevel()->isVisible()
         || toAngle == startOrientationAngle
         || !aboutToChangeReceived) {
         clearScene();

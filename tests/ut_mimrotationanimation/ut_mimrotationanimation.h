@@ -21,7 +21,7 @@
 #include <QObject>
 #include "utils.h"
 
-class MIMApplication;
+class MImXApplication;
 
 class Ut_MImRotationAnimation : public QObject
 {
@@ -34,7 +34,7 @@ private Q_SLOTS:
     void testPassthruHiddenDuringRotation();
 
 private:
-    MIMApplication *app;
+    MImXApplication *app;
     MaliitTestUtils::RemoteWindow *remote;
 };
 
