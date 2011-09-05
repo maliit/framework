@@ -65,8 +65,8 @@ int main(int argc, char **argv)
 
     qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 
-    // Input Context Connection
-    shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
+    // DBus Input Context Connection
+    shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection);
 
     // Rotation Animation
     MImRotationAnimation *rotationAnimation =
