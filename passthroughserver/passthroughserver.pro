@@ -10,12 +10,18 @@ LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
 
 SOURCES += \
            main.cpp \
-           mpassthruwindow.cpp \
-           mimdummyinputcontext.cpp
+           mimdummyinputcontext.cpp \
 
 HEADERS += \
+           mimdummyinputcontext.h \
+
+x11 {
+    SOURCES += \
+           mpassthruwindow.cpp \
+
+    HEADERS += \
            mpassthruwindow.h \
-           mimdummyinputcontext.h
+}
 
 QT += core gui
 
