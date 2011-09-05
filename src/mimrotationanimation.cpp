@@ -171,7 +171,7 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* par
     connect(&rotationAnimationGroup, SIGNAL(finished()),
             this, SLOT(clearScene()));
 
-    connect(mApp, SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
+    connect(MIMApplication::instance(), SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
             this, SLOT(remoteWindowChanged(MImRemoteWindow*)), Qt::UniqueConnection);
 
     damageMonitor = new MImDamageMonitor(remoteWindow, this);
@@ -180,8 +180,8 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* par
 
     hide();
 
-    if (mApp) {
-        resize(mApp->desktop()->screenGeometry().size());
+    if (MIMApplication::instance()) {
+        resize(MIMApplication::instance()->desktop()->screenGeometry().size());
     }
 }
 
@@ -375,7 +375,7 @@ MImRotationAnimation::grabComposited()
 QPixmap
 MImRotationAnimation::grabVkbOnly()
 {
-    mApp->setSuppressBackground(true);
+    MIMApplication::instance()->setSuppressBackground(true);
     // We need to work with a QImage here, otherwise we lose the
     // transparency of the see-through part of the keyboard image.
     QImage grabImage(size(),QImage::Format_ARGB32);
@@ -388,7 +388,7 @@ MImRotationAnimation::grabVkbOnly()
     // new QPixmap generated from QImage.
     painter.end();
 
-    mApp->setSuppressBackground(false);
+    MIMApplication::instance()->setSuppressBackground(false);
 
     return QPixmap::fromImage(grabImage);
 }
@@ -409,7 +409,7 @@ void
 MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     qDebug() << __PRETTY_FUNCTION__ << " - toAngle: " << toAngle;
 
-    if (!mApp->passThruWindow()->isVisible()
+    if (!MIMApplication::instance()->passThruWindow()->isVisible()
         || toAngle == currentOrientationAngle
         || aboutToChangeReceived) {
         return;
@@ -418,7 +418,7 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
 
     // Assuming that in self-composited case we don't need
     // extra redirection, we're already redirected.
-    if (mApp && !mApp->selfComposited() && remoteWindow) {
+    if (MIMApplication::instance() && !MIMApplication::instance()->selfComposited() && remoteWindow) {
         remoteWindow->redirect();
     }
 
@@ -452,7 +452,7 @@ MImRotationAnimation::appOrientationChangeFinished(int toAngle) {
 
     currentOrientationAngle = toAngle;
 
-    if (!mApp->passThruWindow()->isVisible()
+    if (!MIMApplication::instance()->passThruWindow()->isVisible()
         || toAngle == startOrientationAngle
         || !aboutToChangeReceived) {
         clearScene();
@@ -478,7 +478,7 @@ MImRotationAnimation::startAnimation()
 void MImRotationAnimation::clearScene() {
     // When self-compositing is off, we don't need to maintain
     // the redirection.
-    if (mApp && !mApp->selfComposited() && remoteWindow) {
+    if (MIMApplication::instance() && !MIMApplication::instance()->selfComposited() && remoteWindow) {
         remoteWindow->unredirect();
     }
 

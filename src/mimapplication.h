@@ -29,12 +29,6 @@
 #include "mimremotewindow.h"
 #include "mimxextension.h"
 
-class MIMApplication;
-#if defined(mApp)
-#undef mApp
-#endif
-#define mApp (static_cast<MIMApplication *>(QCoreApplication::instance()))
-
 //! \internal
 /*! \brief A helper class to filter X11 events
  *

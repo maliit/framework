@@ -56,7 +56,7 @@ void MImWidget::init()
     Q_D(MImWidget);
     d->q_ptr = this;
 
-    if (mApp && mApp->selfComposited()) {
+    if (MIMApplication::instance() && MIMApplication::instance()->selfComposited()) {
         setAttribute(Qt::WA_OpaquePaintEvent);
         setAttribute(Qt::WA_NoSystemBackground);
     }

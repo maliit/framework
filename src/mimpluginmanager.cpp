@@ -208,7 +208,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    WeakWidget centralWidget(new QWidget(mApp->pluginsProxyWidget()));
+    WeakWidget centralWidget(new QWidget(MIMApplication::instance()->pluginsProxyWidget()));
 
     MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
     MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
@@ -998,11 +998,11 @@ void MIMPluginManagerPrivate::hideActivePlugins()
 
 void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest request)
 {
-    if (not mApp || not mApp->passThruWindow() || not mApp->pluginsProxyWidget()) {
+    if (not MIMApplication::instance() || not MIMApplication::instance()->passThruWindow() || not MIMApplication::instance()->pluginsProxyWidget()) {
         return;
     }
 
-    Q_FOREACH (QObject *obj, mApp->pluginsProxyWidget()->children()) {
+    Q_FOREACH (QObject *obj, MIMApplication::instance()->pluginsProxyWidget()->children()) {
         if (QWidget *w = qobject_cast<QWidget *>(obj)) {
             w->hide();
         }
