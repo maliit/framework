@@ -18,12 +18,16 @@
 // Input method overlay window
 
 #include "mimpluginmanager.h"
-#include "mimxapplication.h"
+#include "mimapplication.h"
 #include "mimdummyinputcontext.h"
+#include "minputcontextglibdbusconnection.h"
+
+#ifdef Q_WS_X11
+#include "mimxapplication.h"
 #include "mimremotewindow.h"
 #include "mimrotationanimation.h"
 #include "mpassthruwindow.h"
-#include "minputcontextglibdbusconnection.h"
+#endif
 
 #include <QApplication>
 #include <QtDebug>
@@ -57,7 +61,11 @@ int main(int argc, char **argv)
     // server itself, we absolutely need to prevent that.
     disableMInputContextPlugin();
 
+#ifdef Q_WS_X11
     MImXApplication app(argc, argv);
+#else
+    MIMApplication app(argc, argv);
+#endif
     // Set a dummy input context so that Qt does not create a default input
     // context (qimsw-multi) which is expensive and not required by
     // meego-im-uiserver.
@@ -68,6 +76,7 @@ int main(int argc, char **argv)
     // DBus Input Context Connection
     shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection);
 
+#ifdef Q_WS_X11
     // Rotation Animation
     MImRotationAnimation *rotationAnimation =
             new MImRotationAnimation(app.pluginsProxyWidget(), app.passThruWindow());
@@ -76,15 +85,19 @@ int main(int argc, char **argv)
             rotationAnimation, SLOT(appOrientationAboutToChange(int)));
     QObject::connect(icConnection.get(), SIGNAL(appOrientationChanged(int)),
             rotationAnimation, SLOT(appOrientationChangeFinished(int)));
+#endif
 
     // PluginManager
     MIMPluginManager *pluginManager = new MIMPluginManager(icConnection);
 
-    QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
-                     app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
     // hide active plugins when remote input window is gone or iconified.
     QObject::connect(&app, SIGNAL(applicationWindowGone()),
                      pluginManager, SLOT(hideActivePlugins()));
+
+#ifdef Q_WS_X11
+    QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
+                     app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
+#endif
 
     return app.exec();
 }

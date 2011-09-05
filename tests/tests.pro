@@ -12,20 +12,24 @@ SUBDIRS = \
           dummyimplugin3 \
           dummyplugin \
           ut_mimpluginmanager \
-          ut_passthroughserver \
           ft_mimpluginmanager \
           ut_mtoolbardata \
           ut_mtoolbaritem \
           ut_mattributeextensionmanager \
-          ut_mimapplication \
           ut_mkeyoverride \
-          ut_selfcompositing \
-          ut_mimrotationanimation \
           ut_minputmethodquickplugin \
           ft_exampleplugin \
           ut_maliit_attributeextension \
           ut_maliit_attributeextensionregistry \
           ut_maliit_inputmethod \
+
+x11 {
+    SUBDIRS += \
+          ut_mimapplication \
+          ut_passthroughserver \
+          ut_selfcompositing \
+          ut_mimrotationanimation \
+}
 
 outputFiles(runtests.sh, gen-tests-xml.sh)
 

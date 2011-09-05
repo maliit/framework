@@ -1,5 +1,9 @@
 #include "ut_mimpluginmanager.h"
+#ifdef Q_WS_X11
+#include "mimxapplication.h"
+#else
 #include "mimapplication.h"
+#endif
 #include "mimsettings_stub.h"
 #include "dummyimplugin.h"
 #include "dummyimplugin3.h"
@@ -70,7 +74,11 @@ void Ut_MIMPluginManager::initTestCase()
     static char *argv[1] = { (char *) "ut_mimpluginloader" };
     static int argc = 1;
 
+#ifdef Q_WS_X11
+    app = new MImXApplication(argc, argv);
+#else
     app = new MIMApplication(argc, argv);
+#endif
 
     Toolbar1 = QCoreApplication::applicationDirPath() + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");

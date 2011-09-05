@@ -63,7 +63,10 @@ public:
     virtual void mouseHandler(int x, QMouseEvent *event);
     virtual void setFocusWidget(QWidget *w); // note: qt marks this as internal
     virtual bool filterEvent(const QEvent *event);
+
+#ifdef Q_WS_X11
     virtual bool x11FilterEvent(QWidget *widget, XEvent *event);
+#endif
     //! \reimp_end
 
 public Q_SLOTS:

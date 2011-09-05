@@ -42,18 +42,12 @@ HEADERS += \
         mattributeextensionmanager.h \
         mtoolbarlayout_p.h \
         minputcontextglibdbusconnection.h \
-        mimremotewindow.h \
-        mimxerrortrap.h \
-        mimxextension.h \
         mimhwkeyboardtracker.h \
         mimgraphicsview_p.h \
         mimwidget_p.h \
-        ../passthroughserver/mpassthruwindow.h \
-        mimrotationanimation.h \
         mimpluginsproxywidget.h \
         mimonscreenplugins.h \
         mimhwkeyboardtracker_p.h \
-        mimxapplication.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -74,21 +68,33 @@ SOURCES += \
         mattributeextension.cpp \
         mtoolbarlayout.cpp \
         minputcontextglibdbusconnection.cpp \
-        mimremotewindow.cpp \
-        mimxerrortrap.cpp \
-        mimxextension.cpp \
         mimextensionevent.cpp \
         mimsettings.cpp \
         mimhwkeyboardtracker.cpp \
         mimgraphicsview.cpp \
         mimwidget.cpp \
-        ../passthroughserver/mpassthruwindow.cpp \
-        mimrotationanimation.cpp \
         mimplugindescription.cpp \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
         mimsubviewdescription.cpp \
+
+x11 {
+    HEADERS += \
+        ../passthroughserver/mpassthruwindow.h \
+        mimremotewindow.h \
+        mimxerrortrap.h \
+        mimxextension.h \
+        mimrotationanimation.h \
+        mimxapplication.h \
+
+    SOURCES += \
+        mimremotewindow.cpp \
+        mimxerrortrap.cpp \
+        mimxextension.cpp \
+        ../passthroughserver/mpassthruwindow.cpp \
+        mimrotationanimation.cpp \
         mimxapplication.cpp \
+}
 
 CONFIG += qdbus link_pkgconfig
 QT = core gui xml

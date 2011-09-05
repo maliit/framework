@@ -41,7 +41,9 @@
 #include <maliit/attributeextensionregistry.h>
 #include <maliit/preeditinjectionevent.h>
 
+#ifdef Q_WS_X11
 #include <X11/XKBlib.h>
+#endif
 
 using Maliit::AttributeExtension;
 using Maliit::AttributeExtensionRegistry;
@@ -53,10 +55,12 @@ namespace
     const char * const ToolbarTarget("/toolbar");
     const char * const InputContextName(MALIIT_INPUTCONTEXT_NAME);
 
+#ifdef Q_WS_X11
     enum {
         XKeyPress = KeyPress,
         XKeyRelease = KeyRelease
     };
+#endif
 }
 
 #undef KeyPress
@@ -89,6 +93,7 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
         debug = true;
     }
 
+#ifdef Q_WS_X11
     int opcode = -1;
     int xkbEventBase = -1;
     int xkbErrorBase = -1;
@@ -104,6 +109,7 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
         qCritical("%s xkb query extension error!", __PRETTY_FUNCTION__);
         return;
     }
+#endif
 
     sipHideTimer.setSingleShot(true);
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
@@ -453,6 +459,7 @@ void MInputContext::setFocusWidget(QWidget *focused)
     }
 }
 
+#ifdef Q_WS_X11
 bool MInputContext::x11FilterEvent(QWidget */*widget*/, XEvent *event)
 {
     if ((event->type == XKeyPress || (event->type == XKeyRelease))) {
@@ -461,6 +468,7 @@ bool MInputContext::x11FilterEvent(QWidget */*widget*/, XEvent *event)
 
     return false;               // let filterEvent() to really handle the event
 }
+#endif
 
 bool MInputContext::filterEvent(const QEvent *event)
 {
@@ -967,12 +975,16 @@ void MInputContext::setRedirectKeys(bool enabled)
 
 void MInputContext::setDetectableAutoRepeat(bool enabled)
 {
+#ifdef Q_WS_X11
     Bool detectableAutoRepeatSupported(False);
     XkbSetDetectableAutoRepeat(QX11Info::display(), enabled ? True : False,
                                &detectableAutoRepeatSupported);
     if (detectableAutoRepeatSupported == False) {
         qWarning() << "Detectable autorepeat not supported.";
     }
+#else
+    Q_UNUSED(enabled)
+#endif
 }
 
 QMap<QString, QVariant> MInputContext::getStateInformation() const
