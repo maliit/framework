@@ -70,8 +70,8 @@ void Ut_MIMApplication::testConfigureWidgetsForCompositing()
     widgets << &mainWindow << &view << view.viewport();
 
     // Test whether we configure passthru window, by default
-    if (mApp && mApp->passThruWindow()) {
-        widgets << mApp->passThruWindow();
+    if (app && app->passThruWindow()) {
+        widgets << app->passThruWindow();
         MIMApplication::configureWidgetsForCompositing();
     }
 

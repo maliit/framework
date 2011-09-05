@@ -44,7 +44,7 @@ namespace
         // QPalette::NoRole - see QTBUG-17924.
         w->setBackgroundRole(QPalette::NoRole);
 
-        if (mApp && not mApp->selfComposited()) {
+        if (MIMApplication::instance() && not MIMApplication::instance()->selfComposited()) {
             // Careful: This flag can trigger a call to
             // qt_x11_recreateNativeWidgetsRecursive
             // - which will crash when it tries to get the effective WId
@@ -237,25 +237,26 @@ MImRemoteWindow *MIMApplication::remoteWindow() const
 
 const QPixmap &MIMApplication::remoteWindowPixmap()
 {
-    if (not mApp || not mApp->mRemoteWindow.get()
-            || mApp->mBackgroundSuppressed 
-            || not mApp->mSelfComposited) {
+    if (not MIMApplication::instance()
+            || not MIMApplication::instance()->mRemoteWindow.get()
+            || MIMApplication::instance()->mBackgroundSuppressed
+            || not MIMApplication::instance()->mSelfComposited) {
         static const QPixmap empty;
         return empty;
     }
 
-    return mApp->mRemoteWindow->windowPixmap();
+    return MIMApplication::instance()->mRemoteWindow->windowPixmap();
 }
 
 void MIMApplication::visitWidgetHierarchy(WidgetVisitor visitor,
                                           QWidget *widget)
 {
-    if (not mApp) {
+    if (not MIMApplication::instance()) {
         return;
     }
 
     std::deque<QWidget *> unvisited;
-    unvisited.push_back(widget ? widget : mApp->passThruWindow());
+    unvisited.push_back(widget ? widget : MIMApplication::instance()->passThruWindow());
 
     // Breadth-first traversal of widget hierarchy, until no more
     // unvisited widgets remain. Will find viewports of QGraphicsViews,

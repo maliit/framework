@@ -27,7 +27,7 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
     setAutoFillBackground(false);
     setBackgroundRole(QPalette::NoRole);
 
-    if (mApp && mApp->selfComposited()) {
+    if (MIMApplication::instance() && MIMApplication::instance()->selfComposited()) {
         setAttribute(Qt::WA_OpaquePaintEvent);
         setAttribute(Qt::WA_NoSystemBackground);
     } else {
@@ -35,6 +35,6 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
     }
 
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    QDesktopWidget* desktop = mApp->desktop();
+    QDesktopWidget* desktop = MIMApplication::instance()->desktop();
     setMinimumSize(desktop->screenGeometry().size());
 }
