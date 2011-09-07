@@ -14,8 +14,6 @@ public:
     MImXApplication(int &argc, char** argv);
     virtual ~MImXApplication();
 
-    static MImXApplication* instance();
-
     const MImXCompositeExtension& compositeExtension() { return mCompositeExtension; }
     const MImXDamageExtension& damageExtension() { return mDamageExtension; }
 

@@ -79,7 +79,7 @@ int main(int argc, char **argv)
 #ifdef Q_WS_X11
     // Rotation Animation
     MImRotationAnimation *rotationAnimation =
-            new MImRotationAnimation(app.pluginsProxyWidget(), app.passThruWindow());
+            new MImRotationAnimation(app.pluginsProxyWidget(), app.passThruWindow(), &app);
 
     QObject::connect(icConnection.get(), SIGNAL(appOrientationAboutToChange(int)),
             rotationAnimation, SLOT(appOrientationAboutToChange(int)));
