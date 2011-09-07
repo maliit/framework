@@ -25,8 +25,6 @@
 #include "mimhwkeyboardtracker.h"
 #include "mimapplication.h"
 #include "mimpluginsproxywidget.h"
-#include "mimremotewindow.h"
-#include "mimrotationanimation.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -1323,13 +1321,6 @@ void MIMPluginManager::hideActivePlugins()
     Q_D(MIMPluginManager);
 
     d->hideActivePlugins();
-}
-
-void MIMPluginManager::hideActivePluginsIfWindowGone(MImRemoteWindow *window)
-{
-    if (not window) {
-        hideActivePlugins();
-    }
 }
 
 QMap<QString, QString> MIMPluginManager::availableSubViews(const QString &plugin,
