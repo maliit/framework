@@ -32,8 +32,6 @@ class QRegion;
 class MIMPluginManagerPrivate;
 class MAttributeExtensionId;
 class MAbstractInputMethod;
-class MImRemoteWindow;
-class MImRotationAnimation;
 
 //! Note: this class is not considered stable API
 class MIMPluginManager: public QObject
@@ -108,9 +106,6 @@ public Q_SLOTS:
 
     //! Hide active plugins.
     void hideActivePlugins();
-
-    //! Hide on window gone.
-    void hideActivePluginsIfWindowGone(MImRemoteWindow* window);
 
     //! Updates the whole painting area for input method objects.
     void updateRegion(const QRegion &region);

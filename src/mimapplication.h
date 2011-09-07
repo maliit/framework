@@ -98,6 +98,7 @@ Q_SIGNALS:
     //! This signal is emitted when remote window is changed.
     //! Parameter can be 0 if window is unmapped.
     void remoteWindowChanged(MImRemoteWindow *newWindow);
+    void applicationWindowGone();
 
 private Q_SLOTS:
     void updatePassThruWindow(const QRegion &region);
