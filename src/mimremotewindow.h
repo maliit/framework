@@ -20,6 +20,8 @@
 #include <QObject>
 #include <QWidget>
 
+class MImXApplication;
+
 /*! \internal
  *  \brief A helper class to handle remote application windows
  *
@@ -29,7 +31,7 @@ class MImRemoteWindow : public QObject
     Q_OBJECT
 public:
     //! Constructs a MImRemoteWindow from a X window.
-    explicit MImRemoteWindow(WId window, QObject *parent = 0);
+    explicit MImRemoteWindow(WId window, MImXApplication *application);
     virtual ~MImRemoteWindow();
 
     //! Sets the \a widget transient to the remote application window
@@ -98,6 +100,8 @@ private:
 
     QPixmap pixmap;
     bool redirected;
+
+    MImXApplication *mApplication;
 };
 //! \internal_end
 

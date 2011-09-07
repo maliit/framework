@@ -24,6 +24,8 @@
 #include <QGraphicsPixmapItem>
 #include <QTimer>
 
+class MImXApplication;
+
 /*! \internal
  * \brief Custom QObject'ified PixmapItem that's placed on the scene,
  * one instance for the origin snapshot, one for the target
@@ -98,7 +100,7 @@ class MImRotationAnimation : public QGraphicsView {
     Q_OBJECT
 
 public:
-    explicit MImRotationAnimation(QWidget* snapshotWidget, QWidget* parent = 0);
+    MImRotationAnimation(QWidget* snapshotWidget, QWidget* parent, MImXApplication *application);
     virtual ~MImRotationAnimation();
 
 public Q_SLOTS:
@@ -160,6 +162,8 @@ private:
     bool aboutToChangeReceived;
 
     MImDamageMonitor* damageMonitor;
+
+    MImXApplication* mApplication;
 };
 
 #endif // MIMROTATIONANIMATION_H

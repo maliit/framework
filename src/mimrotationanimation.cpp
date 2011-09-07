@@ -136,7 +136,7 @@ namespace {
     }
 }
 
-MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* parent) :
+MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* parent, MImXApplication *application) :
         QGraphicsView(new QGraphicsScene(), parent),
         snapshotWidget(snapshotWidget),
         remoteWindow(0),
@@ -145,7 +145,8 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* par
         startOrientationAngle(0),
         currentOrientationAngle(0),
         aboutToChangeReceived(false),
-        damageMonitor(0)
+        damageMonitor(0),
+        mApplication(application)
 {
     // Animation plays on top of a black backround,
     // covering up the underlying application.
@@ -171,7 +172,7 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* par
     connect(&rotationAnimationGroup, SIGNAL(finished()),
             this, SLOT(clearScene()));
 
-    connect(MIMApplication::instance(), SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
+    connect(mApplication, SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
             this, SLOT(remoteWindowChanged(MImRemoteWindow*)), Qt::UniqueConnection);
 
     damageMonitor = new MImDamageMonitor(remoteWindow, this);
@@ -375,7 +376,7 @@ MImRotationAnimation::grabComposited()
 QPixmap
 MImRotationAnimation::grabVkbOnly()
 {
-    MImXApplication::instance()->setSuppressBackground(true);
+    mApplication->setSuppressBackground(true);
     // We need to work with a QImage here, otherwise we lose the
     // transparency of the see-through part of the keyboard image.
     QImage grabImage(size(),QImage::Format_ARGB32);
@@ -388,7 +389,7 @@ MImRotationAnimation::grabVkbOnly()
     // new QPixmap generated from QImage.
     painter.end();
 
-    MImXApplication::instance()->setSuppressBackground(false);
+    mApplication->setSuppressBackground(false);
 
     return QPixmap::fromImage(grabImage);
 }

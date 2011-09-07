@@ -78,17 +78,18 @@ public:
     }
 };
 
-MPassThruWindow::MPassThruWindow(QWidget *p)
-    : QWidget(p),
+MPassThruWindow::MPassThruWindow(MImXApplication *application)
+    : QWidget(0),
       remoteWindow(0),
-      mRegion()
+      mRegion(),
+      mApplication(application)
 {
     setWindowTitle("MInputMethod");
     setFocusPolicy(Qt::NoFocus);
 
     Qt::WindowFlags windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
 
-    if (MImXApplication::instance() && MImXApplication::instance()->bypassWMHint()) {
+    if (mApplication->bypassWMHint()) {
         windowFlags |= Qt::X11BypassWindowManagerHint;
     }
 
@@ -97,7 +98,7 @@ MPassThruWindow::MPassThruWindow(QWidget *p)
     // We do not want input focus for that window.
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
 
-    QObject::connect(MImXApplication::instance(), SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
+    QObject::connect(mApplication, SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
                      this, SLOT(setRemoteWindow(MImRemoteWindow *)));
 }
 
@@ -132,13 +133,13 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (region.isEmpty()) {
-        if (MImXApplication::instance() && MImXApplication::instance()->selfComposited() && remoteWindow) {
+        if (mApplication->selfComposited() && remoteWindow) {
             remoteWindow->unredirect();
         }
 
         hide();
     } else {
-        if (MImXApplication::instance() && MImXApplication::instance()->selfComposited() && remoteWindow) {
+        if (mApplication->selfComposited() && remoteWindow) {
             remoteWindow->redirect();
         }
 
@@ -152,7 +153,7 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
             showFullScreen();
 
             // If bypassing window hint, also do raise to ensure visibility:
-            if (MImXApplication::instance() && MImXApplication::instance()->bypassWMHint()) {
+            if (mApplication->bypassWMHint()) {
                 raise();
             }
         }

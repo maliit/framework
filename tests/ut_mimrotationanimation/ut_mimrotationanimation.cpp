@@ -50,7 +50,7 @@ void Ut_MImRotationAnimation::cleanupTestCase()
 
 void Ut_MImRotationAnimation::testPassthruHiddenDuringRotation()
 {
-    MImRotationAnimation subject(app->passThruWindow());
+    MImRotationAnimation subject(app->passThruWindow(), 0, app);
     app->setTransientHint(remote->window()->effectiveWinId());
 
     subject.appOrientationChangeFinished(0);

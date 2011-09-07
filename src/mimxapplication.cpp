@@ -22,7 +22,7 @@ MImXApplication::MImXApplication(int &argc, char** argv) :
 {
     parseArguments(argc, argv);
 
-    mPassThruWindow.reset(new MPassThruWindow);
+    mPassThruWindow.reset(new MPassThruWindow(this));
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
 
 #ifdef HAVE_MEEGOGRAPHICSSYSTEM
@@ -58,11 +58,6 @@ void MImXApplication::parseArguments(int &argc, char** argv)
             mSelfComposited = mCompositeExtension.supported(0, 2) && mDamageExtension.supported();
         }
     }
-}
-
-MImXApplication* MImXApplication::instance()
-{
-    return static_cast<MImXApplication*>(QCoreApplication::instance());
 }
 
 bool MImXApplication::x11EventFilter(XEvent *ev)
@@ -127,7 +122,7 @@ void MImXApplication::setTransientHint(WId newRemoteWinId)
 
     const bool wasRedirected(mRemoteWindow.get() && mRemoteWindow->isRedirected());
 
-    mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId));
+    mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this));
     mRemoteWindow->setIMWidget(mPassThruWindow->window());
 
     connect(mRemoteWindow.get(), SIGNAL(contentUpdated(QRegion)),

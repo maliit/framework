@@ -28,13 +28,14 @@
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/Xdamage.h>
 
-MImRemoteWindow::MImRemoteWindow(WId window, QObject *parent) :
-    QObject(parent),
+MImRemoteWindow::MImRemoteWindow(WId window, MImXApplication *application) :
+    QObject(0),
     wid(window),
     xpixmap(0),
     damage(0),
     pixmap(),
-    redirected(false)
+    redirected(false),
+    mApplication(application)
 {
 }
 
@@ -124,8 +125,8 @@ void MImRemoteWindow::redirect()
     if (redirected)
         return;
 
-    if (MImXApplication::instance()->manualRedirection()) {
-        MImXErrorTrap xerror(MImXApplication::instance()->compositeExtension(), X_CompositeRedirectWindow);
+    if (mApplication->manualRedirection()) {
+        MImXErrorTrap xerror(mApplication->compositeExtension(), X_CompositeRedirectWindow);
         XCompositeRedirectWindow(QX11Info::display(),
                                  wid,
                                  CompositeRedirectManual);
@@ -151,8 +152,8 @@ void MImRemoteWindow::unredirect()
     destroyDamage();
     destroyPixmap();
 
-    if (MImXApplication::instance()->manualRedirection()) {
-        MImXErrorTrap xerror(MImXApplication::instance()->compositeExtension(), X_CompositeUnredirectWindow);
+    if (mApplication->manualRedirection()) {
+        MImXErrorTrap xerror(mApplication->compositeExtension(), X_CompositeUnredirectWindow);
         XCompositeUnredirectWindow(QX11Info::display(),
                                    wid,
                                    CompositeRedirectManual);
@@ -193,7 +194,7 @@ void MImRemoteWindow::update(const QRegion &region)
 
 void MImRemoteWindow::handleDamageEvent(XEvent *event)
 {
-    if (event->type != MImXApplication::instance()->damageExtension().eventBase() + XDamageNotify)
+    if (event->type != mApplication->damageExtension().eventBase() + XDamageNotify)
         return;
 
     XDamageNotifyEvent *e = reinterpret_cast<XDamageNotifyEvent*>(event);
@@ -228,7 +229,7 @@ void MImRemoteWindow::setupPixmap()
 {
     destroyPixmap();
 
-    MImXErrorTrap error(MImXApplication::instance()->compositeExtension(), X_CompositeNameWindowPixmap);
+    MImXErrorTrap error(mApplication->compositeExtension(), X_CompositeNameWindowPixmap);
     xpixmap = XCompositeNameWindowPixmap(QX11Info::display(), wid);
     if (error.untrap() == BadMatch) {
         qDebug() << "Cannot get offscreen reference for Window " << wid;
