@@ -189,7 +189,7 @@ const QPixmap &MImXApplication::remoteWindowPixmap()
 
 void MImXApplication::updatePassThruWindow(const QRegion &region)
 {
-    if (region.isEmpty() || MIMApplication::remoteWindowPixmap().isNull()) {
+    if (region.isEmpty() || remoteWindowPixmap().isNull()) {
         qDebug() << "Skipping update request for passthru window.";
         return;
     }
