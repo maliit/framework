@@ -757,12 +757,16 @@ void Ut_MInputContext::testInvalidScene()
 
 /* Test that when the input method hides,
  * the widget is unfocused.
- *
- * Warning: Due to using the windowing system, it is vunerable to race conditions
- * The time it takes for the shown widget/window to become active and get focus may wary.
  */
 void Ut_MInputContext::testImInitiatedHideUnfocusesWidget()
 {
+    /* Due to using the windowing system, it is vunerable to race conditions;
+     * the time it takes for the shown widget/window to become active and get focus may wary.
+     * Could be made reliable by running the tests in a nested X server, or by having
+     * a dummy windowing backend for Qt or otherwise mocking the Qt behavior.
+     */
+    QSKIP("Unreliable due to influence from windowing system", SkipSingle);
+
     WidgetStub widget(0);
     // If there is no toplevel window mapped, Qt will not actually focus the widget.
     m_subject->setFocusWidget(&widget);
