@@ -9,3 +9,5 @@ MALIIT_PACKAGENAME = meego-im-framework
 MALIIT_PACKAGE_BRIEF = Meego Touch Input Method Framework
 MALIIT_ATTRIBUTE_EXTENSIONS = meegoimframework/imtoolbars
 MALIIT_CONFIG_ROOT = /meegotouch/inputmethods/
+MALIIT_INPUTCONTEXT_NAME = MInputContext
+MALIIT_INPUTCONTEXT_TARGETNAME = minputcontext

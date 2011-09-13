@@ -2,7 +2,7 @@ include(../common_top.pri)
 
 ICDIR = ../../input-context
 INCLUDEPATH += $$ICDIR ../stubs
-LIBS += -L$$ICDIR -lminputcontext $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
+LIBS += -L$$ICDIR -l$$MALIIT_INPUTCONTEXT_TARGETNAME $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
 DEFINES += M_LIBRARY=
 
 external-libmaliit {
@@ -12,11 +12,7 @@ external-libmaliit {
     LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 }
 
-!enable-legacy {
-    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\"
-} else {
-    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\"
-}
+DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
 # Input
 HEADERS += \

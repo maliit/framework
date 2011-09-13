@@ -1,7 +1,7 @@
 include(../config.pri)
 
 TEMPLATE = lib
-TARGET = minputcontext
+TARGET = $$MALIIT_INPUTCONTEXT_TARGETNAME
 DEPENDPATH += .
 INCLUDEPATH += . .. ../src
 
@@ -15,11 +15,7 @@ external-libmaliit {
     LIBS += ../maliit/lib$${MALIIT_LIB}.so
 }
 
-!enable-legacy {
-    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\" 
-} else {
-    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\" 
-}
+DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
 enable-meegotouch {
     CONFIG  += meegotouch

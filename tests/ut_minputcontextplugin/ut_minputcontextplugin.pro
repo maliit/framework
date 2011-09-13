@@ -1,7 +1,7 @@
 include(../common_top.pri)
 
 INCLUDEPATH += ../../input-context
-LIBS += -L../../input-context -lminputcontext
+LIBS += -L../../input-context -l$$MALIIT_INPUTCONTEXT_TARGETNAME
 
 external-libmaliit {
     PKGCONFIG += maliit-1.0
@@ -9,11 +9,7 @@ external-libmaliit {
     LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 }
 
-!enable-legacy  {
-    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"Maliit\\\"
-} else {
-    DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"MInputContext\\\"
-}
+DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
 HEADERS += \
     ut_minputcontextplugin.h
