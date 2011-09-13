@@ -90,7 +90,7 @@ void Ft_MIMPluginManager::init()
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
     shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
-    subject = new MIMPluginManager(icConnection);
+    subject = new MIMPluginManager(icConnection, 0);
 }
 
 void Ft_MIMPluginManager::cleanup()

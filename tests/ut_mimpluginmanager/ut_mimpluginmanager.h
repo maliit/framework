@@ -55,6 +55,7 @@ private:
     void handleMessages();
 
     MIMApplication *app;
+    QWidget *proxyWidget;
     QString pluginPath;
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;

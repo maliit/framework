@@ -43,7 +43,7 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    explicit MIMPluginManager(std::tr1::shared_ptr<MInputContextConnection> icConnection);
+    MIMPluginManager(std::tr1::shared_ptr<MInputContextConnection> icConnection, QWidget *proxyWidget);
 
     virtual ~MIMPluginManager();
 
