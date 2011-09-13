@@ -88,7 +88,8 @@ int main(int argc, char **argv)
 #endif
 
     // PluginManager
-    MIMPluginManager *pluginManager = new MIMPluginManager(icConnection);
+    MIMPluginManager *pluginManager = new MIMPluginManager(icConnection,
+                                                           app.pluginsProxyWidget());
 
     // hide active plugins when remote input window is gone or iconified.
     QObject::connect(&app, SIGNAL(applicationWindowGone()),

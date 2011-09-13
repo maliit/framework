@@ -65,7 +65,7 @@ public:
     typedef QMap<MInputMethod::HandlerState, MInputMethodPlugin *> HandlerMap;
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
-    MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, MIMPluginManager *p);
+    MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, WeakWidget proxyWidget, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
     void activatePlugin(MInputMethodPlugin *plugin);
@@ -180,6 +180,8 @@ public:
 
     MImOnScreenPlugins onScreenPlugins;
     MImHwKeyboardTracker hwkbTracker;
+
+    WeakWidget mProxyWidget;
 };
 
 #endif

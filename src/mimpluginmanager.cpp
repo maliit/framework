@@ -69,6 +69,7 @@ namespace
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection,
+                                                 WeakWidget proxyWidget,
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
@@ -78,7 +79,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       connectionValid(false),
       acceptRegionUpdates(false),
       indicatorService(0),
-      onScreenPlugins()
+      onScreenPlugins(),
+      mProxyWidget(proxyWidget)
 {
     inputSourceToNameMap[MInputMethod::Hardware] = "hardware";
     inputSourceToNameMap[MInputMethod::Accessory] = "accessory";
@@ -133,8 +135,6 @@ void MIMPluginManagerPrivate::loadPlugins()
 
 bool MIMPluginManagerPrivate::loadFactoryPlugin(const QDir &dir, const QString &fileName)
 {
-    Q_ASSERT(MIMApplication::instance());
-
     if (blacklist.contains(fileName)) {
         qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
         return false;
@@ -164,7 +164,6 @@ bool MIMPluginManagerPrivate::loadFactoryPlugin(const QDir &dir, const QString &
 bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileName)
 {
     Q_Q(MIMPluginManager);
-    Q_ASSERT(MIMApplication::instance());
 
     if (blacklist.contains(fileName)) {
         qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
@@ -206,7 +205,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    WeakWidget centralWidget(new QWidget(MIMApplication::instance()->pluginsProxyWidget()));
+    WeakWidget centralWidget(new QWidget(mProxyWidget.data()));
 
     MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
     MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
@@ -996,11 +995,11 @@ void MIMPluginManagerPrivate::hideActivePlugins()
 
 void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest request)
 {
-    if (not MIMApplication::instance() || not MIMApplication::instance()->toplevel() || not MIMApplication::instance()->pluginsProxyWidget()) {
+    if (not mProxyWidget.data()) {
         return;
     }
 
-    Q_FOREACH (QObject *obj, MIMApplication::instance()->pluginsProxyWidget()->children()) {
+    Q_FOREACH (QObject *obj, mProxyWidget.data()->children()) {
         if (QWidget *w = qobject_cast<QWidget *>(obj)) {
             w->hide();
         }
@@ -1109,9 +1108,10 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 ///////////////
 // actual class
 
-MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnection)
+MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnection,
+                                   QWidget *proxyWidget)
     : QObject(),
-      d_ptr(new MIMPluginManagerPrivate(icConnection, this))
+      d_ptr(new MIMPluginManagerPrivate(icConnection, MIMPluginManagerPrivate::WeakWidget(proxyWidget), this))
 {
     Q_D(MIMPluginManager);
     d->q_ptr = this;

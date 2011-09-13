@@ -76,8 +76,10 @@ void Ut_MIMPluginManager::initTestCase()
 
 #ifdef Q_WS_X11
     app = new MImXApplication(argc, argv);
+    proxyWidget = app->pluginsProxyWidget();
 #else
     app = new MIMApplication(argc, argv);
+    proxyWidget = new QWidget;
 #endif
 
     Toolbar1 = QCoreApplication::applicationDirPath() + Toolbar1;
@@ -112,7 +114,7 @@ void Ut_MIMPluginManager::init()
     activePluginSettings.set(activePlugin);
 
     shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
-    manager = new MIMPluginManager(icConnection);
+    manager = new MIMPluginManager(icConnection, proxyWidget);
 
     subject = manager->d_ptr;
 
