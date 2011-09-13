@@ -133,7 +133,7 @@ void MIMPluginManagerPrivate::loadPlugins()
 
 bool MIMPluginManagerPrivate::loadFactoryPlugin(const QDir &dir, const QString &fileName)
 {
-    Q_ASSERT(mApp);
+    Q_ASSERT(MIMApplication::instance());
 
     if (blacklist.contains(fileName)) {
         qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
@@ -164,7 +164,7 @@ bool MIMPluginManagerPrivate::loadFactoryPlugin(const QDir &dir, const QString &
 bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileName)
 {
     Q_Q(MIMPluginManager);
-    Q_ASSERT(mApp);
+    Q_ASSERT(MIMApplication::instance());
 
     if (blacklist.contains(fileName)) {
         qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
