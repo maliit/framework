@@ -32,6 +32,11 @@ int main(int argc, char** argv)
 
     QApplication kit(argc, argv);
 
+#ifdef Q_WS_QPA
+    // Workaround for lighthouse Qt
+    kit.setInputContext(QInputContextFactory::create("Maliit", &kit));
+#endif
+
     MainWindow window;
     return kit.exec();
 }
