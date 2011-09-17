@@ -23,6 +23,14 @@ x11 {
            mpassthruwindow.h \
 }
 
+qpa {
+    SOURCES += \
+        mimqpaplatform.cpp \
+ 
+    HEADERS += \
+        mimqpaplatform.h
+}
+
 QT += core gui
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on

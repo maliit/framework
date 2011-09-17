@@ -21,12 +21,17 @@
 #include "mimapplication.h"
 #include "mimdummyinputcontext.h"
 #include "minputcontextglibdbusconnection.h"
+#include "mimpluginsproxywidget.h"
 
 #ifdef Q_WS_X11
 #include "mimxapplication.h"
 #include "mimremotewindow.h"
 #include "mimrotationanimation.h"
 #include "mpassthruwindow.h"
+#endif
+
+#ifdef Q_WS_QPA
+#include "mimqpaplatform.h"
 #endif
 
 #include <QApplication>
@@ -90,9 +95,12 @@ int main(int argc, char **argv)
             rotationAnimation, SLOT(appOrientationChangeFinished(int)));
 
     QWidget *pluginsProxyWidget = app.pluginsProxyWidget();
-#else
-    QWidget *pluginsProxyWidget = new QWidget;
-    pluginsProxyWidget->show();
+#endif
+
+#ifdef Q_WS_QPA
+    QWidget *pluginsProxyWidget = new MImPluginsProxyWidget;
+
+    std::auto_ptr<MImQPAPlatform> platform(new MImQPAPlatform(pluginsProxyWidget));
 #endif
 
     // PluginManager
@@ -112,6 +120,11 @@ int main(int argc, char **argv)
 
     // Configure widgets loaded during MIMPluginManager construction
     app.configureWidgetsForCompositing();
+#endif
+
+#ifdef Q_WS_QPA
+    QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
+                     platform.get(), SLOT(inputPassthrough(const QRegion &)));
 #endif
 
     return app.exec();
