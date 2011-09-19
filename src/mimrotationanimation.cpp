@@ -181,8 +181,8 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* par
 
     hide();
 
-    if (MIMApplication::instance()) {
-        resize(MIMApplication::instance()->desktop()->screenGeometry().size());
+    if (QApplication::desktop()) {
+        resize(QApplication::desktop()->screenGeometry().size());
     }
 }
 
