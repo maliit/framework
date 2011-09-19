@@ -39,9 +39,8 @@ public:
     //! self-composited background drawn.
     void setSuppressBackground(bool suppress);
 
-    virtual QWidget *toplevel() const;
     QWidget *passThruWindow() const;
-    virtual QWidget *pluginsProxyWidget() const;
+    QWidget *pluginsProxyWidget() const;
 
     virtual const QPixmap &remoteWindowPixmap();
 

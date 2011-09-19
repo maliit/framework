@@ -88,11 +88,16 @@ int main(int argc, char **argv)
             rotationAnimation, SLOT(appOrientationAboutToChange(int)));
     QObject::connect(icConnection.get(), SIGNAL(appOrientationChanged(int)),
             rotationAnimation, SLOT(appOrientationChangeFinished(int)));
+
+    QWidget *pluginsProxyWidget = app.pluginsProxyWidget();
+#else
+    QWidget *pluginsProxyWidget = new QWidget;
+    pluginsProxyWidget->show();
 #endif
 
     // PluginManager
     MIMPluginManager *pluginManager = new MIMPluginManager(icConnection,
-                                                           app.pluginsProxyWidget());
+                                                           pluginsProxyWidget);
 
 #ifdef Q_WS_X11
     // hide active plugins when remote input window is gone or iconified.

@@ -28,16 +28,6 @@ MIMApplication::~MIMApplication()
 {
 }
 
-QWidget* MIMApplication::toplevel() const
-{
-    return 0;
-}
-
-QWidget* MIMApplication::pluginsProxyWidget() const
-{
-    return 0;
-}
-
 MIMApplication *MIMApplication::instance()
 {
     return static_cast<MIMApplication *>(QCoreApplication::instance());

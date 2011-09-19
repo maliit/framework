@@ -188,11 +188,6 @@ void MImXApplication::setSuppressBackground(bool suppress)
     mBackgroundSuppressed = suppress;
 }
 
-QWidget *MImXApplication::toplevel() const
-{
-    return passThruWindow();
-}
-
 QWidget *MImXApplication::passThruWindow() const
 {
     return mPassThruWindow.get();

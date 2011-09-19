@@ -410,7 +410,7 @@ void
 MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     qDebug() << __PRETTY_FUNCTION__ << " - toAngle: " << toAngle;
 
-    if (!MIMApplication::instance()->toplevel()->isVisible()
+    if (!mApplication->passThruWindow()->isVisible()
         || toAngle == currentOrientationAngle
         || aboutToChangeReceived) {
         return;
@@ -419,7 +419,7 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
 
     // Assuming that in self-composited case we don't need
     // extra redirection, we're already redirected.
-    if (MIMApplication::instance() && !MIMApplication::instance()->selfComposited() && remoteWindow) {
+    if (!mApplication->selfComposited() && remoteWindow) {
         remoteWindow->redirect();
     }
 
@@ -453,7 +453,7 @@ MImRotationAnimation::appOrientationChangeFinished(int toAngle) {
 
     currentOrientationAngle = toAngle;
 
-    if (!MIMApplication::instance()->toplevel()->isVisible()
+    if (!mApplication->passThruWindow()->isVisible()
         || toAngle == startOrientationAngle
         || !aboutToChangeReceived) {
         clearScene();
@@ -479,7 +479,7 @@ MImRotationAnimation::startAnimation()
 void MImRotationAnimation::clearScene() {
     // When self-compositing is off, we don't need to maintain
     // the redirection.
-    if (MIMApplication::instance() && !MIMApplication::instance()->selfComposited() && remoteWindow) {
+    if (mApplication->selfComposited() && remoteWindow) {
         remoteWindow->unredirect();
     }
 
