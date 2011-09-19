@@ -62,11 +62,11 @@ Q_SIGNALS:
     void remoteWindowChanged(MImRemoteWindow *newWindow);
 
 private Q_SLOTS:
+    void finalize();
+
     void updatePassThruWindow(const QRegion &region);
 
 private:
-    virtual void finalize();
-
     void parseArguments(int &argc, char** argv);
 
     void handleTransientEvents(XEvent *ev);

@@ -59,6 +59,10 @@ MImXApplication::MImXApplication(int &argc, char** argv) :
 #endif
 
     configureWidgetsForCompositing();
+
+    connect(this, SIGNAL(aboutToQuit()),
+            this, SLOT(finalize()),
+            Qt::UniqueConnection);
 }
 
 MImXApplication::~MImXApplication()
