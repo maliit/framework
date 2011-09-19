@@ -36,7 +36,6 @@
 #include <dbus/dbus.h>
 
 #include "mabstractinputmethod.h"
-#include "mimapplication.h"
 
 #include <stdint.h> 
 

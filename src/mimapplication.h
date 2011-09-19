@@ -54,9 +54,6 @@ public:
 
 Q_SIGNALS:
     void applicationWindowGone();
-
-private:
-    bool initializeComposite();
 };
 //! \internal_end
 
