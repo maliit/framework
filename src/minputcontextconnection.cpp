@@ -19,7 +19,6 @@
 #include "mabstractinputmethod.h"
 #include "mattributeextensionmanager.h"
 #include "mattributeextensionid.h"
-#include "mimapplication.h" // For the MIMApplication singelton
 
 #include <QKeyEvent>
 
@@ -185,21 +184,24 @@ QRect MInputContextConnection::preeditRectangle(bool &valid)
     return QRect();
 }
 
-WId MInputContextConnection::winId(bool &valid)
+WId MInputContextConnection::winId()
 {
     QVariant winIdVariant = widgetState[WinId];
     // after transfer by dbus type can change
     switch (winIdVariant.type()) {
     case QVariant::UInt:
-        valid = (sizeof(uint) >= sizeof(WId));
-        return winIdVariant.toUInt();
+        if (sizeof(uint) >= sizeof(WId))
+            return winIdVariant.toUInt();
+        break;
     case QVariant::ULongLong:
-        valid = (sizeof(qulonglong) >= sizeof(WId));
-        return winIdVariant.toULongLong();
+        if (sizeof(qulonglong) >= sizeof(WId))
+            return winIdVariant.toULongLong();
+        break;
     default:
-        valid = winIdVariant.canConvert<WId>();
+        if (winIdVariant.canConvert<WId>())
+            return winIdVariant.value<WId>();
     }
-    return winIdVariant.value<WId>();
+    return 0;
 }
 
 int MInputContextConnection::anchorPosition(bool &valid)
@@ -217,20 +219,6 @@ int MInputContextConnection::preeditClickPos(bool &valid) const
 }
 
 /* End accessors to widget state */
-
-void MInputContextConnection::updateTransientHint()
-{
-    bool ok = false;
-    WId appWinId = winId(ok);
-
-    if (ok) {
-        MIMApplication *app = MIMApplication::instance();
-
-        if (app) {
-            app->setTransientHint(appWinId);
-        }
-    }
-}
 
 /* Handlers for inbound communication */
 void MInputContextConnection::showInputMethod(unsigned int connectionId)
@@ -298,7 +286,7 @@ void MInputContextConnection::reset(unsigned int connectionId)
 void
 MInputContextConnection::updateWidgetInformation(
     unsigned int connectionId, const QMap<QString, QVariant> &stateInfo,
-    bool focusChanged)
+    bool handleFocusChange)
 {
     // check visualization change
     bool oldVisualization = false;
@@ -332,12 +320,12 @@ MInputContextConnection::updateWidgetInformation(
     // update state
     widgetState = stateInfo;
 
-    if (focusChanged) {
+    if (handleFocusChange) {
         Q_FOREACH (MAbstractInputMethod *target, targets()) {
             target->handleFocusChange(stateInfo[FocusStateAttribute].toBool());
         }
 
-        updateTransientHint();
+        Q_EMIT focusChanged(winId());
     }
 
     // call notification methods if needed

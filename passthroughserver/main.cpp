@@ -77,6 +77,9 @@ int main(int argc, char **argv)
     shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection);
 
 #ifdef Q_WS_X11
+    QObject::connect(icConnection.get(), SIGNAL(focusChanged(WId)),
+                     &app, SLOT(setTransientHint(WId)));
+
     // Rotation Animation
     MImRotationAnimation *rotationAnimation =
             new MImRotationAnimation(app.pluginsProxyWidget(), app.passThruWindow(), &app);

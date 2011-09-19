@@ -22,8 +22,6 @@ public:
     //! \sa setTransientHint(), setPassThruWindow();
     bool x11EventFilter(XEvent *ev);
 
-    virtual void setTransientHint(WId remoteWinId);
-
     virtual bool selfComposited() const;
     bool manualRedirection() const;
     bool bypassWMHint() const;
@@ -42,6 +40,9 @@ public:
 #ifdef UNIT_TEST
     MImRemoteWindow *remoteWindow() const;
 #endif
+
+public Q_SLOTS:
+    void setTransientHint(WId remoteWinId);
 
 Q_SIGNALS:
     //! This signal is emitted when remote window is changed.

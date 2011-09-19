@@ -64,10 +64,6 @@ void MIMApplication::finalize()
 {
 }
 
-void MIMApplication::setTransientHint(WId)
-{
-}
-
 QWidget* MIMApplication::toplevel() const
 {
     return 0;
