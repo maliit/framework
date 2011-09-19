@@ -100,6 +100,8 @@ Q_SIGNALS:
     //! enabled or disabled
     void pluginsChanged();
 
+    void pluginLoaded();
+
 public Q_SLOTS:
     //! Show active plugins.
     void showActivePlugins();

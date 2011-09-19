@@ -23,8 +23,6 @@
 #include "mabstractinputmethod.h"
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
-#include "mimapplication.h"
-#include "mimpluginsproxywidget.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -224,7 +222,8 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
                                MInputMethod::SwitchUndefined, centralWidget, fileName };
     plugins.insert(plugin, desc);
     host->setInputMethod(im);
-    MIMApplication::configureWidgetsForCompositing();
+
+    Q_EMIT q->pluginLoaded();
 
     return true;
 }
