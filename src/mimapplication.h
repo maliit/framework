@@ -55,9 +55,6 @@ public:
 Q_SIGNALS:
     void applicationWindowGone();
 
-private Q_SLOTS:
-    virtual void finalize();
-
 private:
     bool initializeComposite();
 };

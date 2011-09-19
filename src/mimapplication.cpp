@@ -22,16 +22,9 @@ MIMApplication::MIMApplication(int &argc, char **argv)
     : QApplication(argc, argv)
 
 {
-    connect(this, SIGNAL(aboutToQuit()),
-            this, SLOT(finalize()),
-            Qt::UniqueConnection);
 }
 
 MIMApplication::~MIMApplication()
-{
-}
-
-void MIMApplication::finalize()
 {
 }
 
