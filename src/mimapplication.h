@@ -53,8 +53,6 @@ public:
     virtual ~MIMApplication();
     static MIMApplication *instance();
 
-    virtual void setTransientHint(WId remoteWinId);
-
     virtual QWidget *toplevel() const;
     virtual QWidget *pluginsProxyWidget() const;
 

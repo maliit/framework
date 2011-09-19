@@ -294,6 +294,8 @@ Q_SIGNALS:
     void appOrientationAboutToChange(int angle);
     void appOrientationChanged(int angle);
 
+    void focusChanged(WId id);
+
     //! \internal
     //! Emitted when input method request to be shown.
     void showInputMethodRequest();
@@ -320,14 +322,10 @@ protected:
     void handleActivation(unsigned int connectionId);
 
 private:
-    //! Updates the transient hint on the framework side to point to the
-    //! current application's window id.
-    void updateTransientHint();
-
     /*!
      * \brief get the X window id of the active app window
      */
-    WId winId(bool &valid);
+    WId winId();
 
 private:
     MInputContextConnectionPrivate *d;
