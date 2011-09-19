@@ -94,11 +94,11 @@ int main(int argc, char **argv)
     MIMPluginManager *pluginManager = new MIMPluginManager(icConnection,
                                                            app.pluginsProxyWidget());
 
+#ifdef Q_WS_X11
     // hide active plugins when remote input window is gone or iconified.
-    QObject::connect(&app, SIGNAL(applicationWindowGone()),
+    QObject::connect(&app, SIGNAL(remoteWindowGone()),
                      pluginManager, SLOT(hideActivePlugins()));
 
-#ifdef Q_WS_X11
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
 

@@ -51,9 +51,6 @@ public:
     virtual bool selfComposited() const;
 
     virtual const QPixmap &remoteWindowPixmap();
-
-Q_SIGNALS:
-    void applicationWindowGone();
 };
 //! \internal_end
 

@@ -61,6 +61,8 @@ Q_SIGNALS:
     //! Parameter can be 0 if window is unmapped.
     void remoteWindowChanged(MImRemoteWindow *newWindow);
 
+    void remoteWindowGone();
+
 private Q_SLOTS:
     void finalize();
 

@@ -112,7 +112,7 @@ void MImXApplication::handleTransientEvents(XEvent *ev)
                  << "Remote window was destroyed or iconified - hiding.";
 
         Q_EMIT remoteWindowChanged(0);
-        Q_EMIT applicationWindowGone();
+        Q_EMIT remoteWindowGone();
         mRemoteWindow.reset();
     }
 }
