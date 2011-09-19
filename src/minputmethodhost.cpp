@@ -19,7 +19,6 @@
 #include "mimpluginmanager.h"
 #include "mindicatorserviceclient.h"
 #include "mabstractinputmethod.h"
-#include "mimapplication.h"
 
 #include <QWidget>
 #include <QGraphicsView>
