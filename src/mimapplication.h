@@ -18,7 +18,6 @@
 #define MIM_APPLICATION_H
 
 #include <QApplication>
-#include <QWidget>
 #include <QPixmap>
 
 //! \internal
@@ -44,9 +43,6 @@ public:
     explicit MIMApplication(int &argc, char** argv);
     virtual ~MIMApplication();
     static MIMApplication *instance();
-
-    virtual QWidget *toplevel() const;
-    virtual QWidget *pluginsProxyWidget() const;
 
     virtual bool selfComposited() const;
 
