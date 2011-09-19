@@ -7,7 +7,36 @@
 #include <QtMeeGoGraphicsSystemHelper/QMeeGoGraphicsSystemHelper>
 #endif
 
+#include <deque>
+
 #include <X11/Xlib.h>
+
+namespace
+{
+    bool configureForCompositing(QWidget *w)
+    {
+        if (not w) {
+            return false;
+        }
+
+        w->setAttribute(Qt::WA_OpaquePaintEvent);
+        w->setAttribute(Qt::WA_NoSystemBackground);
+        w->setAutoFillBackground(false);
+        // Be aware that one cannot verify whether the background role *is*
+        // QPalette::NoRole - see QTBUG-17924.
+        w->setBackgroundRole(QPalette::NoRole);
+
+        if (MIMApplication::instance() && not MIMApplication::instance()->selfComposited()) {
+            // Careful: This flag can trigger a call to
+            // qt_x11_recreateNativeWidgetsRecursive
+            // - which will crash when it tries to get the effective WId
+            // (as none of widgets have been mapped yet).
+            w->setAttribute(Qt::WA_TranslucentBackground);
+        }
+
+        return true;
+    }
+}
 
 MImXApplication::MImXApplication(int &argc, char** argv) :
     MIMApplication(argc, argv),
@@ -29,7 +58,7 @@ MImXApplication::MImXApplication(int &argc, char** argv) :
     QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
 #endif
 
-    configureWidgetsForCompositing(mPassThruWindow.get());
+    configureWidgetsForCompositing();
 }
 
 MImXApplication::~MImXApplication()
@@ -190,6 +219,36 @@ void MImXApplication::updatePassThruWindow(const QRegion &region)
     }
 
     mPassThruWindow->updateFromRemoteWindow(region);
+}
+
+void MImXApplication::visitWidgetHierarchy(WidgetVisitor visitor,
+                                           QWidget *widget)
+{
+    std::deque<QWidget *> unvisited;
+    unvisited.push_back(widget);
+
+    // Breadth-first traversal of widget hierarchy, until no more
+    // unvisited widgets remain. Will find viewports of QGraphicsViews,
+    // as QAbstractScrollArea reparents the viewport to itself.
+    while (not unvisited.empty()) {
+        QWidget *current = unvisited.front();
+        unvisited.pop_front();
+
+        // If true, then continue walking the hiearchy of current widget.
+        if (visitor(current)) {
+            // Mark children of current widget as unvisited:
+            Q_FOREACH (QObject *obj, current->children()) {
+                if (QWidget *w = qobject_cast<QWidget *>(obj)) {
+                    unvisited.push_back(w);
+                }
+            }
+        }
+    }
+}
+
+void MImXApplication::configureWidgetsForCompositing()
+{
+    visitWidgetHierarchy(configureForCompositing, mPassThruWindow.get());
 }
 
 #ifdef UNIT_TEST

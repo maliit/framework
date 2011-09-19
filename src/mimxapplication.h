@@ -7,10 +7,18 @@
 #include "mimremotewindow.h"
 #include "mimxextension.h"
 
+#include <memory>
+#include <tr1/functional>
+
 class MImXApplication : public MIMApplication
 {
     Q_OBJECT
 public:
+    //! Walks over widget hierarchy, if used with
+    //! MImXApplication::visitWidgetHierarchy. Return true if children of
+    //! current widget shall be visited, too.
+    typedef std::tr1::function<bool (QWidget *)> WidgetVisitor;
+
     MImXApplication(int &argc, char** argv);
     virtual ~MImXApplication();
 
@@ -37,12 +45,16 @@ public:
 
     virtual const QPixmap &remoteWindowPixmap();
 
+    void visitWidgetHierarchy(WidgetVisitor visitor, QWidget *widget);
+
 #ifdef UNIT_TEST
     MImRemoteWindow *remoteWindow() const;
 #endif
 
 public Q_SLOTS:
     void setTransientHint(WId remoteWinId);
+
+    void configureWidgetsForCompositing();
 
 Q_SIGNALS:
     //! This signal is emitted when remote window is changed.

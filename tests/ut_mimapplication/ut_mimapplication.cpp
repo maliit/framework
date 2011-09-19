@@ -61,19 +61,15 @@ void Ut_MIMApplication::testConfigureWidgetsForCompositing()
 {
     QFETCH(bool, selfCompositing);
 
-    QWidget mainWindow;
+    QWidget mainWindow(app->passThruWindow());
     QGraphicsView view(&mainWindow);
-
-    MIMApplication::configureWidgetsForCompositing(&mainWindow);
 
     QList<QWidget *> widgets;
     widgets << &mainWindow << &view << view.viewport();
 
-    // Test whether we configure passthru window, by default
-    if (app && app->passThruWindow()) {
-        widgets << app->passThruWindow();
-        MIMApplication::configureWidgetsForCompositing();
-    }
+    widgets << app->passThruWindow();
+
+    app->configureWidgetsForCompositing();
 
     Q_FOREACH (QWidget *w, widgets) {
         QVERIFY(w->testAttribute(Qt::WA_NoSystemBackground)

@@ -101,6 +101,12 @@ int main(int argc, char **argv)
 #ifdef Q_WS_X11
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      app.passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
+
+    QObject::connect(pluginManager, SIGNAL(pluginLoaded()),
+                     &app, SLOT(configureWidgetsForCompositing()));
+
+    // Configure widgets loaded during MIMPluginManager construction
+    app.configureWidgetsForCompositing();
 #endif
 
     return app.exec();
