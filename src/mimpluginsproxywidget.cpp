@@ -35,6 +35,6 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
     }
 
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    QDesktopWidget* desktop = MIMApplication::instance()->desktop();
+    QDesktopWidget* desktop = QApplication::desktop();
     setMinimumSize(desktop->screenGeometry().size());
 }
