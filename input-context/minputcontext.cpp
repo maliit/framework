@@ -333,6 +333,13 @@ void MInputContext::update()
         return;
     }
 
+    // Return also if focused widget is a QGraphicsView without a focused item
+    const QGraphicsView * const graphicsView = qobject_cast<const QGraphicsView *>(focused);
+    if (graphicsView && graphicsView->scene()) {
+        if (graphicsView->scene()->focusItem() == 0)
+            return;
+    }
+
     // get the state information of currently focused widget, and pass it to input method server
     QMap<QString, QVariant> stateInformation = getStateInformation();
 
