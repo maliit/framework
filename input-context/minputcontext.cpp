@@ -333,6 +333,18 @@ void MInputContext::update()
         return;
     }
 
+    // A QGraphicsView should only be focused when there is a focused item inside it.
+    // But there are cases on unfocusing an item that the item is already unfocused
+    // while the QGraphicsView is still focused when update() is called.
+    // This case should be handled the same way as if the QGraphicsView would be already
+    // unfocused (so we just return here and the widget information is updated on unfocussing
+    // of the QGraphicsView in setFocusWidget()).
+    const QGraphicsView * const graphicsView = qobject_cast<const QGraphicsView *>(focused);
+    if (graphicsView && graphicsView->scene()) {
+        if (graphicsView->scene()->focusItem() == 0)
+            return;
+    }
+
     // get the state information of currently focused widget, and pass it to input method server
     QMap<QString, QVariant> stateInformation = getStateInformation();
 
