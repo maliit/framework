@@ -1,15 +1,26 @@
-0.80.x
+0.80.6
 ======
 
 CHANGES SINCE 0.80.5
+* Server can build against Qt 4.8 with Lighthouse and run under Wayland
+* Legacy mode config option changed to enable-legacy instead of
+  enable-meegotouch. Enable with:
+  $ qmake -r CONFIG+=enable-legacy* Support hardware keyboard handling for Qt Quick plugins
+* Removed deprecated support for integrating with input methods via
+  LMT/meegotouch directly. LMT/meegotouch uses libmaliit for that now.
+* Track hardware keyboard status on Fremantle (N900)
 * New MAbstractInputMethodHost::setLanguage(QString) API
   - New method setLanguage added to D-Bus interface. Through this method plugins
     can give applications a hint of the language user is going to write.
-* Removed deprecated support for integrating with input methods via
-  LMT/meegotouch directly. LMT/meegotouch uses libmaliit for that now.
-* Legacy mode config option changed to enable-legacy instead of
-  enable-meegotouch. Enable with:
-  $ qmake -r CONFIG+=enable-legacy
+* qmake HELP=1 will now output a list of build options
+* Input context <-> server communication is more generic,
+  and allows implementation of other IPC/transport mechanisms
+* Legacy mode and non-legacy mode now parallel installable.
+
+BUG FIXES
+* Fixes: Install gconf schemas on make install
+* Fixes: Failure to generate dbus glue files in out-of-tree build
+* Fixes: NB#277853 - Meego-im-uiserver crash on invalid plugin name
 
 0.80.5
 ======
