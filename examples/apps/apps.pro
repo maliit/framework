@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = plainqt
+SUBDIRS = plainqt twofields
