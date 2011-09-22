@@ -71,6 +71,10 @@ MInputContextConnectionPrivate::~MInputContextConnectionPrivate()
 
 MInputContextConnection::MInputContextConnection(QObject *parent)
     : d(new MInputContextConnectionPrivate)
+    , mGlobalCorrectionEnabled(false)
+    , mRedirectionEnabled(false)
+    , mDetectableAutoRepeat(false)
+    , lastOrientation(0)
 {
     Q_UNUSED(parent);
 
