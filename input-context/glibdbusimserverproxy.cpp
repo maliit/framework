@@ -50,37 +50,37 @@ namespace
 
     bool encodeVariant(GValue *dest, const QVariant &source)
     {
-        switch (source.type()) {
-        case QVariant::Bool:
+        switch (static_cast<QMetaType::Type>(source.type())) {
+        case QMetaType::Bool:
             g_value_init(dest, G_TYPE_BOOLEAN);
             g_value_set_boolean(dest, source.toBool());
             return true;
-        case QVariant::Int:
+        case QMetaType::Int:
             g_value_init(dest, G_TYPE_INT);
             g_value_set_int(dest, source.toInt());
             return true;
-        case QVariant::UInt:
+        case QMetaType::UInt:
             g_value_init(dest, G_TYPE_UINT);
             g_value_set_uint(dest, source.toUInt());
             return true;
-        case QVariant::LongLong:
+        case QMetaType::LongLong:
             g_value_init(dest, G_TYPE_INT64);
             g_value_set_int64(dest, source.toLongLong());
             return true;
-        case QVariant::ULongLong:
+        case QMetaType::ULongLong:
             g_value_init(dest, G_TYPE_UINT64);
             g_value_set_uint64(dest, source.toULongLong());
             return true;
-        case QVariant::Double:
+        case QMetaType::Double:
             g_value_init(dest, G_TYPE_DOUBLE);
             g_value_set_double(dest, source.toDouble());
             return true;
-        case QVariant::String:
+        case QMetaType::QString:
             g_value_init(dest, G_TYPE_STRING);
             // string is copied by g_value_set_string
             g_value_set_string(dest, source.toString().toUtf8().constData());
             return true;
-        case QVariant::Rect:
+        case QMetaType::QRect:
             {
                 // QRect is encoded as (iiii).
                 // This is compatible with QDBusArgument encoding. see more in decoder
