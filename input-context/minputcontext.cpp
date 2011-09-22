@@ -40,6 +40,7 @@
 #include <maliit/attributeextension.h>
 #include <maliit/attributeextensionregistry.h>
 #include <maliit/preeditinjectionevent.h>
+#include <maliit/namespace.h>
 
 #ifdef Q_WS_X11
 #include <X11/XKBlib.h>
@@ -1022,26 +1023,32 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     }
 
 
-     QVariant queryResult;
-     queryResult = focused->inputMethodQuery(
-         static_cast<Qt::InputMethodQuery>(MInputMethod::VisualizationPriorityQuery));
+    QVariant queryResult;
+
+    queryResult = focused->inputMethodQuery(
+        static_cast<Qt::InputMethodQuery>(MInputMethod::VisualizationPriorityQuery));
 
     if (queryResult.isValid()) {
         stateInformation["visualizationPriority"] = queryResult.toBool();
     }
 
-    queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(MInputMethod::InputMethodAttributeExtensionIdQuery));
+    queryResult = focused->property(Maliit::InputMethodQuery::attributeExtensionId);
 
-    if (!queryResult.isValid()) {
-        // fallback using qgraphicsobject property. Used to bypass qml restrictions
-        // for qt components / meego. Use elsewhere discouraged and nothing guaranteed.
-        const QGraphicsObject *qgraphicsObject
-            = qgraphicsitem_cast<const QGraphicsObject*>(focusedQGraphicsItem);
+    if (!queryResult.isValid())
+    {
+      queryResult = focused->inputMethodQuery(
+          static_cast<Qt::InputMethodQuery>(MInputMethod::InputMethodAttributeExtensionIdQuery));
 
-        if (qgraphicsObject) {
-            queryResult = qgraphicsObject->property("meego-inputmethod-attribute-extension-id");
-        }
+      if (!queryResult.isValid()) {
+          // fallback using qgraphicsobject property. Used to bypass qml restrictions
+          // for qt components / meego. Use elsewhere discouraged and nothing guaranteed.
+          const QGraphicsObject *qgraphicsObject
+              = qgraphicsitem_cast<const QGraphicsObject*>(focusedQGraphicsItem);
+
+          if (qgraphicsObject) {
+              queryResult = qgraphicsObject->property("meego-inputmethod-attribute-extension-id");
+          }
+      }
     }
 
     if (queryResult.isValid()) {
@@ -1049,8 +1056,13 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     }
 
     // toolbar file
-    queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(Maliit::InputMethodAttributeExtensionQuery));
+    queryResult = focused->property(Maliit::InputMethodQuery::attributeExtension);
+
+    if (!queryResult.isValid())
+    {
+      queryResult = focused->inputMethodQuery(
+          static_cast<Qt::InputMethodQuery>(Maliit::InputMethodAttributeExtensionQuery));
+    }
 
     if (queryResult.isValid()) {
         stateInformation["toolbar"] = queryResult.toString();
@@ -1088,8 +1100,13 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     // content type value
     stateInformation["contentType"] = contentType(hints);
 
-    queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(Maliit::ImCorrectionEnabledQuery));
+    queryResult = focused->property(Maliit::InputMethodQuery::correctionEnabledQuery);
+
+    if (!queryResult.isValid())
+    {
+      queryResult = focused->inputMethodQuery(
+          static_cast<Qt::InputMethodQuery>(Maliit::ImCorrectionEnabledQuery));
+    }
 
     if (queryResult.isValid()) {
         stateInformation["correctionEnabled"] = queryResult.toBool();
