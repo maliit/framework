@@ -419,7 +419,7 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
 
     // Assuming that in self-composited case we don't need
     // extra redirection, we're already redirected.
-    if (!mApplication->selfComposited() && remoteWindow) {
+    if (not mApplication->selfComposited() && remoteWindow) {
         remoteWindow->redirect();
     }
 
@@ -479,7 +479,7 @@ MImRotationAnimation::startAnimation()
 void MImRotationAnimation::clearScene() {
     // When self-compositing is off, we don't need to maintain
     // the redirection.
-    if (mApplication->selfComposited() && remoteWindow) {
+    if (not mApplication->selfComposited() && remoteWindow) {
         remoteWindow->unredirect();
     }
 
