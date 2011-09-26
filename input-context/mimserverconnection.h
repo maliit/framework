@@ -68,6 +68,11 @@ public:
                               const QString &attribute, const QVariant &value);
 
 public:
+    /*! \brief Notifies about connection to server being established.
+     *
+     * Note: Creating connection to server and thus emission of this signal
+     * have to be deferred to the mainloop.
+     */
     Q_SIGNAL void connected();
     Q_SIGNAL void disconnected();
 
