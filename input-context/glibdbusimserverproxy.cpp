@@ -157,7 +157,7 @@ GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
 
     dbus_g_thread_init();
 
-    connectToDBus();
+    QTimer::singleShot(0, this, SLOT(connectToDBus()));
 }
 
 GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
