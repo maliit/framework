@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="/">
+    <file>override.qml</file>
+  </qresource>
+</RCC>

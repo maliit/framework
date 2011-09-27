@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = helloworld cyclekeys
+SUBDIRS = helloworld cyclekeys override
