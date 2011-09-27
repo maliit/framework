@@ -14,7 +14,7 @@
  * of this file.
  */
 
-#include "exampleinputmethod.h"
+#include "helloworldinputmethod.h"
 
 #include <mabstractinputmethodhost.h>
 
@@ -22,18 +22,18 @@
 #include <QtGui>
 
 namespace {
-    const char * const exampleSubViewId("ExamplePluginSubview1");
+    const char * const exampleSubViewId("HelloWorldPluginSubview1");
 }
 
-ExampleInputMethod::ExampleInputMethod(MAbstractInputMethodHost *host,
-                                       QWidget *mainWindow)
+HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host,
+                                             QWidget *mainWindow)
     : MAbstractInputMethod(host, mainWindow)
     , mainWidget(new QPushButton(mainWindow))
     , showIsInhibited(false)
     , showRequested(false)
 {
     // Set up UI
-    mainWidget->setText("Hello World");
+    mainWidget->setText("Hello World!");
     connect(mainWidget, SIGNAL(clicked()), this, SLOT(handleButtonClicked()));
 
     // Used only for unittest/sanity test
@@ -41,16 +41,16 @@ ExampleInputMethod::ExampleInputMethod(MAbstractInputMethodHost *host,
     inputMethodHost()->sendPreeditString("Mali", QList<MInputMethod::PreeditTextFormat>(), 0, 6);
 }
 
-ExampleInputMethod::~ExampleInputMethod()
+HelloWorldInputMethod::~HelloWorldInputMethod()
 {}
 
 // Slot for our Hello World button
-void ExampleInputMethod::handleButtonClicked()
+void HelloWorldInputMethod::handleButtonClicked()
 {
     inputMethodHost()->sendCommitString(mainWidget->text());
 }
 
-void ExampleInputMethod::show()
+void HelloWorldInputMethod::show()
 {
     showRequested = true;
     if (showIsInhibited) {
@@ -72,7 +72,7 @@ void ExampleInputMethod::show()
     mainWidget->show();
 }
 
-void ExampleInputMethod::hide()
+void HelloWorldInputMethod::hide()
 {
     if (!showRequested) {
         return;
@@ -86,7 +86,7 @@ void ExampleInputMethod::hide()
 }
 
 QList<MAbstractInputMethod::MInputMethodSubView>
-ExampleInputMethod::subViews(MInputMethod::HandlerState state) const
+HelloWorldInputMethod::subViews(MInputMethod::HandlerState state) const
 {
     QList<MAbstractInputMethod::MInputMethodSubView> subViews;
 
@@ -99,13 +99,13 @@ ExampleInputMethod::subViews(MInputMethod::HandlerState state) const
     return subViews;
 }
 
-QString ExampleInputMethod::activeSubView(MInputMethod::HandlerState state) const
+QString HelloWorldInputMethod::activeSubView(MInputMethod::HandlerState state) const
 {
     QString subView = (state == MInputMethod::OnScreen) ? exampleSubViewId : "";
     return subView;
 }
 
-void ExampleInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
+void HelloWorldInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
 {
     if (state.contains(MInputMethod::OnScreen)) {
         if (showRequested && !showIsInhibited) {
@@ -116,14 +116,14 @@ void ExampleInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
     }
 }
 
-void ExampleInputMethod::handleClientChange()
+void HelloWorldInputMethod::handleClientChange()
 {
     if (showRequested) {
         hide();
     }
 }
 
-void ExampleInputMethod::handleVisualizationPriorityChange(bool inhibitShow)
+void HelloWorldInputMethod::handleVisualizationPriorityChange(bool inhibitShow)
 {
     if (showIsInhibited == inhibitShow) {
         return;
@@ -139,51 +139,51 @@ void ExampleInputMethod::handleVisualizationPriorityChange(bool inhibitShow)
     }
 }
 
-void ExampleInputMethod::handleAppOrientationAboutToChange(int angle)
+void HelloWorldInputMethod::handleAppOrientationAboutToChange(int angle)
 {
     // Rotate your input method UI here
     Q_UNUSED(angle);
 }
 
-void ExampleInputMethod::handleAppOrientationChanged(int angle)
+void HelloWorldInputMethod::handleAppOrientationChanged(int angle)
 {
     // Can typically be forwarded to handleAppOrientationAboutToChange
     // as long as that method will not do anything when newAngle == previousAngle
     Q_UNUSED(angle);
 }
 
-void ExampleInputMethod::update()
+void HelloWorldInputMethod::update()
 {
     // empty default implementation
 }
 
-void ExampleInputMethod::reset()
+void HelloWorldInputMethod::reset()
 {
     // empty default implementation
 }
 
-void ExampleInputMethod::handleFocusChange(bool focusIn)
+void HelloWorldInputMethod::handleFocusChange(bool focusIn)
 {
     // empty default implementation
     Q_UNUSED(focusIn);
 }
 
-void ExampleInputMethod::switchContext(MInputMethod::SwitchDirection direction,
-                                       bool enableAnimation)
+void HelloWorldInputMethod::switchContext(MInputMethod::SwitchDirection direction,
+                                          bool enableAnimation)
 {
     // empty default implementation
     Q_UNUSED(direction);
     Q_UNUSED(enableAnimation);
 }
 
-void ExampleInputMethod::setPreedit(const QString &preeditString, int cursorPos)
+void HelloWorldInputMethod::setPreedit(const QString &preeditString, int cursorPos)
 {
     // empty default implementation
     Q_UNUSED(preeditString);
     Q_UNUSED(cursorPos);
 }
 
-void ExampleInputMethod::setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state)
+void HelloWorldInputMethod::setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state)
 {
     // Ignored as input method only support one subview
     Q_UNUSED(subViewId);

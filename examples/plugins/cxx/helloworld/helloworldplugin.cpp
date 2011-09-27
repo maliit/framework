@@ -14,44 +14,44 @@
  * of this file.
  */
 
-#include "exampleplugin.h"
-#include "exampleinputmethod.h"
+#include "helloworldplugin.h"
+#include "helloworldinputmethod.h"
 
 #include <QtPlugin>
 #include <QtDebug>
 
-ExamplePlugin::ExamplePlugin()
+HelloWorldPlugin::HelloWorldPlugin()
 {
-    /* This example plugin is an on screen input method */
+    /* This helloworld plugin is an on screen input method */
     allowedStates << MInputMethod::OnScreen;
 }
 
-QString ExamplePlugin::name() const
+QString HelloWorldPlugin::name() const
 {
-    return "ExamplePlugin";
+    return "HelloWorldPlugin";
 }
 
-QStringList ExamplePlugin::languages() const
+QStringList HelloWorldPlugin::languages() const
 {
     return QStringList("EN");
 }
 
 MAbstractInputMethod *
-ExamplePlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                  QWidget *mainWindow)
+HelloWorldPlugin::createInputMethod(MAbstractInputMethodHost *host,
+                                    QWidget *mainWindow)
 {
-    return new ExampleInputMethod(host, mainWindow);
+    return new HelloWorldInputMethod(host, mainWindow);
 }
 
-MAbstractInputMethodSettings *ExamplePlugin::createInputMethodSettings()
+MAbstractInputMethodSettings *HelloWorldPlugin::createInputMethodSettings()
 {
     /* This plugin does not have a settings widget */
     return 0;
 }
-QSet<MInputMethod::HandlerState> ExamplePlugin::supportedStates() const
+QSet<MInputMethod::HandlerState> HelloWorldPlugin::supportedStates() const
 {
     return allowedStates;
 }
 
-Q_EXPORT_PLUGIN2(exampleplugin, ExamplePlugin)
+Q_EXPORT_PLUGIN2(cxxhelloworldplugin, HelloWorldPlugin)
 

@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#ifndef EXAMPLEINPUTMETHOD_H
-#define EXAMPLEINPUTMETHOD_H
+#ifndef HELLO_WORLD_INPUT_METHOD_H
+#define HELLO_WORLD_INPUT_METHOD_H
 
 #include <mabstractinputmethod.h>
 #include <mtoolbardata.h> /* Only needed for setToolbar() */
@@ -25,15 +25,15 @@
 #include <QPushButton>
 #include <QLayout>
 
-class ExampleInputMethod
+class HelloWorldInputMethod
     : public MAbstractInputMethod
 {
     Q_OBJECT
 
 public:
-    ExampleInputMethod(MAbstractInputMethodHost *host,
-                       QWidget *mainWindow);
-    ~ExampleInputMethod();
+    HelloWorldInputMethod(MAbstractInputMethodHost *host,
+                          QWidget *mainWindow);
+    ~HelloWorldInputMethod();
 
     //! \reimp
     /* Mandatory */
@@ -61,6 +61,7 @@ public:
     /* Using default implementations
     virtual bool imExtensionEvent(MImExtensionEvent *event);
     virtual void showLanguageNotification();
+    virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
     virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                  Qt::KeyboardModifiers modifiers, const QString &text,
                                  bool autoRepeat, int count, quint32 nativeScanCode,
@@ -80,5 +81,5 @@ private:
     bool showRequested;
 };
 
-#endif // EXAMPLEINPUTMETHOD_H
+#endif // HELLO_WORLD_INPUT_METHOD_H
 
