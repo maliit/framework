@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = exampleplugin
+TARGET = cxxhelloworldplugin
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
@@ -7,12 +7,12 @@ MOC_DIR = .moc
 CONFIG += debug plugin
 
 HEADERS += \
-    exampleplugin.h \
-    exampleinputmethod.h \
+    helloworldplugin.h \
+    helloworldinputmethod.h \
 
 SOURCES += \
-    exampleplugin.cpp \
-    exampleinputmethod.cpp \
+    helloworldplugin.cpp \
+    helloworldinputmethod.cpp \
 
 BUILD_TYPE = unittest
 
@@ -33,7 +33,7 @@ contains(BUILD_TYPE, skeleton-legacy) {
 contains(BUILD_TYPE, unittest) {
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
-    TOP_DIR = ../../..
+    TOP_DIR = ../../../..
 
     include($$TOP_DIR/config.pri)
 
@@ -43,8 +43,8 @@ contains(BUILD_TYPE, unittest) {
     LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
     INCLUDEPATH += $$SRC_DIR
 
-    target.path += $$MALIIT_TEST_PLUGINS_DIR/examples/standard
+    target.path += $$MALIIT_TEST_PLUGINS_DIR/examples/cxx/helloworld
     INSTALLS += target
 }
 
-QMAKE_CLEAN += libexampleplugin.so
+QMAKE_CLEAN += libcxxhelloworldplugin.so

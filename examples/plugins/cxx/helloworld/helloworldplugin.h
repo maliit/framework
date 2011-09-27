@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#ifndef EXAMPLEPLUGIN_H
-#define EXAMPLEPLUGIN_H
+#ifndef HELLO_WORLD_PLUGIN_H
+#define HELLO_WORLD_PLUGIN_H
 
 #include "minputmethodplugin.h"
 
@@ -25,14 +25,14 @@
 // TODO: Licence. We need a license that leaves no doubt this code can be used for any purpose
 
 //! Example input method plugin that can be used as a base when developing new input method plugins
-class ExamplePlugin: public QObject,
+class HelloWorldPlugin: public QObject,
     public MInputMethodPlugin
 {
     Q_OBJECT
     Q_INTERFACES(MInputMethodPlugin)
 
 public:
-    ExamplePlugin();
+    HelloWorldPlugin();
 
     //! \reimp
     virtual QString name() const;
@@ -51,4 +51,4 @@ private:
     QSet<MInputMethod::HandlerState> allowedStates;
 };
 
-#endif
+#endif // HELLO_WORLD_PLUGIN_H
