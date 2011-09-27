@@ -19,6 +19,7 @@
 #define MEEGO_KEYBOARD_QUICK_H
 
 #include <mabstractinputmethod.h>
+#include <mkeyoverride.h>
 
 #include <QRect>
 #include <QPointer>
@@ -56,9 +57,13 @@ class MInputMethodQuick
     Q_PROPERTY(int appOrientation READ appOrientation
                                   NOTIFY appOrientationChanged)
 
+    //! Propagates action key override to QML components.
+    Q_PROPERTY(MKeyOverride *actionKeyOverride READ actionKeyOverride
+                                               NOTIFY actionKeyOverrideChanged)
+
 public:
     enum KeyEvent { KeyPress = QEvent::KeyPress,
-		    KeyRelease = QEvent::KeyRelease };
+                    KeyRelease = QEvent::KeyRelease };
 
     //! Constructor
     //! \param host serves as communication link to framework and application. Managed by framework.
@@ -78,6 +83,7 @@ public:
     virtual void setState(const QSet<MInputMethod::HandlerState> &state);
 
     virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
+    virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
     virtual void handleFocusChange(bool focusIn);
     //! \reimp_end
 
@@ -100,6 +106,12 @@ public:
     //! area the area consumed by the QML input method.
     Q_INVOKABLE void setInputMethodArea(const QRect &area);
 
+    //! Returns action key override.
+    MKeyOverride* actionKeyOverride() const;
+
+    //! Activates action key, that is - sends enter keypress.
+    Q_INVOKABLE void activateActionKey();
+
 Q_SIGNALS:
     //! Emitted when screen height changes.
     void screenHeightChanged(int height);
@@ -112,6 +124,9 @@ Q_SIGNALS:
 
     //! Emitted when input method area changes.
     void inputMethodAreaChanged(const QRect &area);
+
+    //! Emitted when key action override changes.
+    void actionKeyOverrideChanged(MKeyOverride *override);
 
 public Q_SLOTS:
     //! Sends preedit string. Called by QML components.
@@ -132,6 +147,10 @@ private:
     Q_DISABLE_COPY(MInputMethodQuick);
     Q_DECLARE_PRIVATE(MInputMethodQuick);
     MInputMethodQuickPrivate *const d_ptr;
+
+private Q_SLOTS:
+    //! Propagates change to QML.
+    void onSentActionKeyAttributesChanged(const QString &keyId, const MKeyOverride::KeyOverrideAttributes changedAttributes);
 };
 
 #endif // MEEGO_KEYBOARD_QUICK_H
