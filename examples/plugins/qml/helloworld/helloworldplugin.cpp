@@ -42,4 +42,4 @@ QString HelloWorldPlugin::qmlFileName() const
     return filePath;
 }
 
-Q_EXPORT_PLUGIN2(helloworldplugin, HelloWorldPlugin)
+Q_EXPORT_PLUGIN2(qmlhelloworldplugin, HelloWorldPlugin)
