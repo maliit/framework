@@ -34,10 +34,10 @@ class MKeyOverridePrivate;
 class MKeyOverride : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString label  READ label    WRITE setLabel)
-    Q_PROPERTY(QString icon   READ icon    WRITE setIcon)
-    Q_PROPERTY(bool highlighted   READ highlighted WRITE setHighlighted)
-    Q_PROPERTY(bool enabled   READ enabled WRITE setEnabled)
+    Q_PROPERTY(QString label  READ label    WRITE setLabel NOTIFY labelChanged)
+    Q_PROPERTY(QString icon   READ icon    WRITE setIcon NOTIFY iconChanged)
+    Q_PROPERTY(bool highlighted   READ highlighted WRITE setHighlighted NOTIFY highlightedChanged)
+    Q_PROPERTY(bool enabled   READ enabled WRITE setEnabled NOTIFY enabledChanged)
 
 public:
     //! Defines all the attributes of an key override.
@@ -45,7 +45,8 @@ public:
         Label = 0x1,
         Icon  = 0x2,
         Highlighted = 0x4,
-        Enabled = 0x8
+        Enabled = 0x8,
+        All = Label | Icon | Highlighted | Enabled
     };
     Q_DECLARE_FLAGS(KeyOverrideAttributes, KeyOverrideAttribute)
 
@@ -107,11 +108,42 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     /*!
-     * \brief Emitted when some attributes of the key are changed
+     * \brief Emitted when some attributes of the key are changed.
+     *
+     * This signal is emitted after attribute specific signal.
+     *
      * \param keyId, the key id.
      * \param changedAttributes Specifies the changed attributes. \sa KeyOverrideAttribute
      */
     void keyAttributesChanged(const QString &keyId, const MKeyOverride::KeyOverrideAttributes changedAttributes);
+
+    /*!
+     * \brief Emitted when label is changed.
+     *
+     * This signal is emitted before keyAttributesChanged signal.
+     */
+    void labelChanged(const QString &label);
+
+    /*!
+     * \brief Emitted when icon is changed.
+     *
+     * This signal is emitted before keyAttributesChanged signal.
+     */
+    void iconChanged(const QString &icon);
+
+    /*!
+     * \brief Emitted when highlighted is changed.
+     *
+     * This signal is emitted before keyAttributesChanged signal.
+     */
+    void highlightedChanged(bool highlighted);
+
+    /*!
+     * \brief Emitted when enabled is changed.
+     *
+     * This signal is emitted before keyAttributesChanged signal.
+     */
+    void enabledChanged(bool enabled);
 
 private:
     Q_DECLARE_PRIVATE(MKeyOverride)
