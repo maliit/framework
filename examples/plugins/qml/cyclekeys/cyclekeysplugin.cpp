@@ -40,4 +40,4 @@ QString CycleKeys::qmlFileName() const
     return filePath;
 }
 
-Q_EXPORT_PLUGIN2(cyclekeysplugin, CycleKeys)
+Q_EXPORT_PLUGIN2(qmlcyclekeysplugin, CycleKeys)
