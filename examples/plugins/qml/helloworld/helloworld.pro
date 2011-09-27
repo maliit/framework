@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = helloworldplugin
+TARGET = qmlhelloworldplugin
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
@@ -31,7 +31,7 @@ contains(BUILD_TYPE, skeleton-legacy) {
 contains(BUILD_TYPE, unittest) {
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
-    TOP_DIR = ../../..
+    TOP_DIR = ../../../..
 
     include($$TOP_DIR/config.pri)
 
@@ -45,8 +45,8 @@ contains(BUILD_TYPE, unittest) {
     LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
     INCLUDEPATH += $$SRC_DIR
 
-    target.path += $$MALIIT_TEST_PLUGINS_DIR/examples/quick
+    target.path += $$MALIIT_TEST_PLUGINS_DIR/examples/qml/helloworld
     INSTALLS += target
 }
 
-QMAKE_CLEAN += libhelloworldplugin.so
+QMAKE_CLEAN += libqmlhelloworldplugin.so
