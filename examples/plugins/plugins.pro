@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = cxx qml cyclekeys
+SUBDIRS = cxx qml
