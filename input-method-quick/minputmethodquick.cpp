@@ -155,6 +155,8 @@ public:
     //! requests.  We track the current shown/SIP requested state using these variables.
     bool sipRequested;
     bool sipIsInhibited;
+    QSharedPointer<MKeyOverride> actionKeyOverride;
+    QSharedPointer<MKeyOverride> sentActionKeyOverride;
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
 
@@ -166,10 +168,11 @@ public:
         , loader(new MInputMethodQuickLoader(scene, im))
         , appOrientation(0)
         , haveFocus(false)
-	, activeState(MInputMethod::OnScreen)
-	, sipRequested(false)
+        , activeState(MInputMethod::OnScreen)
+        , sipRequested(false)
         , sipIsInhibited(false)
-
+        , actionKeyOverride(new MKeyOverride("actionKey"))
+        , sentActionKeyOverride()
     {}
 
     ~MInputMethodQuickPrivate()
@@ -189,6 +192,25 @@ public:
         host->setInputMethodArea(region);
     }
 
+    void updateActionKey (const MKeyOverride::KeyOverrideAttributes changedAttributes)
+    {
+        if (changedAttributes & MKeyOverride::Label)
+        {
+            actionKeyOverride->setLabel(sentActionKeyOverride->label());
+        }
+        if (changedAttributes & MKeyOverride::Icon)
+        {
+            actionKeyOverride->setIcon(sentActionKeyOverride->icon());
+        }
+        if (changedAttributes & MKeyOverride::Highlighted)
+        {
+            actionKeyOverride->setHighlighted(sentActionKeyOverride->highlighted());
+        }
+        if (changedAttributes & MKeyOverride::Enabled)
+        {
+            actionKeyOverride->setEnabled(sentActionKeyOverride->enabled());
+        }
+    }
 };
 
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
@@ -383,7 +405,7 @@ void MInputMethodQuick::sendCommit(const QString &text)
         QKeyEvent event(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
         inputMethodHost()->sendKeyEvent(event);
     } else
-    if (text == "\r\n") {
+    if ((text == "\r\n") || (text == "\n") || (text == "\r")) {
         QKeyEvent event(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
         inputMethodHost()->sendKeyEvent(event);
     } else {
@@ -401,4 +423,51 @@ void MInputMethodQuick::userHide()
 {
     hide();
     inputMethodHost()->notifyImInitiatedHiding();
+}
+
+void MInputMethodQuick::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides)
+{
+    Q_D(MInputMethodQuick);
+    QMap<QString, QSharedPointer<MKeyOverride> >::iterator iter(overrides.find("actionKey"));
+
+    if (iter == overrides.end())
+    {
+        return;
+    }
+
+    QSharedPointer<MKeyOverride> sentActionKeyOverride(*iter);
+
+    if (d->sentActionKeyOverride)
+    {
+        disconnect(d->sentActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
+                   this, SLOT(onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
+        d->sentActionKeyOverride.clear();
+    }
+
+    if (sentActionKeyOverride)
+    {
+        d->sentActionKeyOverride = sentActionKeyOverride;
+        connect(d->sentActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
+                this, SLOT(onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
+        d->updateActionKey(MKeyOverride::All);
+    }
+}
+
+void MInputMethodQuick::onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes changedAttributes)
+{
+    Q_D(MInputMethodQuick);
+
+    d->updateActionKey (changedAttributes);
+}
+
+MKeyOverride* MInputMethodQuick::actionKeyOverride() const
+{
+    Q_D(const MInputMethodQuick);
+
+    return d->actionKeyOverride.data();
+}
+
+void MInputMethodQuick::activateActionKey()
+{
+    sendCommit("\n");
 }
