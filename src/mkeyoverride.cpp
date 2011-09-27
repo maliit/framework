@@ -105,6 +105,7 @@ void MKeyOverride::setLabel(const QString &label)
 
     if (d->label != label) {
         d->label = label;
+        Q_EMIT labelChanged(label);
         Q_EMIT keyAttributesChanged(keyId(), Label);
     }
 }
@@ -115,6 +116,7 @@ void MKeyOverride::setIcon(const QString &icon)
 
     if (d->icon != icon) {
         d->icon = icon;
+        Q_EMIT iconChanged(icon);
         Q_EMIT keyAttributesChanged(keyId(), Icon);
     }
 }
@@ -125,6 +127,7 @@ void MKeyOverride::setHighlighted(bool highlighted)
 
     if (d->highlighted != highlighted) {
         d->highlighted = highlighted;
+        Q_EMIT highlightedChanged(highlighted);
         Q_EMIT keyAttributesChanged(keyId(), Highlighted);
     }
 }
@@ -135,6 +138,7 @@ void MKeyOverride::setEnabled(bool enabled)
 
     if (d->enabled != enabled) {
         d->enabled = enabled;
+        Q_EMIT enabledChanged(enabled);
         Q_EMIT keyAttributesChanged(keyId(), Enabled);
     }
 }
