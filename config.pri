@@ -18,7 +18,7 @@ enable-legacy {
 # Linker optimization for release build
 QMAKE_LFLAGS_RELEASE+=-Wl,--as-needed
 # Compiler warnings are error if the build type is debug
-QMAKE_CXXFLAGS_DEBUG+=-Werror
+QMAKE_CXXFLAGS_DEBUG+=-Werror -O0
 
 isEmpty(M_IM_VERSION) {
     M_IM_VERSION=$$MALIIT_VERSION
