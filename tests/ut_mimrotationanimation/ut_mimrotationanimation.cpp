@@ -50,6 +50,8 @@ void Ut_MImRotationAnimation::cleanupTestCase()
 
 void Ut_MImRotationAnimation::testPassthruHiddenDuringRotation()
 {
+    QSKIP("Unreliable on Device", SkipAll);
+
     MImRotationAnimation subject(app->passThruWindow(), 0, app);
     app->setTransientHint(remote->window()->effectiveWinId());
 
