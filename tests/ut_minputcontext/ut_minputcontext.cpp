@@ -368,13 +368,6 @@ void Ut_MInputContext::testEvent()
 
     waitAndProcessEvents(500);
 
-    // This event claims to be pre-edit injection event but it's not.
-    QEvent fakeInjectionEvent((QEvent::Type)Maliit::PreeditInjectionEvent::eventNumber());
-    accepted = QCoreApplication::sendEvent(m_subject, &fakeInjectionEvent);
-    QVERIFY(accepted == false);
-
-    waitAndProcessEvents(500);
-
     QCOMPARE(m_connection->setPreeditCount(), 1);
 
     m_connection->resetCallCounts();

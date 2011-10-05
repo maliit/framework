@@ -202,7 +202,10 @@ void MInputContext::connectInputMethodServer()
 bool MInputContext::event(QEvent *event)
 {
     if (event->type() == Maliit::PreeditInjectionEvent::eventNumber()) {
-        Maliit::PreeditInjectionEvent *injectionEvent = dynamic_cast<Maliit::PreeditInjectionEvent *>(event);
+        /* reinterpret_cast is used instead of dynamic_cast because the event might be a
+        MPreeditInjection event. It is layout compatible with Maliit::PreeditInjectionevent
+        Note that if an event has the same QEvent:Type, but is not binary compatible, this will crash */
+        Maliit::PreeditInjectionEvent *injectionEvent = reinterpret_cast<Maliit::PreeditInjectionEvent *>(event);
         if (injectionEvent == 0) {
             return false;
         }
