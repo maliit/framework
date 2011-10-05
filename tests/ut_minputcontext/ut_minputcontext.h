@@ -41,6 +41,8 @@ public:
     int keyEventCount();
     int orientationChangedCount();
 
+    const QString &lastPreedit();
+
     int setCopyPasteStateCount();
     QList<bool> &setCopyPasteStateParams();
 
@@ -82,6 +84,8 @@ private:
     QList<bool> setCopyPasteStateCallParams;
     int redirectKeyCallCount;
     RedirectedKeyParamsStruct redirectKeyCallParams;
+    QString lastPreeditString;
+    int lastPreeditCursorPos;
 };
 
 
@@ -166,6 +170,10 @@ private Q_SLOTS:
     void testSetRedirectKeys();
 
     void testInvalidScene();
+
+#ifdef HAVE_MEEGOTOUCH
+    void testMPreeditInjectionEventCompatibility();
+#endif
 
 private:
     void waitAndProcessEvents(int waitTime);

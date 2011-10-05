@@ -10,6 +10,10 @@
 #include <maliit/inputmethod.h>
 #include <maliit/preeditinjectionevent.h>
 
+#ifdef HAVE_MEEGOTOUCH
+#include <mpreeditinjectionevent.h>
+#endif
+
 namespace
 {
     const int WidgetStubCursorPosition(37);
@@ -148,9 +152,15 @@ void InputMethodServerTestConnection::mouseClickedOnPreedit(const QPoint &pos, c
 void InputMethodServerTestConnection::setPreedit(const QString &text, int cursorPos)
 {
     MImServerConnection::setPreedit(text, cursorPos);
+    lastPreeditString = text;
+    lastPreeditCursorPos = cursorPos;
     setPreeditCallCount++;
 }
 
+const QString &InputMethodServerTestConnection::lastPreedit()
+{
+    return lastPreeditString;
+}
 
 void InputMethodServerTestConnection::reset(bool requireSyncronization)
 {
@@ -863,6 +873,30 @@ void Ut_MInputContext::testImGetSelection()
     m_subject->setFocusWidget(0);
 }
 
+#ifdef HAVE_MEEGOTOUCH
+/* Test that MPreeditInjectionEvent is also accepted, for compatability purposes */
+void Ut_MInputContext::testMPreeditInjectionEventCompatibility()
+{
+    WidgetStub widget(0);
+    gFocusedWidget = &widget;
+    m_subject->setFocusWidget(&widget);
+    m_subject->setGlobalCorrectionEnabled(true);
+
+    QString preeditString("MPreeditInjection");
+
+    MPreeditInjectionEvent injectionEvent(preeditString);
+    bool accepted = QCoreApplication::sendEvent(m_subject, &injectionEvent);
+    QCOMPARE(accepted, true);
+
+    waitAndProcessEvents(500);
+
+    QCOMPARE(m_connection->setPreeditCount(), 1);
+    QCOMPARE(m_connection->lastPreedit(), preeditString);
+
+    m_subject->setFocusWidget(0);
+    gFocusedWidget = 0;
+}
+#endif
 
 QTEST_APPLESS_MAIN(Ut_MInputContext)
 
