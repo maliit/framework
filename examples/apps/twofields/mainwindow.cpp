@@ -94,6 +94,8 @@ MainWindow::MainWindow()
     QLineEdit* loginEdit(new QLineEdit());
     QLabel* passwordLabel(new QLabel("Password:"));
     QLineEdit* passwordEdit(new QLineEdit());
+    QLabel* commentLabel(new QLabel("Comment (not required):"));
+    QLineEdit* commentEdit(new QLineEdit());
     ActionKeyFilter* filter(new ActionKeyFilter(loginEdit, passwordEdit, this));
 
     loginEdit->installEventFilter(filter);
@@ -110,6 +112,8 @@ MainWindow::MainWindow()
     vbox->addWidget(loginEdit);
     vbox->addWidget(passwordLabel);
     vbox->addWidget(passwordEdit);
+    vbox->addWidget(commentLabel);
+    vbox->addWidget(commentEdit);
 
     QPushButton *closeApp = new QPushButton("Close application");
     vbox->addWidget(closeApp);
