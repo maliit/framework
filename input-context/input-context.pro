@@ -17,12 +17,6 @@ external-libmaliit {
 
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
-enable-meegotouch {
-    CONFIG  += meegotouch
-
-    DEFINES += HAVE_MEEGOTOUCH
-}
-
 # Input
 HEADERS += minputcontext.h \
     minputcontextplugin.h \
