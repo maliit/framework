@@ -10,12 +10,15 @@ HEADERSINSTALL = \
         minputmethodquickplugin.h \
         minputmethodquick.h \
         maliitquick.h \
+        mkeyoverridequick.h
 
 HEADERS += $$HEADERSINSTALL \
+        mkeyoverridequick_p.h
 
 SOURCES += \
         minputmethodquickplugin.cpp \
         minputmethodquick.cpp \
+        mkeyoverridequick.cpp
 
 QT = core gui xml declarative
 

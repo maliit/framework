@@ -22,6 +22,7 @@
 #include "mtoolbardata.h"
 #include "mtoolbarlayout.h"
 #include "mtoolbaritem.h"
+#include "mkeyoverridequick.h"
 
 #include <QKeyEvent>
 #include <QApplication>
@@ -43,6 +44,8 @@
 
 namespace
 {
+    const char * const actionKeyName = "actionKey";
+
     const QRect &computeDisplayRect(QWidget *w = 0)
     {
         static const QRect displayRect(w ? qApp->desktop()->screenGeometry(w)
@@ -155,7 +158,7 @@ public:
     //! requests.  We track the current shown/SIP requested state using these variables.
     bool sipRequested;
     bool sipIsInhibited;
-    QSharedPointer<MKeyOverride> actionKeyOverride;
+    QSharedPointer<MKeyOverrideQuick> actionKeyOverride;
     QSharedPointer<MKeyOverride> sentActionKeyOverride;
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
@@ -171,7 +174,7 @@ public:
         , activeState(MInputMethod::OnScreen)
         , sipRequested(false)
         , sipIsInhibited(false)
-        , actionKeyOverride(new MKeyOverride("actionKey"))
+        , actionKeyOverride(new MKeyOverrideQuick(actionKeyName))
         , sentActionKeyOverride()
     {}
 
@@ -194,20 +197,16 @@ public:
 
     void updateActionKey (const MKeyOverride::KeyOverrideAttributes changedAttributes)
     {
-        if (changedAttributes & MKeyOverride::Label)
-        {
+        if (changedAttributes & MKeyOverride::Label) {
             actionKeyOverride->setLabel(sentActionKeyOverride->label());
         }
-        if (changedAttributes & MKeyOverride::Icon)
-        {
+        if (changedAttributes & MKeyOverride::Icon) {
             actionKeyOverride->setIcon(sentActionKeyOverride->icon());
         }
-        if (changedAttributes & MKeyOverride::Highlighted)
-        {
+        if (changedAttributes & MKeyOverride::Highlighted) {
             actionKeyOverride->setHighlighted(sentActionKeyOverride->highlighted());
         }
-        if (changedAttributes & MKeyOverride::Enabled)
-        {
+        if (changedAttributes & MKeyOverride::Enabled) {
             actionKeyOverride->setEnabled(sentActionKeyOverride->enabled());
         }
     }
@@ -428,24 +427,24 @@ void MInputMethodQuick::userHide()
 void MInputMethodQuick::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides)
 {
     Q_D(MInputMethodQuick);
-    QMap<QString, QSharedPointer<MKeyOverride> >::iterator iter(overrides.find("actionKey"));
+    QMap<QString, QSharedPointer<MKeyOverride> >::iterator iter(overrides.find(actionKeyName));
 
-    if (iter == overrides.end())
-    {
+    if (iter == overrides.end()) {
+        if (overrides.isEmpty()) {
+            d->actionKeyOverride->useDefaults();
+        }
         return;
     }
 
     QSharedPointer<MKeyOverride> sentActionKeyOverride(*iter);
 
-    if (d->sentActionKeyOverride)
-    {
+    if (d->sentActionKeyOverride) {
         disconnect(d->sentActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
                    this, SLOT(onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
         d->sentActionKeyOverride.clear();
     }
 
-    if (sentActionKeyOverride)
-    {
+    if (sentActionKeyOverride) {
         d->sentActionKeyOverride = sentActionKeyOverride;
         connect(d->sentActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
                 this, SLOT(onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
