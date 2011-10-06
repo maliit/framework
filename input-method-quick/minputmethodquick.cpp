@@ -22,6 +22,8 @@
 #include "mtoolbardata.h"
 #include "mtoolbarlayout.h"
 #include "mtoolbaritem.h"
+#include "mkeyoverridequick.h"
+#include "mkeyoverride.h"
 
 #include <QKeyEvent>
 #include <QApplication>
@@ -43,6 +45,8 @@
 
 namespace
 {
+    const char * const actionKeyName = "actionKey";
+
     const QRect &computeDisplayRect(QWidget *w = 0)
     {
         static const QRect displayRect(w ? qApp->desktop()->screenGeometry(w)
@@ -155,7 +159,7 @@ public:
     //! requests.  We track the current shown/SIP requested state using these variables.
     bool sipRequested;
     bool sipIsInhibited;
-    QSharedPointer<MKeyOverride> actionKeyOverride;
+    QSharedPointer<MKeyOverrideQuick> actionKeyOverride;
     QSharedPointer<MKeyOverride> sentActionKeyOverride;
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
@@ -171,9 +175,11 @@ public:
         , activeState(MInputMethod::OnScreen)
         , sipRequested(false)
         , sipIsInhibited(false)
-        , actionKeyOverride(new MKeyOverride("actionKey"))
+        , actionKeyOverride(new MKeyOverrideQuick())
         , sentActionKeyOverride()
-    {}
+    {
+        updateActionKey(MKeyOverride::All);
+    }
 
     ~MInputMethodQuickPrivate()
     {
@@ -194,21 +200,61 @@ public:
 
     void updateActionKey (const MKeyOverride::KeyOverrideAttributes changedAttributes)
     {
-        if (changedAttributes & MKeyOverride::Label)
-        {
-            actionKeyOverride->setLabel(sentActionKeyOverride->label());
+        const bool useSentKey (sentActionKeyOverride);
+
+        if (changedAttributes & MKeyOverride::Label) {
+            bool useDefault(false);
+
+            // lets assume that empty string in sent action key override means
+            // that we want to use default value
+            if (useSentKey) {
+                const QString label(sentActionKeyOverride->label());
+
+                if (label.isEmpty()) {
+                    useDefault = true;
+                } else {
+                    actionKeyOverride->overrideLabel(label);
+                }
+            } else {
+                useDefault = true;
+            }
+            if (useDefault) {
+                actionKeyOverride->useDefaultLabel();
+            }
         }
-        if (changedAttributes & MKeyOverride::Icon)
-        {
-            actionKeyOverride->setIcon(sentActionKeyOverride->icon());
+        if (changedAttributes & MKeyOverride::Icon) {
+            bool useDefault(false);
+
+            // lets assume that empty string in sent action key override means
+            // that we want to use default value
+            if (useSentKey) {
+                const QString icon(sentActionKeyOverride->icon());
+
+                if (icon.isEmpty()) {
+                    useDefault = true;
+                } else {
+                    actionKeyOverride->overrideIcon(icon);
+                }
+            } else {
+                useDefault = true;
+            }
+            if (useDefault) {
+                actionKeyOverride->useDefaultIcon();
+            }
         }
-        if (changedAttributes & MKeyOverride::Highlighted)
-        {
-            actionKeyOverride->setHighlighted(sentActionKeyOverride->highlighted());
+        if (changedAttributes & MKeyOverride::Highlighted) {
+            if (useSentKey) {
+                actionKeyOverride->overrideHighlighted(sentActionKeyOverride->highlighted());
+            } else {
+                actionKeyOverride->useDefaultHighlighted();
+            }
         }
-        if (changedAttributes & MKeyOverride::Enabled)
-        {
-            actionKeyOverride->setEnabled(sentActionKeyOverride->enabled());
+        if (changedAttributes & MKeyOverride::Enabled) {
+            if (useSentKey) {
+                actionKeyOverride->overrideEnabled(sentActionKeyOverride->enabled());
+            } else {
+                actionKeyOverride->useDefaultEnabled();
+            }
         }
     }
 };
@@ -428,39 +474,34 @@ void MInputMethodQuick::userHide()
 void MInputMethodQuick::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides)
 {
     Q_D(MInputMethodQuick);
-    QMap<QString, QSharedPointer<MKeyOverride> >::iterator iter(overrides.find("actionKey"));
+    QMap<QString, QSharedPointer<MKeyOverride> >::iterator iter(overrides.find(actionKeyName));
 
-    if (iter == overrides.end())
-    {
-        return;
-    }
-
-    QSharedPointer<MKeyOverride> sentActionKeyOverride(*iter);
-
-    if (d->sentActionKeyOverride)
-    {
+    if (d->sentActionKeyOverride) {
         disconnect(d->sentActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
                    this, SLOT(onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
         d->sentActionKeyOverride.clear();
     }
 
-    if (sentActionKeyOverride)
-    {
-        d->sentActionKeyOverride = sentActionKeyOverride;
-        connect(d->sentActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
-                this, SLOT(onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
-        d->updateActionKey(MKeyOverride::All);
+    if (iter != overrides.end()) {
+        QSharedPointer<MKeyOverride> sentActionKeyOverride(*iter);
+
+        if (sentActionKeyOverride) {
+            d->sentActionKeyOverride = sentActionKeyOverride;
+            connect(d->sentActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
+                    this, SLOT(onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
+        }
     }
+    d->updateActionKey(MKeyOverride::All);
 }
 
 void MInputMethodQuick::onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes changedAttributes)
 {
     Q_D(MInputMethodQuick);
 
-    d->updateActionKey (changedAttributes);
+    d->updateActionKey(changedAttributes);
 }
 
-MKeyOverride* MInputMethodQuick::actionKeyOverride() const
+MKeyOverrideQuick* MInputMethodQuick::actionKeyOverride() const
 {
     Q_D(const MInputMethodQuick);
 

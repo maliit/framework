@@ -30,6 +30,7 @@
 
 class MInputMethodQuickPrivate;
 class MInputMethodQuickLoader;
+class MKeyOverrideQuick;
 
 //! \brief MInputMethodQuick is used for QML-based input method plugins.
 //!
@@ -58,8 +59,8 @@ class MInputMethodQuick
                                   NOTIFY appOrientationChanged)
 
     //! Propagates action key override to QML components.
-    Q_PROPERTY(MKeyOverride *actionKeyOverride READ actionKeyOverride
-                                               NOTIFY actionKeyOverrideChanged)
+    Q_PROPERTY(MKeyOverrideQuick *actionKeyOverride READ actionKeyOverride
+                                                    NOTIFY actionKeyOverrideChanged)
 
 public:
     enum KeyEvent { KeyPress = QEvent::KeyPress,
@@ -107,7 +108,7 @@ public:
     Q_INVOKABLE void setInputMethodArea(const QRect &area);
 
     //! Returns action key override.
-    MKeyOverride* actionKeyOverride() const;
+    MKeyOverrideQuick *actionKeyOverride() const;
 
     //! Activates action key, that is - sends enter keypress.
     Q_INVOKABLE void activateActionKey();
