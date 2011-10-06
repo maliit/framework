@@ -32,10 +32,6 @@
 #include <QDebug>
 #include <QByteArray>
 
-#ifdef HAVE_MEEGOTOUCH
-#include <MApplicationPage>
-#endif
-
 #include <maliit/inputmethod.h>
 #include <maliit/attributeextension.h>
 #include <maliit/attributeextensionregistry.h>
@@ -1164,19 +1160,16 @@ bool MInputContext::isVisible(const QRect &cursorRect, const QGraphicsView *view
     QGraphicsItem *parent = item->parentItem();
     while (parent) {
         QRect widgetClipRect;
-#ifdef HAVE_MEEGOTOUCH
-        // MApplicationPage does not set correctly clipping for its main viewport
+
         if (parent->isWidget()) {
-            QGraphicsWidget *parentWidget = static_cast<QGraphicsWidget*>(parent);
-            MSceneWindow *sceneWindow;
-            if ((sceneWindow = qobject_cast<MSceneWindow *>(parentWidget)) != 0) {
-                if (sceneWindow->windowType() == MSceneWindow::ApplicationPage) {
-                    QRectF clipVsItem = static_cast<MApplicationPage *>(sceneWindow)->exposedContentRect();
-                    widgetClipRect = sceneWindow->mapToScene(clipVsItem).boundingRect().toRect();
-                }
+            // MApplicationPage does not set clipping for its main viewport
+            const QGraphicsWidget *parentWidget = static_cast<QGraphicsWidget*>(parent);
+
+            if (parentWidget->inherits("MApplicationPage")) {
+                widgetClipRect = parent->sceneBoundingRect().toRect();
             }
         }
-#endif
+
         if (!widgetClipRect.isValid()
             && (parent->flags() & QGraphicsItem::ItemClipsChildrenToShape) != 0) {
             // this heavily relies on wehther the view properly set ItemClipsChildrenToShape
