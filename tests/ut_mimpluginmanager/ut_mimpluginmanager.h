@@ -23,8 +23,6 @@ private Q_SLOTS:
 
     void testLoadPlugins();
     void testAddHandlerMap();
-    void testConvertAndFilterHandlers_data();
-    void testConvertAndFilterHandlers();
     void testSwitchPluginState();
     void testMultiplePlugins();
     void testExistInputMethod();

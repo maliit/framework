@@ -76,8 +76,6 @@ public:
     void setActiveHandlers(const QSet<MInputMethod::HandlerState> &states);
     QSet<MInputMethod::HandlerState> activeHandlers() const;
     void deactivatePlugin(MInputMethodPlugin *plugin);
-    void convertAndFilterHandlers(const QStringList &handlerNames,
-                                  QSet<MInputMethod::HandlerState> *handlers);
 
     void replacePlugin(MInputMethod::SwitchDirection direction, MInputMethodPlugin *source,
                        Plugins::iterator replacement, const QString &subViewId);

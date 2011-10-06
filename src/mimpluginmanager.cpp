@@ -345,30 +345,6 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
     mICConnection->removeTarget(inputMethod);
 }
 
-
-void MIMPluginManagerPrivate::convertAndFilterHandlers(const QStringList &handlerNames,
-                                                       QSet<MInputMethod::HandlerState> *handlers)
-{
-    bool ok = false;
-    bool disableOnscreenKbd = false;
-
-    Q_FOREACH (const QString &name, handlerNames) {
-        int handlerNumber = (MInputMethod::HandlerState)name.toInt(&ok);
-        if (ok && handlerNumber >= MInputMethod::OnScreen
-            && handlerNumber <= MInputMethod::Accessory) {
-            if (!disableOnscreenKbd) {
-                disableOnscreenKbd = handlerNumber != MInputMethod::OnScreen;
-            }
-            handlers->insert((MInputMethod::HandlerState)handlerNumber);
-        }
-    }
-
-    if (disableOnscreenKbd) {
-        handlers->remove(MInputMethod::OnScreen);
-    }
-}
-
-
 void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direction,
                                             MInputMethodPlugin *source,
                                             Plugins::iterator replacement,
