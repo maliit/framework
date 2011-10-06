@@ -235,45 +235,6 @@ void Ut_MIMPluginManager::testAddHandlerMap()
     QCOMPARE(plugin->name(), pluginName3);
 }
 
-
-void Ut_MIMPluginManager::testConvertAndFilterHandlers_data()
-{
-    QTest::addColumn<QStringList>("names");
-    QTest::addColumn<HandlerStates>("expectedStates");
-
-    for (int n = 0; n <= MInputMethod::Accessory; ++n) {
-        QTest::newRow("single state")
-                << (QStringList() << QString::number(n))
-                << (HandlerStates() << MInputMethod::HandlerState(n));
-    }
-
-    QTest::newRow("0 1")
-            << (QStringList() << "0" << "1")
-            << (HandlerStates() << MInputMethod::Hardware);
-
-    QTest::newRow("1 2")
-            << (QStringList() << "1" << "2")
-            << (HandlerStates() << MInputMethod::Accessory << MInputMethod::Hardware);
-
-    QTest::newRow("1 1")
-            << (QStringList() << "1" << "1")
-            << (HandlerStates() << MInputMethod::Hardware);
-}
-
-
-void Ut_MIMPluginManager::testConvertAndFilterHandlers()
-{
-    QFETCH(QStringList, names);
-    QFETCH(HandlerStates, expectedStates);
-    HandlerStates states;
-
-    qDebug() << "Handlers' names:" << names << "expected result:" << expectedStates;
-
-    subject->convertAndFilterHandlers(names, &states);
-    QCOMPARE(states, expectedStates);
-}
-
-
 void Ut_MIMPluginManager::testSwitchPluginState()
 {
     QSet<MInputMethod::HandlerState> actualState;
