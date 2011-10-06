@@ -1,12 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui>
+#include <QMainWindow>
+#include <QScopedPointer>
 
-namespace Maliit
-{
-  class AttributeExtension;
-}
+#include "myextension.h"
 
 class MainWindow
     : public QMainWindow
@@ -15,11 +13,10 @@ class MainWindow
 
 public:
     MainWindow();
-    ~MainWindow();
 
 private:
-    QScopedPointer<Maliit::AttributeExtension> loginExtension;
-    QScopedPointer<Maliit::AttributeExtension> passwordExtension;
+    QScopedPointer<MyExtension> loginExtension;
+    QScopedPointer<MyExtension> passwordExtension;
 };
 
 #endif // MAINWINDOW_H
