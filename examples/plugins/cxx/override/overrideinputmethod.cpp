@@ -24,6 +24,7 @@
 namespace {
     const char * const overrideSubViewId("OverridePluginSubview1");
     const char * const actionKeyName = "actionKey";
+    const char * const actionKeyLabel = "Enter";
 }
 
 OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host,
@@ -35,7 +36,7 @@ OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host,
     , activeActionKeyOverride()
 {
     // Set up UI
-    mainWidget->setText("Enter");
+    mainWidget->setText(actionKeyLabel);
     connect(mainWidget, SIGNAL(clicked()), this, SLOT(handleButtonClicked()));
 
     // Used only for unittest/sanity test
@@ -200,13 +201,14 @@ void OverrideInputMethod::setKeyOverrides(const QMap<QString, QSharedPointer<MKe
 {
     QMap<QString, QSharedPointer<MKeyOverride> >::iterator actionKeyOverrideIter(overrides.find(actionKeyName));
 
-    if (actionKeyOverrideIter == overrides.end())
-    {
+    if (actionKeyOverrideIter == overrides.end()) {
+        if (overrides.empty()) {
+            mainWidget->setText(actionKeyLabel);
+        }
         return;
     }
 
-    if (activeActionKeyOverride)
-    {
+    if (activeActionKeyOverride) {
         disconnect(activeActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
                    this, SLOT(onKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
         activeActionKeyOverride.clear();
@@ -214,8 +216,7 @@ void OverrideInputMethod::setKeyOverrides(const QMap<QString, QSharedPointer<MKe
 
     QSharedPointer<MKeyOverride> overrideShared = *actionKeyOverrideIter;
 
-    if (overrideShared)
-    {
+    if (overrideShared) {
         connect(overrideShared.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),
                 this, SLOT(onKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)));
         activeActionKeyOverride = overrideShared;
@@ -227,28 +228,23 @@ void OverrideInputMethod::setKeyOverrides(const QMap<QString, QSharedPointer<MKe
 void OverrideInputMethod::onKeyAttributesChanged(const QString &keyId,
                                                  const MKeyOverride::KeyOverrideAttributes changedAttributes)
 {
-    if (keyId == actionKeyName && activeActionKeyOverride)
-    {
+    if (keyId == actionKeyName && activeActionKeyOverride) {
         updateActionKey(changedAttributes);
     }
 }
 
 void OverrideInputMethod::updateActionKey (const MKeyOverride::KeyOverrideAttributes changedAttributes)
 {
-    if (changedAttributes & MKeyOverride::Label)
-    {
+    if (changedAttributes & MKeyOverride::Label) {
         mainWidget->setText(activeActionKeyOverride->label());
     }
-    if (changedAttributes & MKeyOverride::Icon)
-    {
+    if (changedAttributes & MKeyOverride::Icon) {
         // maybe later
     }
-    if (changedAttributes & MKeyOverride::Highlighted)
-    {
+    if (changedAttributes & MKeyOverride::Highlighted) {
         // maybe later
     }
-    if (changedAttributes & MKeyOverride::Enabled)
-    {
+    if (changedAttributes & MKeyOverride::Enabled) {
         // maybe later
     }
 }
