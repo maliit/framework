@@ -5,7 +5,7 @@ TARGET = maliit-exampleapp-twofields
 target.path = $$M_IM_INSTALL_BIN
 DEPENDPATH += .
 
-BUILD_TYPE = skeleton
+BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {
     CONFIG += link_pkgconfig
