@@ -1,10 +1,18 @@
-#include <QX11Info>
 #include <cstdlib>
 
-#include <maliit/attributeextension.h>
+#include <QApplication>
+#include <QCheckBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVariant>
+#include <QVBoxLayout>
+#include <QX11Info>
+
 #include <maliit/inputmethod.h>
 #include <maliit/namespace.h>
 
+#include "actionkeyfilter.h"
 #include "mainwindow.h"
 
 namespace {
@@ -13,73 +21,12 @@ namespace {
         static const bool fullscreen(qApp->arguments().contains("-fullscreen"));
         return fullscreen;
     }
-
-    class ActionKeyFilter : public QObject
-    {
-    public:
-        explicit ActionKeyFilter(QLineEdit *login, QLineEdit *password, QObject *parent)
-        : QObject(parent),
-          loginEdit(login),
-          passwordEdit(password)
-        {}
-    protected:
-        bool eventFilter(QObject *obj, QEvent *event)
-        {
-            if (!event)
-            {
-                return false;
-            }
-            if (event->type() != QEvent::KeyPress)
-            {
-                return false;
-            }
-
-            QKeyEvent* keyEvent(static_cast<QKeyEvent*>(event));
-
-            if (keyEvent->key() != Qt::Key_Return)
-            {
-                return false;
-            }
-
-            if (obj == loginEdit)
-            {
-                passwordEdit->setFocus(Qt::OtherFocusReason);
-            }
-            else if (obj == passwordEdit)
-            {
-                QString message;
-                QMessageBox::Icon icon;
-
-                if (loginEdit->text().isEmpty() || passwordEdit->text().isEmpty())
-                {
-                    message = "Please enter your credentials.";
-                    icon = QMessageBox::Warning;
-                }
-                else
-                {
-                    message = "Login successfull!";
-                    icon = QMessageBox::Information;
-                }
-
-                QMessageBox messageBox;
-
-                messageBox.setText(message);
-                messageBox.addButton("OK", QMessageBox::AcceptRole);
-                messageBox.setIcon(icon);
-                messageBox.exec();
-            }
-            return false;
-        }
-    private:
-        QLineEdit* loginEdit;
-        QLineEdit* passwordEdit;
-    };
 }
 
 MainWindow::MainWindow()
-    : QMainWindow()
-    , loginExtension(new Maliit::AttributeExtension)
-    , passwordExtension(new Maliit::AttributeExtension)
+    : QMainWindow(),
+      loginExtension(new MyExtension("Next")),
+      passwordExtension(new MyExtension("Login"))
 {
     setWindowTitle("Maliit key override test application");
 
@@ -92,24 +39,43 @@ MainWindow::MainWindow()
 
     QLabel* loginLabel(new QLabel("Login:"));
     QLineEdit* loginEdit(new QLineEdit());
+    QCheckBox* loginCheckBox(new QCheckBox("Enter accepts login"));
     QLabel* passwordLabel(new QLabel("Password:"));
     QLineEdit* passwordEdit(new QLineEdit());
+    QCheckBox* passwordCheckBox(new QCheckBox("Enter accepts password"));
+    QLabel* commentLabel(new QLabel("Comment (not required):"));
+    QLineEdit* commentEdit(new QLineEdit());
     ActionKeyFilter* filter(new ActionKeyFilter(loginEdit, passwordEdit, this));
 
     loginEdit->installEventFilter(filter);
     loginEdit->setProperty(Maliit::InputMethodQuery::attributeExtensionId,
                            QVariant(loginExtension->id()));
-    loginExtension->setAttribute("/keys/actionKey/label", "Next");
+    loginCheckBox->setFocusProxy(loginEdit);
+    connect(loginCheckBox, SIGNAL(toggled(bool)),
+            loginExtension.data(), SLOT(overrideLabel(bool)));
+    loginCheckBox->setChecked(filter->enterLoginAccepts());
+    connect(loginCheckBox, SIGNAL(toggled(bool)),
+            filter, SLOT(setEnterLoginAccepts(bool)));
+
+    passwordEdit->setEchoMode(QLineEdit::Password);
     passwordEdit->installEventFilter(filter);
     passwordEdit->setProperty(Maliit::InputMethodQuery::attributeExtensionId,
                               QVariant(passwordExtension->id()));
-    passwordExtension->setAttribute("/keys/actionKey/label", "Login");
-    passwordEdit->setEchoMode(QLineEdit::Password);
+    passwordCheckBox->setFocusProxy(passwordEdit);
+    connect(passwordCheckBox, SIGNAL(toggled(bool)),
+            passwordExtension.data(), SLOT(overrideLabel(bool)));
+    passwordCheckBox->setChecked(filter->enterPasswordAccepts());
+    connect(passwordCheckBox, SIGNAL(toggled(bool)),
+            filter, SLOT(setEnterPasswordAccepts(bool)));
 
     vbox->addWidget(loginLabel);
     vbox->addWidget(loginEdit);
+    vbox->addWidget(loginCheckBox);
     vbox->addWidget(passwordLabel);
     vbox->addWidget(passwordEdit);
+    vbox->addWidget(passwordCheckBox);
+    vbox->addWidget(commentLabel);
+    vbox->addWidget(commentEdit);
 
     QPushButton *closeApp = new QPushButton("Close application");
     vbox->addWidget(closeApp);
@@ -125,6 +91,3 @@ MainWindow::MainWindow()
         show();
     }
 }
-
-MainWindow::~MainWindow()
-{}

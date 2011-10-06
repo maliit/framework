@@ -27,12 +27,16 @@ contains(BUILD_TYPE, unittest) {
     }
 }
 
-SOURCES +=          \
-    twofields.cpp   \
-    mainwindow.cpp
+SOURCES +=              \
+    actionkeyfilter.cpp \
+    mainwindow.cpp      \
+    myextension.cpp     \
+    twofields.cpp
 
-HEADERS +=          \
-    mainwindow.h
+HEADERS +=              \
+    actionkeyfilter.h   \
+    mainwindow.h        \
+    myextension.h
 
 QT += core gui
 
