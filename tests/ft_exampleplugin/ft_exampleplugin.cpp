@@ -50,13 +50,26 @@ void Ft_ExamplePlugin::init()
 void Ft_ExamplePlugin::cleanup()
 {}
 
+
+void Ft_ExamplePlugin::testFunction_data()
+{
+    QTest::addColumn<QString>("testPluginPath");
+    QTest::newRow("Hello world")
+        << "helloworld/libcxxhelloworldplugin.so";
+    QTest::newRow("Override")
+        << "override/libcxxoverrideplugin.so";
+}
+
 void Ft_ExamplePlugin::testFunction()
 {
+    QFETCH(QString, testPluginPath);
+
     MIndicatorServiceClient fakeService;
     MaliitTestUtils::TestInputMethodHost host(fakeService);
 
-    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR"/examples");
-    const QString pluginPath = pluginDir.absoluteFilePath("standard/libexampleplugin.so");
+    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ?
+                QDir(IN_TREE_TEST_PLUGIN_DIR"/cxx") : QDir(MALIIT_TEST_PLUGINS_DIR"/examples/cxx");
+    const QString pluginPath = pluginDir.absoluteFilePath(testPluginPath);
     QVERIFY(pluginDir.exists(pluginPath));
 
     QPluginLoader loader(pluginPath);

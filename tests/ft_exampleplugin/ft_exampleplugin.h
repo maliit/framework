@@ -35,6 +35,7 @@ private Q_SLOTS:
     void init();
     void cleanup();
 
+    void testFunction_data();
     void testFunction();
 
 private:

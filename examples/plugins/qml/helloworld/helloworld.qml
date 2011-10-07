@@ -25,7 +25,7 @@ Rectangle {
     Rectangle {
         id: imArea
         width: MInputMethodQuick.screenWidth
-        height: 200
+        height: MInputMethodQuick.screenHeight * 0.5
         radius: 10
         color: "grey"
         border.color: "black"

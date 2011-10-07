@@ -54,9 +54,11 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
 {
     QTest::addColumn<QString>("testPluginPath");
     QTest::newRow("Hello world")
-        << "quick/libhelloworldplugin.so";
+        << "helloworld/libqmlhelloworldplugin.so";
     QTest::newRow("Cycle keys")
-        << "cyclekeys/libcyclekeys.so";
+        << "cyclekeys/libqmlcyclekeysplugin.so";
+    QTest::newRow("Override")
+        << "override/libqmloverrideplugin.so";
 }
 
 /* This test currently tests both the qml example found in examples/
@@ -69,7 +71,8 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     MaliitTestUtils::TestInputMethodHost host(fakeService);
     QFETCH(QString, testPluginPath);
 
-    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ? QDir(IN_TREE_TEST_PLUGIN_DIR) : QDir(MALIIT_TEST_PLUGINS_DIR"/examples");
+    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ?
+                QDir(IN_TREE_TEST_PLUGIN_DIR"/qml") : QDir(MALIIT_TEST_PLUGINS_DIR"/examples/qml");
     const QString pluginPath = pluginDir.absoluteFilePath(testPluginPath);
     QVERIFY(pluginDir.exists(pluginPath));
 
