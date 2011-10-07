@@ -10,6 +10,11 @@ QT = core gui declarative
 SOURCES += cyclekeysplugin.cpp
 HEADERS += cyclekeysplugin.h
 RESOURCES = cyclekeys.qrc
+
+OTHER_FILES += \
+    main.qml \
+    CycleKey.qml \
+
 target.depends = $${IN_PWD}/main.qml $${IN_PWD}/CycleKey.qml
 
 BUILD_TYPE = unittest

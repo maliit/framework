@@ -12,6 +12,9 @@ HEADERS += helloworldplugin.h
 RESOURCES = helloworld.qrc
 target.depends = $$IN_PWD/helloworld.qml
 
+OTHER_FILES += \
+    helloworld.qml \
+
 BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {

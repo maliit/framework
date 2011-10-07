@@ -12,6 +12,9 @@ HEADERS += overrideplugin.h
 RESOURCES = override.qrc
 target.depends = $$IN_PWD/override.qml
 
+OTHER_FILES += \
+    override.qml \
+
 BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {
