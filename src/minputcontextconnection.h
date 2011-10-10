@@ -54,6 +54,18 @@ public:
     virtual void removeTarget(MAbstractInputMethod *target);
 
     /*!
+     * \brief Returns focus state if output parameter \a valid is \c true.
+     *
+     * By focus state it is meant to be focus state of an input widget
+     * on application side. If returned value is valid and is \c true then this
+     * means that input widget is focused. Otherwise, if returned value is
+     * \c false then no input widget is focused.
+     *
+     * \param valid An output parameter stating whether return value is valid.
+     */
+    virtual bool focusState(bool &valid);
+
+    /*!
      * \brief returns content type for focused widget if output parameter valid is true,
      * value matches enum M::TextContentType
      */

@@ -109,6 +109,14 @@ QSet<MAbstractInputMethod *> MInputContextConnection::targets()
 }
 
 /* Accessors to widgetState */
+
+bool MInputContextConnection::focusState(bool &valid)
+{
+    QVariant focusStateVariant = widgetState[FocusStateAttribute];
+    valid = focusStateVariant.isValid();
+    return focusStateVariant.toBool();
+}
+
 int MInputContextConnection::contentType(bool &valid)
 {
     QVariant contentTypeVariant = widgetState[ContentTypeAttribute];
@@ -319,10 +327,17 @@ MInputContextConnection::updateWidgetInformation(
 
     // update state
     widgetState = stateInfo;
+    bool focusStateOk(false);
+    const bool widgetFocusState(focusState(focusStateOk));
+
+    if (!focusStateOk)
+    {
+        qCritical() << __PRETTY_FUNCTION__ << ": focus state is invalid.";
+    }
 
     if (handleFocusChange) {
         Q_FOREACH (MAbstractInputMethod *target, targets()) {
-            target->handleFocusChange(stateInfo[FocusStateAttribute].toBool());
+            target->handleFocusChange(widgetFocusState);
         }
 
         Q_EMIT focusChanged(winId());
@@ -351,6 +366,11 @@ MInputContextConnection::updateWidgetInformation(
         Q_EMIT toolbarIdChanged(newAttributeExtensionId);
         // store the new used toolbar id(global).
         attributeExtensionId = newAttributeExtensionId;
+    }
+    // this happens when we focus on a text widget with no attribute extensions.
+    else if (handleFocusChange && widgetFocusState)
+    {
+        Q_EMIT toolbarIdChanged(newAttributeExtensionId);
     }
 
     // general notification last
