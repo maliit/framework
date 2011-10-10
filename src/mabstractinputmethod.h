@@ -245,10 +245,12 @@ public:
     /*!
      * \brief Uses custom key overrides which are defined by given parameter.
      *
-     * Reimplementing this method is optional. It is used in Meego Keyboard to provide
-     * context aware keys that can be customized from the application side.
+     * Reimplementing this method is optional. It is used in Meego Keyboard
+     * to provide context aware keys that can be customized from the application
+     * side.
      *
-     * \param overrides Pointer to key override definitions.
+     * \param overrides Pointer to key override definitions. An empty map means
+     * that no key override exists, and that the normal values should be used.
      */
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
 
