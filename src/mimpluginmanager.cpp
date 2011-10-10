@@ -1302,9 +1302,29 @@ void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
         MAttributeExtensionManager::instance().keyOverrides(id);
 
+    bool focusStateOk(false);
+    const bool focusState(d->mICConnection->focusState(focusStateOk));
+
+    if (!focusStateOk)
+    {
+        qCritical() << __PRETTY_FUNCTION__ ": focus state is invalid.";
+    }
+
+    const bool mapEmpty(keyOverrides.isEmpty());
+    // setKeyOverrides are not called when keyOverrides map is empty
+    // and no widget is focused - we do not want to update keys because either
+    // vkb is not visible or another input widget is focused in, so its
+    // extension attribute will be used in a moment. without this, some vkbs
+    // may have some flickering - first it could show default label and a
+    // fraction of second later - an overriden label.
+    const bool callKeyOverrides(!(!focusState && mapEmpty));
+
     Q_FOREACH (MInputMethodPlugin *plugin, d->activePlugins) {
         d->plugins.value(plugin).inputMethod->setToolbar(toolbar);
-        d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
+        if (callKeyOverrides)
+        {
+            d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
+        }
     }
 }
 
