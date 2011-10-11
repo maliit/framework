@@ -48,7 +48,7 @@ Rectangle {
     Component.onCompleted: {
         MInputMethodQuick.setInputMethodArea(Qt.rect(0, MInputMethodQuick.screenHeight - imArea.height,
                                                      imArea.width, imArea.height))
-        MInputMethodQuick.actionKeyOverride.setLabel("Enter")
+        MInputMethodQuick.actionKeyOverride.setDefaultLabel("Enter")
         MInputMethodQuick.sendCommit("Maliit")
         MInputMethodQuick.sendPreedit("Maliit")
     }
