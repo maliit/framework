@@ -17,7 +17,6 @@ DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 # Input
 HEADERS += \
     ut_minputcontext.h \
-    ../stubs/stubbase.h \
     $$ICDIR/minputcontext.h
 
 SOURCES += \
