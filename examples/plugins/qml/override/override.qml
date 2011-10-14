@@ -23,9 +23,43 @@ Rectangle {
     color: "transparent"
 
     Rectangle {
+        id: labelChanger
+        width: MInputMethodQuick.screenWidth
+        height: MInputMethodQuick.screenHeight * 0.25
+        radius: 10
+        color: "grey"
+        border.color: "black"
+        border.width: 10
+        anchors.bottom: imArea.top
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        Text {
+            id: changerText
+            text: "Change action key to Return."
+            anchors.centerIn: parent
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                if (MInputMethodQuick.actionKeyOverride.defaultLabel == "Enter")
+                {
+                    changerText.text = "Change action key to Enter."
+                    MInputMethodQuick.actionKeyOverride.setDefaultLabel("Return")
+                }
+                else
+                {
+                    changerText.text = "Change action key to Return."
+                    MInputMethodQuick.actionKeyOverride.setDefaultLabel("Enter")
+                }
+            }
+        }
+    }
+
+    Rectangle {
         id: imArea
         width: MInputMethodQuick.screenWidth
-        height: MInputMethodQuick.screenHeight * 0.5
+        height: MInputMethodQuick.screenHeight * 0.25
         radius: 10
         color: "grey"
         border.color: "black"
@@ -46,8 +80,8 @@ Rectangle {
     }
 
     Component.onCompleted: {
-        MInputMethodQuick.setInputMethodArea(Qt.rect(0, MInputMethodQuick.screenHeight - imArea.height,
-                                                     imArea.width, imArea.height))
+        MInputMethodQuick.setInputMethodArea(Qt.rect(0, MInputMethodQuick.screenHeight - imArea.height - labelChanger.height,
+                                                     imArea.width, imArea.height + labelChanger.height))
         MInputMethodQuick.actionKeyOverride.setDefaultLabel("Enter")
         MInputMethodQuick.sendCommit("Maliit")
         MInputMethodQuick.sendPreedit("Maliit")
