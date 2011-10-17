@@ -76,6 +76,7 @@ MainWindow::MainWindow()
     vbox->addWidget(passwordCheckBox);
     vbox->addWidget(commentLabel);
     vbox->addWidget(commentEdit);
+    vbox->addStretch();
 
     QPushButton *closeApp = new QPushButton("Close application");
     vbox->addWidget(closeApp);
