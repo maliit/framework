@@ -31,6 +31,7 @@ namespace MaliitTestUtils {
 
     bool isTestingInSandbox();
     QString getTestPluginPath();
+    QString getTestDataPath();
     void waitForSignal(const QObject* object, const char* signal, int timeout);
 
 

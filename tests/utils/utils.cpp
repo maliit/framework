@@ -25,6 +25,31 @@ namespace {
 
     const QString GlobalTestPluginPath(MALIIT_TEST_PLUGINS_DIR);
     const QString TestPluginPathEnvVariable("TESTPLUGIN_PATH");
+
+    const QString GlobalTestDataPath(MALIIT_TEST_DATA_PATH);
+    const QString TestDataPathEnvVariable("TESTDATA_PATH");
+
+    // If the environment variable envVar has a value, set *path to this value
+    // Returns true on success, false on error
+    bool setPathFromEnvironmentVariable(QString *path, QString envVar) {
+        const QStringList env(QProcess::systemEnvironment());
+        int index = env.indexOf(QRegExp('^' + envVar + "=.*", Qt::CaseInsensitive));
+
+        if (index != -1) {
+            QString pathCandidate = env.at(index);
+            pathCandidate = pathCandidate.remove(
+                                QRegExp('^' + envVar + '=', Qt::CaseInsensitive));
+            if (!pathCandidate.isEmpty()) {
+                *path = pathCandidate;
+                return true;
+            } else {
+                qCritical() << "Invalid " << envVar << " environment variable.\n";
+                return false;
+            }
+        }
+        return true;
+
+    }
 }
 
 namespace MaliitTestUtils {
@@ -58,26 +83,41 @@ bool isTestingInSandbox()
 QString getTestPluginPath()
 {
     QString pluginPath = GlobalTestPluginPath;
+    bool success = setPathFromEnvironmentVariable(&pluginPath, TestPluginPathEnvVariable);
 
-    const QStringList env(QProcess::systemEnvironment());
-    int index = env.indexOf(QRegExp('^' + TestPluginPathEnvVariable + "=.*", Qt::CaseInsensitive));
-    if (index != -1) {
-        QString pathCandidate = env.at(index);
-        pathCandidate = pathCandidate.remove(
-                            QRegExp('^' + TestPluginPathEnvVariable + '=', Qt::CaseInsensitive));
-        if (!pathCandidate.isEmpty()) {
-            pluginPath = pathCandidate;
-        } else {
-            qCritical() << "Invalid " << TestPluginPathEnvVariable << " environment variable.\n";
-            return QString();
-        }
+    if (!success) {
+        return QString();
     }
-    if (!QDir(pluginPath).exists()) {
+
+    if (!QDir("./").exists(pluginPath)) {
         qCritical("Test plugin directory does not exist.");
         return QString();
     }
     return pluginPath;
 }
+
+// Use either global test plugin directory or TESTDATA_PATH, if it is
+// set (to local sandbox's plugin directory by makefile, at least).
+//
+// The test data path is the base directory where the tests directories (like ut_mtoolbardata) reside.
+//
+// Returns a null QString on failure
+QString getTestDataPath()
+{
+    QString dataPath = GlobalTestDataPath;
+    bool success = setPathFromEnvironmentVariable(&dataPath, TestDataPathEnvVariable);
+
+    if (!success) {
+        return QString();
+    }
+
+    if (!QDir("./").exists(dataPath)) {
+        qCritical("Test data directory does not exist.");
+        return QString();
+    }
+    return dataPath;
+}
+
 
 // Wait for signal or timeout; use SIGNAL macro for signal
 void waitForSignal(const QObject* object, const char* signal, int timeout)

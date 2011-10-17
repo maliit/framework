@@ -1,5 +1,7 @@
 #include "ut_mtoolbardata.h"
 
+#include "utils.h"
+
 #include <mtoolbardata.h>
 #include <mtoolbarlayout.h>
 #include <mtoolbaritem.h>
@@ -9,6 +11,8 @@
 #include <QDebug>
 
 namespace {
+    QString testDirectory = "/ut_mtoolbardata";
+
     QString Toolbar1 = "/toolbar1.xml";
     QString Toolbar2 = "/toolbar2.xml";
     QString Toolbar3 = "/toolbar3.xml";
@@ -22,13 +26,13 @@ void Ut_MToolbarData::initTestCase()
 
     app = new QCoreApplication(argc, argv);
 
-    Toolbar1 = QCoreApplication::applicationDirPath() + Toolbar1;
+    Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
-    Toolbar2 = QCoreApplication::applicationDirPath() + Toolbar2;
+    Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
     QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
-    Toolbar3 = QCoreApplication::applicationDirPath() + Toolbar3;
+    Toolbar3 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar3;
     QVERIFY2(QFile(Toolbar3).exists(), "toolbar3.xml does not exist");
-    Toolbar4 = QCoreApplication::applicationDirPath() + Toolbar4;
+    Toolbar4 = MaliitTestUtils::getTestDataPath() + testDirectory+ Toolbar4;
     QVERIFY2(QFile(Toolbar4).exists(), "toolbar4.xml does not exist");
 }
 
