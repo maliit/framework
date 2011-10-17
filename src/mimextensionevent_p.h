@@ -1,3 +1,6 @@
+#ifndef MIMEXTENSIONEVENT_P_H
+#define MIMEXTENSIONEVENT_P_H
+
 /* * This file is part of meego-im-framework *
  *
  * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
@@ -15,32 +18,12 @@
  */
 
 #include "mimextensionevent.h"
-#include "mimextensionevent_p.h"
 
-MImExtensionEventPrivate::~MImExtensionEventPrivate()
-{}
-
-MImExtensionEvent::MImExtensionEvent(Type type)
-    : d_ptr(new MImExtensionEventPrivate)
+class MImExtensionEventPrivate
 {
-    d_ptr->type = type;
-}
+public:
+    virtual ~MImExtensionEventPrivate();
 
-MImExtensionEvent::MImExtensionEvent(MImExtensionEventPrivate *dd,
-                                     Type type)
-    : d_ptr(dd)
-{
-    d_ptr->type = type;
-}
-
-MImExtensionEvent::~MImExtensionEvent()
-{
-    Q_D(MImExtensionEvent);
-    delete d;
-}
-
-MImExtensionEvent::Type MImExtensionEvent::type() const
-{
-    Q_D(const MImExtensionEvent);
-    return d->type;
-}
+    MImExtensionEvent::Type type;
+};
+#endif // MIMEXTENSIONEVENT_P_H
