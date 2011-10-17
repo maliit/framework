@@ -33,16 +33,20 @@ class MImExtensionEvent
 public:
     //! Defines valid types for input method extension event
     enum Type {
-        None
+        None,
+        Update
     };
 
-    MImExtensionEvent(Type type);
+    explicit MImExtensionEvent(Type type);
     virtual ~MImExtensionEvent();
 
     //! Returns the type of the event
     Type type() const;
 
 protected:
+    MImExtensionEvent(MImExtensionEventPrivate *dd,
+                      Type type);
+
     MImExtensionEventPrivate * const d_ptr;
 
 private:

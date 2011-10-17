@@ -48,6 +48,7 @@ HEADERS += \
         mimpluginsproxywidget.h \
         mimonscreenplugins.h \
         mimhwkeyboardtracker_p.h \
+        mimextensionevent_p.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
