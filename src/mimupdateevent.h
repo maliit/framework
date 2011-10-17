@@ -28,13 +28,21 @@ class MImUpdateEvent
 {
 public:
     explicit MImUpdateEvent(const QMap<QString, QVariant> &update,
+<<<<<<< HEAD
                             const QStringList &propertiesChanged);
+=======
+                            const QStringList &changedKeys);
+>>>>>>> New: MImUpdateEvent can be processed by plugins to detect widget changes
 
     //! Returns invalid QVariant if key is invalid.
     QVariant value(const QString &key) const;
 
     //! Returns list of keys that have changed, compared to last update event.
+<<<<<<< HEAD
     QStringList propertiesChanged() const;
+=======
+    QStringList changedKeys() const;
+>>>>>>> New: MImUpdateEvent can be processed by plugins to detect widget changes
 
 protected:
     MImUpdateEventPrivate * const d_ptr;

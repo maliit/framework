@@ -22,17 +22,29 @@ class MImUpdateEventPrivate
 {
 public:
     QMap<QString, QVariant> update;
+<<<<<<< HEAD
     QStringList changedProperties;
 };
 
 MImUpdateEvent::MImUpdateEvent(const QMap<QString, QVariant> &update,
                                const QStringList &changedProperties)
+=======
+    QStringList changedKeys;
+};
+
+MImUpdateEvent::MImUpdateEvent(const QMap<QString, QVariant> &update,
+                               const QStringList &changedKeys)
+>>>>>>> New: MImUpdateEvent can be processed by plugins to detect widget changes
     : MImExtensionEvent(new MImUpdateEventPrivate, MImExtensionEvent::Update)
     , d_ptr(static_cast<MImUpdateEventPrivate * const>(MImExtensionEvent::d_ptr))
 {
     Q_D(MImUpdateEvent);
     d->update = update;
+<<<<<<< HEAD
     d->changedProperties = changedProperties;
+=======
+    d->changedKeys = changedKeys;
+>>>>>>> New: MImUpdateEvent can be processed by plugins to detect widget changes
 }
 
 QVariant MImUpdateEvent::value(const QString &key) const
@@ -41,8 +53,15 @@ QVariant MImUpdateEvent::value(const QString &key) const
     return d->update.value(key);
 }
 
+<<<<<<< HEAD
 QStringList MImUpdateEvent::propertiesChanged() const
 {
     Q_D(const MImUpdateEvent);
     return d->changedProperties;
+=======
+QStringList MImUpdateEvent::changedKeys() const
+{
+    Q_D(const MImUpdateEvent);
+    return d->changedKeys;
+>>>>>>> New: MImUpdateEvent can be processed by plugins to detect widget changes
 }
