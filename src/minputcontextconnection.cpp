@@ -19,6 +19,7 @@
 #include "mabstractinputmethod.h"
 #include "mattributeextensionmanager.h"
 #include "mattributeextensionid.h"
+#include "mimupdateevent.h"
 
 #include <QKeyEvent>
 
@@ -326,6 +327,17 @@ MInputContextConnection::updateWidgetInformation(
     }
 
     // update state
+    QStringList changedProperties;
+    for (QMap<QString, QVariant>::const_iterator iter = stateInfo.constBegin();
+         iter != stateInfo.constEnd();
+         ++iter)
+    {
+        if (widgetState.value(iter.key()) != iter.value()) {
+            changedProperties.append(iter.key());
+        }
+
+    }
+
     widgetState = stateInfo;
     bool focusStateOk(false);
     const bool widgetFocusState(focusState(focusStateOk));
@@ -373,8 +385,12 @@ MInputContextConnection::updateWidgetInformation(
         Q_EMIT toolbarIdChanged(newAttributeExtensionId);
     }
 
-    // general notification last
+    MImUpdateEvent ev(widgetState, changedProperties);
     Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        if (not changedProperties.isEmpty()) {
+            (void) target->imExtensionEvent(&ev);
+        }
+
         target->update();
     }
 }
