@@ -12,6 +12,8 @@ QMAKE_CLEAN += *.log *~
 target.path = $$MALIIT_TEST_LIBDIR/$$TARGET
 INSTALLS += target
 
+DEFINES += MALIIT_TEST_DATA_PATH=\\\"$$MALIIT_TEST_LIBDIR\\\"
+
 TOP_DIR = ../..
 SRC_DIR = $$TOP_DIR/src
 PASSTHROUGH_DIR = $$TOP_DIR/passthroughserver

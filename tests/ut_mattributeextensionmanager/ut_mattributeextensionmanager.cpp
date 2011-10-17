@@ -15,8 +15,10 @@
  */
 
 
-
 #include "ut_mattributeextensionmanager.h"
+
+#include "utils.h"
+
 #include <mattributeextensionmanager.h>
 #include <mtoolbardata.h>
 #include <mtoolbaritem.h>
@@ -27,9 +29,12 @@
 #include <QDebug>
 #include <QDir>
 
+
+
 Q_DECLARE_METATYPE(MInputMethod::ActionType);
 
 namespace {
+    const QString testDirectory = "/ut_mattributeextensionmanager";
     QString Toolbar1 = "/toolbar1.xml";
     QString Toolbar2 = "/toolbar2.xml";
     QString Toolbar3 = "/toolbar3.xml"; // this file does not exist
@@ -44,11 +49,11 @@ void Ut_MAttributeExtensionManager::initTestCase()
     static int argc = 1;
     app = new QCoreApplication(argc, argv);
 
-    Toolbar1 = QCoreApplication::applicationDirPath() + Toolbar1;
+    Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
-    Toolbar2 = QCoreApplication::applicationDirPath() + Toolbar2;
+    Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
     QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
-    Toolbar3 = QCoreApplication::applicationDirPath() + Toolbar3;
+    Toolbar3 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar3;
     QVERIFY2(!QFile(Toolbar3).exists(), "toolbar3.xml should not exist");
 }
 

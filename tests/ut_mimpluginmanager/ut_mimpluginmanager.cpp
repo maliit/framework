@@ -58,6 +58,7 @@ namespace {
     const char * const DBusMIMPluginManagerPath = "/com/meego/inputmethodpluginmanager1";
     const char * const DBusMIMPluginManagerInterface = "com.meego.inputmethodpluginmanager1";
 
+    const QString testDirectory = "/ut_mimpluginmanager";
     QString Toolbar1 = "/toolbar1.xml";
     QString Toolbar2 = "/toolbar2.xml";
 
@@ -82,9 +83,9 @@ void Ut_MIMPluginManager::initTestCase()
     proxyWidget = new QWidget;
 #endif
 
-    Toolbar1 = QCoreApplication::applicationDirPath() + Toolbar1;
+    Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
-    Toolbar2 = QCoreApplication::applicationDirPath() + Toolbar2;
+    Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
     QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
 }
 
