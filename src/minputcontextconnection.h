@@ -38,9 +38,10 @@ class MAttributeExtensionId;
 class MInputContextConnection: public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(MInputContextConnection)
 
 public:
-    MInputContextConnection(QObject *parent = 0);
+    explicit MInputContextConnection(QObject *parent = 0);
     virtual ~MInputContextConnection();
 
     /*!
