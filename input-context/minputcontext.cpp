@@ -1143,6 +1143,16 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         }
     }
 
+    queryResult = focused->property(Maliit::InputMethodQuery::westernNumericInputEnforced);
+
+    if (!queryResult.isValid())
+    {
+      queryResult = focused->inputMethodQuery(
+          static_cast<Qt::InputMethodQuery>(Maliit::WesternNumericInputEnforced));
+    }
+
+    stateInformation[Maliit::InputMethodQuery::westernNumericInputEnforced] = queryResult.toBool();
+
     return stateInformation;
 }
 
