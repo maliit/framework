@@ -226,20 +226,27 @@ namespace Maliit {
         //!< priority for visualization. Input method should
         //!< honor this and stay out of widgets space.
         PreeditRectangleQuery,      //!< Retrieve bounding rectangle for current preedit text.
-        ImCorrectionEnabledQuery,   //!< Explicit correction enabling for text entries
-        ImModeQuery,                //!< Retrieve mode: normal, direct or proxy
-        InputMethodAttributeExtensionIdQuery, //!< attribute extension identifier for text entry
-        InputMethodAttributeExtensionQuery //!< attribute extension file name for text entry
+        ImCorrectionEnabledQuery,   //!< Explicit correction enabling for text entries.
+        ImModeQuery,                //!< Retrieve mode: normal, direct or proxy.
+        InputMethodAttributeExtensionIdQuery, //!< Attribute extension identifier for text entry.
+        InputMethodAttributeExtensionQuery, //!< Attribute extension file name for text entry.
+        WesternNumericInputEnforcedQuery //!< Overrides localized numeric input with western numeric input.
     };
 
     namespace InputMethodQuery
     {
-        //! Name of property which tells whether correction is enabled. See Maliit::ImCorrectionEnabledQuery.
+        //! Name of property which tells whether correction is enabled.
+        //! See Maliit::ImCorrectionEnabledQuery.
         const char* const correctionEnabledQuery = "maliit-correction-enabled";
-        //! Name of property which holds ID of attribute extension. See Maliit::InputMethodAttributeExtensionIdQuery.
+        //! Name of property which holds ID of attribute extension.
+        //! See Maliit::InputMethodAttributeExtensionIdQuery.
         const char* const attributeExtensionId = "maliit-attribute-extension-id";
-        //! Name of property which holds attribute extension. See Maliit::InputMethodAttributeExtensionQuery.
+        //! Name of property which holds attribute extension.
+        //! See Maliit::InputMethodAttributeExtensionQuery.
         const char* const attributeExtension = "maliit-attribute-extension";
+        //! Name of the property which overrides localized numeric input with western numeric input.
+        //! See Maliit::WesternNumericInputEnforcedQuery.
+        const char* const westernNumericInputEnforced = "maliit-western-numeric-input-enforced";
     }
 }
 

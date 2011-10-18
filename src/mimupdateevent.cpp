@@ -17,6 +17,8 @@
 #include "mimupdateevent.h"
 #include "mimextensionevent_p.h"
 
+#include <maliit/namespace.h>
+
 class MImUpdateEventPrivate
     : public MImExtensionEventPrivate
 {
@@ -44,4 +46,15 @@ QStringList MImUpdateEvent::propertiesChanged() const
 {
     Q_D(const MImUpdateEvent);
     return d->changedProperties;
+}
+
+bool MImUpdateEvent::westernNumericInputEnforced(bool *changed) const
+{
+    Q_D(const MImUpdateEvent);
+
+    if (changed) {
+        *changed = d->changedProperties.contains(Maliit::InputMethodQuery::westernNumericInputEnforced);
+    }
+
+    return d->update.value(Maliit::InputMethodQuery::westernNumericInputEnforced).toBool();
 }
