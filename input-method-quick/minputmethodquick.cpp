@@ -200,62 +200,7 @@ public:
 
     void updateActionKey (const MKeyOverride::KeyOverrideAttributes changedAttributes)
     {
-        const bool useSentKey (sentActionKeyOverride);
-
-        if (changedAttributes & MKeyOverride::Label) {
-            bool useDefault(false);
-
-            // lets assume that empty string in sent action key override means
-            // that we want to use default value
-            if (useSentKey) {
-                const QString label(sentActionKeyOverride->label());
-
-                if (label.isEmpty()) {
-                    useDefault = true;
-                } else {
-                    actionKeyOverride->overrideLabel(label);
-                }
-            } else {
-                useDefault = true;
-            }
-            if (useDefault) {
-                actionKeyOverride->useDefaultLabel();
-            }
-        }
-        if (changedAttributes & MKeyOverride::Icon) {
-            bool useDefault(false);
-
-            // lets assume that empty string in sent action key override means
-            // that we want to use default value
-            if (useSentKey) {
-                const QString icon(sentActionKeyOverride->icon());
-
-                if (icon.isEmpty()) {
-                    useDefault = true;
-                } else {
-                    actionKeyOverride->overrideIcon(icon);
-                }
-            } else {
-                useDefault = true;
-            }
-            if (useDefault) {
-                actionKeyOverride->useDefaultIcon();
-            }
-        }
-        if (changedAttributes & MKeyOverride::Highlighted) {
-            if (useSentKey) {
-                actionKeyOverride->overrideHighlighted(sentActionKeyOverride->highlighted());
-            } else {
-                actionKeyOverride->useDefaultHighlighted();
-            }
-        }
-        if (changedAttributes & MKeyOverride::Enabled) {
-            if (useSentKey) {
-                actionKeyOverride->overrideEnabled(sentActionKeyOverride->enabled());
-            } else {
-                actionKeyOverride->useDefaultEnabled();
-            }
-        }
+        actionKeyOverride->applyOverride(sentActionKeyOverride, changedAttributes);
     }
 };
 

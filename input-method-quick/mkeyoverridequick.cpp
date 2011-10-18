@@ -14,6 +14,7 @@
  * of this file.
  */
 
+#include <QDebug>
 #include <QtAlgorithms>
 
 #include "mkeyoverridequick.h"
@@ -254,4 +255,108 @@ void MKeyOverrideQuick::useDefaultEnabled()
     Q_D(MKeyOverrideQuick);
 
     setEnabled(d->defaultEnabled, false);
+}
+
+void MKeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOverride,
+                                      const MKeyOverride::KeyOverrideAttributes changedAttributes)
+{
+    Q_D(MKeyOverrideQuick);
+
+    enum {
+        UseOverride,
+        UseDefault,
+        UseEmpty,
+        UseActual
+    } iconAction(UseEmpty), labelAction(UseEmpty);
+
+    if (keyOverride)
+    {
+        // label and icon are mutually exclusive.
+        // here we prefer icons over labels, that is:
+        // (having foo means that foo is not empty)
+        // (overriden foo means an override from passed key override)
+        //
+        //           if we do override an icon and have overriden icon then use it
+        // otherwise if we do override a label and have overriden label then use it
+        // otherwise if we do not override an icon and have actual icon then use it
+        // otherwise if we do have default icon then use it
+        // otherwise if we do not override a label and have actual label then use it
+        // otherwise if we do have default label then use it
+        if ((changedAttributes & MKeyOverride::Icon) and not keyOverride->icon().isEmpty()) {
+            iconAction = UseOverride;
+        } else if ((changedAttributes & MKeyOverride::Label) and not keyOverride->label().isEmpty()) {
+            labelAction = UseOverride;
+        } else if (((~changedAttributes) & MKeyOverride::Icon) and not d->actualIcon.isEmpty()) {
+            iconAction = UseActual;
+        } else if (not d->defaultIcon.isEmpty()) {
+            iconAction = UseDefault;
+        } else if (((~changedAttributes) & MKeyOverride::Label) and not d->actualLabel.isEmpty()) {
+            labelAction = UseActual;
+        } else if (not d->defaultLabel.isEmpty()) {
+            labelAction = UseDefault;
+        } else {
+            qCritical() << __PRETTY_FUNCTION__ << "- Both label and icon have no default value.";
+        }
+
+        if (changedAttributes & MKeyOverride::Highlighted) {
+            overrideHighlighted(keyOverride->highlighted());
+        }
+
+        if (changedAttributes & MKeyOverride::Enabled) {
+            overrideEnabled(keyOverride->enabled());
+        }
+    } else {
+        // if no key override is passed then we just set defaults.
+        // this case should happen only at the beginning or when we change focus
+        // to non-input widget from input widget with an attribute extension
+        // attached to it. this of course means that if both default label and
+        // default icon are empty then the key will be empty. but we allow this,
+        // because such situation could happen at the beginning. obviously we
+        // expect a plugin to actually set a default value before it is shown.
+        if (not d->defaultIcon.isEmpty()) {
+            iconAction = UseDefault;
+        } else {
+            labelAction = UseDefault;
+        }
+
+        if (changedAttributes & MKeyOverride::Highlighted) {
+            useDefaultHighlighted();
+        }
+
+        if (changedAttributes & MKeyOverride::Enabled) {
+            useDefaultEnabled();
+        }
+    }
+
+    switch (iconAction) {
+    case UseOverride:
+        overrideIcon(keyOverride->icon());
+        break;
+    case UseDefault:
+        useDefaultIcon();
+        break;
+    case UseEmpty:
+        overrideIcon(QString());
+        break;
+    case UseActual:
+        break;
+    default:
+        qCritical() << __PRETTY_FUNCTION__ << "- unknown enum value for iconAction:" << static_cast<int> (iconAction);
+    }
+
+    switch (labelAction) {
+    case UseOverride:
+        overrideLabel(keyOverride->label());
+        break;
+    case UseDefault:
+        useDefaultLabel();
+        break;
+    case UseEmpty:
+        overrideLabel(QString());
+        break;
+    case UseActual:
+        break;
+    default:
+        qCritical() << __PRETTY_FUNCTION__ << "- unknown enum value for labelAction:" << static_cast<int> (labelAction);
+    }
 }

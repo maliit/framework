@@ -19,6 +19,8 @@
 
 #include <QObject>
 
+#include <mkeyoverride.h>
+
 class MKeyOverrideQuickPrivate;
 
 //! MKeyOverrideQuick stores some attributes of a key for QtQuick virtual keyboard.
@@ -71,6 +73,10 @@ public:
     bool defaultEnabled() const;
 
 public Q_SLOTS:
+    //! Applies overrides given in \a keyOverride.
+    void applyOverride(const QSharedPointer<MKeyOverride>& keyOverride,
+                       const MKeyOverride::KeyOverrideAttributes changedAttributes);
+
     //! Override actual label.
     void overrideLabel(const QString &label);
 
