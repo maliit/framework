@@ -1011,13 +1011,10 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     }
 
     const QGraphicsView * const graphicsView = qobject_cast<const QGraphicsView *>(focused);
-    const QGraphicsItem *focusedQGraphicsItem = 0;
-
-    if (graphicsView) {
-        const QGraphicsScene * const scene = graphicsView->scene();
-        focusedQGraphicsItem = scene ? scene->focusItem() : 0;
-    }
-
+    const QGraphicsObject * const focusedObject =
+            (graphicsView && graphicsView->scene())
+            ? qgraphicsitem_cast<const QGraphicsObject *>(graphicsView->scene()->focusItem())
+            : 0;
 
     QVariant queryResult;
 
@@ -1030,21 +1027,21 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
     queryResult = focused->property(Maliit::InputMethodQuery::attributeExtensionId);
 
-    if (!queryResult.isValid())
-    {
-      queryResult = focused->inputMethodQuery(
-          static_cast<Qt::InputMethodQuery>(MInputMethod::InputMethodAttributeExtensionIdQuery));
+    if (!queryResult.isValid()) {
+        if (focusedObject) {
+            // FIXME: Kill off once users of this property were able to switch
+            // to Maliit::InputMethodQuery::attributeExtensionId.
+            queryResult = focusedObject->property("meego-inputmethod-attribute-extension-id");
 
-      if (!queryResult.isValid()) {
-          // fallback using qgraphicsobject property. Used to bypass qml restrictions
-          // for qt components / meego. Use elsewhere discouraged and nothing guaranteed.
-          const QGraphicsObject *qgraphicsObject
-              = qgraphicsitem_cast<const QGraphicsObject*>(focusedQGraphicsItem);
+            if (!queryResult.isValid()) {
+                queryResult = focusedObject->property(Maliit::InputMethodQuery::attributeExtensionId);
+            }
+        }
 
-          if (qgraphicsObject) {
-              queryResult = qgraphicsObject->property("meego-inputmethod-attribute-extension-id");
-          }
-      }
+        if (!queryResult.isValid()) {
+            queryResult = focused->inputMethodQuery(
+                static_cast<Qt::InputMethodQuery>(Maliit::InputMethodAttributeExtensionIdQuery));
+        }
     }
 
     if (queryResult.isValid()) {
@@ -1087,10 +1084,10 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
     Qt::InputMethodHints hints = focused->inputMethodHints();
 
-    if (focusedQGraphicsItem) {
+    if (focusedObject) {
         // focused->inputMethodHints() always returns 0
         // therefore we explicitly call inputMethodHints with focused item
-        hints = focusedQGraphicsItem->inputMethodHints();
+        hints = focusedObject->inputMethodHints();
     }
 
     // content type value
@@ -1138,28 +1135,28 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         QRect cursorRect = queryResult.toRect();
         cursorRect = QRect(focused->mapToGlobal(cursorRect.topLeft()),
                            focused->mapToGlobal(cursorRect.bottomRight()));
-        if (isVisible(cursorRect, graphicsView, focusedQGraphicsItem)) {
+        if (isVisible(cursorRect, graphicsView, focusedObject)) {
             stateInformation["cursorRectangle"] = cursorRect;
         }
     }
 
     // Lookup order for wester numeric input override:
     // 1. focusWidet()->property(.),
-    // 2. focusWidget()->inputMethodQuery(.),
-    // 3. focusedQGraphicsItem->property(.), after casting to QObject.
+    // 2. focusedQGraphicsItem->property(.), after casting to QObject.
+    // 3. focusWidget()->inputMethodQuery(.),
     // Ensures that plain Qt and Qt Comoponents can readily use this override,
     // as neither of them implement a Maliit-specific IM query.
     queryResult = focused->property(Maliit::InputMethodQuery::westernNumericInputEnforced);
 
     if (!queryResult.isValid())
     {
-        queryResult = focused->inputMethodQuery(
-            static_cast<Qt::InputMethodQuery>(Maliit::WesternNumericInputEnforcedQuery));
+       if (focusedObject) {
+            queryResult = focusedObject->property(Maliit::InputMethodQuery::westernNumericInputEnforced);
+        }
 
         if (!queryResult.isValid()) {
-            if (const QObject *obj = dynamic_cast<const QObject *>(focusedQGraphicsItem)) {
-                queryResult = obj->property(Maliit::InputMethodQuery::westernNumericInputEnforced);
-            }
+            queryResult = focused->inputMethodQuery(
+                static_cast<Qt::InputMethodQuery>(Maliit::WesternNumericInputEnforcedQuery));
         }
     }
 
