@@ -1143,12 +1143,24 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         }
     }
 
+    // Lookup order for wester numeric input override:
+    // 1. focusWidet()->property(.),
+    // 2. focusWidget()->inputMethodQuery(.),
+    // 3. focusedQGraphicsItem->property(.), after casting to QObject.
+    // Ensures that plain Qt and Qt Comoponents can readily use this override,
+    // as neither of them implement a Maliit-specific IM query.
     queryResult = focused->property(Maliit::InputMethodQuery::westernNumericInputEnforced);
 
     if (!queryResult.isValid())
     {
-      queryResult = focused->inputMethodQuery(
-          static_cast<Qt::InputMethodQuery>(Maliit::WesternNumericInputEnforcedQuery));
+        queryResult = focused->inputMethodQuery(
+            static_cast<Qt::InputMethodQuery>(Maliit::WesternNumericInputEnforcedQuery));
+
+        if (!queryResult.isValid()) {
+            if (const QObject *obj = dynamic_cast<const QObject *>(focusedQGraphicsItem)) {
+                queryResult = obj->property(Maliit::InputMethodQuery::westernNumericInputEnforced);
+            }
+        }
     }
 
     stateInformation[Maliit::InputMethodQuery::westernNumericInputEnforced] = queryResult.toBool();
