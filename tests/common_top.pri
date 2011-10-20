@@ -21,6 +21,7 @@ PASSTHROUGH_DIR = $$TOP_DIR/passthroughserver
 INCLUDEPATH += . \
                $$TOP_DIR \
                $$SRC_DIR \
+               $$TOP_DIR/common \
                $$PASSTHROUGH_DIR \
                $$UTILS_DIR \
 

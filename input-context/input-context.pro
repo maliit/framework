@@ -3,7 +3,7 @@ include(../config.pri)
 TEMPLATE = lib
 TARGET = $$MALIIT_INPUTCONTEXT_TARGETNAME
 DEPENDPATH += .
-INCLUDEPATH += . .. ../src
+INCLUDEPATH += . .. ../common
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc

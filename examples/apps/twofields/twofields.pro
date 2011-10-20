@@ -21,9 +21,9 @@ contains(BUILD_TYPE, unittest) {
         CONFIG += link_pkgconfig
         PKGCONFIG += maliit-1.0
     } else {
-        TOP_SRC = ../../..
-        INCLUDEPATH += $$TOP_SRC
-        LIBS += $$TOP_SRC/maliit/lib$${MALIIT_LIB}.so
+        TOP_DIR = ../../..
+        INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common
+        LIBS += $$TOP_DIR/maliit/lib$${MALIIT_LIB}.so
     }
 }
 
