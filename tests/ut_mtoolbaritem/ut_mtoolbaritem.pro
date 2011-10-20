@@ -12,15 +12,6 @@ SOURCES += \
     ut_mtoolbaritem.cpp \
     ../stubs/fakegconf.cpp \
 
-isEqual(code_coverage_option, off){
-HEADERS += \
-    $$SRC_DIR/mtoolbaritem.h \
-    $$SRC_DIR/minputmethodnamespace.h \
-
-SOURCES += \
-    $$SRC_DIR/mtoolbaritem.cpp \
-}
-
 CONFIG += plugin qdbus
 
 LIBS += \

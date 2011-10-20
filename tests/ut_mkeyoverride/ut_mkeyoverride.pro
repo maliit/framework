@@ -12,15 +12,6 @@ SOURCES += \
     ut_mkeyoverride.cpp \
     ../stubs/fakegconf.cpp \
 
-isEqual(code_coverage_option, off){
-HEADERS += \
-    $$SRC_DIR/mkeyoverride.h \
-    $$SRC_DIR/minputmethodnamespace.h \
-
-SOURCES += \
-    $$SRC_DIR/mkeyoverride.cpp \
-}
-
 CONFIG += plugin qdbus
 
 LIBS += \
