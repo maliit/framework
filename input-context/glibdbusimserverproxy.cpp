@@ -17,8 +17,6 @@
 #include "glibdbusimserverproxy.h"
 #include "mdbusglibinputcontextadaptor.h"
 
-#include "minputcontext.h"
-
 #include <QPoint>
 #include <QRect>
 #include <QString>
@@ -30,7 +28,6 @@
 
 #include <unistd.h>
 #include <sys/types.h>
-
 
 namespace
 {
@@ -139,6 +136,26 @@ namespace
         }
         return result;
     }
+
+
+    static bool debugEnabled()
+    {
+        static bool enabled = false;
+        static bool initialized = false;
+
+        if (initialized) {
+            return enabled;
+        }
+
+        QByteArray debugEnvVar = qgetenv("MIC_ENABLE_DEBUG");
+        if (!debugEnvVar.isEmpty() && debugEnvVar != "false") {
+            enabled = true;
+        }
+
+        initialized = true;
+        return enabled;
+    }
+
 }
 
 GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
@@ -175,13 +192,13 @@ GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
 
 void GlibDBusIMServerProxy::onDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userData)
 {
-    if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
     static_cast<GlibDBusIMServerProxy *>(userData)->onDisconnection();
 }
 
 void GlibDBusIMServerProxy::connectToDBus()
 {
-    if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
     GError *error = NULL;
 
@@ -212,7 +229,7 @@ void GlibDBusIMServerProxy::connectToDBus()
 
 void GlibDBusIMServerProxy::onDisconnection()
 {
-    if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
     glibObjectProxy = 0;
     connection.reset();
@@ -231,7 +248,7 @@ void GlibDBusIMServerProxy::resetNotifyTrampoline(DBusGProxy *proxy, DBusGProxyC
 
 void GlibDBusIMServerProxy::resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId)
 {
-    if (MInputContext::debug) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
     dbus_g_proxy_end_call(proxy, callId, 0, G_TYPE_INVALID);
     pendingResetCalls.remove(callId);
