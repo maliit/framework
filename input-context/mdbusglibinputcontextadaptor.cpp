@@ -19,8 +19,6 @@
 
 #include <minputmethodnamespace.h>
 
-#include <QDebug>
-
 G_DEFINE_TYPE(MDBusGlibInputContextAdaptor, m_dbus_glib_input_context_adaptor, G_TYPE_OBJECT)
 
 
