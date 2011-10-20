@@ -29,14 +29,26 @@
 #include <X11/extensions/Xdamage.h>
 
 #ifdef Q_WS_MAEMO_5
+# include <X11/Xatom.h>
+#endif
+
+namespace {
+
+Atom wmStateAtom()
+{
+#ifdef Q_WS_MAEMO_5
 // MB doesn't update WM_STATE when window is iconified, so, as a
 // workaround, we monitor _MB_CURRENT_APP_WINDOW. This points to wid
 // when on FullScreen/Active
-# include <X11/Xatom.h>
 # define ICONIFIED_ATOM_NAME "_MB_CURRENT_APP_WINDOW"
 #else
 # define ICONIFIED_ATOM_NAME "WM_STATE"
 #endif
+
+    return XInternAtom(QX11Info::display(), ICONIFIED_ATOM_NAME, false);
+}
+
+}
 
 MImRemoteWindow::MImRemoteWindow(WId window, MImXApplication *application) :
     QObject(0),
@@ -73,9 +85,7 @@ bool MImRemoteWindow::wasIconified(XEvent *ev) const
         return false;
     }
 
-    static const Atom wmState = XInternAtom(QX11Info::display(), ICONIFIED_ATOM_NAME, false);
-
-    if (ev->xproperty.atom == wmState) {
+    if (ev->xproperty.atom == wmStateAtom()) {
         return isIconified();
     }
 
@@ -84,8 +94,6 @@ bool MImRemoteWindow::wasIconified(XEvent *ev) const
 
 bool MImRemoteWindow::isIconified() const
 {
-    static const Atom wmState = XInternAtom(QX11Info::display(), ICONIFIED_ATOM_NAME, false);
-
     Atom type;
     int format;
     unsigned long length;
@@ -101,7 +109,7 @@ bool MImRemoteWindow::isIconified() const
 # define IS_ICONIFIED(_X) _X == IconicState
 #endif
 
-    int queryResult = XGetWindowProperty(QX11Info::display(), wid, wmState, 0, 2,
+    int queryResult = XGetWindowProperty(QX11Info::display(), wid, wmStateAtom(), 0, 2,
                                          false, REAL_ATOM, &type, &format, &length,
                                          &after, &data);
     state = reinterpret_cast<unsigned long *>(data);
