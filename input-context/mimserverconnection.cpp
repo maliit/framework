@@ -15,7 +15,6 @@
  */
 
 #include "mimserverconnection.h"
-#include "minputcontext.h"
 
 /* Dummy class that does nothing. */
 MImServerConnection::MImServerConnection(QObject *parent)

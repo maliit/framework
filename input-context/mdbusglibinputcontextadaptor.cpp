@@ -15,9 +15,9 @@
  */
 
 #include "mdbusglibinputcontextadaptor.h"
-#include "minputcontext.h"
-#include <minputmethodnamespace.h>
 #include "mimserverconnection.h"
+
+#include <minputmethodnamespace.h>
 
 #include <QDebug>
 

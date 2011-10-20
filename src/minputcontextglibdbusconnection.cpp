@@ -17,8 +17,6 @@
 #define _BSD_SOURCE             // for mkdtemp
 
 #include "minputcontextglibdbusconnection.h"
-#include "mattributeextensionmanager.h"
-#include "mattributeextensionid.h"
 
 #include <QDataStream>
 #include <QDebug>
@@ -34,8 +32,6 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus.h>
-
-#include "mabstractinputmethod.h"
 
 #include <stdint.h> 
 

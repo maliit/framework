@@ -15,8 +15,9 @@
  */
 
 #include "glibdbusimserverproxy.h"
-#include "minputcontext.h"
 #include "mdbusglibinputcontextadaptor.h"
+
+#include "minputcontext.h"
 
 #include <QPoint>
 #include <QRect>

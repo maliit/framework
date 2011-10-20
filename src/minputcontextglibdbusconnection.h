@@ -18,7 +18,6 @@
 #define MINPUTCONTEXTGLIBDBUSCONNECTION_H
 
 #include "minputcontextconnection.h"
-#include "mattributeextensionid.h"
 
 #include <QtCore>
 #include <QtGui>
