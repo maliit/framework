@@ -3,7 +3,7 @@ include(../config.pri)
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_LIB
-INCLUDEPATH += .. ../passthroughserver
+INCLUDEPATH += .. ../passthroughserver ../common
 
 # Input
 HEADERSINSTALL = \
@@ -17,7 +17,6 @@ HEADERSINSTALL = \
         mkeyoverride.h \
         mkeyoverridedata.h \
         mattributeextension.h \
-        minputmethodnamespace.h \
         mabstractinputmethodsettings.h \
         mtoolbarlayout.h \
         mimextensionevent.h \
