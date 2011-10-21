@@ -73,7 +73,11 @@ MImXApplication::~MImXApplication()
 
 MImXApplication *MImXApplication::instance()
 {
-    return static_cast<MImXApplication *>(QCoreApplication::instance());
+    MImXApplication *app = qobject_cast<MImXApplication *>(QCoreApplication::instance());
+    if (QCoreApplication::instance() && !app) {
+        qCritical() << "Application instance used is not MImXApplication";
+    }
+    return app;
 }
 
 void MImXApplication::finalize()
