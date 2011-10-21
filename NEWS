@@ -1,3 +1,31 @@
+0.80.7
+======
+
+CHANGES SINCE 0.80.6
+* Improved QPA (Qt Lighthouse) support
+* New MImUpdateEvent: Instead of forcing plugins to poll data from
+  MAbstractInputMethodHost after each update, they can now choose to handle
+  this MImExtensionEvent. MImUpdateEvent informs about the changes (through its
+  propertiesChanged list) and allows extraction of updates through its value
+  method.
+* More dynamic key override examples.
+* Bring dynamic key overrides to QML plugins.
+* Let QObject properties override input method queries. This allows more
+  consistent integration with QML Componeents and plain Qt apps.
+
+BUG FIXES
+* Fixes: Let IM properties on QObjects override IM queries
+* Fixes: Label and icons are both shown at the same time.
+* Fixes: LD_LIBRARY_PATH for tests does not contain input-method-quick
+* Fixes: Lookup of data files causes make check to fail in out-of-tree build
+* Fixes: Plugins get an empty map when focus is switched.
+* Fixes: Action key label does not change back in QtQuick override plugin.
+* Fixes: Action key label does not change back in C++ override plugin.
+* Fixes: Documentation was not installed.
+* Fixes: Extension attributes are not registered after input context creation.
+* Fix unredirecting in self-compositing mode
+* Fixes: Server sometimes crashes in dbus connection
+
 0.80.6
 ======
 
