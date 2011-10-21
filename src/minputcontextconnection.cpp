@@ -16,10 +16,6 @@
 
 #include "minputcontextconnection.h"
 
-#include "mabstractinputmethod.h"
-#include "mimupdateevent.h"
-#include "maliit/namespaceinternal.h"
-
 #include <QKeyEvent>
 
 namespace {
@@ -34,7 +30,6 @@ namespace {
     const char * const CursorPositionAttribute = "cursorPosition";
     const char * const HasSelectionAttribute = "hasSelection";
     const char * const InputMethodModeAttribute = "inputMethodMode";
-    const char * const VisualizationAttribute = "visualizationPriority";
     const char * const ToolbarIdAttribute = "toolbarId";
     const char * const ToolbarAttribute = "toolbar";
     const char * const WinId = "winId";
@@ -48,8 +43,6 @@ class MInputContextConnectionPrivate
 public:
     MInputContextConnectionPrivate();
     ~MInputContextConnectionPrivate();
-
-    QSet<MAbstractInputMethod *> targets; // not owned by us
 };
 
 
@@ -85,29 +78,7 @@ MInputContextConnection::~MInputContextConnection()
     delete d;
 }
 
-void MInputContextConnection::addTarget(MAbstractInputMethod *target)
-{
-    d->targets.insert(target);
-    target->handleAppOrientationChanged(lastOrientation);
-}
-
-void MInputContextConnection::removeTarget(MAbstractInputMethod *target)
-{
-    d->targets.remove(target);
-}
-
-void MInputContextConnection::updateInputMethodArea(const QRegion &region)
-{
-    Q_UNUSED(region);
-}
-
-QSet<MAbstractInputMethod *> MInputContextConnection::targets()
-{
-    return d->targets;
-}
-
 /* Accessors to widgetState */
-
 bool MInputContextConnection::focusState(bool &valid)
 {
     QVariant focusStateVariant = widgetState[FocusStateAttribute];
@@ -252,9 +223,7 @@ void MInputContextConnection::mouseClickedOnPreedit(unsigned int connectionId,
     if (activeConnection != connectionId)
         return;
 
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        target->handleMouseClickOnPreedit(pos, preeditRect);
-    }
+    Q_EMIT mouseClickedOnPreedit(pos, preeditRect);
 }
 
 
@@ -266,9 +235,7 @@ void MInputContextConnection::setPreedit(unsigned int connectionId,
 
     preedit = text;
 
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        target->setPreedit(text, cursorPos);
-    }
+    Q_EMIT preeditChanged(text, cursorPos);
 }
 
 
@@ -279,9 +246,7 @@ void MInputContextConnection::reset(unsigned int connectionId)
 
     preedit.clear();
 
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        target->reset();
-    }
+    Q_EMIT resetInputMethodRequest();
 
     if (!preedit.isEmpty()) {
         qWarning("Preedit set from InputMethod::reset()!");
@@ -296,66 +261,10 @@ MInputContextConnection::updateWidgetInformation(
 {
     QMap<QString, QVariant> &oldState = widgetState;
 
-    // check visualization change
-    bool oldVisualization = false;
-    bool newVisualization = false;
-
-    QVariant variant = widgetState[VisualizationAttribute];
-
-    if (variant.isValid()) {
-        oldVisualization = variant.toBool();
-    }
-
-    variant = stateInfo[VisualizationAttribute];
-    if (variant.isValid()) {
-        newVisualization = variant.toBool();
-    }
-
-    // update state
-    QStringList changedProperties;
-    for (QMap<QString, QVariant>::const_iterator iter = stateInfo.constBegin();
-         iter != stateInfo.constEnd();
-         ++iter)
-    {
-        if (widgetState.value(iter.key()) != iter.value()) {
-            changedProperties.append(iter.key());
-        }
-
-    }
-
     widgetState = stateInfo;
-    bool focusStateOk(false);
-    const bool widgetFocusState(focusState(focusStateOk));
-
-    if (!focusStateOk)
-    {
-        qCritical() << __PRETTY_FUNCTION__ << ": focus state is invalid.";
-    }
 
     if (handleFocusChange) {
-        Q_FOREACH (MAbstractInputMethod *target, targets()) {
-            target->handleFocusChange(widgetFocusState);
-        }
-
         Q_EMIT focusChanged(winId());
-    }
-
-    // call notification methods if needed
-    if (oldVisualization != newVisualization) {
-        Q_FOREACH (MAbstractInputMethod *target, targets()) {
-            target->handleVisualizationPriorityChange(newVisualization);
-        }
-    }
-
-    const Qt::InputMethodHints lastHints = static_cast<Qt::InputMethodHints>(stateInfo.value(Maliit::Internal::inputMethodHints).toLongLong());
-    MImUpdateEvent ev(widgetState, changedProperties, lastHints);
-
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        if (not changedProperties.isEmpty()) {
-            (void) target->imExtensionEvent(&ev);
-        }
-
-        target->update();
     }
 
     Q_EMIT widgetStateChanged(connectionId, widgetState, oldState, handleFocusChange);
@@ -372,9 +281,8 @@ MInputContextConnection::receivedAppOrientationAboutToChange(unsigned int connec
     // to this signal first before the plugins. This ensures
     // that the rotation animation can be painted sufficiently early.
     Q_EMIT appOrientationAboutToChange(angle);
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        target->handleAppOrientationAboutToChange(angle);
-    }
+
+    Q_EMIT appOrientationAboutToChangeCompleted(angle);
 }
 
 
@@ -387,10 +295,8 @@ void MInputContextConnection::receivedAppOrientationChanged(unsigned int connect
     // Handle orientation changes through MImRotationAnimation with priority.
     // That's needed for getting the correct rotated pixmap buffers.
     Q_EMIT appOrientationChanged(angle);
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        target->handleAppOrientationChanged(angle);
-    }
-    lastOrientation = angle;
+
+    Q_EMIT appOrientationChangeCompleted(angle);
 }
 
 
@@ -412,10 +318,9 @@ void MInputContextConnection::processKeyEvent(
     if (activeConnection != connectionId)
         return;
 
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
-                                nativeScanCode, nativeModifiers, time);
-    }
+    Q_EMIT recievedKeyEvent(keyType, keyCode,
+                            modifiers, text, autoRepeat, count,
+                            nativeScanCode, nativeModifiers, time);
 }
 
 void MInputContextConnection::registerAttributeExtension(unsigned int connectionId, int id,
@@ -525,10 +430,7 @@ void MInputContextConnection::handleDisconnection(unsigned int connectionId)
 
     activeConnection = 0;
 
-    // notify plugins
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        target->handleClientChange();
-    }
+    Q_EMIT activeClientDisconnected();
 }
 
 void MInputContextConnection::activateContext(unsigned int connectionId)
@@ -555,10 +457,8 @@ void MInputContextConnection::activateContext(unsigned int connectionId)
         setDetectableAutoRepeat(!mDetectableAutoRepeat);
     }
 
-    // notify plugins
-    Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        target->handleClientChange();
-    }
+    Q_EMIT clientActivated(connectionId);
+
 }
 /* */
 
@@ -608,3 +508,8 @@ void MInputContextConnection::setLanguage(const QString &language)
 
 void MInputContextConnection::sendActivationLostEvent()
 {}
+
+void MInputContextConnection::updateInputMethodArea(const QRegion &region)
+{
+    Q_UNUSED(region);
+}

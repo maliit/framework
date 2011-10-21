@@ -23,6 +23,8 @@
 #include "mabstractinputmethod.h"
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
+#include "mimupdateevent.h"
+#include "maliit/namespaceinternal.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -44,6 +46,9 @@ namespace
 {
     const QString DefaultPluginLocation(M_IM_PLUGINS_DIR);
     const QString DefaultFactoryPluginLocation(M_IM_FACTORY_PLUGINS_DIR);
+
+    const char * const VisualizationAttribute = "visualizationPriority";
+    const char * const FocusStateAttribute = "focusState";
 
     const QString ConfigRoot           = MALIIT_CONFIG_ROOT;
     const QString MImPluginPaths       = ConfigRoot + "paths";
@@ -78,7 +83,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       acceptRegionUpdates(false),
       indicatorService(0),
       onScreenPlugins(),
-      mProxyWidget(proxyWidget)
+      mProxyWidget(proxyWidget),
+      lastOrientation(0)
 {
     inputSourceToNameMap[MInputMethod::Hardware] = "hardware";
     inputSourceToNameMap[MInputMethod::Accessory] = "accessory";
@@ -248,9 +254,9 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
                      q,
                      SLOT(_q_setActiveSubView(QString, MInputMethod::HandlerState)));
 
-    mICConnection->addTarget(inputMethod); // redirect incoming requests
 
-    return;
+    inputMethod->handleAppOrientationChanged(lastOrientation);
+    targets.insert(inputMethod);
 }
 
 
@@ -341,8 +347,9 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
     plugins[plugin].state = PluginState();
     inputMethod->hide();
     inputMethod->reset();
-    QObject::disconnect(inputMethod, 0, q, 0),
-    mICConnection->removeTarget(inputMethod);
+    QObject::disconnect(inputMethod, 0, q, 0);
+
+    targets.remove(inputMethod);
 }
 
 void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direction,
@@ -1091,12 +1098,41 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     Q_D(MIMPluginManager);
     d->q_ptr = this;
 
+    // Connect connection to our handlers
     connect(d->mICConnection.get(), SIGNAL(showInputMethodRequest()),
             this, SLOT(showActivePlugins()));
 
     connect(d->mICConnection.get(), SIGNAL(hideInputMethodRequest()),
             this, SLOT(hideActivePlugins()));
 
+    connect(d->mICConnection.get(), SIGNAL(resetInputMethodRequest()),
+            this, SLOT(resetInputMethods()));
+
+    connect(d->mICConnection.get(), SIGNAL(activeClientDisconnected()),
+            this, SLOT(handleClientChange()));
+
+    connect(d->mICConnection.get(), SIGNAL(clientActivated(uint)),
+            this, SLOT(handleClientChange()));
+
+    connect(d->mICConnection.get(), SIGNAL(appOrientationAboutToChangeCompleted(int)),
+            this, SLOT(handleAppOrientationAboutToChange(int)));
+
+    connect(d->mICConnection.get(), SIGNAL(appOrientationChangeCompleted(int)),
+            this, SLOT(handleAppOrientationChanged(int)));
+
+    connect(d->mICConnection.get(), SIGNAL(preeditChanged(QString,int)),
+            this, SLOT(handlePreeditChanged(QString,int)));
+
+    connect(d->mICConnection.get(), SIGNAL(mouseClickedOnPreedit(QPoint,QRect)),
+            this, SLOT(handleMouseClickOnPreedit(QPoint,QRect)));
+
+    connect(d->mICConnection.get(), SIGNAL(recievedKeyEvent(QEvent::Type,Qt::Key,Qt::KeyboardModifiers,QString,bool,int,quint32,quint32,ulong)),
+            this, SLOT(processKeyEvent(QEvent::Type,Qt::Key,Qt::KeyboardModifiers,QString,bool,int,quint32,quint32,ulong)));
+
+    connect(d->mICConnection.get(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
+            this, SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
+
+    // Connect connection and MAttributeExtensionManager
     connect(d->mICConnection.get(), SIGNAL(copyPasteStateChanged(bool,bool)),
             &MAttributeExtensionManager::instance(), SLOT(setCopyPasteState(bool, bool)));
 
@@ -1115,6 +1151,7 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
             &MAttributeExtensionManager::instance(), SLOT(handleClientDisconnect(uint)));
 
+    // Connect from MAttributeExtensionManager to our handlers
     connect(&MAttributeExtensionManager::instance(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
             this, SLOT(setToolbar(const MAttributeExtensionId &)));
 
@@ -1377,5 +1414,133 @@ void MIMPluginManager::updateKeyOverrides()
         d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
     }
 }
+
+void MIMPluginManager::handleAppOrientationAboutToChange(int angle)
+{
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        target->handleAppOrientationAboutToChange(angle);
+    }
+}
+
+void MIMPluginManager::handleAppOrientationChanged(int angle)
+{
+    Q_D(MIMPluginManager);
+
+    d->lastOrientation = angle;
+
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        target->handleAppOrientationChanged(angle);
+    }
+}
+
+void MIMPluginManager::handleClientChange()
+{
+    // notify plugins
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        target->handleClientChange();
+    }
+}
+
+void MIMPluginManager::handleWidgetStateChanged(unsigned int clientId,
+                                                const QMap<QString, QVariant> &newState,
+                                                const QMap<QString, QVariant> &oldState,
+                                                bool focusChanged)
+{
+    Q_UNUSED(clientId);
+
+    // check visualization change
+    bool oldVisualization = false;
+    bool newVisualization = false;
+
+    QVariant variant = oldState[VisualizationAttribute];
+
+    if (variant.isValid()) {
+        oldVisualization = variant.toBool();
+    }
+
+    variant = newState[VisualizationAttribute];
+    if (variant.isValid()) {
+        newVisualization = variant.toBool();
+    }
+
+    // update state
+    QStringList changedProperties;
+    for (QMap<QString, QVariant>::const_iterator iter = newState.constBegin();
+         iter != newState.constEnd();
+         ++iter)
+    {
+        if (oldState.value(iter.key()) != iter.value()) {
+            changedProperties.append(iter.key());
+        }
+
+    }
+
+    variant = newState[FocusStateAttribute];
+    const bool widgetFocusState = variant.toBool();
+
+    if (focusChanged) {
+        Q_FOREACH (MAbstractInputMethod *target, targets()) {
+            target->handleFocusChange(widgetFocusState);
+        }
+    }
+
+    // call notification methods if needed
+    if (oldVisualization != newVisualization) {
+        Q_FOREACH (MAbstractInputMethod *target, targets()) {
+            target->handleVisualizationPriorityChange(newVisualization);
+        }
+    }
+
+    const Qt::InputMethodHints lastHints = static_cast<Qt::InputMethodHints>(newState.value(Maliit::Internal::inputMethodHints).toLongLong());
+    MImUpdateEvent ev(newState, changedProperties, lastHints);
+
+    // general notification last
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        if (not changedProperties.isEmpty()) {
+            (void) target->imExtensionEvent(&ev);
+        }
+        target->update();
+    }
+}
+
+void MIMPluginManager::handleMouseClickOnPreedit(const QPoint &pos, const QRect &preeditRect)
+{
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        target->handleMouseClickOnPreedit(pos, preeditRect);
+    }
+}
+
+void MIMPluginManager::handlePreeditChanged(const QString &text, int cursorPos)
+{
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        target->setPreedit(text, cursorPos);
+    }
+}
+
+void MIMPluginManager::resetInputMethods()
+{
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        target->reset();
+    }
+}
+
+void MIMPluginManager::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                     Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat, int count,
+                     quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time)
+
+{
+    Q_FOREACH (MAbstractInputMethod *target, targets()) {
+        target->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count,
+                                nativeScanCode, nativeModifiers, time);
+    }
+}
+
+QSet<MAbstractInputMethod *> MIMPluginManager::targets()
+{
+    Q_D(MIMPluginManager);
+    return d->targets;
+}
+
+
 
 #include "moc_mimpluginmanager.cpp"
