@@ -4,7 +4,7 @@ check.commands = \
     TESTING_IN_SANDBOX=1 \
     TESTPLUGIN_PATH=../plugins \
     TESTDATA_PATH=$$IN_PWD \
-    LD_LIBRARY_PATH=../../src:../../input-context/:../../passthroughserver/:../../maliit:../plugins:$(LD_LIBRARY_PATH) \
+    LD_LIBRARY_PATH=../../input-method-quick:../../src:../../input-context/:../../passthroughserver/:../../maliit:../plugins:$(LD_LIBRARY_PATH) \
     ./$$TARGET
 
 check.depends += $$TARGET
