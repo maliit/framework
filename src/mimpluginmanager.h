@@ -109,6 +109,8 @@ public Q_SLOTS:
     //! Hide active plugins.
     void hideActivePlugins();
 
+    void resetInputMethods();
+
     //! Updates the whole painting area for input method objects.
     void updateRegion(const QRegion &region);
 
@@ -121,6 +123,23 @@ private Q_SLOTS:
 
     //! Update the key overrides for active plugin.
     void updateKeyOverrides();
+
+    void handleAppOrientationChanged(int angle);
+    void handleAppOrientationAboutToChange(int angle);
+
+    void handleClientChange();
+
+    void handleWidgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState,
+                                  const QMap<QString, QVariant> &oldState, bool focusChanged);
+    void handleMouseClickOnPreedit(const QPoint &pos, const QRect &preeditRect);
+    void handlePreeditChanged(const QString &text, int cursorPos);
+
+    void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                         Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
+                         int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
+
+private:
+    QSet<MAbstractInputMethod *> targets();
 
 protected:
     MIMPluginManagerPrivate *const d_ptr;

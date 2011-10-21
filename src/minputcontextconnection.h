@@ -43,16 +43,6 @@ public:
     virtual ~MInputContextConnection();
 
     /*!
-     * \brief Adds the target which get called on incoming requests
-     */
-    virtual void addTarget(MAbstractInputMethod *target);
-
-    /*!
-     * \brief Removes the handler of the connection
-     */
-    virtual void removeTarget(MAbstractInputMethod *target);
-
-    /*!
      * \brief Returns focus state if output parameter \a valid is \c true.
      *
      * By focus state it is meant to be focus state of an input widget
@@ -302,8 +292,12 @@ public Q_SLOTS:
     virtual void updateInputMethodArea(const QRegion &region);
 
 Q_SIGNALS:
+    /* Emitted first */
     void appOrientationAboutToChange(int angle);
     void appOrientationChanged(int angle);
+    /* Emitted later */
+    void appOrientationAboutToChangeCompleted(int angle);
+    void appOrientationChangeCompleted(int angle);
 
     void focusChanged(WId id);
 
@@ -312,6 +306,8 @@ Q_SIGNALS:
 
     //! Emitted when input method request to be hidden.
     void hideInputMethodRequest();
+
+    void resetInputMethodRequest();
 
     void copyPasteStateChanged(bool copyAvailable, bool pasteAvailable);
     void widgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState,
@@ -322,11 +318,18 @@ Q_SIGNALS:
     void extendedAttributeChanged(unsigned int connectionId, int id, const QString &target,
                               const QString &targetName,const QString &attribute, const QVariant &value);
 
+    void clientActivated(unsigned int connectionId);
     void clientDisconnected(unsigned int connectionId);
+    void activeClientDisconnected();
 
+    void preeditChanged(const QString &text, int cursorPos);
+    void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
+
+    void recievedKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+                         Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
+                         int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
 protected:
-    QSet<MAbstractInputMethod *> targets();
     unsigned int activeConnection; // 0 means no active connection
 
     bool detectableAutoRepeat();

@@ -149,6 +149,7 @@ public:
 
     Plugins plugins;
     ActivePlugins activePlugins;
+    QSet<MAbstractInputMethod *> targets;
     PluginsFactory factories;
 
     QStringList paths;
@@ -180,6 +181,7 @@ public:
     MImHwKeyboardTracker hwkbTracker;
 
     WeakWidget mProxyWidget;
+    int lastOrientation;
 };
 
 #endif
