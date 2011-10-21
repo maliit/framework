@@ -51,6 +51,7 @@ HEADERS += \
         mimhwkeyboardtracker_p.h \
         mimextensionevent_p.h \
         mimdummyinputcontext.h \
+        mimserver.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -82,6 +83,7 @@ SOURCES += \
         mimonscreenplugins.cpp \
         mimsubviewdescription.cpp \
         mimdummyinputcontext.cpp \
+        mimserver.cpp \
 
 x11 {
     HEADERS += \
