@@ -1097,10 +1097,28 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mICConnection.get(), SIGNAL(hideInputMethodRequest()),
             this, SLOT(hideActivePlugins()));
 
-    connect(d->mICConnection.get(), SIGNAL(toolbarIdChanged(const MAttributeExtensionId &)),
+    connect(d->mICConnection.get(), SIGNAL(copyPasteStateChanged(bool,bool)),
+            &MAttributeExtensionManager::instance(), SLOT(setCopyPasteState(bool, bool)));
+
+    connect(d->mICConnection.get(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
+            &MAttributeExtensionManager::instance(), SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
+
+    connect(d->mICConnection.get(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
+            &MAttributeExtensionManager::instance(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
+
+    connect(d->mICConnection.get(), SIGNAL(attributeExtensionUnregistered(uint, int)),
+            &MAttributeExtensionManager::instance(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
+
+    connect(d->mICConnection.get(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
+            &MAttributeExtensionManager::instance(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
+
+    connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
+            &MAttributeExtensionManager::instance(), SLOT(handleClientDisconnect(uint)));
+
+    connect(&MAttributeExtensionManager::instance(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
             this, SLOT(setToolbar(const MAttributeExtensionId &)));
 
-    connect(d->mICConnection.get(), SIGNAL(keyOverrideCreated()),
+    connect(&MAttributeExtensionManager::instance(), SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();

@@ -17,8 +17,6 @@
 #include "minputcontextconnection.h"
 
 #include "mabstractinputmethod.h"
-#include "mattributeextensionmanager.h"
-#include "mattributeextensionid.h"
 #include "mimupdateevent.h"
 #include "maliit/namespaceinternal.h"
 
@@ -79,9 +77,6 @@ MInputContextConnection::MInputContextConnection(QObject *parent)
     , mDetectableAutoRepeat(false)
 {
     Q_UNUSED(parent);
-
-    connect(&MAttributeExtensionManager::instance(), SIGNAL(keyOverrideCreated()),
-            this,                                    SIGNAL(keyOverrideCreated()));
 }
 
 
@@ -299,6 +294,8 @@ MInputContextConnection::updateWidgetInformation(
     unsigned int connectionId, const QMap<QString, QVariant> &stateInfo,
     bool handleFocusChange)
 {
+    QMap<QString, QVariant> &oldState = widgetState;
+
     // check visualization change
     bool oldVisualization = false;
     bool newVisualization = false;
@@ -314,20 +311,6 @@ MInputContextConnection::updateWidgetInformation(
         newVisualization = variant.toBool();
     }
 
-    // toolbar change
-    MAttributeExtensionId oldAttributeExtensionId;
-    MAttributeExtensionId newAttributeExtensionId;
-    oldAttributeExtensionId = attributeExtensionId;
-
-    variant = stateInfo[ToolbarIdAttribute];
-    if (variant.isValid()) {
-        // map toolbar id from local to global
-        newAttributeExtensionId = MAttributeExtensionId(variant.toInt(), QString::number(connectionId));
-    }
-    if (!newAttributeExtensionId.isValid()) {
-        newAttributeExtensionId = MAttributeExtensionId::standardAttributeExtensionId();
-    }
-
     // update state
     QStringList changedProperties;
     for (QMap<QString, QVariant>::const_iterator iter = stateInfo.constBegin();
@@ -339,8 +322,6 @@ MInputContextConnection::updateWidgetInformation(
         }
 
     }
-
-    const Qt::InputMethodHints lastHints = static_cast<Qt::InputMethodHints>(stateInfo.value(Maliit::Internal::inputMethodHints).toLongLong());
 
     widgetState = stateInfo;
     bool focusStateOk(false);
@@ -366,29 +347,7 @@ MInputContextConnection::updateWidgetInformation(
         }
     }
 
-    // compare the toolbar id (global)
-    if (oldAttributeExtensionId != newAttributeExtensionId) {
-        QString toolbarFile = stateInfo[ToolbarAttribute].toString();
-        if (!MAttributeExtensionManager::instance().contains(newAttributeExtensionId) && !toolbarFile.isEmpty()) {
-            // register toolbar if toolbar manager does not contain it but
-            // toolbar file is not empty. This can reload the toolbar data
-            // if im-uiserver crashes.
-            variant = stateInfo[ToolbarIdAttribute];
-            if (variant.isValid()) {
-                const int toolbarLocalId = variant.toInt();
-                registerAttributeExtension(connectionId, toolbarLocalId, toolbarFile);
-            }
-        }
-        Q_EMIT toolbarIdChanged(newAttributeExtensionId);
-        // store the new used toolbar id(global).
-        attributeExtensionId = newAttributeExtensionId;
-    }
-    // this happens when we focus on a text widget with no attribute extensions.
-    else if (handleFocusChange && widgetFocusState)
-    {
-        Q_EMIT toolbarIdChanged(newAttributeExtensionId);
-    }
-
+    const Qt::InputMethodHints lastHints = static_cast<Qt::InputMethodHints>(stateInfo.value(Maliit::Internal::inputMethodHints).toLongLong());
     MImUpdateEvent ev(widgetState, changedProperties, lastHints);
 
     Q_FOREACH (MAbstractInputMethod *target, targets()) {
@@ -398,6 +357,8 @@ MInputContextConnection::updateWidgetInformation(
 
         target->update();
     }
+
+    Q_EMIT widgetStateChanged(connectionId, widgetState, oldState, handleFocusChange);
 }
 
 void
@@ -439,7 +400,7 @@ void MInputContextConnection::setCopyPasteState(unsigned int connectionId,
     if (activeConnection != connectionId)
         return;
 
-    MAttributeExtensionManager::instance().setCopyPasteState(copyAvailable, pasteAvailable);
+    Q_EMIT copyPasteStateChanged(copyAvailable, pasteAvailable);
 }
 
 
@@ -460,31 +421,19 @@ void MInputContextConnection::processKeyEvent(
 void MInputContextConnection::registerAttributeExtension(unsigned int connectionId, int id,
                                                          const QString &attributeExtension)
 {
-    MAttributeExtensionId globalId(id, QString::number(connectionId));
-    if (globalId.isValid() && !attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().registerAttributeExtension(globalId, attributeExtension);
-        attributeExtensionIds.insert(globalId);
-    }
+    Q_EMIT attributeExtensionRegistered(connectionId, id, attributeExtension);
 }
 
 void MInputContextConnection::unregisterAttributeExtension(unsigned int connectionId, int id)
 {
-    MAttributeExtensionId globalId(id, QString::number(connectionId));
-    if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().unregisterAttributeExtension(globalId);
-        attributeExtensionIds.remove(globalId);
-    }
+    Q_EMIT attributeExtensionUnregistered(connectionId, id);
 }
 
 void MInputContextConnection::setExtendedAttribute(
     unsigned int connectionId, int id, const QString &target, const QString &targetName,
     const QString &attribute, const QVariant &value)
 {
-    qDebug() << __PRETTY_FUNCTION__;
-    MAttributeExtensionId globalId(id, QString::number(connectionId));
-    if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().setExtendedAttribute(globalId, target, targetName, attribute, value);
-    }
+    Q_EMIT extendedAttributeChanged(connectionId, id, target, targetName, attribute, value);
 }
 /* End handlers for inbound communication */
 
@@ -568,17 +517,7 @@ void MInputContextConnection::sendKeyEvent(const QKeyEvent &keyEvent,
 /* */
 void MInputContextConnection::handleDisconnection(unsigned int connectionId)
 {
-    // unregister toolbars registered by the lost connection
-    const QString service(QString::number(connectionId));
-    QSet<MAttributeExtensionId>::iterator i(attributeExtensionIds.begin());
-    while (i != attributeExtensionIds.end()) {
-        if ((*i).service() == service) {
-            MAttributeExtensionManager::instance().unregisterAttributeExtension(*i);
-            i = attributeExtensionIds.erase(i);
-        } else {
-            ++i;
-        }
-    }
+    Q_EMIT clientDisconnected(connectionId);
 
     if (activeConnection != connectionId) {
         return;

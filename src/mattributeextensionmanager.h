@@ -20,15 +20,15 @@
 
 #include <QObject>
 #include <QHash>
+#include <QSet>
 #include <QPointer>
 
 #include "mkeyoverridedata.h"
 #include "mtoolbardata.h"
 #include "mattributeextension.h"
+#include "mattributeextensionid.h"
 #include "minputmethodnamespace.h"
 #include "mimsettings.h"
-
-class MAttributeExtensionId;
 
 //! \internal
 /*!
@@ -96,13 +96,6 @@ public:
     bool contains(const MAttributeExtensionId &id) const;
 
     /*!
-     * \brief Set copy/paste button state: hide it, show copy or show paste
-     *  \param copyAvailable True if text is selected
-     *  \param pasteAvailable True if clipboard content is not empty
-     */
-    void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
-
-    /*!
      *\brief Sets the \a attribute of the \a targetItem in the attribute extension \a target which has unique\a id to \a value.
      */
     void setExtendedAttribute(const MAttributeExtensionId &id,
@@ -110,6 +103,22 @@ public:
                               const QString &targetItem,
                               const QString &attribute,
                               const QVariant &value);
+public Q_SLOTS:
+    /*!
+     * \brief Set copy/paste button state: hide it, show copy or show paste
+     *  \param copyAvailable True if text is selected
+     *  \param pasteAvailable True if clipboard content is not empty
+     */
+    void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
+
+    void handleClientDisconnect(unsigned int clientId);
+    void handleAttributeExtensionRegistered(unsigned int clientId, int id, const QString &attributeExtension);
+    void handleAttributeExtensionUnregistered(unsigned int clientId, int id);
+    void handleExtendedAttributeUpdate(unsigned int clientId, int id,
+                                       const QString &target, const QString &targetName,
+                                       const QString &attribute, const QVariant &value);
+    void handleWidgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState, const QMap<QString, QVariant> &oldState, bool focusChanged);
+
 private Q_SLOTS:
     //! \brief Handle preferred_domain GConf setting updates.
     void handlePreferredDomainUpdate();
@@ -117,6 +126,9 @@ private Q_SLOTS:
 Q_SIGNALS:
     //! This signal is emited when a new key override is created.
     void keyOverrideCreated();
+
+    //! Emitted when attribute extension has changed
+    void attributeExtensionIdChanged(const MAttributeExtensionId &id);
 
 private:
     /*!
@@ -149,6 +161,9 @@ private:
     typedef QHash<MAttributeExtensionId, QSharedPointer<MAttributeExtension> > AttributeExtensionContainer;
     //! all registered attribute extensions
     AttributeExtensionContainer attributeExtensions;
+
+    MAttributeExtensionId attributeExtensionId; //current attribute extension id
+    QSet<MAttributeExtensionId> attributeExtensionIds; //all attribute extension ids
 
     //! Standard close button
     QSharedPointer<MToolbarItem> close;

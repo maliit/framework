@@ -19,8 +19,6 @@
 
 #include "minputmethodnamespace.h"
 
-#include "mattributeextensionid.h"
-
 #include <QtCore>
 #include <QWidget> // For WId
 
@@ -268,7 +266,7 @@ public: // Inbound communication handlers
      *  \param pasteAvailable bool TRUE if clipboard content is not empty
      */
     void setCopyPasteState(unsigned int clientId,
-                                   bool copyAvailable, bool pasteAvailable);
+                           bool copyAvailable, bool pasteAvailable);
 
     /*!
      * \brief Process a key event redirected from hardware keyboard to input method plugin(s).
@@ -309,19 +307,23 @@ Q_SIGNALS:
 
     void focusChanged(WId id);
 
-    //! \internal
     //! Emitted when input method request to be shown.
     void showInputMethodRequest();
 
     //! Emitted when input method request to be hidden.
     void hideInputMethodRequest();
 
-    //! Emitted when set toobar to input method.
-    void toolbarIdChanged(const MAttributeExtensionId &id);
+    void copyPasteStateChanged(bool copyAvailable, bool pasteAvailable);
+    void widgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState,
+                            const QMap<QString, QVariant> &oldState, bool focusChanged);
 
-    //! This signal is emited when a new key override is created.
-    void keyOverrideCreated();
-    //! \internal_end.
+    void attributeExtensionRegistered(unsigned int connectionId, int id, const QString &attributeExtension);
+    void attributeExtensionUnregistered(unsigned int connectionId, int id);
+    void extendedAttributeChanged(unsigned int connectionId, int id, const QString &target,
+                              const QString &targetName,const QString &attribute, const QVariant &value);
+
+    void clientDisconnected(unsigned int connectionId);
+
 
 protected:
     QSet<MAbstractInputMethod *> targets();
@@ -349,8 +351,6 @@ private:
     bool mGlobalCorrectionEnabled;
     bool mRedirectionEnabled;
     bool mDetectableAutoRepeat;
-    MAttributeExtensionId attributeExtensionId; //current attribute extension id
-    QSet<MAttributeExtensionId> attributeExtensionIds; //all attribute extension ids
     QString preedit;
 };
 //! \internal_end
