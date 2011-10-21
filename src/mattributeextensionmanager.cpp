@@ -17,7 +17,6 @@
 
 #include "mattributeextensionmanager.h"
 #include "mattributeextension.h"
-#include "mattributeextensionid.h"
 #include "mtoolbardata.h"
 #include "mtoolbarlayout.h"
 #include "mkeyoverridedata.h"
@@ -34,6 +33,10 @@ namespace {
     const char * const DomainItemName("_domain");
     const char * const KeysExtensionString("/keys");
     const char * const ToolbarExtensionString("/toolbar");
+
+    const char * const ToolbarIdAttribute = "toolbarId";
+    const char * const ToolbarAttribute = "toolbar";
+    const char * const FocusStateAttribute = "focusState";
 }
 
 MAttributeExtensionManager *MAttributeExtensionManager::attributeExtensionMgrInstance = 0;
@@ -331,5 +334,106 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
         item->setProperty(c_str, value);
     } else {
         qWarning() << "Invalid or incompatible attribute extension target:" << target;
+    }
+}
+
+
+void MAttributeExtensionManager::handleClientDisconnect(unsigned int clientId)
+{
+    // unregister toolbars registered by the lost connection
+    const QString service(QString::number(clientId));
+    QSet<MAttributeExtensionId>::iterator i(attributeExtensionIds.begin());
+    while (i != attributeExtensionIds.end()) {
+        if ((*i).service() == service) {
+            MAttributeExtensionManager::instance().unregisterAttributeExtension(*i);
+            i = attributeExtensionIds.erase(i);
+        } else {
+            ++i;
+        }
+    }
+}
+
+void MAttributeExtensionManager::handleExtendedAttributeUpdate(unsigned int clientId, int id,
+                                   const QString &target, const QString &targetName,
+                                   const QString &attribute, const QVariant &value)
+{
+    MAttributeExtensionId globalId(id, QString::number(clientId));
+    if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
+        MAttributeExtensionManager::instance().setExtendedAttribute(globalId, target, targetName, attribute, value);
+    }
+}
+
+void MAttributeExtensionManager::handleAttributeExtensionRegistered(unsigned int clientId,
+                                                                  int id, const QString &attributeExtension)
+{
+    MAttributeExtensionId globalId(id, QString::number(clientId));
+    if (globalId.isValid() && !attributeExtensionIds.contains(globalId)) {
+        MAttributeExtensionManager::instance().registerAttributeExtension(globalId, attributeExtension);
+        attributeExtensionIds.insert(globalId);
+    }
+}
+
+void MAttributeExtensionManager::handleAttributeExtensionUnregistered(unsigned int clientId, int id)
+{
+    MAttributeExtensionId globalId(id, QString::number(clientId));
+    if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
+        MAttributeExtensionManager::instance().unregisterAttributeExtension(globalId);
+        attributeExtensionIds.remove(globalId);
+    }
+}
+
+void MAttributeExtensionManager::handleWidgetStateChanged(unsigned int clientId,
+                                                          const QMap<QString, QVariant> &newState,
+                                                          const QMap<QString, QVariant> &oldState,
+                                                          bool focusChanged)
+
+{
+    Q_UNUSED(oldState);
+    // toolbar change
+    MAttributeExtensionId oldAttributeExtensionId;
+    MAttributeExtensionId newAttributeExtensionId;
+    oldAttributeExtensionId = attributeExtensionId;
+
+    QVariant variant = newState[ToolbarIdAttribute];
+    if (variant.isValid()) {
+        // map toolbar id from local to global
+        newAttributeExtensionId = MAttributeExtensionId(variant.toInt(), QString::number(clientId));
+    }
+    if (!newAttributeExtensionId.isValid()) {
+        newAttributeExtensionId = MAttributeExtensionId::standardAttributeExtensionId();
+    }
+
+    variant = newState[FocusStateAttribute];
+    if (not variant.isValid()) {
+        qCritical() << __PRETTY_FUNCTION__ << "Invalid focus state";
+    }
+    bool widgetFocusState = variant.toBool();
+
+    // compare the toolbar id (global)
+    if (oldAttributeExtensionId != newAttributeExtensionId) {
+        QString toolbarFile = newState[ToolbarAttribute].toString();
+        if (!contains(newAttributeExtensionId) && !toolbarFile.isEmpty()) {
+            // register toolbar if toolbar manager does not contain it but
+            // toolbar file is not empty. This can reload the toolbar data
+            // if im-uiserver crashes.
+            // XXX: should not happen, the input context is reponsible for registering
+            // and resending the toolbar information on server reconnect
+            qWarning() << "Unregistered toolbar found in widget information";
+
+            variant = newState[ToolbarIdAttribute];
+            if (variant.isValid()) {
+                const int toolbarLocalId = variant.toInt();
+                // FIXME: brittle to call the signal handler directly like this
+                handleAttributeExtensionRegistered(clientId, toolbarLocalId, toolbarFile);
+            }
+        }
+        Q_EMIT attributeExtensionIdChanged(newAttributeExtensionId);
+        // store the new used toolbar id(global).
+        attributeExtensionId = newAttributeExtensionId;
+    }
+    // this happens when we focus on a text widget with no attribute extensions.
+    else if (focusChanged && widgetFocusState)
+    {
+        Q_EMIT attributeExtensionIdChanged(newAttributeExtensionId);
     }
 }
