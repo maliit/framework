@@ -15,7 +15,7 @@ HEADERS += \
     $$HEADERSINSTALL \
     $$FRAMEWORKHEADERSINSTALL \
 
-headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER/maliit
+headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
 headers.files += $$HEADERSINSTALL
 
 frameworkheaders.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_FRAMEWORK_HEADER/maliit
