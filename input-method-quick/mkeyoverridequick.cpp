@@ -272,26 +272,17 @@ void MKeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOve
     if (keyOverride)
     {
         // label and icon are mutually exclusive.
-        // here we prefer icons over labels, that is:
-        // (having foo means that foo is not empty)
-        // (overriden foo means an override from passed key override)
-        //
-        //           if we do override an icon and have overriden icon then use it
-        // otherwise if we do override a label and have overriden label then use it
-        // otherwise if we do not override an icon and have actual icon then use it
-        // otherwise if we do have default icon then use it
-        // otherwise if we do not override a label and have actual label then use it
-        // otherwise if we do have default label then use it
-        if ((changedAttributes & MKeyOverride::Icon) and not keyOverride->icon().isEmpty()) {
+        // icons are preferred over labels.
+        // overrides are preferred over defaults.
+        // default value for either icon or label have to be set.
+        // otherwise, it is a programming error.
+
+        if (not keyOverride->icon().isEmpty()) {
             iconAction = UseOverride;
-        } else if ((changedAttributes & MKeyOverride::Label) and not keyOverride->label().isEmpty()) {
+        } else if (not keyOverride->label().isEmpty()) {
             labelAction = UseOverride;
-        } else if (((~changedAttributes) & MKeyOverride::Icon) and not d->actualIcon.isEmpty()) {
-            iconAction = UseActual;
         } else if (not d->defaultIcon.isEmpty()) {
             iconAction = UseDefault;
-        } else if (((~changedAttributes) & MKeyOverride::Label) and not d->actualLabel.isEmpty()) {
-            labelAction = UseActual;
         } else if (not d->defaultLabel.isEmpty()) {
             labelAction = UseDefault;
         } else {
