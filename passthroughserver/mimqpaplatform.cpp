@@ -3,9 +3,9 @@
 #include <QDebug>
 #include <QWidget>
 
-MImQPAPlatform::MImQPAPlatform(QWidget *proxyWidget) :
+MImQPAPlatform::MImQPAPlatform() :
     QObject(0),
-    mProxyWidget(proxyWidget)
+    mProxyWidget(new MImPluginsProxyWidget)
 {
 }
 
@@ -18,3 +18,9 @@ void MImQPAPlatform::inputPassthrough(const QRegion &region)
     else
         mProxyWidget.data()->show();
 }
+
+QWidget *MImQPAPlatform::pluginsProxyWidget()
+{
+    return mProxyWidget.data();
+}
+

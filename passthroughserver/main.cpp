@@ -26,7 +26,6 @@
 #if defined(Q_WS_X11)
 #include "mimxapplication.h"
 #include "mimremotewindow.h"
-#include "mimrotationanimation.h"
 #include "mpassthruwindow.h"
 #elif defined(Q_WS_QPA)
 #include "mimqpaplatform.h"
@@ -66,6 +65,7 @@ int main(int argc, char **argv)
 
 #if defined(Q_WS_X11)
     MImXApplication app(argc, argv);
+    qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 #else
     MIMApplication app(argc, argv);
 #endif
@@ -74,8 +74,6 @@ int main(int argc, char **argv)
     // context (qimsw-multi) which is expensive and not required by
     // meego-im-uiserver.
     app.setInputContext(new MIMDummyInputContext);
-
-    qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 
     // DBus Input Context Connection
     shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection);
@@ -89,14 +87,10 @@ int main(int argc, char **argv)
     QObject::connect(icConnection.get(), SIGNAL(focusChanged(WId)),
                      &app, SLOT(setTransientHint(WId)));
 
-    // Widget for showing a rotation animation inside the toplevel MPassThruWindow instead
-    // of the MImPluginsProxyWidget when the device is rotating.
-    MImRotationAnimation *rotationAnimation = new MImRotationAnimation(app.pluginsProxyWidget(),
-                                                                       app.passThruWindow(), &app);
     QObject::connect(icConnection.get(), SIGNAL(appOrientationAboutToChange(int)),
-                     rotationAnimation, SLOT(appOrientationAboutToChange(int)));
+                     &app, SLOT(appOrientationAboutToChange(int)));
     QObject::connect(icConnection.get(), SIGNAL(appOrientationChanged(int)),
-                     rotationAnimation, SLOT(appOrientationChangeFinished(int)));
+                     &app, SLOT(appOrientationChangeFinished(int)));
 
     // Container for all plugin widgets
     QWidget *pluginsProxyWidget = app.pluginsProxyWidget();
@@ -125,12 +119,10 @@ int main(int argc, char **argv)
     // widgets. The MImQPAPlatform is used to show/hide that toplevel window when
     // required.
 
-    std::auto_ptr<QWidget> pluginsProxyWidget(new MImPluginsProxyWidget);
-
-    std::auto_ptr<MImQPAPlatform> platform(new MImQPAPlatform(pluginsProxyWidget.get()));
+    std::auto_ptr<MImQPAPlatform> platform(new MImQPAPlatform());
 
     MIMPluginManager *pluginManager = new MIMPluginManager(icConnection,
-                                                           pluginsProxyWidget.get());
+                                                           platform.get()->pluginsProxyWidget());
 
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      platform.get(), SLOT(inputPassthrough(const QRegion &)));
