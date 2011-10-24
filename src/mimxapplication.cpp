@@ -260,9 +260,7 @@ void MImXApplication::appOrientationChangeFinished(int toAngle) {
     mRotationAnimation->appOrientationChangeFinished(toAngle);
 }
 
-#ifdef UNIT_TEST
 MImRemoteWindow *MImXApplication::remoteWindow() const
 {
     return mRemoteWindow.get();
 }
-#endif

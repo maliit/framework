@@ -66,9 +66,7 @@ private:
     QRegion mRegion;
     MImXApplication *mApplication;
 
-#ifdef UNIT_TEST
     friend class Ut_PassthroughServer;
-#endif
 };
 
 #endif
