@@ -1,9 +1,9 @@
 #include "ut_mimpluginmanager.h"
+
 #ifdef Q_WS_X11
 #include "mimxapplication.h"
-#else
-#include "mimapplication.h"
 #endif
+
 #include "mimsettings_stub.h"
 #include "dummyimplugin.h"
 #include "dummyimplugin3.h"
@@ -79,7 +79,7 @@ void Ut_MIMPluginManager::initTestCase()
     app = new MImXApplication(argc, argv);
     proxyWidget = static_cast<MImXApplication*>(app)->pluginsProxyWidget();
 #else
-    app = new MIMApplication(argc, argv);
+    app = new QApplication(argc, argv);
     proxyWidget = new QWidget;
 #endif
 

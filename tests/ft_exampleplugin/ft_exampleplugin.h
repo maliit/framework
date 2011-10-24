@@ -21,8 +21,6 @@
 #include <QtCore>
 #include <QtGui>
 
-class MIMApplication;
-
 class Ft_ExamplePlugin 
     : public QObject
 {
@@ -39,7 +37,7 @@ private Q_SLOTS:
     void testFunction();
 
 private:
-    MIMApplication *app;
+    QCoreApplication *app;
 
 };
 

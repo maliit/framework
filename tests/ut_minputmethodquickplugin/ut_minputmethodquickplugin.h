@@ -38,7 +38,7 @@ private Q_SLOTS:
     void testQmlSetup();
 
 private:
-    MIMApplication *app;
+    QApplication *app;
 };
 
 #endif // UT_MINPUTMETHODQUICKPLUGIN_H

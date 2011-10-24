@@ -16,7 +16,10 @@
 
 #include "mimwidget_p.h"
 #include "mimwidget.h"
-#include "mimapplication.h"
+
+#if defined(Q_WS_X11)
+#include "mimxapplication.h"
+#endif
 
 #include <QPainter>
 #include <QDebug>
@@ -66,9 +69,13 @@ void MImWidget::paintEvent(QPaintEvent *ev)
         return;
     }
 
-    const QPixmap &bg(MIMApplication::instance()->remoteWindowPixmap());
+#if defined(Q_WS_X11)
+    const QPixmap &bg(MImXApplication::instance()->remoteWindowPixmap());
     if (not bg.isNull()) {
         QPainter p(this);
         p.drawPixmap(ev->rect(), bg, ev->rect());
     }
+#else
+    return;
+#endif
 }

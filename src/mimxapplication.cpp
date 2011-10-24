@@ -27,7 +27,7 @@ namespace
         // QPalette::NoRole - see QTBUG-17924.
         w->setBackgroundRole(QPalette::NoRole);
 
-        if (MIMApplication::instance() && not MIMApplication::instance()->selfComposited()) {
+        if (MImXApplication::instance() && not MImXApplication::instance()->selfComposited()) {
             // Careful: This flag can trigger a call to
             // qt_x11_recreateNativeWidgetsRecursive
             // - which will crash when it tries to get the effective WId
@@ -40,7 +40,7 @@ namespace
 }
 
 MImXApplication::MImXApplication(int &argc, char** argv) :
-    MIMApplication(argc, argv),
+    QApplication(argc, argv),
     mCompositeExtension(),
     mDamageExtension(),
     mSelfComposited(false),
@@ -69,6 +69,11 @@ MImXApplication::MImXApplication(int &argc, char** argv) :
 
 MImXApplication::~MImXApplication()
 {
+}
+
+MImXApplication *MImXApplication::instance()
+{
+    return static_cast<MImXApplication *>(QCoreApplication::instance());
 }
 
 void MImXApplication::finalize()
@@ -110,7 +115,7 @@ void MImXApplication::handleTransientEvents(XEvent *ev)
     }
 
     if (mRemoteWindow->wasIconified(ev) || mRemoteWindow->wasUnmapped(ev)) {
-        qDebug() << "MIMApplication" << __PRETTY_FUNCTION__
+        qDebug() << "MImXApplication" << __PRETTY_FUNCTION__
                  << "Remote window was destroyed or iconified - hiding.";
 
         Q_EMIT remoteWindowChanged(0);

@@ -28,7 +28,7 @@ private Q_SLOTS:
     void testPluginDescriptions();
 
 private:
-    MIMApplication *app;
+    QApplication *app;
     MIMPluginManager *subject;
 };
 
