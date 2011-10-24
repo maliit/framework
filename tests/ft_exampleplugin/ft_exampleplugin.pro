@@ -5,8 +5,7 @@ DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 
 INCLUDEPATH += \
     $$SRC_DIR \
-    
-DEFINES += UNIT_TEST
+
 QT += core gui
 
 # Input

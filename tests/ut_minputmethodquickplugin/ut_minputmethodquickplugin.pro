@@ -4,8 +4,7 @@ QUICK_DIR = ../../input-method-quick
 INCLUDEPATH += \
     $$SRC_DIR \
     $$QUICK_DIR \
-    
-DEFINES += UNIT_TEST
+
 QT += core gui declarative
 
 IN_TREE_TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins

@@ -49,9 +49,8 @@ public:
 
     void visitWidgetHierarchy(WidgetVisitor visitor, QWidget *widget);
 
-#ifdef UNIT_TEST
+    //! For unittesting purposes
     MImRemoteWindow *remoteWindow() const;
-#endif
 
 public Q_SLOTS:
     void setTransientHint(WId remoteWinId);
