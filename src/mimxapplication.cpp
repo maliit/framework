@@ -1,5 +1,6 @@
 #include "mimxapplication.h"
 #include "mimpluginsproxywidget.h"
+#include "mimrotationanimation.h"
 
 #include <QDebug>
 
@@ -53,6 +54,7 @@ MImXApplication::MImXApplication(int &argc, char** argv) :
 
     mPassThruWindow.reset(new MPassThruWindow(this));
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
+    mRotationAnimation.reset(new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(), this));
 
 #ifdef HAVE_MEEGOGRAPHICSSYSTEM
     QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
@@ -248,6 +250,14 @@ void MImXApplication::visitWidgetHierarchy(WidgetVisitor visitor,
 void MImXApplication::configureWidgetsForCompositing()
 {
     visitWidgetHierarchy(configureForCompositing, mPassThruWindow.get());
+}
+
+void MImXApplication::appOrientationAboutToChange(int toAngle) {
+    mRotationAnimation->appOrientationAboutToChange(toAngle);
+}
+
+void MImXApplication::appOrientationChangeFinished(int toAngle) {
+    mRotationAnimation->appOrientationChangeFinished(toAngle);
 }
 
 #ifdef UNIT_TEST

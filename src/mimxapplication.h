@@ -10,6 +10,8 @@
 #include <memory>
 #include <tr1/functional>
 
+class MImRotationAnimation;
+
 class MImXApplication : public MIMApplication
 {
     Q_OBJECT
@@ -67,6 +69,9 @@ private Q_SLOTS:
 
     void updatePassThruWindow(const QRegion &region);
 
+    void appOrientationAboutToChange(int toAngle);
+    void appOrientationChangeFinished(int toAngle);
+
 private:
     void parseArguments(int &argc, char** argv);
 
@@ -85,6 +90,7 @@ private:
     std::auto_ptr<MPassThruWindow> mPassThruWindow;
     std::auto_ptr<QWidget> mPluginsProxyWidget;
     std::auto_ptr<MImRemoteWindow> mRemoteWindow;
+    std::auto_ptr<MImRotationAnimation> mRotationAnimation;
 
     friend class Ut_PassthroughServer;
 };
