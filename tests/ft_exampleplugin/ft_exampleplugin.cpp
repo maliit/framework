@@ -16,11 +16,11 @@
 
 #include "utils.h"
 #include "ft_exampleplugin.h"
-#include "mimapplication.h"
 
 #include <minputmethodhost.h>
 #include <minputmethodplugin.h>
 #include <minputcontextconnection.h>
+
 #include <QtCore>
 #include <QtGui>
 
@@ -36,7 +36,7 @@ void Ft_ExamplePlugin::initTestCase()
     // Enforcing raster GS to make test reliable:
     QApplication::setGraphicsSystem("raster");
 
-    app = new MIMApplication(argc, argv);
+    app = new QApplication(argc, argv);
 }
 
 void Ft_ExamplePlugin::cleanupTestCase()

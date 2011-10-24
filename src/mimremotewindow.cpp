@@ -271,7 +271,7 @@ void MImRemoteWindow::setupPixmap()
 
 void MImRemoteWindow::destroyPixmap()
 {
-    if (MIMApplication::instance())
+    if (MImXApplication::instance())
         pixmap = QPixmap();
 
     if (xpixmap != 0) {

@@ -1,8 +1,6 @@
 #ifndef MIMXAPPLICATION_H
 #define MIMXAPPLICATION_H
 
-#include "mimapplication.h"
-
 #include "mpassthruwindow.h"
 #include "mimremotewindow.h"
 #include "mimxextension.h"
@@ -10,9 +8,11 @@
 #include <memory>
 #include <tr1/functional>
 
+#include <QApplication>
+
 class MImRotationAnimation;
 
-class MImXApplication : public MIMApplication
+class MImXApplication : public QApplication
 {
     Q_OBJECT
 public:
@@ -23,6 +23,7 @@ public:
 
     MImXApplication(int &argc, char** argv);
     virtual ~MImXApplication();
+    static MImXApplication *instance();
 
     const MImXCompositeExtension& compositeExtension() { return mCompositeExtension; }
     const MImXDamageExtension& damageExtension() { return mDamageExtension; }

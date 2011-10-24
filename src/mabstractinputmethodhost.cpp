@@ -15,8 +15,11 @@
  */
 
 #include "mabstractinputmethodhost.h"
-#include "mimapplication.h"
 #include "mimsubviewdescription.h"
+
+#if defined(Q_WS_X11)
+#include "mimxapplication.h"
+#endif
 
 class MAbstractInputMethodHostPrivate
 {
@@ -55,14 +58,18 @@ bool MAbstractInputMethodHost::hiddenText(bool &valid)
 
 QPixmap MAbstractInputMethodHost::background() const
 {
+#if defined(Q_WS_X11)
     // Check whether we are really running a MIMApplication first.
     // For instance, unit tests in other packages might use !MIMApplication,
     // as they don't have access to the MIMApplication headers.
-    if (qobject_cast<MIMApplication *>(QCoreApplication::instance())) {
-        return MIMApplication::instance()->remoteWindowPixmap();
+    if (qobject_cast<MImXApplication *>(QCoreApplication::instance())) {
+        return MImXApplication::instance()->remoteWindowPixmap();
     } else {
         return QPixmap();
     }
+#else
+    return QPixmap();
+#endif
 }
 
 QList<MImSubViewDescription>

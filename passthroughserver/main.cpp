@@ -18,15 +18,11 @@
 // Input method overlay window
 
 #include "mimpluginmanager.h"
-#include "mimapplication.h"
 #include "mimdummyinputcontext.h"
 #include "minputcontextglibdbusconnection.h"
-#include "mimpluginsproxywidget.h"
 
 #if defined(Q_WS_X11)
 #include "mimxapplication.h"
-#include "mimremotewindow.h"
-#include "mpassthruwindow.h"
 #elif defined(Q_WS_QPA)
 #include "mimqpaplatform.h"
 #endif
@@ -67,7 +63,7 @@ int main(int argc, char **argv)
     MImXApplication app(argc, argv);
     qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
 #else
-    MIMApplication app(argc, argv);
+    QApplication app(argc, argv);
 #endif
 
     // Set a dummy input context so that Qt does not create a default input

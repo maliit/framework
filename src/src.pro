@@ -34,7 +34,6 @@ HEADERS += \
         mimpluginmanager_p.h \
         mimpluginmanageradaptor.h \
         mindicatorserviceclient.h \
-        mimapplication.h \
         minputcontextconnection.h \
         minputmethodhost.h \
         mtoolbardata_p.h \
@@ -61,7 +60,6 @@ SOURCES += \
         mabstractinputmethodhost.cpp \
         minputmethodhost.cpp \
         minputcontextconnection.cpp \
-        mimapplication.cpp \
         mtoolbaritem.cpp \
         mtoolbardata.cpp \
         mkeyoverride.cpp \

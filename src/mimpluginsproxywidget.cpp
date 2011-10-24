@@ -15,7 +15,10 @@
  */
 
 #include "mimpluginsproxywidget.h"
-#include "mimapplication.h"
+
+#if defined(Q_WS_X11)
+#include "mimxapplication.h"
+#endif
 
 #include <QDesktopWidget>
 
@@ -27,13 +30,16 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
     setAutoFillBackground(false);
     setBackgroundRole(QPalette::NoRole);
 
-    if (MIMApplication::instance() && MIMApplication::instance()->selfComposited()) {
+#if defined(Q_WS_X11)
+    if (MImXApplication::instance() && MImXApplication::instance()->selfComposited()) {
         setAttribute(Qt::WA_OpaquePaintEvent);
         setAttribute(Qt::WA_NoSystemBackground);
     } else {
         setAttribute(Qt::WA_TranslucentBackground);
     }
-
+#else
+    setAttribute(Qt::WA_TranslucentBackground);
+#endif
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     QDesktopWidget* desktop = QApplication::desktop();
     setMinimumSize(desktop->screenGeometry().size());

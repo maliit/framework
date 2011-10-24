@@ -16,7 +16,10 @@
 
 #include "mimgraphicsview_p.h"
 #include "mimgraphicsview.h"
-#include "mimapplication.h"
+
+#if defined(Q_WS_X11)
+#include "mimxapplication.h"
+#endif
 
 #include <QDebug>
 
@@ -79,8 +82,12 @@ void MImGraphicsView::drawBackground(QPainter *painter,
         return;
     }
 
-    const QPixmap &bg(MIMApplication::instance()->remoteWindowPixmap());
+#if defined(Q_WS_X11)
+    const QPixmap &bg(MImXApplication::instance()->remoteWindowPixmap());
     if (not bg.isNull()) {
         painter->drawPixmap(rect.toRect(), bg, rect.toRect());
     }
+#else
+    return;
+#endif
 }

@@ -16,7 +16,6 @@
 
 #include "utils.h"
 #include "ut_minputmethodquickplugin.h"
-#include "mimapplication.h"
 
 #include <minputmethodquickplugin.h>
 #include <minputmethodquick.h>
@@ -36,7 +35,7 @@ void Ut_MInputMethodQuickPlugin::initTestCase()
     // Enforcing raster GS to make test reliable:
     QApplication::setGraphicsSystem("raster");
 
-    app = new MIMApplication(argc, argv);
+    app = new QApplication(argc, argv);
 }
 
 void Ut_MInputMethodQuickPlugin::cleanupTestCase()

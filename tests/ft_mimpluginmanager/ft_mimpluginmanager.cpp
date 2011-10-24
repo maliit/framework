@@ -3,18 +3,17 @@
 #include "mkeyboardstatetracker_stub.h"
 #include "dummyimplugin.h"
 #include "dummyinputmethod.h"
-#include "mimapplication.h"
-#include "minputcontextconnection.h"
-
 #include "utils.h"
+
+#include <minputcontextconnection.h>
+#include <mimpluginmanager.h>
+#include <mimpluginmanager_p.h>
 
 #include <QProcess>
 #include <QGraphicsScene>
 #include <QRegExp>
 #include <QApplication>
 #include <QPointer>
-#include <mimpluginmanager.h>
-#include <mimpluginmanager_p.h>
 
 using namespace std::tr1;
 
@@ -56,7 +55,7 @@ void Ft_MIMPluginManager::initTestCase()
     static char *argv[1] = { (char *) "ut_mimpluginmanager" };
     static int argc = 1;
 
-    app = new MIMApplication(argc, argv);
+    app = new QApplication(argc, argv);
 }
 
 void Ft_MIMPluginManager::cleanupTestCase()
