@@ -1,6 +1,6 @@
 include(../common_top.pri)
 
-INCLUDEPATH += ../../passthroughserver \
+INCLUDEPATH += ../../src \
                ../stubs \
 
 # Input
@@ -12,17 +12,6 @@ HEADERS += \
 SOURCES += \
     ut_mimapplication.cpp \
     ../stubs/fakegconf.cpp \
-
-isEqual(code_coverage_option, off) {
-    HEADERS += \
-        $$PASSTHROUGH_DIR/mpassthruwindow.h
-    SOURCES += \
-        $$PASSTHROUGH_DIR/mpassthruwindow.cpp
-} else {
-    LIBS += \
-        $$PASSTHROUGH_DIR/moc_mpassthruwindow.o \
-        $$PASSTHROUGH_DIR/mpassthruwindow.o
-}
 
 CONFIG += plugin qdbus
 

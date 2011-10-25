@@ -8,28 +8,7 @@ INCLUDEPATH += . .. ../src ../common
 
 LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
 
-SOURCES += \
-           main.cpp \
-           mimdummyinputcontext.cpp \
-
-HEADERS += \
-           mimdummyinputcontext.h \
-
-x11 {
-    SOURCES += \
-           mpassthruwindow.cpp \
-
-    HEADERS += \
-           mpassthruwindow.h \
-}
-
-qpa {
-    SOURCES += \
-        mimqpaplatform.cpp \
- 
-    HEADERS += \
-        mimqpaplatform.h
-}
+SOURCES += main.cpp
 
 QT += core gui
 

@@ -3,7 +3,7 @@ include(../config.pri)
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_LIB
-INCLUDEPATH += .. ../passthroughserver ../common
+INCLUDEPATH += .. ../common
 
 # Input
 HEADERSINSTALL = \
@@ -50,6 +50,7 @@ HEADERS += \
         mimonscreenplugins.h \
         mimhwkeyboardtracker_p.h \
         mimextensionevent_p.h \
+        mimdummyinputcontext.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -80,10 +81,11 @@ SOURCES += \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
         mimsubviewdescription.cpp \
+        mimdummyinputcontext.cpp \
 
 x11 {
     HEADERS += \
-        ../passthroughserver/mpassthruwindow.h \
+        mpassthruwindow.h \
         mimremotewindow.h \
         mimxerrortrap.h \
         mimxextension.h \
@@ -94,9 +96,17 @@ x11 {
         mimremotewindow.cpp \
         mimxerrortrap.cpp \
         mimxextension.cpp \
-        ../passthroughserver/mpassthruwindow.cpp \
+        mpassthruwindow.cpp \
         mimrotationanimation.cpp \
         mimxapplication.cpp \
+}
+
+qpa {
+    SOURCES += \
+        mimqpaplatform.cpp \
+
+    HEADERS += \
+        mimqpaplatform.h
 }
 
 CONFIG += qdbus link_pkgconfig

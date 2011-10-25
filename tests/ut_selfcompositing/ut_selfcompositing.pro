@@ -1,9 +1,7 @@
 include(../common_top.pri)
 
-PASSTHRU_DIR = ../../passthroughserver
 INCLUDEPATH += \
     $$SRC_DIR \
-    $$PASSTHRU_DIR \
 
 # Input
 HEADERS += \

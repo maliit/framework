@@ -39,7 +39,7 @@ set -x
 if [ ! -f ./$BASENAME ]; then
     EXIT_CODE=255
 else
-    TESTING_IN_SANDBOX=1 TESTPLUGIN_PATH=../plugins LD_LIBRARY_PATH=../../src:../../input-context/:../../passthroughserver/:$LD_LIBRARY_PATH dui-run ./$BASENAME -xml -o ./$BASENAME.log
+    TESTING_IN_SANDBOX=1 TESTPLUGIN_PATH=../plugins LD_LIBRARY_PATH=../../src:../../input-context/:../../common:$LD_LIBRARY_PATH dui-run ./$BASENAME -xml -o ./$BASENAME.log
     xsltproc --nonet ../qtestlib2junitxml.xsl $QTESTLOG > $JUNITLOG
     EXIT_CODE=$?
 fi
