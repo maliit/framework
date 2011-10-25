@@ -60,10 +60,23 @@ int main(int argc, char **argv)
     disableMInputContextPlugin();
 
 #if defined(Q_WS_X11)
+    // For X11 the toplevel window is a MPassThruWindow (managed by MImXApplication. It
+    // contains a MImPluginsProxyWidget as container for all plugin widgets and a
+    // MImRotationAnimation, which is used to display the rotation animation. MImXApplication
+    // also manages MImRemoteWindows representing the current application window.
+
     MImXApplication app(argc, argv);
     qDebug() << (app.selfComposited() ? "Use self composition" : "Use system compositor");
-#else
+    QWidget *pluginsProxyWidget = app.pluginsProxyWidget();
+
+#elif defined(Q_WS_QPA)
+    // For QPA the toplevel window is a MImPluginsProxyWidget containing all plugin
+    // widgets. The MImQPAPlatform is used to show/hide that toplevel window when
+    // required.
+
     QApplication app(argc, argv);
+    std::auto_ptr<MImQPAPlatform> platform(new MImQPAPlatform);
+    QWidget *pluginsProxyWidget = platform.get()->pluginsProxyWidget();
 #endif
 
     // Set a dummy input context so that Qt does not create a default input
@@ -74,12 +87,10 @@ int main(int argc, char **argv)
     // DBus Input Context Connection
     shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection);
 
-#if defined(Q_WS_X11)
-    // For X11 the toplevel window is a MPassThruWindow (managed by MImXApplication. It
-    // contains a MImPluginsProxyWidget as container for all plugin widgets and a
-    // MImRotationAnimation, which is used to display the rotation animation. MImXApplication
-    // also manages MImRemoteWindows representing the current application window.
+    // Manager for loading and handling all plugins
+    MIMPluginManager *pluginManager = new MIMPluginManager(icConnection, pluginsProxyWidget);
 
+#if defined(Q_WS_X11)
     QObject::connect(icConnection.get(), SIGNAL(focusChanged(WId)),
                      &app, SLOT(setTransientHint(WId)));
 
@@ -87,13 +98,6 @@ int main(int argc, char **argv)
                      &app, SLOT(appOrientationAboutToChange(int)));
     QObject::connect(icConnection.get(), SIGNAL(appOrientationChanged(int)),
                      &app, SLOT(appOrientationChangeFinished(int)));
-
-    // Container for all plugin widgets
-    QWidget *pluginsProxyWidget = app.pluginsProxyWidget();
-
-    // Manager for loading and handling all plugins
-    MIMPluginManager *pluginManager = new MIMPluginManager(icConnection,
-                                                           pluginsProxyWidget);
 
     // Hide active plugins when the application window is gone or iconified.
     QObject::connect(&app, SIGNAL(remoteWindowGone()),
@@ -111,15 +115,6 @@ int main(int argc, char **argv)
     app.configureWidgetsForCompositing();
 
 #elif defined(Q_WS_QPA)
-    // For QPA the toplevel window is a MImPluginsProxyWidget containing all plugin
-    // widgets. The MImQPAPlatform is used to show/hide that toplevel window when
-    // required.
-
-    std::auto_ptr<MImQPAPlatform> platform(new MImQPAPlatform());
-
-    MIMPluginManager *pluginManager = new MIMPluginManager(icConnection,
-                                                           platform.get()->pluginsProxyWidget());
-
     QObject::connect(pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      platform.get(), SLOT(inputPassthrough(const QRegion &)));
 #endif
