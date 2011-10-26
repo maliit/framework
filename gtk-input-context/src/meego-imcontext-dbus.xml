@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<node>
+  <interface name="com.meego.inputmethod.inputcontext1">
+    <method name="activationLostEvent">
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="imInitiatedHide">
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="commitString">
+      <arg name="string" type="s" direction="in"/>
+      <arg name="replaceStart" type="i"/>
+      <arg name="replaceLength" type="i"/>
+      <arg name="cursorPos" type="i"/>
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="updatePreedit">
+      <arg name="string" type="s" direction="in"/>
+      <arg name="formatList" type="ay"/>
+      <arg name="replaceStart" type="i" direction="in"/>
+      <arg name="replaceLength" type="i" direction="in"/>
+      <arg name="cursorPos" type="i" direction="in"/>
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="keyEvent">
+      <arg name="type" type="i" direction="in"/>
+      <arg name="key" type="i" direction="in"/>
+      <arg name="modifiers" type="i" direction="in"/>
+      <arg name="text" type="s" direction="in"/>
+      <arg name="autoRepeat" type="b" direction="in"/>
+      <arg name="count" type="i" direction="in"/>
+      <arg name="requestType" type="y" direction="in"/>
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="updateInputMethodArea">
+      <arg name="data" type="ay" direction="in"/>
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="setGlobalCorrectionEnabled">
+      <arg name="enabled" type="b" direction="in"/>
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="copy">
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="paste">
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="setRedirectKeys">
+      <arg name="enabled" type="b" direction="in"/>
+      <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
+    </method>
+    <method name="preeditRectangle">
+      <arg name="valid" type="b" direction="out"/>
+      <arg name="rect" type="(iiii)" direction="out"/>
+    </method>
+    <method name="setDetectableAutoRepeat">
+      <arg name="enabled" type="b"/>
+    </method>
+    <method name="setSelection">
+      <arg name="start" type="i"/>
+      <arg name="length" type="i"/>
+    </method>
+    <method name="selection">
+      <arg name="valid" type="b" direction="out"/>
+      <arg name="selectionText" type="s" direction="out"/>
+    </method>
+  </interface>
+</node>
+
