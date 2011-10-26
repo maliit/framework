@@ -43,7 +43,7 @@ external-libmaliit {
 }
 
 !only-libmaliit {
-    SUBDIRS += common input-context input-method-quick examples
+    SUBDIRS += common input-context gtk-input-context input-method-quick examples
 
     !nodoc {
         SUBDIRS += doc
