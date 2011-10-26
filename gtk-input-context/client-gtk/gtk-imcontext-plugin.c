@@ -32,10 +32,10 @@
 
 static const GtkIMContextInfo meego_im_info =
 {
-	"meego-im",
-	"MEEGO Input Method",
-	"meego-im",
-	"",
+        "Maliit", /* ID */
+	"Maliit Input Method",
+        "maliit", /* Gettext domain */
+        "",
 	"en:ja:ko:zh:*"
 };
 
@@ -80,7 +80,7 @@ im_module_list (const GtkIMContextInfo ***contexts, int *context_number)
 GtkIMContext *
 im_module_create (const gchar *context_id)
 {
-	if (g_strcmp0(context_id, "meego-im") == 0) {
+        if (g_strcmp0(context_id, "Maliit") == 0) {
 		return meego_imcontext_new();
 	} else {
 		return NULL;

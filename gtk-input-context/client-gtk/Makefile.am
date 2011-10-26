@@ -6,23 +6,23 @@ noinst_HEADERS =
 
 moduledir = @GTK2_IM_MODULEDIR@
 
-module_LTLIBRARIES = im-meego.la
+module_LTLIBRARIES = im-maliit.la
 
-im_meego_la_SOURCES = \
+im_maliit_la_SOURCES = \
 		gtk-imcontext-plugin.c \
 		client-imcontext-gtk.c \
 		client-imcontext-gtk.h \
 		qt-gtk-translate.cpp \
 		qt-gtk-translate.h
 
-im_meego_la_CFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @MT_IM_GTK2_CFLAGS@ -Wall -Werror
-im_meego_la_CXXFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @MT_IM_GTK2_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
+im_maliit_la_CFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @MT_IM_GTK2_CFLAGS@ -Wall -Werror
+im_maliit_la_CXXFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @MT_IM_GTK2_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
 
-im_meego_la_LDFLAGS = -rpath $(moduledir) \
+im_maliit_la_LDFLAGS = -rpath $(moduledir) \
 		     -avoid-version -no-undefined \
 		     -module \
 		     @MT_IM_BRIDGES_LIBS@ @MT_IM_GTK2_LIBS@ @QT_LIBS@
 
-im_meego_la_LIBADD = $(top_builddir)/src/libmeegoimcommon.la
+im_maliit_la_LIBADD = $(top_builddir)/src/libmaliitimcommon.la
 
 MAINTAINERCLEANFILES 	= Makefile.in

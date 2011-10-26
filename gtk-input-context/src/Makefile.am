@@ -1,7 +1,7 @@
 INCLUDES		= -I$(top_builddir) \
 	    		  -I$(top_srcdir)
 
-noinst_LTLIBRARIES = libmeegoimcommon.la
+noinst_LTLIBRARIES = libmaliitimcommon.la
 
 meego-im-proxy-glue.h: meego-im-client.xml
 	$(DBUS_BINDING_TOOL) --prefix=meego_im_proxy --mode=glib-client --output=$@ $<
@@ -12,7 +12,7 @@ meego-imcontext-dbus-glue.h: meego-imcontext-dbus.xml
 BUILT_SOURCES = meego-im-proxy-glue.h \
 		meego-imcontext-dbus-glue.h
 
-libmeegoimcommon_la_SOURCES = debug.h \
+libmaliitimcommon_la_SOURCES = debug.h \
 			meego-imcontext-dbus.c \
 			meego-imcontext-dbus.h \
 			meego-im-proxy.c \
@@ -22,10 +22,10 @@ libmeegoimcommon_la_SOURCES = debug.h \
 			$(BUILT_SOURCES)
 
 
-libmeegoimcommon_la_CFLAGS  = @MT_IM_BRIDGES_CFLAGS@ -Wall -Werror
-libmeegoimcommon_la_CXXFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
+libmaliitimcommon_la_CFLAGS  = @MT_IM_BRIDGES_CFLAGS@ -Wall -Werror
+libmaliitimcommon_la_CXXFLAGS  = @MT_IM_BRIDGES_CFLAGS@ @QT_CFLAGS@ -Wall -Werror
 
-libmeegoimcommon_la_LDFLAGS = \
+libmaliitimcommon_la_LDFLAGS = \
 		     -avoid-version -no-undefined \
 		     @MT_IM_BRIDGES_LIBS@ @QT_LIBS@
 
