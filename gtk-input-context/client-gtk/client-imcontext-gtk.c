@@ -21,6 +21,7 @@
 
 
 #include <X11/keysym.h>
+#include <gdk/gdkx.h> // For retrieving XID
 
 #include "client-imcontext-gtk.h"
 #include "qt-gtk-translate.h"
@@ -49,8 +50,18 @@ static void meego_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean
 static void meego_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window);
 static void meego_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area);
 
+static void meego_imcontext_update_widget_info(MeegoIMContext *imcontext);
+
 static GtkIMContext *meego_imcontext_get_slave_imcontext (void);
 
+static const gchar* const WIDGET_INFO_WIN_ID = "winId";
+static const gchar* const WIDGET_INFO_FOCUS_STATE = "focusState";
+
+void destroy_g_value(GValue *value)
+{
+    g_value_unset(value);
+    g_free(value);
+}
 
 GType meego_imcontext_get_type ()
 {
@@ -76,7 +87,7 @@ meego_imcontext_register_type (GTypeModule *type_module)
 	if (_meego_imcontext_type)
 		return;
 
-        if (type_module) {
+	if (type_module) {
 		_meego_imcontext_type = 
 			g_type_module_register_type(
 				type_module,
@@ -84,14 +95,14 @@ meego_imcontext_register_type (GTypeModule *type_module)
 				"MeegoIMContext",
 				&meego_imcontext_info,
 				(GTypeFlags)0);
-        } else {
+	} else {
 		_meego_imcontext_type =
 			g_type_register_static(
 				GTK_TYPE_IM_CONTEXT,
 				"MeegoIMContext",
 				&meego_imcontext_info,
 				(GTypeFlags)0);
-        }
+	}
 }
 
 
@@ -188,6 +199,8 @@ meego_imcontext_finalize (GObject *object)
 	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(object);
 	G_OBJECT_CLASS(parent_class)->finalize(object);
 
+	g_hash_table_destroy(imcontext->widget_state);
+
 	if (imcontext->client_window)
 		g_object_unref(imcontext->client_window);
 }
@@ -227,6 +240,10 @@ meego_imcontext_init (MeegoIMContext *self)
 	self->preedit_attrs = NULL;
 	self->preedit_cursor_pos = 0;
 
+	self->widget_state = g_hash_table_new_full(&g_str_hash, &g_str_equal,
+				&g_free, (GDestroyNotify)destroy_g_value);
+	self->focus_state = FALSE;
+
 	meego_imcontext_init_dbus(self);
 }
 
@@ -236,6 +253,7 @@ meego_imcontext_focus_in (GtkIMContext *context)
 {
 	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
 	gboolean ret = TRUE;
+	gboolean focus_changed = TRUE;
 
 	DBG("imcontext = %p", imcontext);
 
@@ -243,10 +261,15 @@ meego_imcontext_focus_in (GtkIMContext *context)
 		meego_imcontext_focus_out(GTK_IM_CONTEXT(focused_imcontext));
 	focused_imcontext = imcontext;
 
-	ret = meego_im_proxy_activate_context(imcontext->proxy);
-	if (ret)
-		meego_im_proxy_show_input_method(imcontext->proxy);
+	imcontext->focus_state = TRUE;
+	meego_imcontext_update_widget_info(imcontext);
 
+	ret = meego_im_proxy_activate_context(imcontext->proxy);
+	if (ret) {
+		meego_im_proxy_update_widget_info(imcontext->proxy,
+					imcontext->widget_state, focus_changed);
+		meego_im_proxy_show_input_method(imcontext->proxy);
+	}
 	// TODO: anything else than call "activateContext" and "showInputMethod" ?
 
 }
@@ -262,6 +285,7 @@ meego_imcontext_focus_out (GtkIMContext *context)
 
 	// TODO: anything else than call "hideInputMethod" ?
 
+	imcontext->focus_state = FALSE;
 	focused_imcontext = NULL;
 	focused_widget = NULL;
 }
@@ -376,6 +400,28 @@ meego_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area)
 	//But MEEGO IM seems not using this info at all
 }
 
+/* Update the widget_state map with current information about the widget. */
+void
+meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
+{
+
+    /* Window ID */
+    if (imcontext->client_window) {
+	guint64 xid = GDK_WINDOW_XID(imcontext->client_window);
+	GValue *xid_value = g_new0(GValue, 1);
+	g_value_init(xid_value, G_TYPE_UINT64);
+	g_value_set_uint64(xid_value, xid);
+	g_hash_table_insert(imcontext->widget_state, g_strdup(WIDGET_INFO_WIN_ID), xid_value);
+    } else {
+	g_hash_table_remove(imcontext->widget_state, WIDGET_INFO_WIN_ID);
+    }
+
+    /* Focus state */
+    GValue *focus_value = g_new0(GValue, 1);
+    g_value_init(focus_value, G_TYPE_BOOLEAN);
+    g_value_set_boolean(focus_value, imcontext->focus_state);
+    g_hash_table_insert(imcontext->widget_state, g_strdup(WIDGET_INFO_FOCUS_STATE), focus_value);
+}
 
 // Call back functions for dbus obj
 

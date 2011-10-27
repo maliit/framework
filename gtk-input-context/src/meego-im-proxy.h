@@ -60,8 +60,9 @@ gboolean meego_im_proxy_hide_input_method (MeegoIMProxy *proxy);
 // Not yet really implemented
 gboolean meego_im_proxy_mouse_clicked_on_preedit (MeegoIMProxy *proxy, const GValueArray* pos,
 					const GValueArray* preedit_rect);
-gboolean meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTable *state_information);
 #endif
+
+gboolean meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTable *state_information, gboolean focus_changed);
 
 gboolean meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gint code,
 					const gint modifiers, const char * text,
