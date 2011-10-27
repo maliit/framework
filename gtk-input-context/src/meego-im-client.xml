@@ -22,7 +22,7 @@
       <annotation name="org.freedesktop.DBus.Method.NoReply" value="true"/>
     </method>
     <method name="updateWidgetInformation">
-      <arg name="encodedState" type="ay"/>
+      <arg name="encodedState" type="a{sv}"/>
       <arg name="focusChanged" type="b"/>
     </method>
     <method name="reset">

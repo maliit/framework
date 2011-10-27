@@ -180,19 +180,20 @@ meego_im_proxy_mouse_clicked_on_preedit (MeegoIMProxy *proxy, const GValueArray*
 
 	return ret;
 }
-
+#endif
 
 gboolean
-meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTable *state_information)
+meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTable *state_information, gboolean focus_changed)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
 
+	STEP();
 	if (!proxy || proxy->dbusproxy == NULL)
 		return FALSE;
 
 	ret = com_meego_inputmethod_uiserver1_update_widget_information(proxy->dbusproxy,
-						state_information, &error);
+						state_information, focus_changed, &error);
 
 	if (error != NULL) {
 		g_warning("%s", error->message);
@@ -201,7 +202,7 @@ meego_im_proxy_update_widget_info (MeegoIMProxy *proxy, const GHashTable *state_
 	return ret;
 }
 
-#endif
+
 
 
 gboolean
@@ -210,7 +211,7 @@ meego_im_proxy_process_key_event (MeegoIMProxy *proxy, const gint type, const gi
 					const gboolean auto_repeat, const gint count,
 					const guint native_scan_code,
 					const guint native_modifiers,
-				        const guint time)
+					const guint time)
 {
 	GError *error = NULL;
 	gboolean ret = TRUE;
@@ -333,4 +334,3 @@ meego_im_proxy_show_input_method (MeegoIMProxy *proxy)
 
 	return ret;
 }
-
