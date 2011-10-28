@@ -358,23 +358,23 @@ m_dbus_glib_ic_connection_set_extended_attribute(MDBusGlibICConnection *obj, gin
 static void
 m_dbus_glib_ic_connection_dispose(GObject *object)
 {
-    qDebug() << __PRETTY_FUNCTION__;
-
     MDBusGlibICConnection *self(M_DBUS_GLIB_IC_CONNECTION(object));
 
     if (self->dbusConnection) {
+        dbus_g_connection_unregister_g_object(self->dbusConnection, object);
+
         dbus_g_connection_unref(self->dbusConnection);
         self->dbusConnection = 0;
     }
 
-    G_OBJECT_CLASS(m_dbus_glib_ic_connection_parent_class)->finalize(object);
+    G_OBJECT_CLASS(m_dbus_glib_ic_connection_parent_class)->dispose(object);
 }
 
 
 static void
-m_dbus_glib_ic_connection_finalize(GObject */*object*/)
+m_dbus_glib_ic_connection_finalize(GObject *object)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    G_OBJECT_CLASS(m_dbus_glib_ic_connection_parent_class)->finalize(object);
 }
 
 
