@@ -70,7 +70,8 @@ MInputContextConnectionPrivate::~MInputContextConnectionPrivate()
 // actual class
 
 MInputContextConnection::MInputContextConnection(QObject *parent)
-    : d(new MInputContextConnectionPrivate)
+    : activeConnection(0)
+    , d(new MInputContextConnectionPrivate)
     , lastOrientation(0)
     , mGlobalCorrectionEnabled(false)
     , mRedirectionEnabled(false)
