@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = plainqt twofields
+SUBDIRS = plainqt twofields widgetproperties
