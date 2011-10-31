@@ -58,3 +58,14 @@ bool MImUpdateEvent::westernNumericInputEnforced(bool *changed) const
 
     return d->update.value(Maliit::InputMethodQuery::westernNumericInputEnforced).toBool();
 }
+
+bool MImUpdateEvent::preferNumbers(bool *changed) const
+{
+    Q_D(const MImUpdateEvent);
+
+    if (changed) {
+        *changed = d->changedProperties.contains(Maliit::InputMethodHint::preferNumbers);
+    }
+
+    return d->update.value(Maliit::InputMethodHint::preferNumbers).toBool();
+}

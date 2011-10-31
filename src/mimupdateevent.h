@@ -42,6 +42,11 @@ public:
     //! \param changed whether this value changed with this event.
     bool westernNumericInputEnforced(bool *changed = 0) const;
 
+    //! Returns whether input field has Qt::ImhPreferNumbers hint set.
+    //! False by default.
+    //! \param changed whether this value changed with this event.
+    bool preferNumbers(bool *changed = 0) const;
+
 private:
     Q_DISABLE_COPY(MImUpdateEvent)
     Q_DECLARE_PRIVATE(MImUpdateEvent)

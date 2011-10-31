@@ -248,6 +248,12 @@ namespace Maliit {
         //! See Maliit::WesternNumericInputEnforcedQuery.
         const char* const westernNumericInputEnforced = "maliit-western-numeric-input-enforced";
     }
+
+    namespace InputMethodHint
+    {
+        //! Name of the hint which tells whether input field has Qt::ImhPreferNumbers hint set.
+        const char* const preferNumbers = "maliit-prefer-numbers";
+    }
 }
 
 Q_DECLARE_METATYPE(Maliit::TextContentType)
