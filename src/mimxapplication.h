@@ -33,6 +33,7 @@ public:
     virtual bool selfComposited() const;
     bool manualRedirection() const;
     bool bypassWMHint() const;
+    bool unconditionalShow() const;
 
     //! Flag that is used to sync between MAbstractInputMethodHost and
     //! rotation animation in order to capture the VKB without
@@ -81,6 +82,7 @@ private:
     bool mManualRedirection;
     bool mBypassWMHint;
     bool mBackgroundSuppressed;
+    bool mUnconditionalShow;
 
     std::auto_ptr<MPassThruWindow> mPassThruWindow;
     std::auto_ptr<QWidget> mPluginsProxyWidget;

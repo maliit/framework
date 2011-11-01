@@ -46,6 +46,7 @@ MImXApplication::MImXApplication(int &argc, char** argv) :
     mManualRedirection(false),
     mBypassWMHint(false),
     mBackgroundSuppressed(false),
+    mUnconditionalShow(false),
     mPassThruWindow(),
     mRemoteWindow()
 {
@@ -89,6 +90,8 @@ void MImXApplication::parseArguments(int &argc, char** argv)
             mBypassWMHint = true;
         } else if (arg == "-use-self-composition") {
             mSelfComposited = mCompositeExtension.supported(0, 2) && mDamageExtension.supported();
+        } else if (arg == "-unconditional-show") {
+            mUnconditionalShow = true;
         }
     }
 }
@@ -181,6 +184,11 @@ bool MImXApplication::manualRedirection() const
 bool MImXApplication::bypassWMHint() const
 {
     return mBypassWMHint;
+}
+
+bool MImXApplication::unconditionalShow() const
+{
+    return mUnconditionalShow;
 }
 
 void MImXApplication::setSuppressBackground(bool suppress)
