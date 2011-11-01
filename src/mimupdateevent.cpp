@@ -15,26 +15,49 @@
  */
 
 #include "mimupdateevent.h"
+#include "mimupdateevent_p.h"
 #include "mimextensionevent_p.h"
+#include "maliit/namespace.h"
 
-#include <maliit/namespace.h>
+MImUpdateEventPrivate::MImUpdateEventPrivate(const QMap<QString, QVariant> &newUpdate,
+                                             const QStringList &newChangedProperties,
+                                             const Qt::InputMethodHints &newLastHints)
+    : update(newUpdate)
+    , changedProperties(newChangedProperties)
+    , lastHints(newLastHints)
+{}
 
-class MImUpdateEventPrivate
-    : public MImExtensionEventPrivate
+bool MImUpdateEventPrivate::isFlagSet(Qt::InputMethodHint hint,
+                                      bool *changed) const
 {
-public:
-    QMap<QString, QVariant> update;
-    QStringList changedProperties;
-};
+    bool result = false;
+
+    if (update.contains(Maliit::Internal::inputMethodHints)) {
+        const Qt::InputMethodHints hints(static_cast<Qt::InputMethodHints>(
+                                             update.value(Maliit::Internal::inputMethodHints).toLongLong()));
+
+        result = (hints & hint);
+    }
+
+    if (changed) {
+        *changed = (result != (lastHints & hint));
+    }
+
+    return result;
+}
 
 MImUpdateEvent::MImUpdateEvent(const QMap<QString, QVariant> &update,
                                const QStringList &changedProperties)
-    : MImExtensionEvent(new MImUpdateEventPrivate, MImExtensionEvent::Update)
-{
-    Q_D(MImUpdateEvent);
-    d->update = update;
-    d->changedProperties = changedProperties;
-}
+    : MImExtensionEvent(new MImUpdateEventPrivate(update, changedProperties, Qt::InputMethodHints()),
+                        MImExtensionEvent::Update)
+{}
+
+MImUpdateEvent::MImUpdateEvent(const QMap<QString, QVariant> &update,
+                               const QStringList &changedProperties,
+                               const Qt::InputMethodHints &lastHints)
+    : MImExtensionEvent(new MImUpdateEventPrivate(update, changedProperties, lastHints),
+                        MImExtensionEvent::Update)
+{}
 
 QVariant MImUpdateEvent::value(const QString &key) const
 {
@@ -48,6 +71,17 @@ QStringList MImUpdateEvent::propertiesChanged() const
     return d->changedProperties;
 }
 
+Qt::InputMethodHints MImUpdateEvent::hints(bool *changed) const
+{
+    Q_D(const MImUpdateEvent);
+
+    if (changed) {
+        *changed = d->changedProperties.contains(Maliit::Internal::inputMethodHints);
+    }
+
+    return static_cast<Qt::InputMethodHints>(d->update.value(Maliit::Internal::inputMethodHints).toLongLong());
+}
+
 bool MImUpdateEvent::westernNumericInputEnforced(bool *changed) const
 {
     Q_D(const MImUpdateEvent);
@@ -57,4 +91,10 @@ bool MImUpdateEvent::westernNumericInputEnforced(bool *changed) const
     }
 
     return d->update.value(Maliit::InputMethodQuery::westernNumericInputEnforced).toBool();
+}
+
+bool MImUpdateEvent::preferNumbers(bool *changed) const
+{
+    Q_D(const MImUpdateEvent);
+    return d->isFlagSet(Qt::ImhPreferNumbers, changed);
 }
