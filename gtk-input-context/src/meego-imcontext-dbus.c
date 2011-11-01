@@ -25,9 +25,7 @@
 #include "meego-imcontext-dbus.h"
 #include "debug.h"
 
-#define MEEGO_IM_SOCKET_PATH "unix:path=/tmp/meego-im-uiserver/imserver_dbus"
 #define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/com/meego/inputmethod/inputcontext"
-
 
 G_DEFINE_TYPE( MeegoIMContextDbusObj, meego_imcontext_dbusobj, G_TYPE_OBJECT);
 
@@ -67,40 +65,13 @@ meego_imcontext_dbusobj_class_init(MeegoIMContextDbusObjClass* klass)
 }
 
 
-MeegoIMContextDbusObj *
-meego_imcontext_dbus_register(void)
+
+void
+meego_imcontext_dbusobj_connect(MeegoIMContextDbusObj *obj, DBusGConnection *connection)
 {
-	DBusGConnection *bus = NULL;
-	MeegoIMContextDbusObj *dbusobj = NULL;
-	GError *error = NULL;
-
-	bus = dbus_g_connection_open (MEEGO_IM_SOCKET_PATH, &error);
-	if (error != NULL) {
-		g_warning("Couldn't connect to IM bus\n");
-		g_error_free (error);
-		return NULL;
-	}
-
-	dbusobj = g_object_new(MEEGO_IMCONTEXT_TYPE_DBUSOBJ, NULL);
-
-	if (dbusobj == NULL) {
-		g_warning("Failed to create dbus_obj.\n");
-		goto done;
-	}
-
-	dbus_g_connection_register_g_object(bus,
+	dbus_g_connection_register_g_object(connection,
 					    MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
-					    G_OBJECT(dbusobj));
-
-	dbusobj->connection = bus;
-done:
-	return dbusobj;
-}
-
-DBusGConnection *
-meego_imcontext_dbusobj_get_connection (MeegoIMContextDbusObj *obj)
-{
-	return obj->connection;
+					    G_OBJECT(obj));
 }
 
 MeegoIMContextDbusObj *
@@ -109,7 +80,7 @@ meego_imcontext_dbusobj_get_singleton (void)
 	static MeegoIMContextDbusObj *dbusobj = NULL;
 
 	if (!dbusobj)
-		dbusobj = meego_imcontext_dbus_register();
+		dbusobj = g_object_new(MEEGO_IMCONTEXT_TYPE_DBUSOBJ, NULL);
 	return dbusobj;
 }
 

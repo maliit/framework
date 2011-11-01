@@ -9,12 +9,14 @@ PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1
 HEADERS += \
     meego-im-proxy.h \
     meego-imcontext-dbus.h \
+    meego-im-connector.h \
     qt-keysym-map.h \
     debug.h \
 
 SOURCES += \
     meego-im-proxy.c \
     meego-imcontext-dbus.c \
+    meego-im-connector.c \
     qt-keysym-map.cpp \
 
 GTK3_IM_MODULEDIR =

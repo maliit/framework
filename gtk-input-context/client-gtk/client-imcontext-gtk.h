@@ -22,8 +22,10 @@
 #define _CLIENT_IMCONTEXT_GTK_H
 
 #include <gtk/gtk.h>
+
 #include "meego-im-proxy.h"
 #include "meego-imcontext-dbus.h"
+#include "meego-im-connector.h"
 
 G_BEGIN_DECLS
 
@@ -49,6 +51,7 @@ struct _MeegoIMContext {
 
 	MeegoIMProxy *proxy;
 	MeegoIMContextDbusObj *dbusobj;
+	MeegoImConnector *connector;
 
 	GdkWindow *client_window;
 	GdkRectangle cursor_location;

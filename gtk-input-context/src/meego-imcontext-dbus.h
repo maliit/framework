@@ -51,9 +51,7 @@ GType meego_imcontext_dbusobj_get_type(void);
 
 
 MeegoIMContextDbusObj *meego_imcontext_dbusobj_get_singleton (void);
-DBusGConnection *meego_imcontext_dbusobj_get_connection (MeegoIMContextDbusObj *obj);
-
-
+void meego_imcontext_dbusobj_connect (MeegoIMContextDbusObj *obj, DBusGConnection *connection);
 
 // Call back functions for dbus obj, need to be implemented in imcontext client side
 
