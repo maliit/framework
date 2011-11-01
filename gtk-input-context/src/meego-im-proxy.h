@@ -41,7 +41,6 @@ typedef struct _MeegoIMProxyClass MeegoIMProxyClass;
 struct _MeegoIMProxy {
 	GObject parent;
 
-	DBusGConnection *connection;
 	DBusGProxy *dbusproxy;
 };
 
@@ -52,7 +51,7 @@ struct _MeegoIMProxyClass {
 GType meego_im_proxy_get_type (void);
 
 MeegoIMProxy *meego_im_proxy_get_singleton (void);
-void         meego_im_proxy_set_connection (MeegoIMProxy *proxy, DBusGConnection *connection);
+void meego_im_proxy_connect (MeegoIMProxy *proxy, DBusGConnection *connection);
 gboolean meego_im_proxy_activate_context (MeegoIMProxy *proxy);
 gboolean meego_im_proxy_app_orientation_changed (MeegoIMProxy *proxy, const gint angle);
 gboolean meego_im_proxy_hide_input_method (MeegoIMProxy *proxy);

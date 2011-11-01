@@ -25,7 +25,6 @@
 
 G_DEFINE_TYPE (MeegoIMProxy, meego_im_proxy, G_TYPE_OBJECT);
 
-#define MEEGO_IM_SOCKET_PATH "unix:path=/tmp/meego-im-uiserver/imserver_dbus"
 #define MEEGO_IM_OBJECT_PATH "/com/meego/inputmethod/uiserver1"
 #define MEEGO_IM_SERVICE_INTERFACE "com.meego.inputmethod.uiserver1"
 
@@ -85,29 +84,19 @@ meego_im_proxy_class_init (MeegoIMProxyClass *klass)
 static void
 meego_im_proxy_init (MeegoIMProxy *self)
 {
-	self->connection = NULL;
 }
 
 void
-meego_im_proxy_set_connection (MeegoIMProxy *proxy, DBusGConnection *connection)
+meego_im_proxy_connect (MeegoIMProxy *proxy, DBusGConnection *connection)
 {
 	DBusGProxy* dbusproxy;
-	GError* error = NULL;
+	g_return_if_fail(connection != NULL);
 
-	g_assert (connection != NULL);
-
-	if (proxy->connection != NULL)
-		return;
-
-	proxy->connection = connection;
-
-	if (error != NULL) {
-		g_warning("%s", error->message);
-		g_error_free (error);
-		error = NULL;
+	if (proxy->dbusproxy) {
+		g_object_unref(proxy->dbusproxy);
 	}
 
-	dbusproxy = dbus_g_proxy_new_for_peer (proxy->connection,
+	dbusproxy = dbus_g_proxy_new_for_peer (connection,
 					       MEEGO_IM_OBJECT_PATH, /* obj path */
 					       MEEGO_IM_SERVICE_INTERFACE /* interface */);
 

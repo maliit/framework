@@ -49,7 +49,6 @@ static void meego_imcontext_get_preedit_string (GtkIMContext *context, gchar **s
 static void meego_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled);
 static void meego_imcontext_set_client_window (GtkIMContext *context, GdkWindow *window);
 static void meego_imcontext_set_cursor_location (GtkIMContext *context, GdkRectangle *area);
-
 static void meego_imcontext_update_widget_info(MeegoIMContext *imcontext);
 
 static GtkIMContext *meego_imcontext_get_slave_imcontext (void);
@@ -105,24 +104,6 @@ meego_imcontext_register_type (GTypeModule *type_module)
 	}
 }
 
-
-static gboolean
-meego_imcontext_init_dbus (MeegoIMContext *self)
-{
-	gboolean ret = TRUE;
-
-	self->dbusobj = meego_imcontext_dbusobj_get_singleton();
-	self->proxy = meego_im_proxy_get_singleton();
-
-	if (!self->dbusobj || !self->proxy) {
-		return FALSE;
-	}
-
-	meego_im_proxy_set_connection (self->proxy,
-				       meego_imcontext_dbusobj_get_connection(self->dbusobj));
-
-	return ret;
-}
 
 
 // staff for fallback slave GTK simple imcontext
@@ -242,7 +223,13 @@ meego_imcontext_init (MeegoIMContext *self)
 				&g_free, (GDestroyNotify)destroy_g_value);
 	self->focus_state = FALSE;
 
-	meego_imcontext_init_dbus(self);
+	/* The singletons are used to let them have the same lifetime as
+	 * the application. GTK inputcontexts are destroyed when focus 
+	 * is removed from the GTK widget they are attached to */
+	/* TODO: use one singleton instead of tree separate ones */
+	self->dbusobj = meego_imcontext_dbusobj_get_singleton();
+	self->proxy = meego_im_proxy_get_singleton();
+	self->connector = meego_im_connector_get_singleton();
 }
 
 
