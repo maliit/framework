@@ -15,8 +15,8 @@
  */
 
 #include "minputcontext.h"
-
 #include "glibdbusimserverproxy.h"
+#include "maliit/namespaceinternal.h"
 
 #include <QApplication>
 #include <QX11Info>
@@ -1094,6 +1094,8 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     }
 
     // content type value
+    // Deprecated, replaced by just transmitting all hints (see below):
+    // FIXME: Remove once MAbstractInputMethod API for this got deprecated/removed.
     stateInformation["contentType"] = contentType(hints);
 
     queryResult = focused->property(Maliit::InputMethodQuery::correctionEnabledQuery);
@@ -1108,10 +1110,13 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         stateInformation["correctionEnabled"] = queryResult.toBool();
     }
 
+    // Deprecated, replaced by just transmitting all hints (see below):
+    // FIXME: Remove once MAbstractInputMethod API for this got deprecated/removed.
     stateInformation["predictionEnabled"] = !(hints & Qt::ImhNoPredictiveText);
     stateInformation["autocapitalizationEnabled"] = !(hints & Qt::ImhNoAutoUppercase);
     stateInformation["hiddenText"] = static_cast<bool>(hints & Qt::ImhHiddenText);
 
+    stateInformation[Maliit::Internal::inputMethodHints] = QVariant(static_cast<qint64>(hints));
 
     queryResult = focused->inputMethodQuery(
         static_cast<Qt::InputMethodQuery>(Maliit::ImModeQuery));

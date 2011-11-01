@@ -20,6 +20,7 @@
 #include "mattributeextensionmanager.h"
 #include "mattributeextensionid.h"
 #include "mimupdateevent.h"
+#include "maliit/namespaceinternal.h"
 
 #include <QKeyEvent>
 
@@ -339,6 +340,8 @@ MInputContextConnection::updateWidgetInformation(
 
     }
 
+    const Qt::InputMethodHints lastHints = static_cast<Qt::InputMethodHints>(stateInfo.value(Maliit::Internal::inputMethodHints).toLongLong());
+
     widgetState = stateInfo;
     bool focusStateOk(false);
     const bool widgetFocusState(focusState(focusStateOk));
@@ -386,7 +389,8 @@ MInputContextConnection::updateWidgetInformation(
         Q_EMIT toolbarIdChanged(newAttributeExtensionId);
     }
 
-    MImUpdateEvent ev(widgetState, changedProperties);
+    MImUpdateEvent ev(widgetState, changedProperties, lastHints);
+
     Q_FOREACH (MAbstractInputMethod *target, targets()) {
         if (not changedProperties.isEmpty()) {
             (void) target->imExtensionEvent(&ev);
