@@ -115,6 +115,10 @@ meego_imcontext_init_dbus (MeegoIMContext *self)
 	self->dbusobj = meego_imcontext_dbusobj_get_singleton();
 	self->proxy = meego_im_proxy_get_singleton();
 
+	if (!self->dbusobj || !self->proxy) {
+		return FALSE;
+	}
+
 	meego_im_proxy_set_connection (self->proxy,
 				       meego_imcontext_dbusobj_get_connection(self->dbusobj));
 
