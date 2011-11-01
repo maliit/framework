@@ -43,6 +43,7 @@ HEADERS += \
         mtoolbarlayout_p.h \
         minputcontextglibdbusconnection.h \
         mimhwkeyboardtracker.h \
+        mimupdateevent_p.h \
         mimgraphicsview_p.h \
         mimwidget_p.h \
         mimpluginsproxywidget.h \

@@ -39,6 +39,7 @@ MainWindow::MainWindow()
 
     QLabel* loginLabel(new QLabel("Login:"));
     QLineEdit* loginEdit(new QLineEdit());
+    loginEdit->setInputMethodHints(Qt::ImhPreferNumbers);
     QCheckBox* loginCheckBox(new QCheckBox("Enter accepts login"));
     QLabel* passwordLabel(new QLabel("Password:"));
     QLineEdit* passwordEdit(new QLineEdit());
