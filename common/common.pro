@@ -9,11 +9,12 @@ HEADERSINSTALL = \
     minputmethodnamespace.h \
 
 FRAMEWORKHEADERSINSTALL = \
-    maliit/namespace.h
+    maliit/namespace.h \
 
 HEADERS += \
     $$HEADERSINSTALL \
     $$FRAMEWORKHEADERSINSTALL \
+    maliit/namespaceinternal.h \
 
 headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
 headers.files += $$HEADERSINSTALL
@@ -28,3 +29,4 @@ INSTALLS += \
     headers \
     frameworkheaders \
     install_pkgconfig \
+
