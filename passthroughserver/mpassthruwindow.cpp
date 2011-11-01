@@ -149,7 +149,11 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
         // is iconified (since the keyboard is transient to the remote
         // window it could result in the remote window to be shown by calling
         // showFullScreen)
-        if (!isVisible() && remoteWindow && !remoteWindow->isIconified()) {
+        //
+        // Check can be overidden by the unconditionalShow option. For instance on Ubuntu 11.10 with Unity
+        // isVisible() sometimes starts to return true when the window is still unmapped, causing
+        // the logic to fail, preventing the input method window to show if done conditionally
+        if (mApplication->unconditionalShow() || (!isVisible() && remoteWindow && !remoteWindow->isIconified())) {
             showFullScreen();
 
             // If bypassing window hint, also do raise to ensure visibility:
