@@ -36,6 +36,8 @@ public:
 
     bool isFlagSet(Qt::InputMethodHint hint,
                    bool *changed = 0) const;
-};
+
+    QVariant extractProperty(const QString &key,
+                             bool *changed = 0) const;};
 
 #endif // MIMUPDATEEVENT_P_H
