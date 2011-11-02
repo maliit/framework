@@ -46,6 +46,16 @@ bool MImUpdateEventPrivate::isFlagSet(Qt::InputMethodHint hint,
     return result;
 }
 
+QVariant MImUpdateEventPrivate::extractProperty(const QString &key,
+                                                bool *changed) const
+{
+    if (changed) {
+        *changed = changedProperties.contains(key);
+    }
+
+    return update.value(key);
+}
+
 MImUpdateEvent::MImUpdateEvent(const QMap<QString, QVariant> &update,
                                const QStringList &changedProperties)
     : MImExtensionEvent(new MImUpdateEventPrivate(update, changedProperties, Qt::InputMethodHints()),
@@ -74,23 +84,14 @@ QStringList MImUpdateEvent::propertiesChanged() const
 Qt::InputMethodHints MImUpdateEvent::hints(bool *changed) const
 {
     Q_D(const MImUpdateEvent);
-
-    if (changed) {
-        *changed = d->changedProperties.contains(Maliit::Internal::inputMethodHints);
-    }
-
-    return static_cast<Qt::InputMethodHints>(d->update.value(Maliit::Internal::inputMethodHints).toLongLong());
+    return static_cast<Qt::InputMethodHints>(
+        d->extractProperty(Maliit::Internal::inputMethodHints, changed).toLongLong());
 }
 
 bool MImUpdateEvent::westernNumericInputEnforced(bool *changed) const
 {
     Q_D(const MImUpdateEvent);
-
-    if (changed) {
-        *changed = d->changedProperties.contains(Maliit::InputMethodQuery::westernNumericInputEnforced);
-    }
-
-    return d->update.value(Maliit::InputMethodQuery::westernNumericInputEnforced).toBool();
+    return d->extractProperty(Maliit::InputMethodQuery::westernNumericInputEnforced, changed).toBool();
 }
 
 bool MImUpdateEvent::preferNumbers(bool *changed) const
