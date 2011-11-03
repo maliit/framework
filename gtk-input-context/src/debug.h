@@ -14,5 +14,7 @@ G_BEGIN_DECLS
 
 #define STEP() DBG("")
 
+#define UNUSED(v) (void)v;
+
 G_END_DECLS
 #endif // _DEBUG_H

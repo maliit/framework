@@ -19,6 +19,10 @@ enable-legacy {
 QMAKE_LFLAGS_RELEASE+=-Wl,--as-needed
 # Compiler warnings are error if the build type is debug
 QMAKE_CXXFLAGS_DEBUG+=-Werror -O0
+QMAKE_CFLAGS_DEBUG+=-Werror -O0
+
+OBJECTS_DIR = .obj
+MOC_DIR = .moc
 
 isEmpty(M_IM_VERSION) {
     M_IM_VERSION=$$MALIIT_VERSION
