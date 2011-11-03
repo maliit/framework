@@ -84,6 +84,7 @@ meego_im_proxy_class_init (MeegoIMProxyClass *klass)
 static void
 meego_im_proxy_init (MeegoIMProxy *self)
 {
+	UNUSED(self);
 }
 
 void

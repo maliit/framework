@@ -6,6 +6,14 @@ TARGET = maliit-im-common
 CONFIG += link_pkgconfig
 PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1
 
+debug{
+    DEFINES += ENABLE_DEBUG
+}
+
+# Generated dbus glue code has warnings of this type, so disable them
+QMAKE_CFLAGS_DEBUG += -Wno-unused-parameter
+QMAKE_CFLAGS_RELEASE += -Wno-unused-parameter
+
 HEADERS += \
     meego-im-proxy.h \
     meego-imcontext-dbus.h \

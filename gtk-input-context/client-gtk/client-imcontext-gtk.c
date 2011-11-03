@@ -81,6 +81,7 @@ meego_imcontext_register_type (GTypeModule *type_module)
 		sizeof (MeegoIMContext),
 		0,
 		(GInstanceInitFunc) meego_imcontext_init,
+                NULL
 	};
 
 	if (_meego_imcontext_type)
@@ -108,8 +109,10 @@ meego_imcontext_register_type (GTypeModule *type_module)
 
 // staff for fallback slave GTK simple imcontext
 static void
-slave_commit (GtkIMContext *slave, const char *text, gpointer data)
+slave_commit (GtkIMContext * slave, const char *text, gpointer data)
 {
+	UNUSED(slave);
+	UNUSED(data);
 	DBG("text = %s", text);
 	if (focused_imcontext && text) {
 		g_signal_emit_by_name(focused_imcontext, "commit", text);
@@ -120,6 +123,7 @@ slave_commit (GtkIMContext *slave, const char *text, gpointer data)
 static void
 slave_preedit_changed (GtkIMContext *slave, gpointer data)
 {
+	UNUSED(data);
 	gchar *str = NULL;
 	gint cursor_pos = 0;
 	PangoAttrList *attrs = NULL;
@@ -347,6 +351,8 @@ meego_imcontext_get_preedit_string (GtkIMContext *context, gchar **str, PangoAtt
 static void
 meego_imcontext_set_preedit_enabled (GtkIMContext *context, gboolean enabled)
 {
+	UNUSED(context);
+	UNUSED(enabled);
 	// TODO: Seems QT/MEEGO don't need it, it will always showing preedit.
 	return;
 }
@@ -413,6 +419,7 @@ meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
 gboolean
 meego_imcontext_client_activation_lost_event (MeegoIMContextDbusObj *obj)
 {
+	UNUSED(obj);
 	STEP();
 	return TRUE;
 }
@@ -421,6 +428,8 @@ meego_imcontext_client_activation_lost_event (MeegoIMContextDbusObj *obj)
 gboolean
 meego_imcontext_client_im_initiated_hide (MeegoIMContextDbusObj *obj)
 {
+	// TODO: unfocus the widget
+	UNUSED(obj);
 	STEP();
 	return TRUE;
 }
@@ -429,6 +438,7 @@ meego_imcontext_client_im_initiated_hide (MeegoIMContextDbusObj *obj)
 gboolean
 meego_imcontext_client_commit_string (MeegoIMContextDbusObj *obj, char *string)
 {
+	UNUSED(obj);
 	DBG("string is:%s", string);
 	if (focused_imcontext)
 		g_signal_emit_by_name(focused_imcontext, "commit", string);
@@ -440,6 +450,9 @@ meego_imcontext_client_commit_string (MeegoIMContextDbusObj *obj, char *string)
 gboolean
 meego_imcontext_client_update_preedit (MeegoIMContextDbusObj *obj, char *string, int preedit_face)
 {
+	UNUSED(obj);
+	UNUSED(string);
+	UNUSED(preedit_face);
 	STEP();
 	return TRUE;
 }
@@ -449,6 +462,9 @@ gboolean
 meego_imcontext_client_key_event (MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
 				gboolean auto_repeat, int count)
 {
+	UNUSED(obj);
+	UNUSED(count);
+	UNUSED(auto_repeat);
 	GdkEventKey *event = NULL;
 	GdkWindow *window = NULL;
 
@@ -471,6 +487,8 @@ meego_imcontext_client_key_event (MeegoIMContextDbusObj *obj, int type, int key,
 gboolean
 meego_imcontext_client_update_input_method_area (MeegoIMContextDbusObj *obj, GPtrArray *data)
 {
+	UNUSED(obj);
+	UNUSED(data);
 	STEP();
 	return TRUE;
 }
@@ -479,6 +497,8 @@ meego_imcontext_client_update_input_method_area (MeegoIMContextDbusObj *obj, GPt
 gboolean
 meego_imcontext_client_set_global_correction_enabled (MeegoIMContextDbusObj *obj, gboolean correction)
 {
+	UNUSED(obj);
+	UNUSED(correction);
 	STEP();
 	return TRUE;
 }
@@ -487,6 +507,7 @@ meego_imcontext_client_set_global_correction_enabled (MeegoIMContextDbusObj *obj
 gboolean
 meego_imcontext_client_copy (MeegoIMContextDbusObj *obj)
 {
+	UNUSED(obj);
 	GdkWindow *window = NULL;
 	GdkEventKey *event = NULL;
 
@@ -518,6 +539,7 @@ meego_imcontext_client_copy (MeegoIMContextDbusObj *obj)
 gboolean
 meego_imcontext_client_paste (MeegoIMContextDbusObj *obj)
 {
+	UNUSED(obj);
 	GdkWindow *window = NULL;
 	GdkEventKey *event = NULL;
 
@@ -550,6 +572,7 @@ meego_imcontext_client_paste (MeegoIMContextDbusObj *obj)
 gboolean
 meego_imcontext_client_set_redirect_keys (MeegoIMContextDbusObj *obj, gboolean enabled)
 {
+	UNUSED(obj);
 	DBG("enabled = %d", enabled);
 	redirect_keys = enabled;
 	return TRUE;
@@ -559,6 +582,9 @@ meego_imcontext_client_set_redirect_keys (MeegoIMContextDbusObj *obj, gboolean e
 gboolean
 meego_imcontext_client_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray** rect, gboolean *valid)
 {
+	UNUSED(obj);
+	UNUSED(rect);
+	UNUSED(valid);
 	STEP();
 	return TRUE;
 }
