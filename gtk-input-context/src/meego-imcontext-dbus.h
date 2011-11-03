@@ -52,7 +52,6 @@ GType meego_imcontext_dbusobj_get_type(void);
 
 MeegoIMContextDbusObj *meego_imcontext_dbusobj_get_singleton (void);
 DBusGConnection *meego_imcontext_dbusobj_get_connection (MeegoIMContextDbusObj *obj);
-gchar *meego_imcontext_dbusobj_get_path(MeegoIMContextDbusObj *obj);
 
 
 

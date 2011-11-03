@@ -277,26 +277,6 @@ meego_im_proxy_reset (MeegoIMProxy *proxy)
 
 
 gboolean
-meego_im_proxy_set_context_object (MeegoIMProxy *proxy, const char *object_name)
-{
-	GError *error = NULL;
-	gboolean ret = TRUE;
-
-	STEP();
-	if (!proxy || proxy->dbusproxy == NULL)
-		return FALSE;
-
-	ret = com_meego_inputmethod_uiserver1_set_context_object(proxy->dbusproxy, object_name, &error);
-
-	if (error != NULL) {
-		g_warning("%s", error->message);
-	}
-
-	return ret;
-}
-
-
-gboolean
 meego_im_proxy_set_copy_paste_state (MeegoIMProxy *proxy, const gboolean copy_available,
 					const gboolean paste_available)
 {

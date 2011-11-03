@@ -228,10 +228,3 @@ meego_imcontext_dbus_selection (MeegoIMContextDbusObj *obj, gboolean *valid, gch
 	return TRUE;
 }
 
-gchar *
-meego_imcontext_dbusobj_get_path(MeegoIMContextDbusObj *obj)
-{
-	return MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH;
-}
-
-
