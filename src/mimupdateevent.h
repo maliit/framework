@@ -22,6 +22,7 @@
 #include <QtCore>
 
 class MImUpdateEventPrivate;
+class MImUpdateReceiver;
 
 class MImUpdateEvent
     : public MImExtensionEvent
@@ -73,6 +74,8 @@ public:
 private:
     Q_DISABLE_COPY(MImUpdateEvent)
     Q_DECLARE_PRIVATE(MImUpdateEvent)
+
+    friend class MImUpdateReceiver; // Allows receiver to copy PIMPL instance.
 };
 
 #endif // MIMUPDATEEVENT_H

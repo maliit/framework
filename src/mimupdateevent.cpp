@@ -20,6 +20,12 @@
 #include "maliit/namespace.h"
 #include "maliit/namespaceinternal.h"
 
+MImUpdateEventPrivate::MImUpdateEventPrivate()
+    : update()
+    , changedProperties()
+    , lastHints(Qt::ImhNone)
+{}
+
 MImUpdateEventPrivate::MImUpdateEventPrivate(const QMap<QString, QVariant> &newUpdate,
                                              const QStringList &newChangedProperties,
                                              const Qt::InputMethodHints &newLastHints)

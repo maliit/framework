@@ -28,6 +28,8 @@ public:
     QStringList changedProperties;
     Qt::InputMethodHints lastHints;
 
+    explicit MImUpdateEventPrivate();
+
     explicit MImUpdateEventPrivate(const QMap<QString, QVariant> &newUpdate,
                                    const QStringList &newChangedProperties,
                                    const Qt::InputMethodHints &newLastHints);
