@@ -64,6 +64,12 @@ public:
     //! \param changed whether this value changed with this event.
     bool preferNumbers(bool *changed = 0) const;
 
+    //! Returns whether the input method should be styled translucently. Useful
+    //! when apps need to display a lot of information, for example terminals.
+    //! False by default.
+    //! \param changed whether this value changed with this event.
+    bool translucentInputMethod(bool *changed = 0) const;
+
 private:
     Q_DISABLE_COPY(MImUpdateEvent)
     Q_DECLARE_PRIVATE(MImUpdateEvent)

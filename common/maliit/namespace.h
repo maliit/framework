@@ -247,6 +247,8 @@ namespace Maliit {
         //! Name of the property which overrides localized numeric input with western numeric input.
         //! See Maliit::WesternNumericInputEnforcedQuery.
         const char* const westernNumericInputEnforced = "maliit-western-numeric-input-enforced";
+        //! Name of the property which controls translucent VKB mode.
+        const char* const translucentInputMethod = "maliit-translucent-inputmethod";
     }
 }
 
