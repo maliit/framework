@@ -109,7 +109,6 @@ meego_imcontext_register_type (GTypeModule *type_module)
 static gboolean
 meego_imcontext_init_dbus (MeegoIMContext *self)
 {
-	static gboolean first_time = TRUE;
 	gboolean ret = TRUE;
 
 	self->dbusobj = meego_imcontext_dbusobj_get_singleton();
@@ -121,12 +120,6 @@ meego_imcontext_init_dbus (MeegoIMContext *self)
 
 	meego_im_proxy_set_connection (self->proxy,
 				       meego_imcontext_dbusobj_get_connection(self->dbusobj));
-
-	if (first_time) {
-		ret = meego_im_proxy_set_context_object(self->proxy,
-				meego_imcontext_dbusobj_get_path(self->dbusobj));
-		first_time = FALSE;
-	}
 
 	return ret;
 }
