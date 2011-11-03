@@ -12,11 +12,12 @@ class MainWindow
     Q_OBJECT
 
 private:
-    QTextEdit *translucencyEdit;
+    QTextEdit *entryWithProperties;
 
 public:
     MainWindow();
     Q_SLOT void onTranslucencyToggled(bool value);
+    Q_SLOT void onPreferNumbersToggled(bool value);
 };
 
 #endif // MAINWINDOW_H

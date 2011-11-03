@@ -41,7 +41,7 @@ namespace {
 
 MainWindow::MainWindow()
     : QMainWindow()
-    , translucencyEdit(new QTextEdit)
+    , entryWithProperties(new QTextEdit)
 {
     setWindowTitle("Maliit widget properties test application");
 
@@ -53,7 +53,11 @@ MainWindow::MainWindow()
     vbox->addWidget(hideVkb);
 
     QCheckBox *translucencyCheckBox(new QCheckBox("Make input method translucent"));
-    translucencyCheckBox->setFocusProxy(translucencyEdit);
+    translucencyCheckBox->setFocusProxy(entryWithProperties);
+
+    QCheckBox *preferNumbersCheckBox(new QCheckBox("Prefer numbers (show symview first)"));
+    preferNumbersCheckBox->setFocusProxy(entryWithProperties);
+
     QTextEdit *hiddenText(new QTextEdit);
     hiddenText->setTextColor(Qt::gray);
     hiddenText->setFontPointSize(16);
@@ -63,13 +67,17 @@ MainWindow::MainWindow()
                                "impact, sorry!"));
     vbox->addWidget(new QLabel("Regular line edit"));
     vbox->addWidget(new QLineEdit);
-    vbox->addWidget(translucencyEdit);
+    vbox->addWidget(entryWithProperties);
     vbox->addWidget(translucencyCheckBox);
+    vbox->addWidget(preferNumbersCheckBox);
     vbox->addStretch();
     vbox->addWidget(hiddenText);
 
     connect(translucencyCheckBox, SIGNAL(toggled(bool)),
-            this, SLOT(onTranslucencyToggled(bool)));
+            this,                 SLOT(onTranslucencyToggled(bool)));
+
+    connect(preferNumbersCheckBox, SIGNAL(toggled(bool)),
+            this,                  SLOT(onPreferNumbersToggled(bool)));
 
     QPushButton *closeApp = new QPushButton("Close application");
     vbox->addWidget(closeApp);
@@ -88,7 +96,16 @@ MainWindow::MainWindow()
 
 void MainWindow::onTranslucencyToggled(bool value)
 {
-    translucencyEdit->setProperty(Maliit::InputMethodQuery::translucentInputMethod, QVariant(value));
+    entryWithProperties->setProperty(Maliit::InputMethodQuery::translucentInputMethod, QVariant(value));
+    if (QInputContext *ic = qApp->inputContext()) {
+        ic->update();
+    }
+}
+
+void MainWindow::onPreferNumbersToggled(bool value)
+{
+    entryWithProperties->setInputMethodHints(value ? (entryWithProperties->inputMethodHints() | Qt::ImhPreferNumbers)
+                                                   : (entryWithProperties->inputMethodHints() & ~Qt::ImhPreferNumbers));
     if (QInputContext *ic = qApp->inputContext()) {
         ic->update();
     }
