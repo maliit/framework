@@ -33,6 +33,22 @@ static void meego_im_proxy_finalize(GObject *object);
 static void meego_im_proxy_class_init (MeegoIMProxyClass *klass);
 static void meego_im_proxy_init (MeegoIMProxy *meego_im_proxy);
 
+enum {
+	SIGNAL_CONNECTION_DROPPED = 0,
+	N_SIGNALS
+};
+
+static guint meego_im_proxy_signals[N_SIGNALS];
+
+static void
+handle_disconnect(gpointer instance, MeegoIMProxy *im_proxy)
+{
+        g_return_if_fail(im_proxy);
+
+        im_proxy->dbusproxy = NULL;
+        g_signal_emit(im_proxy, meego_im_proxy_signals[SIGNAL_CONNECTION_DROPPED], 0, NULL);
+
+}
 
 MeegoIMProxy *
 meego_im_proxy_get_singleton (void)
@@ -59,6 +75,10 @@ meego_im_proxy_class_init (MeegoIMProxyClass *klass)
 	GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
 
 	gobject_class->finalize = meego_im_proxy_finalize;
+
+	meego_im_proxy_signals[SIGNAL_CONNECTION_DROPPED] =
+		g_signal_new("connection-dropped", G_TYPE_FROM_CLASS(klass),
+                        0, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 }
 
 
@@ -94,6 +114,8 @@ meego_im_proxy_set_connection (MeegoIMProxy *proxy, DBusGConnection *connection)
 	if (dbusproxy == NULL) {
 		g_warning("could not create dbus_proxy\n");
 	}
+
+	g_signal_connect(G_OBJECT(dbusproxy), "destroy", G_CALLBACK(handle_disconnect), proxy);
 
 	proxy->dbusproxy = dbusproxy;
 }
