@@ -21,6 +21,7 @@ HEADERSINSTALL = \
         mtoolbarlayout.h \
         mimextensionevent.h \
         mimupdateevent.h \
+        mimupdatereceiver.h \
         mimgraphicsview.h \
         mimwidget.h \
         mimplugindescription.h \
@@ -44,6 +45,7 @@ HEADERS += \
         minputcontextglibdbusconnection.h \
         mimhwkeyboardtracker.h \
         mimupdateevent_p.h \
+        mimupdatereceiver_p.h \
         mimgraphicsview_p.h \
         mimwidget_p.h \
         mimpluginsproxywidget.h \
@@ -72,6 +74,7 @@ SOURCES += \
         minputcontextglibdbusconnection.cpp \
         mimextensionevent.cpp \
         mimupdateevent.cpp \
+        mimupdatereceiver.cpp \
         mimsettings.cpp \
         mimhwkeyboardtracker.cpp \
         mimgraphicsview.cpp \
@@ -200,6 +203,9 @@ fake_dbus_glue.target = mdbusglibicconnectionserviceglue.h
 fake_dbus_glue.depends = dbus_glue
 
 OTHER_FILES += minputmethodserver1interface.xml
+
+
+
 
 
 
