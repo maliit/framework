@@ -201,12 +201,13 @@ static void
 meego_imcontext_finalize (GObject *object)
 {
 	MeegoIMContext *imcontext = MEEGO_IMCONTEXT(object);
-	G_OBJECT_CLASS(parent_class)->finalize(object);
 
 	g_hash_table_destroy(imcontext->widget_state);
 
 	if (imcontext->client_window)
 		g_object_unref(imcontext->client_window);
+
+	G_OBJECT_CLASS(parent_class)->finalize(object);
 }
 
 
