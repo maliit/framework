@@ -18,6 +18,7 @@
 #include "mimupdateevent_p.h"
 #include "mimextensionevent_p.h"
 #include "maliit/namespace.h"
+#include "maliit/namespaceinternal.h"
 
 MImUpdateEventPrivate::MImUpdateEventPrivate(const QMap<QString, QVariant> &newUpdate,
                                              const QStringList &newChangedProperties,
@@ -98,4 +99,10 @@ bool MImUpdateEvent::preferNumbers(bool *changed) const
 {
     Q_D(const MImUpdateEvent);
     return d->isFlagSet(Qt::ImhPreferNumbers, changed);
+}
+
+bool MImUpdateEvent::translucentInputMethod(bool *changed) const
+{
+    Q_D(const MImUpdateEvent);
+    return d->extractProperty(Maliit::InputMethodQuery::translucentInputMethod, changed).toBool();
 }

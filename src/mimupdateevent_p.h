@@ -18,8 +18,6 @@
 #define MIMUPDATEEVENT_P_H
 
 #include "mimextensionevent_p.h"
-#include "maliit/namespace.h"
-#include "maliit/namespaceinternal.h"
 #include <QtCore>
 
 class MImUpdateEventPrivate
@@ -38,6 +36,7 @@ public:
                    bool *changed = 0) const;
 
     QVariant extractProperty(const QString &key,
-                             bool *changed = 0) const;};
+                             bool *changed = 0) const;
+};
 
 #endif // MIMUPDATEEVENT_P_H

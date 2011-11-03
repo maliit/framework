@@ -1170,6 +1170,17 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
     stateInformation[Maliit::InputMethodQuery::westernNumericInputEnforced] = queryResult.toBool();
 
+    queryResult = focused->property(Maliit::InputMethodQuery::translucentInputMethod);
+
+    if (!queryResult.isValid())
+    {
+       if (focusedObject) {
+            queryResult = focusedObject->property(Maliit::InputMethodQuery::translucentInputMethod);
+        }
+    }
+
+    stateInformation[Maliit::InputMethodQuery::translucentInputMethod] = queryResult.toBool();
+
     return stateInformation;
 }
 
