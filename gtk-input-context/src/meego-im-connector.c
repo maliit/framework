@@ -20,23 +20,23 @@
 
 #define MEEGO_IM_SOCKET_PATH "unix:path=/tmp/meego-im-uiserver/imserver_dbus"
 
-MeegoImConnector * meego_im_connector_new ();
+MeegoImConnector *meego_im_connector_new();
 
 static gboolean
 try_reconnect(MeegoImConnector *connector)
 {
-	meego_im_connector_run(connector);
-	return FALSE; // _run is responsible for setting up a new timeout if needed
+    meego_im_connector_run(connector);
+    return FALSE; // _run is responsible for setting up a new timeout if needed
 }
 
 
 static void
-connection_dropped (gpointer instance, MeegoImConnector *connector)
+connection_dropped(gpointer instance, MeegoImConnector *connector)
 {
-	if (connector->connection) {
-		dbus_g_connection_unref(connector->connection);
-	}
-	try_reconnect(connector);
+    if (connector->connection) {
+        dbus_g_connection_unref(connector->connection);
+    }
+    try_reconnect(connector);
 }
 
 
@@ -47,63 +47,64 @@ connection_dropped (gpointer instance, MeegoImConnector *connector)
  * that depend on it. Makes sure that MeegoIMProxy and MeegoIMDbusObj
  * has the correct DBusConnection by calling _connect on them when
  * the connection has changed.
- * 
+ *
  * MeegoIMProxy is responsible for letting the connector know that the
  * connection was dropped by emitting the "connection-dropped signal".
  */
 MeegoImConnector *
-meego_im_connector_new ()
+meego_im_connector_new()
 {
-	MeegoImConnector *self = g_new(MeegoImConnector, 1);
+    MeegoImConnector *self = g_new(MeegoImConnector, 1);
 
-	self->connection = NULL;
-	self->dbusobj = meego_imcontext_dbusobj_get_singleton();
-	self->proxy = meego_im_proxy_get_singleton();
+    self->connection = NULL;
+    self->dbusobj = meego_imcontext_dbusobj_get_singleton();
+    self->proxy = meego_im_proxy_get_singleton();
 
-	g_signal_connect(self->proxy, "connection-dropped", 
-			 G_CALLBACK(connection_dropped), (gpointer)self);
+    g_signal_connect(self->proxy, "connection-dropped",
+                     G_CALLBACK(connection_dropped), (gpointer)self);
 
-	return self;
+    return self;
 }
 
 void
-meego_im_connector_free (MeegoImConnector *self)
+meego_im_connector_free(MeegoImConnector *self)
 {
-	if (self->connection) {
-		dbus_g_connection_unref(self->connection);
-	}
-	g_free(self);
+    if (self->connection) {
+        dbus_g_connection_unref(self->connection);
+    }
+    g_free(self);
 }
 
 MeegoImConnector *
-meego_im_connector_get_singleton () {
-	static MeegoImConnector *connector = NULL;
-	if (!connector) {
-		connector = meego_im_connector_new();
-		meego_im_connector_run(connector);
-	}
-	return connector;
+meego_im_connector_get_singleton()
+{
+    static MeegoImConnector *connector = NULL;
+    if (!connector) {
+        connector = meego_im_connector_new();
+        meego_im_connector_run(connector);
+    }
+    return connector;
 }
 
 void
-meego_im_connector_run (MeegoImConnector *self)
+meego_im_connector_run(MeegoImConnector *self)
 {
-	GError *error = NULL;
-	DBusGConnection *connection = NULL;
+    GError *error = NULL;
+    DBusGConnection *connection = NULL;
 
-	g_return_if_fail(self != NULL);
+    g_return_if_fail(self != NULL);
 
-	connection = dbus_g_connection_open (MEEGO_IM_SOCKET_PATH, &error);
+    connection = dbus_g_connection_open(MEEGO_IM_SOCKET_PATH, &error);
 
-	if (error != NULL) {
-		g_warning("Couldn't connect to Maliit server. Retrying...");
-		g_error_free (error);
+    if (error != NULL) {
+        g_warning("Couldn't connect to Maliit server. Retrying...");
+        g_error_free(error);
 
-                g_timeout_add_seconds(2, (GSourceFunc)try_reconnect, self);
-	}
+        g_timeout_add_seconds(2, (GSourceFunc)try_reconnect, self);
+    }
 
-        self->connection = connection;
+    self->connection = connection;
 
-        meego_im_proxy_connect (self->proxy, self->connection);
-        meego_imcontext_dbusobj_connect (self->dbusobj, self->connection);
+    meego_im_proxy_connect(self->proxy, self->connection);
+    meego_imcontext_dbusobj_connect(self->dbusobj, self->connection);
 }

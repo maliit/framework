@@ -18,10 +18,10 @@
 #include "meego-imcontext-dbus.h"
 
 typedef struct {
-	MeegoIMProxy *proxy;
-	MeegoIMContextDbusObj *dbusobj;
-	DBusGConnection *connection;
+    MeegoIMProxy *proxy;
+    MeegoIMContextDbusObj *dbusobj;
+    DBusGConnection *connection;
 } MeegoImConnector;
 
-void meego_im_connector_run (MeegoImConnector *self);
-MeegoImConnector *meego_im_connector_get_singleton ();
+void meego_im_connector_run(MeegoImConnector *self);
+MeegoImConnector *meego_im_connector_get_singleton();
