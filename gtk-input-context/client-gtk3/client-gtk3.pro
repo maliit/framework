@@ -20,8 +20,19 @@ LIBS += ../src/libmaliit-im-common.so
 
 GTK3_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-3.0)
 GTK3_BINARY_VERSION = $$system(pkg-config --variable=gtk_binary_version gtk+-3.0)
-GTK3_IM_MODULEDIR = $$GTK3_IM_LIBDIR/gtk-3.0/$$GTK3_BINARY_VERSION/immodules
+GTK3_DIR = $$GTK3_IM_LIBDIR/gtk-3.0/$$GTK3_BINARY_VERSION
+GTK3_IM_MODULEDIR = $$GTK3_DIR/immodules
 
 target.path += $$GTK3_IM_MODULEDIR
 
 INSTALLS += target
+
+!disable-gtk-cache-update {
+  DISTRO = $$system(lsb_release -s -i)
+  isEqual(DISTRO, Ubuntu) {
+    update-im-cache.path = $$GTK3_DIR/
+    update-im-cache.extra = gtk-query-immodules-3.0 >$$GTK3_DIR/immodules.cache
+
+    INSTALLS += update-im-cache
+  }
+}

@@ -20,8 +20,19 @@ LIBS += ../src/libmaliit-im-common.so
 
 GTK2_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-2.0)
 GTK2_BINARY_VERSION = $$system(pkg-config --variable=gtk_binary_version gtk+-2.0)
-GTK2_IM_MODULEDIR = $$GTK2_IM_LIBDIR/gtk-2.0/$$GTK2_BINARY_VERSION/immodules
+GTK2_DIR = $$GTK2_IM_LIBDIR/gtk-2.0/$$GTK2_BINARY_VERSION
+GTK2_IM_MODULEDIR = $$GTK2_DIR/immodules
 
 target.path += $$GTK2_IM_MODULEDIR
 
 INSTALLS += target
+
+!disable-gtk-cache-update {
+  DISTRO = $$system(lsb_release -s -i)
+  isEqual(DISTRO, Ubuntu) {
+    update-im-cache.path = $$GTK2_DIR/
+    update-im-cache.extra = gtk-query-immodules-2.0 >$$GTK2_DIR/gtk.immodules
+
+    INSTALLS *= update-im-cache
+  }
+}
