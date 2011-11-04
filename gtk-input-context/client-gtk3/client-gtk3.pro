@@ -28,11 +28,11 @@ target.path += $$GTK3_IM_MODULEDIR
 INSTALLS += target
 
 !disable-gtk-cache-update {
-  DISTRO = $$system(lsb_release -s -i)
-  isEqual(DISTRO, Ubuntu) {
-    update-im-cache.path = $$GTK3_DIR/
-    update-im-cache.extra = gtk-query-immodules-3.0 >$$GTK3_DIR/immodules.cache
+    DISTRO = $$system(lsb_release -s -i)
+    isEqual(DISTRO, Ubuntu) {
+        update-im-cache.path = $$GTK3_DIR/
+        update-im-cache.extra = gtk-query-immodules-3.0 > $$GTK3_DIR/immodules.cache
 
-    INSTALLS += update-im-cache
-  }
+        INSTALLS *= update-im-cache
+    }
 }
