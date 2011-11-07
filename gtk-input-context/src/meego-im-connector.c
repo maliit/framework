@@ -101,6 +101,7 @@ meego_im_connector_run(MeegoImConnector *self)
         g_error_free(error);
 
         g_timeout_add_seconds(2, (GSourceFunc)try_reconnect, self);
+        return;
     }
 
     self->connection = connection;
