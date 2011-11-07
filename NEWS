@@ -1,3 +1,38 @@
+0.80.8
+======
+
+CHANGES SINCE 0.80.7
+* Merge GTK+ input context bridge from
+  https://gitorious.org/meegotouch-inputmethodbridges into Maliit
+  - Use GTK_IM_MODULE=Maliit to activate the input context.
+* Improved GTK+ support
+  - GTK+ applications now properly reconnect when the connection to the Maliit
+    server was lost or when the Maliit server was started after the
+    application.
+  - By default, update GTK+ inputmethod module cache. Packagers might want to
+    override this at configure time via qmake CONFIG+=disable-gtk-cache-update
+* Forward all Qt inputmethod hints to Maliit plugins, via
+  MImUpdateEvent::hints().
+* Allow applications to control whether symbol view or QWERTY view should be
+  shown when a text entry gains focus (check widgetproperties example):
+  - Set the Qt::ImPreferNumbers inputmethod hint.
+* Add a translucent inputmethod mode (check widgetproperties example):
+  - Use QObject::setProperty(Maliit::InputMethodQuery::translucentInputMethod,
+    true|false)
+* New MImUpdateReceiver class demonstrates a Qt property technique for plugins
+  to cleanly process MImUpdateEvents.
+
+BUG FIXES
+* Fixes: Compilation warnings in GTK+ IC
+* Fixes: Wrong upchaining in meego_imcontext_finalize
+* Fixes: GTK+ IC crashes if server is not started on app startup
+* Fixes: NB#284151 - [TASK] ImhPreferNumbers does not open page 2 on virtual keyboard
+* Fixes: GTK+ input context not showing plugin
+* Fixes: MPreeditInjectionEvent compatibility
+* Fixes: activeConnection uninitialized in MInputContextConnection
+* Fixes: Crash in Server->IC connection due to wrong upchaining
+* Fixes: Wrong values are shown when both label and icon are overriden.
+
 0.80.7
 ======
 
