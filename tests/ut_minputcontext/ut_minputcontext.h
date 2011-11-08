@@ -173,6 +173,9 @@ private Q_SLOTS:
 
     void testMPreeditInjectionEventCompatibility();
 
+    void testPropertyNormalization_data();
+    void testPropertyNormalization();
+
 private:
     void waitAndProcessEvents(int waitTime);
 

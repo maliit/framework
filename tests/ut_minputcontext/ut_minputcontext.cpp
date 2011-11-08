@@ -7,6 +7,7 @@
 #include <QGraphicsView>
 #include <QLineEdit>
 
+#include <maliit/namespace.h>
 #include <maliit/inputmethod.h>
 #include <maliit/preeditinjectionevent.h>
 
@@ -891,6 +892,42 @@ void Ut_MInputContext::testMPreeditInjectionEventCompatibility()
 #else
     QSKIP("Not built against MeegoTouch, can't run test", SkipSingle);
 #endif
+}
+
+void Ut_MInputContext::testPropertyNormalization_data()
+{
+    typedef QByteArray QBA;
+    typedef QVariant QV;
+
+    QTest::addColumn<QBA>("name");
+    QTest::addColumn<QBA>("defaultName");
+    QTest::addColumn<QVariant>("value");
+
+    QCOMPARE(Maliit::InputMethodQuery::westernNumericInputEnforced,
+             "maliit-western-numeric-input-enforced");
+
+    QTest::newRow("no normalization")
+     << QBA("maliit-western-numeric-input-enforced")
+     << QBA("maliit-western-numeric-input-enforced")
+     << QV(true);
+}
+
+void Ut_MInputContext::testPropertyNormalization()
+{
+    QFETCH(QByteArray, name);
+    QFETCH(QByteArray, defaultName);
+    QFETCH(QVariant, value);
+
+    WidgetStub widget(0);
+    gFocusedWidget = &widget;
+    m_subject->setFocusWidget(&widget);
+
+    widget.setProperty(name.data(), value);
+    m_subject->update();
+    QVariant extracted = m_subject->getStateInformation().value(QString(defaultName));
+
+    QCOMPARE(extracted.isValid(), value.isValid());
+    QCOMPARE(extracted, value);
 }
 
 
