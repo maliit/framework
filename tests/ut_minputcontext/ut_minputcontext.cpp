@@ -894,7 +894,7 @@ void Ut_MInputContext::testMPreeditInjectionEventCompatibility()
 #endif
 }
 
-void Ut_MInputContext::testPropertyNormalization_data()
+void Ut_MInputContext::testPropertyNameNormalization_data()
 {
     typedef QByteArray QBA;
     typedef QVariant QV;
@@ -902,21 +902,30 @@ void Ut_MInputContext::testPropertyNormalization_data()
     QTest::addColumn<QBA>("name");
     QTest::addColumn<QBA>("defaultName");
     QTest::addColumn<QVariant>("value");
-
-    QCOMPARE(Maliit::InputMethodQuery::westernNumericInputEnforced,
-             "maliit-western-numeric-input-enforced");
+    QTest::addColumn<QVariant>("expected");
 
     QTest::newRow("no normalization")
      << QBA("maliit-western-numeric-input-enforced")
-     << QBA("maliit-western-numeric-input-enforced")
-     << QV(true);
+     << QBA(Maliit::InputMethodQuery::westernNumericInputEnforced)
+     << QV(true) << QV(true);
+
+    QTest::newRow("Qt component normalization")
+     << QBA("westernNumericInputEnforced")
+     << QBA(Maliit::InputMethodQuery::westernNumericInputEnforced)
+     << QV(true) << QV(true);
+
+    QTest::newRow("Invalid property")
+     << QBA("invalidPropertyName")
+     << QBA("invalid-property-name")
+     << QV(42) << QV();
 }
 
-void Ut_MInputContext::testPropertyNormalization()
+void Ut_MInputContext::testPropertyNameNormalization()
 {
     QFETCH(QByteArray, name);
     QFETCH(QByteArray, defaultName);
     QFETCH(QVariant, value);
+    QFETCH(QVariant, expected);
 
     WidgetStub widget(0);
     gFocusedWidget = &widget;
@@ -926,8 +935,7 @@ void Ut_MInputContext::testPropertyNormalization()
     m_subject->update();
     QVariant extracted = m_subject->getStateInformation().value(QString(defaultName));
 
-    QCOMPARE(extracted.isValid(), value.isValid());
-    QCOMPARE(extracted, value);
+    QCOMPARE(extracted, expected);
 }
 
 
