@@ -12,7 +12,8 @@ include(./config.pri)
         \\n\\t enable-meegotouch : Link input context to libmeegotouch for a MApplicationPage hack \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t notests : Do not build tests \
-        \\n\\t nodoc : Do not build documentation \
+        \\n\\t nosdk : Do not build Maliit SDK \
+        \\n\\t nodoc : Do not build documentation (also disables SDK) \
         \\n\\t only-libmaliit : Only build libmaliit \
         \\n\\t external-libmaliit : Use external libmaliit (do not build libmaliit) \
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches \
@@ -49,6 +50,10 @@ external-libmaliit {
 
     !nodoc {
         SUBDIRS += doc
+    }
+
+    !nosdk:!nodoc {
+        SUBDIRS += sdk
     }
 
     !notests {

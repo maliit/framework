@@ -119,6 +119,7 @@ defineTest(outputFile) {
                 M_IM_INSTALL_BIN \
                 M_IM_INSTALL_HEADERS \
                 M_IM_INSTALL_LIBS \
+                M_IM_INSTALL_DOCS \
                 M_IM_PLUGINS_DIR \
                 M_IM_FACTORY_PLUGINS_DIR \
                 M_IM_VERSION \
@@ -139,6 +140,7 @@ defineTest(outputFile) {
                 MALIIT_TEST_TMPDIR \
                 MALIIT_IN_DIR \
                 MALIIT_OUT_DIR \
+                MALIIT_PACKAGENAME \
                 MALIIT_PACKAGE_BRIEF \
                 MALIIT_FRAMEWORK_HEADER \
                 MALIIT_SERVER_ARGUMENTS \
