@@ -1,0 +1,73 @@
+#!/bin/bash
+
+### This script will allow user to get started using the Maliit SDK
+
+DOC_START_PATH=@M_IM_INSTALL_DOCS@/@MALIIT_PACKAGENAME@/html/index.html
+SDK_PATH=@M_IM_INSTALL_DOCS@/@MALIIT_PACKAGENAME@/maliit-sdk/
+
+MINIMUM_ARGS=1
+
+ERROR_GENERAL=1
+ERROR_BADARGS=65
+
+POSSIBLE_COMMANDS="start|extract|run"
+
+### Functions
+print_usage() {
+
+    echo "Usage: `basename $0` $POSSIBLE_COMMANDS"
+    echo -e "\n"\
+         "run: Open the Maliit SDK documentation start page\n"\
+         "extract: Extract the Maliit SDK to given directory. Default: ./maliit-sdk \n"\
+         "start: Do both of the run and extract commands\n"\
+         ""
+}
+
+do_command () {
+    COMMAND=$1
+    COMMAND_ARG=$2
+
+    case $COMMAND in
+        extract )
+            # Extract SDK to given directory, or to a default
+            OUT_PATH=./maliit-sdk
+
+            if [ "$COMMAND_ARG" ]
+            then
+                OUT_PATH=$COMMAND_ARG
+            fi
+
+            if [ -e $OUT_PATH ]
+            then
+                echo "Error: File \"$OUT_PATH\" exists already. Not overwriting."
+                exit $ERROR_GENERAL
+            fi
+
+            cp -r $SDK_PATH $OUT_PATH && echo "Maliit SDK has been extracted to $OUT_PATH"
+            ;;
+        run )
+            # Open HTML documentation
+            xdg-open $DOC_START_PATH && echo "Maliit SDK documentation should now be open in your browser"
+            ;;
+        start )
+            do_command extract $COMMAND_ARG
+            do_command run
+            ;;
+        * )
+            echo "Wrong command: \"$COMMAND\". Valid commands: $POSSIBLE_COMMANDS"
+            exit $ERROR_BADARGS
+            ;;
+    esac
+}
+
+### Main
+if [ "$#" -lt "$MINIMUM_ARGS" ]
+then
+  print_usage
+  exit $ERROR_BADARGS
+fi
+
+COMMAND=$1
+COMMAND_ARG=$2
+
+do_command $COMMAND $COMMAND_ARG
