@@ -52,6 +52,45 @@ namespace
     const char * const ToolbarTarget("/toolbar");
     const char * const InputContextName(MALIIT_INPUTCONTEXT_NAME);
 
+    //! Extracts a dynamic QObject property from obj, using normalization rules
+    //! for propertyName (eases mapping of QML properties to QObject
+    //! properties). Valid property names start with "maliiit-"
+    QVariant extractProperty(const QObject *obj,
+                             const char * const propertyName)
+    {
+        static const QByteArray prefix("maliit-");
+        const QByteArray name(propertyName);
+
+        if (not obj || not name.startsWith(prefix)) {
+            qWarning() << __PRETTY_FUNCTION__
+                       << "Ignoring invalid object or invalid propertyName "
+                       << propertyName;
+            return QVariant();
+        }
+
+        QVariant result = obj->property(name);
+
+        if (not result.isValid()) {
+            QByteArray camelCased;
+            bool turnUp = false;
+
+            // Function guard guarantees that properyName starts with "maliit-".
+            for (int idx = prefix.length(); idx < name.length(); ++idx) {
+                const QChar curr = name.at(idx);
+                if (curr == '-') {
+                    turnUp = true;
+                } else {
+                    camelCased.append(turnUp ? curr.toUpper() : curr);
+                    turnUp = false;
+                }
+            }
+
+            result = obj->property(camelCased);
+        }
+
+        return result;
+    }
+
 #ifdef Q_WS_X11
     enum {
         XKeyPress = KeyPress,
@@ -1028,16 +1067,16 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         stateInformation["visualizationPriority"] = queryResult.toBool();
     }
 
-    queryResult = focused->property(Maliit::InputMethodQuery::attributeExtensionId);
+    queryResult = extractProperty(focused, Maliit::InputMethodQuery::attributeExtensionId);
 
     if (!queryResult.isValid()) {
         if (focusedObject) {
             // FIXME: Kill off once users of this property were able to switch
             // to Maliit::InputMethodQuery::attributeExtensionId.
-            queryResult = focusedObject->property("meego-inputmethod-attribute-extension-id");
+            queryResult = extractProperty(focusedObject, "meego-inputmethod-attribute-extension-id");
 
             if (!queryResult.isValid()) {
-                queryResult = focusedObject->property(Maliit::InputMethodQuery::attributeExtensionId);
+                queryResult = extractProperty(focusedObject, Maliit::InputMethodQuery::attributeExtensionId);
             }
         }
 
@@ -1052,7 +1091,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     }
 
     // toolbar file
-    queryResult = focused->property(Maliit::InputMethodQuery::attributeExtension);
+    queryResult = extractProperty(focused, Maliit::InputMethodQuery::attributeExtension);
 
     if (!queryResult.isValid())
     {
@@ -1154,12 +1193,13 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     // 3. focusWidget()->inputMethodQuery(.),
     // Ensures that plain Qt and Qt Comoponents can readily use this override,
     // as neither of them implement a Maliit-specific IM query.
-    queryResult = focused->property(Maliit::InputMethodQuery::westernNumericInputEnforced);
+    queryResult = extractProperty(focused, Maliit::InputMethodQuery::westernNumericInputEnforced);
 
     if (!queryResult.isValid())
     {
        if (focusedObject) {
-            queryResult = focusedObject->property(Maliit::InputMethodQuery::westernNumericInputEnforced);
+            queryResult = extractProperty(focusedObject,
+                                          Maliit::InputMethodQuery::westernNumericInputEnforced);
         }
 
         if (!queryResult.isValid()) {
@@ -1170,12 +1210,12 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
     stateInformation[Maliit::InputMethodQuery::westernNumericInputEnforced] = queryResult.toBool();
 
-    queryResult = focused->property(Maliit::InputMethodQuery::translucentInputMethod);
+    queryResult = extractProperty(focused, Maliit::InputMethodQuery::translucentInputMethod);
 
     if (!queryResult.isValid())
     {
        if (focusedObject) {
-            queryResult = focusedObject->property(Maliit::InputMethodQuery::translucentInputMethod);
+            queryResult = extractProperty(focusedObject, Maliit::InputMethodQuery::translucentInputMethod);
         }
     }
 
