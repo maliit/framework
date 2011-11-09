@@ -18,6 +18,7 @@ public:
     MainWindow();
     Q_SLOT void onTranslucencyToggled(bool value);
     Q_SLOT void onPreferNumbersToggled(bool value);
+    Q_SLOT void onSuppressionToggled(bool value);
 };
 
 #endif // MAINWINDOW_H

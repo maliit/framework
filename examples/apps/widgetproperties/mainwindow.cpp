@@ -58,6 +58,9 @@ MainWindow::MainWindow()
     QCheckBox *preferNumbersCheckBox(new QCheckBox("Prefer numbers (show symview first)"));
     preferNumbersCheckBox->setFocusProxy(entryWithProperties);
 
+    QCheckBox *suppressionCheckBox(new QCheckBox("Suppress virtual keyboard while retaining focus"));
+    suppressionCheckBox->setFocusProxy(entryWithProperties);
+
     QTextEdit *hiddenText(new QTextEdit);
     hiddenText->setTextColor(Qt::gray);
     hiddenText->setFontPointSize(16);
@@ -70,6 +73,7 @@ MainWindow::MainWindow()
     vbox->addWidget(entryWithProperties);
     vbox->addWidget(translucencyCheckBox);
     vbox->addWidget(preferNumbersCheckBox);
+    vbox->addWidget(suppressionCheckBox);
     vbox->addStretch();
     vbox->addWidget(hiddenText);
 
@@ -78,6 +82,9 @@ MainWindow::MainWindow()
 
     connect(preferNumbersCheckBox, SIGNAL(toggled(bool)),
             this,                  SLOT(onPreferNumbersToggled(bool)));
+
+    connect(suppressionCheckBox, SIGNAL(toggled(bool)),
+            this,                SLOT(onSuppressionToggled(bool)));
 
     QPushButton *closeApp = new QPushButton("Close application");
     vbox->addWidget(closeApp);
@@ -106,6 +113,14 @@ void MainWindow::onPreferNumbersToggled(bool value)
 {
     entryWithProperties->setInputMethodHints(value ? (entryWithProperties->inputMethodHints() | Qt::ImhPreferNumbers)
                                                    : (entryWithProperties->inputMethodHints() & ~Qt::ImhPreferNumbers));
+    if (QInputContext *ic = qApp->inputContext()) {
+        ic->update();
+    }
+}
+
+void MainWindow::onSuppressionToggled(bool value)
+{
+    entryWithProperties->setProperty(Maliit::InputMethodQuery::suppressInputMethod, QVariant(value));
     if (QInputContext *ic = qApp->inputContext()) {
         ic->update();
     }

@@ -1060,8 +1060,20 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
     QVariant queryResult;
 
-    queryResult = focused->inputMethodQuery(
-        static_cast<Qt::InputMethodQuery>(MInputMethod::VisualizationPriorityQuery));
+    // Extract suppressInputMethod (formerly known as VisualizationPriorityQuery):
+    queryResult = extractProperty(focused, Maliit::InputMethodQuery::suppressInputMethod);
+
+    if (!queryResult.isValid()) {
+        if (focusedObject) {
+            queryResult = extractProperty(focusedObject, Maliit::InputMethodQuery::suppressInputMethod);
+        }
+
+        if (!queryResult.isValid()) {
+
+            queryResult = focused->inputMethodQuery(
+                        static_cast<Qt::InputMethodQuery>(MInputMethod::VisualizationPriorityQuery));
+        }
+    }
 
     if (queryResult.isValid()) {
         stateInformation["visualizationPriority"] = queryResult.toBool();
