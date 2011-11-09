@@ -18,9 +18,9 @@ isEmpty(DOXYGEN_BIN) {
     doc.commands += ( $${IN_PWD}/xmlize.pl );
 
     # Install rules
-    htmldocs.files = $${OUT_PWD}/html/*
+    htmldocs.files = $${OUT_PWD}/html/
     htmldocs.path = $$M_IM_INSTALL_DOCS/$$MALIIT_PACKAGENAME
-    htmldocs.CONFIG += no_check_exist
+    htmldocs.CONFIG += no_check_exist directory
     INSTALLS += htmldocs
 }
 
