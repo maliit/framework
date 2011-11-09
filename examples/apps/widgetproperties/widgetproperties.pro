@@ -1,8 +1,5 @@
-include(../../../config.pri)
-
 TEMPLATE = app
 TARGET = maliit-exampleapp-widgetproperties
-target.path = $$M_IM_INSTALL_BIN
 DEPENDPATH += .
 
 BUILD_TYPE = unittest
@@ -14,6 +11,9 @@ contains(BUILD_TYPE, skeleton) {
 }
 
 contains(BUILD_TYPE, unittest) {
+    include(../../../config.pri)
+    target.path = $$M_IM_INSTALL_BIN
+    INSTALLS += target
 
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
@@ -36,5 +36,4 @@ HEADERS += \
 
 QT += core gui
 
-INSTALLS += target
 QMAKE_CLEAN += target
