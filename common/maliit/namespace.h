@@ -249,6 +249,9 @@ namespace Maliit {
         const char* const westernNumericInputEnforced = "maliit-western-numeric-input-enforced";
         //! Name of the property which controls translucent VKB mode.
         const char* const translucentInputMethod = "maliit-translucent-inputmethod";
+        //! Name of the property which can suppress VKB even if focused.
+        //! See Maliit::VisualizationPriorityQuery
+        const char* const suppressInputMethod = "maliit-suppress-inputmethod";
     }
 }
 
