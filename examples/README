@@ -2,3 +2,11 @@ Note that the examples are compiled as part of the normal build,
 and have simple sanity tests found under tests/
 All newly added examples must contain such a test.
 This is done to prevent bitrot.
+
+To make the examples buildable both as a part of the normal
+framework build, and as a stand-alone examples package, the BUILD_TYPE
+is used.
+The value "unittest" means normal framework build, and "skeleton" means
+stand-alone. The value "skeleton-legacy" should be used for examples
+that need to build differently as examples for framework in legacy mode.
+When not in unittest mode, the build cannot refer to directories below examples/
