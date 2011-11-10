@@ -30,6 +30,7 @@ namespace Maliit {
 
 class InputMethodPrivate;
 
+//! \ingroup libmaliit
 class InputMethod : public QObject
 {
     Q_OBJECT

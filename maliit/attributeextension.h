@@ -29,6 +29,7 @@ namespace Maliit {
 
 class AttributeExtensionPrivate;
 
+//! \ingroup libmaliit
 class AttributeExtension : public QObject
 {
     Q_OBJECT

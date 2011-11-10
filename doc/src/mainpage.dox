@@ -17,33 +17,40 @@ The UI framework has a client-server type architecture, where the application ac
 
 These input method plugins can range from simple virtual or hardware keyboards to handwriting recognition or even speech-to-text type of input.
 
-@section inputmethoduifw MeeGo Touch Input Method UI Framework
+@section libmaliitintro Libmaliit
+
+@ref libmaliit "Libmaliit" is an input method extension library for Qt — use it to add application support for screen rotation and attribute extensions.
+
+@subsection libmaliitclasses Useful classes
+
+- @ref Maliit::AttributeExtension "AttributeExtension" : Register extensions such as key overrides. Monitor the extensions with @ref Maliit::AttributeExtensionRegistry "AttributeExtensionRegistry".
+- @ref Maliit::InputMethod "InputMethod" : Listen to device orientation, language and raw key events.
+- @ref Maliit::PreeditInjectionEvent "PreeditInjectionEvent" : Extension for text edit preedit text.
+
+@section maliit-fwintro MeeGo Touch Input Method UI Framework
 
 MeeGo Touch Input Method UI Framework is an integration framework that provides interfaces to be implemented by input method UI plugins created by developers. Such plugins offer a custom UI to be used in inputting text to text fields in applications. They also buffer and allow on-the-fly modification of text prior to delivery to the application. The included MeeGo Keyboard is an implementation of such a plugin.
 
-<B>Note</B>: The Input Method UI plugins interact with Input Method Engine plugins which can provide them with, for example, modified, alternate or corrected versions of the entered input. For more information, see the libmeegoimengine library introduction.
+@note Input method plugins interact with word engine plugins, which can provide them with, for example, modified, alternate or corrected versions of the entered input. For more information, see the libmeegoimengine library introduction.
 
-@section basicusage Basic Usage
+@subsection maliit-fwbasicusage Basic Usage
 
-<B>Main classes:</B>
+@subsubsection maliit-fwclasses Main classes
 
 The following base classes are needed to implement an input method UI plugin:
 
 - MAbstractInputMethod : to allow input method server to update input method plugin state
-
 - MAbstractInputMethodSettings : to provide settings in control panel
-
 - MInputMethodPlugin : to enable the plugin to be loaded by the input method server
 
-@section general General documentation
+@subsection general General documentation
 - <a href="architecture.html">Architecture</a>
 - <a href="extensions.html">Extensions to Qt</a>
 - <a href="pluginsystem.html">Plugin System</a>
 - <a href="internals.html">Feature Internals</a>
 - <a href="toolbarxml.html">Toolbar Widget XML Specification</a>
 
-
-@section tutorial Tutorial
+@subsection tutorial Tutorial
 - <a href="plugintutorial.html">How to implement a plugin</a>
 
 @section api API reference
