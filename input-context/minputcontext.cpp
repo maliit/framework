@@ -54,7 +54,7 @@ namespace
 
     //! Extracts a dynamic QObject property from obj, using normalization rules
     //! for propertyName (eases mapping of QML properties to QObject
-    //! properties). Valid property names start with "maliiit-"
+    //! properties). Valid property names start with "maliit-"
     QVariant extractProperty(const QObject *obj,
                              const char * const propertyName)
     {
