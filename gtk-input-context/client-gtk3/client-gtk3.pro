@@ -44,7 +44,8 @@ INSTALLS += target
 
     system(test -e /etc/fedora-release) {
         update-im-cache.path = $$GTK3_DIR/
-        contains(GTK3_IM_LIBDIR, lib64) {
+        64bit = $$find(GTK3_IM_LIBDIR, lib64)
+        !isEmpty(64bit) {
             update-im-cache.extra = gtk-query-immodules-3.0-64 > $$GTK3_DIR/immodules.cache
         } else {
             update-im-cache.extra = gtk-query-immodules-3.0-32 > $$GTK3_DIR/immodules.cache
