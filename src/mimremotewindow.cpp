@@ -44,8 +44,9 @@ Atom wmStateAtom()
 #else
 # define ICONIFIED_ATOM_NAME "WM_STATE"
 #endif
+    static const Atom stateAtom = XInternAtom(QX11Info::display(), ICONIFIED_ATOM_NAME, false);
 
-    return XInternAtom(QX11Info::display(), ICONIFIED_ATOM_NAME, false);
+    return stateAtom;
 }
 
 }
