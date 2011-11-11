@@ -28,6 +28,8 @@ main(gint    argc,
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title(GTK_WINDOW(window), "Maliit GTK+ example");
 
+    // Clicking the button will steal focus from the text entry, thus hiding
+    // the virtual keyboard:
     button = gtk_button_new_with_label("Hide keyboard");
     entry = gtk_entry_new();
     text_view = gtk_text_view_new();
