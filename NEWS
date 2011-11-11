@@ -11,6 +11,9 @@ CHANGES SINCE 0.80.8
 * Plain QML file loading support for QML-based input methods
   - Install main QML file into plugins directory and set the GConf keys in
     /maliit/onscreen/[active,enabled] to that file.
+* Improved documentation
+  - Stand-alone application and plugins examples are installed by default
+  - A maliit-sdk executable can be used to extract examples and to view documentation
 
 0.80.8
 ======
