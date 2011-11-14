@@ -38,6 +38,7 @@ INSTALLS += target
     isEqual(DISTRO, Ubuntu) {
         update-im-cache.path = $$GTK2_DIR/
         update-im-cache.extra = gtk-query-immodules-2.0 > $$GTK2_DIR/gtk.immodules
+        update-im-cache.uninstall = gtk-query-immodules-2.0 > $$GTK2_DIR/gtk.immodules
 
         INSTALLS *= update-im-cache
     }
@@ -46,6 +47,7 @@ INSTALLS += target
     system(test -e /etc/fedora-release) {
         update-im-cache.path = $$GTK3_DIR/
         update-im-cache.extra = update-gtk-immodules $$HOST
+        update-im-cache.uninstall = update-gtk-immodules $$HOST
 
         INSTALLS *= update-im-cache
     }
