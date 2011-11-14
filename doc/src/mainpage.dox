@@ -1,37 +1,38 @@
-/*! @mainpage MeeGo Touch Input Method Framework Documentation
+/*! @mainpage %Maliit Framework Documentation
 
 @section intro Introduction
 
-MeeGo Touch Input Method Framework provides the necessary framework to input text into text entry fields of applications. To achieve this, MeeGo Touch Input Method Framework indirectly interacts with the applications through the MeeGo Touch Framework, using the supplied MInputContext. MInputContext is an implementation of the QInputContext defined by Qt. This input context enables input services for both native MeeGo Touch and plain Qt applications. The input context is created automatically by the application process and acts a messenger between server and the applications.
+%Maliit provides a flexible and cross-platform input method framework. It has a
+plugin-based client-server architecture where applications act as clients and
+communicate with the %Maliit server via input context plugins. The communication
+link currently uses D-Bus. %Maliit is an open source framework (LGPL 2) with
+open source plugins (BSD).
 
-Non-Qt input contexts need to implement the D-Bus interface to be able to use the framework.
+The framework provides two distinct plugin interfaces:
+- %Maliit plugin, for writing input methods such as virtual keyboards or handwriting
+- %Maliit engine plugin, for writing input method engines used for word prediction and error correction.
 
-MeeGo Touch Input Method Framework consists of two frameworks:
+@if false
+[ATTENTION: engine interface is not Maliit-fied yet].
+* Writing Maliit plugins [LINK]
+* Writing Maliit engine plugins [LINK]
+@endif
 
-- MeeGo Touch Input Method UI Framework
-- MeeGo Touch Input Method Engine Framework
+The %Maliit architecture provides an abstraction that enables application
+developers to concentrate on application logic, with the option to extend input
+method interaction with @ref libmaliitintro, while plugin developers are
+insulated from applications. Neither plugins nor applications know directly of
+each other, nor do they have to use the same toolkits. For example, plugins
+written for Qt or MeeGo Touch applications will work just as well for GTK+
+applications, without any modifications.
 
-These frameworks are built in such a way that both the input method engines and UIs are individual plugin components separate from the frameworks. Therefore, developers can create alternate or additional Input Method engine and UI plugins, or customise the existing ones.
-
-The UI framework has a client-server type architecture, where the application acts as the client, and the Input Method main application (UI Server) as the server. The server presents the user an input UI whenever the user taps a text entry field. The input UI and any active input method engines are provided by the plugins present in the system at a given time.
-
-These input method plugins can range from simple virtual or hardware keyboards to handwriting recognition or even speech-to-text type of input.
-
-@section libmaliitintro Libmaliit
-
-@ref libmaliit "Libmaliit" is an input method extension library for Qt — use it to add application support for screen rotation and attribute extensions.
-
-@subsection libmaliitclasses Useful classes
-
-- @ref Maliit::AttributeExtension "AttributeExtension" : Register extensions such as key overrides. Monitor the extensions with @ref Maliit::AttributeExtensionRegistry "AttributeExtensionRegistry".
-- @ref Maliit::InputMethod "InputMethod" : Listen to device orientation, language and raw key events.
-- @ref Maliit::PreeditInjectionEvent "PreeditInjectionEvent" : Extension for text edit preedit text.
-
-@section maliit-fwintro MeeGo Touch Input Method UI Framework
-
-MeeGo Touch Input Method UI Framework is an integration framework that provides interfaces to be implemented by input method UI plugins created by developers. Such plugins offer a custom UI to be used in inputting text to text fields in applications. They also buffer and allow on-the-fly modification of text prior to delivery to the application. The included MeeGo Keyboard is an implementation of such a plugin.
-
-@note Input method plugins interact with word engine plugins, which can provide them with, for example, modified, alternate or corrected versions of the entered input. For more information, see the libmeegoimengine library introduction.
+The framework is responsible for switching to specific plugins, depending on
+the application and device state. For example, when opening a hardware
+keyboard, %Maliit will automatically search for a HWKB-capable plugin and
+activate it. Additionally, plugins can trigger a plugin or language layout
+change. Plugins announce their services via a plugin description interface, the
+list of languages they support, whether they are on-screen or
+HWKB plugins (or both).
 
 @subsection maliit-fwbasicusage Basic Usage
 
@@ -52,6 +53,16 @@ The following base classes are needed to implement an input method UI plugin:
 
 @subsection tutorial Tutorial
 - <a href="plugintutorial.html">How to implement a plugin</a>
+
+@section libmaliitintro Libmaliit
+
+@ref libmaliit "Libmaliit" is an input method extension library for Qt — use it to add application support for screen rotation and attribute extensions.
+
+@subsection libmaliitclasses Useful classes
+
+- @ref Maliit::AttributeExtension "AttributeExtension" : Register extensions such as key overrides. Monitor the extensions with @ref Maliit::AttributeExtensionRegistry "AttributeExtensionRegistry".
+- @ref Maliit::InputMethod "InputMethod" : Listen to device orientation, language and raw key events.
+- @ref Maliit::PreeditInjectionEvent "PreeditInjectionEvent" : Extension for preedit text inside text edits.
 
 @section api API reference
 <a href="classes.html">All Classes</a>
