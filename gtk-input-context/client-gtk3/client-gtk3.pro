@@ -38,6 +38,7 @@ INSTALLS += target
     isEqual(DISTRO, Ubuntu) {
         update-im-cache.path = $$GTK3_DIR/
         update-im-cache.extra = gtk-query-immodules-3.0 > $$GTK3_DIR/immodules.cache
+        update-im-cache.uninstall = gtk-query-immodules-3.0 > $$GTK3_DIR/immodules.cache
 
         INSTALLS *= update-im-cache
     }
@@ -47,8 +48,10 @@ INSTALLS += target
         64bit = $$find(GTK3_IM_LIBDIR, lib64)
         !isEmpty(64bit) {
             update-im-cache.extra = gtk-query-immodules-3.0-64 > $$GTK3_DIR/immodules.cache
+            update-im-cache.uninstall = gtk-query-immodules-3.0-64 > $$GTK3_DIR/immodules.cache
         } else {
             update-im-cache.extra = gtk-query-immodules-3.0-32 > $$GTK3_DIR/immodules.cache
+            update-im-cache.uninstall = gtk-query-immodules-3.0-32 > $$GTK3_DIR/immodules.cache
         }
 
         INSTALLS *= update-im-cache
