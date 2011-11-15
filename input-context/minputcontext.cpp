@@ -1085,7 +1085,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         if (focusedObject) {
             // FIXME: Kill off once users of this property were able to switch
             // to Maliit::InputMethodQuery::attributeExtensionId.
-            queryResult = extractProperty(focusedObject, "meego-inputmethod-attribute-extension-id");
+            queryResult = focusedObject->property("meego-inputmethod-attribute-extension-id");
 
             if (!queryResult.isValid()) {
                 queryResult = extractProperty(focusedObject, Maliit::InputMethodQuery::attributeExtensionId);
