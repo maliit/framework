@@ -32,6 +32,7 @@ class AttributeExtensionRegistryPrivate;
 typedef QList<QWeakPointer<AttributeExtension> > ExtensionList;
 
 //! \ingroup libmaliit
+//! \internal
 class AttributeExtensionRegistry : public QObject
 {
     Q_OBJECT
