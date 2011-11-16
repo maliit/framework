@@ -1,2 +1,26 @@
 /*! @defgroup libmaliit Libmaliit
+
+Libmaliit is an input method extension library for Qt — use it to add
+application support for screen rotation and attribute extensions.
+
+@section basiclibmaliitusage Basic usage
+
+Include the header for the class that you wish to use. For example, if you want
+to use @ref Maliit::InputMethod "InputMethod":
+@code
+#include <maliit/inputmethod.h>
+@endcode
+
+Add the libmaliit pkg-config checks to your project's qmake .pro %file:
+@code
+CONFIG += link_pkgconfig
+PKGCONFIG += maliit-1.0
+@endcode
+
+Finally, run qmake and build your application in the usual way:
+@code
+qmake
+make
+@endcode
+
 */
