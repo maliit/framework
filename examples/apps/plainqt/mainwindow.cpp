@@ -186,5 +186,7 @@ void MainWindow::onRotateKeyboardClicked()
     }
     const Maliit::OrientationAngle angle = orientations[orientationIndex];
 
+    //! [Get singleton InputMethod instance]
     Maliit::InputMethod::instance()->setOrientationAngle(angle);
+    //! [Get singleton InputMethod instance]
 }

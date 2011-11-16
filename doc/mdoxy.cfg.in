@@ -54,6 +54,7 @@ EXCLUDE               =
 EXCLUDE_PATTERNS      = moc_*.cpp *_p.h *_p.cpp */demo/*
 IMAGE_PATH            = @MALIIT_IN_DIR@/images
 INPUT_FILTER          = "sed -f @MALIIT_IN_DIR@/aliases.sed <"
+EXAMPLE_PATH          = @MALIIT_IN_DIR@/../examples/apps/
 
 #---------------------------------------------------------------------------
 # configuration options related to the alphabetical class index

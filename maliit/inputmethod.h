@@ -37,6 +37,9 @@ class InputMethod : public QObject
 
 public:
     //! \brief Get singleton instance
+    //!
+    //! Example of using the singleton InputMethod instance:
+    //! \snippet plainqt/mainwindow.cpp Get singleton InputMethod instance
     //! \return singleton instance
     static InputMethod *instance();
 
