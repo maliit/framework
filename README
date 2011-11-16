@@ -1,24 +1,54 @@
-= How to run in i386 =
+Maliit
 
-0.
-Make sure you have a composite manager running. You're mostly OK if you're running Compiz.
-If you use Metacity make sure the composite management feature is ON:
+Maliit provides a flexible and cross-platform input method framework. It has a
+plugin-based client-server architecture where applications act as clients and
+communicate with the Maliit server via input context plugins. The communication
+link currently uses D-Bus. Maliit is an open source framework (LGPL 2) with
+open source plugins (BSD).
 
-gconftool-2 -s -t bool /apps/metacity/general/compositing_manager true
+This is the Maliit framework. For plugins, such as virtual keyboards, see
+http://wiki.maliit.org/Plugins
 
-1.
-Make sure your dbus session daemon is running. If you're on Scratchbox2,
-make sure your session is using the correct DBUS_SESSION_BUS_ADDRESS environment
-variable.
 
-2.
-If you're not using duicompositor call meego-im-uiserver with -bypass-wm-hint
-You may need to modify the service file as well.
+Installing
 
-3.
-Run your application
-Make sure there's no error messages complaining about DBUS service/connection
+Qt 4.7 must be installed to build the Maliit framework. At a terminal, run:
 
-meego-im-uiserver window is not movable, and if you're using dual screen, it's
-always on display 0.0.  You can use Xephyr if you want to move it around.
+qmake
+make
+make install
 
+Run qmake HELP=1 to get more information about build options.
+
+
+Running
+
+Set Maliit as the Qt and GTK+ input context:
+
+export QT_IM_MODULE=Maliit
+export GTK_IM_MODULE=Maliit
+
+Start the server:
+
+maliit-server -software -bypass-wm-hint
+
+Note that a compositing window manager and a D-Bus session bus are required to
+use Maliit.
+
+Test with the provided example applications:
+
+maliit-exampleapp-plainqt # for Qt
+maliit-exampleapp-gtk2 # for Gtk2
+maliit-exampleapp-gtk3 # for Gtk3
+
+Double-tap on the input field, and an input method (usually a virtual keyboard)
+should be shown. Note that an input method plugin, such as the Maliit keyboard
+from the maliit-plugins package, must be installed for the example applications
+to work.
+
+Resources
+
+Wiki: http://wiki.maliit.org/
+IRC: #maliit on chat.freenode.net
+Announcement mailing list: maliit-announce@lists.maliit.org
+Discussion mailing list: maliit-discuss@lists.maliit.org
