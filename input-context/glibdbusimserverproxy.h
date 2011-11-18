@@ -27,6 +27,7 @@
 
 #include "mimserverconnection.h"
 #include "minputcontext.h"
+#include "inputcontextdbusaddress.h"
 
 namespace Maliit
 {
@@ -108,6 +109,7 @@ private:
     GObject *inputContextAdaptor;
     bool active;
     QSet<DBusGProxyCall *> pendingResetCalls;
+    const std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> mAddress;
 };
 
 #endif

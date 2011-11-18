@@ -33,7 +33,6 @@ namespace
 {
     const char * const DBusPath("/com/meego/inputmethod/uiserver1");
     const char * const DBusInterface("com.meego.inputmethod.uiserver1");
-    const char * const SocketPath = "unix:path=/tmp/meego-im-uiserver/imserver_dbus";
     const int ConnectionRetryInterval(6*1000); // in ms
     const QString icAdaptorPath("/com/meego/inputmethod/inputcontext");
 
@@ -161,7 +160,8 @@ namespace
 GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
     : glibObjectProxy(NULL),
       connection(),
-      active(true)
+      active(true),
+      mAddress(new Maliit::InputContext::DBus::Address)
 {
     Q_UNUSED(parent);
 
@@ -202,7 +202,13 @@ void GlibDBusIMServerProxy::connectToDBus()
 
     GError *error = NULL;
 
-    connection = toRef(dbus_g_connection_open(SocketPath, &error));
+    const std::string &address = mAddress->get();
+    if (address.empty()) {
+        QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
+        return;
+    }
+
+    connection = toRef(dbus_g_connection_open(address.c_str(), &error));
     if (!connection) {
         if (error) {
             qWarning("MInputContext: unable to create D-Bus connection: %s", error->message);
