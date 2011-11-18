@@ -52,6 +52,7 @@ HEADERS += \
         mimextensionevent_p.h \
         mimdummyinputcontext.h \
         mimserver.h \
+        serverdbusaddress.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -84,6 +85,7 @@ SOURCES += \
         mimsubviewdescription.cpp \
         mimdummyinputcontext.cpp \
         mimserver.cpp \
+        serverdbusaddress.cpp \
 
 x11 {
     HEADERS += \
@@ -150,7 +152,7 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
 }
 
 !enable-legacy {
-    outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
+    outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas, org.maliit.server.service)
 } else {
     outputFiles(MeegoImFramework.pc, meegoimframework.prf, meego-im-framework.schemas)
 }
@@ -168,11 +170,20 @@ install_prf.files = $$OUT_PWD/meegoimframework.prf
 }
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
 
+!enable-legacy {
+    install_services.path = $$system(pkg-config --variable session_bus_services_dir dbus-1)
+    install_services.files = org.maliit.server.service
+}
+
 INSTALLS += target \
     headers \
     install_prf \
     install_pkgconfig \
     install_schemas \
+
+!enable-legacy {
+    INSTALLS += install_services
+}
 
 # Registering the GConf schemas in the gconf database
 gconftool = gconftool-2

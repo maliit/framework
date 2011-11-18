@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.maliit.server
+Exec=@M_IM_INSTALL_BIN@/maliit-server @MALIIT_SERVER_ARGUMENTS@
+
