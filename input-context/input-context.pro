@@ -23,19 +23,21 @@ HEADERS += minputcontext.h \
     mdbusglibinputcontextadaptor.h \
     glibdbusimserverproxy.h \
     mimserverconnection.h \
+    inputcontextdbusaddress.h \
 
 SOURCES += minputcontext.cpp \
     minputcontextplugin.cpp \
     mdbusglibinputcontextadaptor.cpp \
     glibdbusimserverproxy.cpp \
     mimserverconnection.cpp \
+    inputcontextdbusaddress.cpp \
 
 OTHER_FILES += minputmethodcontext1interface.xml
 
 QT = core gui
 CONFIG += plugin link_pkgconfig
 
-PKGCONFIG += dbus-glib-1
+PKGCONFIG += dbus-glib-1 gio-2.0
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
