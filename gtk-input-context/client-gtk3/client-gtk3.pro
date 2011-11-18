@@ -4,7 +4,7 @@ TEMPLATE = lib
 TARGET = im-maliit
 
 CONFIG += link_pkgconfig
-PKGCONFIG += gtk+-3.0
+PKGCONFIG += gtk+-3.0 gio-2.0
 PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1 # FIXME: should not be needed
 
 debug{

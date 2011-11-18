@@ -17,8 +17,12 @@
 #include "meego-im-connector.h"
 
 #include <glib.h>
+#include <gio/gio.h>
 
-#define MEEGO_IM_SOCKET_PATH "unix:path=/tmp/meego-im-uiserver/imserver_dbus"
+#define MALIIT_SERVER_NAME "org.maliit.server"
+#define MALIIT_SERVER_OBJECT_PATH "/org/maliit/server/address"
+#define MALIIT_SERVER_INTERFACE "org.maliit.Server.Address"
+#define MALIIT_SERVER_ADDRESS_PROPERTY "address"
 
 MeegoImConnector *meego_im_connector_new();
 
@@ -39,6 +43,34 @@ connection_dropped(gpointer instance, MeegoImConnector *connector)
     try_reconnect(connector);
 }
 
+static char *
+get_dbus_address()
+{
+    GDBusProxy *proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SESSION,
+                                                      G_DBUS_PROXY_FLAGS_NONE,
+                                                      0,
+                                                      MALIIT_SERVER_NAME,
+                                                      MALIIT_SERVER_OBJECT_PATH,
+                                                      MALIIT_SERVER_INTERFACE,
+                                                      0, 0);
+
+    if (!proxy)
+        return 0;
+
+    GVariant *variant = g_dbus_proxy_get_cached_property(proxy, MALIIT_SERVER_ADDRESS_PROPERTY);
+
+    if (!variant) {
+        g_object_unref(proxy);
+        return 0;
+    }
+
+    char* address = g_strdup(g_variant_get_string(variant, 0));
+
+    g_variant_unref(variant);
+    g_object_unref(proxy);
+
+    return address;
+}
 
 /**
  * MeegoImConnector:
@@ -94,7 +126,16 @@ meego_im_connector_run(MeegoImConnector *self)
 
     g_return_if_fail(self != NULL);
 
-    connection = dbus_g_connection_open(MEEGO_IM_SOCKET_PATH, &error);
+    char *address = get_dbus_address();
+    if (!address) {
+        g_warning("Couldn't connect to Maliit server. Retrying...");
+
+        g_timeout_add_seconds(2, (GSourceFunc)try_reconnect, self);
+        return;
+    }
+
+    connection = dbus_g_connection_open(address, &error);
+    g_free(address);
 
     if (error != NULL) {
         g_warning("Couldn't connect to Maliit server. Retrying...");
