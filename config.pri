@@ -140,6 +140,7 @@ defineTest(outputFile) {
                 MALIIT_OUT_DIR \
                 MALIIT_PACKAGE_BRIEF \
                 MALIIT_FRAMEWORK_HEADER \
+                MALIIT_SERVER_ARGUMENTS \
 
     command = "sed"
     for(var, variables) {

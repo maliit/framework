@@ -22,6 +22,9 @@
 #include <QtCore>
 #include <QtGui>
 
+#include "serverdbusaddress.h"
+#include <tr1/memory>
+
 struct MDBusGlibICConnection;
 struct MIMSDBusActivater;
 struct DBusServer;
@@ -80,8 +83,10 @@ private:
                      const QString &language);
 
 private:
-    QByteArray socketAddress;
+    const std::tr1::shared_ptr<Maliit::Server::DBus::Address> mAddress;
     DBusServer *server;
+    DBusServer *oldServer;
+
     /* Used to maintain a mapping between the connection identifiers
     and the object we actually use to handle communication for the given ID. */
     QMap<unsigned int,MDBusGlibICConnection *>mConnections;

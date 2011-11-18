@@ -6,6 +6,7 @@ include(./config.pri)
         Important build options: \
         \\n\\t M_IM_PREFIX : Install prefix (default: /usr) \
         \\n\\t M_IM_INSTALL_{BIN,LIBS,HEADERS,SCHEMAS,DOCS} : Install prefix for specific types of files \
+        \\n\\t MALIIT_SERVER_ARGUMENTS : Arguments to use for starting maliit-server by D-Bus activation \
         \\nRecognised CONFIG flags: \
         \\n\\t enable-legacy : Build in legacy mode (for meego-im ABI/API compatability) \
         \\n\\t enable-meegotouch : Link input context to libmeegotouch for a MApplicationPage hack \
