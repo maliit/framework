@@ -38,8 +38,6 @@
 
 namespace
 {
-    const char * const SocketDirectory = "/tmp/meego-im-uiserver";
-    const char * const SocketName = "imserver_dbus";
     const char * const DBusPath = "/com/meego/inputmethod/uiserver1";
 
     const char * const DBusClientPath = "/com/meego/inputmethod/inputcontext";
@@ -466,8 +464,7 @@ void MInputContextGlibDBusConnection::insertNewConnection(unsigned int connectio
 
 MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
     : mAddress(new Maliit::Server::DBus::Address),
-      server(0),
-      oldServer(0)
+      server(0)
 {
     dbus_g_thread_init();
     g_type_init();
@@ -476,26 +473,6 @@ MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
 
     dbus_server_setup_with_g_main(server, NULL);
     dbus_server_set_new_connection_function(server, handleNewConnection, this, NULL);
-
-    if (!QDir().mkpath(SocketDirectory)) {
-        qFatal("IMServer: couldn't create directory for D-Bus socket.");
-    }
-    QByteArray socketAddress = SocketDirectory;
-    socketAddress.append("/");
-    socketAddress.append(SocketName);
-    QFile::remove(socketAddress);
-    socketAddress.prepend("unix:path=");
-
-    DBusError error;
-    dbus_error_init(&error);
-
-    oldServer = dbus_server_listen(socketAddress, &error);
-    if (!oldServer) {
-        qFatal("Couldn't create D-Bus server: %s", error.message);
-    }
-
-    dbus_server_setup_with_g_main(oldServer, NULL);
-    dbus_server_set_new_connection_function(oldServer, handleNewConnection, this, NULL);
 }
 
 
@@ -503,8 +480,6 @@ MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
 {
     dbus_server_disconnect(server);
     dbus_server_unref(server);
-    dbus_server_disconnect(oldServer);
-    dbus_server_unref(oldServer);
 }
 
 MDBusGlibICConnection *MInputContextGlibDBusConnection::activeContext()
