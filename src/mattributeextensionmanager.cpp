@@ -39,8 +39,6 @@ namespace {
     const char * const FocusStateAttribute = "focusState";
 }
 
-MAttributeExtensionManager *MAttributeExtensionManager::attributeExtensionMgrInstance = 0;
-
 MAttributeExtensionManager::MAttributeExtensionManager()
     : copyPasteStatus(MInputMethod::InputMethodNoCopyPaste),
       preferredDomainSetting(PreferredDomainSettingName)
@@ -51,13 +49,6 @@ MAttributeExtensionManager::MAttributeExtensionManager()
 
 MAttributeExtensionManager::~MAttributeExtensionManager()
 {
-}
-
-void MAttributeExtensionManager::destroyInstance()
-{
-    Q_ASSERT(attributeExtensionMgrInstance);
-    delete attributeExtensionMgrInstance;
-    attributeExtensionMgrInstance = 0;
 }
 
 QList<MAttributeExtensionId> MAttributeExtensionManager::attributeExtensionIdList() const
@@ -345,7 +336,7 @@ void MAttributeExtensionManager::handleClientDisconnect(unsigned int clientId)
     QSet<MAttributeExtensionId>::iterator i(attributeExtensionIds.begin());
     while (i != attributeExtensionIds.end()) {
         if ((*i).service() == service) {
-            MAttributeExtensionManager::instance().unregisterAttributeExtension(*i);
+            unregisterAttributeExtension(*i);
             i = attributeExtensionIds.erase(i);
         } else {
             ++i;
@@ -359,7 +350,7 @@ void MAttributeExtensionManager::handleExtendedAttributeUpdate(unsigned int clie
 {
     MAttributeExtensionId globalId(id, QString::number(clientId));
     if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().setExtendedAttribute(globalId, target, targetName, attribute, value);
+        setExtendedAttribute(globalId, target, targetName, attribute, value);
     }
 }
 
@@ -368,7 +359,7 @@ void MAttributeExtensionManager::handleAttributeExtensionRegistered(unsigned int
 {
     MAttributeExtensionId globalId(id, QString::number(clientId));
     if (globalId.isValid() && !attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().registerAttributeExtension(globalId, attributeExtension);
+        registerAttributeExtension(globalId, attributeExtension);
         attributeExtensionIds.insert(globalId);
     }
 }
@@ -377,7 +368,7 @@ void MAttributeExtensionManager::handleAttributeExtensionUnregistered(unsigned i
 {
     MAttributeExtensionId globalId(id, QString::number(clientId));
     if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
-        MAttributeExtensionManager::instance().unregisterAttributeExtension(globalId);
+        unregisterAttributeExtension(globalId);
         attributeExtensionIds.remove(globalId);
     }
 }

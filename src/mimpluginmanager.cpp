@@ -84,7 +84,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       indicatorService(0),
       onScreenPlugins(),
       mProxyWidget(proxyWidget),
-      lastOrientation(0)
+      lastOrientation(0),
+      mAttributeExtensionManager(new MAttributeExtensionManager)
 {
     inputSourceToNameMap[MInputMethod::Hardware] = "hardware";
     inputSourceToNameMap[MInputMethod::Accessory] = "accessory";
@@ -386,11 +387,11 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
         plugins[source].lastSwitchDirection = direction;
     }
     QSharedPointer<const MToolbarData> toolbar =
-        MAttributeExtensionManager::instance().toolbarData(toolbarId);
+        mAttributeExtensionManager->toolbarData(toolbarId);
     switchedTo->setToolbar(toolbar);
 
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        MAttributeExtensionManager::instance().keyOverrides(toolbarId);
+        mAttributeExtensionManager->keyOverrides(toolbarId);
     switchedTo->setKeyOverrides(keyOverrides);
 
     // TODO: show/hide from IC matches SIP show/hide requests but here show is used (and
@@ -1134,28 +1135,28 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
 
     // Connect connection and MAttributeExtensionManager
     connect(d->mICConnection.get(), SIGNAL(copyPasteStateChanged(bool,bool)),
-            &MAttributeExtensionManager::instance(), SLOT(setCopyPasteState(bool, bool)));
+            d->mAttributeExtensionManager.data(), SLOT(setCopyPasteState(bool, bool)));
 
     connect(d->mICConnection.get(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
-            &MAttributeExtensionManager::instance(), SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
+            d->mAttributeExtensionManager.data(), SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
 
     connect(d->mICConnection.get(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
-            &MAttributeExtensionManager::instance(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
+            d->mAttributeExtensionManager.data(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
 
     connect(d->mICConnection.get(), SIGNAL(attributeExtensionUnregistered(uint, int)),
-            &MAttributeExtensionManager::instance(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
+            d->mAttributeExtensionManager.data(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
 
     connect(d->mICConnection.get(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
-            &MAttributeExtensionManager::instance(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
+            d->mAttributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
 
     connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
-            &MAttributeExtensionManager::instance(), SLOT(handleClientDisconnect(uint)));
+            d->mAttributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
 
     // Connect from MAttributeExtensionManager to our handlers
-    connect(&MAttributeExtensionManager::instance(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
+    connect(d->mAttributeExtensionManager.data(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
             this, SLOT(setToolbar(const MAttributeExtensionId &)));
 
-    connect(&MAttributeExtensionManager::instance(), SIGNAL(keyOverrideCreated()),
+    connect(d->mAttributeExtensionManager.data(), SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
@@ -1206,7 +1207,6 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
 MIMPluginManager::~MIMPluginManager()
 {
     Q_D(MIMPluginManager);
-    MAttributeExtensionManager::destroyInstance();
     delete d;
 }
 
@@ -1328,10 +1328,10 @@ void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
     d->toolbarId = id;
 
     QSharedPointer<const MToolbarData> toolbar =
-        MAttributeExtensionManager::instance().toolbarData(id);
+        d->mAttributeExtensionManager->toolbarData(id);
 
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        MAttributeExtensionManager::instance().keyOverrides(id);
+        d->mAttributeExtensionManager->keyOverrides(id);
 
     bool focusStateOk(false);
     const bool focusState(d->mICConnection->focusState(focusStateOk));
@@ -1408,7 +1408,7 @@ void MIMPluginManager::updateKeyOverrides()
 {
     Q_D(MIMPluginManager);
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        MAttributeExtensionManager::instance().keyOverrides(d->toolbarId);
+        d->mAttributeExtensionManager->keyOverrides(d->toolbarId);
 
     Q_FOREACH (MInputMethodPlugin *plugin, d->activePlugins) {
         d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
@@ -1540,7 +1540,5 @@ QSet<MAbstractInputMethod *> MIMPluginManager::targets()
     Q_D(MIMPluginManager);
     return d->targets;
 }
-
-
 
 #include "moc_mimpluginmanager.cpp"

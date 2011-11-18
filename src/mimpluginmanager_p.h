@@ -32,6 +32,7 @@ class MInputMethodPlugin;
 class MImAbstractPluginFactory;
 class MInputContextConnection;
 class MIMPluginManager;
+class MAttributeExtensionManager;
 class MImSettings;
 class MAbstractInputMethod;
 class MIMPluginManagerAdaptor;
@@ -182,6 +183,8 @@ public:
 
     WeakWidget mProxyWidget;
     int lastOrientation;
+
+    QScopedPointer<MAttributeExtensionManager> mAttributeExtensionManager;
 };
 
 #endif

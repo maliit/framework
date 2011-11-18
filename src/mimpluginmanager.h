@@ -32,6 +32,7 @@ class QRegion;
 class MIMPluginManagerPrivate;
 class MAttributeExtensionId;
 class MAbstractInputMethod;
+class MAttributeExtensionManager;
 
 //! Note: this class is not considered stable API
 class MIMPluginManager: public QObject

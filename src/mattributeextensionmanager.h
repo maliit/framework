@@ -44,16 +44,14 @@ class MAttributeExtensionManager : public QObject
 
 public:
     /*!
+     * \brief Default constructor.
+     */
+    MAttributeExtensionManager();
+
+    /*!
      *\brief Destructor.
      */
     virtual ~MAttributeExtensionManager();
-
-    //! \brief Get singleton instance
-    //! \return singleton instance
-    static MAttributeExtensionManager &instance();
-
-    //! \brief Destroy singleton
-    static void destroyInstance();
 
     /*!
      * \brief Register an input method attribute extension which is defined in \a fileName with the unique identifier \a id.
@@ -132,11 +130,6 @@ Q_SIGNALS:
 
 private:
     /*!
-     * \brief Default constructor.
-     */
-    MAttributeExtensionManager();
-
-    /*!
      * \brief Returns a list of the id for all attribute extensions' ids.
      */
     QList<MAttributeExtensionId> attributeExtensionIdList() const;
@@ -180,19 +173,9 @@ private:
     //! Preferred domain for URL and Email toolbar domain buttons.
     MImSettings preferredDomainSetting;
 
-    //! Singleton instance
-    static MAttributeExtensionManager *attributeExtensionMgrInstance;
-
     friend class Ut_MAttributeExtensionManager;
 };
 
-inline MAttributeExtensionManager &MAttributeExtensionManager::instance()
-{
-    if (!attributeExtensionMgrInstance) {
-        attributeExtensionMgrInstance = new MAttributeExtensionManager;
-    }
-    return *attributeExtensionMgrInstance;
-}
 //! \internal_end
 
 #endif

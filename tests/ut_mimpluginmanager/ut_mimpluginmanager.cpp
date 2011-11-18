@@ -501,13 +501,13 @@ void Ut_MIMPluginManager::testPluginSwitcher()
 
     //test toolbar status when switch plugin
     MAttributeExtensionId toolbarId1(1, "toolbarIdTest1");
-    MAttributeExtensionManager::instance().registerAttributeExtension(toolbarId1, Toolbar1);
+    subject->mAttributeExtensionManager->registerAttributeExtension(toolbarId1, Toolbar1);
     QSharedPointer<const MToolbarData> toolbarData1 =
-        MAttributeExtensionManager::instance().toolbarData(toolbarId1);
+        subject->mAttributeExtensionManager->toolbarData(toolbarId1);
     MAttributeExtensionId toolbarId2(2, "toolbarIdTest2");
-    MAttributeExtensionManager::instance().registerAttributeExtension(toolbarId2, Toolbar2);
+    subject->mAttributeExtensionManager->registerAttributeExtension(toolbarId2, Toolbar2);
     QSharedPointer<const MToolbarData> toolbarData2 =
-        MAttributeExtensionManager::instance().toolbarData(toolbarId2);
+        subject->mAttributeExtensionManager->toolbarData(toolbarId2);
 
     QVERIFY(toolbarData1.data());
     QVERIFY(toolbarData2.data());
@@ -525,8 +525,8 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     QVERIFY(inputMethod->toolbarParam == toolbarData2);
     QVERIFY(inputMethod3->toolbarParam == toolbarData2);
 
-    MAttributeExtensionManager::instance().unregisterAttributeExtension(toolbarId1);
-    MAttributeExtensionManager::instance().unregisterAttributeExtension(toolbarId2);
+    subject->mAttributeExtensionManager->unregisterAttributeExtension(toolbarId1);
+    subject->mAttributeExtensionManager->unregisterAttributeExtension(toolbarId2);
 }
 
 void Ut_MIMPluginManager::checkHandlerMap(int handler, const QString &name)
@@ -818,13 +818,13 @@ void Ut_MIMPluginManager::testSetToolbar()
     QVERIFY(inputMethod);
 
     MAttributeExtensionId toolbarId1(1, "toolbarIdTest1");
-    MAttributeExtensionManager::instance().registerAttributeExtension(toolbarId1, Toolbar1);
+    subject->mAttributeExtensionManager->registerAttributeExtension(toolbarId1, Toolbar1);
     QSharedPointer<const MToolbarData> toolbarData1 =
-        MAttributeExtensionManager::instance().toolbarData(toolbarId1);
+        subject->mAttributeExtensionManager->toolbarData(toolbarId1);
     MAttributeExtensionId toolbarId2(2, "toolbarIdTest2");
-    MAttributeExtensionManager::instance().registerAttributeExtension(toolbarId2, Toolbar2);
+    subject->mAttributeExtensionManager->registerAttributeExtension(toolbarId2, Toolbar2);
     QSharedPointer<const MToolbarData> toolbarData2 =
-        MAttributeExtensionManager::instance().toolbarData(toolbarId2);
+        subject->mAttributeExtensionManager->toolbarData(toolbarId2);
 
     QVERIFY(toolbarData1.data());
     QVERIFY(toolbarData2.data());
@@ -836,8 +836,8 @@ void Ut_MIMPluginManager::testSetToolbar()
     manager->setToolbar(toolbarId2);
     QVERIFY(inputMethod->toolbarParam == toolbarData2);
 
-    MAttributeExtensionManager::instance().unregisterAttributeExtension(toolbarId1);
-    MAttributeExtensionManager::instance().unregisterAttributeExtension(toolbarId2);
+    subject->mAttributeExtensionManager->unregisterAttributeExtension(toolbarId1);
+    subject->mAttributeExtensionManager->unregisterAttributeExtension(toolbarId2);
 }
 
 void Ut_MIMPluginManager::testLoadedPluginsInfo_data()
