@@ -32,6 +32,7 @@ class QRegion;
 class MIMPluginManagerPrivate;
 class MAttributeExtensionId;
 class MAbstractInputMethod;
+class MAttributeExtensionManager;
 
 //! \internal
 /*! \ingroup maliitserver
