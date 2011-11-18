@@ -29,7 +29,9 @@ namespace Maliit {
 
 class AttributeExtensionPrivate;
 
-//! \ingroup libmaliit
+/*! \ingroup libmaliit
+ * \brief Register extensions such as key overrides.
+ */
 class AttributeExtension : public QObject
 {
     Q_OBJECT

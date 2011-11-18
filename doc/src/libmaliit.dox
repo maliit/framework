@@ -1,5 +1,7 @@
 /*! @defgroup libmaliit Libmaliit
 
+\brief Input method extension library for Qt.
+
 Libmaliit is an input method extension library for Qt — use it to add
 application support for screen rotation and attribute extensions.
 

@@ -30,7 +30,9 @@ namespace Maliit {
 
 class InputMethodPrivate;
 
-//! \ingroup libmaliit
+/*! \ingroup libmaliit
+ * \brief Listen to device orientation, language and raw key events.
+ */
 class InputMethod : public QObject
 {
     Q_OBJECT
@@ -79,14 +81,15 @@ public Q_SLOTS:
     void setArea(const QRect &newRegion);
 
 Q_SIGNALS:
-    /*! \brief Emitted when input method area is changed
+    /*!
+     * \brief Emitted when input method area is changed
      *
-     *  If applications want to react to this signal by changing their layout (e.g. to
-     *  one that works better when a input method panel is around) they have to do their
-     *  layout changes immediately upon invocation of this signal. Therefore queued
-     *  connections (like Qt::QueuedConnection) should not be used for that purpose.
+     * \warning This signal is consumed by the input widget relocator inside
+     * libmeegotouch, and can be emitted at any time, so in order to avoid
+     * conflicts, an application that does any custom relayout must not use a
+     * queued connection (like Qt::QueuedConnection).
      *
-     *  \param region new input method area
+     * \param region new input method area
      */
     void areaChanged(const QRect &region);
 
@@ -129,16 +132,17 @@ private:
 };
 
 /*!
- * Sends a request to the application's input context to open a software
+ * \brief Sends a request to the application's input context to open a software
  * input panel (e.g. the virtual keyboard).
- * Warning: In order to gain more screen space, window decorations may be
+ *
+ * \warning In order to gain more screen space, window decorations may be
  * temporarily hidden while the input panel is up.
  * \sa closeInputMethodPanel
  */
 void requestInputMethodPanel();
 
 /*!
- * Sends a request to the application's input context to close a software
+ * \brief Sends a request to the application's input context to close a software
  * input panel.
  * \sa requestInputMethodPanel
  */

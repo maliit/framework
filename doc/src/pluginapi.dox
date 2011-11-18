@@ -1,0 +1,5 @@
+/*! @defgroup plugin-api Plugin API
+
+\brief Input method plugin API.
+
+*/

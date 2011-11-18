@@ -17,6 +17,7 @@
 #ifndef NAMESPACEINTERNAL_H
 #define NAMESPACEINTERNAL_H
 
+//! \internal
 namespace Maliit { namespace Internal {
 
     //! Name of the input method hints stored in our update map.

@@ -20,9 +20,10 @@
 #include <QMetaType>
 #include <QSharedPointer>
 
+//! \ingroup common
 namespace Maliit {
     /*!
-     * This enum contains values of the orientation angle of windows in the application.
+     * \brief Orientation angle of windows in the application.
      *
      * \sa Orientation
      */
@@ -34,16 +35,23 @@ namespace Maliit {
     };
 
     /*!
-     * This enum contains possible values for orientation of windows in the application.
+     * \brief Possible orientations of windows in the application.
      *
      * \sa OrientationAngle
      */
     enum Orientation {
-        Portrait, //!< equal to either M::Angle90 or M::Angle270 orientation angles
-        Landscape //!< equal to either M::Angle0 or M::Angle180 orientation angles
+        Portrait, //!< equal to either Maliit::Angle90 or Maliit::Angle270 orientation angles
+        Landscape //!< equal to either Maliit::Angle0 or Maliit::Angle180 orientation angles
     };
 
-    //! Content type for text entries. Used at least with MTextEdit
+    /*!
+     * \brief Content type for text entries.
+     *
+     * Content type of the text in the text edit widget, which can be used by
+     * input method plugins to offer more specific input methods, such as a
+     * numeric keypad for a number content type. Plugins may also adjust their
+     * word prediction and error correction accordingly.
+     */
     enum TextContentType {
         //! all characters allowed
         FreeTextContentType,
@@ -64,7 +72,7 @@ namespace Maliit {
         CustomContentType
     };
 
-    //! Type of toolbar widget
+    //! \brief Type of toolbar widget
     enum ItemType {
         //! Undefined item type
         ItemUndefined,
@@ -76,7 +84,7 @@ namespace Maliit {
         ItemLabel
     };
 
-    //! Type of visible premiss for toolbar button
+    //! \brief Type of visible premiss for toolbar button
     enum VisibleType {
         //! Item's visibility will not be changed automatically
         VisibleUndefined,
@@ -88,7 +96,7 @@ namespace Maliit {
         VisibleAlways
     };
 
-    //! Type of action
+    //! \brief Type of action
     enum ActionType {
         //! Do nothing
         ActionUndefined,
@@ -136,7 +144,7 @@ namespace Maliit {
     };
 
     /*!
-     * This enum defines direction of plugin switching
+     * \brief Direction of plugin switching
      */
     enum SwitchDirection {
         SwitchUndefined, //!< Special value for uninitialized variables
@@ -156,7 +164,7 @@ namespace Maliit {
         Accessory
     };
 
-    /// \brief Key event request type for \a MInputContext::keyEvent().
+    //! \brief Key event request type for \a MInputContext::keyEvent().
     enum EventRequestType {
         EventRequestBoth,         //!< Both a Qt::KeyEvent and a signal
         EventRequestSignalOnly,   //!< Only a signal
@@ -164,8 +172,8 @@ namespace Maliit {
     };
 
      /*!
-      * This enum contains possible values for all the modes that are shown in the
-      * Input mode indicator.
+      * \brief Possible values for all the modes that are shown in the Input
+      * mode indicator.
       */
     enum InputModeIndicator {
         NoIndicator,                 //!< No indicator should be shown
@@ -201,8 +209,8 @@ namespace Maliit {
     };
 
     /*!
-     * PreeditTextFormat defines the text format for part of the preedit string
-     * specified by start and length.
+     * \brief The text format for part of the preedit string, specified by
+     * start and length.
      *
      * \sa PreeditFace.
      */
@@ -220,7 +228,9 @@ namespace Maliit {
         {};
     };
 
-    //! extensions for Qt::inputMethodQuery
+    /*! \brief Extensions for Qt::inputMethodQuery
+     * \note the inputMethodQuery interface may change or be removed in Qt 5!
+     */
     enum InputMethodQueryExtensions {
         VisualizationPriorityQuery = 10001, //!< Tells if input method widget wants to have high
         //!< priority for visualization. Input method should
@@ -236,21 +246,21 @@ namespace Maliit {
     namespace InputMethodQuery
     {
         //! Name of property which tells whether correction is enabled.
-        //! See Maliit::ImCorrectionEnabledQuery.
+        //! \sa Maliit::ImCorrectionEnabledQuery.
         const char* const correctionEnabledQuery = "maliit-correction-enabled";
         //! Name of property which holds ID of attribute extension.
-        //! See Maliit::InputMethodAttributeExtensionIdQuery.
+        //! \sa Maliit::InputMethodAttributeExtensionIdQuery.
         const char* const attributeExtensionId = "maliit-attribute-extension-id";
         //! Name of property which holds attribute extension.
-        //! See Maliit::InputMethodAttributeExtensionQuery.
+        //! \sa Maliit::InputMethodAttributeExtensionQuery.
         const char* const attributeExtension = "maliit-attribute-extension";
         //! Name of the property which overrides localized numeric input with western numeric input.
-        //! See Maliit::WesternNumericInputEnforcedQuery.
+        //! \sa Maliit::WesternNumericInputEnforcedQuery.
         const char* const westernNumericInputEnforced = "maliit-western-numeric-input-enforced";
         //! Name of the property which controls translucent VKB mode.
         const char* const translucentInputMethod = "maliit-translucent-input-method";
         //! Name of the property which can suppress VKB even if focused.
-        //! See Maliit::VisualizationPriorityQuery
+        //! \sa Maliit::VisualizationPriorityQuery
         const char* const suppressInputMethod = "maliit-suppress-input-method";
     }
 }

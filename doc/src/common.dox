@@ -1,0 +1,5 @@
+/*! @defgroup common Common
+
+\brief Shared API between @ref libmaliit and @ref plugin-api.
+
+*/

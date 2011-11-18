@@ -27,7 +27,7 @@ class PreeditInjectionEventPrivate;
 
 /*!
  * \ingroup libmaliit
- * \brief The MPreeditInjectionEvent class provides the information about preedit text.
+ * \brief Extension for preedit text inside text edits.
  *
  * MPreeditInjectionEvent should be sent from text edit to input context and offer the word as preedit.
  */
