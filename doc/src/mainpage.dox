@@ -18,7 +18,9 @@ The framework provides two distinct plugin interfaces:
 * Writing Maliit engine plugins [LINK]
 @endif
 
-The %Maliit architecture provides an abstraction that enables application
+@image html architecture-overview.png
+
+The %Maliit @ref architecture provides an abstraction that enables application
 developers to concentrate on application logic, with the option to extend input
 method interaction with @ref libmaliitintro, while plugin developers are
 insulated from applications. Neither plugins nor applications know directly of
