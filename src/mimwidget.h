@@ -25,9 +25,12 @@
 
 class MImWidgetPrivate;
 
-//! A QWidget implementation that can be used for input methods
-//! using MAbstractInputMethod.
-//! Need to call MImWidget::paintEvent when overriding paintEvent.
+/*! \ingroup maliitserver
+ * \brief A QWidget implementation that can be used for input methods using
+ * MAbstractInputMethod.
+ *
+ * Need to call MImWidget::paintEvent when overriding paintEvent.
+ */
 class MImWidget
     : public QWidget
 {

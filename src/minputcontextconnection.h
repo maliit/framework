@@ -28,10 +28,10 @@ class MInputContextConnectionPrivate;
 class MAbstractInputMethod;
 class MAttributeExtensionId;
 
-//! \internal
-/*!
- * \brief MInputContextConnection is a base class of the input method communication implementation
- * between the input context and the input method server.
+/*! \internal
+ * \ingroup maliitserver
+ * \brief Base class of the input method communication implementation between
+ * the input context and the input method server.
  */
 class MInputContextConnection: public QObject
 {

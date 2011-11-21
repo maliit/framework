@@ -36,13 +36,13 @@ class MKeyOverride;
 class MImExtensionEvent;
 
 
-/*!
- * \brief MAbstractInputMethod is a base class for input methods.
+/*! \ingroup pluginapi
+ * \brief A base class for input methods.
  *
- * It defines the interface which input method framework uses for
- * passing commands received from the applications. Communication in the other direction,
- * from the input method to the framework, is done using the MAbstractInputMethodHost
- * object returned from inputMethodHost().
+ * Defines the interface which input method framework uses for passing commands
+ * received from the applications to plugins. Communication in the other
+ * direction, from the input method plugin to the framework, is done using the
+ * MAbstractInputMethodHost object returned from inputMethodHost().
  */
 class MAbstractInputMethod: public QObject
 {

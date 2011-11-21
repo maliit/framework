@@ -25,10 +25,16 @@
 #include <QPainter>
 #include <QRectF>
 
-//! A QGraphicsView implementation that can be used for input methods
-//! using MAbstractInputMethod.
 class MImGraphicsViewPrivate;
 
+/*! \ingroup maliitserver
+ * \brief A QGraphicsView implementation that can be used for input methods
+ * using MAbstractInputMethod.
+ *
+ * Comes with support for self-compositing.
+ *
+ * \sa MImWidget
+ */
 class MImGraphicsView
     : public QGraphicsView
 {

@@ -19,6 +19,12 @@
 
 #include <QWidget>
 
+/*! \ingroup maliitserver
+ * \brief Proxy QWidget for input method plugins.
+ *
+ * Used to manage the visibility of plugins without having to infer that from
+ * the plugin's own visibility.
+ */
 class MImPluginsProxyWidget : public QWidget
 {
     Q_OBJECT

@@ -30,8 +30,8 @@ class QRegion;
 
 using namespace std::tr1;
 
-//! \internal
-/*!
+/*! \internal
+ * \ingroup maliitserver
  * \brief Interface implementation for connecting input method instances to the environment.
  */
 class MInputMethodHost: public MAbstractInputMethodHost

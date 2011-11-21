@@ -27,8 +27,8 @@
 #include "mkeyoverride.h"
 
 
-/*!
-  \brief MKeyOverrideData corresponds to the key overrides.
+/*! \ingroup maliitserver
+ * \brief Corresponds to the key overrides.
  */
 class MKeyOverrideData : public QObject
 {

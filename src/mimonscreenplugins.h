@@ -25,6 +25,9 @@
 
 #include "mimsettings.h"
 
+/*! \ingroup maliitserver
+ * \brief Check the current status of plugins for a subview.
+ */
 class MImOnScreenPlugins: public QObject
 {
     Q_OBJECT

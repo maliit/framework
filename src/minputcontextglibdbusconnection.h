@@ -26,8 +26,9 @@ struct MDBusGlibICConnection;
 struct MIMSDBusActivater;
 struct DBusServer;
 
-//! \internal
-/*! \brief Peer-to-peer DBus input context connection based on glib dbus bindings
+/*! \internal
+ * \ingroup maliitserver
+ * \brief Peer-to-peer DBus input context connection based on glib dbus bindings
  */
 class MInputContextGlibDBusConnection : public MInputContextConnection
 {

@@ -28,7 +28,7 @@
 
 class MKeyOverridePrivate;
 
-/*!
+/*! \ingroup maliitserver
  * \brief MKeyOverride is used to store key attribute overrides for virtual keyboard.
  */
 class MKeyOverride : public QObject

@@ -31,7 +31,7 @@
 #include "mimsettings.h"
 
 //! \internal
-/*!
+/*! \ingroup maliitserver
  \brief The MAttributeExtensionManager class manager the virtual keyboard attribute extensions.
 
   AttributeExtensionManager loads and manages not only the toolbars which are registered

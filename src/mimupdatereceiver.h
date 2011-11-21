@@ -22,18 +22,22 @@
 class MImUpdateReceiverPrivate;
 class MImUpdateEvent;
 
-//! An example that turns data-polling from events into data-pushing via
-//! properties and change notifications.
-//! Used in combination with MImUpdateEvents: The event is propagated down to
-//! the final component, where it is then processed by an event receiver. The
-//! receiver therefore acts as an endpoint for events, allowing the actual
-//! consumers of event data to listen to property changes. Using this approach,
-//! consumers are completely decoupled from the event propagation itself.
-//! Event receivers implemented in plugins are supposed to be more specialized
-//! than the generic MImUpdateReceiver. They can be designed to only carry the
-//! properties that is required for a given endpoint.
-//! The life time of event receivers usually exceeds the life time of events,
-//! which allows to keep signal connections alive.
+/*! \ingroup pluginapi
+ * \brief An example that turns data-polling from events into data-pushing via
+ * properties and change notifications.
+ *
+ * Used in combination with MImUpdateEvents: The event is propagated down to
+ * the final component, where it is then processed by an event receiver. The
+ * receiver therefore acts as an endpoint for events, allowing the actual
+ * consumers of input method properties to listen to property changes. Using
+ * this approach, consumers are completely decoupled from the event propagation
+ * itself. Event receivers implemented in plugins are supposed to be more
+ * specialized than the generic MImUpdateReceiver. They can be designed to only
+ * carry the properties that are required for a given endpoint. The life time
+ * of event receivers usually exceeds the life time of events, which makes it
+ * possible to keep signal connections between consumers and event receivers
+ * alive.
+ */
 class MImUpdateReceiver
     : public QObject
 {

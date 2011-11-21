@@ -23,11 +23,12 @@
 class MInputMethodPlugin;
 class MImAbstractPluginFactoryPrivate;
 
-/*!
- * \brief MImAbstractPluginFactory is an MInputMethodPlugin factory used for dynamic languages
+/*! \ingroup pluginapi
+ * \brief An MInputMethodPlugin factory used for dynamic languages
  *
- * To create a factory, re-implement the virtual functions this functions will be used to create
- * a new instacen of MInputMethodPlugin based on file mime-type
+ * To create a factory, re-implement the virtual functions. These functions will
+ * be used to create a new instance of MInputMethodPlugin based on file
+ * mime-type.
  */
 class MImAbstractPluginFactory
 {

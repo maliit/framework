@@ -1,0 +1,7 @@
+/*! @defgroup maliitserver Maliit server
+
+%Maliit Server is an integration framework that provides interfaces to be implemented by input method UI plugins created by developers. If you are an application developer, you likely want to read the @ref pluginapi documentation instead. Such plugins offer a custom UI to be used in inputting text to text fields in applications. They also buffer and allow on-the-fly modification of text prior to delivery to the application. The included MeeGo Keyboard is an implementation of such a plugin.
+
+@note Input method plugins interact with word engine plugins, which can provide them with, for example, modified, alternate or corrected versions of the entered input. For more information, see the libmeegoimengine library introduction.
+
+*/

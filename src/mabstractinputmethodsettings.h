@@ -21,13 +21,12 @@
 
 class QGraphicsWidget;
 
-/*!
- * \brief MAbstractInputMethodSettings is a base class for input method settings.
+/*! \ingroup pluginapi
+ * \brief A base class for input method settings.
  *
- * MAbstractInputMethodSettings defines the setting of a input method plugin. contentWidget()
- * holds its content.
- * Each input method plugin can implement its own setting by inheriting this class.
- *
+ * MAbstractInputMethodSettings defines the setting of a input method plugin.
+ * contentWidget() holds its content. Each input method plugin can implement
+ * its own setting by inheriting this class.
  */
 
 class MAbstractInputMethodSettings

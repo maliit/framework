@@ -27,8 +27,8 @@ class QString;
 class QDBusInterface;
 class QDBusServiceWatcher;
 
-//! \internal
-/*!
+/*! \internal
+ * \ingroup maliitserver
  * \brief Provides interface for setting the system keyboard indicator state.
  */
 class MIndicatorServiceClient: public QObject

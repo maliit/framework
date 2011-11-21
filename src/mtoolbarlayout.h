@@ -27,8 +27,8 @@
 
 class MToolbarLayoutPrivate;
 
-/*!
- * \brief MToolbarLayout defines toolbar layout for specified orientation
+/*! \ingroup maliitserver
+ * \brief Defines toolbar layout for specified orientation.
  */
 class MToolbarLayout {
 public:

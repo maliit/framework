@@ -31,7 +31,7 @@
 //! \internal
 
 /*!
-
+  \ingroup maliitserver
   \brief MImSettings is a simple C++ wrapper for GConf.
 
   Creating a MImSettings instance gives you access to a single GConf

@@ -27,6 +27,9 @@
 class MIMPluginManager;
 
 //! \internal
+/*! \ingroup maliitserver
+ * \brief Manage available and active plugins.
+ */
 class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT

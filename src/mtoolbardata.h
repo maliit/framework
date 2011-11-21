@@ -32,8 +32,8 @@ struct MTBParseParameters;
 struct MTBParseStructure;
 class MToolbarDataPrivate;
 
-/*!
-  \brief MToolbarData corresponds to a toolbar defined in a XML file
+/*! \ingroup maliitserver
+ * \brief corresponds to a toolbar defined in a XML file.
  */
 class MToolbarData : public QObject
 {

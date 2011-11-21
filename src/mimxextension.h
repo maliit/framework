@@ -19,9 +19,10 @@
 
 #include <QObject>
 
-//! \internal
-/*! \brief A helper class to check if X extensions are supported and query their event
- * and error bases.
+/*! \internal
+ * \ingroup maliitserver
+ * \brief A helper class to check if X extensions are supported, and query
+ * their event and error bases.
  */
 class MImXExtension
 {

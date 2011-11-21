@@ -21,6 +21,9 @@
 
 class MImSubViewDescriptionPrivate;
 
+/*! \ingroup maliitserver
+ * \brief Query the current subview properties.
+ */
 class MImSubViewDescription
 {
 public:

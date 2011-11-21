@@ -21,12 +21,13 @@
 
 class MImExtensionEventPrivate;
 
-/*!
- * \brief MImExtensionEvent is base class for extending signaling from input method
- * system to plugins.
+/*! \ingroup pluginapi
+ * \brief Base class for extending signaling from input method system to
+ * plugins.
  *
- * This event can be subclassed for future additions. See
- * MAbstractInputMethod::imExtensionEvent(MImExtensionEvent *event)
+ * This event can be subclassed for future additions.
+ *
+ * \sa MAbstractInputMethod::imExtensionEvent(MImExtensionEvent *event)
  */
 class MImExtensionEvent
 {

@@ -24,7 +24,9 @@
 class MImPluginDescriptionPrivate;
 class MInputMethodPlugin;
 
-//! \brief MImPluginDescription provides information about loaded input method plugin
+/*! \ingroup maliitserver
+ * \brief Provides information about loaded input method plugin
+ */
 class MImPluginDescription
 {
 public:
@@ -59,4 +61,3 @@ private:
 };
 
 #endif
-

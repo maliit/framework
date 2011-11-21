@@ -9,7 +9,7 @@ link currently uses D-Bus. %Maliit is an open source framework (LGPL 2) with
 open source plugins (BSD).
 
 The framework provides two distinct plugin interfaces:
-- %Maliit plugin, for writing input methods such as virtual keyboards or handwriting
+- @ref pluginapi "Maliit plugin", for writing input methods such as virtual keyboards or handwriting
 - %Maliit engine plugin, for writing input method engines used for word prediction and error correction.
 
 @if false

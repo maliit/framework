@@ -29,10 +29,10 @@
 class MToolbarItemPrivate;
 class MToolbarItemActionPrivate;
 
-/*!
- * \brief MToolbarItemAction defines action which could be performed by MToolbarItem.
+/*! \ingroup maliitserver
+ * \brief Defines action which could be performed by MToolbarItem.
  *
- * See also MInputMethod::ActionType
+ * \sa MInputMethod::ActionType
  */
 class MToolbarItemAction {
 public:

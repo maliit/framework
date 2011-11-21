@@ -28,12 +28,13 @@ class MAbstractInputMethodSettings;
 class MAbstractInputMethodHost;
 
 
-/*!
- * \brief MInputMethodPlugin is an interface class for all input method plugins.
+/*! \ingroup pluginapi
+ * \brief An interface class for all input method plugins.
  *
- * To create a virtual keyboard / input method plugin, re-implement the virtual functions and
- * instantiate the input method implementation in the createInputMethod() method.
- * Make sure your plugin links against the m im framework library as well.
+ * To create a virtual keyboard / input method plugin, re-implement the virtual
+ * functions and instantiate the input method implementation in the
+ * createInputMethod() method. Make sure your plugin links against the m im
+ * framework library as well.
  */
 class MInputMethodPlugin
 {

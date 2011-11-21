@@ -31,14 +31,15 @@ class MImPluginDescription;
 class MImSubViewDescription;
 class MAbstractInputMethodHostPrivate;
 
-/*!
+/*! \ingroup maliitserver
  * \brief Provides an interface for input method instances to connect to the environment.
  *
  * MAbstractInputMethodHost provides methods MAbstractInputMethod instances can use
  * for interacting with the application that is using input method services and
  * the input method framework state itself.
- * Note: this is not meant to be derived by the input method framework users.
  *
+ * \note this is not meant to be derived by the input method framework users;
+ * the concrete implementations are provided by the framework.
  */
 class MAbstractInputMethodHost: public QObject
 {

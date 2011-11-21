@@ -33,7 +33,11 @@ class MIMPluginManagerPrivate;
 class MAttributeExtensionId;
 class MAbstractInputMethod;
 
-//! Note: this class is not considered stable API
+//! \internal
+/*! \ingroup maliitserver
+ * \brief Manager of MInputMethodPlugin instances.
+ * \note this class is not considered stable API
+ */
 class MIMPluginManager: public QObject
 {
     Q_OBJECT

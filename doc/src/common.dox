@@ -1,5 +1,8 @@
 /*! @defgroup common Common
 
-\brief Shared API between @ref libmaliit and @ref plugin-api.
+\brief Shared API between @ref libmaliit and @ref pluginapi.
+
+This API consists of enums and other constants that are generally useful to
+consumers of %Maliit APIs.
 
 */

@@ -22,16 +22,18 @@
 #include <QObject>
 #include <QScopedPointer>
 
-//! \internal
-/*!
- * Class responsible for tracking the hardware keyboard properties and signaling events.
- * It is designed as singleton. Using isPresent() can query whether the device supports
- * hardware keyboard or not. If hardware keyboard is supported, using isOpen() to query
- * its current state. Signal stateChanged will be emitted when hardware keyboard state is changed.
- */
-
 class MImHwKeyboardTrackerPrivate;
 
+//! \internal
+/*! \ingroup maliitserver
+ * \brief Class responsible for tracking the hardware keyboard properties and
+ * signaling events.
+ *
+ * Singleton class. Using isPresent() queries whether the device supports
+ * hardware keyboard or not. If hardware keyboard is supported, using isOpen()
+ * to query its current state. Signal stateChanged will be emitted when the
+ * hardware keyboard state is changed.
+ */
 class MImHwKeyboardTracker
     : public QObject
 {

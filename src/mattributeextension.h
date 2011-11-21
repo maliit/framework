@@ -30,6 +30,9 @@ class MAttributeExtensionPrivate;
 class MToolbarData;
 class MKeyOverrideData;
 
+/*! \ingroup pluginapi
+ * \brief Attribute extension.
+ */
 class MAttributeExtension : public QObject
 {
     Q_OBJECT

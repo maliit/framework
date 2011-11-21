@@ -12,6 +12,9 @@
 
 class MImRotationAnimation;
 
+/*! \ingroup maliitserver
+ * \brief Application abstraction for X applications.
+ */
 class MImXApplication : public QApplication
 {
     Q_OBJECT

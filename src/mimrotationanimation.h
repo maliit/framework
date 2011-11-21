@@ -27,9 +27,11 @@
 class MImXApplication;
 
 /*! \internal
- * \brief Custom QObject'ified PixmapItem that's placed on the scene,
- * one instance for the origin snapshot, one for the target
- * of the rotation (crossfading).
+ * \ingroup maliitserver
+ * \brief Custom QObject'ified PixmapItem that's placed on the scene, one
+ * instance for the origin snapshot, one for the target of the rotation
+ * (crossfading).
+ *
  * Inherits from QObject so that it can have animatable properties.
  */
 class SnapshotPixmapItem : public QObject, public QGraphicsPixmapItem {

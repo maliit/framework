@@ -23,8 +23,8 @@
 class MImXApplication;
 
 /*! \internal
- *  \brief A helper class to handle remote application windows
- *
+ * \ingroup maliitserver
+ * \brief A helper class to handle remote application windows
  */
 class MImRemoteWindow : public QObject
 {

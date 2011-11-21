@@ -24,6 +24,9 @@
 class MImUpdateEventPrivate;
 class MImUpdateReceiver;
 
+/*! \ingroup pluginapi
+ * \brief Monitor the input method properties sent by the application.
+ */
 class MImUpdateEvent
     : public MImExtensionEvent
 {

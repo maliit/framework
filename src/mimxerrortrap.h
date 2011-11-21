@@ -22,9 +22,11 @@
 #include <X11/Xlib.h>
 
 /*! \internal
- *  \brief A helper class to enable to trap X errors.
+ * \ingroup maliitserver
+ * \brief A helper class to enable trapping of X errors.
  *
- * This class is not thread safe and must be only used in the main UI thread.
+ * \warning This class is not thread safe and must be only used in the main UI
+ * thread.
  */
 class MImXErrorTrap
 {
