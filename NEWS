@@ -1,3 +1,11 @@
+${NEXT}
+=======
+
+CHANGES SINCE 0.80.8
+* Plain QML file loading support for QML-based input methods
+  - Install main QML file into plugins directory and set the GConf keys in
+    /maliit/onscreen/[active,enabled] to that file.
+
 0.80.8
 ======
 
