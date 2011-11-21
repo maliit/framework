@@ -132,6 +132,7 @@ defineTest(outputFile) {
                 MALIIT_HEADER \
                 MALIIT_PLUGINS_QUICK_LIB \
                 MALIIT_PLUGINS_QUICK_HEADER \
+                MALIIT_PLUGINS_QUICK_FACTORY \
                 MALIIT_TEST_SUITE \
                 MALIIT_TEST_DATADIR \
                 MALIIT_TEST_LIBDIR \
