@@ -40,7 +40,7 @@ contains(BUILD_TYPE, unittest) {
 
     INCLUDEPATH += $$TOP_DIR
 
-    QUICK_DIR = $$TOP_DIR/input-method-quick
+    QUICK_DIR = $$TOP_DIR/maliit-plugins-quick/input-method
     LIBS += $$QUICK_DIR/lib$${MALIIT_PLUGINS_QUICK_LIB}.so
     INCLUDEPATH += $$QUICK_DIR
 

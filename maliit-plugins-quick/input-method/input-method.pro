@@ -1,9 +1,13 @@
-include(../config.pri)
+include(../../config.pri)
 
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_QUICK_LIB
-INCLUDEPATH += .. ../src ../common
+INCLUDEPATH_BASE = ../..
+INCLUDEPATH += \
+        $${INCLUDEPATH_BASE} \
+        $${INCLUDEPATH_BASE}/src \
+        $${INCLUDEPATH_BASE}/common \
 
 # Input
 HEADERSINSTALL = \
