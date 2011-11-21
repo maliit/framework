@@ -2,6 +2,12 @@ ${NEXT}
 =======
 
 CHANGES SINCE 0.80.8
+* D-Bus activation for maliit-server
+  - An application can launch a maliit-server instance via D-Bus activation;
+    use MALIIT_SERVER_ARGUMENTS when building maliit-server to specify
+    additional arguments. Check src/org.maliit.server.service for currently
+    configured arguments.
+  - Each user session can run its own maliit-server now.
 * Plain QML file loading support for QML-based input methods
   - Install main QML file into plugins directory and set the GConf keys in
     /maliit/onscreen/[active,enabled] to that file.
