@@ -4,6 +4,7 @@ MALIIT_PLUGINS_LIB = meegoimframework
 MALIIT_PLUGINS_HEADER = meegoimframework
 MALIIT_PLUGINS_QUICK_LIB = meegoimquick
 MALIIT_PLUGINS_QUICK_HEADER = meegoimquick
+MALIIT_PLUGINS_QUICK_FACTORY = meegoimquickfactory-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}
 MALIIT_TEST_SUITE = meego-im-framework-tests
 MALIIT_PACKAGENAME = meego-im-framework
 MALIIT_PACKAGE_BRIEF = Meego Touch Input Method Framework
