@@ -1,5 +1,5 @@
-${NEXT}
-=======
+0.81.0
+======
 
 CHANGES SINCE 0.80.8
 * D-Bus activation for maliit-server
@@ -13,7 +13,13 @@ CHANGES SINCE 0.80.8
     /maliit/onscreen/[active,enabled] to that file.
 * Improved documentation
   - Stand-alone application and plugins examples are installed by default
-  - A maliit-sdk executable can be used to extract examples and to view documentation
+  - A maliit-sdk executable can be used to extract examples and to view
+    documentation.
+
+BUG FIXES
+* Fixes: Building example applications stand-alone
+* Fixes: NB#291062 - Regression: QML Components Gallery, Text Input, Sip
+  Attributes Example failed.
 
 0.80.8
 ======
