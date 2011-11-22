@@ -41,9 +41,3 @@ MOC_DIR = .moc
 QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 
 INSTALLS += target
-
-QMAKE_EXTRA_TARGETS += check
-check.target = check
-check.depends += lib$${TARGET}.so.$${VERSION}
-
-
