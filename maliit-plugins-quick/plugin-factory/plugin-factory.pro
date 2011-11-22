@@ -1,6 +1,5 @@
 include(../../config.pri)
 
-VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_QUICK_FACTORY
 QUICK_DIR = $${OUT_PWD}/../input-method
