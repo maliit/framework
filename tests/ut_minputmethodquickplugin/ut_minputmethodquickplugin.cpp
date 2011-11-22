@@ -20,7 +20,7 @@
 #include <minputmethodquickplugin.h>
 #include <minputmethodquick.h>
 #include <minputmethodhost.h>
-#include <maliit-plugins-quick/plugin-factory/maliitquickpluginfactory.h>
+#include <maliitquickpluginfactory.h>
 #include <QtCore>
 #include <QtGui>
 

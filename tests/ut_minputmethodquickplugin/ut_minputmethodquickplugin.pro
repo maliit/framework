@@ -5,7 +5,8 @@ QUICK_IM_DIR = $${QUICK_DIR}/input-method
 QUICK_FACTORY_DIR = $${QUICK_DIR}/plugin-factory
 INCLUDEPATH += \
     $$SRC_DIR \
-    $$QUICK_DIR \
+    $$QUICK_IM_DIR \
+    $$QUICK_FACTORY_DIR \
 
 QT += core gui declarative
 
