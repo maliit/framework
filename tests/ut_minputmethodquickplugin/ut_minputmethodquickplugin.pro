@@ -1,6 +1,8 @@
 include(../common_top.pri)
 
-QUICK_DIR = $${OUT_PWD}/../../maliit-plugins-quick/input-method
+QUICK_DIR = $${OUT_PWD}/../../maliit-plugins-quick
+QUICK_IM_DIR = $${QUICK_DIR}/input-method
+QUICK_FACTORY_DIR = $${QUICK_DIR}/plugin-factory
 INCLUDEPATH += \
     $$SRC_DIR \
     $$QUICK_DIR \
@@ -19,6 +21,7 @@ SOURCES += \
 
 LIBS += \
     $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
-    $$QUICK_DIR/lib$${MALIIT_PLUGINS_QUICK_LIB}.so \
+    $$QUICK_IM_DIR/lib$${MALIIT_PLUGINS_QUICK_LIB}.so \
+    $$QUICK_FACTORY_DIR/lib$${MALIIT_PLUGINS_QUICK_FACTORY}.so \
 
 include(../common_check.pri)

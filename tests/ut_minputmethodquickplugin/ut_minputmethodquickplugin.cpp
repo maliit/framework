@@ -20,6 +20,7 @@
 #include <minputmethodquickplugin.h>
 #include <minputmethodquick.h>
 #include <minputmethodhost.h>
+#include <maliit-plugins-quick/plugin-factory/maliitquickpluginfactory.h>
 #include <QtCore>
 #include <QtGui>
 
@@ -53,7 +54,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
 {
     QTest::addColumn<QString>("testPluginPath");
     QTest::newRow("Hello world")
-        << "helloworld/libqmlhelloworldplugin.so";
+        << "helloworld/helloworld.qml";
     QTest::newRow("Cycle keys")
         << "cyclekeys/libqmlcyclekeysplugin.so";
     QTest::newRow("Override")
@@ -75,11 +76,19 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     const QString pluginPath = pluginDir.absoluteFilePath(testPluginPath);
     QVERIFY(pluginDir.exists(pluginPath));
 
-    QPluginLoader loader(pluginPath);
-    QObject *pluginInstance = loader.instance();
-    QVERIFY(pluginInstance != 0);
+    QObject *pluginInstance = 0;
+    MInputMethodPlugin *plugin = 0;
 
-    MInputMethodPlugin *plugin =  qobject_cast<MInputMethodPlugin *>(pluginInstance);
+    if (pluginPath.endsWith(".qml")) {
+        MaliitQuickPluginFactory factory;
+        plugin = factory.create(pluginPath);
+    } else {
+        QPluginLoader loader(pluginPath);
+        pluginInstance = loader.instance();
+        QVERIFY(pluginInstance != 0);
+        plugin =  qobject_cast<MInputMethodPlugin *>(pluginInstance);
+    }
+
     QVERIFY(plugin != 0);
 
     MInputMethodQuick *testee = static_cast<MInputMethodQuick *>(
