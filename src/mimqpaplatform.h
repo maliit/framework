@@ -5,6 +5,8 @@
 #include <QRegion>
 #include <QWeakPointer>
 
+#include <memory>
+
 class QWidget;
 
 class MImQPAPlatform : public QObject
