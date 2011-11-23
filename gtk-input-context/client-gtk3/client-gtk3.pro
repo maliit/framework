@@ -2,6 +2,7 @@ include(../../config.pri)
 
 TEMPLATE = lib
 TARGET = im-maliit
+CONFIG += plugin
 
 CONFIG += link_pkgconfig
 PKGCONFIG += gtk+-3.0 gio-2.0
