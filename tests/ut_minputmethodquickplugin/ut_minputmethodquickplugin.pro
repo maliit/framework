@@ -23,6 +23,7 @@ SOURCES += \
 LIBS += \
     -L$${QUICK_IM_DIR} \
     -L$${QUICK_FACTORY_DIR} \
+    -L$${SRC_DIR} \
     -l$${MALIIT_PLUGINS_LIB} \
     -l$${MALIIT_PLUGINS_QUICK_LIB} \
     -l$${MALIIT_PLUGINS_QUICK_FACTORY} \
