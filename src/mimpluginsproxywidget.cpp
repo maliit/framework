@@ -20,6 +20,7 @@
 #include "mimxapplication.h"
 #endif
 
+#include <QApplication>
 #include <QDesktopWidget>
 
 MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
