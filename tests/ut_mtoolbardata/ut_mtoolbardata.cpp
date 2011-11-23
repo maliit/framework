@@ -63,7 +63,7 @@ void Ut_MToolbarData::testLoadXML()
     //test landscape part
     QSharedPointer<const MToolbarLayout> landscape = subject->layout(MInputMethod::Landscape);
     QVERIFY(!landscape.isNull());
-    QCOMPARE(landscape->items().count(), 4);
+    QCOMPARE(landscape->items().count(), 7);
 
     item = landscape->items().at(0);
     QVERIFY(!item.isNull());
@@ -135,12 +135,41 @@ void Ut_MToolbarData::testLoadXML()
     QCOMPARE(item->iconId(), QString("icon3"));
     QCOMPARE(item->enabled(), false);
 
+
     QCOMPARE(item->actions().count(), 1);
     QCOMPARE(int(item->actions().at(0)->type()), int(MInputMethod::ActionPaste));
     QCOMPARE(item->actions().at(0)->keys(), QString());
     QCOMPARE(item->actions().at(0)->text(), QString());
     QCOMPARE(item->actions().at(0)->command(), QString());
     QCOMPARE(item->actions().at(0)->group(), QString());
+
+    item = landscape->items().at(3);
+    QVERIFY(!item.isNull());
+    QCOMPARE(item->type(), MInputMethod::ItemLabel);
+    QCOMPARE(item->name(), QString("test4"));
+    QCOMPARE(item->alignment(), Qt::AlignRight);
+    QCOMPARE(item->contentAlignment(), Qt::AlignLeft | Qt::AlignVCenter);
+
+    item = landscape->items().at(4);
+    QVERIFY(!item.isNull());
+    QCOMPARE(item->type(), MInputMethod::ItemLabel);
+    QCOMPARE(item->name(), QString("test6"));
+    QCOMPARE(item->alignment(), Qt::AlignCenter);
+    QCOMPARE(item->contentAlignment(), Qt::AlignRight | Qt::AlignVCenter);
+
+    item = landscape->items().at(5);
+    QVERIFY(!item.isNull());
+    QCOMPARE(item->type(), MInputMethod::ItemLabel);
+    QCOMPARE(item->name(), QString("test7"));
+    QCOMPARE(item->alignment(), Qt::AlignLeft);
+    QCOMPARE(item->contentAlignment(), Qt::AlignCenter);
+
+    item = landscape->items().at(6);
+    QVERIFY(!item.isNull());
+    QCOMPARE(item->type(), MInputMethod::ItemLabel);
+    QCOMPARE(item->name(), QString("test8"));
+    QCOMPARE(item->alignment(), Qt::AlignCenter);
+    QCOMPARE(item->contentAlignment(), Qt::AlignCenter);
 
     // test portrait part
     QSharedPointer<const MToolbarLayout> portrait = subject->layout(MInputMethod::Portrait);

@@ -31,7 +31,7 @@ Warning: it is not recommended to create more than one button with the same name
 The GROUP attribute defines the group this button belongs to.
 The SHOWON attribute tells when the button is displayed. If the value is "selectedtext", it will be only displayed when there is a selected text. If the value is "always" then it is always displayed.
 Similar rule applies with HIDEON attribute, except that there is no "always" value.
-The button is aligned within the toolbar according to the value of ALIGMENT attribute. Normal button should have default (center) alignment, but you could use right or left alignment if you want to override close or copy/paste button.
+The button is aligned within the toolbar according to the value of ALIGMENT attribute. Default aligment is center, but you could use right or left alignment if you want to put button at the screen edge.
 The ICON attribute holds the icon file name (absolute file name). The icon will be displayed in the center of the button.
 The SIZE attribute holds the icon size percentage. The icon will be resized according this attribute and the button size.
 The ICON_ID attribute holds the icon logical id to be displayed on button. ICON_ID has higher priority than ICON, so if both ICON and ICON_ID are specified, ICON_ID will be used. Note: only the ICON_ID of the icons loaded by meegotouch theme will be used.
@@ -46,6 +46,8 @@ The VISIBLE attribute defines the button's visibility. Normally, application doe
 This tag will be constructed as MLabel.
 LABEL tag could have following attributes: NAME, GROUP, VISIBLE, SHOWON, HIDEON, ALIGMENT, TEXT and TEXT_ID.
 Every attribute has the same meaning as for BUTTON tag.
+The CONTENT-ALIGNMENT defines alignment of the text inside label. Default alignment is center, but you could also use right or left alignment.
+We support customization of horizontal alignment only and text is always centered vertically.
 
 \subsubsubsection ACTIONS
 This tag holds a sequence of actions defined within.
@@ -142,6 +144,7 @@ Warning: you can use REFUSE to remove standard toolbar items. But you should not
 <!ATTLIST label alignment (left|right|center) "center">
 <!ATTLIST label text CDATA "">
 <!ATTLIST label text_id CDATA "">
+<!ATTLIST label content-alignment (left|right|center) "center">
 
 <!ATTLIST sendkeysequence keysequence CDATA>
 <!ATTLIST sendstring string CDATA>

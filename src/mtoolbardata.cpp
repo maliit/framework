@@ -43,6 +43,7 @@ namespace
     const QString ImTagShowOn                = QString::fromLatin1("showon");
     const QString ImTagHideOn                = QString::fromLatin1("hideon");
     const QString ImTagAlignment             = QString::fromLatin1("alignment");
+    const QString ImTagContentAlignment      = QString::fromLatin1("content-alignment");
     const QString ImTagIcon                  = QString::fromLatin1("icon");
     const QString ImTagSize                  = QString::fromLatin1("size");
     const QString ImTagIconId                = QString::fromLatin1("icon_id");
@@ -391,6 +392,11 @@ void MToolbarDataPrivate::parseTagLabel(const QDomElement &element, MTBParsePara
     parseAttribute(&MToolbarItem::setAlignment, element, ImTagAlignment, params);
     parseAttribute(&MToolbarItem::setText, element, ImTagText, params);
     parseAttribute(&MToolbarItem::setTextId, element, ImTagTextId, params);
+    parseAttribute(&MToolbarItem::setContentAlignment, element, ImTagContentAlignment, params);
+
+    if ((label->contentAlignment() & Qt::AlignVertical_Mask) == 0) {
+        label->setContentAlignment(label->contentAlignment() | Qt::AlignVCenter);
+    }
 }
 
 void MToolbarDataPrivate::parseTagActions(const QDomElement &element, MTBParseParameters &params)

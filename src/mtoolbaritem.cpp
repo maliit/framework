@@ -38,7 +38,8 @@ MToolbarItemPrivate::MToolbarItemPrivate()
       size(100),
       highlighted(false),
       custom(true),
-      enabled(true)
+      enabled(true),
+      contentAlignment(Qt::AlignCenter)
 {
 }
 
@@ -334,6 +335,23 @@ void MToolbarItem::setIconId(const QString &iconId)
     if (d->iconId != iconId) {
         d->iconId = iconId;
         emit propertyChanged("iconId");
+    }
+}
+
+Qt::Alignment MToolbarItem::contentAlignment() const
+{
+    Q_D(const MToolbarItem);
+
+    return d->contentAlignment;
+}
+
+void MToolbarItem::setContentAlignment(Qt::Alignment alignment)
+{
+    Q_D(MToolbarItem);
+
+    if (d->contentAlignment != alignment) {
+        d->contentAlignment = alignment;
+        Q_EMIT propertyChanged("contentAlignment");
     }
 }
 

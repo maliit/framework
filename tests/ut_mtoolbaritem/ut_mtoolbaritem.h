@@ -22,6 +22,7 @@ private slots:
     void testHighlighted();
     void testCustom();
     void testEnabled();
+    void testContentAlignment();
 
 private:
     QCoreApplication *app;
