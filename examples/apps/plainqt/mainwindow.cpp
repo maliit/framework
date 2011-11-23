@@ -1,9 +1,12 @@
 #include "mainwindow.h"
 
-#include <QX11Info>
 #include <stdlib.h>
 #include <QtCore>
 #include <QtGui>
+
+#if defined(Q_WS_X11)
+#include <QX11Info>
+#endif
 
 #include <maliit/namespace.h>
 #include <maliit/inputmethod.h>
@@ -27,6 +30,7 @@ namespace {
                             .arg(ExpectedImModule));
         }
 
+#if defined(Q_WS_X11)
         if (not QX11Info::isCompositingManagerRunning()) {
             if (not errorMsg.isEmpty()) {
                 errorMsg.append("\n");
@@ -36,6 +40,7 @@ namespace {
                             "Maliit server in self-compositing mode:\n" \
                             "$ %1 -use-self-composition -manual-redirection").arg(serverName));
         }
+#endif
 
         return errorMsg;
     }
