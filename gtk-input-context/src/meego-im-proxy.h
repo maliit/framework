@@ -23,12 +23,14 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <dbus/dbus-glib.h>
 
 G_BEGIN_DECLS
 
+typedef struct _DBusGConnection DBusGConnection;
+
 typedef struct _MeegoIMProxy MeegoIMProxy;
 typedef struct _MeegoIMProxyClass MeegoIMProxyClass;
+typedef struct _MeegoImProxyPrivate MeegoImProxyPrivate;
 
 #define MEEGO_TYPE_IM_PROXY     (meego_im_proxy_get_type())
 #define MEEGO_IM_PROXY(obj)     (G_TYPE_CHECK_INSTANCE_CAST((obj), MEEGO_TYPE_IM_PROXY, MeegoIMProxy))
@@ -41,7 +43,7 @@ typedef struct _MeegoIMProxyClass MeegoIMProxyClass;
 struct _MeegoIMProxy {
     GObject parent;
 
-    DBusGProxy *dbusproxy;
+    MeegoImProxyPrivate *priv;
 };
 
 struct _MeegoIMProxyClass {

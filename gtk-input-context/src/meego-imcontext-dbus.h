@@ -22,12 +22,14 @@
 #ifndef _MEEGO_IMCONTEXT_DBUS_H
 #define _MEEGO_IMCONTEXT_DBUS_H
 
-#include <dbus/dbus-glib.h>
+#include <glib.h>
+#include <glib-object.h>
+
+typedef struct _DBusGConnection DBusGConnection;
 
 typedef struct {
     GObject parent;
 
-    DBusGConnection *connection;
 } MeegoIMContextDbusObj;
 
 typedef struct {
@@ -35,7 +37,6 @@ typedef struct {
 } MeegoIMContextDbusObjClass;
 
 GType meego_imcontext_dbusobj_get_type(void);
-
 
 #define MEEGO_IMCONTEXT_TYPE_DBUSOBJ (meego_imcontext_dbusobj_get_type())
 #define MEEGO_IMCONTEXT_DBUSOBJ(obj) \

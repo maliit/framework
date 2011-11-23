@@ -4,7 +4,7 @@ TEMPLATE = lib
 TARGET = maliit-im-common
 
 CONFIG += link_pkgconfig
-PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1
+PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1 gio-2.0
 
 debug{
     DEFINES += ENABLE_DEBUG
