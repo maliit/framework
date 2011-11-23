@@ -179,5 +179,28 @@ void Ut_MToolbarItem::testEnabled()
     QVERIFY(spy.isEmpty());
 }
 
+void Ut_MToolbarItem::testContentAlignment()
+{
+    QSignalSpy spy(subject, SIGNAL(propertyChanged(const QString &)));
+
+    QVERIFY(spy.isValid());
+
+    QCOMPARE(subject->contentAlignment(), Qt::AlignCenter);
+
+    subject->setContentAlignment(Qt::AlignCenter);
+    QVERIFY(spy.isEmpty());
+
+    subject->setContentAlignment(Qt::AlignLeft);
+    QCOMPARE(subject->contentAlignment(), Qt::AlignLeft);
+    QVERIFY(spy.count() == 1);
+    QVERIFY(spy.first().count() == 1);
+    QCOMPARE(spy.first().first().toString(), QString("contentAlignment"));
+    spy.clear();
+
+    subject->setContentAlignment(Qt::AlignLeft);
+    QCOMPARE(subject->contentAlignment(), Qt::AlignLeft);
+    QVERIFY(spy.isEmpty());
+}
+
 QTEST_APPLESS_MAIN(Ut_MToolbarItem)
 

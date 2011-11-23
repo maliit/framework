@@ -75,6 +75,11 @@ public:
     //!
     //! An enabled item handles mouse events; a disabled item does not.
     bool enabled;
+
+    //! Content aligment inside toolbar item
+    //!
+    //! \sa Qt::Alignment
+    Qt::Alignment contentAlignment;
 };
 
 #endif

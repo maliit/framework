@@ -100,6 +100,7 @@ class MToolbarItem : public QObject
     Q_PROPERTY(int size       READ size    WRITE setSize)
     Q_PROPERTY(QString iconId READ iconId  WRITE setIconId)
     Q_PROPERTY(bool enabled   READ enabled WRITE setEnabled)
+    Q_PROPERTY(Qt::Alignment contentAlignment READ contentAlignment WRITE setContentAlignment)
 
 public:
     /*!
@@ -181,6 +182,12 @@ public:
 
     //! Sets icon id
     void setIconId(const QString &iconId);
+
+    //! Return alignment of content inside item
+    Qt::Alignment contentAlignment() const;
+
+    //! Set  alignment of content inside item
+    void setContentAlignment(Qt::Alignment alignment);
 
     Qt::Alignment alignment() const;
 
