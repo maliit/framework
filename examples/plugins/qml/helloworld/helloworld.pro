@@ -1,19 +1,28 @@
-TEMPLATE = app
-TARGET = helloworld.qml
+# To avoid qmake from cleaning and trying to build
+# the .qml file with g++....
+TEMPLATE = lib
+TARGET = dummy
+
+PLUGIN_FILE = helloworld.qml
+
+plugin.files = $$PLUGIN_FILE # Install target
+# plugin.path # Different depending on BUILD_TYPE
+
+OTHER_FILES = $$PLUGIN_FILE
 
 BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {
     CONFIG += link_pkgconfig
     PKGCONFIG += maliit-plugins-quick-0.80
-    target.path += $$system(pkg-config --variable pluginsdir maliit-plugins-0.80)
-    INSTALLS += target
+    plugin.path += $$system(pkg-config --variable pluginsdir maliit-plugins-0.80)
+    INSTALLS += plugin
 }
 
 contains(BUILD_TYPE, skeleton-legacy) {
     CONFIG += meegoimframework
-    target.path += $$system(pkg-config --variable pluginsdir MeegoImFramework)
-    INSTALLS += target
+    plugin.path += $$system(pkg-config --variable pluginsdir MeegoImFramework)
+    INSTALLS += plugin
 }
 
 contains(BUILD_TYPE, unittest) {
@@ -23,6 +32,6 @@ contains(BUILD_TYPE, unittest) {
 
     include($$TOP_DIR/config.pri)
 
-    target.path += $$MALIIT_TEST_PLUGINS_DIR/examples/qml/helloworld
-    INSTALLS += target
+    plugin.path += $$MALIIT_TEST_PLUGINS_DIR/examples/qml/helloworld
+    INSTALLS += plugin
 }
