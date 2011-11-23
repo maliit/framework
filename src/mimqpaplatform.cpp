@@ -1,5 +1,7 @@
 #include "mimqpaplatform.h"
 
+#include "mimpluginsproxywidget.h"
+
 #include <QDebug>
 #include <QWidget>
 
@@ -14,13 +16,13 @@ void MImQPAPlatform::inputPassthrough(const QRegion &region)
     qDebug() << __PRETTY_FUNCTION__;
 
     if (region.isEmpty())
-        mProxyWidget.data()->hide();
+        mProxyWidget->hide();
     else
-        mProxyWidget.data()->show();
+        mProxyWidget->show();
 }
 
 QWidget *MImQPAPlatform::pluginsProxyWidget()
 {
-    return mProxyWidget.data();
+    return mProxyWidget.get();
 }
 
