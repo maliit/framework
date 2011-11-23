@@ -1,6 +1,7 @@
 include(../config.pri)
 
 TEMPLATE = subdirs
+CONFIG += ordered
 
 system(pkg-config gtk+-2.0) {
     SUBDIRS *= src
