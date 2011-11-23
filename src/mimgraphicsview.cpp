@@ -88,6 +88,7 @@ void MImGraphicsView::drawBackground(QPainter *painter,
         painter->drawPixmap(rect.toRect(), bg, rect.toRect());
     }
 #else
+    Q_UNUSED(painter);
     return;
 #endif
 }
