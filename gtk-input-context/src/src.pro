@@ -47,7 +47,7 @@ dbus_glue_improxy.depends = $$IN_PWD/meego-im-client.xml
 dbus_glue_improxy.commands = \
     dbus-binding-tool --prefix=meego_im_proxy --mode=glib-client \
         --output=$$OUT_PWD/meego-im-proxy-glue.h \
-        meego-im-client.xml
+        $$IN_PWD/meego-im-client.xml
 
 # Use to work around the fact that qmake looks up the target for the generated header wrong
 QMAKE_EXTRA_TARGETS += fake_dbus_glue_improxy
@@ -63,7 +63,7 @@ dbus_glue_imcontext.depends = $$IN_PWD/meego-imcontext-dbus.xml
 dbus_glue_imcontext.commands = \
     dbus-binding-tool --prefix=meego_imcontext_dbus --mode=glib-server \
         --output=$$OUT_PWD/meego-imcontext-dbus-glue.h \
-        meego-imcontext-dbus.xml
+        $$IN_PWD/meego-imcontext-dbus.xml
 
 # Use to work around the fact that qmake looks up the target for the generated header wrong
 QMAKE_EXTRA_TARGETS += fake_dbus_glue_imcontext
