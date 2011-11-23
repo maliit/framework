@@ -23,6 +23,7 @@
 #include "meego-im-proxy-glue.h"
 #include "debug.h"
 
+#include <dbus/dbus-glib.h>
 G_DEFINE_TYPE(MeegoIMProxy, meego_im_proxy, G_TYPE_OBJECT);
 
 #define MEEGO_IM_OBJECT_PATH "/com/meego/inputmethod/uiserver1"
@@ -39,12 +40,17 @@ enum {
 
 static guint meego_im_proxy_signals[N_SIGNALS];
 
+/* Private struct */
+struct _MeegoImProxyPrivate {
+    DBusGProxy *dbusproxy;
+};
+
 static void
 handle_disconnect(gpointer instance, MeegoIMProxy *im_proxy)
 {
     g_return_if_fail(im_proxy);
 
-    im_proxy->dbusproxy = NULL;
+    im_proxy->priv->dbusproxy = NULL;
     g_signal_emit(im_proxy, meego_im_proxy_signals[SIGNAL_CONNECTION_DROPPED], 0, NULL);
 
 }
@@ -78,13 +84,15 @@ meego_im_proxy_class_init(MeegoIMProxyClass *klass)
     meego_im_proxy_signals[SIGNAL_CONNECTION_DROPPED] =
         g_signal_new("connection-dropped", G_TYPE_FROM_CLASS(klass),
                      0, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+
+    g_type_class_add_private(klass, sizeof(MeegoImProxyPrivate));
 }
 
 
 static void
 meego_im_proxy_init(MeegoIMProxy *self)
 {
-    UNUSED(self);
+    self->priv = G_TYPE_INSTANCE_GET_PRIVATE(self, MEEGO_TYPE_IM_PROXY, MeegoImProxyPrivate);
 }
 
 void
@@ -93,8 +101,8 @@ meego_im_proxy_connect(MeegoIMProxy *proxy, DBusGConnection *connection)
     DBusGProxy *dbusproxy;
     g_return_if_fail(connection != NULL);
 
-    if (proxy->dbusproxy) {
-        g_object_unref(proxy->dbusproxy);
+    if (proxy->priv->dbusproxy) {
+        g_object_unref(proxy->priv->dbusproxy);
     }
 
     dbusproxy = dbus_g_proxy_new_for_peer(connection,
@@ -107,7 +115,7 @@ meego_im_proxy_connect(MeegoIMProxy *proxy, DBusGConnection *connection)
 
     g_signal_connect(G_OBJECT(dbusproxy), "destroy", G_CALLBACK(handle_disconnect), proxy);
 
-    proxy->dbusproxy = dbusproxy;
+    proxy->priv->dbusproxy = dbusproxy;
 }
 
 gboolean
@@ -117,10 +125,10 @@ meego_im_proxy_activate_context(MeegoIMProxy *proxy)
     gboolean ret = TRUE;
 
     STEP();
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_activate_context(proxy->dbusproxy, &error);
+    ret = com_meego_inputmethod_uiserver1_activate_context(proxy->priv->dbusproxy, &error);
 
     if (error != NULL) {
         g_warning("%s", error->message);
@@ -137,10 +145,10 @@ meego_im_proxy_app_orientation_changed(MeegoIMProxy *proxy, const gint angle)
     gboolean ret = TRUE;
 
     STEP();
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_app_orientation_changed(proxy->dbusproxy, angle, &error);
+    ret = com_meego_inputmethod_uiserver1_app_orientation_changed(proxy->priv->dbusproxy, angle, &error);
 
     if (error != NULL) {
         g_warning("%s", error->message);
@@ -157,10 +165,10 @@ meego_im_proxy_hide_input_method(MeegoIMProxy *proxy)
     gboolean ret = TRUE;
 
     STEP();
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_hide_input_method(proxy->dbusproxy, &error);
+    ret = com_meego_inputmethod_uiserver1_hide_input_method(proxy->priv->dbusproxy, &error);
 
     if (error != NULL) {
         g_warning("%s", error->message);
@@ -180,10 +188,10 @@ meego_im_proxy_mouse_clicked_on_preedit(MeegoIMProxy *proxy, const GValueArray *
     GError *error = NULL;
     gboolean ret = TRUE;
 
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_mouse_clicked_on_preedit(proxy->dbusproxy,
+    ret = com_meego_inputmethod_uiserver1_mouse_clicked_on_preedit(proxy->priv->dbusproxy,
             pos, preedit_rect, &error);
 
     if (error != NULL) {
@@ -201,10 +209,10 @@ meego_im_proxy_update_widget_info(MeegoIMProxy *proxy, const GHashTable *state_i
     gboolean ret = TRUE;
 
     STEP();
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_update_widget_information(proxy->dbusproxy,
+    ret = com_meego_inputmethod_uiserver1_update_widget_information(proxy->priv->dbusproxy,
             state_information, focus_changed, &error);
 
     if (error != NULL) {
@@ -230,10 +238,10 @@ meego_im_proxy_process_key_event(MeegoIMProxy *proxy, const gint type, const gin
 
     DBG("QT key event type=0x%x, code=0x%x, modifiers=0x%x, text=%s",
         type, code, modifiers, text);
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_process_key_event(proxy->dbusproxy,
+    ret = com_meego_inputmethod_uiserver1_process_key_event(proxy->priv->dbusproxy,
             type, code, modifiers, text, auto_repeat,
             count, native_scan_code, native_modifiers,
             time, &error);
@@ -253,10 +261,10 @@ meego_im_proxy_reset(MeegoIMProxy *proxy)
     gboolean ret = TRUE;
 
     STEP();
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_reset(proxy->dbusproxy, &error);
+    ret = com_meego_inputmethod_uiserver1_reset(proxy->priv->dbusproxy, &error);
 
     if (error != NULL) {
         g_warning("%s", error->message);
@@ -274,10 +282,10 @@ meego_im_proxy_set_copy_paste_state(MeegoIMProxy *proxy, const gboolean copy_ava
     gboolean ret = TRUE;
 
     STEP();
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_set_copy_paste_state(proxy->dbusproxy,
+    ret = com_meego_inputmethod_uiserver1_set_copy_paste_state(proxy->priv->dbusproxy,
             copy_available, paste_available, &error);
 
     if (error != NULL) {
@@ -295,10 +303,10 @@ meego_im_proxy_set_preedit(MeegoIMProxy *proxy, const char *text, gint cursor_po
     gboolean ret = TRUE;
 
     STEP();
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_set_preedit(proxy->dbusproxy, text, cursor_pos, &error);
+    ret = com_meego_inputmethod_uiserver1_set_preedit(proxy->priv->dbusproxy, text, cursor_pos, &error);
 
     if (error != NULL) {
         g_warning("%s", error->message);
@@ -315,10 +323,10 @@ meego_im_proxy_show_input_method(MeegoIMProxy *proxy)
     gboolean ret = TRUE;
 
     STEP();
-    if (!proxy || proxy->dbusproxy == NULL)
+    if (!proxy || proxy->priv->dbusproxy == NULL)
         return FALSE;
 
-    ret = com_meego_inputmethod_uiserver1_show_input_method(proxy->dbusproxy, &error);
+    ret = com_meego_inputmethod_uiserver1_show_input_method(proxy->priv->dbusproxy, &error);
 
     if (error != NULL) {
         g_warning("%s", error->message);
