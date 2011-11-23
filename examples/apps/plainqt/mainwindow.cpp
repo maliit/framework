@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 
-#include <stdlib.h>
 #include <QtCore>
 #include <QtGui>
 
@@ -11,6 +10,8 @@
 #include <maliit/namespace.h>
 #include <maliit/inputmethod.h>
 
+#include <cstdlib>
+
 namespace {
     const char * const TextPrompt = "Double-click this text area to invoke virtual keyboard ...";
     const char * const ImModuleEnv = "QT_IM_MODULE";
@@ -19,7 +20,7 @@ namespace {
 
     QString checkForErrors()
     {
-        const char * const imModule = getenv(ImModuleEnv);
+        const char * const imModule = std::getenv(ImModuleEnv);
         QString errorMsg;
 
         if (not imModule
