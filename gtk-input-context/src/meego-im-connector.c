@@ -19,6 +19,9 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
 #define MALIIT_SERVER_NAME "org.maliit.server"
 #define MALIIT_SERVER_OBJECT_PATH "/org/maliit/server/address"
 #define MALIIT_SERVER_INTERFACE "org.maliit.Server.Address"
@@ -121,12 +124,14 @@ meego_im_connector_get_singleton()
 void
 meego_im_connector_run(MeegoImConnector *self)
 {
-    GError *error = NULL;
     DBusGConnection *connection = NULL;
+    DBusConnection *dbus_connection;
+    DBusError error;
+    char *address = NULL;
 
     g_return_if_fail(self != NULL);
 
-    char *address = get_dbus_address();
+    address = get_dbus_address();
     if (!address) {
         g_warning("Couldn't connect to Maliit server. Retrying...");
 
@@ -134,16 +139,25 @@ meego_im_connector_run(MeegoImConnector *self)
         return;
     }
 
-    connection = dbus_g_connection_open(address, &error);
+    dbus_error_init(&error);
+
+    // Input contexts should not share the connection to the maliit server with
+    // each other (even not when they are in the same application). Therefore,
+    // use private connection for IC to server connection.
+    dbus_connection = dbus_connection_open_private(address, &error);
     g_free(address);
 
-    if (error != NULL) {
-        g_warning("Couldn't connect to Maliit server. Retrying...");
-        g_error_free(error);
+    if (!dbus_connection) {
+        g_warning("Couldn't connect to Maliit server: %s. Retrying...", error.message);
+
+        dbus_error_free(&error);
 
         g_timeout_add_seconds(2, (GSourceFunc)try_reconnect, self);
         return;
     }
+
+    dbus_connection_setup_with_g_main(dbus_connection, NULL);
+    connection = dbus_connection_get_g_connection(dbus_connection);
 
     self->connection = connection;
 

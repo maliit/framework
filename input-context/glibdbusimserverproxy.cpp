@@ -29,6 +29,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 
+#include <dbus/dbus.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
 namespace
 {
     const char * const DBusPath("/com/meego/inputmethod/uiserver1");
@@ -200,7 +203,6 @@ void GlibDBusIMServerProxy::connectToDBus()
 {
     if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
-    GError *error = NULL;
 
     const std::string &address = mAddress->get();
     if (address.empty()) {
@@ -208,15 +210,22 @@ void GlibDBusIMServerProxy::connectToDBus()
         return;
     }
 
-    connection = toRef(dbus_g_connection_open(address.c_str(), &error));
-    if (!connection) {
-        if (error) {
-            qWarning("MInputContext: unable to create D-Bus connection: %s", error->message);
-            g_error_free(error);
-        }
+    DBusError error;
+    dbus_error_init(&error);
+
+    // Input contexts should not share the connection to the maliit server with
+    // each other (even not when they are in the same application). Therefore,
+    // use private connection for IC to server connection.
+    DBusConnection *dbusConnection = dbus_connection_open_private(address.c_str(), &error);
+    if (!dbusConnection) {
+        qWarning("MInputContext: unable to create D-Bus connection: %s", error.message);
+        dbus_error_free(&error);
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
         return;
     }
+
+    dbus_connection_setup_with_g_main(dbusConnection, 0);
+    connection = toRef(dbus_connection_get_g_connection(dbusConnection));
 
     glibObjectProxy = dbus_g_proxy_new_for_peer(connection.get(), DBusPath, DBusInterface);
     if (!glibObjectProxy) {
