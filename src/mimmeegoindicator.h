@@ -14,14 +14,14 @@
  * of this file.
  */
 
-#ifndef MINDICATORSERVICECLIENT_H
-#define MINDICATORSERVICECLIENT_H
-
+#ifndef MIMMEEGOINDICATOR_H
+#define MIMMEEGOINDICATOR_H
 
 #include <QObject>
 #include <QMap>
 
-#include "minputmethodnamespace.h"
+#include "mindicatorserviceclient.h"
+#include <maliit/namespace.h>
 
 class QString;
 class QDBusInterface;
@@ -29,32 +29,32 @@ class QDBusServiceWatcher;
 
 /*! \internal
  * \ingroup maliitserver
- * \brief Provides interface for setting the system keyboard indicator state.
+ * \brief Implementation of the system keyboard indicator MIndicatorServiceClient on Harmattan
  */
-class MIndicatorServiceClient: public QObject
+class MImMeegoIndicator: public QObject, public MIndicatorServiceClient
 {
     Q_OBJECT
 
 public:
-    explicit MIndicatorServiceClient(QObject *parent = 0);
-    ~MIndicatorServiceClient();
+    explicit MImMeegoIndicator(QObject *parent = 0);
+    ~MImMeegoIndicator();
 
-    void setInputModeIndicator(MInputMethod::InputModeIndicator mode);
+    void setInputModeIndicator(Maliit::InputModeIndicator mode);
 
 private Q_SLOTS:
     void handleIndicatorServiceChanged(const QString &serviceName, const QString &oldOwner,
                                        const QString &newOwner);
 private:
-    Q_DISABLE_COPY(MIndicatorServiceClient)
+    Q_DISABLE_COPY(MImMeegoIndicator)
 
     void connectToIndicatorDBus();
 
     //! map the InputModeIndicator to icon id
-    QString indicatorIconID(MInputMethod::InputModeIndicator mode);
+    QString indicatorIconID(Maliit::InputModeIndicator mode);
 
     QDBusInterface *indicatorIface; // indicator server interface
     QDBusServiceWatcher *indicatorServiceWatcher;
-    QMap<MInputMethod::InputModeIndicator, QString> indicatorMap;
+    QMap<Maliit::InputModeIndicator, QString> indicatorMap;
 };
 //! \internal_end
 

@@ -20,7 +20,7 @@
 #include "minputmethodnamespace.h"
 #include "mattributeextensionid.h"
 #include "minputmethodhost.h"
-#include "mindicatorserviceclient.h"
+#include "mimmeegoindicator.h"
 #include "mimonscreenplugins.h"
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
@@ -174,7 +174,7 @@ public:
 
     MAttributeExtensionId toolbarId;
 
-    MIndicatorServiceClient indicatorService;
+    MImMeegoIndicator indicatorService;
 
     QTimer ensureEmptyRegionWhenHiddenTimer;
 

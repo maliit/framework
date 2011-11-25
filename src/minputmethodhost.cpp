@@ -17,11 +17,13 @@
 #include "minputmethodhost.h"
 #include "minputcontextconnection.h"
 #include "mimpluginmanager.h"
-#include "mimmeegoindicator.h"
+#include "mindicatorserviceclient.h"
 #include "mabstractinputmethod.h"
 
 #include <QWidget>
 #include <QGraphicsView>
+
+#include <maliit/namespace.h>
 
 MInputMethodHost::MInputMethodHost(shared_ptr<MInputContextConnection> inputContextConnection,
                                    MIMPluginManager *pluginManager,
@@ -184,7 +186,7 @@ void MInputMethodHost::setGlobalCorrectionEnabled(bool correctionEnabled)
 void MInputMethodHost::setInputModeIndicator(MInputMethod::InputModeIndicator mode)
 {
     if (enabled) {
-        indicatorService.setInputModeIndicator(mode);
+        indicatorService.setInputModeIndicator(static_cast<Maliit::InputModeIndicator>(mode));
     }
 }
 
