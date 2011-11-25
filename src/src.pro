@@ -33,7 +33,7 @@ HEADERS += \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
         mimpluginmanageradaptor.h \
-        mindicatorserviceclient.h \
+        mimmeegoindicator.h \
         minputcontextconnection.h \
         minputmethodhost.h \
         mtoolbardata_p.h \
@@ -58,7 +58,7 @@ SOURCES += \
         mimabstractpluginfactory.cpp \
         mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
-        mindicatorserviceclient.cpp \
+        mimmeegoindicator.cpp \
         mabstractinputmethod.cpp \
         mabstractinputmethodhost.cpp \
         minputmethodhost.cpp \

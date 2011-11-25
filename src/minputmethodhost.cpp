@@ -17,7 +17,7 @@
 #include "minputmethodhost.h"
 #include "minputcontextconnection.h"
 #include "mimpluginmanager.h"
-#include "mindicatorserviceclient.h"
+#include "mimmeegoindicator.h"
 #include "mabstractinputmethod.h"
 
 #include <QWidget>

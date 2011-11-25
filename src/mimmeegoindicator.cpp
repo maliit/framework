@@ -14,7 +14,7 @@
  * of this file.
  */
 
-#include "mindicatorserviceclient.h"
+#include "mimmeegoindicator.h"
 
 #include <QDBusInterface>
 #include <QDBusServiceWatcher>
