@@ -27,7 +27,7 @@ namespace {
 };
 
 
-MIndicatorServiceClient::MIndicatorServiceClient(QObject *parent)
+MImMeegoIndicator::MImMeegoIndicator(QObject *parent)
     : QObject(parent),
       indicatorIface(0),
       indicatorServiceWatcher(new QDBusServiceWatcher(DBusIndicatorServiceName,
@@ -39,40 +39,40 @@ MIndicatorServiceClient::MIndicatorServiceClient(QObject *parent)
     connect(indicatorServiceWatcher, SIGNAL(serviceOwnerChanged(QString, QString, QString)),
             this, SLOT(handleIndicatorServiceChanged(QString, QString, QString)));
 
-    indicatorMap.insert(MInputMethod::NoIndicator, "");
-    indicatorMap.insert(MInputMethod::LatinLowerIndicator, "icon-s-status-latin-lowercase");
-    indicatorMap.insert(MInputMethod::LatinUpperIndicator, "icon-s-status-latin-uppercase");
-    indicatorMap.insert(MInputMethod::LatinLockedIndicator, "icon-s-status-latin-caps");
-    indicatorMap.insert(MInputMethod::CyrillicLowerIndicator, "icon-s-status-cyrillic-lowercase");
-    indicatorMap.insert(MInputMethod::CyrillicUpperIndicator, "icon-s-status-cyrillic-uppercase");
-    indicatorMap.insert(MInputMethod::CyrillicLockedIndicator, "icon-s-status-cyrillic-caps");
-    indicatorMap.insert(MInputMethod::ArabicIndicator, "icon-s-status-arabic");
-    indicatorMap.insert(MInputMethod::PinyinIndicator, "icon-s-status-pinyin");
-    indicatorMap.insert(MInputMethod::ZhuyinIndicator, "icon-s-status-zhuyin");
-    indicatorMap.insert(MInputMethod::CangjieIndicator, "icon-s-status-cangjie");
-    indicatorMap.insert(MInputMethod::NumAndSymLatchedIndicator, "icon-s-status-number");
-    indicatorMap.insert(MInputMethod::NumAndSymLockedIndicator, "icon-s-status-number-locked");
-    indicatorMap.insert(MInputMethod::DeadKeyAcuteIndicator, "icon-s-status-acute");
-    indicatorMap.insert(MInputMethod::DeadKeyCaronIndicator, "icon-s-status-caron");
-    indicatorMap.insert(MInputMethod::DeadKeyCircumflexIndicator, "icon-s-status-circumflex");
-    indicatorMap.insert(MInputMethod::DeadKeyDiaeresisIndicator, "icon-s-status-diaeresis");
-    indicatorMap.insert(MInputMethod::DeadKeyGraveIndicator, "icon-s-status-grave");
-    indicatorMap.insert(MInputMethod::DeadKeyTildeIndicator, "icon-s-status-tilde");
+    indicatorMap.insert(Maliit::NoIndicator, "");
+    indicatorMap.insert(Maliit::LatinLowerIndicator, "icon-s-status-latin-lowercase");
+    indicatorMap.insert(Maliit::LatinUpperIndicator, "icon-s-status-latin-uppercase");
+    indicatorMap.insert(Maliit::LatinLockedIndicator, "icon-s-status-latin-caps");
+    indicatorMap.insert(Maliit::CyrillicLowerIndicator, "icon-s-status-cyrillic-lowercase");
+    indicatorMap.insert(Maliit::CyrillicUpperIndicator, "icon-s-status-cyrillic-uppercase");
+    indicatorMap.insert(Maliit::CyrillicLockedIndicator, "icon-s-status-cyrillic-caps");
+    indicatorMap.insert(Maliit::ArabicIndicator, "icon-s-status-arabic");
+    indicatorMap.insert(Maliit::PinyinIndicator, "icon-s-status-pinyin");
+    indicatorMap.insert(Maliit::ZhuyinIndicator, "icon-s-status-zhuyin");
+    indicatorMap.insert(Maliit::CangjieIndicator, "icon-s-status-cangjie");
+    indicatorMap.insert(Maliit::NumAndSymLatchedIndicator, "icon-s-status-number");
+    indicatorMap.insert(Maliit::NumAndSymLockedIndicator, "icon-s-status-number-locked");
+    indicatorMap.insert(Maliit::DeadKeyAcuteIndicator, "icon-s-status-acute");
+    indicatorMap.insert(Maliit::DeadKeyCaronIndicator, "icon-s-status-caron");
+    indicatorMap.insert(Maliit::DeadKeyCircumflexIndicator, "icon-s-status-circumflex");
+    indicatorMap.insert(Maliit::DeadKeyDiaeresisIndicator, "icon-s-status-diaeresis");
+    indicatorMap.insert(Maliit::DeadKeyGraveIndicator, "icon-s-status-grave");
+    indicatorMap.insert(Maliit::DeadKeyTildeIndicator, "icon-s-status-tilde");
 }
 
-MIndicatorServiceClient::~MIndicatorServiceClient()
+MImMeegoIndicator::~MImMeegoIndicator()
 {
     delete indicatorIface;
 }
 
-void MIndicatorServiceClient::setInputModeIndicator(MInputMethod::InputModeIndicator mode)
+void MImMeegoIndicator::setInputModeIndicator(Maliit::InputModeIndicator mode)
 {
     if (indicatorIface) {
         indicatorIface->call(QDBus::NoBlock, "setIconID", indicatorIconID(mode));
     }
 }
 
-void MIndicatorServiceClient::connectToIndicatorDBus()
+void MImMeegoIndicator::connectToIndicatorDBus()
 {
     qDebug() << __PRETTY_FUNCTION__;
     QDBusConnection connection = QDBusConnection::sessionBus();
@@ -93,7 +93,7 @@ void MIndicatorServiceClient::connectToIndicatorDBus()
     }
 }
 
-void MIndicatorServiceClient::handleIndicatorServiceChanged(const QString &serviceName,
+void MImMeegoIndicator::handleIndicatorServiceChanged(const QString &serviceName,
                                                             const QString &oldOwner,
                                                             const QString &newOwner)
 {
@@ -115,7 +115,7 @@ void MIndicatorServiceClient::handleIndicatorServiceChanged(const QString &servi
     }
 }
 
-QString MIndicatorServiceClient::indicatorIconID(MInputMethod::InputModeIndicator mode)
+QString MImMeegoIndicator::indicatorIconID(Maliit::InputModeIndicator mode)
 {
     return indicatorMap.value(mode);
 }

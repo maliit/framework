@@ -53,6 +53,7 @@ HEADERS += \
         mimdummyinputcontext.h \
         mimserver.h \
         serverdbusaddress.h \
+        mindicatorserviceclient.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -86,6 +87,7 @@ SOURCES += \
         mimdummyinputcontext.cpp \
         mimserver.cpp \
         serverdbusaddress.cpp \
+        mindicatorserviceclient.cpp \
 
 x11 {
     HEADERS += \
@@ -223,6 +225,8 @@ fake_dbus_glue.target = mdbusglibicconnectionserviceglue.h
 fake_dbus_glue.depends = dbus_glue
 
 OTHER_FILES += minputmethodserver1interface.xml
+
+
 
 
 
