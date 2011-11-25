@@ -81,7 +81,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       q_ptr(0),
       connectionValid(false),
       acceptRegionUpdates(false),
-      indicatorService(0),
+      indicatorService(),
       onScreenPlugins(),
       mProxyWidget(proxyWidget),
       lastOrientation(0),

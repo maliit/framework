@@ -33,7 +33,6 @@ HEADERS += \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
         mimpluginmanageradaptor.h \
-        mimmeegoindicator.h \
         minputcontextconnection.h \
         minputmethodhost.h \
         mtoolbardata_p.h \
@@ -59,7 +58,6 @@ SOURCES += \
         mimabstractpluginfactory.cpp \
         mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
-        mimmeegoindicator.cpp \
         mabstractinputmethod.cpp \
         mabstractinputmethodhost.cpp \
         minputmethodhost.cpp \
@@ -113,6 +111,14 @@ qpa {
 
     HEADERS += \
         mimqpaplatform.h
+}
+
+enable-legacy {
+    HEADERS += \
+        mimmeegoindicator.h \
+
+    SOURCES += \
+        mimmeegoindicator.cpp \
 }
 
 CONFIG += qdbus link_pkgconfig
