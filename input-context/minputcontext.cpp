@@ -152,6 +152,9 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
     connect(&sipHideTimer, SIGNAL(timeout()), SLOT(hideInputMethod()));
 
+    connect(QApplication::clipboard(), SIGNAL(dataChanged()),
+            this, SLOT(handleClipboardDataChange()));
+
     connectInputMethodServer();
     connectInputMethodExtension();
 }
@@ -479,13 +482,11 @@ void MInputContext::setFocusWidget(QWidget *focused)
 
         pasteAvailable = !QApplication::clipboard()->text().isEmpty();
 
-        connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(handleClipboardDataChange()), Qt::UniqueConnection);
     } else {
         copyAvailable = false;
         copyAllowed = false;
         imServer->updateWidgetInformation(stateInformation, true);
 
-        disconnect(QApplication::clipboard(), SIGNAL(dataChanged()), this, 0);
     }
 
     // show or hide Copy/Paste button on input method server
