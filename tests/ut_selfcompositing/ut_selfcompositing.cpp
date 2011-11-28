@@ -68,7 +68,12 @@ void Ut_SelfCompositing::initTestCase()
     QApplication::setGraphicsSystem("raster");
 
     app = new MImXApplication(argc, argv);
-    QVERIFY(app->selfComposited());
+
+#if defined(Q_WS_X11)
+    if (QX11Info::isCompositingManagerRunning()) {
+        QVERIFY(app->selfComposited());
+    }
+#endif
 }
 
 void Ut_SelfCompositing::cleanupTestCase()
