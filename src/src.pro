@@ -11,7 +11,6 @@ HEADERSINSTALL = \
         mimabstractpluginfactory.h \
         mabstractinputmethod.h \
         mabstractinputmethodhost.h \
-        mimpluginmanager.h \
         mtoolbaritem.h \
         mtoolbardata.h \
         mkeyoverride.h \
@@ -31,6 +30,7 @@ HEADERSINSTALL = \
 
 HEADERS += \
         $$HEADERSINSTALL \
+        mimpluginmanager.h \
         mimpluginmanager_p.h \
         mimpluginmanageradaptor.h \
         mindicatorserviceclient.h \
