@@ -20,6 +20,10 @@
 #include "mimxapplication.h"
 #include "utils.h"
 
+#if defined(Q_WS_X11)
+#include <QX11Info>
+#endif
+
 namespace
 {
     const QSize windowSize(200, 200);
@@ -87,6 +91,13 @@ void Ut_SelfCompositing::testSelfCompositing_data()
 
 void Ut_SelfCompositing::testSelfCompositing()
 {
+#if defined(Q_WS_X11)
+    if (not QX11Info::isCompositingManagerRunning()) {
+        QSKIP("Not running a compositing windowmanager", SkipSingle);
+    }
+#endif
+
+
     QFETCH(WidgetCreator, widgetCreator);
 
     MaliitTestUtils::RemoteWindow remote;
