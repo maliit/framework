@@ -693,7 +693,7 @@ void Ut_MInputContext::testCopyPasteState()
     m_subject->setFocusWidget(0);
     waitAndProcessEvents(100);
     ++count;
-    QVERIFY(m_connection->setCopyPasteStateCount() == count);
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
     QCOMPARE(params.count(), 2);
     QCOMPARE(params.takeFirst(), false);
     QCOMPARE(params.takeFirst(), false);
@@ -701,12 +701,14 @@ void Ut_MInputContext::testCopyPasteState()
     qDebug() << "Set some text to clipboard (simulate paste)";
     QApplication::clipboard()->setText("Some text");
     waitAndProcessEvents(100);
-    QVERIFY(m_connection->setCopyPasteStateCount() == count);
+    ++count;
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
 
     qDebug() << "Clear clipboard";
     QApplication::clipboard()->clear();
     waitAndProcessEvents(100);
-    QVERIFY(m_connection->setCopyPasteStateCount() == count);
+    ++count;
+    QCOMPARE(m_connection->setCopyPasteStateCount(), count);
 }
 
 void Ut_MInputContext::testSetRedirectKeys()
