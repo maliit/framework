@@ -10,6 +10,8 @@ debug{
     DEFINES += ENABLE_DEBUG
 }
 
+DEFINES += G_LOG_DOMAIN=\\\"Maliit\\\"
+
 # Generated dbus glue code has warnings of this type, so disable them
 QMAKE_CFLAGS_DEBUG += -Wno-unused-parameter
 QMAKE_CFLAGS_RELEASE += -Wno-unused-parameter
@@ -26,6 +28,7 @@ SOURCES += \
     meego-imcontext-dbus.c \
     meego-im-connector.c \
     qt-keysym-map.cpp \
+    debug.c \
 
 GTK3_IM_MODULEDIR =
 
@@ -69,3 +72,4 @@ dbus_glue_imcontext.commands = \
 QMAKE_EXTRA_TARGETS += fake_dbus_glue_imcontext
 fake_dbus_glue_imcontext.target = meego-imcontext-dbus-glue.h
 fake_dbus_glue_imcontext.depends = dbus_glue_imcontext
+

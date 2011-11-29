@@ -11,6 +11,8 @@ debug{
     DEFINES += ENABLE_DEBUG
 }
 
+DEFINES += G_LOG_DOMAIN=\\\"Maliit\\\"
+
 INCLUDEPATH = ../src
 
 HEADERS += \
