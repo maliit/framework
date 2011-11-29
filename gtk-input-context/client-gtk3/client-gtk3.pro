@@ -7,9 +7,7 @@ CONFIG += plugin
 CONFIG += link_pkgconfig
 PKGCONFIG += gtk+-3.0
 
-debug{
-    DEFINES += ENABLE_DEBUG
-}
+DEFINES += G_LOG_DOMAIN=\\\"Maliit\\\"
 
 INCLUDEPATH = ../src
 
