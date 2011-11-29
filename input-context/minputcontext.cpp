@@ -125,8 +125,8 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
       redirectKeys(false),
       currentKeyEventTime(0)
 {
-    QByteArray debugEnvVar = qgetenv("MIC_ENABLE_DEBUG");
-    if (!debugEnvVar.isEmpty() && debugEnvVar != "false") {
+    QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
+    if (debugEnvVar.toLower() == "enabled") {
         debug = true;
     }
 
