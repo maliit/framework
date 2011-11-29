@@ -44,10 +44,48 @@ namespace {
         // TODO: Check if hardwiring the QStyle can be removed at a later stage.
         QApplication::setStyle(new QCommonStyle);
     }
+
+    bool isDebugEnabled()
+    {
+        static int debugEnabled = -1;
+
+        if (debugEnabled == -1) {
+            QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
+            if (debugEnvVar.toLower() == "enabled") {
+                debugEnabled = 1;
+            } else {
+                debugEnabled = 0;
+            }
+        }
+
+        return debugEnabled == 1;
+    }
+
+    void ouputMessagesToStdErr(QtMsgType type, const char *msg)
+    {
+        switch (type) {
+        case QtDebugMsg:
+            if (isDebugEnabled()) {
+                fprintf(stderr, "DEBUG: %s\n", msg);
+            }
+            break;
+        case QtWarningMsg:
+            fprintf(stderr, "WARNING: %s\n", msg);
+            break;
+        case QtCriticalMsg:
+            fprintf(stderr, "CRITICAL: %s\n", msg);
+            break;
+        case QtFatalMsg:
+            fprintf(stderr, "FATAL: %s\n", msg);
+            abort();
+        }
+    }
 }
 
 int main(int argc, char **argv)
 {
+    qInstallMsgHandler(ouputMessagesToStdErr);
+
     // QT_IM_MODULE, MApplication and QtMaemo5Style all try to load
     // MInputContext, which is fine for the application. For the passthrough
     // server itself, we absolutely need to prevent that.
