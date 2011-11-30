@@ -1,6 +1,8 @@
 include(../config.pri)
 
-TEMPLATE = subdirs
+TEMPLATE = lib
+CONFIG += plugin
+TARGET = dummy
 
 outputFiles(maliit-sdk)
 
@@ -8,18 +10,23 @@ OTHER_FILES = \
     maliit-sdk-create.sh \
     maliit-sdk.in
 
-# Hack to make the sdk_tarball target run automatically
-QMAKE_EXTRA_TARGETS += first
-first.depends += sdk
-
 # Build
 enable-legacy {
     MODE = legacy
 } else {
     MODE = normal
 }
-QMAKE_EXTRA_TARGETS += sdk
+
+DUMMY = .
+
+sdk.name = create_sdk
+sdk.CONFIG += target_predeps no_link
 sdk.commands += $$IN_PWD/maliit-sdk-create.sh $$IN_PWD/.. $$OUT_PWD/build $$MALIIT_VERSION $$MODE
+sdk.output = build
+sdk.clean_commands = rm -rf build
+sdk.input = DUMMY
+
+QMAKE_EXTRA_COMPILERS += sdk
 
 # Install
 sdk_install.files = $$OUT_PWD/build/maliit-sdk/
