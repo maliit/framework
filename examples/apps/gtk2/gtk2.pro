@@ -1,6 +1,8 @@
 TEMPLATE = app
 TARGET = maliit-exampleapp-gtk2
 
+OBJECTS_DIR = .obj
+
 BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, unittest) {
@@ -15,4 +17,4 @@ PKGCONFIG += gtk+-2.0
 
 SOURCES = exampleapp-gtk.c
 
-QMAKE_CLEAN += target
+QMAKE_CLEAN += maliit-exampleapp-gtk2

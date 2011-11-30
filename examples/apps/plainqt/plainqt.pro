@@ -1,5 +1,9 @@
 TEMPLATE = app
 TARGET = maliit-exampleapp-plainqt
+
+OBJECTS_DIR = .obj
+MOC_DIR = .moc
+
 DEPENDPATH += .
 
 BUILD_TYPE = unittest

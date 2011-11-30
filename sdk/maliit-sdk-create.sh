@@ -37,15 +37,17 @@ SDK_DIR=maliit-sdk
 SDK_OUT_PATH=$OUT/$SDK_DIR
 SDK_OUT_FILE_PATH=$OUT/maliit-sdk-$VERSION.tar.gz
 
-rm -r $SDK_OUT_PATH
+if [ -d $SDK_OUT_PATH ] ; then rm -r $SDK_OUT_PATH ; fi
 mkdir -p $SDK_OUT_PATH/examples
 
 # Extract examples
 cp -r $EXAMPLES_PATH $SDK_OUT_PATH/
 cd $SDK_OUT_PATH/examples
 sed -i -e s/"^BUILD_TYPE.*=.*"/"BUILD_TYPE = $BUILD_TYPE"/ `grep -r --files-with-matches BUILD_TYPE ./ | tr "\n" " "`
+# Clean examples
 make clean &> /dev/null
 find ./ -name Makefile -exec rm {} \;
+find ./ -type d \( -name ".obj" -o -name ".moc" \) -print0 | xargs -0 /bin/rmdir
 rm README
 cd -
 
@@ -53,4 +55,3 @@ cd -
 cd $OUT
 tar -acf $SDK_OUT_FILE_PATH $SDK_DIR
 cd -
-

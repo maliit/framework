@@ -1,6 +1,9 @@
-
 TEMPLATE = app
 TARGET = maliit-exampleapp-twofields
+
+OBJECTS_DIR = .obj
+MOC_DIR = .moc
+
 DEPENDPATH += .
 
 BUILD_TYPE = unittest

@@ -1,5 +1,9 @@
 TEMPLATE = app
 TARGET = maliit-exampleapp-widgetproperties
+
+OBJECTS_DIR = .obj
+MOC_DIR = .moc
+
 DEPENDPATH += .
 
 BUILD_TYPE = unittest
@@ -36,4 +40,4 @@ HEADERS += \
 
 QT += core gui
 
-QMAKE_CLEAN += target
+QMAKE_CLEAN += maliit-exampleapp-widgetproperties
