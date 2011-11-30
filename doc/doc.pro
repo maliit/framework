@@ -2,10 +2,20 @@ include(../config.pri)
 
 DOXYGEN_BIN=doxygen
 
-QMAKE_EXTRA_TARGETS += doc
-target = doc
+TEMPLATE = lib
+CONFIG += plugin
+TARGET = dummy
 
 outputFiles(mdoxy.cfg)
+
+DOXYGEN = .
+
+doc.name = doc
+doc.CONFIG += target_predeps no_link
+doc.output = html
+doc.clean_commands = rm -rf html
+doc.clean = doxygen.log doxygen.log.xml
+doc.input = DOXYGEN
 
 isEmpty(DOXYGEN_BIN) {
     doc.commands = @echo "Unable to detect doxygen in PATH"
@@ -24,4 +34,4 @@ isEmpty(DOXYGEN_BIN) {
     INSTALLS += htmldocs
 }
 
-doc.depends = FORCE
+QMAKE_EXTRA_COMPILERS += doc
