@@ -1,5 +1,7 @@
 #include "debug.h"
 
+#include <strings.h>
+
 gboolean
 maliit_is_debug_enabled(void)
 {
