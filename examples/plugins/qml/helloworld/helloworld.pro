@@ -46,3 +46,5 @@ contains(BUILD_TYPE, unittest) {
     plugin.path += $$MALIIT_TEST_PLUGINS_DIR/examples/qml/helloworld
     INSTALLS += plugin
 }
+
+QMAKE_CLEAN += libdummy.so*
