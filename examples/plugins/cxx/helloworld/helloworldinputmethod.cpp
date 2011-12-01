@@ -19,7 +19,8 @@
 #include <mabstractinputmethodhost.h>
 
 #include <QDebug>
-#include <QtGui>
+#include <QApplication>
+#include <QDesktopWidget>
 
 namespace {
     const char * const exampleSubViewId("HelloWorldPluginSubview1");

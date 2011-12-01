@@ -2,8 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
-#include <QtGui>
+#include <QProcess>
+#include <QPushButton>
+#include <QTextEdit>
 
 class MainWindow
         : public QMainWindow

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 
 #include <QtCore>
-#include <QtGui>
+#include <QVBoxLayout>
 
 #if defined(Q_WS_X11)
 #include <QX11Info>
