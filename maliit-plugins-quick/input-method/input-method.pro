@@ -24,7 +24,7 @@ SOURCES += \
         minputmethodquick.cpp \
         mkeyoverridequick.cpp
 
-QT = core gui xml declarative
+QT = core $$QT_WIDGETS xml declarative
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){

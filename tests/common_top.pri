@@ -5,7 +5,7 @@ MOC_DIR = .moc
 UTILS_DIR = ../utils
 
 CONFIG += debug
-QT += testlib xml
+QT += testlib xml $$QT_WIDGETS
 
 QMAKE_CLEAN += *.log *~
 

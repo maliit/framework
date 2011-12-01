@@ -102,6 +102,12 @@ enable-legacy {
     DEFINES += HAVE_LEGACY_NAMES
 }
 
+contains(QT_MAJOR_VERSION, 4) {
+    QT_WIDGETS = gui
+} else {
+    QT_WIDGETS = gui widgets
+}
+
 defineTest(outputFile) {
     out = $$OUT_PWD/$$1
     in = $$PWD/$${1}.in

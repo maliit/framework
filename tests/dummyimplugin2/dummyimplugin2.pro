@@ -12,6 +12,8 @@ MOC_DIR = .moc
 
 CONFIG += debug plugin
 
+QT += $$QT_WIDGETS
+
 HEADERS += dummyimplugin2.h
 SOURCES += dummyimplugin2.cpp
 

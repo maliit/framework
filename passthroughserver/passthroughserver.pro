@@ -10,7 +10,7 @@ LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
 
 SOURCES += main.cpp
 
-QT += core gui
+QT += core $$QT_WIDGETS
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
