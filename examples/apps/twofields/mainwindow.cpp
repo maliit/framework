@@ -7,7 +7,6 @@
 #include <QPushButton>
 #include <QVariant>
 #include <QVBoxLayout>
-#include <QX11Info>
 
 #include <maliit/inputmethod.h>
 #include <maliit/namespace.h>
