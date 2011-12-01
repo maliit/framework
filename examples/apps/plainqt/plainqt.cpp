@@ -30,8 +30,7 @@ int main(int argc, char** argv)
 #endif
 
     QApplication kit(argc, argv);
-
-#ifdef Q_WS_QPA
+#if defined(Q_WS_QPA) && (QT_VERSION < 0x050000)
     // Workaround for lighthouse Qt
     kit.setInputContext(QInputContextFactory::create("Maliit", &kit));
 #endif
