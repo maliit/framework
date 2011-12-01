@@ -14,7 +14,6 @@
 #include <QPushButton>
 #include <QVariant>
 #include <QVBoxLayout>
-#include <QX11Info>
 
 namespace {
     const char * const FillerText = "Mauris pretium vehicula tellus, vitae "
