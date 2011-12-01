@@ -46,7 +46,11 @@ external-libmaliit {
 }
 
 !only-libmaliit {
-    SUBDIRS += common input-context gtk-input-context maliit-plugins-quick examples
+    SUBDIRS += common gtk-input-context maliit-plugins-quick examples
+
+    contains(QT_MAJOR_VERSION, 4) {
+        SUBDIRS += input-context
+    }
 
     !nodoc {
         SUBDIRS += doc
