@@ -16,8 +16,7 @@
 
 #include "mainwindow.h"
 
-#include <QtCore>
-#include <QtGui>
+#include <QApplication>
 
 #include <cstdlib>
 

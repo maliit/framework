@@ -19,7 +19,9 @@
 #include <mabstractinputmethodhost.h>
 
 #include <QDebug>
-#include <QtGui>
+#include <QApplication>
+#include <QDesktopWidget>
+#include <QKeyEvent>
 
 namespace {
     const char * const overrideSubViewId("OverridePluginSubview1");
