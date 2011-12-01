@@ -17,7 +17,7 @@ enable-legacy {
     MODE = normal
 }
 
-DUMMY = .
+DUMMY = maliit-sdk
 
 sdk.name = create_sdk
 sdk.CONFIG += target_predeps no_link
@@ -32,7 +32,7 @@ QMAKE_EXTRA_COMPILERS += sdk
 sdk_install.files = $$OUT_PWD/build/maliit-sdk/
 sdk_install.path = $$M_IM_INSTALL_DOCS/$$MALIIT_PACKAGENAME
 sdk_install.CONFIG += no_check_exist directory
-sdk_install.depends = sdk
+sdk_install.depends += build
 
 sdk_executable.CONFIG += no_check_exist
 sdk_executable.files = $$OUT_PWD/maliit-sdk
