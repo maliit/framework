@@ -42,6 +42,10 @@ HEADERS +=              \
     mainwindow.h        \
     myextension.h
 
-QT += core gui
+contains(QT_MAJOR_VERSION, 4) {
+    QT += core gui
+} else {
+    QT += core gui widgets
+}
 
 QMAKE_CLEAN += maliit-exampleapp-twofields

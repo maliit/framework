@@ -6,6 +6,12 @@ MOC_DIR = .moc
 
 CONFIG += debug plugin
 
+contains(QT_MAJOR_VERSION, 4) {
+    QT += core gui
+} else {
+    QT += core gui widgets
+}
+
 HEADERS += \
     overrideplugin.h \
     overrideinputmethod.h \

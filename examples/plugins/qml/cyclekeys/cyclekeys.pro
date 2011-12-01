@@ -5,7 +5,12 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
 CONFIG += debug plugin
-QT = core gui declarative
+
+contains(QT_MAJOR_VERSION, 4) {
+    QT = core gui declarative
+} else {
+    QT = core gui widgets declarative
+}
 
 SOURCES += cyclekeysplugin.cpp
 HEADERS += cyclekeysplugin.h
