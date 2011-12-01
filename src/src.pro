@@ -122,7 +122,7 @@ enable-legacy {
 }
 
 CONFIG += qdbus link_pkgconfig
-QT = core gui xml
+QT = core $$QT_WIDGETS xml
 
 PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
 

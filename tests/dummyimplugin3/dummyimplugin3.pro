@@ -12,6 +12,8 @@ MOC_DIR = .moc
 
 CONFIG += debug plugin
 
+QT += $$QT_WIDGETS
+
 HEADERS += \
     dummyimplugin3.h \
     dummyinputmethod3.h \

@@ -22,7 +22,7 @@ SOURCES += \
 LIBS += \
         $$QUICK_DIR/lib$${MALIIT_PLUGINS_QUICK_LIB}.so \
 
-QT = core gui declarative
+QT = core $$QT_WIDGETS declarative
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
