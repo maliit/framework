@@ -4,9 +4,7 @@ CONFIG += ordered
 
 TEMPLATE = subdirs
 
-SUBDIRS = \
-          ut_minputcontextplugin \
-          ut_minputcontext \
+SUBDIRS += \
           dummyimplugin \
           dummyimplugin2 \
           dummyimplugin3 \
@@ -22,6 +20,12 @@ SUBDIRS = \
           ut_maliit_attributeextension \
           ut_maliit_attributeextensionregistry \
           ut_maliit_inputmethod \
+
+contains(QT_MAJOR_VERSION, 4) {
+    SUBDIRS += \
+          ut_minputcontext \
+          ut_minputcontextplugin \
+}
 
 x11 {
     SUBDIRS += \
