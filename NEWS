@@ -2,6 +2,9 @@
 ======
 
 CHANGES SINCE 0.81.0
+* Plugins can store plugin data such as graphical assets in
+  /usr/share/maliit/plugins/<plugin-name>. The prefix can be queried through
+  "$ pkg-config --variable pluginsdatadir maliit-plugins-0.80".
 * Standardized logging output on Maliit server and Qt and Gtk+ input contexts.
   Debug output is enabled with setting the environment variable MALIIT_DEBUG
   to enabled (MALIIT_DEBUG=enabled). The old environment variable
