@@ -3,6 +3,7 @@ exec_prefix=@M_IM_PREFIX@
 libdir=@M_IM_INSTALL_LIBS@
 includedir=@M_IM_INSTALL_HEADERS@
 pluginsdir=@M_IM_PLUGINS_DIR@
+pluginsdatadir=@M_IM_PLUGINS_DATA_DIR@
 factorypluginsdir=@M_IM_FACTORY_PLUGINS_DIR@
 
 Name: MeegoIMFramework
