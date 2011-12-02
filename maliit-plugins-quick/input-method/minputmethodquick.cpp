@@ -78,6 +78,7 @@ public:
         Q_ASSERT(m_controller);
 
         m_engine->rootContext()->setContextProperty("MInputMethodQuick", m_controller);
+        m_engine->addImportPath(M_IM_PLUGINS_DATA_DIR);
     }
 
     virtual ~MInputMethodQuickLoader()
