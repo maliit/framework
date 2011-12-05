@@ -45,7 +45,7 @@ INSTALLS += target
 
     HOST = $$system(pkg-config --variable gtk_host gtk+-2.0)
     system(test -e /etc/fedora-release) {
-        update-im-cache.path = $$GTK3_DIR/
+        update-im-cache.path = $$GTK2_DIR/
         update-im-cache.extra = update-gtk-immodules $$HOST
         update-im-cache.uninstall = update-gtk-immodules $$HOST
 
