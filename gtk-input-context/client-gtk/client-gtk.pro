@@ -25,6 +25,11 @@ LIBS += ../src/libmaliit-gtk-im-common.a
 PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1 gio-2.0
 
 GTK2_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-2.0)
+GTK2_PREFIX = $$system(pkg-config --variable prefix gtk+-2.0)
+enforce-install-prefix {
+    GTK2_IM_LIBDIR = $$replace(GTK2_IM_LIBDIR, $$GTK2_PREFIX, $$M_IM_PREFIX)
+}
+
 GTK2_BINARY_VERSION = $$system(pkg-config --variable=gtk_binary_version gtk+-2.0)
 GTK2_DIR = $$GTK2_IM_LIBDIR/gtk-2.0/$$GTK2_BINARY_VERSION
 GTK2_IM_MODULEDIR = $$GTK2_DIR/immodules

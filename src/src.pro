@@ -179,7 +179,13 @@ install_prf.files = $$OUT_PWD/meegoimframework.prf
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
 
 !enable-legacy {
-    install_services.path = $$system(pkg-config --variable session_bus_services_dir dbus-1)
+    DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
+    DBUS_SERVICES_PREFIX = $$system(pkg-config --variable prefix dbus-1)
+    enforce-install-prefix {
+        DBUS_SERVICES_DIR = $$replace(DBUS_SERVICES_DIR, $$DBUS_SERVICES_PREFIX, $$M_IM_PREFIX)
+    }
+
+    install_services.path = $$DBUS_SERVICES_DIR
     install_services.files = org.maliit.server.service
 }
 

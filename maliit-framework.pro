@@ -9,16 +9,18 @@ include(./config.pri)
         \\n\\t MALIIT_SERVER_ARGUMENTS : Arguments to use for starting maliit-server by D-Bus activation \
         \\nRecognised CONFIG flags: \
         \\n\\t enable-legacy : Build in legacy mode (for meego-im ABI/API compatability) \
-        \\n\\t enable-meegotouch : Link input context to libmeegotouch for a MApplicationPage hack \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t notests : Do not build tests \
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \
         \\n\\t only-libmaliit : Only build libmaliit \
         \\n\\t external-libmaliit : Use external libmaliit (do not build libmaliit) \
-        \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches \
+        \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
+        \\n\\t enforce-install-prefix : Always use M_IM_PREFIX instead of prefix reported by GTK+, Qt, DBus etc. (used for testing) \
         \\nInfluential environment variables: \
         \\n\\t GCONF_CONFIG_SOURCE : Specify custom gconf source2 \
+        \\n\\t GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL : Don't register gconf schemas (used for packaging) \
+        \\n\\t PKG_CONFIG_PATH : Override standard directories to look for pkg-config information \
         \\nExamples: \
         \\n\\t qmake \
         \\n\\t qmake M_IM_PREFIX=/usr M_IM_INSTALL_LIBS=/usr/lib64 CONFIG+=enable-legacy CONFIG+=notests \

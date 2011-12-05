@@ -51,6 +51,11 @@ servicefilegenerator.commands += sed -e \"s:M_BIN_PATH:$$M_IM_INSTALL_BIN:g\" -e
 servicefilegenerator.CONFIG = target_predeps no_link
 QMAKE_EXTRA_COMPILERS += servicefilegenerator
 
-servicefiles.path = $$system(pkg-config --variable session_bus_services_dir dbus-1)
+DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
+DBUS_SERVICES_PREFIX = $$system(pkg-config --variable prefix dbus-1)
+enforce-install-prefix {
+    DBUS_SERVICES_DIR = $$replace(DBUS_SERVICES_DIR, $$DBUS_SERVICES_PREFIX, $$M_IM_PREFIX)
+}
+servicefiles.path = $$DBUS_SERVICES_DIR
 servicefiles.files = minputmethodserver.service
 servicefiles.CONFIG += no_check_exist
