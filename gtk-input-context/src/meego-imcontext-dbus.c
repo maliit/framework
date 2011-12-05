@@ -97,7 +97,7 @@ gboolean
 meego_imcontext_dbus_im_initiated_hide(MeegoIMContextDbusObj *obj, GError **error)
 {
     STEP();
-    return TRUE;
+    return meego_imcontext_client_im_initiated_hide (obj);
 }
 
 

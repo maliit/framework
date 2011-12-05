@@ -428,10 +428,24 @@ meego_imcontext_client_activation_lost_event(MeegoIMContextDbusObj *obj)
 gboolean
 meego_imcontext_client_im_initiated_hide(MeegoIMContextDbusObj *obj)
 {
-    // TODO: unfocus the widget
     UNUSED(obj);
-    STEP();
-    return TRUE;
+    if (focused_imcontext && focused_imcontext->client_window) {
+        gpointer user_data = NULL;
+        GtkWidget* parent_widget = NULL;
+
+        gdk_window_get_user_data (focused_imcontext->client_window, user_data);
+
+        parent_widget = GTK_WIDGET (user_data);
+
+        while (parent_widget && !GTK_IS_WINDOW (parent_widget)) {
+            parent_widget = gtk_widget_get_parent (parent_widget);
+        }
+        if (parent_widget) {
+            gtk_window_set_focus (GTK_WINDOW (parent_widget), NULL);
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 
 
