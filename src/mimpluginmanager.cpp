@@ -133,6 +133,10 @@ void MIMPluginManagerPrivate::loadPlugins()
         } // end Q_FOREACH file in path
     } // end Q_FOREACH path in paths
 
+    if (plugins.empty()) {
+        qFatal("No plugins were found.");
+    }
+
     onScreenPlugins.updateAvailableSubViews(availablePluginsAndSubViews());
 
     Q_EMIT q->pluginsChanged();
