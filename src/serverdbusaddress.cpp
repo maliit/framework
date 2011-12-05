@@ -21,6 +21,8 @@
 
 #include <dbus/dbus.h>
 
+#include <cstdlib>
+
 namespace {
     const char * const MaliitServerName = "org.maliit.server";
     const char * const MaliitServerObjectPath = "/org/maliit/server/address";
@@ -35,7 +37,10 @@ AddressPublisher::AddressPublisher(const QString &address)
     , mAddress(address)
 {
     QDBusConnection::sessionBus().registerObject(MaliitServerObjectPath, this, QDBusConnection::ExportAllProperties);
-    QDBusConnection::sessionBus().registerService(MaliitServerName);
+    if (!QDBusConnection::sessionBus().registerService(MaliitServerName)) {
+        qWarning("maliit-server is already running");
+        std::exit(0);
+    }
 }
 
 AddressPublisher::~AddressPublisher()
