@@ -1,7 +1,8 @@
 include(../../config.pri)
 
 TEMPLATE = lib
-TARGET = maliit-im-common
+TARGET = maliit-gtk-im-common
+CONFIG += staticlib
 
 CONFIG += link_pkgconfig
 PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1 gio-2.0
@@ -30,16 +31,9 @@ SOURCES += \
     qt-keysym-map.cpp \
     debug.c \
 
-GTK3_IM_MODULEDIR =
-
-target.path = $$M_IM_INSTALL_LIBS
-
-INSTALLS += target
-
 EXTRA_FILES = \
     meego-im-client.xml \
     meego-imcontext-dbus.xml
-
 
 # improxy
 # Generate dbus glue

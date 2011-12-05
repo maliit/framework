@@ -20,7 +20,9 @@ SOURCES += \
     ../client-gtk/client-imcontext-gtk.c \
     ../client-gtk/qt-gtk-translate.cpp \
 
-LIBS += ../src/libmaliit-im-common.so
+# DBus code
+LIBS += ../src/libmaliit-gtk-im-common.a
+PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1 gio-2.0
 
 GTK3_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-3.0)
 GTK3_BINARY_VERSION = $$system(pkg-config --variable=gtk_binary_version gtk+-3.0)
