@@ -96,16 +96,17 @@ meego_im_proxy_init(MeegoIMProxy *self)
 }
 
 void
-meego_im_proxy_connect(MeegoIMProxy *proxy, DBusGConnection *connection)
+meego_im_proxy_connect(MeegoIMProxy *proxy, gpointer connection)
 {
     DBusGProxy *dbusproxy;
-    g_return_if_fail(connection != NULL);
+    DBusGConnection *dbus_connection = (DBusGConnection *)connection;
+    g_return_if_fail(dbus_connection != NULL);
 
     if (proxy->priv->dbusproxy) {
         g_object_unref(proxy->priv->dbusproxy);
     }
 
-    dbusproxy = dbus_g_proxy_new_for_peer(connection,
+    dbusproxy = dbus_g_proxy_new_for_peer(dbus_connection,
                                           MEEGO_IM_OBJECT_PATH, /* obj path */
                                           MEEGO_IM_SERVICE_INTERFACE /* interface */);
 

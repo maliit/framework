@@ -26,8 +26,6 @@
 
 G_BEGIN_DECLS
 
-typedef struct _DBusGConnection DBusGConnection;
-
 typedef struct _MeegoIMProxy MeegoIMProxy;
 typedef struct _MeegoIMProxyClass MeegoIMProxyClass;
 typedef struct _MeegoImProxyPrivate MeegoImProxyPrivate;
@@ -53,7 +51,7 @@ struct _MeegoIMProxyClass {
 GType meego_im_proxy_get_type(void);
 
 MeegoIMProxy *meego_im_proxy_get_singleton(void);
-void meego_im_proxy_connect(MeegoIMProxy *proxy, DBusGConnection *connection);
+void meego_im_proxy_connect(MeegoIMProxy *proxy, gpointer connection);
 gboolean meego_im_proxy_activate_context(MeegoIMProxy *proxy);
 gboolean meego_im_proxy_app_orientation_changed(MeegoIMProxy *proxy, const gint angle);
 gboolean meego_im_proxy_hide_input_method(MeegoIMProxy *proxy);

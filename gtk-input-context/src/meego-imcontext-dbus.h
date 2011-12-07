@@ -25,8 +25,6 @@
 #include <glib.h>
 #include <glib-object.h>
 
-typedef struct _DBusGConnection DBusGConnection;
-
 typedef struct {
     GObject parent;
 
@@ -52,7 +50,7 @@ GType meego_imcontext_dbusobj_get_type(void);
 
 
 MeegoIMContextDbusObj *meego_imcontext_dbusobj_get_singleton(void);
-void meego_imcontext_dbusobj_connect(MeegoIMContextDbusObj *obj, DBusGConnection *connection);
+void meego_imcontext_dbusobj_connect(MeegoIMContextDbusObj *obj, gpointer connection);
 
 // Call back functions for dbus obj, need to be implemented in imcontext client side
 
