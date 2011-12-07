@@ -6,9 +6,26 @@ CHANGES SINCE 0.81.0
   /usr/share/maliit/plugins/<plugin-name>. The prefix can be queried through
   "$ pkg-config --variable pluginsdatadir maliit-plugins-0.80".
 * Standardized logging output on Maliit server and Qt and Gtk+ input contexts.
-  Debug output is enabled with setting the environment variable MALIIT_DEBUG
-  to enabled (MALIIT_DEBUG=enabled). The old environment variable
-  MIC_ENABLE_DEBUG is not supported any longer.
+  - Debug output is enabled with setting the environment variable MALIIT_DEBUG
+    to enabled (MALIIT_DEBUG=enabled).
+  - Old environment variable MIC_ENABLE_DEBUG is not supported any longer.
+* Use a static, non-installed lib for common GTK+ IC code.
+* Framework and examples can be compiled with Qt 5.
+
+BUG FIXES
+* Fixes: MALIIT#48 - 	It is possible to have more than one maliit-server per session 
+* Fixes: MALIIT#31 - On closing IM with GTK+ applications, user has to unfocus manually to be able to invoke IM again
+* Fixes: MALIIT#33 - maliit-sdk make clean fix and .obj/.moc removal
+* Fixes: MALIIT#16 - root owned directory ./sdk/build/maliit-sdk is created on make install
+* Fixes: NB#286366 - libmeegoimframework-dev package is incomplete
+* Fixes: QML helloworld plugin build failure
+* Fixes: ut_selfcompositing fails on buildbot
+* Fix GTK+ IC build for out-of-tree builds
+* Fixes: Ut_MInputContext::testCopyPasteState() failing if clipboard has text at test start
+* Fixes: MALIIT#17 - Qt input-context crashes if using GtkStyle and have GTK+ input-context enabled
+* Fix build for MImQPAPlatform
+* Fix missing QApplication include in case of non X11 platform.
+* Fixes: Missing linker directory in ut_minputmethodquickplugin
 
 0.81.0
 ======
