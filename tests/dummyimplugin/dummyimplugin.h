@@ -9,10 +9,10 @@
 
 //! Dummy input method plugin for ut_mimpluginloader
 class DummyImPlugin: public QObject,
-    public MInputMethodPlugin
+    public Maliit::Server::InputMethodPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(MInputMethodPlugin)
+    Q_INTERFACES(Maliit::Server::InputMethodPlugin)
 
 public:
     DummyImPlugin();
@@ -20,12 +20,8 @@ public:
     //! \reimp
     virtual QString name() const;
 
-    virtual QStringList languages() const;
-
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
-                                                    QWidget *mainWindow);
-
-    virtual MAbstractInputMethodSettings *createInputMethodSettings();
+                                                    std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory);
 
     virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end

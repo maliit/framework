@@ -24,7 +24,7 @@ class OverridePlugin
      : public QObject, public MInputMethodQuickPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(MInputMethodQuickPlugin MInputMethodPlugin)
+    Q_INTERFACES(MInputMethodQuickPlugin Maliit::Server::InputMethodPlugin)
 public:
     OverridePlugin();
     //! \reimpl

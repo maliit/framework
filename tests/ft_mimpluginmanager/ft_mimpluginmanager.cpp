@@ -4,6 +4,7 @@
 #include "dummyimplugin.h"
 #include "dummyinputmethod.h"
 #include "utils.h"
+#include "defaultsurfaces.h"
 
 #include <minputcontextconnection.h>
 #include <mimpluginmanager.h>
@@ -89,7 +90,8 @@ void Ft_MIMPluginManager::init()
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
     shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
-    subject = new MIMPluginManager(icConnection, 0);
+    shared_ptr<Maliit::Server::Internal::SurfacesFactory> surfacesFactory(new Maliit::Server::Internal::DefaultSurfacesFactory);
+    subject = new MIMPluginManager(icConnection, surfacesFactory);
 }
 
 void Ft_MIMPluginManager::cleanup()

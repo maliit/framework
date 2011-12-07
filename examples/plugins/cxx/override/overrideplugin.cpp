@@ -31,23 +31,13 @@ QString OverridePlugin::name() const
     return "OverridePlugin";
 }
 
-QStringList OverridePlugin::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 OverridePlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                  QWidget *mainWindow)
+                                  std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
 {
-    return new OverrideInputMethod(host, mainWindow);
+    return new OverrideInputMethod(host, 0);
 }
 
-MAbstractInputMethodSettings *OverridePlugin::createInputMethodSettings()
-{
-    /* This plugin does not have a settings widget */
-    return 0;
-}
 QSet<MInputMethod::HandlerState> OverridePlugin::supportedStates() const
 {
     return allowedStates;

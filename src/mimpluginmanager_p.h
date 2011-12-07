@@ -29,10 +29,17 @@
 #include "mimmeegoindicator.h"
 #endif
 
+#include "surface.h"
+#include "surfaces.h"
+
 #include <QtCore>
 #include <tr1/memory>
 
-class MInputMethodPlugin;
+namespace Maliit {
+namespace Server {
+    class InputMethodPlugin;
+}
+}
 class MImAbstractPluginFactory;
 class MInputContextConnection;
 class MIMPluginManager;
@@ -42,6 +49,11 @@ class MAbstractInputMethod;
 class MIMPluginManagerAdaptor;
 
 using namespace std::tr1;
+
+using Maliit::Server::Surface;
+using Maliit::Server::SurfaceFactory;
+using Maliit::Server::Internal::Surfaces;
+using Maliit::Server::Internal::SurfacesFactory;
 
 /* Internal class only! Interfaces here change, internal developers only*/
 class MIMPluginManagerPrivate
@@ -61,39 +73,39 @@ public:
         MInputMethodHost *imHost;
         PluginState state;
         MInputMethod::SwitchDirection lastSwitchDirection;
-        WeakWidget centralWidget;
         QString pluginId; // the library filename is used as ID
+        shared_ptr<Surfaces> surfaces;
     };
 
-    typedef QMap<MInputMethodPlugin *, PluginDescription> Plugins;
-    typedef QSet<MInputMethodPlugin *> ActivePlugins;
-    typedef QMap<MInputMethod::HandlerState, MInputMethodPlugin *> HandlerMap;
+    typedef QMap<Maliit::Server::InputMethodPlugin *, PluginDescription> Plugins;
+    typedef QSet<Maliit::Server::InputMethodPlugin *> ActivePlugins;
+    typedef QMap<MInputMethod::HandlerState, Maliit::Server::InputMethodPlugin *> HandlerMap;
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
-    MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, WeakWidget proxyWidget, MIMPluginManager *p);
+    MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, shared_ptr<SurfacesFactory> surfacesFactory, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
-    void activatePlugin(MInputMethodPlugin *plugin);
+    void activatePlugin(Maliit::Server::InputMethodPlugin *plugin);
     void loadPlugins();
     bool loadPlugin(const QDir &dir, const QString &fileName);
     bool loadFactoryPlugin(const QDir &dir, const QString &fileName);
     void addHandlerMap(MInputMethod::HandlerState state, const QString &pluginName);
     void setActiveHandlers(const QSet<MInputMethod::HandlerState> &states);
     QSet<MInputMethod::HandlerState> activeHandlers() const;
-    void deactivatePlugin(MInputMethodPlugin *plugin);
+    void deactivatePlugin(Maliit::Server::InputMethodPlugin *plugin);
 
-    void replacePlugin(MInputMethod::SwitchDirection direction, MInputMethodPlugin *source,
+    void replacePlugin(MInputMethod::SwitchDirection direction, Maliit::Server::InputMethodPlugin *source,
                        Plugins::iterator replacement, const QString &subViewId);
     bool switchPlugin(MInputMethod::SwitchDirection direction, MAbstractInputMethod *initiator);
     bool switchPlugin(const QString &name,
                       MAbstractInputMethod *initiator,
                       const QString &subViewId = QString());
     bool trySwitchPlugin(MInputMethod::SwitchDirection direction,
-                         MInputMethodPlugin *source,
+                         Maliit::Server::InputMethodPlugin *source,
                          Plugins::iterator replacement,
                          const QString &subViewId = QString());
-    void changeHandlerMap(MInputMethodPlugin *origin,
-                          MInputMethodPlugin *replacement,
+    void changeHandlerMap(Maliit::Server::InputMethodPlugin *origin,
+                          Maliit::Server::InputMethodPlugin *replacement,
                           QSet<MInputMethod::HandlerState> states);
 
     QStringList loadedPluginsNames() const;
@@ -112,7 +124,7 @@ public:
     QStringList activePluginsNames() const;
     QString activePluginsName(MInputMethod::HandlerState state) const;
     void loadHandlerMap();
-    MInputMethodPlugin *activePlugin(MInputMethod::HandlerState state) const;
+    Maliit::Server::InputMethodPlugin *activePlugin(MInputMethod::HandlerState state) const;
     void hideActivePlugins();
     void showActivePlugins();
     void ensureActivePluginsVisible(ShowInputMethodRequest request);
@@ -189,7 +201,7 @@ public:
     MImOnScreenPlugins onScreenPlugins;
     MImHwKeyboardTracker hwkbTracker;
 
-    WeakWidget mProxyWidget;
+    shared_ptr<SurfacesFactory> mSurfacesFactory;
     int lastOrientation;
 
     QScopedPointer<MAttributeExtensionManager> mAttributeExtensionManager;

@@ -56,23 +56,10 @@ MInputMethodQuickPlugin::~MInputMethodQuickPlugin()
     delete d_ptr;
 }
 
-QStringList MInputMethodQuickPlugin::languages() const
-{
-    Q_D(const MInputMethodQuickPlugin);
-
-    return d->languages;
-}
-
 MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                                                 QWidget *mainWindow)
+                                                                 std::tr1::shared_ptr<SurfaceFactory> surfaceFactory)
 {
-    return new MInputMethodQuick(host, mainWindow, qmlFileName());
-}
-
-MAbstractInputMethodSettings *MInputMethodQuickPlugin::createInputMethodSettings()
-{
-    // not supported
-    return 0;
+    return new MInputMethodQuick(host, surfaceFactory, qmlFileName());
 }
 
 QSet<MInputMethod::HandlerState> MInputMethodQuickPlugin::supportedStates() const

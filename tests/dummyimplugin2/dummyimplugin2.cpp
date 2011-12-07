@@ -8,19 +8,9 @@ QString DummyImPlugin2::name() const
     return "DummyImPlugin2";
 }
 
-QStringList DummyImPlugin2::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 DummyImPlugin2::createInputMethod(MAbstractInputMethodHost *,
-                                  QWidget *)
-{
-    return 0;
-}
-
-MAbstractInputMethodSettings *DummyImPlugin2::createInputMethodSettings()
+                                  std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
 {
     return 0;
 }

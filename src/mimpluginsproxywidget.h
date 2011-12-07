@@ -30,6 +30,8 @@ class MImPluginsProxyWidget : public QWidget
     Q_OBJECT
 public:
     explicit MImPluginsProxyWidget(QWidget *parent = 0);
+
+    bool event(QEvent *e);
 };
 
 #endif // MIMPLUGINSPROXYWIDGET_H

@@ -27,14 +27,14 @@ MImQPAPlatform::MImQPAPlatform() :
 {
 }
 
-void MImQPAPlatform::inputPassthrough(const QRegion &region)
+void MImQPAPlatform::inputPassthrough(const QRegion &)
 {
     qDebug() << __PRETTY_FUNCTION__;
-
+/*
     if (region.isEmpty())
         mProxyWidget->hide();
     else
-        mProxyWidget->show();
+        mProxyWidget->show();*/
 }
 
 QWidget *MImQPAPlatform::pluginsProxyWidget()

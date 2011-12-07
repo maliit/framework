@@ -57,7 +57,7 @@ QString MaliitQuickPluginFactory::fileExtension() const
     return "qml";
 }
 
-MInputMethodPlugin * MaliitQuickPluginFactory::create(const QString &file) const
+Maliit::Server::InputMethodPlugin * MaliitQuickPluginFactory::create(const QString &file) const
 {
     return new MyPlugin(file);
 }

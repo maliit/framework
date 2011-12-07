@@ -20,11 +20,18 @@
 
 #if defined(Q_WS_X11)
 #include "mimxapplication.h"
+#include "defaultsurfaces.h"
 #elif defined(Q_WS_QPA)
 #include "mimqpaplatform.h"
+#include "defaultsurfaces.h"
 #endif
 
-using namespace std::tr1;
+#include "surfaces.h"
+
+using std::tr1::shared_ptr;
+using Maliit::Server::Internal::SurfacesFactory;
+using Maliit::Server::Internal::DefaultSurfacesFactory;
+// using Maliit::Server::Internal::FullscreenSurfacesFactory;
 
 class MImServerPrivate
 {
@@ -73,7 +80,13 @@ MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *
     d->platform.reset(new MImQPAPlatform);
 #endif
 
-    d->pluginManager = new MIMPluginManager(d->icConnection, pluginsWidget());
+//#if defined(Q_WS_X11)
+//    shared_ptr<SurfacesFactory> surfacesFactory(new FullscreenSurfacesFactory(pluginsWidget()));
+//#else
+    shared_ptr<SurfacesFactory> surfacesFactory(new DefaultSurfacesFactory);
+//#endif
+
+    d->pluginManager = new MIMPluginManager(d->icConnection, surfacesFactory);
 
     connectComponents();
 

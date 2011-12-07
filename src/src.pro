@@ -27,6 +27,7 @@ HEADERSINSTALL = \
         mimsettings.h \
         mattributeextensionid.h \
         mimsubviewdescription.h \
+        surface.h \
 
 HEADERS += \
         $$HEADERSINSTALL \
@@ -53,6 +54,10 @@ HEADERS += \
         mimserver.h \
         serverdbusaddress.h \
         mindicatorserviceclient.h \
+    defaultsurface.h \
+    fullscreensurface.h \
+    surfaces.h \
+    defaultsurfaces.h
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -86,6 +91,11 @@ SOURCES += \
         mimserver.cpp \
         serverdbusaddress.cpp \
         mindicatorserviceclient.cpp \
+        surface.cpp \
+    defaultsurface.cpp \
+    fullscreensurface.cpp \
+    surfaces.cpp \
+    defaultsurfaces.cpp
 
 x11 {
     HEADERS += \
@@ -122,7 +132,7 @@ enable-legacy {
 }
 
 CONFIG += qdbus link_pkgconfig
-QT = core $$QT_WIDGETS xml
+QT = core declarative qtquick1 $$QT_WIDGETS xml
 
 PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
 
@@ -243,6 +253,24 @@ fake_dbus_glue.target = mdbusglibicconnectionserviceglue.h
 fake_dbus_glue.depends = dbus_glue
 
 OTHER_FILES += minputmethodserver1interface.xml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

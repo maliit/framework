@@ -23,12 +23,19 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
+#if QT_VERSION >= 0x050000
+#include <QGuiApplication>
+#include <QPlatformNativeInterface>
+#include <QVariant>
+#include <QWindow>
+#endif
+
 MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
     QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
-    setAutoFillBackground(false);
+/*    setAutoFillBackground(false);
     setBackgroundRole(QPalette::NoRole);
 
 #if defined(Q_WS_X11)
@@ -43,5 +50,17 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
 #endif
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     QDesktopWidget* desktop = QApplication::desktop();
-    setMinimumSize(desktop->screenGeometry().size());
+    setMinimumSize(desktop->screenGeometry().size());*/
+}
+
+bool MImPluginsProxyWidget::event(QEvent *e)
+{
+    if (e->type() == QEvent::WinIdChange) {
+#if QT_VERSION >= 0x050000
+        QWindow *win = window()->windowHandle();
+        if (win)
+            QGuiApplication::platformNativeInterface()->setWindowProperty(win->handle(), "AcceptFocus", QVariant(false));
+#endif
+    }
+    return QWidget::event(e);
 }

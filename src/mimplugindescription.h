@@ -22,7 +22,11 @@
 #include <QString>
 
 class MImPluginDescriptionPrivate;
-class MInputMethodPlugin;
+namespace Maliit {
+namespace Server {
+    class InputMethodPlugin;
+}
+}
 
 /*! \ingroup maliitserver
  * \brief Provides information about loaded input method plugin
@@ -48,7 +52,7 @@ public:
 private:
     //! Constructor
     //! \param plugin Reference to loaded plugin.
-    explicit MImPluginDescription(const MInputMethodPlugin &plugin);
+    explicit MImPluginDescription(const Maliit::Server::InputMethodPlugin &plugin);
 
     //! Set enabled state to given value.
     void setEnabled(bool newEnabled);

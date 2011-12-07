@@ -77,7 +77,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     QVERIFY(pluginDir.exists(pluginPath));
 
     QObject *pluginInstance = 0;
-    MInputMethodPlugin *plugin = 0;
+    Maliit::Server::InputMethodPlugin *plugin = 0;
 
     if (pluginPath.endsWith(".qml")) {
         MaliitQuickPluginFactory factory;
@@ -86,13 +86,13 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
         QPluginLoader loader(pluginPath);
         pluginInstance = loader.instance();
         QVERIFY(pluginInstance != 0);
-        plugin =  qobject_cast<MInputMethodPlugin *>(pluginInstance);
+        plugin =  qobject_cast<Maliit::Server::InputMethodPlugin *>(pluginInstance);
     }
 
     QVERIFY(plugin != 0);
 
     MInputMethodQuick *testee = static_cast<MInputMethodQuick *>(
-        plugin->createInputMethod(&host, new QWidget));
+                plugin->createInputMethod(&host, std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>()));
 
     QVERIFY(not testee->inputMethodArea().isEmpty());
     QCOMPARE(testee->inputMethodArea(), QRect(0, testee->screenHeight() * 0.5,

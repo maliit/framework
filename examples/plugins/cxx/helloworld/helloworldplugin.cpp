@@ -31,23 +31,13 @@ QString HelloWorldPlugin::name() const
     return "HelloWorldPlugin";
 }
 
-QStringList HelloWorldPlugin::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 HelloWorldPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                    QWidget *mainWindow)
+                                    std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
 {
-    return new HelloWorldInputMethod(host, mainWindow);
+    return new HelloWorldInputMethod(host, 0);
 }
 
-MAbstractInputMethodSettings *HelloWorldPlugin::createInputMethodSettings()
-{
-    /* This plugin does not have a settings widget */
-    return 0;
-}
 QSet<MInputMethod::HandlerState> HelloWorldPlugin::supportedStates() const
 {
     return allowedStates;

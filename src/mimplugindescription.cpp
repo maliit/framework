@@ -25,7 +25,7 @@ class MImPluginDescriptionPrivate
 public:
     //! Construct new instance.
     //! \param plugin Reference to loaded plugin.
-    MImPluginDescriptionPrivate(const MInputMethodPlugin &plugin);
+    MImPluginDescriptionPrivate(const Maliit::Server::InputMethodPlugin &plugin);
 
 public:
     //! Plugin name.
@@ -37,13 +37,13 @@ public:
 //! \internal_end
 
 
-MImPluginDescriptionPrivate::MImPluginDescriptionPrivate(const MInputMethodPlugin &plugin)
+MImPluginDescriptionPrivate::MImPluginDescriptionPrivate(const Maliit::Server::InputMethodPlugin &plugin)
     : pluginName(plugin.name()),
     enabled(true)
 {
 }
 
-MImPluginDescription::MImPluginDescription(const MInputMethodPlugin &plugin)
+MImPluginDescription::MImPluginDescription(const Maliit::Server::InputMethodPlugin &plugin)
     : d_ptr(new MImPluginDescriptionPrivate(plugin))
 {
 }

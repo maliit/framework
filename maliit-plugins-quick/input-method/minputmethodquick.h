@@ -21,6 +21,8 @@
 #include <mabstractinputmethod.h>
 #include <mkeyoverride.h>
 
+#include "surface.h"
+
 #include <QRect>
 #include <QPointer>
 #include <QString>
@@ -71,7 +73,7 @@ public:
     //! \param mainWindow should be used to install plugin's UI into it. Managed by framework.
     //! \param qmlFileName the QML file that will be loaded.
     explicit MInputMethodQuick(MAbstractInputMethodHost *host,
-                               QWidget *mainWindow,
+                               std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> surfaceFactory,
                                const QString &qmlFileName);
     virtual ~MInputMethodQuick();
 

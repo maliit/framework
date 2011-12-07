@@ -14,21 +14,11 @@ QString DummyImPlugin::name() const
     return "DummyImPlugin";
 }
 
-QStringList DummyImPlugin::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 DummyImPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                 QWidget *mainWindow)
+                                 std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
 {
-    return new DummyInputMethod(host, mainWindow);
-}
-
-MAbstractInputMethodSettings *DummyImPlugin::createInputMethodSettings()
-{
-    return 0;
+    return new DummyInputMethod(host, 0);
 }
 
 QSet<MInputMethod::HandlerState> DummyImPlugin::supportedStates() const

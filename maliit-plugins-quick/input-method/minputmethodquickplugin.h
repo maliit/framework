@@ -19,11 +19,14 @@
 #define M_INPUT_METHOD_QUICK_PLUGIN
 
 #include "minputmethodplugin.h"  // why not <MInputMethodPlugin>?
+#include "surface.h"
 
 #include <QWidget>
 #include <QString>
 #include <QStringList>
 #include <QSet>
+
+using Maliit::Server::SurfaceFactory;
 
 class MInputMethodQuickPluginPrivate;
 
@@ -38,17 +41,15 @@ class MInputMethodQuickPluginPrivate;
 //! MInputMethodQuickPlugin::createInputMethodSettings as well and create a
 //! custom MAbstractInputMethod instance there.
 class MInputMethodQuickPlugin
-    : public MInputMethodPlugin
+    : public Maliit::Server::InputMethodPlugin
 {
 public:
     MInputMethodQuickPlugin();
     virtual ~MInputMethodQuickPlugin();
 
     //! \reimp
-    virtual QStringList languages() const;
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
-                                                    QWidget *mainWindow);
-    virtual MAbstractInputMethodSettings *createInputMethodSettings();
+                                                    std::tr1::shared_ptr<SurfaceFactory> surfaceFactory);
     virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end
 

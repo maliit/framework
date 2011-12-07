@@ -27,6 +27,7 @@
 #include "mattributeextensionid.h"
 #include "mimsubviewdescription.h"
 #include "minputcontextconnection.h"
+#include "surfaces.h"
 
 class QRegion;
 class MIMPluginManagerPrivate;
@@ -48,7 +49,7 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    MIMPluginManager(std::tr1::shared_ptr<MInputContextConnection> icConnection, QWidget *proxyWidget);
+    MIMPluginManager(std::tr1::shared_ptr<MInputContextConnection> icConnection, std::tr1::shared_ptr<Maliit::Server::Internal::SurfacesFactory>);
 
     virtual ~MIMPluginManager();
 

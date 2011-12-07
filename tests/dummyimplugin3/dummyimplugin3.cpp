@@ -15,22 +15,13 @@ QString DummyImPlugin3::name() const
     return "DummyImPlugin3";
 }
 
-QStringList DummyImPlugin3::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 DummyImPlugin3::createInputMethod(MAbstractInputMethodHost *host,
-                                  QWidget *mainWindow)
+                                  std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
 {
-    return new DummyInputMethod3(host, mainWindow);
+    return new DummyInputMethod3(host, 0);
 }
 
-MAbstractInputMethodSettings *DummyImPlugin3::createInputMethodSettings()
-{
-    return 0;
-}
 QSet<MInputMethod::HandlerState> DummyImPlugin3::supportedStates() const
 {
     return allowedStates;

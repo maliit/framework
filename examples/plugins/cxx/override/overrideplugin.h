@@ -26,10 +26,10 @@
 
 //! Override input method plugin that can be used as a base when developing new input method plugins
 class OverridePlugin: public QObject,
-    public MInputMethodPlugin
+    public Maliit::Server::InputMethodPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(MInputMethodPlugin)
+    Q_INTERFACES(Maliit::Server::InputMethodPlugin)
 
 public:
     OverridePlugin();
@@ -37,12 +37,8 @@ public:
     //! \reimp
     virtual QString name() const;
 
-    virtual QStringList languages() const;
-
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
-                                                    QWidget *mainWindow);
-
-    virtual MAbstractInputMethodSettings *createInputMethodSettings();
+                                                    std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> surfaceFactory);
 
     virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end

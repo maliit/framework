@@ -24,6 +24,7 @@
 #include "mtoolbaritem.h"
 #include "mkeyoverridequick.h"
 #include "mkeyoverride.h"
+#include "surface.h"
 
 #include <QKeyEvent>
 #include <QApplication>
@@ -42,6 +43,10 @@
 #include <QGraphicsObject>
 #include <QDir>
 #include <memory>
+
+using Maliit::Server::Surface;
+using Maliit::Server::SurfaceFactory;
+using Maliit::Server::SurfacePolicy;
 
 namespace
 {
@@ -146,9 +151,7 @@ class MInputMethodQuickPrivate
 {
 public:
     MInputMethodQuick *const q_ptr;
-    QGraphicsScene *const scene;
-    QGraphicsView *const view;
-    MInputMethodQuickLoader *const loader;
+    std::tr1::shared_ptr<Surface> surface;
     QRect inputMethodArea;
     int appOrientation;
     bool haveFocus;
@@ -165,12 +168,10 @@ public:
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
 
-    MInputMethodQuickPrivate(QWidget *mainWindow,
+    MInputMethodQuickPrivate(std::tr1::shared_ptr<SurfaceFactory>,
                              MInputMethodQuick *im)
         : q_ptr(im)
-        , scene(new QGraphicsScene(computeDisplayRect(), im))
-        , view(new MImGraphicsView(scene, mainWindow))
-        , loader(new MInputMethodQuickLoader(scene, im))
+        , surface()
         , appOrientation(0)
         , haveFocus(false)
         , activeState(MInputMethod::OnScreen)
@@ -184,9 +185,6 @@ public:
 
     ~MInputMethodQuickPrivate()
     {
-        delete loader;
-        delete view;
-        delete scene;
     }
 
     void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
@@ -206,32 +204,21 @@ public:
 };
 
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
-                                     QWidget *mainWindow,
-                                     const QString &qmlFileName)
-    : MAbstractInputMethod(host, mainWindow)
-    , d_ptr(new MInputMethodQuickPrivate(mainWindow, this))
+                                     std::tr1::shared_ptr<SurfaceFactory> surfaceFactory,
+                                     const QString &)
+    : MAbstractInputMethod(host, 0)
+    , d_ptr(new MInputMethodQuickPrivate(surfaceFactory, this))
 {
-    Q_D(MInputMethodQuick);
+//    Q_D(MInputMethodQuick);
 
-    d->loader->loadQmlFile(qmlFileName);
-    propagateScreenSize();
-    QWidget *p = d->view->viewport();
+//    d->surface->setQuickSource(QUrl(qmlFileName), this);
 
-    // make sure the window gets displayed:
-    if (p->nativeParentWidget()) {
-        p = p->nativeParentWidget();
-    }
-
-    // TODO: Make it work on multi-display setups.
-    // Would need to correctly follow current display of app window
-    // (record last mouse event and get display through event's position?).
-    const QRect displayRect(computeDisplayRect(p));
-    d->view->resize(displayRect.size());
+/*    d->view->resize(displayRect.size());
     d->view->setSceneRect(displayRect);
     d->view->show();
     d->view->setFrameShape(QFrame::NoFrame);
     d->view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d->view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    d->view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);*/
 }
 
 MInputMethodQuick::~MInputMethodQuick()
@@ -254,7 +241,8 @@ void MInputMethodQuick::show()
     handleAppOrientationChanged(d->appOrientation);
     
     if (d->activeState == MInputMethod::OnScreen) {
-      d->loader->showUI();
+//      d->loader->showUI();
+        d->surface->show();
       const QRegion r(inputMethodArea());
       d->handleInputMethodAreaUpdate(inputMethodHost(), r);
     }
@@ -267,16 +255,17 @@ void MInputMethodQuick::hide()
         return;
     }
     d->sipRequested = false;
-    d->loader->hideUI();
+//    d->loader->hideUI();
+    d->surface->hide();
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }
 
-void MInputMethodQuick::setToolbar(QSharedPointer<const MToolbarData> toolbar)
+void MInputMethodQuick::setToolbar(QSharedPointer<const MToolbarData>)
 {
-    Q_D(MInputMethodQuick);
+    //Q_D(MInputMethodQuick);
 
-    d->loader->setToolbar(toolbar);
+//    d->loader->setToolbar(toolbar);
 }
 
 void MInputMethodQuick::handleAppOrientationChanged(int angle)
@@ -312,7 +301,8 @@ void MInputMethodQuick::setState(const QSet<MInputMethod::HandlerState> &state)
             show(); // Force reparent of client widgets.
         }
     } else {
-        d->loader->hideUI();
+//        d->loader->hideUI();
+        d->surface->hide();
         // Allow client to make use of InputMethodArea
         const QRegion r;
         d->handleInputMethodAreaUpdate(inputMethodHost(), r);
@@ -325,7 +315,8 @@ void MInputMethodQuick::handleClientChange()
     Q_D(MInputMethodQuick);
 
     if (d->sipRequested) {
-        d->loader->hideUI();
+//        d->loader->hideUI();
+        d->surface->hide();
     }
 }
 
@@ -340,9 +331,12 @@ void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
 
     if (d->sipRequested) {
         if (inhibitShow) {
-            d->loader->hideUI();
+//            d->loader->hideUI();
+            d->surface->hide();
+
         } else {
-            d->loader->showUI();
+            d->surface->show();
+//            d->loader->showUI();
         }
     }
 }
