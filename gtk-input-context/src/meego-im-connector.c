@@ -161,6 +161,6 @@ meego_im_connector_run(MeegoImConnector *self)
 
     self->connection = connection;
 
-    meego_im_proxy_connect(self->proxy, self->connection);
-    meego_imcontext_dbusobj_connect(self->dbusobj, self->connection);
+    meego_im_proxy_connect(self->proxy, (gpointer)self->connection);
+    meego_imcontext_dbusobj_connect(self->dbusobj, (gpointer)self->connection);
 }

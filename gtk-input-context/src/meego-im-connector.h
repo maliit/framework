@@ -17,6 +17,8 @@
 #include "meego-im-proxy.h"
 #include "meego-imcontext-dbus.h"
 
+#include <dbus/dbus-glib.h>
+
 typedef struct {
     MeegoIMProxy *proxy;
     MeegoIMContextDbusObj *dbusobj;

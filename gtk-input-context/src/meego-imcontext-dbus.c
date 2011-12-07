@@ -67,9 +67,12 @@ meego_imcontext_dbusobj_class_init(MeegoIMContextDbusObjClass *klass)
 
 
 void
-meego_imcontext_dbusobj_connect(MeegoIMContextDbusObj *obj, DBusGConnection *connection)
+meego_imcontext_dbusobj_connect(MeegoIMContextDbusObj *obj, gpointer connection)
 {
-    dbus_g_connection_register_g_object(connection,
+    DBusGConnection *dbus_connection = (DBusGConnection *)connection;
+    g_return_if_fail(dbus_connection != NULL);
+
+    dbus_g_connection_register_g_object(dbus_connection,
                                         MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH,
                                         G_OBJECT(obj));
 }
