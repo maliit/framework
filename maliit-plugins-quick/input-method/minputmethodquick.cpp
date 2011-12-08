@@ -307,6 +307,7 @@ void MInputMethodQuick::setState(const QSet<MInputMethod::HandlerState> &state)
     }
 
     if (state.contains(MInputMethod::OnScreen)) {
+        d->activeState = MInputMethod::OnScreen;
         if (d->sipRequested && !d->sipIsInhibited) {
             show(); // Force reparent of client widgets.
         }
@@ -315,6 +316,7 @@ void MInputMethodQuick::setState(const QSet<MInputMethod::HandlerState> &state)
         // Allow client to make use of InputMethodArea
         const QRegion r;
         d->handleInputMethodAreaUpdate(inputMethodHost(), r);
+        d->activeState = *state.begin();
     }
 }
 
