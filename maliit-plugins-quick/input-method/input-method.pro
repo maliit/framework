@@ -50,7 +50,13 @@ headers.files += $$HEADERSINSTALL
     outputFiles(meegoimquick.prf)
 }
 
-install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
+QT_PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
+QT_PREFIX = $$[QT_INSTALL_PREFIX]
+enforce-install-prefix {
+    QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$M_IM_PREFIX)
+}
+
+install_prf.path = $$QT_PRF_DIR
 install_prf.files = $$OUT_PWD/meegoimquick.prf
 
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig

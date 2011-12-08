@@ -168,7 +168,13 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/MeegoImFramework.pc $$OUT_PWD/maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc
 
-install_prf.path = $$[QT_INSTALL_DATA]/mkspecs/features
+QT_PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
+QT_PREFIX = $$[QT_INSTALL_PREFIX]
+enforce-install-prefix {
+    QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$M_IM_PREFIX)
+}
+
+install_prf.path = $$QT_PRF_DIR
 install_prf.files = $$OUT_PWD/meegoimframework.prf
 
 !enable-legacy {
