@@ -433,7 +433,7 @@ meego_imcontext_client_im_initiated_hide(MeegoIMContextDbusObj *obj)
         gpointer user_data = NULL;
         GtkWidget* parent_widget = NULL;
 
-        gdk_window_get_user_data (focused_imcontext->client_window, user_data);
+        gdk_window_get_user_data (focused_imcontext->client_window, &user_data);
 
         parent_widget = GTK_WIDGET (user_data);
 
