@@ -6,7 +6,7 @@
       <applyto>/maliit/plugins/hardware</applyto>
       <owner>meegotouch</owner>
       <type>string</type>
-      <default>@M_IM_DEFAULT_PLUGIN@</default>
+      <default>@M_IM_DEFAULT_HW_PLUGIN@</default>
       <locale name="C">
         <short>Plugin name for hardware keyboard</short>
         <long>Plugin name for hardware keyboard</long>
