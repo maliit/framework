@@ -187,6 +187,10 @@ void Ut_Maliit_InputMethod::testEmitKeyRelease()
 
 void Ut_Maliit_InputMethod::testRequestInputMethodPanel()
 {
+#if QT_VERSION >= 0x050000
+    QSKIP("Does not apply to Qt5", QTest::SkipSingle);
+#endif
+
     EventSpyInputContext<QEvent::Type> *spy = new EventSpyInputContext<QEvent::Type>(std::mem_fun(&QEvent::type));
     qApp->setInputContext(spy);
 
@@ -198,6 +202,10 @@ void Ut_Maliit_InputMethod::testRequestInputMethodPanel()
 
 void Ut_Maliit_InputMethod::testCloseInputMethodPanel()
 {
+#if QT_VERSION >= 0x050000
+    QSKIP("Does not apply to Qt5", QTest::SkipSingle);
+#endif
+
     EventSpyInputContext<QEvent::Type> *spy = new EventSpyInputContext<QEvent::Type>(std::mem_fun(&QEvent::type));
     qApp->setInputContext(spy);
 
