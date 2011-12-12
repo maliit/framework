@@ -936,6 +936,7 @@ void Ut_MIMPluginManager::testSubViewsInfo()
 
 void Ut_MIMPluginManager::handleMessages()
 {
+    QTest::qWait(100);
     while (app->hasPendingEvents()) {
         app->processEvents();
     }
