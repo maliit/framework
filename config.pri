@@ -66,12 +66,22 @@ isEmpty(M_IM_ENABLE_MULTITOUCH) {
 MALIIT_EXTENSIONS_DIR = $$DATADIR/$$MALIIT_ATTRIBUTE_EXTENSIONS/
 DEFINES += MALIIT_EXTENSIONS_DIR=\\\"$$MALIIT_EXTENSIONS_DIR\\\"
 
+isEmpty(M_IM_DEFAULT_HW_PLUGIN) {
+enable-legacy {
+    M_IM_DEFAULT_HW_PLUGIN = libmeego-keyboard.so
+} else {
+    M_IM_DEFAULT_HW_PLUGIN = libmaliit-keyboard.so
+}
+}
+
+isEmpty(M_IM_DEFAULT_PLUGIN) {
 enable-legacy {
     M_IM_DEFAULT_PLUGIN = libmeego-keyboard.so
     M_IM_DEFAULT_SUBVIEW = en_gb.xml
 } else {
     M_IM_DEFAULT_PLUGIN = libmaliit-keyboard-plugin.so
     M_IM_DEFAULT_SUBVIEW = en_gb
+}
 }
 
 MALIIT_TEST_DATADIR = $$DATADIR/$$MALIIT_TEST_SUITE
@@ -134,6 +144,7 @@ defineTest(outputFile) {
                 M_IM_FACTORY_PLUGINS_DIR \
                 M_IM_VERSION \
                 M_IM_ENABLE_MULTITOUCH \
+                M_IM_DEFAULT_HW_PLUGIN \
                 M_IM_DEFAULT_PLUGIN \
                 M_IM_DEFAULT_SUBVIEW \
                 M_IM_QUICK_FEATURE \
