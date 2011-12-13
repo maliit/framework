@@ -8,7 +8,7 @@ DEPENDPATH += .
 
 BUILD_TYPE = unittest
 
-contains(BUILD_TYPE, skeleton) {
+contains(BUILD_TYPE, skeleton)|contains(BUILD_TYPE, skeleton-legacy) {
     CONFIG += link_pkgconfig
     PKGCONFIG += maliit-1.0
     INCLUDEPATH += $$system(pkg-config --cflags maliit-1.0 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
