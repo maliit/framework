@@ -10,10 +10,15 @@ outputFiles(mdoxy.cfg)
 
 DOXYGEN = .
 
+HTML_BUILD_DIR = $${OUT_PWD}/html/
+# qmake creates wrong install rules for directories
+# that do not exist at qmake time, so we hack it here
+system(mkdir -p $$HTML_BUILD_DIR)
+
 doc.name = doc
 doc.CONFIG += target_predeps no_link
-doc.output = html
-doc.clean_commands = rm -rf html
+doc.output = $$HTML_BUILD_DIR/index.html
+doc.clean_commands = rm -rf $$HTML_BUILD_DIR/*
 doc.clean = doxygen.log doxygen.log.xml
 doc.input = DOXYGEN
 
@@ -21,14 +26,13 @@ isEmpty(DOXYGEN_BIN) {
     doc.commands = @echo "Unable to detect doxygen in PATH"
 } else {
     # Build docs
-    doc.commands += mkdir -p $${OUT_PWD}/html ;
-    doc.commands += ( $${DOXYGEN_BIN} $${OUT_PWD}/mdoxy.cfg );
-    doc.commands += cp $${IN_PWD}/src/images/* $${OUT_PWD}/html ;
-    doc.commands += cp $${IN_PWD}/src/*.html $${OUT_PWD}/html ;
-    doc.commands += ( $${IN_PWD}/xmlize.pl );
+    doc.commands += $${DOXYGEN_BIN} $${OUT_PWD}/mdoxy.cfg;
+    doc.commands += cp $${IN_PWD}/src/images/* $$HTML_BUILD_DIR ;
+    doc.commands += cp $${IN_PWD}/src/*.html $$HTML_BUILD_DIR ;
+    doc.commands += $${IN_PWD}/xmlize.pl;
 
     # Install rules
-    htmldocs.files = $${OUT_PWD}/html/
+    htmldocs.files = $$HTML_BUILD_DIR
     htmldocs.path = $$M_IM_INSTALL_DOCS/$$MALIIT_PACKAGENAME
     htmldocs.CONFIG += no_check_exist directory
     INSTALLS += htmldocs
