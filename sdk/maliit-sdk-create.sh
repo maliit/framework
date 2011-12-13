@@ -44,10 +44,15 @@ mkdir -p $SDK_OUT_PATH/examples
 cp -r $EXAMPLES_PATH $SDK_OUT_PATH/
 cd $SDK_OUT_PATH/examples
 sed -i -e s/"^BUILD_TYPE.*=.*"/"BUILD_TYPE = $BUILD_TYPE"/ `grep -r --files-with-matches BUILD_TYPE ./ | tr "\n" " "`
-# Clean examples
-make clean &> /dev/null
-find ./ -name Makefile -exec rm {} \;
-find ./ -type d \( -name ".obj" -o -name ".moc" \) -print0 | xargs -0 /bin/rmdir
+# Clean examples if built in-tree
+if [ -f Makefile ]
+then
+    qmake -r || exit 1
+    make clean -j2 || exit 1
+    find ./ -name Makefile -exec rm {} \;
+    find ./ -type d \( -name ".obj" -o -name ".moc" \) -print0 | xargs -0 /bin/rmdir
+fi
+
 rm README
 cd -
 
