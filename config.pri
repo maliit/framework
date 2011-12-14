@@ -77,9 +77,15 @@ enable-legacy {
 isEmpty(M_IM_DEFAULT_PLUGIN) {
 enable-legacy {
     M_IM_DEFAULT_PLUGIN = libmeego-keyboard.so
-    M_IM_DEFAULT_SUBVIEW = en_gb.xml
 } else {
     M_IM_DEFAULT_PLUGIN = libmaliit-keyboard-plugin.so
+}
+}
+
+isEmpty(M_IM_DEFAULT_SUBVIEW) {
+enable-legacy {
+    M_IM_DEFAULT_SUBVIEW = en_gb.xml
+} else {
     M_IM_DEFAULT_SUBVIEW = en_gb
 }
 }

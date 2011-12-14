@@ -6,8 +6,9 @@ include(./config.pri)
         Important build options: \
         \\n\\t M_IM_PREFIX : Install prefix (default: /usr) \
         \\n\\t M_IM_INSTALL_{BIN,LIBS,HEADERS,SCHEMAS,DOCS} : Install prefix for specific types of files \
-        \\n\\t M_IM_DEFAULT_PLUGIN : Default onscreen (software) plugin \
-        \\n\\t M_IM_DEFAULT_HW_PLUGIN : Default hardware keyboard plugin \
+        \\n\\t M_IM_DEFAULT_PLUGIN : Default onscreen (software) plugin name \
+        \\n\\t M_IM_DEFAULT_HW_PLUGIN : Default hardware keyboard plugin name \
+        \\n\\t M_IM_DEFAULT_SUBVIEW : Default onscreen (software) subview name \
         \\n\\t MALIIT_SERVER_ARGUMENTS : Arguments to use for starting maliit-server by D-Bus activation \
         \\nRecognised CONFIG flags: \
         \\n\\t enable-legacy : Build in legacy mode (for meego-im ABI/API compatability) \
@@ -26,6 +27,7 @@ include(./config.pri)
         \\nExamples: \
         \\n\\t qmake \
         \\n\\t qmake M_IM_PREFIX=/usr M_IM_INSTALL_LIBS=/usr/lib64 CONFIG+=enable-legacy CONFIG+=notests \
+        \\n\\t qmake M_IM_PREFIX=/usr M_IM_DEFAULT_PLUGIN=libmykeyboard.so M_IM_DEFAULT_SUBVIEW=en.xml
 
     !build_pass:system(echo -e \"$$help_string\")
 } else {
