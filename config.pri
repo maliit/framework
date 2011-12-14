@@ -70,8 +70,8 @@ enable-legacy {
     M_IM_DEFAULT_PLUGIN = libmeego-keyboard.so
     M_IM_DEFAULT_SUBVIEW = en_gb.xml
 } else {
-    M_IM_DEFAULT_PLUGIN = libmaliit-keyboard.so
-    M_IM_DEFAULT_SUBVIEW = 
+    M_IM_DEFAULT_PLUGIN = libmaliit-keyboard-plugin.so
+    M_IM_DEFAULT_SUBVIEW = en_gb
 }
 
 MALIIT_TEST_DATADIR = $$DATADIR/$$MALIIT_TEST_SUITE
