@@ -72,7 +72,8 @@ public:
     //! \param qmlFileName the QML file that will be loaded.
     explicit MInputMethodQuick(MAbstractInputMethodHost *host,
                                QWidget *mainWindow,
-                               const QString &qmlFileName);
+                               const QString &qmlFileName,
+                               const QStringList &qmlImportPaths);
     virtual ~MInputMethodQuick();
 
     //! \reimp

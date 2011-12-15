@@ -78,7 +78,11 @@ public:
         Q_ASSERT(m_controller);
 
         m_engine->rootContext()->setContextProperty("MInputMethodQuick", m_controller);
-        m_engine->addImportPath(M_IM_PLUGINS_DATA_DIR);
+        addQmlImportPath(M_IM_PLUGINS_DATA_DIR);
+    }
+
+    void addQmlImportPath(const QString & importPath) {
+        m_engine->addImportPath(importPath);
     }
 
     virtual ~MInputMethodQuickLoader()
@@ -207,12 +211,18 @@ public:
 
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
                                      QWidget *mainWindow,
-                                     const QString &qmlFileName)
+                                     const QString &qmlFileName,
+                                     const QStringList &qmlImportPaths = 0)
     : MAbstractInputMethod(host, mainWindow)
     , d_ptr(new MInputMethodQuickPrivate(mainWindow, this))
 {
     Q_D(MInputMethodQuick);
 
+    if (qmlImportPaths && qmlImportPaths.length() > 0) {
+        Q_FOREACH(QString path, qmlImportPaths) {
+            d->loader->addQmlImportPath(path);
+        }
+    }
     d->loader->loadQmlFile(qmlFileName);
     propagateScreenSize();
     QWidget *p = d->view->viewport();

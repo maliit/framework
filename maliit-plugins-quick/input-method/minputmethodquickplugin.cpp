@@ -66,7 +66,7 @@ QStringList MInputMethodQuickPlugin::languages() const
 MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host,
                                                                  QWidget *mainWindow)
 {
-    return new MInputMethodQuick(host, mainWindow, qmlFileName());
+    return new MInputMethodQuick(host, mainWindow, qmlFileName(), qmlImportPaths());
 }
 
 MAbstractInputMethodSettings *MInputMethodQuickPlugin::createInputMethodSettings()

@@ -54,6 +54,7 @@ public:
 
     //! Which QML file to load.
     virtual QString qmlFileName() const = 0;
+    virtual QStringList qmlImportPaths() const = 0;
 
 private:
     Q_DISABLE_COPY(MInputMethodQuickPlugin);
