@@ -17,6 +17,9 @@
 #include "mainwindow.h"
 
 #include <QApplication>
+#if defined(Q_WS_QPA) && (QT_VERSION < 0x050000)
+#include <QInputContextFactory>
+#endif
 
 #include <cstdlib>
 
