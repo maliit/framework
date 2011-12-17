@@ -44,6 +44,12 @@ public:
     MInputMethodQuickPlugin();
     virtual ~MInputMethodQuickPlugin();
 
+    //! \internal
+    // FIXME: Add getter as vfunc with next API break and remove both static functions.
+    static void setQmlImportPaths(const QStringList &paths);
+    static QStringList qmlImportPaths();
+    //! \internal_end
+
     //! \reimp
     virtual QStringList languages() const;
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
