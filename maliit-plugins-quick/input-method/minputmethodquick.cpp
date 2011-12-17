@@ -24,6 +24,7 @@
 #include "mtoolbaritem.h"
 #include "mkeyoverridequick.h"
 #include "mkeyoverride.h"
+#include "minputmethodquickplugin.h"
 
 #include <QKeyEvent>
 #include <QApplication>
@@ -79,6 +80,14 @@ public:
 
         m_engine->rootContext()->setContextProperty("MInputMethodQuick", m_controller);
         m_engine->addImportPath(M_IM_PLUGINS_DATA_DIR);
+
+        Q_FOREACH (const QString &path, MInputMethodQuickPlugin::qmlImportPaths()) {
+            m_engine->addImportPath(path);
+        }
+
+        // Assuming that plugin B loads after plugin A, we need to make sure
+        // that plugin B does not use the customized import paths of plugin A:
+        MInputMethodQuickPlugin::setQmlImportPaths(QStringList());
     }
 
     virtual ~MInputMethodQuickLoader()

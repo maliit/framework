@@ -22,6 +22,10 @@
 
 #include <QDeclarativeComponent> // needed for qmlRegisterUncreatableType
 
+namespace {
+QStringList gQmlImportPaths;
+}
+
 class MInputMethodQuickPluginPrivate
 {
 public:
@@ -54,6 +58,17 @@ MInputMethodQuickPlugin::MInputMethodQuickPlugin()
 MInputMethodQuickPlugin::~MInputMethodQuickPlugin()
 {
     delete d_ptr;
+}
+
+
+void MInputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
+{
+    gQmlImportPaths = paths;
+}
+
+QStringList MInputMethodQuickPlugin::qmlImportPaths()
+{
+    return gQmlImportPaths;
 }
 
 QStringList MInputMethodQuickPlugin::languages() const
