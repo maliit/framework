@@ -63,6 +63,9 @@ namespace
 
     const int MaxPluginHideTransitionTime(2*1000);
 
+    const char * const InputMethodItem = "inputMethod";
+    const char * const LoadAll = "loadAll";
+
     // this function is used to detect the file suffix used to associate with specific factory
     static QString getFileMimeType(const QString& fileName)
     {
@@ -1163,6 +1166,9 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mAttributeExtensionManager.data(), SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
+    connect(d->mAttributeExtensionManager.data(), SIGNAL(globalAttributeChanged(QString,QString,QVariant)),
+            this, SLOT(onGlobalAttributeChanged(QString,QString,QVariant)));
+
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist    = MImSettings(MImPluginDisabled).value().toStringList();
 
@@ -1295,6 +1301,13 @@ void MIMPluginManager::switchPlugin(MInputMethod::SwitchDirection direction,
             initiator->switchContext(direction, true);
         }
     }
+}
+
+void MIMPluginManager::enableAllSubViews()
+{
+    Q_D(MIMPluginManager);
+
+    d->onScreenPlugins.enableAllSubViews();
 }
 
 void MIMPluginManager::switchPlugin(const QString &name,
@@ -1543,6 +1556,17 @@ QSet<MAbstractInputMethod *> MIMPluginManager::targets()
 {
     Q_D(MIMPluginManager);
     return d->targets;
+}
+
+void MIMPluginManager::onGlobalAttributeChanged(const QString &targetItem,
+                                                const QString &attribute,
+                                                const QVariant &value)
+{
+    if (targetItem == InputMethodItem
+        && attribute == LoadAll
+        && value.toBool()) {
+        enableAllSubViews();
+    }
 }
 
 #include "moc_mimpluginmanager.cpp"

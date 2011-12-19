@@ -25,6 +25,7 @@
 #include <QDBusReply>
 #include <QTimer>
 #include <QEventLoop>
+#include <QStringList>
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
 #include <minputmethodplugin.h>
@@ -931,6 +932,38 @@ void Ut_MIMPluginManager::testSubViewsInfo()
     QCOMPARE(subViewDescriptions.size(), expectedTitles.size());
     for(int n = 0; n < subViewDescriptions.size(); ++n) {
         QCOMPARE(subViewDescriptions.at(n).title(), expectedTitles.at(n));
+    }
+}
+
+void Ut_MIMPluginManager::testEnableAllSubviews()
+{
+    if (!manager->isDBusConnectionValid()) {
+        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.",
+              SkipSingle);
+    }
+
+    //load all subviews provided by all available plugins
+    manager->enableAllSubViews();
+    handleMessages();
+
+    // enumerate all subviews provided by all available plugins
+    QStringList allSubViews;
+    Q_FOREACH(MInputMethodPlugin * p, subject->plugins.keys()) {
+        Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &s,
+                   subject->plugins[p].inputMethod->subViews(MInputMethod::OnScreen)) {
+                allSubViews << subject->plugins[p].pluginId << s.subViewId;
+        }
+    }
+
+    MImSettings enabledPluginsSettings(EnabledPluginsKey);
+    QStringList enabledSubViews = enabledPluginsSettings.value().value<QStringList>();
+
+    // every available subview should be enabled
+    // and it should be placed after correct plugin id
+    for (int n = 0; n < allSubViews.count() - 1; n += 2) {
+        int index = enabledSubViews.indexOf(allSubViews.at(n + 1));
+        QVERIFY(index > 0);
+        QCOMPARE(enabledSubViews.at(index - 1), allSubViews.at(n));
     }
 }
 

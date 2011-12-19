@@ -95,6 +95,9 @@ public:
     //! Switches active plugin to inactive plugin with given \a name
     void switchPlugin(const QString &name, MAbstractInputMethod *initiator);
 
+    //! Enables all installed subviews
+    void enableAllSubViews();
+
 Q_SIGNALS:
     //!
     // This signal is emitted when the whole painting area of the
@@ -142,6 +145,16 @@ private Q_SLOTS:
     void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
+
+    /*!
+     * \brief Handle global attribute change
+     * \param targetItem Item name
+     * \param attribute Attribute name
+     * \param value New attribute value
+     */
+    void onGlobalAttributeChanged(const QString &targetItem,
+                                  const QString &attribute,
+                                  const QVariant &value);
 
 private:
     QSet<MAbstractInputMethod *> targets();
