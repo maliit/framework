@@ -79,9 +79,13 @@ MInputContextConnection::MInputContextConnection(QObject *parent)
     , mDetectableAutoRepeat(false)
 {
     Q_UNUSED(parent);
+    MAttributeExtensionManager *attributeManager= &MAttributeExtensionManager::instance();
 
-    connect(&MAttributeExtensionManager::instance(), SIGNAL(keyOverrideCreated()),
-            this,                                    SIGNAL(keyOverrideCreated()));
+    connect(attributeManager, SIGNAL(keyOverrideCreated()),
+            this,             SIGNAL(keyOverrideCreated()));
+
+    connect(attributeManager, SIGNAL(globalAttributeChanged(QString,QString,QVariant)),
+            this,             SIGNAL(globalAttributeChanged(QString,QString,QVariant)));
 }
 
 
