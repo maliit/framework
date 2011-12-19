@@ -320,7 +320,14 @@ Q_SIGNALS:
     void toolbarIdChanged(const MAttributeExtensionId &id);
 
     //! This signal is emited when a new key override is created.
+    //! \sa MAttributeExtensionManager::keyOverrideCreated()
     void keyOverrideCreated();
+
+    //! This signal is emitted when application wants to change global attribute
+    //! \sa MAttributeExtensionManager::globalAttributeChanged()
+    void globalAttributeChanged(const QString &targetItem,
+                                const QString &attribute,
+                                const QVariant &value);
     //! \internal_end.
 
 protected:

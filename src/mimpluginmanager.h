@@ -90,6 +90,9 @@ public:
     //! Switches active plugin to inactive plugin with given \a name
     void switchPlugin(const QString &name, MAbstractInputMethod *initiator);
 
+    //! Enables all installed subviews
+    void enableAllSubViews();
+
 Q_SIGNALS:
     //!
     // This signal is emitted when the whole painting area of the
@@ -121,6 +124,16 @@ private Q_SLOTS:
 
     //! Update the key overrides for active plugin.
     void updateKeyOverrides();
+
+    /*!
+     * \brief Handle global attribute change
+     * \param targetItem Item name
+     * \param attribute Attribute name
+     * \param value New attribute value
+     */
+    void onGlobalAttributeChange(const QString &targetItem,
+                                 const QString &attribute,
+                                 const QVariant &value);
 
 protected:
     MIMPluginManagerPrivate *const d_ptr;

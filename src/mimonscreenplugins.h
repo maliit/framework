@@ -63,6 +63,8 @@ public:
     const SubView activeSubView();
     void setActiveSubView(const SubView &subView);
 
+    void enableAllSubViews();
+
 Q_SIGNALS:
     void activeSubViewChanged();
 

@@ -34,6 +34,7 @@ namespace {
     const char * const DomainItemName("_domain");
     const char * const KeysExtensionString("/keys");
     const char * const ToolbarExtensionString("/toolbar");
+    const char * const GlobalExtensionString("/");
 }
 
 MAttributeExtensionManager *MAttributeExtensionManager::attributeExtensionMgrInstance = 0;
@@ -284,6 +285,11 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
                                                       const QString &attribute,
                                                       const QVariant &value)
 {
+    if (target == GlobalExtensionString) {
+        Q_EMIT globalAttributeChanged(targetItem, attribute, value);
+        return;
+    }
+
     if (!id.isValid() || attribute.isEmpty() || targetItem.isEmpty() || !value.isValid())
         return;
 
