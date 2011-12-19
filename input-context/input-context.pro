@@ -41,7 +41,11 @@ OTHER_FILES += minputmethodcontext1interface.xml
 QT = core gui
 CONFIG += plugin link_pkgconfig
 
-PKGCONFIG += dbus-glib-1 gio-2.0
+PKGCONFIG += dbus-glib-1
+system(pkg-config gio-2.0 --atleast-version 2.26) {
+    DEFINES   += MALIIT_USE_GIO_API
+    PKGCONFIG += gio-2.0
+}
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
