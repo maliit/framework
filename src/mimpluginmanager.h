@@ -143,8 +143,21 @@ private Q_SLOTS:
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
+    /*!
+     * \brief Handle global attribute change
+     * \param targetItem Item name
+     * \param attribute Attribute name
+     * \param value New attribute value
+     */
+    void onGlobalAttributeChange(const QString &targetItem,
+                                 const QString &attribute,
+                                 const QVariant &value);
+
 private:
     QSet<MAbstractInputMethod *> targets();
+
+    //! Enables all installed subviews
+    void enableAllSubViews();
 
 protected:
     MIMPluginManagerPrivate *const d_ptr;

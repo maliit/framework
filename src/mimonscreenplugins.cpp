@@ -194,3 +194,8 @@ void MImOnScreenPlugins::setActiveSubView(const MImOnScreenPlugins::SubView &sub
     mActiveSubViewSettings.set(toSettings(subViews));
     Q_EMIT activeSubViewChanged();
 }
+
+void MImOnScreenPlugins::enableAllSubViews()
+{
+    setEnabledSubViews(mAvailableSubViews);
+}
