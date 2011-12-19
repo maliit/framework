@@ -128,6 +128,17 @@ Q_SIGNALS:
     //! Emitted when attribute extension has changed
     void attributeExtensionIdChanged(const MAttributeExtensionId &id);
 
+    /*!
+     * \brief This signal is emitted when application wants to change global attribute
+     * that affects the whole input methods framework.
+     * \param targetName Target name
+     * \param attribute Attribute name
+     * \param value New attribute value
+     */
+    void globalAttributeChanged(const QString &targetName,
+                                const QString &attribute,
+                                const QVariant &value);
+
 private:
     /*!
      * \brief Returns a list of the id for all attribute extensions' ids.

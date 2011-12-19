@@ -48,6 +48,8 @@ private Q_SLOTS:
     void testSubViewsInfo_data();
     void testSubViewsInfo();
 
+    void testEnableAllSubviews();
+
 private:
     void handleMessages();
 

@@ -33,6 +33,7 @@ namespace {
     const char * const DomainItemName("_domain");
     const char * const KeysExtensionString("/keys");
     const char * const ToolbarExtensionString("/toolbar");
+    const char * const GlobalExtensionString("/");
 
     const char * const ToolbarIdAttribute = "toolbarId";
     const char * const ToolbarAttribute = "toolbar";
@@ -348,6 +349,11 @@ void MAttributeExtensionManager::handleExtendedAttributeUpdate(unsigned int clie
                                    const QString &target, const QString &targetName,
                                    const QString &attribute, const QVariant &value)
 {
+    if (target == GlobalExtensionString) {
+        Q_EMIT globalAttributeChanged(targetName, attribute, value);
+        return;
+    }
+
     MAttributeExtensionId globalId(id, QString::number(clientId));
     if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
         setExtendedAttribute(globalId, target, targetName, attribute, value);
