@@ -1,3 +1,21 @@
+0.81.2
+======
+
+CHANGES SINCE 0.81.1
+* M_IM_DEFAULT[_HW]_PLUGIN configuration variables available to set default
+  plugins (and also plugin subview) at configure time. See qmake HELP=1 for
+  more.
+
+BUG FIXES
+* Fixes: Add missing header to plainqt example application for Qt 4.8
+* Fixes: SDK creation fails if libmaliit is not installed
+* Fixes: Docs/SDK installed to wrong location if destination directory exists
+* Fixes: SDK example applications fails in legacy-mode
+* Fixes: NEMO#14 - VKB opens even if HWKB is already open
+* Fixes: Crash happening during initiated hide in Gtk+ app.
+* Fixes: enforce-install-prefix for legacy mode
+* Fixes: Copy/paste error in GTK+ 2 im cache update for Fedora
+
 0.81.1
 ======
 
