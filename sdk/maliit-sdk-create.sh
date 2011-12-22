@@ -4,6 +4,18 @@
 
 EXPECTED_ARGS=4
 ERROR_BADARGS=65
+QMAKE_EXEC=qmake
+
+# Find proper qmake binary, cmake style ...
+for binary in qmake qmake4 qmake-qt4 qmake-mac
+do
+  which ${binary}
+  if [ $? -eq "0" ]
+  then
+    QMAKE_EXEC=${binary}
+    break
+  fi
+done
 
 if [ $# -ne $EXPECTED_ARGS ]
 then
@@ -47,7 +59,7 @@ sed -i -e s/"^BUILD_TYPE.*=.*"/"BUILD_TYPE = $BUILD_TYPE"/ `grep -r --files-with
 # Clean examples if built in-tree
 if [ -f Makefile ]
 then
-    qmake -r || exit 1
+    ${QMAKE_EXEC} -r || exit 1
     make clean -j2 || exit 1
     find ./ -name Makefile -exec rm {} \;
     find ./ -type d \( -name ".obj" -o -name ".moc" \) -print0 | xargs -0 /bin/rmdir
