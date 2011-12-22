@@ -340,24 +340,25 @@ QSet<MInputMethod::HandlerState> MIMPluginManagerPrivate::activeHandlers() const
 void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
 {
     Q_Q(MIMPluginManager);
-    if (!plugin)
+    if (!plugin || !activePlugins.contains(plugin)) {
         return;
+    }
 
-    if (!activePlugins.contains(plugin))
-        return;
+    MAbstractInputMethod *inputMethod = 0;
 
     activePlugins.remove(plugin);
-    MAbstractInputMethod *inputMethod = plugins.value(plugin).inputMethod;
-    plugins.value(plugin).imHost->setEnabled(false);
+    inputMethod = plugins.value(plugin).inputMethod;
 
-    if (!inputMethod)
-        return;
+    Q_ASSERT(inputMethod);
 
-    plugins[plugin].state = PluginState();
     inputMethod->hide();
     inputMethod->reset();
-    QObject::disconnect(inputMethod, 0, q, 0);
 
+    // this call disables normal behaviour on inputMethod->hide
+    plugins.value(plugin).imHost->setEnabled(false);
+
+    plugins[plugin].state = PluginState();
+    QObject::disconnect(inputMethod, 0, q, 0);
     targets.remove(inputMethod);
 }
 
