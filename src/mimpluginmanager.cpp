@@ -25,6 +25,7 @@
 #include "mimhwkeyboardtracker.h"
 #include "mimupdateevent.h"
 #include "maliit/namespaceinternal.h"
+#include "msubviewwatcher.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -1166,8 +1167,8 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mAttributeExtensionManager.data(), SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
-    connect(d->mAttributeExtensionManager.data(), SIGNAL(globalAttributeChanged(QString,QString,QVariant)),
-            this, SLOT(onGlobalAttributeChange(QString,QString,QVariant)));
+    connect(d->mAttributeExtensionManager.data(), SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
+            this, SLOT(onGlobalAttributeChange(MAttributeExtensionId,QString,QString,QVariant)));
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist    = MImSettings(MImPluginDisabled).value().toStringList();
@@ -1545,16 +1546,33 @@ void MIMPluginManager::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
     }
 }
 
-void MIMPluginManager::onGlobalAttributeChange(const QString &targetItem,
+void MIMPluginManager::onGlobalAttributeChange(const MAttributeExtensionId &id,
+                                               const QString &targetItem,
                                                const QString &attribute,
                                                const QVariant &value)
 {
+    Q_D(MIMPluginManager);
+
     if (targetItem == InputMethodItem
-        && attribute == LoadAll
-        && value.toBool()) {
-        enableAllSubViews();
+        && attribute == LoadAll) {
+        QSharedPointer<MAttributeExtension> extension =
+                d->mAttributeExtensionManager->attributeExtension(id);
+
+        if (value.toBool()) {
+            if (extension && !extension->subViewWatcher()) {
+                MSubViewWatcher * const watcher = new MSubViewWatcher(d->mICConnection.get(),
+                                                                      &d->onScreenPlugins,
+                                                                      extension.data());
+                extension->addSubViewWatcher(watcher);
+            }
+
+            enableAllSubViews();
+        } else if (extension) {
+            extension->destroySubViewWatcher();
+        }
     }
 }
+
 
 QSet<MAbstractInputMethod *> MIMPluginManager::targets()
 {

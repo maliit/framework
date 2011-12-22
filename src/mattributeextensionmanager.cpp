@@ -349,12 +349,13 @@ void MAttributeExtensionManager::handleExtendedAttributeUpdate(unsigned int clie
                                    const QString &target, const QString &targetName,
                                    const QString &attribute, const QVariant &value)
 {
+    MAttributeExtensionId globalId(id, QString::number(clientId));
+
     if (target == GlobalExtensionString) {
-        Q_EMIT globalAttributeChanged(targetName, attribute, value);
+        Q_EMIT globalAttributeChanged(globalId, targetName, attribute, value);
         return;
     }
 
-    MAttributeExtensionId globalId(id, QString::number(clientId));
     if (globalId.isValid() && attributeExtensionIds.contains(globalId)) {
         setExtendedAttribute(globalId, target, targetName, attribute, value);
     }

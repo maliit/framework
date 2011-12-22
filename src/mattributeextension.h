@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QList>
+#include <QWeakPointer>
 
 #include "minputmethodnamespace.h"
 
@@ -29,6 +30,7 @@ class MAttributeExtensionId;
 class MAttributeExtensionPrivate;
 class MToolbarData;
 class MKeyOverrideData;
+class MSubViewWatcher;
 
 /*! \ingroup pluginapi
  * \brief Attribute extension.
@@ -56,6 +58,15 @@ public:
 
     //! Return the pointer to key override data.
     QSharedPointer<MKeyOverrideData> keyOverrideData() const;
+
+    //! Remember object watching on layout changes
+    void addSubViewWatcher(MSubViewWatcher *watcher);
+
+    //! Destroy object watching on layout changes
+    void destroySubViewWatcher();
+
+    //! Return object watching on layout changes
+    MSubViewWatcher * subViewWatcher() const;
 
 private:
     /*!

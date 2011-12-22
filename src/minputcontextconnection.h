@@ -329,6 +329,12 @@ Q_SIGNALS:
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
+    //! Emitted when input method sends key event to client
+    void keyEventSent();
+
+    //! Emitted when input method sends commit string to client
+    void stringCommited();
+
 protected:
     unsigned int activeConnection; // 0 means no active connection
 

@@ -393,6 +393,8 @@ void MInputContextConnection::sendCommitString(const QString &string, int replac
             widgetState[AnchorPositionAttribute] = widgetState[CursorPositionAttribute];
         }
     }
+
+    Q_EMIT stringCommited();
 }
 
 void MInputContextConnection::sendKeyEvent(const QKeyEvent &keyEvent,
@@ -416,6 +418,8 @@ void MInputContextConnection::sendKeyEvent(const QKeyEvent &keyEvent,
             widgetState[AnchorPositionAttribute] = cursorPosition - 1;
         }
     }
+
+    Q_EMIT keyEventSent();
 }
 /* */
 

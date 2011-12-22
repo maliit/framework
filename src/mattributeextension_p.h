@@ -22,6 +22,7 @@
 #include "mattributeextensionid.h"
 class MToolbarData;
 class MKeyOverrideData;
+class MSubViewWatcher;
 
 class MAttributeExtensionPrivate {
 public:
@@ -32,6 +33,7 @@ private:
     MAttributeExtensionId id;
     QSharedPointer<MToolbarData> toolbarData;
     QSharedPointer<MKeyOverrideData> keyOverrideData;
+    QWeakPointer<MSubViewWatcher> watcher;
 
     MAttributeExtension *q_ptr;
 };

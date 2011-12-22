@@ -19,6 +19,7 @@
 #include "mattributeextension_p.h"
 #include "mkeyoverridedata.h"
 #include "mtoolbardata.h"
+#include "msubviewwatcher.h"
 
 #include <QDebug>
 
@@ -75,4 +76,25 @@ QSharedPointer<MKeyOverrideData> MAttributeExtension::keyOverrideData() const
 {
     Q_D(const MAttributeExtension);
     return d->keyOverrideData;
+}
+
+void MAttributeExtension::addSubViewWatcher(MSubViewWatcher *watcher)
+{
+    Q_D(MAttributeExtension);
+    destroySubViewWatcher();
+    d->watcher = watcher;
+}
+
+void MAttributeExtension::destroySubViewWatcher()
+{
+    Q_D(MAttributeExtension);
+    delete d->watcher.data();
+    d->watcher.clear();
+}
+
+MSubViewWatcher * MAttributeExtension::subViewWatcher() const
+{
+    Q_D(const MAttributeExtension);
+
+    return d->watcher.data();
 }

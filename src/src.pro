@@ -53,6 +53,7 @@ HEADERS += \
         mimserver.h \
         serverdbusaddress.h \
         mindicatorserviceclient.h \
+        msubviewwatcher.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -86,6 +87,7 @@ SOURCES += \
         mimserver.cpp \
         serverdbusaddress.cpp \
         mindicatorserviceclient.cpp \
+        msubviewwatcher.cpp \
 
 x11 {
     HEADERS += \

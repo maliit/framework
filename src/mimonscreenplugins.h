@@ -51,10 +51,19 @@ public:
         {
             return plugin == other.plugin && id == other.id;
         }
+
+        bool operator<(const SubView &other) const
+        {
+            if (plugin != other.plugin)
+                return (plugin < other.plugin);
+
+            return (id < other.id);
+        }
     };
 
     bool isEnabled(const QString &plugin) const;
     QList<SubView> enabledSubViews(const QString &plugin) const;
+    QList<SubView> enabledSubViews() const;
 
     bool isSubViewEnabled(const SubView &subview) const;
     void setEnabledSubViews(const QList<SubView> &subViews);
@@ -88,6 +97,8 @@ private:
     QSet<QString> enabledPlugins; //should be updated when mEnabledSubViews is changed
 
 };
+
+uint qHash(const MImOnScreenPlugins::SubView &subView);
 
 Q_DECLARE_METATYPE(MImOnScreenPlugins::SubView);
 

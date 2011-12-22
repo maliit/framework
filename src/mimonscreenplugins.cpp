@@ -123,6 +123,11 @@ QList<MImOnScreenPlugins::SubView> MImOnScreenPlugins::enabledSubViews(const QSt
     return result;
 }
 
+QList<MImOnScreenPlugins::SubView> MImOnScreenPlugins::enabledSubViews() const
+{
+    return mEnabledSubViews;
+}
+
 void MImOnScreenPlugins::setEnabledSubViews(const QList<MImOnScreenPlugins::SubView> &subViews)
 {
     mEnabledSubViewsSettings.set(QVariant(toSettings(subViews)));
@@ -198,4 +203,10 @@ void MImOnScreenPlugins::setActiveSubView(const MImOnScreenPlugins::SubView &sub
 void MImOnScreenPlugins::enableAllSubViews()
 {
     setEnabledSubViews(mAvailableSubViews);
+}
+
+uint qHash(const MImOnScreenPlugins::SubView &subView)
+{
+    const QString s = subView.plugin + "," + subView.id;
+    return qHash(s);
 }
