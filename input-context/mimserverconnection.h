@@ -51,6 +51,8 @@ public:
 
     virtual void appOrientationAboutToChange(int angle);
 
+    virtual void appOrientationAboutToChange(int angle, Qt::HANDLE pixmapHandle);
+
     virtual void appOrientationChanged(int angle);
 
     virtual void setCopyPasteState(bool copyAvailable, bool pasteAvailable);

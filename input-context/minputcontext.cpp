@@ -96,6 +96,41 @@ namespace
         XKeyPress = KeyPress,
         XKeyRelease = KeyRelease
     };
+
+    Qt::HANDLE currentWindowPixmapCopyHandle(Qt::HANDLE winId)
+    {
+        int screenHandle = DefaultScreen(QX11Info::display());
+        int depth  = DefaultDepth(QX11Info::display(), screenHandle);
+
+        Screen *screen = XDefaultScreenOfDisplay(QX11Info::display());
+        unsigned int width = XWidthOfScreen(screen);
+        unsigned int height = XHeightOfScreen(screen);
+
+        Window root = RootWindow(QX11Info::display(), screenHandle);
+
+        XSetWindowAttributes attributes;
+        Window newWindow = XCreateWindow(QX11Info::display(), root, 0, 0, width, height, 0, depth,
+                CopyFromParent, DefaultVisual(QX11Info::display(), screenHandle), 0, &attributes);
+
+        Pixmap xpixmap = XCreatePixmap(QX11Info::display(), newWindow, width, height, depth);
+
+        GC gc = DefaultGC(QX11Info::display(), screenHandle);
+
+        XGCValues gc_values;
+        XGetGCValues(QX11Info::display(), gc, GCGraphicsExposures, &gc_values);
+        XSetGraphicsExposures(QX11Info::display(), gc, False);
+        XCopyArea(QX11Info::display(), winId, xpixmap, gc, 0, 0, width, height, 0, 0);
+        XSetGraphicsExposures(QX11Info::display(), gc, gc_values.graphics_exposures);
+
+        XDestroyWindow(QX11Info::display(), newWindow);
+
+        Qt::HANDLE handle = xpixmap;
+
+        XSync(QX11Info::display(), false);
+
+        return handle;
+    }
+
 #endif
 }
 
@@ -123,7 +158,8 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
       copyAvailable(false),
       copyAllowed(true),
       redirectKeys(false),
-      currentKeyEventTime(0)
+      currentKeyEventTime(0),
+      serverConnected(false)
 {
     QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
     if (debugEnvVar.toLower() == "enabled") {
@@ -896,6 +932,8 @@ void MInputContext::onDBusDisconnection()
     redirectKeys = false;
 
     InputMethod::instance()->setArea(QRect());
+
+    serverConnected = false;
 }
 
 void MInputContext::onDBusConnection()
@@ -921,6 +959,8 @@ void MInputContext::onDBusConnection()
             inputPanelState = InputPanelShown;
         }
     }
+
+    serverConnected = true;
 }
 
 void MInputContext::handleSelectedTextChange()
@@ -957,7 +997,23 @@ void MInputContext::notifyOrientationAboutToChange(Maliit::OrientationAngle angl
 {
     // can get called from signal so cannot be sure we are really currently active
     if (active) {
+#ifdef Q_WS_X11
+        //additional checking to prevent situation when server is down
+        //and the focus is assigned after that
+        if (serverConnected) {
+            //there are specific situations when window() returns null
+            //let the pixmap be produced server-side if so
+            if (focusWidget() && focusWidget()->window()) {
+                Qt::HANDLE pixmapHandle = currentWindowPixmapCopyHandle(focusWidget()->window()->effectiveWinId());
+                imServer->appOrientationAboutToChange(static_cast<int>(angle), pixmapHandle);
+            }
+            else {
+                imServer->appOrientationAboutToChange(static_cast<int>(angle));
+            }
+        }
+#else
         imServer->appOrientationAboutToChange(static_cast<int>(angle));
+#endif
     }
 }
 

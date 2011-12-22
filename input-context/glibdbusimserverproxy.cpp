@@ -375,6 +375,17 @@ void GlibDBusIMServerProxy::appOrientationAboutToChange(int angle)
                                G_TYPE_INVALID);
 }
 
+void GlibDBusIMServerProxy::appOrientationAboutToChange(int angle, Qt::HANDLE pixmapHandle)
+{
+    if (!glibObjectProxy) {
+        return;
+    }
+    dbus_g_proxy_call_no_reply(glibObjectProxy, "appOrientationAboutToChangeWithPixmapHandle",
+                               G_TYPE_INT, angle,
+                               G_TYPE_ULONG, pixmapHandle,
+                               G_TYPE_INVALID);
+}
+
 void GlibDBusIMServerProxy::appOrientationChanged(int angle)
 {
     if (!glibObjectProxy) {

@@ -28,6 +28,10 @@
     <method name="appOrientationAboutToChange">
       <arg type="i"/>
     </method>
+    <method name="appOrientationAboutToChangeWithPixmapHandle">
+      <arg type="i"/>
+      <arg type="u"/>
+    </method>
     <method name="appOrientationChanged">
       <arg type="i"/>
     </method>

@@ -99,8 +99,8 @@ void MImServer::connectComponents()
     QObject::connect(d->icConnection.get(), SIGNAL(focusChanged(WId)),
                      app, SLOT(setTransientHint(WId)));
 
-    QObject::connect(d->icConnection.get(), SIGNAL(appOrientationAboutToChange(int)),
-                     app, SLOT(appOrientationAboutToChange(int)));
+    QObject::connect(d->icConnection.get(), SIGNAL(appOrientationAboutToChange(int, Qt::HANDLE)),
+                     app, SLOT(appOrientationAboutToChange(int, Qt::HANDLE)));
     QObject::connect(d->icConnection.get(), SIGNAL(appOrientationChanged(int)),
                      app, SLOT(appOrientationChangeFinished(int)));
 

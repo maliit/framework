@@ -65,6 +65,12 @@ void MImServerConnection::appOrientationAboutToChange(int angle)
     Q_UNUSED(angle);
 }
 
+void MImServerConnection::appOrientationAboutToChange(int angle, Qt::HANDLE pixmapHandle)
+{
+    Q_UNUSED(angle);
+    Q_UNUSED(pixmapHandle);
+}
+
 void MImServerConnection::appOrientationChanged(int angle)
 {
     Q_UNUSED(angle);

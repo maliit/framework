@@ -244,7 +244,7 @@ public: // Inbound communication handlers
     /*!
      * \brief Target application is changing orientation
      */
-    void receivedAppOrientationAboutToChange(unsigned int clientId, int angle);
+    void receivedAppOrientationAboutToChange(unsigned int clientId, int angle, Qt::HANDLE pixmapHandle = 0);
 
     /*!
      * \brief Target application changed orientation (already finished)
@@ -293,7 +293,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     /* Emitted first */
-    void appOrientationAboutToChange(int angle);
+    void appOrientationAboutToChange(int angle, Qt::HANDLE handle = 0);
     void appOrientationChanged(int angle);
     /* Emitted later */
     void appOrientationAboutToChangeCompleted(int angle);

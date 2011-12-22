@@ -241,6 +241,8 @@ private:
     unsigned long currentKeyEventTime;
 
     QString m_language;
+
+    bool serverConnected;
 };
 
 #endif

@@ -269,7 +269,14 @@ void MImXApplication::configureWidgetsForCompositing()
     visitWidgetHierarchy(configureForCompositing, mPassThruWindow.get());
 }
 
-void MImXApplication::appOrientationAboutToChange(int toAngle) {
+void MImXApplication::appOrientationAboutToChange(int toAngle, Qt::HANDLE pixmapHandle)
+{
+    #if defined(Q_WS_X11)
+        mRotationAnimation->updateCompositeWindowPixmap(pixmapHandle);
+    #else
+        Q_UNUSED(pixmapHandle);
+    #endif
+
     mRotationAnimation->appOrientationAboutToChange(toAngle);
 }
 
