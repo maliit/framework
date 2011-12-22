@@ -146,7 +146,8 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* pas
         currentOrientationAngle(0),
         aboutToChangeReceived(false),
         damageMonitor(0),
-        mApplication(application)
+        mApplication(application),
+        compositeWindowPixmapUpdated(false)
 {
     // Animation plays on top of a black backround,
     // covering up the underlying application.
@@ -355,22 +356,38 @@ MImRotationAnimation::~MImRotationAnimation() {
 }
 
 
-QPixmap
+void
 MImRotationAnimation::grabComposited()
 {
+    qDebug() << __PRETTY_FUNCTION__;
     if (!remoteWindow || remoteWindow->windowPixmap().isNull()) {
-        return QPixmap();
+        compositeWindowStart = QPixmap();
+    } else {
+        QImage grabImage;
+
+        //check if composite window is already updated, i.e. updateCompositeWindowPixmap(),
+        //grab it only if necessary
+
+        if (!compositeWindowPixmapUpdated) {
+            // Explicitly copying here since we want to paint the keyboard on top.
+            // Qt is unable to render text into QPixmap, therefore we use QImage here.
+            grabImage = QImage(remoteWindow->windowPixmap().toImage());
+        } else {
+            grabImage = QImage(compositeWindowStart.toImage());
+        }
+
+        //proper background is provided already in grabImage
+        mApplication->setSuppressBackground(true);
+
+        // Overlay keyboard, transparency not required
+        QPainter painter(&grabImage);
+        snapshotWidget->render(&painter,QPoint(0,0),QRect(0,0,width(),height()));
+        painter.end();
+
+        mApplication->setSuppressBackground(false);
+
+        compositeWindowStart = QPixmap::fromImage(grabImage);
     }
-
-    // Explicitly copying here since we want to paint the keyboard on top.
-    // Qt is unable to render text into QPixmap, therefore we use QImage here.
-    QImage grabImage(remoteWindow->windowPixmap().toImage());
-
-    // Overlay keyboard, transparency not required
-    QPainter painter(&grabImage);
-    snapshotWidget->render(&painter,QPoint(0,0),QRect(0,0,width(),height()));
-
-    return QPixmap::fromImage(grabImage);
 }
 
 QPixmap
@@ -406,6 +423,16 @@ MImRotationAnimation::remoteWindowChanged(MImRemoteWindow* newRemoteWindow) {
     }
 }
 
+#if defined(Q_WS_X11)
+void
+MImRotationAnimation::updateCompositeWindowPixmap(Qt::HANDLE pixmapHandle) {
+    qDebug() << __PRETTY_FUNCTION__ << " - pixmapHandle:" << pixmapHandle;
+    compositeWindowStart = QPixmap::fromX11Pixmap(pixmapHandle).copy();
+
+    compositeWindowPixmapUpdated = !compositeWindowStart.isNull();
+}
+#endif
+
 void
 MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     qDebug() << __PRETTY_FUNCTION__ << " - toAngle: " << toAngle;
@@ -424,7 +451,7 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     }
 
     // Capturing initial snapshot that's used for the beginning of the rotation.
-    compositeWindowStart = grabComposited();
+    grabComposited();
 
     // Do not do anything if no initial snapshot is available
     if (compositeWindowStart.isNull())
@@ -474,6 +501,8 @@ MImRotationAnimation::startAnimation()
 
     rotationAnimationGroup.start();
     aboutToChangeReceived = false;
+
+    compositeWindowPixmapUpdated = false;
 }
 
 void MImRotationAnimation::clearScene() {
@@ -489,5 +518,6 @@ void MImRotationAnimation::clearScene() {
         scene()->clear();
     }
 
+    compositeWindowPixmapUpdated = false;
     compositeWindowStart = QPixmap();
 }

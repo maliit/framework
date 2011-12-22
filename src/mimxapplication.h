@@ -72,7 +72,7 @@ private Q_SLOTS:
 
     void updatePassThruWindow(const QRegion &region);
 
-    void appOrientationAboutToChange(int toAngle);
+    void appOrientationAboutToChange(int toAngle, Qt::HANDLE pixmapHandle = 0);
     void appOrientationChangeFinished(int toAngle);
 
 private:

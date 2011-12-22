@@ -34,6 +34,9 @@
 
 #include <stdint.h> 
 
+#include <QX11Info>
+#include <X11/Xlib.h>
+
 namespace
 {
     const char * const DBusPath = "/com/meego/inputmethod/uiserver1";
@@ -217,6 +220,19 @@ m_dbus_glib_ic_connection_app_orientation_about_to_change(MDBusGlibICConnection 
                                                          GError **/*error*/)
 {
     obj->icConnection->receivedAppOrientationAboutToChange(obj->connectionNumber, static_cast<int>(angle));
+    return TRUE;
+}
+
+
+static gboolean
+m_dbus_glib_ic_connection_app_orientation_about_to_change_with_pixmap_handle(MDBusGlibICConnection *obj, gint32 angle, guint32 pixmapHandle,
+                                                         GError **/*error*/)
+{
+    obj->icConnection->receivedAppOrientationAboutToChange(obj->connectionNumber, static_cast<int>(angle), Qt::HANDLE(pixmapHandle));
+
+    if (pixmapHandle != 0)
+        XFreePixmap(QX11Info::display(), pixmapHandle);
+
     return TRUE;
 }
 

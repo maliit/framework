@@ -272,7 +272,8 @@ MInputContextConnection::updateWidgetInformation(
 
 void
 MInputContextConnection::receivedAppOrientationAboutToChange(unsigned int connectionId,
-                                                                     int angle)
+                                                                    int angle,
+                                                                    Qt::HANDLE pixmapHandle)
 {
     if (activeConnection != connectionId)
         return;
@@ -280,7 +281,7 @@ MInputContextConnection::receivedAppOrientationAboutToChange(unsigned int connec
     // Needs to be passed to the MImRotationAnimation listening
     // to this signal first before the plugins. This ensures
     // that the rotation animation can be painted sufficiently early.
-    Q_EMIT appOrientationAboutToChange(angle);
+    Q_EMIT appOrientationAboutToChange(angle, pixmapHandle);
 
     Q_EMIT appOrientationAboutToChangeCompleted(angle);
 }

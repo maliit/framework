@@ -125,6 +125,10 @@ public Q_SLOTS:
      */
     void remoteWindowChanged(MImRemoteWindow* newRemoteWindow);
 
+#if defined(Q_WS_X11)
+    void updateCompositeWindowPixmap(Qt::HANDLE);
+#endif
+
 protected:
     virtual void resizeEvent(QResizeEvent *event);
     virtual void showEvent(QShowEvent *event);
@@ -137,7 +141,7 @@ private:
     void setupAnimation(int fromAngle, int toAngle);
 
     //! \brief Grab snapshot of application and plugin into one fullscreen pixmap
-    QPixmap grabComposited();
+    void grabComposited();
 
     //! \brief Grab snapshot of plugin only
     QPixmap grabVkbOnly();
@@ -166,6 +170,8 @@ private:
     MImDamageMonitor* damageMonitor;
 
     MImXApplication* mApplication;
+
+    bool compositeWindowPixmapUpdated;
 };
 
 #endif // MIMROTATIONANIMATION_H

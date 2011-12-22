@@ -83,6 +83,7 @@ public:
     virtual void reset(bool requireSynchronization);
 
     virtual void appOrientationAboutToChange(int angle);
+    virtual void appOrientationAboutToChange(int angle, Qt::HANDLE pixmapHandle);
 
     virtual void appOrientationChanged(int angle);
 
