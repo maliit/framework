@@ -20,6 +20,7 @@ SUBDIRS += \
           ut_maliit_attributeextension \
           ut_maliit_attributeextensionregistry \
           ut_maliit_inputmethod \
+          ut_msubviewwatcher \
 
 contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \

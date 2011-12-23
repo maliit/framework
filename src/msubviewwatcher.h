@@ -61,6 +61,8 @@ private:
     QWeakPointer<MImOnScreenPlugins> onScreenPlugins;
     QSet<MImOnScreenPlugins::SubView> recordedSubViews;
     bool connected; //!< Contains true if startWatching() is already connected to signal
+
+    friend class Ut_MSubViewWatcher;
 };
 //! \internal_end
 
