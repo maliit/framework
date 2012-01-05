@@ -113,8 +113,12 @@ mac {
     INCLUDEPATH += include/
 }
 
-# Use x11 on unix systems without lighthouse (qpa)
-unix:!qpa: {
+contains(QT_CONFIG,embedded) {
+    CONFIG += qws
+}
+
+# Use x11 on unix systems without lighthouse (qpa) or QWS (qws)
+unix:!qpa:!qws {
     CONFIG += x11
 }
 
