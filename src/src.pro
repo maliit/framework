@@ -105,7 +105,7 @@ x11 {
         mimxapplication.cpp \
 }
 
-qpa {
+qpa|qws {
     SOURCES += \
         mimqpaplatform.cpp \
 

@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 
 #if defined(Q_WS_X11)
     MImXApplication app(argc, argv);
-#elif defined(Q_WS_QPA)
+#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
     QApplication app(argc, argv);
 #endif
 

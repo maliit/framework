@@ -20,7 +20,7 @@
 
 #if defined(Q_WS_X11)
 #include "mimxapplication.h"
-#elif defined(Q_WS_QPA)
+#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
 #include "mimqpaplatform.h"
 #endif
 
@@ -37,7 +37,7 @@ public:
     // Connection to application side (input-context)
     shared_ptr<MInputContextConnection> icConnection;
 
-#if defined(Q_WS_QPA)
+#if defined(Q_WS_QPA) || defined(Q_WS_QWS)
     std::auto_ptr<MImQPAPlatform> platform;
 #endif
 
@@ -69,7 +69,7 @@ MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *
 #if defined(Q_WS_X11)
     MImXApplication *app = MImXApplication::instance();
     qDebug() << (app->selfComposited() ? "Use self composition" : "Use system compositor");
-#elif defined(Q_WS_QPA)
+#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
     d->platform.reset(new MImQPAPlatform);
 #endif
 
@@ -116,7 +116,7 @@ void MImServer::connectComponents()
     QObject::connect(d->pluginManager, SIGNAL(pluginLoaded()),
                      app, SLOT(configureWidgetsForCompositing()));
 
-#elif defined(Q_WS_QPA)
+#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
     QObject::connect(d->pluginManager, SIGNAL(regionUpdated(const QRegion &)),
                      d->platform.get(), SLOT(inputPassthrough(const QRegion &)));
 #endif
@@ -129,7 +129,7 @@ QWidget *MImServer::pluginsWidget()
 #if defined(Q_WS_X11)
     Q_UNUSED(d);
     return MImXApplication::instance()->pluginsProxyWidget();
-#elif defined(Q_WS_QPA)
+#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
     return d->platform.get()->pluginsProxyWidget();
 #endif
 }

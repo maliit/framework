@@ -17,7 +17,7 @@
 #include "mainwindow.h"
 
 #include <QApplication>
-#if defined(Q_WS_QPA) && (QT_VERSION < 0x050000)
+#if (defined(Q_WS_QPA) || defined(Q_WS_QWS)) && (QT_VERSION < 0x050000)
 #include <QInputContextFactory>
 #endif
 
@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 #endif
 
     QApplication kit(argc, argv);
-#if defined(Q_WS_QPA) && (QT_VERSION < 0x050000)
+#if (defined(Q_WS_QPA) || defined(Q_WS_QWS)) && (QT_VERSION < 0x050000)
     // Workaround for lighthouse Qt
     kit.setInputContext(QInputContextFactory::create("Maliit", &kit));
 #endif
