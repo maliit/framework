@@ -181,6 +181,19 @@ void MImOnScreenPlugins::updateActiveSubview()
 
 const MImOnScreenPlugins::SubView MImOnScreenPlugins::activeSubView()
 {
+    if (mActiveSubView.id.isEmpty()) {
+        // Subview id might be empty because we jumped to a new plugin,
+        // without calling MIMPluginManager::setActivePlugin. In this case, we
+        // try to guess the active subview from the first enabled subview of
+        // that plugin:
+        Q_FOREACH (const SubView &sub, mEnabledSubViews) {
+            if (sub.plugin == mActiveSubView.plugin) {
+                setActiveSubView(sub);
+                break;
+            }
+        }
+    }
+
     return mActiveSubView;
 }
 
