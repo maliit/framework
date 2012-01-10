@@ -66,7 +66,7 @@ public:
     const SubView activeSubView();
     void setActiveSubView(const SubView &subView);
 
-    void enableAllSubViews();
+    void setAllSubViewsEnabled(bool enable);
 
 Q_SIGNALS:
     void activeSubViewChanged();
@@ -80,6 +80,7 @@ private Q_SLOTS:
 private:
     QList<SubView> mAvailableSubViews;
     QList<SubView> mEnabledSubViews;
+    QList<SubView> mLastEnabledSubViews;
     SubView mActiveSubView;
 
     MImSettings mEnabledSubViewsSettings;

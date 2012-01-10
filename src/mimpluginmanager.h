@@ -157,7 +157,7 @@ private:
     QSet<MAbstractInputMethod *> targets();
 
     //! Enables all installed subviews
-    void enableAllSubViews();
+    void setAllSubViewsEnabled(bool enable);
 
 protected:
     MIMPluginManagerPrivate *const d_ptr;

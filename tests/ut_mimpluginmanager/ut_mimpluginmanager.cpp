@@ -942,7 +942,7 @@ void Ut_MIMPluginManager::testEnableAllSubviews()
     }
 
     //load all subviews provided by all available plugins
-    manager->enableAllSubViews();
+    manager->setAllSubViewsEnabled(true);
     handleMessages();
 
     // enumerate all subviews provided by all available plugins

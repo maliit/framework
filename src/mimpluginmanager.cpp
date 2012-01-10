@@ -1060,6 +1060,7 @@ QString MIMPluginManagerPrivate::activeSubView(MInputMethod::HandlerState state)
 void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
                                               MInputMethod::HandlerState state)
 {
+    qCritical() << __PRETTY_FUNCTION__ << pluginId << state;
     if (state == MInputMethod::OnScreen) {
         const QList<MImOnScreenPlugins::SubView> &subViews = onScreenPlugins.enabledSubViews(pluginId);
         if (subViews.empty()) {
@@ -1069,6 +1070,7 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 
         const MImOnScreenPlugins::SubView &subView = subViews.first();
         onScreenPlugins.setActiveSubView(subView);
+        qCritical() << __PRETTY_FUNCTION__ << pluginId << subView.id << subView.plugin;
 
         // Even when the onScreen plugins where the same it does not mean the onScreen plugin
         // is the active one (that could be a plugin from another state) so make sure the current
@@ -1550,9 +1552,8 @@ void MIMPluginManager::onGlobalAttributeChange(const QString &targetItem,
                                                const QVariant &value)
 {
     if (targetItem == InputMethodItem
-        && attribute == LoadAll
-        && value.toBool()) {
-        enableAllSubViews();
+        && attribute == LoadAll) {
+        setAllSubViewsEnabled(value.toBool());
     }
 }
 
@@ -1562,11 +1563,10 @@ QSet<MAbstractInputMethod *> MIMPluginManager::targets()
     return d->targets;
 }
 
-void MIMPluginManager::enableAllSubViews()
+void MIMPluginManager::setAllSubViewsEnabled(bool enable)
 {
     Q_D(MIMPluginManager);
-
-    d->onScreenPlugins.enableAllSubViews();
+    d->onScreenPlugins.setAllSubViewsEnabled(enable);
 }
 
 #include "moc_mimpluginmanager.cpp"
