@@ -96,7 +96,7 @@ public:
     void switchPlugin(const QString &name, MAbstractInputMethod *initiator);
 
     //! Enables all installed subviews
-    void enableAllSubViews();
+    void setAllSubViewsEnabled(bool enable);
 
 Q_SIGNALS:
     //!

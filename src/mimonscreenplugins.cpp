@@ -86,6 +86,7 @@ MImOnScreenPlugins::MImOnScreenPlugins():
     QObject(),
     mAvailableSubViews(),
     mEnabledSubViews(),
+    mLastEnabledSubViews(),
     mActiveSubView(),
     mEnabledSubViewsSettings(EnabledSubViews),
     mActiveSubViewSettings(ActiveSubView)
@@ -208,7 +209,11 @@ void MImOnScreenPlugins::setActiveSubView(const MImOnScreenPlugins::SubView &sub
     Q_EMIT activeSubViewChanged();
 }
 
-void MImOnScreenPlugins::enableAllSubViews()
+void MImOnScreenPlugins::setAllSubViewsEnabled(bool enable)
 {
-    setEnabledSubViews(mAvailableSubViews);
+    if (enable) {
+        mLastEnabledSubViews = mEnabledSubViews;
+    }
+
+    setEnabledSubViews(enable ? mAvailableSubViews : mLastEnabledSubViews);
 }
