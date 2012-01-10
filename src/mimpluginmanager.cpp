@@ -1244,13 +1244,6 @@ void MIMPluginManager::switchPlugin(MInputMethod::SwitchDirection direction,
     }
 }
 
-void MIMPluginManager::enableAllSubViews()
-{
-    Q_D(MIMPluginManager);
-
-    d->onScreenPlugins.enableAllSubViews();
-}
-
 void MIMPluginManager::switchPlugin(const QString &name,
                                     MAbstractInputMethod *initiator)
 {
@@ -1262,6 +1255,12 @@ void MIMPluginManager::switchPlugin(const QString &name,
                        << name << " failed";
         }
     }
+}
+
+void MIMPluginManager::setAllSubViewsEnabled(bool enable)
+{
+    Q_D(MIMPluginManager);
+    d->onScreenPlugins.setAllSubViewsEnabled(enable);
 }
 
 void MIMPluginManager::updateRegion(const QRegion &region)
@@ -1378,9 +1377,8 @@ void MIMPluginManager::onGlobalAttributeChange(const QString &targetItem,
                                                const QVariant &value)
 {
     if (targetItem == InputMethodItem
-        && attribute == LoadAll
-        && value.toBool()) {
-        enableAllSubViews();
+        && attribute == LoadAll) {
+        setAllSubViewsEnabled(value.toBool());
     }
 }
 
