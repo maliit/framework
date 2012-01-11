@@ -33,12 +33,10 @@ QStringList gQmlImportPaths;
 class MInputMethodQuickPluginPrivate
 {
 public:
-    QStringList languages;  // supported languages
     QSet<Maliit::HandlerState> supportedStates;
 
     MInputMethodQuickPluginPrivate()
     {
-        languages << "en" << "fi_FI" << "en_US" << "en_GB" << "ru_RU";
         supportedStates << Maliit::OnScreen << Maliit::Hardware;
     }
 };
@@ -64,7 +62,6 @@ MInputMethodQuickPlugin::~MInputMethodQuickPlugin()
     delete d_ptr;
 }
 
-
 void MInputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
 {
     gQmlImportPaths = paths;
@@ -73,13 +70,6 @@ void MInputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
 QStringList MInputMethodQuickPlugin::qmlImportPaths()
 {
     return gQmlImportPaths;
-}
-
-QStringList MInputMethodQuickPlugin::languages() const
-{
-    Q_D(const MInputMethodQuickPlugin);
-
-    return d->languages;
 }
 
 MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host,

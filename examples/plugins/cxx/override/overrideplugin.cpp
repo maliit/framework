@@ -31,11 +31,6 @@ QString OverridePlugin::name() const
     return "OverridePlugin";
 }
 
-QStringList OverridePlugin::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 OverridePlugin::createInputMethod(MAbstractInputMethodHost *host,
                                   QWidget *mainWindow)

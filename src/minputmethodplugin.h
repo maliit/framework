@@ -44,10 +44,6 @@ public:
      */
     virtual QString name() const = 0;
 
-    /*! \brief Implement this function to return the languages supported for this virtual keyboard.
-     */
-    virtual QStringList languages() const = 0;
-
     /*! \brief Creates and returns the MAbstractInputMethod object for
      * this plugin. This function will be only called once and the allocated
      * resources will be owned by the input method server.

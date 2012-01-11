@@ -31,11 +31,6 @@ QString HelloWorldPlugin::name() const
     return "HelloWorldPlugin";
 }
 
-QStringList HelloWorldPlugin::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 HelloWorldPlugin::createInputMethod(MAbstractInputMethodHost *host,
                                     QWidget *mainWindow)

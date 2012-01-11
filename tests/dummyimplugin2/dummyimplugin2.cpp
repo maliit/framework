@@ -8,11 +8,6 @@ QString DummyImPlugin2::name() const
     return "DummyImPlugin2";
 }
 
-QStringList DummyImPlugin2::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 DummyImPlugin2::createInputMethod(MAbstractInputMethodHost *,
                                   QWidget *)
