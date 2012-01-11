@@ -53,6 +53,7 @@ HEADERS += \
         mimserver.h \
         serverdbusaddress.h \
         mindicatorserviceclient.h \
+        mimsubviewoverride.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -86,6 +87,7 @@ SOURCES += \
         mimserver.cpp \
         serverdbusaddress.cpp \
         mindicatorserviceclient.cpp \
+        mimsubviewoverride.cpp \
 
 x11 {
     HEADERS += \
@@ -243,11 +245,3 @@ fake_dbus_glue.target = mdbusglibicconnectionserviceglue.h
 fake_dbus_glue.depends = dbus_glue
 
 OTHER_FILES += minputmethodserver1interface.xml
-
-
-
-
-
-
-
-
