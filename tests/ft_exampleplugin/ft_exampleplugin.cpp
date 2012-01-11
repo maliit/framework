@@ -18,7 +18,7 @@
 #include "ft_exampleplugin.h"
 
 #include <minputmethodhost.h>
-#include <minputmethodplugin.h>
+#include <maliit/plugins/inputmethodplugin.h>
 #include <minputcontextconnection.h>
 
 #include <QtCore>

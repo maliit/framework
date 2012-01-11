@@ -17,7 +17,7 @@
 
 
 #include "mimplugindescription.h"
-#include "minputmethodplugin.h"
+#include <maliit/plugins/inputmethodplugin.h>
 
 //! \internal
 class MImPluginDescriptionPrivate

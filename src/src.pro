@@ -7,7 +7,7 @@ INCLUDEPATH += .. ../common ../connection
 
 # Input
 HEADERSINSTALL = \
-        minputmethodplugin.h \
+        maliit/plugins/inputmethodplugin.h \
         mimabstractpluginfactory.h \
         mabstractinputmethod.h \
         mabstractinputmethodhost.h \

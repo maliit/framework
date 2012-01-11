@@ -17,7 +17,7 @@
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
 #include "mimpluginmanageradaptor.h"
-#include "minputmethodplugin.h"
+#include <maliit/plugins/inputmethodplugin.h>
 #include "mimabstractpluginfactory.h"
 #include "mattributeextensionmanager.h"
 #include "mabstractinputmethod.h"
