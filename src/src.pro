@@ -184,7 +184,7 @@ install_prf.files = $$OUT_PWD/meegoimframework.prf
 }
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
 
-!enable-legacy {
+!enable-legacy:!disable-dbus-activation {
     DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
     DBUS_SERVICES_PREFIX = $$system(pkg-config --variable prefix dbus-1)
     enforce-install-prefix {
@@ -201,7 +201,7 @@ INSTALLS += target \
     install_pkgconfig \
     install_schemas \
 
-!enable-legacy {
+!enable-legacy:!disable-dbus-activation {
     INSTALLS += install_services
 }
 

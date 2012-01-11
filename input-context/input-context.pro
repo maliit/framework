@@ -15,6 +15,10 @@ external-libmaliit {
     LIBS += ../maliit/lib$${MALIIT_LIB}.so
 }
 
+disable-dbus-activation {
+    DEFINES += NO_DBUS_ACTIVATION
+}
+
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
 # Input

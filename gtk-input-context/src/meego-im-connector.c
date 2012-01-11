@@ -49,13 +49,20 @@ connection_dropped(gpointer instance, MeegoImConnector *connector)
 static char *
 get_dbus_address()
 {
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_NONE;
+
+#if defined(NO_DBUS_ACTIVATION)
+    flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
+#endif
+
     GDBusProxy *proxy = g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SESSION,
-                                                      G_DBUS_PROXY_FLAGS_NONE,
+                                                      flags,
                                                       0,
                                                       MALIIT_SERVER_NAME,
                                                       MALIIT_SERVER_OBJECT_PATH,
                                                       MALIIT_SERVER_INTERFACE,
                                                       0, 0);
+
 
     if (!proxy)
         return 0;
