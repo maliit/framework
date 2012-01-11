@@ -20,8 +20,6 @@ public:
     //! \reimp
     virtual QString name() const;
 
-    virtual QStringList languages() const;
-
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
                                                     QWidget *mainWindow);
 

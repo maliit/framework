@@ -60,7 +60,6 @@ MInputMethodQuickPlugin::~MInputMethodQuickPlugin()
     delete d_ptr;
 }
 
-
 void MInputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
 {
     gQmlImportPaths = paths;
@@ -69,13 +68,6 @@ void MInputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
 QStringList MInputMethodQuickPlugin::qmlImportPaths()
 {
     return gQmlImportPaths;
-}
-
-QStringList MInputMethodQuickPlugin::languages() const
-{
-    Q_D(const MInputMethodQuickPlugin);
-
-    return d->languages;
 }
 
 MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host,

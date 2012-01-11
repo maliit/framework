@@ -15,11 +15,6 @@ QString DummyImPlugin3::name() const
     return "DummyImPlugin3";
 }
 
-QStringList DummyImPlugin3::languages() const
-{
-    return QStringList("EN");
-}
-
 MAbstractInputMethod *
 DummyImPlugin3::createInputMethod(MAbstractInputMethodHost *host,
                                   QWidget *mainWindow)
