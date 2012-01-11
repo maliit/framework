@@ -28,6 +28,7 @@ HEADERSINSTALL = \
         mimsettings.h \
         mattributeextensionid.h \
         mimsubviewdescription.h \
+        mimsubviewoverride.h \
 
 HEADERS += \
         $$HEADERSINSTALL \
@@ -82,6 +83,7 @@ SOURCES += \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
         mimsubviewdescription.cpp \
+        mimsubviewoverride.cpp \
 
 x11 {
     HEADERS += \
@@ -202,9 +204,3 @@ fake_dbus_glue.target = mdbusglibicconnectionserviceglue.h
 fake_dbus_glue.depends = dbus_glue
 
 OTHER_FILES += minputmethodserver1interface.xml
-
-
-
-
-
-

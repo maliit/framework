@@ -286,7 +286,7 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
                                                       const QVariant &value)
 {
     if (target == GlobalExtensionString) {
-        Q_EMIT globalAttributeChanged(targetItem, attribute, value);
+        Q_EMIT globalAttributeChanged(id, targetItem, attribute, value);
         return;
     }
 

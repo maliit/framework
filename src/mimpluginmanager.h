@@ -127,11 +127,13 @@ private Q_SLOTS:
 
     /*!
      * \brief Handle global attribute change
+     * \param id id of the attribute extension that triggered this change
      * \param targetItem Item name
      * \param attribute Attribute name
      * \param value New attribute value
      */
-    void onGlobalAttributeChange(const QString &targetItem,
+    void onGlobalAttributeChange(const MAttributeExtensionId &id,
+                                 const QString &targetItem,
                                  const QString &attribute,
                                  const QVariant &value);
 

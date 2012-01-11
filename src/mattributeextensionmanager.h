@@ -121,11 +121,13 @@ Q_SIGNALS:
     /*!
      * \brief This signal is emitted when application wants to change global attribute
      * that affects the whole input methods framework.
+     * \param id the attribute extension id
      * \param targetItem Item name
      * \param attribute Attribute name
      * \param value New attribute value
      */
-    void globalAttributeChanged(const QString &targetItem,
+    void globalAttributeChanged(const MAttributeExtensionId &id,
+                                const QString &targetItem,
                                 const QString &attribute,
                                 const QVariant &value);
 

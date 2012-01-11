@@ -23,6 +23,7 @@
 #include "mabstractinputmethod.h"
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
+#include "mimsubviewoverride.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -1106,8 +1107,8 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mICConnection.get(), SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
-    connect(d->mICConnection.get(), SIGNAL(globalAttributeChanged(QString,QString,QVariant)),
-            this, SLOT(onGlobalAttributeChange(QString,QString,QVariant)));
+    connect(&MAttributeExtensionManager::instance(), SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
+            this, SLOT(onGlobalAttributeChange(MAttributeExtensionId,QString,QString,QVariant)));
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist    = MImSettings(MImPluginDisabled).value().toStringList();
@@ -1372,12 +1373,27 @@ void MIMPluginManager::updateKeyOverrides()
     }
 }
 
-void MIMPluginManager::onGlobalAttributeChange(const QString &targetItem,
+void MIMPluginManager::onGlobalAttributeChange(const MAttributeExtensionId &id,
+                                               const QString &targetItem,
                                                const QString &attribute,
                                                const QVariant &value)
 {
+    Q_D(MIMPluginManager);
+
     if (targetItem == InputMethodItem
         && attribute == LoadAll) {
+
+        if (value.toBool()) {
+            if (const QSharedPointer<MAttributeExtension> &extension =
+                    MAttributeExtensionManager::instance().attributeExtension(id)) {
+                // Create an object that is bound to the life time of the
+                // attribute extension (through QObject ownership hierarchy).
+                // Upon destruction, it will reset the all-subviews-enabled
+                // override.
+               (void) new MImSubViewOverride(&d->onScreenPlugins, extension.data());
+            }
+        }
+
         setAllSubViewsEnabled(value.toBool());
     }
 }
