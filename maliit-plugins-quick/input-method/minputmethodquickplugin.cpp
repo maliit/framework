@@ -84,12 +84,6 @@ MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputM
     return new MInputMethodQuick(host, mainWindow, qmlFileName());
 }
 
-MAbstractInputMethodSettings *MInputMethodQuickPlugin::createInputMethodSettings()
-{
-    // not supported
-    return 0;
-}
-
 QSet<MInputMethod::HandlerState> MInputMethodQuickPlugin::supportedStates() const
 {
     Q_D(const MInputMethodQuickPlugin);

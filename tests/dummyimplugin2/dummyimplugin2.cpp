@@ -20,11 +20,6 @@ DummyImPlugin2::createInputMethod(MAbstractInputMethodHost *,
     return 0;
 }
 
-MAbstractInputMethodSettings *DummyImPlugin2::createInputMethodSettings()
-{
-    return 0;
-}
-
 QSet<MInputMethod::HandlerState> DummyImPlugin2::supportedStates() const
 {
     QSet<MInputMethod::HandlerState> result;
