@@ -2,6 +2,7 @@
 #define MALIIT_SERVER_SURFACE_H
 
 #include <QPoint>
+#include <QSharedPointer>
 #include <QSize>
 #include <QUrl>
 
@@ -54,7 +55,7 @@ public:
     virtual QPoint relativePosition() const = 0;
     virtual void setRelativePosition(const QPoint &position) = 0;
 
-    virtual std::tr1::shared_ptr<Surface> parent() = 0;
+    virtual QSharedPointer<Surface> parent() = 0;
 };
 
 class GraphicsViewSurface : public virtual Surface
@@ -78,9 +79,7 @@ public:
     virtual QSize screenLandscapeSize();
     virtual QSize screenPortraitSize();
 
-//    virtual std::tr1::shared_ptr<Surface> createSurface(const SurfacePolicy &policy) = 0;
-    virtual std::tr1::shared_ptr<GraphicsViewSurface> createGraphicsViewSurface(const SurfacePolicy &policy, std::tr1::shared_ptr<Surface> parent = std::tr1::shared_ptr<Surface>()) = 0;
-//    std::tr1::shared_ptr<Surface> createSubSurface(const SurfacePolicy &policy, const std::tr1::shared_ptr<Surface> &parent, const QPoint &location);
+    virtual QSharedPointer<GraphicsViewSurface> createGraphicsViewSurface(const SurfacePolicy &policy, QSharedPointer<Surface> parent = QSharedPointer<Surface>()) = 0;
 
     void setActive();
 };

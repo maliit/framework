@@ -116,8 +116,8 @@ void Ut_MIMPluginManager::init()
     activePluginSettings.set(activePlugin);
 
     shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
-    shared_ptr<Maliit::Server::Internal::SurfacesFactory> surfacesFactory(new Maliit::Server::Internal::DefaultSurfacesFactory);
-    manager = new MIMPluginManager(icConnection, surfacesFactory);
+    QSharedPointer<Maliit::Server::Internal::SurfaceGroupFactory> surfaceGroupFactory(new Maliit::Server::Internal::DefaultSurfaceGroupFactory);
+    manager = new MIMPluginManager(icConnection, surfaceGroupFactory);
 
     subject = manager->d_ptr;
 

@@ -32,10 +32,9 @@ QString HelloWorldPlugin::name() const
 }
 
 MAbstractInputMethod *
-HelloWorldPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                    std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
+HelloWorldPlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
-    return new HelloWorldInputMethod(host, 0);
+    return new HelloWorldInputMethod(host);
 }
 
 QSet<MInputMethod::HandlerState> HelloWorldPlugin::supportedStates() const

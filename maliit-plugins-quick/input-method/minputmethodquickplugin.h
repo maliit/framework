@@ -26,8 +26,6 @@
 #include <QStringList>
 #include <QSet>
 
-using Maliit::Server::SurfaceFactory;
-
 class MInputMethodQuickPluginPrivate;
 
 //! \brief Creates an input method plugin that allows to use QML.
@@ -48,8 +46,7 @@ public:
     virtual ~MInputMethodQuickPlugin();
 
     //! \reimp
-    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
-                                                    std::tr1::shared_ptr<SurfaceFactory> surfaceFactory);
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host);
     virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end
 

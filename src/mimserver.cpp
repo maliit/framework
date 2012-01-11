@@ -29,8 +29,8 @@
 #include "surfaces.h"
 
 using std::tr1::shared_ptr;
-using Maliit::Server::Internal::SurfacesFactory;
-using Maliit::Server::Internal::DefaultSurfacesFactory;
+using Maliit::Server::Internal::SurfaceGroupFactory;
+using Maliit::Server::Internal::DefaultSurfaceGroupFactory;
 // using Maliit::Server::Internal::FullscreenSurfacesFactory;
 
 class MImServerPrivate
@@ -83,10 +83,10 @@ MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *
 //#if defined(Q_WS_X11)
 //    shared_ptr<SurfacesFactory> surfacesFactory(new FullscreenSurfacesFactory(pluginsWidget()));
 //#else
-    shared_ptr<SurfacesFactory> surfacesFactory(new DefaultSurfacesFactory);
+    QSharedPointer<SurfaceGroupFactory> surfaceGroupFactory(new DefaultSurfaceGroupFactory);
 //#endif
 
-    d->pluginManager = new MIMPluginManager(d->icConnection, surfacesFactory);
+    d->pluginManager = new MIMPluginManager(d->icConnection, surfaceGroupFactory);
 
     connectComponents();
 

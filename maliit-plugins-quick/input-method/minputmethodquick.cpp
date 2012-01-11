@@ -168,7 +168,7 @@ public:
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
 
-    MInputMethodQuickPrivate(std::tr1::shared_ptr<SurfaceFactory>,
+    MInputMethodQuickPrivate(SurfaceFactory *,
                              MInputMethodQuick *im)
         : q_ptr(im)
         , surface()
@@ -204,10 +204,9 @@ public:
 };
 
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
-                                     std::tr1::shared_ptr<SurfaceFactory> surfaceFactory,
                                      const QString &)
-    : MAbstractInputMethod(host, 0)
-    , d_ptr(new MInputMethodQuickPrivate(surfaceFactory, this))
+    : MAbstractInputMethod(host)
+    , d_ptr(new MInputMethodQuickPrivate(host->surfaceFactory(), this))
 {
 //    Q_D(MInputMethodQuick);
 

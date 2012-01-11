@@ -52,8 +52,8 @@ using namespace std::tr1;
 
 using Maliit::Server::Surface;
 using Maliit::Server::SurfaceFactory;
-using Maliit::Server::Internal::Surfaces;
-using Maliit::Server::Internal::SurfacesFactory;
+using Maliit::Server::Internal::SurfaceGroup;
+using Maliit::Server::Internal::SurfaceGroupFactory;
 
 /* Internal class only! Interfaces here change, internal developers only*/
 class MIMPluginManagerPrivate
@@ -74,7 +74,7 @@ public:
         PluginState state;
         MInputMethod::SwitchDirection lastSwitchDirection;
         QString pluginId; // the library filename is used as ID
-        shared_ptr<Surfaces> surfaces;
+        QSharedPointer<SurfaceGroup> surfaceGroup;
     };
 
     typedef QMap<Maliit::Server::InputMethodPlugin *, PluginDescription> Plugins;
@@ -82,7 +82,7 @@ public:
     typedef QMap<MInputMethod::HandlerState, Maliit::Server::InputMethodPlugin *> HandlerMap;
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
-    MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, shared_ptr<SurfacesFactory> surfacesFactory, MIMPluginManager *p);
+    MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, QSharedPointer<SurfaceGroupFactory> surfaceGroupFactory, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
     void activatePlugin(Maliit::Server::InputMethodPlugin *plugin);
@@ -201,7 +201,7 @@ public:
     MImOnScreenPlugins onScreenPlugins;
     MImHwKeyboardTracker hwkbTracker;
 
-    shared_ptr<SurfacesFactory> mSurfacesFactory;
+    QSharedPointer<SurfaceGroupFactory> mSurfaceGroupFactory;
     int lastOrientation;
 
     QScopedPointer<MAttributeExtensionManager> mAttributeExtensionManager;

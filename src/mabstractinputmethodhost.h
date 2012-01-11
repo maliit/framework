@@ -291,7 +291,7 @@ public:
 
     /*!
       */
-    virtual std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> surfaceFactory();
+    virtual Maliit::Server::SurfaceFactory* surfaceFactory() = 0;
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)

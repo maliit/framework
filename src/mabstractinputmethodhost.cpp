@@ -83,8 +83,3 @@ MAbstractInputMethodHost::surroundingSubViewDescriptions(MInputMethod::HandlerSt
 void MAbstractInputMethodHost::setLanguage(const QString &/*language*/)
 {
 }
-
-std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> MAbstractInputMethodHost::surfaceFactory()
-{
-    return std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>(new Maliit::Server::DefaultSurfaceFactory);
-}

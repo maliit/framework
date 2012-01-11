@@ -90,8 +90,8 @@ void Ft_MIMPluginManager::init()
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
     shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
-    shared_ptr<Maliit::Server::Internal::SurfacesFactory> surfacesFactory(new Maliit::Server::Internal::DefaultSurfacesFactory);
-    subject = new MIMPluginManager(icConnection, surfacesFactory);
+    QSharedPointer<Maliit::Server::Internal::SurfaceGroupFactory> surfaceGroupFactory(new Maliit::Server::Internal::DefaultSurfaceGroupFactory);
+    subject = new MIMPluginManager(icConnection, surfaceGroupFactory);
 }
 
 void Ft_MIMPluginManager::cleanup()

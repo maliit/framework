@@ -56,10 +56,9 @@ MInputMethodQuickPlugin::~MInputMethodQuickPlugin()
     delete d_ptr;
 }
 
-MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                                                 std::tr1::shared_ptr<SurfaceFactory> surfaceFactory)
+MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
-    return new MInputMethodQuick(host, surfaceFactory, qmlFileName());
+    return new MInputMethodQuick(host, qmlFileName());
 }
 
 QSet<MInputMethod::HandlerState> MInputMethodQuickPlugin::supportedStates() const

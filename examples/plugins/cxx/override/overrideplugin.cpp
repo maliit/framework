@@ -32,10 +32,9 @@ QString OverridePlugin::name() const
 }
 
 MAbstractInputMethod *
-OverridePlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                  std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
+OverridePlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
-    return new OverrideInputMethod(host, 0);
+    return new OverrideInputMethod(host);
 }
 
 QSet<MInputMethod::HandlerState> OverridePlugin::supportedStates() const

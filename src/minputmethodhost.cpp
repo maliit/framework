@@ -27,13 +27,15 @@
 
 MInputMethodHost::MInputMethodHost(shared_ptr<MInputContextConnection> inputContextConnection,
                                    MIMPluginManager *pluginManager,
-                                   MIndicatorServiceClient &indicatorService, QObject *parent)
-    : MAbstractInputMethodHost(parent),
+                                   MIndicatorServiceClient &indicatorService,
+                                   SurfaceFactory *surfaceFactory)
+    : MAbstractInputMethodHost(),
       connection(inputContextConnection),
       pluginManager(pluginManager),
       inputMethod(0),
       enabled(false),
-      indicatorService(indicatorService)
+      indicatorService(indicatorService),
+      mSurfaceFactory(surfaceFactory)
 {
     // nothing
 }
@@ -251,4 +253,9 @@ void MInputMethodHost::setOrientationAngleLocked(bool)
 int MInputMethodHost::anchorPosition(bool &valid)
 {
     return connection->anchorPosition(valid);
+}
+
+SurfaceFactory *MInputMethodHost::surfaceFactory()
+{
+    return mSurfaceFactory;
 }

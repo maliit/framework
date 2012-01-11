@@ -8,29 +8,26 @@ namespace Maliit {
 namespace Server {
 namespace Internal {
 
-class DefaultSurfaces : public Maliit::Server::Internal::Surfaces
+class DefaultSurfaceGroup : public Maliit::Server::Internal::SurfaceGroup
 {
 public:
-    DefaultSurfaces();
+    DefaultSurfaceGroup();
 
-    virtual std::tr1::shared_ptr<SurfaceFactory> factory();
+    virtual SurfaceFactory *factory();
 
     virtual void activate();
     virtual void deactivate();
 
     virtual void setRotation(Maliit::OrientationAngle angle);
 
-    virtual bool supportsLegacyPlugins();
-    virtual QWidget *legacySurface();
-
 private:
-    std::tr1::shared_ptr<DefaultSurfaceFactory> mSurfaceFactory;
+    QScopedPointer<DefaultSurfaceFactory> mSurfaceFactory;
 };
 
-class DefaultSurfacesFactory : public Maliit::Server::Internal::SurfacesFactory
+class DefaultSurfaceGroupFactory : public Maliit::Server::Internal::SurfaceGroupFactory
 {
 public:
-    virtual std::tr1::shared_ptr<Surfaces> createSurfaces();
+    virtual QSharedPointer<SurfaceGroup> createSurfaceGroup();
 };
 
 } // namespace Internal

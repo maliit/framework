@@ -29,10 +29,9 @@ namespace {
     const char * const actionKeyLabel = "Enter";
 }
 
-OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host,
-                                         QWidget *mainWindow)
-    : MAbstractInputMethod(host, mainWindow)
-    , mainWidget(new QPushButton(mainWindow))
+OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host)
+    : MAbstractInputMethod(host)
+    , mainWidget(new QPushButton(0)) // mainWindow
     , showIsInhibited(false)
     , showRequested(false)
     , activeActionKeyOverride()

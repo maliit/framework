@@ -21,7 +21,7 @@ namespace Server {
 class DefaultSurface : public virtual Surface
 {
 public:
-    DefaultSurface(const SurfacePolicy &policy, std::tr1::shared_ptr<DefaultSurface> parent, QWidget *toplevel)
+    DefaultSurface(const SurfacePolicy &policy, QSharedPointer<DefaultSurface> parent, QWidget *toplevel)
         : Surface(),
           mPolicy(policy),
           mParent(parent),
@@ -91,14 +91,14 @@ public:
     }
 
 
-    std::tr1::shared_ptr<Surface> parent()
+    QSharedPointer<Surface> parent()
     {
         return mParent;
     }
 
 protected:
     SurfacePolicy mPolicy;
-    std::tr1::shared_ptr<DefaultSurface> mParent;
+    QSharedPointer<DefaultSurface> mParent;
     QScopedPointer<QWidget> mToplevel;
 };
 
@@ -164,7 +164,7 @@ public:
 class DefaultGraphicsViewSurface : public DefaultSurface, public GraphicsViewSurface
 {
 public:
-    DefaultGraphicsViewSurface(const SurfacePolicy &policy, std::tr1::shared_ptr<DefaultSurface> parent)
+    DefaultGraphicsViewSurface(const SurfacePolicy &policy, QSharedPointer<DefaultSurface> parent)
         : DefaultSurface(policy, parent, new GraphicsView),
           GraphicsViewSurface(),
           mRoot(0)
@@ -234,10 +234,10 @@ DefaultSurfaceFactory::~DefaultSurfaceFactory()
 {
 }
 
-std::tr1::shared_ptr<GraphicsViewSurface> DefaultSurfaceFactory::createGraphicsViewSurface(const SurfacePolicy &policy, std::tr1::shared_ptr<Surface> parent)
+QSharedPointer<GraphicsViewSurface> DefaultSurfaceFactory::createGraphicsViewSurface(const SurfacePolicy &policy, QSharedPointer<Surface> parent)
 {
-    std::tr1::shared_ptr<DefaultSurface> defaultSurfaceParent(std::tr1::dynamic_pointer_cast<DefaultSurface>(parent));
-    std::tr1::shared_ptr<DefaultGraphicsViewSurface> newSurface(new DefaultGraphicsViewSurface(policy, defaultSurfaceParent));
+    QSharedPointer<DefaultSurface> defaultSurfaceParent(qSharedPointerDynamicCast<DefaultSurface>(parent));
+    QSharedPointer<DefaultGraphicsViewSurface> newSurface(new DefaultGraphicsViewSurface(policy, defaultSurfaceParent));
     surfaces.push_back(newSurface);
     return newSurface;
 }

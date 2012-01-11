@@ -22,57 +22,10 @@
 #include <QSet>
 
 #include "minputmethodnamespace.h"
-#include "surface.h"
 
 class MAbstractInputMethod;
 class MAbstractInputMethodSettings;
 class MAbstractInputMethodHost;
-
-#if 0
-/*! \ingroup pluginapi
- * \brief An interface class for all input method plugins.
- *
- * To create a virtual keyboard / input method plugin, re-implement the virtual
- * functions and instantiate the input method implementation in the
- * createInputMethod() method. Make sure your plugin links against the m im
- * framework library as well.
- */
-class MInputMethodPlugin
-{
-public:
-    /*! \brief Implement this function to return the identifier for this input method.
-     */
-    virtual QString name() const = 0;
-
-    /*! \brief Implement this function to return the languages supported for this virtual keyboard.
-     */
-    virtual QStringList languages() const = 0;
-
-    /*! \brief Creates and returns the MAbstractInputMethod object for
-     * this plugin. This function will be only called once and the allocated
-     * resources will be owned by the input method server.
-     */
-    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
-                                                    QWidget *mainWindow) = 0;
-
-    /*! \brief Creates and returns the MAbstractInputMethodSettings object for
-     * this plugin. This function will be only called once and the allocated
-     * resources will be owned by the input method server.
-     */
-    virtual MAbstractInputMethodSettings *createInputMethodSettings() = 0;
-
-    /*!
-     * \brief Returns set of states which could be handled by this plugin.
-     *
-     * WARNING: If result is empty then this plugin will not be loaded
-     * during startup.
-     */
-    virtual QSet<MInputMethod::HandlerState> supportedStates() const = 0;
-};
-
-Q_DECLARE_INTERFACE(MInputMethodPlugin,
-                    "com.meego.meegoimframework.MInputMethodPlugin/1.1")
-#endif
 
 namespace Maliit {
 namespace Server {
@@ -92,8 +45,7 @@ public:
      * this plugin. This function will be only called once and the allocated
      * resources will be owned by the input method server.
      */
-    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
-                                                    std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> factory) = 0;
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host) = 0;
 
 
     /*!

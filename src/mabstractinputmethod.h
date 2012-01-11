@@ -70,8 +70,7 @@ public:
      * \param host serves as communication link to framework and application. Managed by framework.
      * \param mainWindow should be used to install plugin's UI into it. Managed by framework.
      */
-    MAbstractInputMethod(MAbstractInputMethodHost *host,
-                         QWidget *mainWindow);
+    MAbstractInputMethod(MAbstractInputMethodHost *host);
     virtual ~MAbstractInputMethod();
 
     /*! \brief Returns input method host.

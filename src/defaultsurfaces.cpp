@@ -4,42 +4,32 @@ namespace Maliit {
 namespace Server {
 namespace Internal {
 
-DefaultSurfaces::DefaultSurfaces()
-    : Surfaces(),
+DefaultSurfaceGroup::DefaultSurfaceGroup()
+    : SurfaceGroup(),
       mSurfaceFactory(new DefaultSurfaceFactory)
 {
 }
 
-std::tr1::shared_ptr<SurfaceFactory> DefaultSurfaces::factory()
+SurfaceFactory *DefaultSurfaceGroup::factory()
 {
-    return mSurfaceFactory;
+    return mSurfaceFactory.data();
 }
 
-void DefaultSurfaces::activate()
-{
-}
-
-void DefaultSurfaces::deactivate()
+void DefaultSurfaceGroup::activate()
 {
 }
 
-void DefaultSurfaces::setRotation(Maliit::OrientationAngle)
+void DefaultSurfaceGroup::deactivate()
 {
 }
 
-bool DefaultSurfaces::supportsLegacyPlugins()
+void DefaultSurfaceGroup::setRotation(Maliit::OrientationAngle)
 {
-    return false;
 }
 
-QWidget *DefaultSurfaces::legacySurface()
+QSharedPointer<SurfaceGroup> DefaultSurfaceGroupFactory::createSurfaceGroup()
 {
-    return 0;
-}
-
-std::tr1::shared_ptr<Surfaces> DefaultSurfacesFactory::createSurfaces()
-{
-    return std::tr1::shared_ptr<Surfaces>(new DefaultSurfaces);
+    return QSharedPointer<SurfaceGroup>(new DefaultSurfaceGroup);
 }
 
 

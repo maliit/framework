@@ -72,7 +72,7 @@ namespace
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection,
-                                                 shared_ptr<SurfacesFactory> surfacesFactory,
+                                                 QSharedPointer<SurfaceGroupFactory> surfaceGroupFactory,
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
@@ -83,7 +83,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       acceptRegionUpdates(false),
       indicatorService(),
       onScreenPlugins(),
-      mSurfacesFactory(surfacesFactory),
+      mSurfaceGroupFactory(surfaceGroupFactory),
       lastOrientation(0),
       mAttributeExtensionManager(new MAttributeExtensionManager)
 {
@@ -181,7 +181,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     Maliit::Server::InputMethodPlugin *plugin = 0;
 
-    shared_ptr<Surfaces> surfaces(mSurfacesFactory->createSurfaces());
+    QSharedPointer<SurfaceGroup> surfaceGroup(mSurfaceGroupFactory->createSurfaceGroup());
 
     // Check if we have a specific factory for this plugin
     QString mimeType = getFileMimeType(fileName);
@@ -217,10 +217,9 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
     }
 
 
-    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
+    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, surfaceGroup->factory());
 
-    MAbstractInputMethod *im = 0;
-    im = plugin->createInputMethod(host, surfaces->factory());
+    MAbstractInputMethod *im = plugin->createInputMethod(host);
 
     QObject::connect(q, SIGNAL(pluginsChanged()), host, SIGNAL(pluginsChanged()));
 
@@ -233,7 +232,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
     }
 
     PluginDescription desc = { im, host, PluginState(),
-                               MInputMethod::SwitchUndefined, fileName, surfaces };
+                               MInputMethod::SwitchUndefined, fileName, surfaceGroup };
     plugins.insert(plugin, desc);
     host->setInputMethod(im);
 
@@ -989,12 +988,12 @@ void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest 
 
     for (; iterator != plugins.end(); ++iterator) {
         if (activePlugins.contains(iterator.key())) {
-            iterator.value().surfaces->activate();
+            iterator.value().surfaceGroup->activate();
             if (request == ShowInputMethod) {
                 iterator.value().inputMethod->show();
             }
         } else {
-            iterator.value().surfaces->deactivate();
+            iterator.value().surfaceGroup->deactivate();
         }
     }
 }
@@ -1091,7 +1090,7 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 // actual class
 
 MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnection,
-                                   shared_ptr<SurfacesFactory> surfacesFactory)
+                                   QSharedPointer<SurfaceGroupFactory> surfacesFactory)
     : QObject(),
       d_ptr(new MIMPluginManagerPrivate(icConnection, surfacesFactory, this))
 {

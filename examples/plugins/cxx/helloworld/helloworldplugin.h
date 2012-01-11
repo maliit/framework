@@ -37,8 +37,7 @@ public:
     //! \reimp
     virtual QString name() const;
 
-    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
-                                                    std::tr1::shared_ptr<Maliit::Server::SurfaceFactory> surfaceFactory);
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host);
 
     virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end

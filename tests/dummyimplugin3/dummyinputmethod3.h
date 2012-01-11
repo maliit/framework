@@ -13,8 +13,7 @@ class DummyInputMethod3 : public MAbstractInputMethod
 
 public:
 
-    DummyInputMethod3(MAbstractInputMethodHost *host,
-                      QWidget *mainWindow);
+    DummyInputMethod3(MAbstractInputMethodHost *host);
 
     //! \reimp
     virtual void setState(const QSet<MInputMethod::HandlerState> &state);

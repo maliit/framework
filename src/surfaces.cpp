@@ -4,7 +4,7 @@ namespace Maliit {
 namespace Server {
 namespace Internal {
 
-SurfacesFactory::~SurfacesFactory()
+SurfaceGroupFactory::~SurfaceGroupFactory()
 {
 }
 

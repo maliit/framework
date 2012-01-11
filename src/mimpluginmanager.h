@@ -49,7 +49,7 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    MIMPluginManager(std::tr1::shared_ptr<MInputContextConnection> icConnection, std::tr1::shared_ptr<Maliit::Server::Internal::SurfacesFactory>);
+    MIMPluginManager(std::tr1::shared_ptr<MInputContextConnection> icConnection, QSharedPointer<Maliit::Server::Internal::SurfaceGroupFactory>);
 
     virtual ~MIMPluginManager();
 

@@ -9,8 +9,7 @@ QString DummyImPlugin2::name() const
 }
 
 MAbstractInputMethod *
-DummyImPlugin2::createInputMethod(MAbstractInputMethodHost *,
-                                  std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
+DummyImPlugin2::createInputMethod(MAbstractInputMethodHost *)
 {
     return 0;
 }

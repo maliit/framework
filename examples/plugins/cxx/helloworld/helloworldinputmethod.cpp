@@ -26,10 +26,9 @@ namespace {
     const char * const exampleSubViewId("HelloWorldPluginSubview1");
 }
 
-HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host,
-                                             QWidget *mainWindow)
-    : MAbstractInputMethod(host, mainWindow)
-    , mainWidget(new QPushButton(mainWindow))
+HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host)
+    : MAbstractInputMethod(host)
+    , mainWidget(new QPushButton(0)) // TODO mainWindow
     , showIsInhibited(false)
     , showRequested(false)
 {

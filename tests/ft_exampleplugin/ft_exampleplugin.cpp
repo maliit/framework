@@ -79,7 +79,7 @@ void Ft_ExamplePlugin::testFunction()
     Maliit::Server::InputMethodPlugin *plugin =  qobject_cast<Maliit::Server::InputMethodPlugin *>(pluginInstance);
     QVERIFY(plugin != 0);
 
-    plugin->createInputMethod(&host, std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>());
+    plugin->createInputMethod(&host);
 
     QCOMPARE(host.lastCommit, QString("Maliit"));
     QCOMPARE(host.sendCommitCount, 1);

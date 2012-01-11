@@ -15,10 +15,9 @@ QString DummyImPlugin::name() const
 }
 
 MAbstractInputMethod *
-DummyImPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                 std::tr1::shared_ptr<Maliit::Server::SurfaceFactory>)
+DummyImPlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
-    return new DummyInputMethod(host, 0);
+    return new DummyInputMethod(host);
 }
 
 QSet<MInputMethod::HandlerState> DummyImPlugin::supportedStates() const
