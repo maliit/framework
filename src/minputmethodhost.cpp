@@ -18,7 +18,7 @@
 #include "minputcontextconnection.h"
 #include "mimpluginmanager.h"
 #include "mindicatorserviceclient.h"
-#include "mabstractinputmethod.h"
+#include <maliit/plugins/abstractinputmethod.h>
 
 #include <QWidget>
 #include <QGraphicsView>

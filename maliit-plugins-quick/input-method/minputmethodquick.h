@@ -18,8 +18,8 @@
 #ifndef MEEGO_KEYBOARD_QUICK_H
 #define MEEGO_KEYBOARD_QUICK_H
 
-#include <mabstractinputmethod.h>
-#include <mkeyoverride.h>
+#include <maliit/plugins/abstractinputmethod.h>
+#include <maliit/plugins/keyoverride.h>
 
 #include <QRect>
 #include <QPointer>

@@ -16,14 +16,13 @@
 
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
-
-#include "minputmethodplugin.h"
-#include "mimabstractpluginfactory.h"
+#include <maliit/plugins/inputmethodplugin.h>
+#include <maliit/plugins/abstractpluginfactory.h>
 #include "mattributeextensionmanager.h"
-#include "mabstractinputmethod.h"
+#include <maliit/plugins/abstractinputmethod.h>
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
-#include "mimupdateevent.h"
+#include <maliit/plugins/updateevent.h>
 #include "mimsubviewoverride.h"
 #include "maliit/namespaceinternal.h"
 

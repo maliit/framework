@@ -16,7 +16,7 @@
 
 #include "helloworldinputmethod.h"
 
-#include <mabstractinputmethodhost.h>
+#include <maliit/plugins/abstractinputmethodhost.h>
 
 #include <QDebug>
 #include <QApplication>

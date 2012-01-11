@@ -17,8 +17,8 @@
 #ifndef OVERRIDE_INPUT_METHOD_H
 #define OVERRIDE_INPUT_METHOD_H
 
-#include <mabstractinputmethod.h>
-#include <mkeyoverride.h>
+#include <maliit/plugins/abstractinputmethod.h>
+#include <maliit/plugins/keyoverride.h>
 
 #include <QSet>
 #include <QWidget>

@@ -1,6 +1,6 @@
 #include "ut_mkeyoverride.h"
 
-#include <mkeyoverride.h>
+#include <maliit/plugins/keyoverride.h>
 #include <QFile>
 #include <QDir>
 #include <QSignalSpy>

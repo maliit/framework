@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QTimer>
 
-#include "mabstractinputmethodhost.h"
+#include <maliit/plugins/abstractinputmethodhost.h>
 
 DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *host,
                                    QWidget *mainWindow)

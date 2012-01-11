@@ -17,10 +17,11 @@
 
 #include "minputmethodquick.h"
 
-#include "mabstractinputmethodhost.h"
 #include "mkeyoverridequick.h"
-#include "mkeyoverride.h"
 #include "minputmethodquickplugin.h"
+
+#include <maliit/plugins/abstractinputmethodhost.h>
+#include <maliit/plugins/keyoverride.h>
 
 #include <QKeyEvent>
 #include <QApplication>

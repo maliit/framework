@@ -26,8 +26,8 @@
 
 #include <maliit/namespace.h>
 
-#include "mkeyoverridedata.h"
-#include "mattributeextension.h"
+#include <maliit/plugins/keyoverridedata.h>
+#include <maliit/plugins/attributeextension.h>
 #include "mattributeextensionid.h"
 #include "mimsettings.h"
 

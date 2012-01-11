@@ -14,10 +14,8 @@
  * of this file.
  */
 
-
-
-#include "mimplugindescription.h"
-#include "minputmethodplugin.h"
+#include <maliit/plugins/plugindescription.h>
+#include <maliit/plugins/inputmethodplugin.h>
 
 //! \internal
 class MImPluginDescriptionPrivate

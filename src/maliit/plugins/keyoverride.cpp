@@ -14,11 +14,10 @@
  * of this file.
  */
 
-
-
 #include <QtAlgorithms>
-#include "mkeyoverride.h"
-#include "mkeyoverride_p.h"
+
+#include <maliit/plugins/keyoverride.h>
+#include <maliit/plugins/keyoverride_p.h>
 
 MKeyOverridePrivate::MKeyOverridePrivate()
     : highlighted(false),

@@ -24,7 +24,7 @@
 #include <QMap>
 #include <QSharedPointer>
 
-#include "mkeyoverride.h"
+#include <maliit/plugins/keyoverride.h>
 
 
 /*! \ingroup maliitserver

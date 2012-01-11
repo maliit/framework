@@ -15,11 +15,12 @@
  */
 
 #include <QtCore>
-#include "mimupdateevent_p.h"
-#include "mimupdatereceiver.h"
-#include "mimupdateevent.h"
-#include "maliit/namespace.h"
-#include "maliit/namespaceinternal.h"
+
+#include <maliit/plugins/updateevent_p.h>
+#include <maliit/plugins/updatereceiver.h>
+#include <maliit/plugins/updateevent.h>
+#include <maliit/namespace.h>
+#include <maliit/namespaceinternal.h>
 
 // Choosing inheritance instead of typedef, as we might want to add
 // receiver-specific data later.

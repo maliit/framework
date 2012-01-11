@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#include "mabstractinputmethod.h"
-#include "mabstractinputmethodhost.h"
+#include <maliit/plugins/abstractinputmethod.h>
+#include <maliit/plugins/abstractinputmethodhost.h>
 
 #include <QKeyEvent>
 #include <QWidget>

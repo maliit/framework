@@ -17,7 +17,7 @@
 #ifndef HELLO_WORLD_PLUGIN_H
 #define HELLO_WORLD_PLUGIN_H
 
-#include "minputmethodplugin.h"
+#include <maliit/plugins/inputmethodplugin.h>
 
 #include <QObject>
 #include <QWidget>

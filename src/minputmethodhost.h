@@ -17,7 +17,7 @@
 #ifndef MINPUTMETHODHOST_H
 #define MINPUTMETHODHOST_H
 
-#include "mabstractinputmethodhost.h"
+#include <maliit/plugins/abstractinputmethodhost.h>
 
 #include <tr1/memory>
 

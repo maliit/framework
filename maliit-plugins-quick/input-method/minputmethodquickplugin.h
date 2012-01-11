@@ -18,7 +18,7 @@
 #ifndef M_INPUT_METHOD_QUICK_PLUGIN
 #define M_INPUT_METHOD_QUICK_PLUGIN
 
-#include "minputmethodplugin.h"  // why not <MInputMethodPlugin>?
+#include <maliit/plugins/inputmethodplugin.h>
 
 #include <QWidget>
 #include <QString>

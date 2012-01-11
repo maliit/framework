@@ -22,7 +22,7 @@
 #include <QStringList>
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
-#include <minputmethodplugin.h>
+#include <maliit/plugins/inputmethodplugin.h>
 
 #include "mattributeextensionmanager.h"
 

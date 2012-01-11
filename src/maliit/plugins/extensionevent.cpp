@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#include "mimextensionevent.h"
-#include "mimextensionevent_p.h"
+#include <maliit/plugins/extensionevent.h>
+#include <maliit/plugins/extensionevent_p.h>
 
 MImExtensionEventPrivate::~MImExtensionEventPrivate()
 {}

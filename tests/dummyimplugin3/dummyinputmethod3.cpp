@@ -1,5 +1,5 @@
 #include "dummyinputmethod3.h"
-#include "mabstractinputmethodhost.h"
+#include <maliit/plugins/abstractinputmethodhost.h>
 
 #include <QDebug>
 #include <QRegion>

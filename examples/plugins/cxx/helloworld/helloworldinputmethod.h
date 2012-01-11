@@ -17,7 +17,7 @@
 #ifndef HELLO_WORLD_INPUT_METHOD_H
 #define HELLO_WORLD_INPUT_METHOD_H
 
-#include <mabstractinputmethod.h>
+#include <maliit/plugins/abstractinputmethod.h>
 
 #include <QSet>
 #include <QWidget>

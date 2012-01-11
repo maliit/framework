@@ -17,7 +17,7 @@
 #ifndef MIMUPDATEEVENT_H
 #define MIMUPDATEEVENT_H
 
-#include "mimextensionevent.h"
+#include <maliit/plugins/extensionevent.h>
 
 #include <QtCore>
 

@@ -18,7 +18,7 @@
 #ifndef MALIITQUICKPLUGINFACTORY_H
 #define MALIITQUICKPLUGINFACTORY_H
 
-#include "mimabstractpluginfactory.h"
+#include <maliit/plugins/abstractpluginfactory.h>
 
 #include <QtCore>
 

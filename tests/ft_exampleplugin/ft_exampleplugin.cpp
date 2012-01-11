@@ -19,7 +19,7 @@
 #include "gui-utils.h"
 
 #include <minputmethodhost.h>
-#include <minputmethodplugin.h>
+#include <maliit/plugins/inputmethodplugin.h>
 #include <minputcontextconnection.h>
 
 #include <QtCore>

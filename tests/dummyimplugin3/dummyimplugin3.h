@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QWidget>
 
-#include "minputmethodplugin.h"
+#include <maliit/plugins/inputmethodplugin.h>
 
 //! Dummy input method plugin for ut_mimpluginloader
 class DummyImPlugin3: public QObject,

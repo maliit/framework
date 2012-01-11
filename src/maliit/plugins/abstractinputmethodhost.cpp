@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#include "mabstractinputmethodhost.h"
-#include "mimsubviewdescription.h"
+#include <maliit/plugins/abstractinputmethodhost.h>
+#include <maliit/plugins/subviewdescription.h>
 
 #if defined(Q_WS_X11)
 #include "mimxapplication.h"

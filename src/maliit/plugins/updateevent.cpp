@@ -14,11 +14,11 @@
  * of this file.
  */
 
-#include "mimupdateevent.h"
-#include "mimupdateevent_p.h"
-#include "mimextensionevent_p.h"
-#include "maliit/namespace.h"
-#include "maliit/namespaceinternal.h"
+#include <maliit/plugins/updateevent.h>
+#include <maliit/plugins/updateevent_p.h>
+#include <maliit/plugins/extensionevent_p.h>
+#include <maliit/namespace.h>
+#include <maliit/namespaceinternal.h>
 
 MImUpdateEventPrivate::MImUpdateEventPrivate()
     : update()

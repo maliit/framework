@@ -8,36 +8,37 @@ TARGET = $$MALIIT_PLUGINS_LIB
 
 # Input
 PLUGIN_HEADERS_PUBLIC = \
-        minputmethodplugin.h \
-        mimabstractpluginfactory.h \
-        mabstractinputmethod.h \
-        mabstractinputmethodhost.h \
-        mkeyoverride.h \
-        mkeyoverridedata.h \
-        mattributeextension.h \
-        mimextensionevent.h \
-        mimupdateevent.h \
-        mimupdatereceiver.h \
-        mimplugindescription.h \
-        mimsubviewdescription.h \
+        maliit/plugins/inputmethodplugin.h \
+        maliit/plugins/abstractpluginfactory.h \
+        maliit/plugins/abstractinputmethod.h \
+        maliit/plugins/abstractinputmethodhost.h \
+        maliit/plugins/keyoverride.h \
+        maliit/plugins/keyoverridedata.h \
+        maliit/plugins/attributeextension.h \
+        maliit/plugins/extensionevent.h \
+        maliit/plugins/updateevent.h \
+        maliit/plugins/updatereceiver.h \
+        maliit/plugins/plugindescription.h \
+        maliit/plugins/subviewdescription.h \
 
 PLUGIN_SOURCES += \
-        mimabstractpluginfactory.cpp \
-        mabstractinputmethod.cpp \
-        mabstractinputmethodhost.cpp \
-        mkeyoverride.cpp \
-        mkeyoverridedata.cpp \
-        mattributeextension.cpp \
-        mimextensionevent.cpp \
-        mimupdateevent.cpp \
-        mimupdatereceiver.cpp \
-        mimplugindescription.cpp \
-        mimsubviewdescription.cpp \
+        maliit/plugins/abstractpluginfactory.cpp \
+        maliit/plugins/abstractinputmethod.cpp \
+        maliit/plugins/abstractinputmethodhost.cpp \
+        maliit/plugins/keyoverride.cpp \
+        maliit/plugins/keyoverridedata.cpp \
+        maliit/plugins/attributeextension.cpp \
+        maliit/plugins/extensionevent.cpp \
+        maliit/plugins/updateevent.cpp \
+        maliit/plugins/updatereceiver.cpp \
+        maliit/plugins/plugindescription.cpp \
+        maliit/plugins/subviewdescription.cpp \
 
 PLUGIN_HEADERS_PRIVATE += \
-        mkeyoverride_p.h \
-        mimupdateevent_p.h \
-        mimextensionevent_p.h \
+        maliit/plugins/keyoverride_p.h \
+        maliit/plugins/attributeextension_p.h \
+        maliit/plugins/extensionevent_p.h \
+        maliit/plugins/updateevent_p.h \
 
 SERVER_HEADERS_PUBLIC += \
         mimserver.h \
@@ -168,7 +169,7 @@ QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 
 target.path += $$M_IM_INSTALL_LIBS
 
-plugins_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
+plugins_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER/maliit/plugins
 plugins_headers.files += $$PLUGIN_HEADERS_PUBLIC
 
 server_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_SERVER_HEADER

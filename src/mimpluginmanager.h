@@ -23,9 +23,11 @@
 #include <tr1/memory>
 
 #include <maliit/namespace.h>
-#include "mimplugindescription.h"
+
+#include <maliit/plugins/plugindescription.h>
+#include <maliit/plugins/subviewdescription.h>
+
 #include "mattributeextensionid.h"
-#include "mimsubviewdescription.h"
 #include "minputcontextconnection.h"
 
 class QRegion;

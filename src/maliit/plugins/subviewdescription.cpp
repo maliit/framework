@@ -1,4 +1,4 @@
-#include "mimsubviewdescription.h"
+#include <maliit/plugins/subviewdescription.h>
 
 //! \internal
 class MImSubViewDescriptionPrivate

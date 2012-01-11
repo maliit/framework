@@ -1,6 +1,9 @@
+#ifndef MIMEXTENSIONEVENT_P_H
+#define MIMEXTENSIONEVENT_P_H
+
 /* * This file is part of meego-im-framework *
  *
- * Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
+ * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
  * Contact: Nokia Corporation (directui@nokia.com)
  *
@@ -14,14 +17,13 @@
  * of this file.
  */
 
-#include "mimabstractpluginfactory.h"
+#include <maliit/plugins/extensionevent.h>
 
-class MImAbstractPluginFactoryPrivate
-{};
+class MImExtensionEventPrivate
+{
+public:
+    virtual ~MImExtensionEventPrivate();
 
-MImAbstractPluginFactory::MImAbstractPluginFactory()
-    : d_ptr() // Create PIMPL instance here, if needed.
-{}
-
-MImAbstractPluginFactory::~MImAbstractPluginFactory()
-{}
+    MImExtensionEvent::Type type;
+};
+#endif // MIMEXTENSIONEVENT_P_H

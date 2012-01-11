@@ -17,7 +17,8 @@
 #ifndef MIMUPDATEEVENT_P_H
 #define MIMUPDATEEVENT_P_H
 
-#include "mimextensionevent_p.h"
+#include <maliit/plugins/extensionevent_p.h>
+
 #include <QtCore>
 
 class MImUpdateEventPrivate

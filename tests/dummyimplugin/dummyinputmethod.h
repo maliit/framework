@@ -1,7 +1,7 @@
 #ifndef DUMMYINPUTMETHOD_H
 #define DUMMYINPUTMETHOD_H
 
-#include <mabstractinputmethod.h>
+#include <maliit/plugins/abstractinputmethod.h>
 #include <QSet>
 #include <QWidget>
 

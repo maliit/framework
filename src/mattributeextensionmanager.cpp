@@ -16,9 +16,8 @@
 
 
 #include "mattributeextensionmanager.h"
-#include "mattributeextension.h"
-#include "mkeyoverridedata.h"
-#include "mkeyoverride.h"
+#include <maliit/plugins/keyoverridedata.h>
+#include <maliit/plugins/keyoverride.h>
 
 #include <QVariant>
 #include <QFileInfo>

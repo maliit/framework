@@ -17,7 +17,7 @@
 #ifndef OVERRIDE_PLUGIN_H
 #define OVERRIDE_PLUGIN_H
 
-#include "minputmethodplugin.h"
+#include <maliit/plugins/inputmethodplugin.h>
 
 #include <QObject>
 #include <QWidget>

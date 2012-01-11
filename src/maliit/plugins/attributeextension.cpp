@@ -15,9 +15,9 @@
  */
 
 
-#include "mattributeextension.h"
-#include "mattributeextension_p.h"
-#include "mkeyoverridedata.h"
+#include <maliit/plugins/attributeextension.h>
+#include <maliit/plugins/attributeextension_p.h>
+#include <maliit/plugins/keyoverridedata.h>
 
 #include <QDebug>
 

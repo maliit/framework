@@ -14,8 +14,7 @@
  * of this file.
  */
 
-
-#include "mkeyoverridedata.h"
+#include <maliit/plugins/keyoverridedata.h>
 
 #include <QDebug>
 
