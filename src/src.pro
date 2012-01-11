@@ -15,7 +15,6 @@ PLUGIN_HEADERS_PUBLIC = \
         mkeyoverride.h \
         mkeyoverridedata.h \
         mattributeextension.h \
-        mabstractinputmethodsettings.h \
         mimextensionevent.h \
         mimupdateevent.h \
         mimupdatereceiver.h \

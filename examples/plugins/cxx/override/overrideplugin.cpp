@@ -43,11 +43,6 @@ OverridePlugin::createInputMethod(MAbstractInputMethodHost *host,
     return new OverrideInputMethod(host, mainWindow);
 }
 
-MAbstractInputMethodSettings *OverridePlugin::createInputMethodSettings()
-{
-    /* This plugin does not have a settings widget */
-    return 0;
-}
 QSet<Maliit::HandlerState> OverridePlugin::supportedStates() const
 {
     return allowedStates;

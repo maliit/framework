@@ -24,7 +24,6 @@
 #include <maliit/namespace.h>
 
 class MAbstractInputMethod;
-class MAbstractInputMethodSettings;
 class MAbstractInputMethodHost;
 
 namespace Maliit {
@@ -55,12 +54,6 @@ public:
      */
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
                                                     QWidget *mainWindow) = 0;
-
-    /*! \brief Creates and returns the MAbstractInputMethodSettings object for
-     * this plugin. This function will be only called once and the allocated
-     * resources will be owned by the input method server.
-     */
-    virtual MAbstractInputMethodSettings *createInputMethodSettings() = 0;
 
     /*!
      * \brief Returns set of states which could be handled by this plugin.

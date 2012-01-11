@@ -43,11 +43,6 @@ HelloWorldPlugin::createInputMethod(MAbstractInputMethodHost *host,
     return new HelloWorldInputMethod(host, mainWindow);
 }
 
-MAbstractInputMethodSettings *HelloWorldPlugin::createInputMethodSettings()
-{
-    /* This plugin does not have a settings widget */
-    return 0;
-}
 QSet<Maliit::HandlerState> HelloWorldPlugin::supportedStates() const
 {
     return allowedStates;

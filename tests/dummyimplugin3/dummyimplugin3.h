@@ -24,8 +24,6 @@ public:
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
                                                     QWidget *mainWindow);
 
-    virtual MAbstractInputMethodSettings *createInputMethodSettings();
-
     virtual QSet<Maliit::HandlerState> supportedStates() const;
     //! \reimp_end
 

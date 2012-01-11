@@ -27,10 +27,6 @@ DummyImPlugin3::createInputMethod(MAbstractInputMethodHost *host,
     return new DummyInputMethod3(host, mainWindow);
 }
 
-MAbstractInputMethodSettings *DummyImPlugin3::createInputMethodSettings()
-{
-    return 0;
-}
 QSet<Maliit::HandlerState> DummyImPlugin3::supportedStates() const
 {
     return allowedStates;
