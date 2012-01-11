@@ -13,6 +13,7 @@ include(./config.pri)
         \\nRecognised CONFIG flags: \
         \\n\\t enable-legacy : Build in legacy mode (for meego-im ABI/API compatability) \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
+        \\n\\t disable-dbus-activation : Do not use dbus activation support for maliit-server \
         \\n\\t notests : Do not build tests \
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \

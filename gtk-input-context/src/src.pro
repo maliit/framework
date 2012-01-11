@@ -11,6 +11,10 @@ debug{
     DEFINES += ENABLE_DEBUG
 }
 
+disable-dbus-activation {
+    DEFINES += NO_DBUS_ACTIVATION
+}
+
 DEFINES += G_LOG_DOMAIN=\\\"Maliit\\\"
 
 # Generated dbus glue code has warnings of this type, so disable them

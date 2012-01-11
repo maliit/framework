@@ -55,9 +55,15 @@ Address::Address()
 
 const std::string Address::get() const
 {
+    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_NONE;
+
+#if defined(NO_SERVER_DBUS_ACTIVATION)
+    flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
+#endif
+
     GError *error = NULL;
     std::tr1::shared_ptr<GDBusProxy> proxy(g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SESSION,
-                                                                         G_DBUS_PROXY_FLAGS_NONE,
+                                                                         flags,
                                                                          0,
                                                                          MaliitServerName,
                                                                          MaliitServerObjectPath,
