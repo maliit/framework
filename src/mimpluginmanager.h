@@ -148,14 +148,15 @@ private Q_SLOTS:
 
     /*!
      * \brief Handle global attribute change
+     * \param id id of the attribute extension that triggered this change
      * \param targetItem Item name
      * \param attribute Attribute name
      * \param value New attribute value
      */
-    void onGlobalAttributeChanged(const QString &targetItem,
+    void onGlobalAttributeChanged(const MAttributeExtensionId &id,
+                                  const QString &targetItem,
                                   const QString &attribute,
                                   const QVariant &value);
-
 private:
     QSet<MAbstractInputMethod *> targets();
 
