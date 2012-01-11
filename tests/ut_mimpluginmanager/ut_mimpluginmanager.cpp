@@ -101,7 +101,7 @@ void Ut_MIMPluginManager::init()
     subject = manager->d_ptr;
 
     QVERIFY(subject->activePlugins.size() == 1);
-    MInputMethodPlugin *plugin = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin = 0;
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
@@ -127,8 +127,8 @@ void Ut_MIMPluginManager::cleanup()
 
 void Ut_MIMPluginManager::testLoadPlugins()
 {
-    MInputMethodPlugin *plugin = 0;
-    MInputMethodPlugin *plugin3 = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin3 = 0;
 
     // Initial load based on settings -> DummyImPlugin loaded and activated,
     // DummyImPlugin3 loaded, DummyPlugin2 not loaded (skipped).  Also,
@@ -137,7 +137,7 @@ void Ut_MIMPluginManager::testLoadPlugins()
     // libinvalidplugin not loaded.  The only "test" for these two is that the
     // test does not crash.  (One may also observe the warning/debug messages
     // concerning loading of those two plugins.)
-    Q_FOREACH(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+    Q_FOREACH(Maliit::Plugins::InputMethodPlugin * plugin, subject->plugins.keys()) {
         qDebug() << plugin->name();
     }
     QCOMPARE(subject->plugins.size(), 2);
@@ -146,7 +146,7 @@ void Ut_MIMPluginManager::testLoadPlugins()
     QCOMPARE(plugin->name(), pluginName);
     bool dummyImPluginFound = false;
     bool dummyImPlugin3Found = false;
-    Q_FOREACH(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+    Q_FOREACH(Maliit::Plugins::InputMethodPlugin * plugin, subject->plugins.keys()) {
         if (plugin->name() == "DummyImPlugin") {
             dummyImPluginFound = true;
         } else if (plugin->name() == "DummyImPlugin3") {
@@ -184,7 +184,7 @@ void Ut_MIMPluginManager::testLoadPlugins()
 
 void Ut_MIMPluginManager::testAddHandlerMap()
 {
-    MInputMethodPlugin *plugin = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
     subject->addHandlerMap(Maliit::OnScreen, pluginId);
     subject->addHandlerMap(Maliit::Hardware, pluginId);
@@ -284,7 +284,7 @@ void Ut_MIMPluginManager::testMultiplePlugins()
     actualState << Maliit::Accessory << Maliit::Hardware;
     subject->setActiveHandlers(actualState);
     QCOMPARE(subject->activePlugins.size(), 2);
-    Q_FOREACH(MInputMethodPlugin * p, subject->activePlugins) {
+    Q_FOREACH(Maliit::Plugins::InputMethodPlugin * p, subject->activePlugins) {
         plugin3 = dynamic_cast<DummyImPlugin3 *>(p);
         if (plugin3 != 0) {
             ++plugin3Count;
@@ -520,7 +520,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, Maliit::SwitchUndefined);
     QCOMPARE(subject->activePlugins.count(), 1);
     QVERIFY(plugin == *subject->activePlugins.begin());
-    Q_FOREACH (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *handler, subject->handlerToPlugin.values()) {
         QVERIFY(handler == plugin);
     }
 
@@ -543,7 +543,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     inputMethod3->setStateCount = 0;
     QCOMPARE(inputMethod3->setStateParam.size(), 1);
     QCOMPARE(*inputMethod3->setStateParam.begin(), state);
-    Q_FOREACH (MInputMethodPlugin *handler, subject->handlerToPlugin.values()) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *handler, subject->handlerToPlugin.values()) {
         qDebug() << handler << plugin3;
         QVERIFY(handler == plugin3);
     }
@@ -607,7 +607,7 @@ void Ut_MIMPluginManager::testSwitchShow()
 void Ut_MIMPluginManager::testSetActivePlugin()
 {
     QVERIFY(subject->activePlugins.size() == 1);
-    MInputMethodPlugin *plugin = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin = 0;
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
@@ -627,14 +627,14 @@ void Ut_MIMPluginManager::testSetActivePlugin()
 void Ut_MIMPluginManager::testSubViews()
 {
     QList<MAbstractInputMethod::MInputMethodSubView> subViews;
-    Q_FOREACH (MInputMethodPlugin *plugin, subject->plugins.keys()) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, subject->plugins.keys()) {
         subViews += subject->plugins[plugin].inputMethod->subViews(Maliit::OnScreen);
     }
     // only has subviews for Maliit::OnScreen
     QCOMPARE(subViews.count(), 5);
 
     subViews.clear();
-    Q_FOREACH (MInputMethodPlugin *plugin, subject->plugins.keys()) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, subject->plugins.keys()) {
         subViews += subject->plugins[plugin].inputMethod->subViews(Maliit::Hardware);
     }
     // doesn't have subviews for Hardware
@@ -645,7 +645,7 @@ void Ut_MIMPluginManager::testSubViews()
 void Ut_MIMPluginManager::testActiveSubView()
 {
     QVERIFY(subject->activePlugins.size() == 1);
-    MInputMethodPlugin *plugin = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin = 0;
     plugin = *subject->activePlugins.begin();
     QVERIFY(plugin != 0);
     QCOMPARE(plugin->name(), pluginName);
@@ -666,12 +666,12 @@ void Ut_MIMPluginManager::testActiveSubView()
 
 void Ut_MIMPluginManager::testRegionUpdates()
 {
-    MInputMethodPlugin *plugin3 = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin3 = 0;
     QSignalSpy regionUpdates(manager, SIGNAL(regionUpdated(QRegion)));
     QList<QVariant> regionUpdatesSignal;
     QVariant region;
 
-    Q_FOREACH(MInputMethodPlugin * plugin, subject->plugins.keys()) {
+    Q_FOREACH(Maliit::Plugins::InputMethodPlugin * plugin, subject->plugins.keys()) {
         if (plugin->name() == "DummyImPlugin3") {
             plugin3 = plugin;
         }
@@ -802,7 +802,7 @@ void Ut_MIMPluginManager::testEnableAllSubviews()
 
     // enumerate all subviews provided by all available plugins
     QStringList allSubViews;
-    Q_FOREACH(MInputMethodPlugin * p, subject->plugins.keys()) {
+    Q_FOREACH(Maliit::Plugins::InputMethodPlugin * p, subject->plugins.keys()) {
         Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &s,
                    subject->plugins[p].inputMethod->subViews(Maliit::OnScreen)) {
                 allSubViews << subject->plugins[p].pluginId << s.subViewId;

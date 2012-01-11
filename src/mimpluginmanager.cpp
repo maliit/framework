@@ -176,7 +176,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    MInputMethodPlugin *plugin = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
     // Check if we have a specific factory for this plugin
     QString mimeType = getFileMimeType(fileName);
@@ -197,7 +197,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
             return false;
         }
 
-        plugin = qobject_cast<MInputMethodPlugin *>(pluginInstance);
+        plugin = qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
         if (!plugin) {
             qWarning() << __PRETTY_FUNCTION__
                        << "Could not cast" << pluginInstance->metaObject()->className() << "into MInputMethodPlugin.";
@@ -236,7 +236,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
     return true;
 }
 
-void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
+void MIMPluginManagerPrivate::activatePlugin(Maliit::Plugins::InputMethodPlugin *plugin)
 {
     Q_Q(MIMPluginManager);
     if (!plugin || activePlugins.contains(plugin)) {
@@ -265,7 +265,7 @@ void MIMPluginManagerPrivate::activatePlugin(MInputMethodPlugin *plugin)
 void MIMPluginManagerPrivate::addHandlerMap(Maliit::HandlerState state,
                                             const QString &pluginId)
 {
-    Q_FOREACH (MInputMethodPlugin *plugin, plugins.keys()) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, plugins.keys()) {
         if (plugins.value(plugin).pluginId == pluginId) {
             handlerToPlugin[state] = plugin;
             return;
@@ -277,7 +277,7 @@ void MIMPluginManagerPrivate::addHandlerMap(Maliit::HandlerState state,
 
 void MIMPluginManagerPrivate::setActiveHandlers(const QSet<Maliit::HandlerState> &states)
 {
-    QSet<MInputMethodPlugin *> activatedPlugins;
+    QSet<Maliit::Plugins::InputMethodPlugin *> activatedPlugins;
     MAbstractInputMethod *inputMethod = 0;
 
     //clear all cached states before activating new one
@@ -290,7 +290,7 @@ void MIMPluginManagerPrivate::setActiveHandlers(const QSet<Maliit::HandlerState>
     //activate new plugins
     Q_FOREACH (Maliit::HandlerState state, states) {
         HandlerMap::const_iterator iterator = handlerToPlugin.find(state);
-        MInputMethodPlugin *plugin = 0;
+        Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
         if (iterator != handlerToPlugin.end()) {
             plugin = iterator.value();
@@ -306,13 +306,13 @@ void MIMPluginManagerPrivate::setActiveHandlers(const QSet<Maliit::HandlerState>
     }
 
     // notify plugins about new states
-    Q_FOREACH (MInputMethodPlugin *plugin, activatedPlugins) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activatedPlugins) {
         plugins.value(plugin).inputMethod->setState(plugins.value(plugin).state);
     }
 
     // deactivate unnecessary plugins
-    QSet<MInputMethodPlugin *> previousActive = activePlugins;
-    Q_FOREACH (MInputMethodPlugin *plugin, previousActive) {
+    QSet<Maliit::Plugins::InputMethodPlugin *> previousActive = activePlugins;
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, previousActive) {
         if (!activatedPlugins.contains(plugin)) {
             deactivatePlugin(plugin);  //activePlugins is modified here
         }
@@ -323,14 +323,14 @@ void MIMPluginManagerPrivate::setActiveHandlers(const QSet<Maliit::HandlerState>
 QSet<Maliit::HandlerState> MIMPluginManagerPrivate::activeHandlers() const
 {
     QSet<Maliit::HandlerState> handlers;
-    Q_FOREACH (MInputMethodPlugin *plugin, activePlugins) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activePlugins) {
         handlers << handlerToPlugin.key(plugin);
     }
     return handlers;
 }
 
 
-void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
+void MIMPluginManagerPrivate::deactivatePlugin(Maliit::Plugins::InputMethodPlugin *plugin)
 {
     Q_Q(MIMPluginManager);
     if (!plugin || !activePlugins.contains(plugin)) {
@@ -356,7 +356,7 @@ void MIMPluginManagerPrivate::deactivatePlugin(MInputMethodPlugin *plugin)
 }
 
 void MIMPluginManagerPrivate::replacePlugin(Maliit::SwitchDirection direction,
-                                            MInputMethodPlugin *source,
+                                            Maliit::Plugins::InputMethodPlugin *source,
                                             Plugins::iterator replacement,
                                             const QString &subViewId)
 {
@@ -494,11 +494,11 @@ bool MIMPluginManagerPrivate::switchPlugin(const QString &pluginId,
 }
 
 bool MIMPluginManagerPrivate::trySwitchPlugin(Maliit::SwitchDirection direction,
-                                              MInputMethodPlugin *source,
+                                              Maliit::Plugins::InputMethodPlugin *source,
                                               Plugins::iterator replacement,
                                               const QString &subViewId)
 {
-    MInputMethodPlugin *newPlugin = replacement.key();
+    Maliit::Plugins::InputMethodPlugin *newPlugin = replacement.key();
 
     if (activePlugins.contains(newPlugin)) {
         qDebug() << __PRETTY_FUNCTION__ << plugins.value(newPlugin).pluginId
@@ -545,8 +545,8 @@ QString MIMPluginManagerPrivate::inputSourceName(Maliit::HandlerState source) co
     return inputSourceToNameMap.value(source);
 }
 
-void MIMPluginManagerPrivate::changeHandlerMap(MInputMethodPlugin *origin,
-                                               MInputMethodPlugin *replacement,
+void MIMPluginManagerPrivate::changeHandlerMap(Maliit::Plugins::InputMethodPlugin *origin,
+                                               Maliit::Plugins::InputMethodPlugin *replacement,
                                                QSet<Maliit::HandlerState> states)
 {
     Q_FOREACH (Maliit::HandlerState state, states) {
@@ -581,7 +581,7 @@ QStringList MIMPluginManagerPrivate::loadedPluginsNames(Maliit::HandlerState sta
 {
     QStringList result;
 
-    Q_FOREACH (MInputMethodPlugin *plugin, plugins.keys()) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, plugins.keys()) {
         if (plugin->supportedStates().contains(state))
             result.append(plugins.value(plugin).pluginId);
     }
@@ -598,7 +598,7 @@ QList<MImPluginDescription> MIMPluginManagerPrivate::pluginDescriptions(Maliit::
     for (Plugins::const_iterator iterator(plugins.constBegin());
          iterator != end;
          ++iterator) {
-        const MInputMethodPlugin * const plugin = iterator.key();
+        const Maliit::Plugins::InputMethodPlugin * const plugin = iterator.key();
         if (plugin && plugin->supportedStates().contains(state)) {
             result.append(MImPluginDescription(*plugin));
 
@@ -632,7 +632,7 @@ MIMPluginManagerPrivate::findEnabledPlugin(Plugins::const_iterator current,
             --iterator;
         }
 
-        MInputMethodPlugin *otherPlugin = iterator.key();
+        Maliit::Plugins::InputMethodPlugin *otherPlugin = iterator.key();
         Q_ASSERT(otherPlugin);
         const MIMPluginManagerPrivate::PluginState &supportedStates = otherPlugin->supportedStates();
         if (!supportedStates.contains(state)) {
@@ -683,7 +683,7 @@ QList<MImSubViewDescription>
 MIMPluginManagerPrivate::surroundingSubViewDescriptions(Maliit::HandlerState state) const
 {
     QList<MImSubViewDescription> result;
-    MInputMethodPlugin *plugin = activePlugin(state);
+    Maliit::Plugins::InputMethodPlugin *plugin = activePlugin(state);
 
     if (!plugin) {
         return result;
@@ -754,7 +754,7 @@ QStringList MIMPluginManagerPrivate::activePluginsNames() const
 {
     QStringList result;
 
-    Q_FOREACH (MInputMethodPlugin *plugin, activePlugins) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activePlugins) {
         result.append(plugins.value(plugin).pluginId);
     }
 
@@ -764,7 +764,7 @@ QStringList MIMPluginManagerPrivate::activePluginsNames() const
 
 QString MIMPluginManagerPrivate::activePluginsName(Maliit::HandlerState state) const
 {
-    MInputMethodPlugin *plugin = activePlugin(state);
+    Maliit::Plugins::InputMethodPlugin *plugin = activePlugin(state);
     if (!plugin)
         return QString();
 
@@ -803,7 +803,7 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
 {
     const Maliit::HandlerState source = static_cast<Maliit::HandlerState>(state);
 
-    MInputMethodPlugin *currentPlugin = activePlugin(source);
+    Maliit::Plugins::InputMethodPlugin *currentPlugin = activePlugin(source);
     MImSettings gconf(PluginRoot + "/" + inputSourceName(source));
     const QString pluginId = gconf.value().toString();
 
@@ -812,8 +812,8 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
        return;
     }
 
-    MInputMethodPlugin *replacement = 0;
-    Q_FOREACH (MInputMethodPlugin *plugin, plugins.keys()) {
+    Maliit::Plugins::InputMethodPlugin *replacement = 0;
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, plugins.keys()) {
         if (plugins.value(plugin).pluginId == pluginId) {
             replacement = plugin;
             break;
@@ -840,7 +840,7 @@ void MIMPluginManagerPrivate::_q_onScreenSubViewChanged()
         return;
     }
 
-    MInputMethodPlugin *currentPlugin = activePlugin(Maliit::OnScreen);
+    Maliit::Plugins::InputMethodPlugin *currentPlugin = activePlugin(Maliit::OnScreen);
 
     if (currentPlugin && subView.plugin == plugins.value(currentPlugin).pluginId && activePlugins.contains(currentPlugin)) {
         qDebug() << __PRETTY_FUNCTION__ << "just switch subview";
@@ -848,8 +848,8 @@ void MIMPluginManagerPrivate::_q_onScreenSubViewChanged()
         return;
     }
 
-    MInputMethodPlugin *replacement = 0;
-    Q_FOREACH (MInputMethodPlugin *plugin, plugins.keys()) {
+    Maliit::Plugins::InputMethodPlugin *replacement = 0;
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, plugins.keys()) {
         if (plugins.value(plugin).pluginId == subView.plugin) {
             replacement = plugin;
             break;
@@ -869,9 +869,9 @@ void MIMPluginManagerPrivate::_q_onScreenSubViewChanged()
     }
 }
 
-MInputMethodPlugin *MIMPluginManagerPrivate::activePlugin(Maliit::HandlerState state) const
+Maliit::Plugins::InputMethodPlugin *MIMPluginManagerPrivate::activePlugin(Maliit::HandlerState state) const
 {
-    MInputMethodPlugin *plugin = 0;
+    Maliit::Plugins::InputMethodPlugin *plugin = 0;
     HandlerMap::const_iterator iterator = handlerToPlugin.find(state);
     if (iterator != handlerToPlugin.constEnd()) {
         plugin = iterator.value();
@@ -892,7 +892,7 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
         return;
     }
 
-    MInputMethodPlugin *plugin = activePlugin(Maliit::OnScreen);
+    Maliit::Plugins::InputMethodPlugin *plugin = activePlugin(Maliit::OnScreen);
     if (!plugin) {
         qDebug() << __PRETTY_FUNCTION__ << "No active plugin";
         return;
@@ -960,7 +960,7 @@ void MIMPluginManagerPrivate::showActivePlugins()
 void MIMPluginManagerPrivate::hideActivePlugins()
 {
     visible = false;
-    Q_FOREACH (MInputMethodPlugin *plugin, activePlugins) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activePlugins) {
         plugins.value(plugin).inputMethod->hide();
     }
 
@@ -979,7 +979,7 @@ void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest 
         }
     }
 
-    Q_FOREACH (MInputMethodPlugin *plugin, activePlugins) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activePlugins) {
         const WeakWidget &w = plugins.value(plugin).centralWidget;
         if (w) {
             w.data()->show();
@@ -1034,7 +1034,7 @@ MIMPluginManagerPrivate::availablePluginsAndSubViews(Maliit::HandlerState state)
 QString MIMPluginManagerPrivate::activeSubView(Maliit::HandlerState state) const
 {
     QString subView;
-    MInputMethodPlugin *currentPlugin = activePlugin(state);
+    Maliit::Plugins::InputMethodPlugin *currentPlugin = activePlugin(state);
     if (currentPlugin) {
         subView = plugins.value(currentPlugin).inputMethod->activeSubView(state);
     }
@@ -1064,7 +1064,7 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
     MImSettings currentPluginConf(PluginRoot + "/" + inputSourceName(state));
     if (!pluginId.isEmpty() && currentPluginConf.value().toString() != pluginId) {
         // check whether the pluginName is valid
-        Q_FOREACH (MInputMethodPlugin *plugin, plugins.keys()) {
+        Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, plugins.keys()) {
             if (plugins.value(plugin).pluginId == pluginId) {
                 currentPluginConf.set(pluginId);
                 // Force call _q_syncHandlerMap() even though we already connect
@@ -1332,7 +1332,7 @@ void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
     // fraction of second later - an overriden label.
     const bool callKeyOverrides(!(!focusState && mapEmpty));
 
-    Q_FOREACH (MInputMethodPlugin *plugin, d->activePlugins) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, d->activePlugins) {
         if (callKeyOverrides)
         {
             d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
@@ -1385,7 +1385,7 @@ void MIMPluginManager::updateKeyOverrides()
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
         d->attributeExtensionManager->keyOverrides(d->toolbarId);
 
-    Q_FOREACH (MInputMethodPlugin *plugin, d->activePlugins) {
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, d->activePlugins) {
         d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
     }
 }

@@ -29,7 +29,11 @@
 #include <QtCore>
 #include <tr1/memory>
 
-class MInputMethodPlugin;
+namespace Maliit {
+namespace Plugins {
+    class InputMethodPlugin;
+}
+}
 class MImAbstractPluginFactory;
 class MInputContextConnection;
 class MIMPluginManager;
@@ -62,35 +66,35 @@ public:
         QString pluginId; // the library filename is used as ID
     };
 
-    typedef QMap<MInputMethodPlugin *, PluginDescription> Plugins;
-    typedef QSet<MInputMethodPlugin *> ActivePlugins;
-    typedef QMap<Maliit::HandlerState, MInputMethodPlugin *> HandlerMap;
+    typedef QMap<Maliit::Plugins::InputMethodPlugin *, PluginDescription> Plugins;
+    typedef QSet<Maliit::Plugins::InputMethodPlugin *> ActivePlugins;
+    typedef QMap<Maliit::HandlerState, Maliit::Plugins::InputMethodPlugin *> HandlerMap;
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
     MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, WeakWidget proxyWidget, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
-    void activatePlugin(MInputMethodPlugin *plugin);
+    void activatePlugin(Maliit::Plugins::InputMethodPlugin *plugin);
     void loadPlugins();
     bool loadPlugin(const QDir &dir, const QString &fileName);
     bool loadFactoryPlugin(const QDir &dir, const QString &fileName);
     void addHandlerMap(Maliit::HandlerState state, const QString &pluginName);
     void setActiveHandlers(const QSet<Maliit::HandlerState> &states);
     QSet<Maliit::HandlerState> activeHandlers() const;
-    void deactivatePlugin(MInputMethodPlugin *plugin);
+    void deactivatePlugin(Maliit::Plugins::InputMethodPlugin *plugin);
 
-    void replacePlugin(Maliit::SwitchDirection direction, MInputMethodPlugin *source,
+    void replacePlugin(Maliit::SwitchDirection direction, Maliit::Plugins::InputMethodPlugin *source,
                        Plugins::iterator replacement, const QString &subViewId);
     bool switchPlugin(Maliit::SwitchDirection direction, MAbstractInputMethod *initiator);
     bool switchPlugin(const QString &name,
                       MAbstractInputMethod *initiator,
                       const QString &subViewId = QString());
     bool trySwitchPlugin(Maliit::SwitchDirection direction,
-                         MInputMethodPlugin *source,
+                         Maliit::Plugins::InputMethodPlugin *source,
                          Plugins::iterator replacement,
                          const QString &subViewId = QString());
-    void changeHandlerMap(MInputMethodPlugin *origin,
-                          MInputMethodPlugin *replacement,
+    void changeHandlerMap(Maliit::Plugins::InputMethodPlugin *origin,
+                          Maliit::Plugins::InputMethodPlugin *replacement,
                           QSet<Maliit::HandlerState> states);
 
     QStringList loadedPluginsNames() const;
@@ -109,7 +113,7 @@ public:
     QStringList activePluginsNames() const;
     QString activePluginsName(Maliit::HandlerState state) const;
     void loadHandlerMap();
-    MInputMethodPlugin *activePlugin(Maliit::HandlerState state) const;
+    Maliit::Plugins::InputMethodPlugin *activePlugin(Maliit::HandlerState state) const;
     void hideActivePlugins();
     void showActivePlugins();
     void ensureActivePluginsVisible(ShowInputMethodRequest request);
