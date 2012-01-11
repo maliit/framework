@@ -26,10 +26,10 @@
 
 //! Override input method plugin that can be used as a base when developing new input method plugins
 class OverridePlugin: public QObject,
-    public MInputMethodPlugin
+    public Maliit::Plugins::InputMethodPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(MInputMethodPlugin)
+    Q_INTERFACES(Maliit::Plugins::InputMethodPlugin)
 
 public:
     OverridePlugin();

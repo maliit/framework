@@ -20,7 +20,11 @@
 #include <QtCore>
 #include <QtPlugin>
 
-class MInputMethodPlugin;
+namespace Maliit {
+namespace Plugins {
+    class InputMethodPlugin;
+}
+}
 class MImAbstractPluginFactoryPrivate;
 
 /*! \ingroup pluginapi
@@ -46,7 +50,7 @@ public:
     virtual QString fileExtension() const = 0;
 
     //! \brief Implement this function to create a new MInputMethodPlugin base on a file
-    virtual MInputMethodPlugin* create(const QString &file) const = 0;
+    virtual Maliit::Plugins::InputMethodPlugin* create(const QString &file) const = 0;
 };
 
 

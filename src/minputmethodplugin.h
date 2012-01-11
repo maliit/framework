@@ -27,6 +27,8 @@ class MAbstractInputMethod;
 class MAbstractInputMethodSettings;
 class MAbstractInputMethodHost;
 
+namespace Maliit {
+namespace Plugins {
 
 /*! \ingroup pluginapi
  * \brief An interface class for all input method plugins.
@@ -36,7 +38,7 @@ class MAbstractInputMethodHost;
  * createInputMethod() method. Make sure your plugin links against the m im
  * framework library as well.
  */
-class MInputMethodPlugin
+class InputMethodPlugin
 {
 public:
     /*! \brief Implement this function to return the identifier for this input method.
@@ -69,7 +71,10 @@ public:
     virtual QSet<MInputMethod::HandlerState> supportedStates() const = 0;
 };
 
-Q_DECLARE_INTERFACE(MInputMethodPlugin,
-                    "com.meego.meegoimframework.MInputMethodPlugin/1.1")
+}
+}
+
+Q_DECLARE_INTERFACE(Maliit::Plugins::InputMethodPlugin,
+                    "org.maliit.plugins.InputMethodPlugin/1.1")
 
 #endif

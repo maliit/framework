@@ -35,7 +35,7 @@ public:
     //! \reimp
     virtual ~MaliitQuickPluginFactory();
     virtual QString fileExtension() const;
-    virtual MInputMethodPlugin * create(const QString &file) const;
+    virtual Maliit::Plugins::InputMethodPlugin * create(const QString &file) const;
     //! \reimp_end
 };
 

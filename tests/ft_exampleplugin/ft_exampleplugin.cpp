@@ -76,7 +76,7 @@ void Ft_ExamplePlugin::testFunction()
     QObject *pluginInstance = loader.instance();
     QVERIFY(pluginInstance != 0);
 
-    MInputMethodPlugin *plugin =  qobject_cast<MInputMethodPlugin *>(pluginInstance);
+    Maliit::Plugins::InputMethodPlugin *plugin =  qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
     QVERIFY(plugin != 0);
 
     plugin->createInputMethod(&host, new QWidget);

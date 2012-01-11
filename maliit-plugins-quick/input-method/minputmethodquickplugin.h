@@ -38,7 +38,7 @@ class MInputMethodQuickPluginPrivate;
 //! MInputMethodQuickPlugin::createInputMethodSettings as well and create a
 //! custom MAbstractInputMethod instance there.
 class MInputMethodQuickPlugin
-    : public MInputMethodPlugin
+    : public Maliit::Plugins::InputMethodPlugin
 {
 public:
     MInputMethodQuickPlugin();

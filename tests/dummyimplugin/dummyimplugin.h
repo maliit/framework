@@ -9,10 +9,10 @@
 
 //! Dummy input method plugin for ut_mimpluginloader
 class DummyImPlugin: public QObject,
-    public MInputMethodPlugin
+    public Maliit::Plugins::InputMethodPlugin
 {
     Q_OBJECT
-    Q_INTERFACES(MInputMethodPlugin)
+    Q_INTERFACES(Maliit::Plugins::InputMethodPlugin)
 
 public:
     DummyImPlugin();
