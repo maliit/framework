@@ -1,3 +1,15 @@
+NEXT
+======
+
+CHANGES SINCE 0.81.2
+* DBus activation for maliit-server now optional. Pass
+  CONFIG+=disable-dbus-activation to qmake to disable.
+  Use this option when using a system/session manager (like systemd)
+  to start and keep maliit-server alive
+
+BUG FIXES
+* Fixes: MALIIT#73 - Make dbus-x11 an optional dependency
+
 0.81.2
 ======
 
