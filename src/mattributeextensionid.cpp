@@ -25,12 +25,12 @@ namespace {
 }
 
 MAttributeExtensionId::MAttributeExtensionId()
-    : id(InvalidId)
+    : m_id(InvalidId)
 {
 }
 
 MAttributeExtensionId::MAttributeExtensionId(int id, const QString &service)
-    : id(id),
+    : m_id(id),
       m_service(service)
 {
 }
@@ -42,12 +42,12 @@ MAttributeExtensionId MAttributeExtensionId::standardAttributeExtensionId()
 
 bool MAttributeExtensionId::isValid() const
 {
-    return id >= 0 && !m_service.isEmpty();
+    return m_id >= 0 && !m_service.isEmpty();
 }
 
 bool MAttributeExtensionId::operator==(const MAttributeExtensionId &other) const
 {
-    return (id == other.id) && (m_service == other.m_service);
+    return (m_id == other.m_id) && (m_service == other.m_service);
 }
 
 bool MAttributeExtensionId::operator!=(const MAttributeExtensionId &other) const
@@ -60,8 +60,13 @@ QString MAttributeExtensionId::service() const
     return m_service;
 }
 
+int MAttributeExtensionId::id() const
+{
+    return m_id;
+}
+
 uint qHash(const MAttributeExtensionId &id)
 {
-    return qHash(QPair<int, QString>(id.id, id.m_service));
+    return qHash(QPair<int, QString>(id.m_id, id.m_service));
 }
 

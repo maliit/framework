@@ -52,9 +52,12 @@ public:
     //! \return service part of the ID, given to constructor
     QString service() const;
 
+    //! Id given by application
+    int id() const;
+
 private:
     //! Id given by application
-    int id;
+    int m_id;
 
     //! Unique application identifier
     QString m_service;

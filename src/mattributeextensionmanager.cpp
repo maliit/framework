@@ -21,6 +21,7 @@
 #include "mtoolbarlayout.h"
 #include "mkeyoverridedata.h"
 #include "mkeyoverride.h"
+#include "mtoolbaritemfilter.h"
 
 #include <QVariant>
 #include <QFileInfo>
@@ -50,6 +51,13 @@ MAttributeExtensionManager::MAttributeExtensionManager()
 
 MAttributeExtensionManager::~MAttributeExtensionManager()
 {
+    MToolbarItemFilters::iterator iterator = toolbarItemFilters.begin();
+
+    for (; iterator != toolbarItemFilters.end(); ++iterator) {
+        disconnect(iterator.key(), 0, this, 0);
+    }
+
+    toolbarItemFilters.clear();
 }
 
 QList<MAttributeExtensionId> MAttributeExtensionManager::attributeExtensionIdList() const
@@ -195,6 +203,35 @@ void MAttributeExtensionManager::handlePreferredDomainUpdate()
     }
 }
 
+void MAttributeExtensionManager::handleToolbarItemUpdate(const QString &attributeName)
+{
+    MToolbarItem *item = qobject_cast<MToolbarItem *>(sender());
+    MToolbarItemFilters::iterator iterator(toolbarItemFilters.find(item));
+
+    if (iterator != toolbarItemFilters.end()) {
+        const QVariant actualValue = item->property(attributeName.toLatin1().data());
+        const QVariant filterValue = iterator->property(attributeName);
+        if (filterValue.isValid() && filterValue != actualValue) {
+            iterator->setProperty(attributeName, actualValue);
+            Q_EMIT notifyExtensionAttributeChanged(iterator->extensionId().id(),
+                                                   QString::fromLatin1(ToolbarExtensionString),
+                                                   item->name(),
+                                                   attributeName,
+                                                   actualValue);
+        }
+    }
+}
+
+void MAttributeExtensionManager::handleToolbarItemDestroyed()
+{
+    // we use this slot for toolbar items only,
+    // so it is safe to use static_cast here.
+    // it is not possible to dynamic_cast or qobject_cast,
+    // because sender is partially destroyed at the moment
+    MToolbarItem *item = static_cast<MToolbarItem *>(sender());
+    unwatchItem(item);
+}
+
 void MAttributeExtensionManager::updateDomain(QSharedPointer<MToolbarData> &toolbar)
 {
     const QString domain(preferredDomainSetting.value().toString());
@@ -214,6 +251,16 @@ void MAttributeExtensionManager::updateDomain(QSharedPointer<MToolbarData> &tool
 
     actions[0]->setText(domain);
     item->setText(domain);
+}
+
+void MAttributeExtensionManager::unwatchItem(MToolbarItem *item)
+{
+    if (item) {
+        MToolbarItemFilters::iterator iterator(toolbarItemFilters.find(item));
+        if (iterator != toolbarItemFilters.end()) {
+            toolbarItemFilters.erase(iterator);
+        }
+    }
 }
 
 void MAttributeExtensionManager::registerAttributeExtension(const MAttributeExtensionId &id, const QString &fileName)
@@ -243,8 +290,19 @@ void MAttributeExtensionManager::registerAttributeExtension(const MAttributeExte
 
 void MAttributeExtensionManager::unregisterAttributeExtension(const MAttributeExtensionId &id)
 {
-    if (!attributeExtensions.contains(id))
+    AttributeExtensionContainer::iterator iterator(attributeExtensions.find(id));
+
+    if (iterator == attributeExtensions.end()) {
         return;
+    }
+
+    QSharedPointer<MToolbarData> toolbarData = (*iterator)->toolbarData();
+    if (toolbarData) {
+        Q_FOREACH(const QSharedPointer<MToolbarItem> &item, toolbarData->items()) {
+            unwatchItem(item.data());
+            disconnect(item.data(), 0, this, 0);
+        }
+    }
 
     attributeExtensions.remove(id);
 }
@@ -326,9 +384,22 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
         if (!item) {
             return;
         }
-        const QByteArray byteArray = attribute.toLatin1();
-        const char * const c_str = byteArray.data();
-        item->setProperty(c_str, value);
+
+        MToolbarItemFilters::iterator iterator(toolbarItemFilters.find(item.data()));
+
+        if (iterator == toolbarItemFilters.end()) {
+            iterator = toolbarItemFilters.insert(item.data(),
+                                                 MToolbarItemFilter(id));
+
+            connect(item.data(), SIGNAL(propertyChanged(QString)),
+                    this, SLOT(handleToolbarItemUpdate(QString)), Qt::UniqueConnection);
+
+            connect(item.data(), SIGNAL(destroyed()),
+                    this, SLOT(handleToolbarItemDestroyed()), Qt::UniqueConnection);
+        }
+        iterator->setProperty(attribute, value); // put value into filter first
+
+        item->setProperty(attribute.toLatin1().data(), value);
     } else {
         qWarning() << "Invalid or incompatible attribute extension target:" << target;
     }
