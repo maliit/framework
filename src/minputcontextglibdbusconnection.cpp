@@ -103,6 +103,75 @@ namespace
         }
     }
 
+    bool encodeVariant(GValue *dest, const QVariant &source)
+    {
+        switch (static_cast<QMetaType::Type>(source.type())) {
+        case QMetaType::Bool:
+            g_value_init(dest, G_TYPE_BOOLEAN);
+            g_value_set_boolean(dest, source.toBool());
+            return true;
+        case QMetaType::Int:
+            g_value_init(dest, G_TYPE_INT);
+            g_value_set_int(dest, source.toInt());
+            return true;
+        case QMetaType::UInt:
+            g_value_init(dest, G_TYPE_UINT);
+            g_value_set_uint(dest, source.toUInt());
+            return true;
+        case QMetaType::LongLong:
+            g_value_init(dest, G_TYPE_INT64);
+            g_value_set_int64(dest, source.toLongLong());
+            return true;
+        case QMetaType::ULongLong:
+            g_value_init(dest, G_TYPE_UINT64);
+            g_value_set_uint64(dest, source.toULongLong());
+            return true;
+        case QMetaType::Double:
+            g_value_init(dest, G_TYPE_DOUBLE);
+            g_value_set_double(dest, source.toDouble());
+            return true;
+        case QMetaType::QString:
+            g_value_init(dest, G_TYPE_STRING);
+            // string is copied by g_value_set_string
+            g_value_set_string(dest, source.toString().toUtf8().constData());
+            return true;
+        case QMetaType::QRect:
+            {
+                // QRect is encoded as (iiii).
+                // This is compatible with QDBusArgument encoding. see more in decoder
+                GType structType = dbus_g_type_get_struct("GValueArray",
+                                                          G_TYPE_INT, G_TYPE_INT,
+                                                          G_TYPE_INT, G_TYPE_INT,
+                                                          G_TYPE_INVALID);
+                g_value_init(dest, structType);
+                GValueArray *array = (GValueArray*)dbus_g_type_specialized_construct(structType);
+                if (!array) {
+                    qWarning() << Q_FUNC_INFO << "failed to initialize Rect instance";
+                }
+                g_value_take_boxed(dest, array);
+                QRect rect = source.toRect();
+                if (!dbus_g_type_struct_set(dest,
+                                        0, rect.left(),
+                                        1, rect.top(),
+                                        2, rect.width(),
+                                        3, rect.height(),
+                                        G_MAXUINT)) {
+                    g_value_unset(dest);
+                    qWarning() << Q_FUNC_INFO << "failed to fill Rect instance";
+                    return false;
+                }
+                return true;
+            }
+        case QMetaType::ULong:
+            g_value_init(dest, G_TYPE_ULONG);
+            g_value_set_ulong(dest, source.value<ulong>());
+            return true;
+        default:
+            qWarning() << Q_FUNC_INFO << "unsupported data:" << source.type() << source;
+            return false;
+        }
+    }
+
     bool encodePreeditFormats(GType *typeDest, GPtrArray **dataDest, const QList<MInputMethod::PreeditTextFormat> &preeditFormats)
     {
         // dbus datatype is a(iii)
@@ -726,6 +795,31 @@ void MInputContextGlibDBusConnection::updateInputMethodArea(const QRegion &regio
                                    G_TYPE_INVALID);
     }
 }
+
+void MInputContextGlibDBusConnection::notifyExtendedAttributeChanged(int id,
+                                                                     const QString &target,
+                                                                     const QString &targetItem,
+                                                                     const QString &attribute,
+                                                                     const QVariant &value)
+{
+    if (!activeContext()) {
+        return;
+    }
+    GValue valueData = {0, {{0}, {0}}};
+    if (!encodeVariant(&valueData, value)) {
+        return;
+    }
+
+    dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "notifyExtendedAttributeChanged",
+                               G_TYPE_INT, id,
+                               G_TYPE_STRING, target.toUtf8().data(),
+                               G_TYPE_STRING, targetItem.toUtf8().data(),
+                               G_TYPE_STRING, attribute.toUtf8().data(),
+                               G_TYPE_VALUE, &valueData,
+                               G_TYPE_INVALID);
+    g_value_unset(&valueData);
+}
+
 
 void MInputContextGlibDBusConnection::sendActivationLostEvent()
 {
