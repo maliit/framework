@@ -1157,6 +1157,9 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mICConnection.get(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
             d->attributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
 
+    connect(d->attributeExtensionManager.data(), SIGNAL(notifyExtensionAttributeChanged(int, QString, QString, QString, QVariant)),
+            d->mICConnection.get(), SLOT(notifyExtendedAttributeChanged(int, QString, QString, QString, QVariant)));
+
     connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
             d->attributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
 

@@ -19,6 +19,11 @@
 
 #include <minputmethodnamespace.h>
 
+#include <glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus.h>
+
 G_DEFINE_TYPE(MDBusGlibInputContextAdaptor, m_dbus_glib_input_context_adaptor, G_TYPE_OBJECT)
 
 
@@ -175,6 +180,89 @@ static gboolean m_dbus_glib_input_context_adaptor_set_language(
     GError **/*error*/)
 {
     Q_EMIT obj->imServerConnection->setLanguage(QString::fromUtf8(string));
+    return TRUE;
+}
+
+static bool variantFromGValue(QVariant *dest, GValue *source, QString *error_message)
+{
+    switch (G_VALUE_TYPE(source)) {
+    case G_TYPE_BOOLEAN:
+        *dest = bool(g_value_get_boolean(source));
+        return true;
+    case G_TYPE_INT:
+        *dest = int(g_value_get_int(source));
+        return true;
+    case G_TYPE_UINT:
+        *dest = uint(g_value_get_uint(source));
+        return true;
+    case G_TYPE_INT64:
+        *dest = static_cast<qlonglong>(g_value_get_int64(source));
+        return true;
+    case G_TYPE_UINT64:
+        *dest = static_cast<qulonglong>(g_value_get_uint64(source));
+        return true;
+    case G_TYPE_DOUBLE:
+        *dest = double(g_value_get_double(source));
+        return true;
+    case G_TYPE_STRING:
+        *dest = QString::fromUtf8(g_value_get_string(source));
+        return true;
+    default:
+        // The encoding must to be compatible with QDBusArgument's encoding of types,
+        // because the implementation will be eventually changed to using the QDBus.
+        //
+        // Unfortunately, the QDBusArgument encoding of variants
+        // does not encode information on the type explicitly,
+        // and we have to recover types from structures.
+        //
+        // For instance, (iiii) means QRect.
+        // (QVariant which holds array of four integers cannot be converted to QRect)
+        if (G_VALUE_TYPE(source) == dbus_g_type_get_struct("GValueArray",
+                                                           G_TYPE_INT, G_TYPE_INT, G_TYPE_INT, G_TYPE_INT,
+                                                           G_TYPE_INVALID)) {
+            int left;
+            int top;
+            int width;
+            int height;
+            if (!dbus_g_type_struct_get(source,
+                                        0, &left, 1, &top, 2, &width, 3, &height,
+                                        G_MAXUINT)) {
+                gchar *contents = g_strdup_value_contents(source);
+                if (error_message != 0)
+                    *error_message = QString(": failed to extract Rect from: ") + contents;
+                g_free(contents);
+                return false;
+            }
+            *dest = QRect(left, top, width, height);
+            return true;
+        } else {
+            if (error_message != 0)
+                *error_message = QString(": unknown data type: ") + G_VALUE_TYPE_NAME(source);
+            return false;
+        }
+    }
+}
+
+static gboolean m_dbus_glib_input_context_adaptor_notify_extended_attribute_changed(
+        MDBusGlibInputContextAdaptor *obj,
+        gint32 id,
+        const char *target,
+        const char *targetItem,
+        const char *attribute,
+        GValue *valueData,
+        GError **/*error*/)
+{
+    QVariant value;
+    QString error_message;
+    if (variantFromGValue(&value, valueData, &error_message)) {
+         Q_EMIT obj->imServerConnection->extendedAttributeChanged(static_cast<int>(id),
+                                                                  QString::fromUtf8(target),
+                                                                  QString::fromUtf8(targetItem),
+                                                                  QString::fromUtf8(attribute),
+                                                                  value);
+     } else {
+        qWarning() << "notify_extended_attribute_changed.arg[4]" + error_message;
+    }
     return TRUE;
 }
 

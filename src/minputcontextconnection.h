@@ -291,6 +291,16 @@ public Q_SLOTS:
     //! Update \a region covered by virtual keyboard
     virtual void updateInputMethodArea(const QRegion &region);
 
+    /*!
+     *\brief Informs application that input method servers has changed the \a attribute of the \a targetItem
+     * in the attribute extension \a target which has unique \a id to \a value.
+     */
+    virtual void notifyExtendedAttributeChanged(int id,
+                                                const QString &target,
+                                                const QString &targetItem,
+                                                const QString &attribute,
+                                                const QVariant &value);
+
 Q_SIGNALS:
     /* Emitted first */
     void appOrientationAboutToChange(int angle);
