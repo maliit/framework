@@ -25,6 +25,8 @@
                     <paste />
                 </actions>
             </button>
+            <button name="toggle" text="toggle-button" toggle="true" pressed="false" />
+            <button name="idle" text="idle-button" toggle="true" pressed="false" />
         </row>
     </layout>
 </toolbar>

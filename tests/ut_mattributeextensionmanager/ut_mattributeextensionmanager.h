@@ -37,6 +37,7 @@ private Q_SLOTS:
     void testLoadToolbar();
     void testSetItemAttribute();
     void testSetExtendedAttribute();
+    void testSendExtendedAttributeBack();
 
 private:
     QCoreApplication *app;

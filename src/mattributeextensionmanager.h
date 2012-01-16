@@ -22,6 +22,7 @@
 #include <QHash>
 #include <QSet>
 #include <QPointer>
+#include <QSharedPointer>
 
 #include "mkeyoverridedata.h"
 #include "mtoolbardata.h"
@@ -30,6 +31,7 @@
 #include "minputmethodnamespace.h"
 #include "mimsettings.h"
 
+struct MToolbarItemFilter;
 //! \internal
 /*! \ingroup maliitserver
  \brief The MAttributeExtensionManager class manager the virtual keyboard attribute extensions.
@@ -121,6 +123,23 @@ private Q_SLOTS:
     //! \brief Handle preferred_domain GConf setting updates.
     void handlePreferredDomainUpdate();
 
+    /*!
+     * \brief Handle extended attribute updates which are coming from plugin or framework.
+     * \param attributeName Name of changed attribute.
+     *
+     * Note: this slot relies on QObject::sender() and should be connected to
+     * MToolbarItem only.
+     */
+    void handleToolbarItemUpdate(const QString &attributeName);
+
+    /*!
+     * \brief Disconnect slots and remove all references to toolbar item which is being destroyed.
+     *
+     * Note: this slot relies on QObject::sender() and should be connected to
+     * MToolbarItem only.
+     */
+    void handleToolbarItemDestroyed();
+
 Q_SIGNALS:
     //! This signal is emited when a new key override is created.
     void keyOverrideCreated();
@@ -140,6 +159,21 @@ Q_SIGNALS:
                                 const QString &targetItem,
                                 const QString &attribute,
                                 const QVariant &value);
+
+    /*
+     * \brief Emitted when attribute is changed by framework or plugin.
+     * \param id the unique identifier of a registered extended attribute.
+     * \param target a string specifying the target for the attribute.
+     * \param targetItem the item name.
+     * \param attribute attribute to be changed.
+     * \param value new value.
+     * \sa handleExtendedAttributeUpdate()
+     */
+    void notifyExtensionAttributeChanged(int id,
+                                         const QString &target,
+                                         const QString &targetItem,
+                                         const QString &attribute,
+                                         const QVariant &value);
 
 private:
     /*!
@@ -164,6 +198,11 @@ private:
     //! \brief Update the text of a button named _domain in \a toolbar to match the configuration.
     void updateDomain(QSharedPointer<MToolbarData> &toolbar);
 
+    /*!
+     * \brief Disconnect slots and remove all references to toolbar item which is being destroyed.
+     */
+    void unwatchItem(MToolbarItem *item);
+
     typedef QHash<MAttributeExtensionId, QSharedPointer<MAttributeExtension> > AttributeExtensionContainer;
     //! all registered attribute extensions
     AttributeExtensionContainer attributeExtensions;
@@ -185,6 +224,11 @@ private:
 
     //! Preferred domain for URL and Email toolbar domain buttons.
     MImSettings preferredDomainSetting;
+
+    typedef QMap<MToolbarItem *, MToolbarItemFilter> MToolbarItemFilters;
+    //! Allow us to decide which changes in toolbar should be sent
+    //! to the application side
+    MToolbarItemFilters toolbarItemFilters;
 
     friend class Ut_MAttributeExtensionManager;
 };
