@@ -513,3 +513,12 @@ void MInputContextConnection::updateInputMethodArea(const QRegion &region)
 {
     Q_UNUSED(region);
 }
+
+void MInputContextConnection::notifyExtendedAttributeChanged(int ,
+                                                             const QString &,
+                                                             const QString &,
+                                                             const QString &,
+                                                             const QVariant &)
+{
+    // empty default implementation
+}

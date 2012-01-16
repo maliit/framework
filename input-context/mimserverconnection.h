@@ -194,6 +194,16 @@ public:
      */
     Q_SIGNAL void setLanguage(const QString &language);
 
+    /*!
+     *\brief Informs application that input method server has changed the \a attribute of the \a targetItem
+     * in the attribute extension \a target which has unique \a id to \a value.
+     */
+    Q_SIGNAL void extendedAttributeChanged(int id,
+                                           const QString &target,
+                                           const QString &targetItem,
+                                           const QString &attribute,
+                                           const QVariant &value);
+
 private:
     Q_DISABLE_COPY(MImServerConnection)
 

@@ -64,5 +64,12 @@
     <method name="setLanguage">
       <arg type="s"/>
     </method>
+    <method name="notifyExtendedAttributeChanged">
+      <arg type="i"/>
+      <arg type="s"/>
+      <arg type="s"/>
+      <arg type="s"/>
+      <arg type="v"/>
+    </method>
   </interface>
 </node>
