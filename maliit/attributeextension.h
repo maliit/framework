@@ -65,6 +65,25 @@ public:
      */
     int id() const;
 
+    /*!
+     * \brief Return key corresponding to given parameters.
+     *
+     * \param target Attribute extension.
+     * \param targetItem Item name.
+     * \param attribute Attribute name.
+     *
+     * \sa setAttribute()
+     */
+    static QString key(const QString &target,
+                       const QString &targetItem,
+                       const QString &attribute);
+
+    /*!
+     * \brief Update cached \a value of extended attribute corresponding to given \a key.
+     */
+    void updateAttribute(const QString &key,
+                         const QVariant &value);
+
 public Q_SLOTS:
     /*!
      * \brief Set the \a attribute of the \a targetItem in the input method registered attribute extension \a target to \a value.
@@ -77,6 +96,17 @@ public Q_SLOTS:
      *  Additional targets can be added in the future.
      */
     void setAttribute(const QString &key, const QVariant &value);
+
+Q_SIGNALS:
+    /*!
+     * \brief Informs application that input method server has changed the extended attribute.
+     * \param key a string specifying the target for the attribute.
+     * \param value new value.
+     */
+    void extendedAttributeChanged(const QString &key,
+                                  const QVariant &value);
+
+private Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(AttributeExtension)
