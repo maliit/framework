@@ -20,6 +20,9 @@
 #include "attributeextension_p.h"
 
 #include "attributeextensionregistry.h"
+#include "inputmethod.h"
+
+#include <QDebug>
 
 namespace Maliit {
 
@@ -83,6 +86,23 @@ int AttributeExtension::id() const
     Q_D(const AttributeExtension);
 
     return d->id;
+}
+
+QString AttributeExtension::key(const QString &target,
+                                const QString &targetItem,
+                                const QString &attribute)
+{
+    return QString::fromLatin1("%1/%2/%3").arg(target, targetItem, attribute);
+}
+
+void AttributeExtension::updateAttribute(const QString &key,
+                                         const QVariant &value)
+{
+    Q_D(AttributeExtension);
+
+    d->values[key] = value;
+
+    Q_EMIT extendedAttributeChanged(key, value);
 }
 
 void AttributeExtension::setAttribute(const QString &key, const QVariant &value)

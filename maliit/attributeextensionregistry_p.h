@@ -29,6 +29,8 @@ public:
     ~AttributeExtensionRegistryPrivate();
 
     ExtensionList extensions;
+
+    AttributeExtension * find(int id);
 };
 
 }

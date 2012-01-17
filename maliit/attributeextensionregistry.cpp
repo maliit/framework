@@ -18,8 +18,30 @@
 
 #include "attributeextensionregistry.h"
 #include "attributeextensionregistry_p.h"
+#include <QDebug>
+#include <algorithm>
 
 namespace Maliit {
+
+namespace {
+
+struct IdPredicate
+{
+    explicit IdPredicate(int i)
+        : id(i)
+    {
+    }
+
+    bool operator()(const QWeakPointer<AttributeExtension> &extension)
+    {
+        AttributeExtension * ptr = extension.data();
+        return (ptr ? id == ptr->id() : false);
+    }
+
+    int id;
+};
+
+}
 
 AttributeExtensionRegistryPrivate::AttributeExtensionRegistryPrivate() :
     extensions()
@@ -28,6 +50,20 @@ AttributeExtensionRegistryPrivate::AttributeExtensionRegistryPrivate() :
 
 AttributeExtensionRegistryPrivate::~AttributeExtensionRegistryPrivate()
 {
+}
+
+AttributeExtension * AttributeExtensionRegistryPrivate::find(int id)
+{
+    AttributeExtension * result = 0;
+    ExtensionList::iterator iterator = std::find_if(extensions.begin(),
+                                                    extensions.end(),
+                                                    IdPredicate(id));
+
+    if (iterator != extensions.end()) {
+        result = iterator->data();
+    }
+
+    return result;
 }
 
 AttributeExtensionRegistry::AttributeExtensionRegistry() :
@@ -73,6 +109,25 @@ ExtensionList AttributeExtensionRegistry::extensions() const
     Q_D(const AttributeExtensionRegistry);
 
     return d->extensions;
+}
+
+void AttributeExtensionRegistry::updateAttribute(int id,
+                                                 const QString &target,
+                                                 const QString &targetItem,
+                                                 const QString &attribute,
+                                                 const QVariant &value)
+{
+    Q_D(AttributeExtensionRegistry);
+
+    AttributeExtension *extension = d->find(id);
+
+    if (!extension) {
+        qWarning() << __PRETTY_FUNCTION__
+                   << "extension" << id << "was not found";
+    }
+
+    extension->updateAttribute(AttributeExtension::key(target, targetItem, attribute),
+                               value);
 }
 
 } // namespace Maliit

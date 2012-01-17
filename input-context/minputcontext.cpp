@@ -157,6 +157,17 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
 
     connectInputMethodServer();
     connectInputMethodExtension();
+
+    bool ok = connect(imServer,
+                      SIGNAL(extendedAttributeChanged(int,QString,QString,QString,QVariant)),
+                      Maliit::AttributeExtensionRegistry::instance(),
+                      SLOT(updateAttribute(int,QString,QString,QString,QVariant)));
+
+    if (!ok) {
+        qCritical() << __PRETTY_FUNCTION__
+                    << "could not establish connection between InputMethod and AttributeExtension";
+    }
+
 }
 
 MInputContext::~MInputContext()

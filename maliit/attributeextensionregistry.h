@@ -59,6 +59,16 @@ Q_SIGNALS:
     //! Emitted when input method extended attribute is changed.
     void extensionChanged(int id, const QString &key, const QVariant &value);
 
+public Q_SLOTS:
+    /*!
+     * \brief Update cached \a value of extended attribute corresponding to given parameters.
+     */
+    void updateAttribute(int id,
+                         const QString &target,
+                         const QString &targetItem,
+                         const QString &attribute,
+                         const QVariant &value);
+
 private:
     AttributeExtensionRegistry();
     ~AttributeExtensionRegistry();
