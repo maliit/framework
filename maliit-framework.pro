@@ -41,7 +41,7 @@ CONFIG += ordered
 TEMPLATE = subdirs
 
 !only-libmaliit {
-    SUBDIRS = src passthroughserver
+    SUBDIRS = connection common src passthroughserver
     TARGET = meego-im-uiserver
 }
 
@@ -53,7 +53,7 @@ external-libmaliit {
 }
 
 !only-libmaliit {
-    SUBDIRS += common gtk-input-context maliit-plugins-quick examples
+    SUBDIRS += gtk-input-context maliit-plugins-quick examples
 
     # Qt 5 has a new platform input plugin system which already contains
     # support for Maliit.

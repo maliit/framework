@@ -3,7 +3,7 @@ include(../config.pri)
 TEMPLATE = lib
 TARGET = $$MALIIT_INPUTCONTEXT_TARGETNAME
 DEPENDPATH += .
-INCLUDEPATH += . .. ../common
+INCLUDEPATH += . .. ../common ../connection
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
@@ -18,6 +18,9 @@ external-libmaliit {
 disable-dbus-activation {
     DEFINES += NO_DBUS_ACTIVATION
 }
+
+LIBS += ../connection/libmaliit-connection.a
+POST_TARGETDEPS += ../connection/libmaliit-connection.a
 
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
