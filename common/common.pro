@@ -29,4 +29,3 @@ INSTALLS += \
     headers \
     frameworkheaders \
     install_pkgconfig \
-

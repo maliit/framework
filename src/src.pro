@@ -3,7 +3,7 @@ include(../config.pri)
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_LIB
-INCLUDEPATH += .. ../common
+INCLUDEPATH += .. ../common ../connection
 
 # Input
 HEADERSINSTALL = \
@@ -227,6 +227,9 @@ check.target = check
 check.depends += lib$${TARGET}.so.$${VERSION}
 
 x11:LIBS += -lXcomposite -lXdamage -lXfixes
+LIBS += ../connection/libmaliit-connection.a
+
+POST_TARGETDEPS += ../connection/libmaliit-connection.a
 
 # Generate dbus glue
 QMAKE_EXTRA_TARGETS += dbus_glue
