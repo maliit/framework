@@ -325,7 +325,8 @@ Q_SIGNALS:
 
     //! This signal is emitted when application wants to change global attribute
     //! \sa MAttributeExtensionManager::globalAttributeChanged()
-    void globalAttributeChanged(const QString &targetItem,
+    void globalAttributeChanged(const MAttributeExtensionId &id,
+                                const QString &targetItem,
                                 const QString &attribute,
                                 const QVariant &value);
     //! \internal_end.

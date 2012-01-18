@@ -81,11 +81,13 @@ MInputContextConnection::MInputContextConnection(QObject *parent)
     Q_UNUSED(parent);
     MAttributeExtensionManager *attributeManager= &MAttributeExtensionManager::instance();
 
+    // FIXME: Remove me.
     connect(attributeManager, SIGNAL(keyOverrideCreated()),
             this,             SIGNAL(keyOverrideCreated()));
 
-    connect(attributeManager, SIGNAL(globalAttributeChanged(QString,QString,QVariant)),
-            this,             SIGNAL(globalAttributeChanged(QString,QString,QVariant)));
+    // FIXME: Remove me.
+    connect(attributeManager, SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
+            this,             SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)));
 }
 
 
