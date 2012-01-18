@@ -84,9 +84,9 @@ private:
     MImSettings mActiveSubViewSettings;
 
     QSet<QString> enabledPlugins; //should be updated when mEnabledSubViews is changed
+    bool mAllSubviewsEnabled;
 
 };
 
 Q_DECLARE_METATYPE(MImOnScreenPlugins::SubView);
-
 #endif // MIMENABLEDPLUGINS_H
