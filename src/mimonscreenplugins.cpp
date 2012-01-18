@@ -89,7 +89,8 @@ MImOnScreenPlugins::MImOnScreenPlugins():
     mLastEnabledSubViews(),
     mActiveSubView(),
     mEnabledSubViewsSettings(EnabledSubViews),
-    mActiveSubViewSettings(ActiveSubView)
+    mActiveSubViewSettings(ActiveSubView),
+    mAllSubviewsEnabled(false)
 {
     connect(&mEnabledSubViewsSettings, SIGNAL(valueChanged()),
             this, SLOT(updateEnabledSubviews()));
@@ -211,13 +212,18 @@ void MImOnScreenPlugins::setActiveSubView(const MImOnScreenPlugins::SubView &sub
 
 void MImOnScreenPlugins::setAllSubViewsEnabled(bool enable)
 {
-    if (enable) {
-        mLastEnabledSubViews = mEnabledSubViews;
-    } else {
-        if (not mLastEnabledSubViews.contains(mActiveSubView)) {
-            mLastEnabledSubViews.append(mActiveSubView);
-        }
-    }
+    if (mAllSubviewsEnabled != enable) {
+        mAllSubviewsEnabled = enable;
 
-    setEnabledSubViews(enable ? mAvailableSubViews : mLastEnabledSubViews);
+        if (mAllSubviewsEnabled) {
+            mLastEnabledSubViews = mEnabledSubViews;
+        } else {
+            if (not mLastEnabledSubViews.contains(mActiveSubView)) {
+                mLastEnabledSubViews.append(mActiveSubView);
+            }
+        }
+
+        setEnabledSubViews(mAllSubviewsEnabled ? mAvailableSubViews
+                                               : mLastEnabledSubViews);
+    }
 }
