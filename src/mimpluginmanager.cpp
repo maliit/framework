@@ -1107,7 +1107,9 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mICConnection.get(), SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
-    connect(&MAttributeExtensionManager::instance(), SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
+    // MAttributeExtensionManager::globalAttributeChanged is currently forwared
+    // via the IC connection instance (see commit da01265):
+    connect(d->mICConnection.get(), SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
             this, SLOT(onGlobalAttributeChange(MAttributeExtensionId,QString,QString,QVariant)));
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
