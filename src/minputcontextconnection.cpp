@@ -43,8 +43,6 @@ namespace {
     const char * const CursorRectAttribute = "cursorRectangle";
     const char * const HiddenTextAttribute = "hiddenText";
     const char * const PreeditClickPosAttribute = "preeditClickPos";
-    const char * const InputMethodItem = "inputMethod";
-    const char * const LoadAll = "loadAll";
 }
 
 class MInputContextConnectionPrivate
@@ -357,10 +355,6 @@ MInputContextConnection::updateWidgetInformation(
     if (!focusStateOk)
     {
         qCritical() << __PRETTY_FUNCTION__ << ": focus state is invalid.";
-    }
-
-    if (not widgetFocusState) {
-        Q_EMIT globalAttributeChanged(MAttributeExtensionId(), InputMethodItem, LoadAll, QVariant(false));
     }
 
     if (handleFocusChange) {
