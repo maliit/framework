@@ -26,6 +26,11 @@
 #include <tr1/functional>
 #include <QDebug>
 
+/* For glib < 2.30 */
+#ifndef G_VALUE_INIT
+#define G_VALUE_INIT { 0, { { 0 } } }
+#endif
+
 namespace {
 const char * const MaliitServerName = "org.maliit.server";
 const char * const MaliitServerObjectPath = "/org/maliit/server/address";
@@ -110,7 +115,7 @@ const std::string Address::get() const
 #else
 const std::string Address::get() const
 {
-    GValue value = {0,};
+    GValue value = G_VALUE_INIT;
     GError *error = NULL;
 
     QScopedPointer<DBusGConnection, SafeUnref>
