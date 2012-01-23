@@ -27,6 +27,16 @@
 #define MALIIT_SERVER_INTERFACE "org.maliit.Server.Address"
 #define MALIIT_SERVER_ADDRESS_PROPERTY "address"
 
+#ifndef MALIIT_USE_GIO_API
+#define DBUS_PROPERTIES_INTERFACE "org.freedesktop.DBus.Properties"
+#define DBUS_PROPERTIES_GET_METHOD "Get"
+#endif
+
+/* For glib < 2.30 */
+#ifndef G_VALUE_INIT
+#define G_VALUE_INIT { 0, { { 0 } } }
+#endif
+
 MeegoImConnector *meego_im_connector_new();
 
 static gboolean
@@ -46,6 +56,7 @@ connection_dropped(gpointer instance, MeegoImConnector *connector)
     try_reconnect(connector);
 }
 
+#ifdef MALIIT_USE_GIO_API
 static char *
 get_dbus_address()
 {
@@ -81,6 +92,46 @@ get_dbus_address()
 
     return address;
 }
+
+#else
+static char *
+get_dbus_address()
+{
+    GValue value = G_VALUE_INIT;
+    GError *error = NULL;
+    DBusGConnection *connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
+
+    if (!connection) {
+        g_warning("%s: %s", __PRETTY_FUNCTION__, error->message);
+        g_error_free(error);
+        return NULL;
+    }
+
+    DBusGProxy *proxy = dbus_g_proxy_new_for_name(connection,
+                                            MALIIT_SERVER_NAME,
+                                            MALIIT_SERVER_OBJECT_PATH,
+                                            DBUS_PROPERTIES_INTERFACE);
+
+    if (!dbus_g_proxy_call(proxy,
+                           DBUS_PROPERTIES_GET_METHOD,
+                           &error,
+                           G_TYPE_STRING, MALIIT_SERVER_INTERFACE,
+                           G_TYPE_STRING, MALIIT_SERVER_ADDRESS_PROPERTY,
+                           G_TYPE_INVALID,
+                           G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
+
+        g_warning("%s: %s", __PRETTY_FUNCTION__, error->message);
+        g_error_free(error);
+        return NULL;
+    }
+
+    gchar *result = g_value_dup_string(&value);
+    g_value_unset(&value);
+    g_object_unref(proxy);
+
+    return result;
+}
+#endif
 
 /**
  * MeegoImConnector:

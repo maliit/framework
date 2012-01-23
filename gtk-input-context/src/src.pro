@@ -5,7 +5,12 @@ TARGET = maliit-gtk-im-common
 CONFIG += staticlib
 
 CONFIG += link_pkgconfig
-PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1 gio-2.0
+PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1
+
+system(pkg-config gio-2.0 --atleast-version 2.26) {
+    DEFINES   += MALIIT_USE_GIO_API
+    PKGCONFIG += gio-2.0
+}
 
 debug{
     DEFINES += ENABLE_DEBUG
