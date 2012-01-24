@@ -74,6 +74,12 @@ external-libmaliit {
     }
 }
 
+contains(SUBDIRS, input-context) {
+    !contains(QT_CONFIG, glib) {
+        error(Qt4 input context requires Qt Glib support)
+    }
+}
+
 !system(pkg-config --exists dbus-glib-1 dbus-1 gconf-2.0):error("Could not find dbus-glib-1 dbus-1 gconf-2.0")
 
 QMAKE_EXTRA_TARGETS += check-xml
