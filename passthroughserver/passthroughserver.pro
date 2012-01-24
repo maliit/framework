@@ -6,7 +6,8 @@ target.path = $$M_IM_INSTALL_BIN
 DEPENDPATH += .
 INCLUDEPATH += . .. ../src ../common
 
-LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
+LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so
+x11:LIBS += -lXfixes
 
 SOURCES += main.cpp
 
