@@ -47,20 +47,28 @@ const char * const DBusPropertiesGetMethod = "Get";
 #ifdef MALIIT_USE_GIO_API
         static inline void cleanup(GDBusProxy *pointer)
         {
-            g_object_unref(pointer);
+            if (pointer) {
+                g_object_unref(pointer);
+            }
         }
         static inline void cleanup(GVariant *pointer)
         {
-            g_variant_unref(pointer);
+            if (pointer) {
+                g_variant_unref(pointer);
+            }
         }
 #else
         static inline void cleanup(DBusGConnection *pointer)
         {
-            dbus_g_connection_unref(pointer);
+            if (pointer) {
+                dbus_g_connection_unref(pointer);
+            }
         }
         static inline void cleanup(DBusGProxy *pointer)
         {
-            g_object_unref(pointer);
+            if (pointer) {
+                g_object_unref(pointer);
+            }
         }
 #endif
     };
