@@ -41,7 +41,7 @@ CONFIG += ordered
 TEMPLATE = subdirs
 
 !only-libmaliit {
-    SUBDIRS = connection common src passthroughserver
+    SUBDIRS = common connection src passthroughserver
     TARGET = meego-im-uiserver
 }
 
