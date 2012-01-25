@@ -74,16 +74,16 @@ glib-dbus-connection {
 
     # Generate dbus glue for input-context side
     QMAKE_EXTRA_TARGETS += dbus_glue_inputcontext
-    dbus_glue_inputcontext.target = $$OUT_PWD/mdbusglibicconnectionserviceglue.h
+    dbus_glue_inputcontext.target = $$OUT_PWD/mdbusglibinputcontextadaptorglue.h
     dbus_glue_inputcontext.commands = \
         dbus-binding-tool --prefix=m_dbus_glib_input_context_adaptor --mode=glib-server \
-            --output=$$OUT_PWD/mdbusglibicconnectionserviceglue.h $$IN_PWD/minputmethodcontext1interface.xml
-    dbus_glue_inputcontext.output = $$OUT_PWD/mdbusglibicconnectionserviceglue.h
+            --output=$$OUT_PWD/mdbusglibinputcontextadaptorglue.h $$IN_PWD/minputmethodcontext1interface.xml
+    dbus_glue_inputcontext.output = $$OUT_PWD/mdbusglibinputcontextadaptorglue.h
     dbus_glue_inputcontext.depends = $$IN_PWD/minputmethodcontext1interface.xml
 
     # Use to work around the fact that qmake looks up the target for the generated header wrong
     QMAKE_EXTRA_TARGETS += fake_dbus_glue_inputcontext
-    fake_dbus_glue_inputcontext.target = mdbusglibicconnectionserviceglue.h
+    fake_dbus_glue_inputcontext.target = mdbusglibinputcontextadaptorglue.h
     fake_dbus_glue_inputcontext.depends = dbus_glue_inputcontext
 
     OTHER_FILES += minputmethodcontext1interface.xml
