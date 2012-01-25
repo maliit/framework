@@ -204,8 +204,7 @@ static gboolean m_dbus_glib_input_context_adaptor_notify_extended_attribute_chan
     return TRUE;
 }
 
-#include "mdbusglibicconnectionserviceglue.h"
-
+#include "mdbusglibinputcontextadaptorglue.h"
 
 static void
 m_dbus_glib_input_context_adaptor_init(MDBusGlibInputContextAdaptor */*obj*/)
