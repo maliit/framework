@@ -21,6 +21,7 @@ INCLUDEPATH += . \
                $$TOP_DIR \
                $$SRC_DIR \
                $$TOP_DIR/common \
+               $$TOP_DIR/connection \
                $$UTILS_DIR \
 
 HEADERS += \

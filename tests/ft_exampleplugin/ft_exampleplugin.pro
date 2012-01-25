@@ -8,6 +8,10 @@ INCLUDEPATH += \
 
 QT += core gui
 
+# For MImInputContextConnection pulled in by TestInputMethodHost
+LIBS += ../../connection/libmaliit-connection.a
+POST_TARGETDEPS += ../../connection/libmaliit-connection.a
+
 # Input
 HEADERS += \
     ft_exampleplugin.h \
