@@ -26,7 +26,7 @@
 #include <tr1/memory>
 
 #include "mimserverconnection.h"
-#include "minputcontext.h"
+
 #include "inputcontextdbusaddress.h"
 
 namespace Maliit
