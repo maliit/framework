@@ -10,6 +10,10 @@ INCLUDEPATH += \
 
 QT += core gui declarative
 
+# For MImInputContextConnection pulled in by TestInputMethodHost
+LIBS += ../../connection/libmaliit-connection.a
+POST_TARGETDEPS += ../../connection/libmaliit-connection.a
+
 IN_TREE_TEST_PLUGIN_DIR = $${OUT_PWD}/../../examples/plugins
 DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 
