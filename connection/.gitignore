@@ -1,2 +1,5 @@
-libmaliit-connection.a
+org.maliit.server.service
+minputmethodserver.service
+mdbusglibicconnectionserviceglue.h
+mdbusglibinputcontextadaptorglue.h
 

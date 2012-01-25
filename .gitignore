@@ -4,6 +4,7 @@ Makefile
 doxygen.log*
 .moc
 .obj
+*.a
 *.so
 *.so.*
 *.o
