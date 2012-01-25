@@ -154,7 +154,7 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
 }
 
 !enable-legacy {
-    outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas, org.maliit.server.service)
+    outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
 } else {
     outputFiles(MeegoImFramework.pc, meegoimframework.prf, meego-im-framework.schemas)
 }

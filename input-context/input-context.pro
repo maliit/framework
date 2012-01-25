@@ -15,10 +15,6 @@ external-libmaliit {
     LIBS += ../maliit/lib$${MALIIT_LIB}.so
 }
 
-disable-dbus-activation {
-    DEFINES += NO_DBUS_ACTIVATION
-}
-
 LIBS += ../connection/libmaliit-connection.a
 POST_TARGETDEPS += ../connection/libmaliit-connection.a
 
