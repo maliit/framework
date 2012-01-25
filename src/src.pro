@@ -33,14 +33,12 @@ HEADERS += \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
         mimpluginmanageradaptor.h \
-        minputcontextconnection.h \
         minputmethodhost.h \
         mtoolbardata_p.h \
         mtoolbaritem_p.h \
         mkeyoverride_p.h \
         mattributeextensionmanager.h \
         mtoolbarlayout_p.h \
-        minputcontextglibdbusconnection.h \
         mimhwkeyboardtracker.h \
         mimupdateevent_p.h \
         mimgraphicsview_p.h \
@@ -51,7 +49,6 @@ HEADERS += \
         mimextensionevent_p.h \
         mimdummyinputcontext.h \
         mimserver.h \
-        serverdbusaddress.h \
         mindicatorserviceclient.h \
 
 SOURCES += \
@@ -61,7 +58,6 @@ SOURCES += \
         mabstractinputmethod.cpp \
         mabstractinputmethodhost.cpp \
         minputmethodhost.cpp \
-        minputcontextconnection.cpp \
         mtoolbaritem.cpp \
         mtoolbardata.cpp \
         mkeyoverride.cpp \
@@ -70,7 +66,6 @@ SOURCES += \
         mattributeextensionid.cpp \
         mattributeextension.cpp \
         mtoolbarlayout.cpp \
-        minputcontextglibdbusconnection.cpp \
         mimextensionevent.cpp \
         mimupdateevent.cpp \
         mimupdatereceiver.cpp \
@@ -84,7 +79,6 @@ SOURCES += \
         mimsubviewdescription.cpp \
         mimdummyinputcontext.cpp \
         mimserver.cpp \
-        serverdbusaddress.cpp \
         mindicatorserviceclient.cpp \
 
 x11 {
@@ -124,7 +118,7 @@ enable-legacy {
 CONFIG += qdbus link_pkgconfig
 QT = core $$QT_WIDGETS xml
 
-PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0
+PKGCONFIG += gconf-2.0
 
 enable-contextkit {
     PKGCONFIG += contextsubscriber-1.0
@@ -184,26 +178,11 @@ install_prf.files = $$OUT_PWD/meegoimframework.prf
 }
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
 
-!enable-legacy:!disable-dbus-activation {
-    DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
-    DBUS_SERVICES_PREFIX = $$system(pkg-config --variable prefix dbus-1)
-    enforce-install-prefix {
-        DBUS_SERVICES_DIR = $$replace(DBUS_SERVICES_DIR, $$DBUS_SERVICES_PREFIX, $$M_IM_PREFIX)
-    }
-
-    install_services.path = $$DBUS_SERVICES_DIR
-    install_services.files = org.maliit.server.service
-}
-
 INSTALLS += target \
     headers \
     install_prf \
     install_pkgconfig \
     install_schemas \
-
-!enable-legacy:!disable-dbus-activation {
-    INSTALLS += install_services
-}
 
 # Registering the GConf schemas in the gconf database
 gconftool = gconftool-2
@@ -231,21 +210,7 @@ LIBS += ../connection/libmaliit-connection.a
 
 POST_TARGETDEPS += ../connection/libmaliit-connection.a
 
-# Generate dbus glue
-QMAKE_EXTRA_TARGETS += dbus_glue
-dbus_glue.target = $$OUT_PWD/mdbusglibicconnectionserviceglue.h
-dbus_glue.commands = \
-    dbus-binding-tool --prefix=m_dbus_glib_ic_connection --mode=glib-server \
-        --output=$$OUT_PWD/mdbusglibicconnectionserviceglue.h $$IN_PWD/minputmethodserver1interface.xml
-dbus_glue.output = $$OUT_PWD/mdbusglibicconnectionserviceglue.h
-dbus_glue.depends = $$IN_PWD/minputmethodserver1interface.xml
 
-# Use to work around the fact that qmake looks up the target for the generated header wrong
-QMAKE_EXTRA_TARGETS += fake_dbus_glue
-fake_dbus_glue.target = mdbusglibicconnectionserviceglue.h
-fake_dbus_glue.depends = dbus_glue
-
-OTHER_FILES += minputmethodserver1interface.xml
 
 
 
