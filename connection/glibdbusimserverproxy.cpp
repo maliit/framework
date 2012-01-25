@@ -19,6 +19,8 @@
 #include "inputcontextdbusaddress.h"
 #include <variantmarshalling.h>
 
+#include "glibdbusimserverproxy_p.h"
+
 #include <QPoint>
 #include <QRect>
 #include <QString>
@@ -92,23 +94,53 @@ namespace
         return enabled;
     }
 
+    void resetNotifyTrampoline(DBusGProxy *proxy, DBusGProxyCall *callId, gpointer userData)
+    {
+        static_cast<GlibDBusIMServerProxyPrivate *>(userData)->resetNotify(proxy, callId);
+    }
 }
 
-GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
+
+GlibDBusIMServerProxyPrivate::GlibDBusIMServerProxyPrivate()
     : glibObjectProxy(NULL),
       connection(),
       active(true),
       mAddress(new Maliit::InputContext::DBus::Address)
 {
-    Q_UNUSED(parent);
-
     g_type_init();
+}
+
+GlibDBusIMServerProxyPrivate::~GlibDBusIMServerProxyPrivate()
+{}
+
+void GlibDBusIMServerProxyPrivate::resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId)
+{
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+
+    dbus_g_proxy_end_call(proxy, callId, 0, G_TYPE_INVALID);
+    pendingResetCalls.remove(callId);
+}
+
+
+void GlibDBusIMServerProxy::onDisconnectionTrampoline(void */*proxy*/, void *userData)
+{
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    static_cast<GlibDBusIMServerProxy *>(userData)->onDisconnection();
+}
+
+
+GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
+    : MImServerConnection(parent),
+    d_ptr(new GlibDBusIMServerProxyPrivate)
+{
+    Q_UNUSED(parent);
+    Q_D(GlibDBusIMServerProxy);
 
     MDBusGlibInputContextAdaptor *adaptor = M_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR(
             g_object_new(M_TYPE_DBUS_GLIB_INPUT_CONTEXT_ADAPTOR, NULL));
     adaptor->imServerConnection = this;
 
-    inputContextAdaptor = G_OBJECT(adaptor);
+    d->inputContextAdaptor = G_OBJECT(adaptor);
 
     dbus_g_thread_init();
 
@@ -117,31 +149,30 @@ GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
 
 GlibDBusIMServerProxy::~GlibDBusIMServerProxy()
 {
-    active = false;
+    Q_D(GlibDBusIMServerProxy);
 
-    Q_FOREACH (DBusGProxyCall *callId, pendingResetCalls) {
-        dbus_g_proxy_cancel_call(glibObjectProxy, callId);
+    d->active = false;
+
+    Q_FOREACH (DBusGProxyCall *callId, d->pendingResetCalls) {
+        dbus_g_proxy_cancel_call(d->glibObjectProxy, callId);
     }
 }
 
 
 // Auxiliary connection handling.............................................
 
-void GlibDBusIMServerProxy::onDisconnectionTrampoline(DBusGProxy */*proxy*/, gpointer userData)
-{
-    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
-    static_cast<GlibDBusIMServerProxy *>(userData)->onDisconnection();
-}
-
 void GlibDBusIMServerProxy::connectToDBus()
 {
+    Q_D(GlibDBusIMServerProxy);
+
     if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
-    mAddress->get(this, SLOT(openDBusConnection(QDBusVariant)), SLOT(connectToDBusFailed(QDBusError)));
+    d->mAddress->get(this, SLOT(openDBusConnection(QDBusVariant)), SLOT(connectToDBusFailed(QDBusError)));
 }
 
 void GlibDBusIMServerProxy::openDBusConnection(const QDBusVariant &address)
 {
+    Q_D(GlibDBusIMServerProxy);
     const QString &addressString = address.variant().toString();
 
     if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "Address:" << addressString;
@@ -166,19 +197,19 @@ void GlibDBusIMServerProxy::openDBusConnection(const QDBusVariant &address)
     }
 
     dbus_connection_setup_with_g_main(dbusConnection, 0);
-    connection = toRef(dbus_connection_get_g_connection(dbusConnection));
+    d->connection = toRef(dbus_connection_get_g_connection(dbusConnection));
 
-    glibObjectProxy = dbus_g_proxy_new_for_peer(connection.get(), DBusPath, DBusInterface);
-    if (!glibObjectProxy) {
+    d->glibObjectProxy = dbus_g_proxy_new_for_peer(d->connection.get(), DBusPath, DBusInterface);
+    if (!d->glibObjectProxy) {
         qWarning("MInputContext: unable to find the D-Bus service.");
-        connection.reset();
+        d->connection.reset();
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
         return;
     }
-    g_signal_connect(G_OBJECT(glibObjectProxy), "destroy", G_CALLBACK(onDisconnectionTrampoline),
+    g_signal_connect(G_OBJECT(d->glibObjectProxy), "destroy", G_CALLBACK(onDisconnectionTrampoline),
                      this);
 
-    dbus_g_connection_register_g_object(connection.get(), icAdaptorPath.toAscii().data(), inputContextAdaptor);
+    dbus_g_connection_register_g_object(d->connection.get(), icAdaptorPath.toAscii().data(), d->inputContextAdaptor);
 
     Q_EMIT connected();
 }
@@ -192,67 +223,62 @@ void GlibDBusIMServerProxy::connectToDBusFailed(const QDBusError &error)
 
 void GlibDBusIMServerProxy::onDisconnection()
 {
+    Q_D(GlibDBusIMServerProxy);
+
     if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
-    glibObjectProxy = 0;
-    connection.reset();
+    d->glibObjectProxy = 0;
+    d->connection.reset();
     Q_EMIT disconnected();
 
-    if (active) {
+    if (d->active) {
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
     }
 }
-
-void GlibDBusIMServerProxy::resetNotifyTrampoline(DBusGProxy *proxy, DBusGProxyCall *callId,
-                                                  gpointer userData)
-{
-    static_cast<GlibDBusIMServerProxy *>(userData)->resetNotify(proxy, callId);
-}
-
-void GlibDBusIMServerProxy::resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId)
-{
-    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
-
-    dbus_g_proxy_end_call(proxy, callId, 0, G_TYPE_INVALID);
-    pendingResetCalls.remove(callId);
-}
-
 
 // Remote methods............................................................
 
 void GlibDBusIMServerProxy::activateContext()
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "activateContext",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "activateContext",
                                G_TYPE_INVALID);
 }
 
 void GlibDBusIMServerProxy::showInputMethod()
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "showInputMethod",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "showInputMethod",
                                G_TYPE_INVALID);
 }
 
 void GlibDBusIMServerProxy::hideInputMethod()
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "hideInputMethod",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "hideInputMethod",
                                G_TYPE_INVALID);
 }
 
 void GlibDBusIMServerProxy::mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "mouseClickedOnPreedit",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "mouseClickedOnPreedit",
                                G_TYPE_INT, pos.x(),
                                G_TYPE_INT, pos.y(),
                                G_TYPE_INT, preeditRect.x(),
@@ -264,10 +290,12 @@ void GlibDBusIMServerProxy::mouseClickedOnPreedit(const QPoint &pos, const QRect
 
 void GlibDBusIMServerProxy::setPreedit(const QString &text, int cursorPos)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "setPreedit",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "setPreedit",
                                G_TYPE_STRING, text.toUtf8().data(),
                                G_TYPE_INT, cursorPos,
                                G_TYPE_INVALID);
@@ -276,7 +304,9 @@ void GlibDBusIMServerProxy::setPreedit(const QString &text, int cursorPos)
 void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant> &stateInformation,
                                                     bool focusChanged)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
     GHashTable *encodedState = encodeVariantMap(stateInformation);
@@ -284,7 +314,7 @@ void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant
         return;
 
     GType encodedStateType = dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE);
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "updateWidgetInformation",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "updateWidgetInformation",
                                encodedStateType, encodedState,
                                G_TYPE_BOOLEAN, focusChanged,
                                G_TYPE_INVALID);
@@ -293,52 +323,62 @@ void GlibDBusIMServerProxy::updateWidgetInformation(const QMap<QString, QVariant
 
 void GlibDBusIMServerProxy::reset(bool requireSynchronization)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
 
     if (requireSynchronization) {
-        DBusGProxyCall *resetCall = dbus_g_proxy_begin_call(glibObjectProxy, "reset",
-                                                            resetNotifyTrampoline, this,
+        DBusGProxyCall *resetCall = dbus_g_proxy_begin_call(d->glibObjectProxy, "reset",
+                                                            resetNotifyTrampoline, d,
                                                             0, G_TYPE_INVALID);
-        pendingResetCalls.insert(resetCall);
+        d->pendingResetCalls.insert(resetCall);
     } else {
-        dbus_g_proxy_call_no_reply(glibObjectProxy, "reset",
+        dbus_g_proxy_call_no_reply(d->glibObjectProxy, "reset",
                                    G_TYPE_INVALID);
     }
 }
 
 bool GlibDBusIMServerProxy::pendingResets()
 {
-    return (pendingResetCalls.size() > 0);
+    Q_D(GlibDBusIMServerProxy);
+
+    return (d->pendingResetCalls.size() > 0);
 }
 
 void GlibDBusIMServerProxy::appOrientationAboutToChange(int angle)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "appOrientationAboutToChange",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "appOrientationAboutToChange",
                                G_TYPE_INT, angle,
                                G_TYPE_INVALID);
 }
 
 void GlibDBusIMServerProxy::appOrientationChanged(int angle)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "appOrientationChanged",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "appOrientationChanged",
                                G_TYPE_INT, angle,
                                G_TYPE_INVALID);
 }
 
 void GlibDBusIMServerProxy::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "setCopyPasteState",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "setCopyPasteState",
                                G_TYPE_BOOLEAN, copyAvailable,
                                G_TYPE_BOOLEAN, pasteAvailable,
                                G_TYPE_INVALID);
@@ -350,10 +390,12 @@ void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCod
                                             quint32 nativeScanCode, quint32 nativeModifiers,
                                             unsigned long time)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "processKeyEvent",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "processKeyEvent",
                                G_TYPE_INT, static_cast<int>(keyType),
                                G_TYPE_INT, static_cast<int>(keyCode),
                                G_TYPE_INT, static_cast<int>(modifiers),
@@ -366,10 +408,12 @@ void GlibDBusIMServerProxy::processKeyEvent(QEvent::Type keyType, Qt::Key keyCod
 
 void GlibDBusIMServerProxy::registerAttributeExtension(int id, const QString &fileName)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "registerAttributeExtension",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "registerAttributeExtension",
                                G_TYPE_INT, id,
                                G_TYPE_STRING, fileName.toUtf8().data(),
                                G_TYPE_INVALID);
@@ -377,10 +421,12 @@ void GlibDBusIMServerProxy::registerAttributeExtension(int id, const QString &fi
 
 void GlibDBusIMServerProxy::unregisterAttributeExtension(int id)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "unregisterAttributeExtension",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "unregisterAttributeExtension",
                                G_TYPE_INT, id,
                                G_TYPE_INVALID);
 }
@@ -388,7 +434,9 @@ void GlibDBusIMServerProxy::unregisterAttributeExtension(int id)
 void GlibDBusIMServerProxy::setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                                                  const QString &attribute, const QVariant &value)
 {
-    if (!glibObjectProxy) {
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
         return;
     }
     GValue valueData = {0, {{0}, {0}}};
@@ -396,7 +444,7 @@ void GlibDBusIMServerProxy::setExtendedAttribute(int id, const QString &target, 
         return;
     }
 
-    dbus_g_proxy_call_no_reply(glibObjectProxy, "setExtendedAttribute",
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "setExtendedAttribute",
                                G_TYPE_INT, id,
                                G_TYPE_STRING, target.toUtf8().data(),
                                G_TYPE_STRING, targetItem.toUtf8().data(),

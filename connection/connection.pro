@@ -39,6 +39,7 @@ glib-dbus-connection {
         \ # input-context
         mdbusglibinputcontextadaptor.h \
         glibdbusimserverproxy.h \
+        glibdbusimserverproxy_p.h \
         inputcontextdbusaddress.h \
         \ # server
         minputcontextglibdbusconnection.h \
