@@ -4,6 +4,10 @@ VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = maliit-connection
 
+INCLUDEPATH += ../common
+LIBS += ../common/libmaliit-common.a
+POST_TARGETDEPS += ../common/libmaliit-common.a
+
 CONFIG += link_pkgconfig staticlib
 
 # Interface classes

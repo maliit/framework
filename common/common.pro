@@ -3,6 +3,8 @@ include(../config.pri)
 TEMPLATE = lib
 TARGET = maliit-common
 
+CONFIG += staticlib
+
 outputFiles(maliit-framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}.pc)
 
 HEADERSINSTALL = \
