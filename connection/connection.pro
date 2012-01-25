@@ -20,6 +20,9 @@ CONFIG += glib-dbus-connection
 
 glib-dbus-connection {
 
+    # Used for serverdbusaddress
+    CONFIG += qdbus
+
     disable-dbus-activation {
         DEFINES += NO_DBUS_ACTIVATION
     }
