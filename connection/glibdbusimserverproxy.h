@@ -17,27 +17,14 @@
 #ifndef GLIBDBUSIMSERVERPROXY_H
 #define GLIBDBUSIMSERVERPROXY_H
 
-#include <dbus/dbus-glib.h>
 #include <QObject>
 #include <QEvent>
 #include <Qt>
 #include <QMap>
-#include <QSet>
-#include <tr1/memory>
 
 #include "mimserverconnection.h"
 
-#include "inputcontextdbusaddress.h"
-
-namespace Maliit
-{
-    namespace DBusGLib
-    {
-    // std::tr1::shared_ptr allows to specify a deleter. Hiding it behind a typedef,
-    // as we do not really need all the shared pointer semantics here.
-    typedef std::tr1::shared_ptr<DBusGConnection> ConnectionRef;
-    }
-}
+class GlibDBusIMServerProxyPrivate;
 
 /* \brief Glib D-Bus implementation of a connection with the input method server.
  *
@@ -96,20 +83,11 @@ private Q_SLOTS:
     void connectToDBus();
 
 private:
-    void setContextObject(const QString &dbusObjectPath);
-
-    static void onDisconnectionTrampoline(DBusGProxy *proxy, gpointer userData);
     void onDisconnection();
+    static void onDisconnectionTrampoline(void *proxy, void* userData);
 
-    static void resetNotifyTrampoline(DBusGProxy *proxy, DBusGProxyCall *callId, gpointer userData);
-    void resetNotify(DBusGProxy *proxy, DBusGProxyCall *callId);
-
-    DBusGProxy *glibObjectProxy;
-    Maliit::DBusGLib::ConnectionRef connection;
-    GObject *inputContextAdaptor;
-    bool active;
-    QSet<DBusGProxyCall *> pendingResetCalls;
-    const std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> mAddress;
+    const QScopedPointer<GlibDBusIMServerProxyPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(GlibDBusIMServerProxy)
 };
 
 #endif
