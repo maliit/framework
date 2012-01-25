@@ -23,7 +23,7 @@ include(./config.pri)
         \\n\\t enforce-install-prefix : Always use M_IM_PREFIX instead of prefix reported by GTK+, Qt, DBus etc. (used for testing) \
         \\nInfluential environment variables: \
         \\n\\t GCONF_CONFIG_SOURCE : Specify custom gconf source2 \
-        \\n\\t GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL : Don't register gconf schemas (used for packaging) \
+        \\n\\t GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL : Do not register gconf schemas (used for packaging) \
         \\n\\t PKG_CONFIG_PATH : Override standard directories to look for pkg-config information \
         \\nExamples: \
         \\n\\t qmake \
