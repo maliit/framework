@@ -38,7 +38,7 @@ class MInputContextGlibDBusConnection : public MInputContextConnection
     Q_OBJECT
 
 public:
-    MInputContextGlibDBusConnection();
+    explicit MInputContextGlibDBusConnection(std::tr1::shared_ptr<Maliit::Server::DBus::Address> address);
     virtual ~MInputContextGlibDBusConnection();
 
     void handleNewDBusConnectionReady(MDBusGlibICConnection *connectionObj);
@@ -87,6 +87,7 @@ private:
     //! Helper method for setLanguage(QString) to use it for other than active connection.
     void setLanguage(MDBusGlibICConnection *targetIcConnection,
                      const QString &language);
+    void init();
 
 private:
     const std::tr1::shared_ptr<Maliit::Server::DBus::Address> mAddress;

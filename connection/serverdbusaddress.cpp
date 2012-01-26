@@ -53,11 +53,16 @@ QString AddressPublisher::address() const
     return mAddress;
 }
 
-
 Address::Address()
 {}
 
-DBusServer* Address::connect()
+Address::~Address()
+{}
+
+DynamicAddress::DynamicAddress()
+{}
+
+DBusServer* DynamicAddress::connect()
 {
     std::string dbusAddress("unix:tmpdir=/tmp/maliit-server");
 
@@ -75,6 +80,24 @@ DBusServer* Address::connect()
 
     return server;
 }
+
+DBusServer* FixedAddress::connect()
+{
+    DBusError error;
+    dbus_error_init(&error);
+
+    DBusServer *server = dbus_server_listen(mAddress.toUtf8().constData(), &error);
+    if (!server) {
+        qFatal("Couldn't create D-Bus server: %s", error.message);
+    }
+
+    return server;
+}
+
+
+FixedAddress::FixedAddress(const QString &address)
+    : mAddress(address)
+{}
 
 } // namespace DBus
 } // namespace Server
