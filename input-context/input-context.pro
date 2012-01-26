@@ -18,6 +18,13 @@ external-libmaliit {
 LIBS += ../connection/libmaliit-connection.a
 POST_TARGETDEPS += ../connection/libmaliit-connection.a
 
+CONFIG += direct-connection
+
+direct-connection {
+    LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so
+    INCLUDEPATH += ../src
+}
+
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
 # Input

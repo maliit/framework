@@ -113,7 +113,7 @@ bool MInputContext::debug = false;
 // MApplication or classes relying on it being initialized.
 
 
-MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
+MInputContext::MInputContext(MImServerConnection *newImServer, const QString &name, QObject *parent)
     : QInputContext(parent),
       active(false),
       inputPanelState(InputPanelHidden),
@@ -125,7 +125,8 @@ MInputContext::MInputContext(MImServerConnection *newImServer, QObject *parent)
       copyAvailable(false),
       copyAllowed(true),
       redirectKeys(false),
-      currentKeyEventTime(0)
+      currentKeyEventTime(0),
+      m_name(name)
 {
     QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
     if (debugEnvVar.toLower() == "enabled") {
@@ -322,7 +323,7 @@ bool MInputContext::handlePreeditInjectionEvent(const PreeditInjectionEvent *eve
 
 QString MInputContext::identifierName()
 {
-    return InputContextName;
+    return m_name;
 }
 
 

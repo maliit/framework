@@ -32,6 +32,8 @@ public:
     //! Current input method area
     QRect area;
 
+    QWidget *widget;
+
     //! Current orientation angle of application's active window
     OrientationAngle orientationAngle;
 

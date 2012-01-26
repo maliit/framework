@@ -45,6 +45,19 @@ public:
     //! \return singleton instance
     static InputMethod *instance();
 
+    //! \brief Get the input method widget
+    //!
+    //! If the "MaliitDirect" input-context plugin is in use, the Maliit Server
+    //! will be hosted inside the application process, and the input method widget
+    //! be available here.
+    //! The application may then reparent the widget into its widget hierarchy to
+    //! make use of the input method. Handling of show and hide is still done by
+    //! Maliit, and the application should follow the areaChanged() signal to track
+    //! the size of the IM, just as in the server-hosted case.
+    //!
+    //! If the input-context plugin in use is not "MaliitDirect", this method will return 0
+    QWidget *widget() const;
+
     //! \brief Get current input method area
     //! \return current input method area
     QRect area() const;
@@ -57,6 +70,7 @@ public:
     void emitKeyPress(const QKeyEvent &event);
     void emitKeyRelease(const QKeyEvent &event);
     void setLanguage(const QString &language);
+    void setWidget(QWidget *widget);
     //! \internal_end
 
     //! \brief Current language of active input method
