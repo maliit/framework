@@ -1,5 +1,5 @@
 TEMPLATE = subdirs
-SUBDIRS = plainqt twofields widgetproperties allinputmethods
+SUBDIRS = plainqt twofields widgetproperties allinputmethods embedded
 
 system(pkg-config gtk+-2.0) {
     SUBDIRS += gtk2
