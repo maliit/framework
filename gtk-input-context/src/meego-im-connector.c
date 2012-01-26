@@ -32,6 +32,8 @@
 #define DBUS_PROPERTIES_GET_METHOD "Get"
 #endif
 
+#define MALIIT_SERVER_ADDRESS_ENV "MALIIT_SERVER_ADDRESS"
+
 /* For glib < 2.30 */
 #ifndef G_VALUE_INIT
 #define G_VALUE_INIT { 0, { { 0 } } }
@@ -60,6 +62,12 @@ connection_dropped(gpointer instance, MeegoImConnector *connector)
 static char *
 get_dbus_address()
 {
+    const char *overridden_address = g_getenv(MALIIT_SERVER_ADDRESS_ENV);
+
+    if (overridden_address && *overridden_address) {
+        return g_strdup(overridden_address);
+    }
+
     GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_NONE;
 
 #if defined(NO_DBUS_ACTIVATION)
@@ -97,6 +105,12 @@ get_dbus_address()
 static char *
 get_dbus_address()
 {
+    const char *overridden_address = g_getenv(MALIIT_SERVER_ADDRESS_ENV);
+
+    if (overridden_address && *overridden_address) {
+        return g_strdup(overridden_address);
+    }
+
     GValue value = G_VALUE_INIT;
     GError *error = NULL;
     DBusGConnection *connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
