@@ -48,7 +48,7 @@ class MInputContext : public QInputContext
 
 public:
     //! \brief Constructor
-    explicit MInputContext(MImServerConnection *imServer, QObject *parent = 0);
+    explicit MInputContext(MImServerConnection *imServer, const QString &name, QObject *parent = 0);
 
     //! \brief Destructor
     virtual ~MInputContext();
@@ -241,6 +241,7 @@ private:
     unsigned long currentKeyEventTime;
 
     QString m_language;
+    QString m_name;
 };
 
 #endif

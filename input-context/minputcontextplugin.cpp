@@ -19,12 +19,24 @@
 #include "glibdbusimserverproxy.h"
 #include "inputcontextdbusaddress.h"
 
+#include "mimserver.h"
+#include "mimapphostedserverlogic.h"
+
+#include "mimdirectserverconnection.h"
+#include "miminputcontextdirectconnection.h"
+
+#include "inputmethod.h"
+
+using namespace std::tr1;
+
 #include <minputcontext.h>
 #include <QString>
 #include <QStringList>
 
 namespace {
     const char * const ServerAddressEnv("MALIIT_SERVER_ADDRESS");
+    const QString MaliitInputContextName(MALIIT_INPUTCONTEXT_NAME);
+    const QString MaliitDirectInputContextName(MALIIT_INPUTCONTEXT_NAME"Direct");
 }
 
 MInputContextPlugin::MInputContextPlugin(QObject *parent)
@@ -40,12 +52,13 @@ MInputContextPlugin::~MInputContextPlugin()
 }
 
 
+// TODO: split the two different cases into different classes
+// and build separately, so that the non-direct IC does not have to link against server code
 QInputContext *MInputContextPlugin::create(const QString &key)
 {
     QInputContext *ctx = NULL;
 
-    if (!key.isEmpty()) {
-        // currently there is only one type of inputcontext
+    if (key == MaliitInputContextName) {
         std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address;
 
         const QByteArray overriddenAddress = qgetenv(ServerAddressEnv);
@@ -56,10 +69,30 @@ QInputContext *MInputContextPlugin::create(const QString &key)
             address.reset(new Maliit::InputContext::DBus::FixedAddress(overriddenAddress));
         }
 
-        MImServerConnection *imServer = new GlibDBusIMServerProxy(address, 0);
-        ctx = new MInputContext(imServer, this);
-        imServer->setParent(ctx); // Tie lifetime of server connection to the inputcontext
+        MImServerConnection *serverConnection = new GlibDBusIMServerProxy(address, 0);
+
+        ctx = new MInputContext(serverConnection, MaliitInputContextName, this);
+        serverConnection->setParent(ctx); // Tie lifetime of server connection to the inputcontext
+
+    } else if (key == MaliitDirectInputContextName) {
+
+        MImDirectServerConnection *serverConnection = new MImDirectServerConnection(0);
+        MImInputContextDirectConnection *icConnection = new MImInputContextDirectConnection(0);
+        serverConnection->connectTo(icConnection);
+
+        shared_ptr<MInputContextConnection> icConn(icConnection);
+        QSharedPointer<MImAbstractServerLogic> serverLogic(new MImAppHostedServerLogic);
+        MImServer *imServer = new MImServer(serverLogic, icConn);
+
+        Maliit::InputMethod::instance()->setWidget(imServer->pluginsWidget());
+
+        ctx = new MInputContext(serverConnection, MaliitDirectInputContextName, this);
+        serverConnection->setParent(ctx);
+        imServer->setParent(ctx);
+    } else {
+        qCritical() << "Unknown plugin name";
     }
+
     return ctx;
 }
 
@@ -83,7 +116,9 @@ QString MInputContextPlugin::displayName(const QString &s)
 
 QStringList MInputContextPlugin::keys() const
 {
-    return QStringList(MALIIT_INPUTCONTEXT_NAME);
+    QStringList list = QStringList(MaliitInputContextName);
+    list << QString(MaliitDirectInputContextName);
+    return list;
 }
 
 

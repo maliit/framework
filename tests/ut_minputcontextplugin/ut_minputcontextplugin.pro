@@ -17,6 +17,13 @@ HEADERS += \
 SOURCES += \
     ut_minputcontextplugin.cpp
 
+CONFIG += direct-connection
+
+direct-connection {
+    LIBS += ../../src/lib$${MALIIT_PLUGINS_LIB}.so
+    INCLUDEPATH += ../../src
+}
+
 
 CONFIG += link_pkgconfig
 

@@ -31,6 +31,7 @@ namespace Maliit {
 
 InputMethodPrivate::InputMethodPrivate() :
     area(),
+    widget(0),
     orientationAngle(),
     rotationInProgress(false)
 {
@@ -55,6 +56,18 @@ InputMethod *InputMethod::instance()
     static InputMethod singleton;
 
     return &singleton;
+}
+
+void InputMethod::setWidget(QWidget *widget)
+{
+    Q_D(InputMethod);
+    d->widget = widget;
+}
+
+QWidget *InputMethod::widget() const
+{
+    Q_D(const InputMethod);
+    return d->widget;
 }
 
 QRect InputMethod::area() const
