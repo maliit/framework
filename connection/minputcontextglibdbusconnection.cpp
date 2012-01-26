@@ -400,9 +400,14 @@ void MInputContextGlibDBusConnection::insertNewConnection(unsigned int connectio
     mConnections.insert(connectionId, connectionObj);
 }
 
-MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
-    : mAddress(new Maliit::Server::DBus::Address),
-      server(0)
+MInputContextGlibDBusConnection::MInputContextGlibDBusConnection(std::tr1::shared_ptr<Maliit::Server::DBus::Address> address)
+  : mAddress(address)
+  , server(0)
+{
+    init();
+}
+
+void MInputContextGlibDBusConnection::init()
 {
     dbus_g_thread_init();
     g_type_init();
@@ -412,7 +417,6 @@ MInputContextGlibDBusConnection::MInputContextGlibDBusConnection()
     dbus_server_setup_with_g_main(server, NULL);
     dbus_server_set_new_connection_function(server, handleNewConnection, this, NULL);
 }
-
 
 MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
 {

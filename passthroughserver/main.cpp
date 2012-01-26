@@ -83,6 +83,7 @@ namespace {
     }
 }
 
+
 int main(int argc, char **argv)
 {
     qInstallMsgHandler(ouputMessagesToStdErr);
@@ -116,8 +117,34 @@ int main(int argc, char **argv)
     // meego-im-uiserver.
     app.setInputContext(new MIMDummyInputContext);
 
+
+    // Parse commandline arguments
+    QString overrideAddress;
+    bool expectOverrideAddressValue(false);
+
+    Q_FOREACH(const QString &arg, app.arguments()) {
+
+        if (expectOverrideAddressValue) {
+            overrideAddress = arg;
+            expectOverrideAddressValue = false;
+        } else if (arg == "-override-address") {
+            expectOverrideAddressValue = true;
+        }
+    }
+
+    if (expectOverrideAddressValue) {
+        qWarning() << app.arguments().at(0) << ": no param given for -override-address - ignoring.";
+    }
+
     // DBus Input Context Connection
-    shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection);
+    shared_ptr<Maliit::Server::DBus::Address> address;
+    if (overrideAddress.isEmpty()) {
+        address.reset(new Maliit::Server::DBus::DynamicAddress);
+    } else {
+        address.reset(new Maliit::Server::DBus::FixedAddress(overrideAddress));
+    }
+
+    shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection(address));
 
     MImServer imServer(icConnection);
     Q_UNUSED(imServer);

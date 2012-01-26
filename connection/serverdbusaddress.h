@@ -17,9 +17,8 @@
 #ifndef MALIIT_SERVER_DBUS_SERVERDBUSADDRESS_H
 #define MALIIT_SERVER_DBUS_SERVERDBUSADDRESS_H
 
-#include <string>
-
 #include <QObject>
+#include <QString>
 
 struct DBusServer;
 
@@ -47,11 +46,35 @@ class Address
 {
 public:
     explicit Address();
+    ~Address();
 
+    virtual DBusServer* connect() = 0;
+};
+
+class DynamicAddress : public Address
+{
+
+public:
+    explicit DynamicAddress();
+
+    //! reimpl
     virtual DBusServer* connect();
 
 private:
     QScopedPointer<AddressPublisher> publisher;
+};
+
+class FixedAddress : public Address
+{
+
+public:
+    explicit FixedAddress(const QString &address);
+
+    //! reimpl
+    virtual DBusServer* connect();
+
+private:
+    QString mAddress;
 };
 
 } // namespace DBus
