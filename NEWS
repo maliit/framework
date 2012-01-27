@@ -1,4 +1,4 @@
-NEXT
+0.81.3
 ======
 
 CHANGES SINCE 0.81.2
@@ -6,9 +6,17 @@ CHANGES SINCE 0.81.2
   CONFIG+=disable-dbus-activation to qmake to disable.
   Use this option when using a system/session manager (like systemd)
   to start and keep maliit-server alive
+* Improved support for Qt Embedded (QWS)
+* Make framework compile on older platforms
+  * With the fix of MALIIT#14, latest version of framework will now compile on
+    Maemo Fremantle again (might require skipping the tests still).
 
 BUG FIXES
+* Fixes: MALIIT#14 - Maliit requires glib/gio 2.26+
 * Fixes: MALIIT#73 - Make dbus-x11 an optional dependency
+* Fixes: Use the QPA platform implementation when compiling for Qt Embedded (QWS).
+* Fixes: do not use X11 plugin host implementation for Qt Embedded (QWS).
+* Fixes: Use correct qmake binary when creating SDK
 
 0.81.2
 ======
