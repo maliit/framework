@@ -52,3 +52,22 @@ Wiki: http://wiki.maliit.org/
 IRC: #maliit on chat.freenode.net
 Announcement mailing list: maliit-announce@lists.maliit.org
 Discussion mailing list: maliit-discuss@lists.maliit.org
+
+
+NETWORK TRANSPARENCY
+
+On one computer run:
+maliit-server -allow-anonymous -override-address tcp:host=xxx.xxx.xxx.xxx,port=yyyyy
+
+Any valid dbus address is supported. Using -allow-anonymous must only be done on
+a trusted network. If using a method with authentication, the -allow-anonymous flag
+may be dropped.
+
+On another computer:
+MALIIT_SERVER_ADDRESS=tcp:host=xxx.xxx.xxx.xxx,port=yyyyy
+export MALIIT_SERVER_ADDRESS
+maliit-exampleapp-plainqt (or maliit-exampleapp-gtk{2,3})
+
+Where xxx.xxx.xxx.xxx is IP address of computer where maliit-server is ran
+and yyyyy is port number < 65536.
+
