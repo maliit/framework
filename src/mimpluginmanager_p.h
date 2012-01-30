@@ -189,10 +189,10 @@ public:
     MImOnScreenPlugins onScreenPlugins;
     MImHwKeyboardTracker hwkbTracker;
 
-    WeakWidget mProxyWidget;
+    WeakWidget proxyWidget;
     int lastOrientation;
 
-    QScopedPointer<MAttributeExtensionManager> mAttributeExtensionManager;
+    QScopedPointer<MAttributeExtensionManager> attributeExtensionManager;
 };
 
 #endif

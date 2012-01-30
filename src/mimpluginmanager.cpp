@@ -87,9 +87,9 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       acceptRegionUpdates(false),
       indicatorService(),
       onScreenPlugins(),
-      mProxyWidget(proxyWidget),
+      proxyWidget(proxyWidget),
       lastOrientation(0),
-      mAttributeExtensionManager(new MAttributeExtensionManager)
+      attributeExtensionManager(new MAttributeExtensionManager)
 {
     inputSourceToNameMap[MInputMethod::Hardware] = "hardware";
     inputSourceToNameMap[MInputMethod::Accessory] = "accessory";
@@ -218,7 +218,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    WeakWidget centralWidget(new QWidget(mProxyWidget.data()));
+    WeakWidget centralWidget(new QWidget(proxyWidget.data()));
 
     MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
     MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
@@ -395,11 +395,11 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
         plugins[source].lastSwitchDirection = direction;
     }
     QSharedPointer<const MToolbarData> toolbar =
-        mAttributeExtensionManager->toolbarData(toolbarId);
+        attributeExtensionManager->toolbarData(toolbarId);
     switchedTo->setToolbar(toolbar);
 
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        mAttributeExtensionManager->keyOverrides(toolbarId);
+        attributeExtensionManager->keyOverrides(toolbarId);
     switchedTo->setKeyOverrides(keyOverrides);
 
     // TODO: show/hide from IC matches SIP show/hide requests but here show is used (and
@@ -986,11 +986,11 @@ void MIMPluginManagerPrivate::hideActivePlugins()
 
 void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest request)
 {
-    if (not mProxyWidget.data()) {
+    if (not proxyWidget.data()) {
         return;
     }
 
-    Q_FOREACH (QObject *obj, mProxyWidget.data()->children()) {
+    Q_FOREACH (QObject *obj, proxyWidget.data()->children()) {
         if (QWidget *w = qobject_cast<QWidget *>(obj)) {
             w->hide();
         }
@@ -1143,31 +1143,31 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
 
     // Connect connection and MAttributeExtensionManager
     connect(d->mICConnection.get(), SIGNAL(copyPasteStateChanged(bool,bool)),
-            d->mAttributeExtensionManager.data(), SLOT(setCopyPasteState(bool, bool)));
+            d->attributeExtensionManager.data(), SLOT(setCopyPasteState(bool, bool)));
 
     connect(d->mICConnection.get(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
-            d->mAttributeExtensionManager.data(), SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
+            d->attributeExtensionManager.data(), SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
 
     connect(d->mICConnection.get(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
-            d->mAttributeExtensionManager.data(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
+            d->attributeExtensionManager.data(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
 
     connect(d->mICConnection.get(), SIGNAL(attributeExtensionUnregistered(uint, int)),
-            d->mAttributeExtensionManager.data(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
+            d->attributeExtensionManager.data(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
 
     connect(d->mICConnection.get(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
-            d->mAttributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
+            d->attributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
 
     connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
-            d->mAttributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
+            d->attributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
 
     // Connect from MAttributeExtensionManager to our handlers
-    connect(d->mAttributeExtensionManager.data(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
+    connect(d->attributeExtensionManager.data(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
             this, SLOT(setToolbar(const MAttributeExtensionId &)));
 
-    connect(d->mAttributeExtensionManager.data(), SIGNAL(keyOverrideCreated()),
+    connect(d->attributeExtensionManager.data(), SIGNAL(keyOverrideCreated()),
             this, SLOT(updateKeyOverrides()));
 
-    connect(d->mAttributeExtensionManager.data(), SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
+    connect(d->attributeExtensionManager.data(), SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
             this, SLOT(onGlobalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)));
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
@@ -1345,10 +1345,10 @@ void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
     d->toolbarId = id;
 
     QSharedPointer<const MToolbarData> toolbar =
-        d->mAttributeExtensionManager->toolbarData(id);
+        d->attributeExtensionManager->toolbarData(id);
 
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        d->mAttributeExtensionManager->keyOverrides(id);
+        d->attributeExtensionManager->keyOverrides(id);
 
     bool focusStateOk(false);
     const bool focusState(d->mICConnection->focusState(focusStateOk));
@@ -1425,7 +1425,7 @@ void MIMPluginManager::updateKeyOverrides()
 {
     Q_D(MIMPluginManager);
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        d->mAttributeExtensionManager->keyOverrides(d->toolbarId);
+        d->attributeExtensionManager->keyOverrides(d->toolbarId);
 
     Q_FOREACH (MInputMethodPlugin *plugin, d->activePlugins) {
         d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
@@ -1570,7 +1570,7 @@ void MIMPluginManager::onGlobalAttributeChanged(const MAttributeExtensionId &id,
 
         if (value.toBool()) {
             if (const QSharedPointer<MAttributeExtension> &extension =
-                    d->mAttributeExtensionManager->attributeExtension(id)) {
+                    d->attributeExtensionManager->attributeExtension(id)) {
                 // Create an object that is bound to the life time of the
                 // attribute extension (through QObject ownership hierarchy).
                 // Upon destruction, it will reset the all-subviews-enabled
