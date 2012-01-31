@@ -1,4 +1,0 @@
-[D-BUS Service]
-Interface=ACTIVATION_OR_REAL_INTERFACE
-Name=com.meego.inputmethod.uiserver1
-Exec=M_BIN_PATH/MALIIT_SERVER -remote-theme SOFTWARE TARGET
