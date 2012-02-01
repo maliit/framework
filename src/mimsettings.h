@@ -27,6 +27,26 @@
 #include <QVariant>
 #include <QStringList>
 #include <QObject>
+#include <QScopedPointer>
+
+class MImSettingsBackend : public QObject
+{
+    Q_OBJECT
+
+public:
+    explicit MImSettingsBackend(QObject *parent = 0);
+    virtual ~MImSettingsBackend();
+
+    virtual QString key() const = 0;
+    virtual QVariant value(const QVariant &def) const = 0;
+    virtual void set(const QVariant &val) = 0;
+    virtual void unset() = 0;
+    virtual QList<QString> listDirs() const = 0;
+    virtual QList<QString> listEntries() const = 0;
+
+Q_SIGNALS:
+    void valueChanged();
+};
 
 //! \internal
 
@@ -141,10 +161,7 @@ Q_SIGNALS:
     void valueChanged();
 
 private:
-    friend struct MImSettingsPrivate;
-    struct MImSettingsPrivate *priv;
-
-    void update_value(bool emit_signal);
+    QScopedPointer<MImSettingsBackend> backend;
 };
 
 //! \internal_end
