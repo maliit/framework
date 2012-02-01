@@ -38,14 +38,12 @@ class MInputContextGlibDBusConnection : public MInputContextConnection
     Q_OBJECT
 
 public:
-    explicit MInputContextGlibDBusConnection(std::tr1::shared_ptr<Maliit::Server::DBus::Address> address);
+    explicit MInputContextGlibDBusConnection(std::tr1::shared_ptr<Maliit::Server::DBus::Address> address, bool allowAnonymous);
     virtual ~MInputContextGlibDBusConnection();
 
-    void handleNewDBusConnectionReady(MDBusGlibICConnection *connectionObj);
-
     /* Public so they can be called from plain C callbacks */
+    void handleNewConnection(MDBusGlibICConnection *connectionObj);
     void handleDisconnection(unsigned int connectionId);
-    void insertNewConnection(unsigned int connectionId, MDBusGlibICConnection *connectionObj);
 
     //! \reimp
     virtual void sendPreeditString(const QString &string,
@@ -83,14 +81,16 @@ public Q_SLOTS:
 private:
     MDBusGlibICConnection *activeContext();
     MDBusGlibICConnection *connectionObj(unsigned int connectionId);
+    void handleNewDBusConnectionReady(MDBusGlibICConnection *connectionObj);
+    void insertNewConnection(unsigned int connectionId, MDBusGlibICConnection *connectionObj);
 
     //! Helper method for setLanguage(QString) to use it for other than active connection.
     void setLanguage(MDBusGlibICConnection *targetIcConnection,
                      const QString &language);
-    void init();
 
 private:
     const std::tr1::shared_ptr<Maliit::Server::DBus::Address> mAddress;
+    bool mAllowAnonymous;
     DBusServer *server;
 
     /* Used to maintain a mapping between the connection identifiers

@@ -122,6 +122,8 @@ int main(int argc, char **argv)
     QString overrideAddress;
     bool expectOverrideAddressValue(false);
 
+    bool allowAnonymous(false);
+
     Q_FOREACH(const QString &arg, app.arguments()) {
 
         if (expectOverrideAddressValue) {
@@ -129,6 +131,8 @@ int main(int argc, char **argv)
             expectOverrideAddressValue = false;
         } else if (arg == "-override-address") {
             expectOverrideAddressValue = true;
+        } else if (arg == "-allow-anonymous") {
+            allowAnonymous = true;
         }
     }
 
@@ -144,7 +148,7 @@ int main(int argc, char **argv)
         address.reset(new Maliit::Server::DBus::FixedAddress(overrideAddress));
     }
 
-    shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection(address));
+    shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection(address, allowAnonymous));
 
     MImServer imServer(icConnection);
     Q_UNUSED(imServer);
