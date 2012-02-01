@@ -359,19 +359,28 @@ void MInputContextGlibDBusConnection::handleNewDBusConnectionReady(MDBusGlibICCo
     setLanguage(connectionObj, lastLanguage);
 }
 
-static void handleNewConnection(DBusServer */*server*/, DBusConnection *connection, gpointer userData)
+static void handleNewConnectionTrampoline(DBusServer */*server*/, DBusConnection *connection, gpointer userData)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    MInputContextGlibDBusConnection *icConnection = static_cast<MInputContextGlibDBusConnection *>(userData);
+
     dbus_connection_ref(connection);
     dbus_connection_setup_with_g_main(connection, NULL);
 
     MDBusGlibICConnection *obj = M_DBUS_GLIB_IC_CONNECTION(
         g_object_new(M_TYPE_DBUS_GLIB_IC_CONNECTION, NULL));
 
-    MInputContextGlibDBusConnection *icConnection = static_cast<MInputContextGlibDBusConnection *>(userData);;
-
     obj->dbusConnection = dbus_connection_get_g_connection(connection);
     obj->icConnection = icConnection;
+
+    icConnection->handleNewConnection(obj);
+}
+
+void MInputContextGlibDBusConnection::handleNewConnection(MDBusGlibICConnection *obj)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+
+    DBusConnection *connection = dbus_g_connection_get_connection(obj->dbusConnection);
+    dbus_connection_set_allow_anonymous(connection, mAllowAnonymous);
 
     // Proxy for calling input context methods
     DBusGProxy *inputContextProxy = dbus_g_proxy_new_for_peer(
@@ -387,11 +396,11 @@ static void handleNewConnection(DBusServer */*server*/, DBusConnection *connecti
     static unsigned int connectionCounter = 1; // Start at 1 so 0 can be used as a sentinel value
     obj->connectionNumber = connectionCounter++;
 
-    icConnection->insertNewConnection(obj->connectionNumber, obj);
+    insertNewConnection(obj->connectionNumber, obj);
 
     dbus_g_connection_register_g_object(obj->dbusConnection, DBusPath, G_OBJECT(obj));
 
-    obj->icConnection->handleNewDBusConnectionReady(obj);
+    handleNewDBusConnectionReady(obj);
 }
 
 void MInputContextGlibDBusConnection::insertNewConnection(unsigned int connectionId,
@@ -400,14 +409,10 @@ void MInputContextGlibDBusConnection::insertNewConnection(unsigned int connectio
     mConnections.insert(connectionId, connectionObj);
 }
 
-MInputContextGlibDBusConnection::MInputContextGlibDBusConnection(std::tr1::shared_ptr<Maliit::Server::DBus::Address> address)
+MInputContextGlibDBusConnection::MInputContextGlibDBusConnection(std::tr1::shared_ptr<Maliit::Server::DBus::Address> address, bool allowAnonymous)
   : mAddress(address)
+  , mAllowAnonymous(allowAnonymous)
   , server(0)
-{
-    init();
-}
-
-void MInputContextGlibDBusConnection::init()
 {
     dbus_g_thread_init();
     g_type_init();
@@ -415,7 +420,7 @@ void MInputContextGlibDBusConnection::init()
     server = mAddress->connect();
 
     dbus_server_setup_with_g_main(server, NULL);
-    dbus_server_set_new_connection_function(server, handleNewConnection, this, NULL);
+    dbus_server_set_new_connection_function(server, handleNewConnectionTrampoline, this, NULL);
 }
 
 MInputContextGlibDBusConnection::~MInputContextGlibDBusConnection()
