@@ -48,6 +48,14 @@ Q_SIGNALS:
     void valueChanged();
 };
 
+
+class MImSettingsBackendFactory
+{
+public:
+    virtual MImSettingsBackend *create(const QString &key, QObject *parent) = 0;
+};
+
+
 //! \internal
 
 /*!
@@ -155,6 +163,7 @@ public:
     */
     QList<QString> listEntries() const;
 
+    static void setImplementationFactory(MImSettingsBackendFactory *factory);
     static QHash<QString, QVariant> defaults();
 
 Q_SIGNALS:
@@ -164,6 +173,7 @@ Q_SIGNALS:
 
 private:
     QScopedPointer<MImSettingsBackend> backend;
+    static QScopedPointer<MImSettingsBackendFactory> factory;
 };
 
 //! \internal_end
