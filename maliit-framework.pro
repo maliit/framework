@@ -14,6 +14,7 @@ include(./config.pri)
         \\n\\t enable-legacy : Build in legacy mode (for meego-im ABI/API compatability) \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t disable-dbus-activation : Do not use dbus activation support for maliit-server \
+        \\n\\t disable-gconf : Disable GConf settings backend (falls back to QSettings) \
         \\n\\t notests : Do not build tests \
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \
@@ -80,7 +81,11 @@ contains(SUBDIRS, input-context) {
     }
 }
 
-!system(pkg-config --exists dbus-glib-1 dbus-1 gconf-2.0):error("Could not find dbus-glib-1 dbus-1 gconf-2.0")
+!system(pkg-config --exists dbus-glib-1 dbus-1):error("Could not find dbus-glib-1 dbus-1")
+
+!disable-gconf {
+    !system(pkg-config --exists gconf-2.0):error("Could not find gconf-2.0")
+}
 
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml

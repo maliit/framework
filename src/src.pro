@@ -52,7 +52,6 @@ HEADERS += \
         mindicatorserviceclient.h \
         mimsubviewoverride.h \
         mtoolbaritemfilter.h \
-        mimsettingsgconf.h \
         mimsettingsqsettings.h \
 
 SOURCES += \
@@ -74,7 +73,6 @@ SOURCES += \
         mimupdateevent.cpp \
         mimupdatereceiver.cpp \
         mimsettings.cpp \
-        mimsettingsgconf.cpp \
         mimsettingsqsettings.cpp \
         mimhwkeyboardtracker.cpp \
         mimgraphicsview.cpp \
@@ -123,10 +121,24 @@ enable-legacy {
         mimmeegoindicator.cpp \
 }
 
+!disable-gconf {
+    HEADERS += \
+        mimsettingsgconf.h \
+
+    SOURCES += \
+        mimsettingsgconf.cpp \
+}
+
+disable-gconf {
+    DEFINES += M_IM_DISABLE_GCONF
+}
+
 CONFIG += qdbus link_pkgconfig
 QT = core $$QT_WIDGETS xml
 
-PKGCONFIG += gconf-2.0
+!disable-gconf {
+    PKGCONFIG += gconf-2.0
+}
 
 enable-contextkit {
     PKGCONFIG += contextsubscriber-1.0
@@ -191,13 +203,18 @@ INSTALLS += target \
     headers \
     install_prf \
     install_pkgconfig \
-    install_schemas \
+
+!disable-gconf {
+    INSTALLS += install_schemas
+}
 
 # Registering the GConf schemas in the gconf database
-gconftool = gconftool-2
-gconf_config_source = $$system(echo $GCONF_CONFIG_SOURCE)
-isEmpty(gconf_config_source) {
-    gconf_config_source = $$system(gconftool-2 --get-default-source)
+!disable-gconf {
+    gconftool = gconftool-2
+    gconf_config_source = $$system(echo $GCONF_CONFIG_SOURCE)
+    isEmpty(gconf_config_source) {
+        gconf_config_source = $$system(gconftool-2 --get-default-source)
+    }
 }
 
 QMAKE_EXTRA_TARGETS += register_schemas
