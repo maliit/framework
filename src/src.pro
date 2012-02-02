@@ -53,6 +53,7 @@ HEADERS += \
         mimsubviewoverride.h \
         mtoolbaritemfilter.h \
         mimsettingsgconf.h \
+        mimsettingsqsettings.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -74,6 +75,7 @@ SOURCES += \
         mimupdatereceiver.cpp \
         mimsettings.cpp \
         mimsettingsgconf.cpp \
+        mimsettingsqsettings.cpp \
         mimhwkeyboardtracker.cpp \
         mimgraphicsview.cpp \
         mimwidget.cpp \
