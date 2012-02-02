@@ -46,4 +46,10 @@ private:
     Q_DECLARE_PRIVATE(MImSettingsQSettingsBackend)
 };
 
+class MImSettingsQSettingsBackendFactory : public MImSettingsBackendFactory
+{
+public:
+    virtual MImSettingsBackend *create(const QString &key, QObject *parent);
+};
+
 #endif // MIMSETTINGSQSETTINGS_H

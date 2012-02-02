@@ -159,3 +159,9 @@ MImSettingsQSettingsBackend::~MImSettingsQSettingsBackend()
 
     d->unregisterInstance(this);
 }
+
+
+MImSettingsBackend *MImSettingsQSettingsBackendFactory::create(const QString &key, QObject *parent)
+{
+    return new MImSettingsQSettingsBackend(key, parent);
+}
