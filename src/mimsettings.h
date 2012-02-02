@@ -155,6 +155,8 @@ public:
     */
     QList<QString> listEntries() const;
 
+    static QHash<QString, QVariant> defaults();
+
 Q_SIGNALS:
     /*! Emitted when the value of this item has changed.
      */

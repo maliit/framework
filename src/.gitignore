@@ -3,3 +3,4 @@ MeegoImFramework.pc
 meego-im-framework.schemas
 maliit-framework.schemas
 maliit-plugins-*.pc
+config.h
