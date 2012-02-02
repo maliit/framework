@@ -18,7 +18,10 @@
 ****************************************************************************/
 
 #include "mimsettings.h"
+#if !defined(M_IM_DISABLE_GCONF)
 #include "mimsettingsgconf.h"
+#endif
+#include "mimsettingsqsettings.h"
 #include "config.h"
 
 #include <QString>
@@ -75,7 +78,11 @@ QList<QString> MImSettings::listEntries() const
 MImSettings::MImSettings(const QString &key, QObject *parent)
     : QObject(parent)
 {
+#if defined(M_IM_DISABLE_GCONF)
+    backend.reset(new MImSettingsQSettingsBackend(key, this));
+#else
     backend.reset(new MImSettingsGConfBackend(key, this));
+#endif
 
     connect(backend.data(), SIGNAL(valueChanged()), this, SIGNAL(valueChanged()));
 }
