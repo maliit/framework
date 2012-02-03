@@ -184,6 +184,40 @@ void Ut_MImSettings::testModifyValueNotification()
     QCOMPARE(spy_string2.count(), 1);
 }
 
+void Ut_MImSettings::testUnsetValue()
+{
+    MImSettings integer("/ut_mimsettings/group/integer");
+    MImSettings group("/ut_mimsettings/group");
+    QSignalSpy spy_integer(&integer, SIGNAL(valueChanged()));
+
+    // unset(), then set(Qvariant())
+    integer.unset();
+
+    QVERIFY(!integer.value().isValid());
+    QCOMPARE(group.listEntries(),
+             QList<QString>() << "/ut_mimsettings/group/string");
+    QCOMPARE(spy_integer.count(), 1);
+
+    integer.set(QVariant());
+
+    QCOMPARE(spy_integer.count(), 1);
+
+    // set(Qvariant()), then unset()
+    integer.set(42);
+    spy_integer.clear();
+
+    integer.set(QVariant());
+
+    QVERIFY(!integer.value().isValid());
+    QCOMPARE(group.listEntries(),
+             QList<QString>() << "/ut_mimsettings/group/string");
+    QCOMPARE(spy_integer.count(), 1);
+
+    integer.unset();
+
+    QCOMPARE(spy_integer.count(), 1);
+}
+
 void Ut_MImSettings::testListDirs()
 {
     QCOMPARE(MImSettings("/ut_mimsettings").listDirs(),

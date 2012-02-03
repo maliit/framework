@@ -61,7 +61,11 @@ QVariant MImSettings::value(const QVariant &def) const
 
 void MImSettings::set(const QVariant &val)
 {
-    backend->set(val);
+    if (val.isValid()) {
+        backend->set(val);
+    } else {
+        backend->unset();
+    }
 }
 
 void MImSettings::unset()

@@ -35,6 +35,7 @@ private Q_SLOTS:
 
     void testValue();
     void testModifyValue();
+    void testUnsetValue();
     void testModifyValueNotification();
     void testListDirs();
     void testListEntries();
