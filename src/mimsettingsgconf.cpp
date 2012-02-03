@@ -71,7 +71,7 @@ static QByteArray convertKey(const QString &key)
     else {
         QString replaced = key;
         replaced.replace('.', '/');
-        qWarning() << "mgconfitem.cpp" << "Using dot-separated key names with MGConfItem is deprecated.";
+        qWarning() << "mgconfitem.cpp" << "Using dot-separated key names with MImSettingsGConfBackend is deprecated.";
         qWarning() << "mgconfitem.cpp" << "Please use" << '/' + replaced << "instead of" << key;
         return '/' + replaced.toUtf8();
     }
@@ -242,7 +242,7 @@ void MImSettingsGConfBackend::update_value(bool emit_signal)
         GConfValue *v = gconf_client_get(client, k.data(), &error);
 
         if (error) {
-            qWarning() << "MGConfItem" << error->message;
+            qWarning() << "MImSettingsGConfBackend" << error->message;
             g_error_free(error);
             new_value = d->value;
         } else {
@@ -294,7 +294,7 @@ void MImSettingsGConfBackend::set(const QVariant &val)
             }
 
             if (error) {
-                qWarning() << "MGConfItem" << error->message;
+                qWarning() << "MImSettingsGConfBackend" << error->message;
                 g_error_free(error);
             } else if (d->value != val) {
                 d->value = val;
@@ -302,7 +302,7 @@ void MImSettingsGConfBackend::set(const QVariant &val)
             }
 
         } else
-            qWarning() << "MGConfItem" << "Can't store a" << val.typeName();
+            qWarning() << "MImSettingsGConfBackend" << "Can't store a" << val.typeName();
     }
 }
 
@@ -321,7 +321,7 @@ QList<QString> MImSettingsGConfBackend::listDirs() const
         GError *error = NULL;
         GSList *dirs = gconf_client_all_dirs(client, k.data(), &error);
         if(error) {
-            qWarning() << "MGConfItem" << error->message;
+            qWarning() << "MImSettingsGConfBackend" << error->message;
             g_error_free(error);
             return children;
         }
@@ -346,7 +346,7 @@ QList<QString> MImSettingsGConfBackend::listEntries() const
         GError *error = NULL;
         GSList *entries = gconf_client_all_entries(client, k.data(), &error);
         if(error) {
-            qWarning() << "MGConfItem" << error->message;
+            qWarning() << "MImSettingsGConfBackend" << error->message;
             g_error_free(error);
             return children;
         }
@@ -381,7 +381,7 @@ MImSettingsGConfBackend::MImSettingsGConfBackend(const QString &key, QObject *pa
         }
 
         if(error) {
-            qWarning() << "MGConfItem" << error->message;
+            qWarning() << "MImSettingsGConfBackend" << error->message;
             g_error_free(error);
             return;
         }
@@ -389,7 +389,7 @@ MImSettingsGConfBackend::MImSettingsGConfBackend(const QString &key, QObject *pa
                        MImSettingsGConfBackendPrivate::notify_trampoline, this,
                        NULL, &error);
         if(error) {
-            qWarning() << "MGConfItem" << error->message;
+            qWarning() << "MImSettingsGConfBackend" << error->message;
             g_error_free(error);
             d->have_gconf = false;
             return;
@@ -417,7 +417,7 @@ MImSettingsGConfBackend::~MImSettingsGConfBackend()
             gconf_client_remove_dir(client, k.data(), &error);
 
             if(error) {
-                qWarning() << "MGConfItem" << error->message;
+                qWarning() << "MImSettingsGConfBackend" << error->message;
                 g_error_free(error);
             }
         }

@@ -67,7 +67,7 @@ public:
   valueChanged() signal to be notified about changes.
 
   The value of a GConf key is returned to you as a QVariant, and you
-  pass in a QVariant when setting the value.  MGConfItem converts
+  pass in a QVariant when setting the value.  MImSettings converts
   between a QVariant and GConf values as needed, and according to the
   following rules:
 
@@ -90,7 +90,7 @@ public:
 
   - Any other QVariant or GConf value is essentially ignored.
 
-  \warning MGConfItem is as thread-safe as GConf.
+  \warning MImSettings is as thread-safe as GConf.
 
 */
 
@@ -99,7 +99,7 @@ class MImSettings : public QObject
     Q_OBJECT
 
 public:
-    /*! Initializes a MGConfItem to access the GConf key denoted by
+    /*! Initializes a MImSettings to access the GConf key denoted by
         \a key.  Key names should follow the normal GConf conventions
         like "/myapp/settings/first".
 
@@ -108,7 +108,7 @@ public:
     */
     explicit MImSettings(const QString &key, QObject *parent = 0);
 
-    /*! Finalizes a MGConfItem.
+    /*! Finalizes a MImSettings.
      */
     virtual ~MImSettings();
 
@@ -130,8 +130,8 @@ public:
         reasons, the current value is not changed and nothing happens.
 
         When the new value is different from the old value, the
-        changedValue() signal is emitted on this MGConfItem as part
-        of calling set(), but other MGConfItem:s for the same key do
+        changedValue() signal is emitted on this MImSettings as part
+        of calling set(), but other MImSettings:s for the same key do
         only receive a notification once the main loop runs.
 
         \param val  The new value.

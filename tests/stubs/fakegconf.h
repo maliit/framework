@@ -22,7 +22,7 @@
 
 /**
  * This file defines FakeGConf class that can be used to store settings
- * in treelike structure, like MGConfItem does. All settings are
+ * in treelike structure, like MImSettings does. All settings are
  * stored in-memory only and are valid during the lifetime of FakeGConf
  * instance.
  */
