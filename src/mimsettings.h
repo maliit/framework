@@ -29,29 +29,106 @@
 #include <QObject>
 #include <QScopedPointer>
 
+
+//! \internal
+
+/*!
+  \ingroup maliitserver
+  \brief Implements a storage backend for MImSettings
+*/
 class MImSettingsBackend : public QObject
 {
     Q_OBJECT
 
 public:
+    /*! Initialized a MImSettingsBackend.
+     */
     explicit MImSettingsBackend(QObject *parent = 0);
+
+    /*! Finalizes a MImSettingsBackend.
+     */
     virtual ~MImSettingsBackend();
 
+    /*! Returns the key of this item, as given to MImSettings constructor.
+
+        \sa MImSettings::key()
+     */
     virtual QString key() const = 0;
+
+    /*! Returns the current value of this item, as a QVariant.  If
+        there is no value for this item, return \a def instead.
+
+        The implementation is:
+        - return the value associated to the key (if present)
+        - otherwise return the value listed in MImSettings::getDefaults()
+          (if present)
+        - otherwise return the passed-in default value
+
+        \sa MImSettings::value()
+     */
     virtual QVariant value(const QVariant &def) const = 0;
+
+    /*! Set the value of this item to \a val.
+
+        Must emit valueChanged() if the new value differs from the old one.
+
+        \param val  The new value (is always a valid QVariant).
+
+        \sa MImSettings::set()
+    */
     virtual void set(const QVariant &val) = 0;
+
+    /*! Unset this item.
+
+        Must emit valueChanged() if it deletes the entry.
+
+        This backend method is called both for MImSettings::unset()
+        and MImSettings::set(QVariant()).
+
+        \sa MImSettings::unset()
+        \sa MImSettings::set()
+     */
     virtual void unset() = 0;
+
+    /*! Return a list of the directories below this item.  The
+        returned strings are absolute key names like
+        "/myapp/settings".
+
+        A directory is a key that has children.
+
+        \sa MImSettings::listDirs()
+    */
     virtual QList<QString> listDirs() const = 0;
+
+    /*! Return a list of entries below this item.  The returned
+        strings are absolute key names like "/myapp/settings/first".
+
+        A entry is a key that has a value.
+
+        \sa MImSettings::listEntries()
+    */
     virtual QList<QString> listEntries() const = 0;
 
 Q_SIGNALS:
+    /*! Emitted when the value is changed or unset.
+
+        \sa MImSettingsBackend::valueChanged()
+    */
     void valueChanged();
 };
 
 
+//! \internal
+
+/*!
+  \ingroup maliitserver
+  \brief Factory for MImSettings backend implementations
+*/
 class MImSettingsBackendFactory
 {
 public:
+    /*! Creates a backend instance for the specified key.
+    */
     virtual MImSettingsBackend *create(const QString &key, QObject *parent) = 0;
 };
 
@@ -60,38 +137,20 @@ public:
 
 /*!
   \ingroup maliitserver
-  \brief MImSettings is a simple C++ wrapper for GConf.
+  \brief MImSettings is a generic interface to access configuration values
 
-  Creating a MImSettings instance gives you access to a single GConf
+  Creating a MImSettings instance gives you access to a single configuration
   key.  You can get and set its value, and connect to its
   valueChanged() signal to be notified about changes.
 
-  The value of a GConf key is returned to you as a QVariant, and you
-  pass in a QVariant when setting the value.  MImSettings converts
-  between a QVariant and GConf values as needed, and according to the
-  following rules:
+  The value of the key is returned to you as a QVariant, and you
+  pass in a QVariant when setting the value.
 
-  - A QVariant of type QVariant::Invalid denotes an unset GConf key.
+  MImSettings defaults to using GConf as a storage mechanism; if GConf
+  support has been disabled at compile time, the values are stored using
+  QSettings.
 
-  - QVariant::Int, QVariant::Double, QVariant::Bool are converted to
-    and from the obvious equivalents.
-
-  - QVariant::String is converted to/from a GConf string and always
-    uses the UTF-8 encoding.  No other encoding is supported.
-
-  - QVariant::StringList is converted to a list of UTF-8 strings.
-
-  - QVariant::List (which denotes a QList<QVariant>) is converted
-    to/from a GConf list.  All elements of such a list must have the
-    same type, and that type must be one of QVariant::Int,
-    QVariant::Double, QVariant::Bool, or QVariant::String.  (A list of
-    strings is returned as a QVariant::StringList, however, when you
-    get it back.)
-
-  - Any other QVariant or GConf value is essentially ignored.
-
-  \warning MImSettings is as thread-safe as GConf.
-
+  \warning MImSettings is not reentrant.
 */
 
 class MImSettings : public QObject
@@ -99,9 +158,9 @@ class MImSettings : public QObject
     Q_OBJECT
 
 public:
-    /*! Initializes a MImSettings to access the GConf key denoted by
-        \a key.  Key names should follow the normal GConf conventions
-        like "/myapp/settings/first".
+    /*! Initializes a MImSettings to access the configuratin key denoted by
+        \a key.  Key names are formatted like Unix filesystem paths (es.
+        like "/myapp/settings/first").
 
         \param key    The name of the key.
         \param parent Parent object
@@ -125,14 +184,15 @@ public:
      */
     QVariant value(const QVariant &def) const;
 
-    /*! Set the value of this item to \a val.  If \a val can not be
-        represented in GConf or GConf refuses to accept it for other
-        reasons, the current value is not changed and nothing happens.
+    /*! Set the value of this item to \a val.  If string \a val fails
+        for any reason, the current value is not changed and nothing happens.
 
         When the new value is different from the old value, the
-        changedValue() signal is emitted on this MImSettings as part
-        of calling set(), but other MImSettings:s for the same key do
-        only receive a notification once the main loop runs.
+        changedValue() signal is emitted on this MImSettings and on all
+        other MImSettings instances for the same key.
+
+        Depending on the backend, the signals might be emitted immediatly
+        or the next time the main event loop runs.
 
         \param val  The new value.
     */
@@ -163,7 +223,16 @@ public:
     */
     QList<QString> listEntries() const;
 
+    /*! Set the factory used to create backend implementations.
+
+        Should be called at most once at startup, and is meant to be used
+        only for tests.
+    */
     static void setImplementationFactory(MImSettingsBackendFactory *factory);
+
+    /*! Return the default values used for some keys (duplicates some
+        of the information contained in the GConf schema)
+    */
     static QHash<QString, QVariant> defaults();
 
 Q_SIGNALS:

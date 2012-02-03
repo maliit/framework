@@ -22,6 +22,8 @@
 #include <QScopedPointer>
 
 
+//! \internal
+
 struct MImSettingsQSettingsBackendPrivate;
 
 class MImSettingsQSettingsBackend : public MImSettingsBackend
@@ -45,6 +47,9 @@ private:
     Q_DISABLE_COPY(MImSettingsQSettingsBackend)
     Q_DECLARE_PRIVATE(MImSettingsQSettingsBackend)
 };
+
+
+//! \internal
 
 class MImSettingsQSettingsBackendFactory : public MImSettingsBackendFactory
 {

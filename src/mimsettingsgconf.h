@@ -20,6 +20,37 @@
 #include "mimsettings.h"
 
 
+//! \internal
+
+/*!
+  \ingroup maliitserver
+  \brief MImSettingsGConfBackend stores configuration values using GConf
+
+  The conversion between Qvariant and GConf values are performed
+  according to the following rules:
+
+  - A QVariant of type QVariant::Invalid denotes an unset GConf key.
+
+  - QVariant::Int, QVariant::Double, QVariant::Bool are converted to
+    and from the obvious equivalents.
+
+  - QVariant::String is converted to/from a GConf string and always
+    uses the UTF-8 encoding.  No other encoding is supported.
+
+  - QVariant::StringList is converted to a list of UTF-8 strings.
+
+  - QVariant::List (which denotes a QList<QVariant>) is converted
+    to/from a GConf list.  All elements of such a list must have the
+    same type, and that type must be one of QVariant::Int,
+    QVariant::Double, QVariant::Bool, or QVariant::String.  (A list of
+    strings is returned as a QVariant::StringList, however, when you
+    get it back.)
+
+  - Any other QVariant or GConf value is essentially ignored.
+
+  \warning MImSettingsGConfBackend is as thread-safe as GConf
+*/
+
 struct MImSettingsGConfBackendPrivate;
 
 class MImSettingsGConfBackend : public MImSettingsBackend
