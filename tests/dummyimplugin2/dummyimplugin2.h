@@ -17,8 +17,7 @@ public:
     //! \reimp
     virtual QString name() const;
 
-    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host,
-                                                    QWidget *mainWindow);
+    virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host);
 
     virtual QSet<MInputMethod::HandlerState> supportedStates() const;
     //! \reimp_end

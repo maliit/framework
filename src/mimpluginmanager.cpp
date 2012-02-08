@@ -222,7 +222,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, surfaceGroup->factory());
 
-    MAbstractInputMethod *im = plugin->createInputMethod(host, 0);
+    MAbstractInputMethod *im = plugin->createInputMethod(host);
 
     QObject::connect(q, SIGNAL(pluginsChanged()), host, SIGNAL(pluginsChanged()));
 

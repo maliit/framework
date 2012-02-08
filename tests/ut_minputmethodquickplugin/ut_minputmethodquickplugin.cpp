@@ -92,7 +92,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     QVERIFY(plugin != 0);
 
     MInputMethodQuick *testee = static_cast<MInputMethodQuick *>(
-        plugin->createInputMethod(&host, new QWidget));
+        plugin->createInputMethod(&host));
 
     QVERIFY(not testee->inputMethodArea().isEmpty());
     QCOMPARE(testee->inputMethodArea(), QRect(0, testee->screenHeight() * 0.5,

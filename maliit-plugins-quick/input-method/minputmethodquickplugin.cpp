@@ -70,8 +70,7 @@ QStringList MInputMethodQuickPlugin::qmlImportPaths()
     return gQmlImportPaths;
 }
 
-MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                                                 QWidget *mainWindow)
+MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
     return new MInputMethodQuick(host, qmlFileName());
 }
