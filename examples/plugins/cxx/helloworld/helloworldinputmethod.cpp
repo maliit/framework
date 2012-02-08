@@ -28,7 +28,7 @@ namespace {
 
 HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host,
                                              QWidget *mainWindow)
-    : MAbstractInputMethod(host, mainWindow)
+    : MAbstractInputMethod(host)
     , mainWidget(new QPushButton(mainWindow))
     , showIsInhibited(false)
     , showRequested(false)

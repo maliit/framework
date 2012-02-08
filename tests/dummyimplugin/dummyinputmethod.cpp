@@ -5,8 +5,8 @@
 #include "mabstractinputmethodhost.h"
 
 DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *host,
-                                   QWidget *mainWindow)
-    : MAbstractInputMethod(host, mainWindow),
+                                   QWidget *)
+    : MAbstractInputMethod(host),
       setStateCount(0),
       switchContextCallCount(0),
       directionParam(MInputMethod::SwitchUndefined),
