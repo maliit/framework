@@ -31,6 +31,12 @@ class MImPluginDescription;
 class MImSubViewDescription;
 class MAbstractInputMethodHostPrivate;
 
+namespace Maliit {
+namespace Plugins {
+    class AbstractSurfaceFactory;
+}
+}
+
 /*! \ingroup maliitserver
  * \brief Provides an interface for input method instances to connect to the environment.
  *
@@ -287,6 +293,10 @@ public:
      * This can be used as a hint to determine text direction in input fields, for example.
      */
     virtual void setLanguage(const QString &language);
+
+    /*!
+      */
+    virtual Maliit::Plugins::AbstractSurfaceFactory* surfaceFactory() = 0;
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)

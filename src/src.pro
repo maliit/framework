@@ -8,6 +8,9 @@ TARGET = $$MALIIT_PLUGINS_LIB
 
 # Input
 PLUGIN_HEADERS_PUBLIC = \
+        maliit/plugins/abstractsurface.h \
+        maliit/plugins/abstractwidgetssurface.h \
+        maliit/plugins/abstractsurfacefactory.h \
         maliit/plugins/inputmethodplugin.h \
         maliit/plugins/abstractpluginfactory.h \
         maliit/plugins/abstractinputmethod.h \
@@ -22,6 +25,9 @@ PLUGIN_HEADERS_PUBLIC = \
         maliit/plugins/subviewdescription.h \
 
 PLUGIN_SOURCES += \
+        maliit/plugins/abstractsurface.cpp \
+        maliit/plugins/abstractwidgetssurface.cpp \
+        maliit/plugins/abstractsurfacefactory.cpp \
         maliit/plugins/abstractpluginfactory.cpp \
         maliit/plugins/abstractinputmethod.cpp \
         maliit/plugins/abstractinputmethodhost.cpp \
