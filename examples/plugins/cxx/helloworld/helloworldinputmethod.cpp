@@ -17,6 +17,7 @@
 #include "helloworldinputmethod.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
+#include <maliit/plugins/abstractsurfacefactory.h>
 
 #include <QDebug>
 #include <QApplication>
@@ -26,10 +27,14 @@ namespace {
     const char * const exampleSubViewId("HelloWorldPluginSubview1");
 }
 
+using Maliit::Plugins::AbstractSurface;
+using Maliit::Plugins::AbstractWidgetSurface;
+
 HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host,
-                                             QWidget *mainWindow)
+                                             QWidget *)
     : MAbstractInputMethod(host)
-    , mainWidget(new QPushButton(mainWindow))
+    , surface(qSharedPointerDynamicCast<AbstractWidgetSurface>(host->surfaceFactory()->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget)))
+    , mainWidget(new QPushButton(surface->widget()))
     , showIsInhibited(false)
     , showRequested(false)
 {

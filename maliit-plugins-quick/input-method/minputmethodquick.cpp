@@ -21,6 +21,8 @@
 #include "minputmethodquickplugin.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
+#include <maliit/plugins/abstractsurfacefactory.h>
+#include <maliit/plugins/abstractwidgetssurface.h>
 #include <maliit/plugins/keyoverride.h>
 
 #include <QKeyEvent>
@@ -153,6 +155,7 @@ class MInputMethodQuickPrivate
 {
 public:
     MInputMethodQuick *const q_ptr;
+    QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface;
     QGraphicsScene *const scene;
     QGraphicsView *const view;
     MInputMethodQuickLoader *const loader;
@@ -172,11 +175,12 @@ public:
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
 
-    MInputMethodQuickPrivate(QWidget *mainWindow,
+    MInputMethodQuickPrivate(MAbstractInputMethodHost *host,
                              MInputMethodQuick *im)
         : q_ptr(im)
-        , scene(new QGraphicsScene(computeDisplayRect(), im))
-        , view(new QGraphicsView(scene, mainWindow))
+        , surface(qSharedPointerDynamicCast<Maliit::Plugins::AbstractGraphicsViewSurface>(host->surfaceFactory()->create(Maliit::Plugins::AbstractSurface::PositionCenterBottom | Maliit::Plugins::AbstractSurface::TypeGraphicsView)))
+        , scene(surface->scene())
+        , view(surface->view())
         , loader(new MInputMethodQuickLoader(scene, im))
         , appOrientation(0)
         , haveFocus(false)
@@ -192,8 +196,6 @@ public:
     ~MInputMethodQuickPrivate()
     {
         delete loader;
-        delete view;
-        delete scene;
     }
 
     void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
@@ -213,32 +215,15 @@ public:
 };
 
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
-                                     QWidget *mainWindow,
+                                     QWidget *,
                                      const QString &qmlFileName)
     : MAbstractInputMethod(host)
-    , d_ptr(new MInputMethodQuickPrivate(mainWindow, this))
+    , d_ptr(new MInputMethodQuickPrivate(host, this))
 {
     Q_D(MInputMethodQuick);
 
     d->loader->loadQmlFile(qmlFileName);
     propagateScreenSize();
-    QWidget *p = d->view->viewport();
-
-    // make sure the window gets displayed:
-    if (p->nativeParentWidget()) {
-        p = p->nativeParentWidget();
-    }
-
-    // TODO: Make it work on multi-display setups.
-    // Would need to correctly follow current display of app window
-    // (record last mouse event and get display through event's position?).
-    const QRect displayRect(computeDisplayRect(p));
-    d->view->resize(displayRect.size());
-    d->view->setSceneRect(displayRect);
-    d->view->show();
-    d->view->setFrameShape(QFrame::NoFrame);
-    d->view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d->view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 MInputMethodQuick::~MInputMethodQuick()
@@ -261,6 +246,7 @@ void MInputMethodQuick::show()
     handleAppOrientationChanged(d->appOrientation);
     
     if (d->activeState == Maliit::OnScreen) {
+      d->surface->show();
       d->loader->showUI();
       const QRegion r(inputMethodArea());
       d->handleInputMethodAreaUpdate(inputMethodHost(), r);
@@ -275,6 +261,7 @@ void MInputMethodQuick::hide()
     }
     d->sipRequested = false;
     d->loader->hideUI();
+    d->surface->hide();
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }

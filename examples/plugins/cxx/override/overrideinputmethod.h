@@ -18,6 +18,7 @@
 #define OVERRIDE_INPUT_METHOD_H
 
 #include <maliit/plugins/abstractinputmethod.h>
+#include <maliit/plugins/abstractwidgetssurface.h>
 #include <maliit/plugins/keyoverride.h>
 
 #include <QSet>
@@ -80,6 +81,7 @@ private Q_SLOTS:
 private:
     void updateActionKey(const MKeyOverride::KeyOverrideAttributes changedAttributes);
 
+    QSharedPointer<Maliit::Plugins::AbstractWidgetSurface> surface;
     QPushButton *mainWidget;
     bool showIsInhibited;
     bool showRequested;

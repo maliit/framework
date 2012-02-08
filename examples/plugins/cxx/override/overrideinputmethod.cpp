@@ -17,6 +17,7 @@
 #include "overrideinputmethod.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
+#include <maliit/plugins/abstractsurfacefactory.h>
 
 #include <QDebug>
 #include <QApplication>
@@ -29,10 +30,14 @@ namespace {
     const char * const actionKeyLabel = "Enter";
 }
 
+using Maliit::Plugins::AbstractSurface;
+using Maliit::Plugins::AbstractWidgetSurface;
+
 OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host,
-                                         QWidget *mainWindow)
+                                         QWidget *)
     : MAbstractInputMethod(host)
-    , mainWidget(new QPushButton(mainWindow))
+    , surface(qSharedPointerDynamicCast<AbstractWidgetSurface>(host->surfaceFactory()->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget)))
+    , mainWidget(new QPushButton(surface->widget()))
     , showIsInhibited(false)
     , showRequested(false)
     , activeActionKeyOverride()
