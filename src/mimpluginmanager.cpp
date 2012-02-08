@@ -85,6 +85,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       q_ptr(0),
       connectionValid(false),
       acceptRegionUpdates(false),
+      visible(false),
       indicatorService(),
       onScreenPlugins(),
       proxyWidget(proxyWidget),
@@ -402,10 +403,7 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
         attributeExtensionManager->keyOverrides(toolbarId);
     switchedTo->setKeyOverrides(keyOverrides);
 
-    // TODO: show/hide from IC matches SIP show/hide requests but here show is used (and
-    // hide in deactivatePlugin) in a sense completely unrelated to SIP requests.  Should
-    // there be separte methods for plugin activation/deactivation?
-    if (acceptRegionUpdates) {
+    if (visible) {
         ensureActivePluginsVisible(DontShowInputMethod);
         switchedTo->show();
         switchedTo->showLanguageNotification();
@@ -971,12 +969,14 @@ void MIMPluginManagerPrivate::showActivePlugins()
 {
     ensureEmptyRegionWhenHiddenTimer.stop();
     acceptRegionUpdates = true;
+    visible = true;
 
     ensureActivePluginsVisible(ShowInputMethod);
 }
 
 void MIMPluginManagerPrivate::hideActivePlugins()
 {
+    visible = false;
     Q_FOREACH (MInputMethodPlugin *plugin, activePlugins) {
         plugins.value(plugin).inputMethod->hide();
     }
