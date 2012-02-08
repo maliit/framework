@@ -172,6 +172,7 @@ public:
     bool connectionValid;
 
     bool acceptRegionUpdates;
+    bool visible;
 
     typedef QMap<MInputMethod::HandlerState, QString> InputSourceToNameMap;
     InputSourceToNameMap inputSourceToNameMap;
