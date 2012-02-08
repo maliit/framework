@@ -32,8 +32,7 @@ class HelloWorldInputMethod
     Q_OBJECT
 
 public:
-    HelloWorldInputMethod(MAbstractInputMethodHost *host,
-                          QWidget *mainWindow);
+    HelloWorldInputMethod(MAbstractInputMethodHost *host);
     ~HelloWorldInputMethod();
 
     //! \reimp

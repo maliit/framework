@@ -33,8 +33,7 @@ class OverrideInputMethod
     Q_OBJECT
 
 public:
-    OverrideInputMethod(MAbstractInputMethodHost *host,
-                        QWidget *mainWindow);
+    OverrideInputMethod(MAbstractInputMethodHost *host);
     ~OverrideInputMethod();
 
     //! \reimp

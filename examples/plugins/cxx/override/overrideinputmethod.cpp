@@ -29,8 +29,7 @@ namespace {
     const char * const actionKeyLabel = "Enter";
 }
 
-OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host,
-                                         QWidget *)
+OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host)
     : MAbstractInputMethod(host)
     , surface(host->surfaceFactory()->createWidgetSurface(Maliit::Plugins::SurfacePolicy(Maliit::Plugins::SurfacePositionCenterBottom)))
     , mainWidget(new QPushButton(surface->widget()))

@@ -26,8 +26,7 @@ namespace {
     const char * const exampleSubViewId("HelloWorldPluginSubview1");
 }
 
-HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host,
-                                             QWidget *)
+HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host)
     : MAbstractInputMethod(host)
     , surface(host->surfaceFactory()->createWidgetSurface(Maliit::Plugins::SurfacePolicy(Maliit::Plugins::SurfacePositionCenterBottom)))
     , mainWidget(new QPushButton(surface->widget()))
