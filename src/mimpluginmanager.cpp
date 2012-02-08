@@ -69,7 +69,7 @@ namespace
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection,
-                                                 WeakWidget proxyWidget,
+                                                 QSharedPointer<AbstractSurfaceGroupFactory> surfaceGroupFactory,
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
@@ -79,7 +79,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       visible(false),
       indicatorService(),
       onScreenPlugins(),
-      proxyWidget(proxyWidget),
+      mSurfaceGroupFactory(surfaceGroupFactory),
       lastOrientation(0),
       attributeExtensionManager(new MAttributeExtensionManager)
 {
@@ -177,6 +177,8 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
+    QSharedPointer<AbstractSurfaceGroup> surfaceGroup(mSurfaceGroupFactory->createSurfaceGroup());
+
     // Check if we have a specific factory for this plugin
     QString mimeType = getFileMimeType(fileName);
     if (factories.contains(mimeType)) {
@@ -199,7 +201,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         plugin = qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
         if (!plugin) {
             qWarning() << __PRETTY_FUNCTION__
-                       << "Could not cast" << pluginInstance->metaObject()->className() << "into MInputMethodPlugin.";
+                       << pluginInstance->metaObject()->className() << "is not a Maliit::Server::InputMethodPlugin.";
             return false;
         }
     }
@@ -210,10 +212,9 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    WeakWidget centralWidget(new QWidget(proxyWidget.data()));
+    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, surfaceGroup->factory());
 
-    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, 0);
-    MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
+    MAbstractInputMethod *im = plugin->createInputMethod(host, 0);
 
     QObject::connect(q, SIGNAL(pluginsChanged()), host, SIGNAL(pluginsChanged()));
 
@@ -226,7 +227,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
     }
 
     PluginDescription desc = { im, host, PluginState(),
-                               Maliit::SwitchUndefined, centralWidget, fileName };
+                               Maliit::SwitchUndefined, fileName, surfaceGroup };
     plugins.insert(plugin, desc);
     host->setInputMethod(im);
 
@@ -961,6 +962,7 @@ void MIMPluginManagerPrivate::hideActivePlugins()
     visible = false;
     Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activePlugins) {
         plugins.value(plugin).inputMethod->hide();
+        plugins.value(plugin).surfaceGroup->deactivate();
     }
 
     ensureEmptyRegionWhenHiddenTimer.start();
@@ -968,24 +970,16 @@ void MIMPluginManagerPrivate::hideActivePlugins()
 
 void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest request)
 {
-    if (not proxyWidget.data()) {
-        return;
-    }
+    Plugins::iterator iterator(plugins.begin());
 
-    Q_FOREACH (QObject *obj, proxyWidget.data()->children()) {
-        if (QWidget *w = qobject_cast<QWidget *>(obj)) {
-            w->hide();
-        }
-    }
-
-    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activePlugins) {
-        const WeakWidget &w = plugins.value(plugin).centralWidget;
-        if (w) {
-            w.data()->show();
-        }
-
-        if (request == ShowInputMethod) {
-            plugins.value(plugin).inputMethod->show();
+    for (; iterator != plugins.end(); ++iterator) {
+        if (activePlugins.contains(iterator.key())) {
+            iterator.value().surfaceGroup->activate();
+            if (request == ShowInputMethod) {
+                iterator.value().inputMethod->show();
+            }
+        } else {
+            iterator.value().surfaceGroup->deactivate();
         }
     }
 }
@@ -1082,9 +1076,9 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 // actual class
 
 MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnection,
-                                   QWidget *proxyWidget)
+                                   QSharedPointer<AbstractSurfaceGroupFactory> surfacesFactory)
     : QObject(),
-      d_ptr(new MIMPluginManagerPrivate(icConnection, MIMPluginManagerPrivate::WeakWidget(proxyWidget), this))
+      d_ptr(new MIMPluginManagerPrivate(icConnection, surfacesFactory, this))
 {
     Q_D(MIMPluginManager);
     d->q_ptr = this;

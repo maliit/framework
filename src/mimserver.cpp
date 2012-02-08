@@ -52,7 +52,7 @@ MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
 
     d->icConnection = icConnection;
     d->serverLogic = serverLogic;
-    d->pluginManager = new MIMPluginManager(d->icConnection, pluginsWidget());
+    d->pluginManager = new MIMPluginManager(d->icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>());
 
     connectComponents();
 

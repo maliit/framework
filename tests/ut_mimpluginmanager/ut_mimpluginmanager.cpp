@@ -96,7 +96,7 @@ void Ut_MIMPluginManager::init()
     activePluginSettings.set(activePlugin);
 
     shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
-    manager = new MIMPluginManager(icConnection, proxyWidget);
+    manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
 
     subject = manager->d_ptr;
 
