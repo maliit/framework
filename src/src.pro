@@ -32,6 +32,8 @@ HEADERSINSTALL = \
 HEADERS += \
         $$HEADERSINSTALL \
         maliit/plugins/abstractsurfacegroup.h \
+        maliit/plugins/windowedsurface.h \
+        maliit/plugins/windowedsurfacegroup.h \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
         mimpluginmanageradaptor.h \
@@ -58,6 +60,8 @@ HEADERS += \
 SOURCES += \
         maliit/plugins/abstractsurface.cpp \
         maliit/plugins/abstractsurfacegroup.cpp \
+        maliit/plugins/windowedsurface.cpp \
+        maliit/plugins/windowedsurfacegroup.cpp \
         mimabstractpluginfactory.cpp \
         mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
