@@ -18,6 +18,7 @@
 #define MABSTRACTINPUTMETHODHOST_H
 
 #include "minputmethodnamespace.h"
+#include <maliit/plugins/abstractsurface.h>
 
 #include <QRect>
 #include <QObject>
@@ -287,6 +288,10 @@ public:
      * This can be used as a hint to determine text direction in input fields, for example.
      */
     virtual void setLanguage(const QString &language);
+
+    /*!
+      */
+    virtual Maliit::Plugins::AbstractSurfaceFactory* surfaceFactory() = 0;
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)

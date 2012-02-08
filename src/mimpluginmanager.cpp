@@ -220,7 +220,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     WeakWidget centralWidget(new QWidget(proxyWidget.data()));
 
-    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService);
+    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, 0);
     MAbstractInputMethod *im = plugin->createInputMethod(host, centralWidget.data());
 
     QObject::connect(q, SIGNAL(pluginsChanged()), host, SIGNAL(pluginsChanged()));

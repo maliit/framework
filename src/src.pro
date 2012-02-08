@@ -7,6 +7,7 @@ INCLUDEPATH += .. ../common ../connection
 
 # Input
 HEADERSINSTALL = \
+        maliit/plugins/abstractsurface.h \
         maliit/plugins/inputmethodplugin.h \
         mimabstractpluginfactory.h \
         mabstractinputmethod.h \
@@ -30,6 +31,7 @@ HEADERSINSTALL = \
 
 HEADERS += \
         $$HEADERSINSTALL \
+        maliit/plugins/abstractsurfacegroup.h \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
         mimpluginmanageradaptor.h \
@@ -54,6 +56,8 @@ HEADERS += \
         mtoolbaritemfilter.h \
 
 SOURCES += \
+        maliit/plugins/abstractsurface.cpp \
+        maliit/plugins/abstractsurfacegroup.cpp \
         mimabstractpluginfactory.cpp \
         mimpluginmanager.cpp \
         mimpluginmanageradaptor.cpp \
