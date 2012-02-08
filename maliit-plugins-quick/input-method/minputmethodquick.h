@@ -71,7 +71,6 @@ public:
     //! \param mainWindow should be used to install plugin's UI into it. Managed by framework.
     //! \param qmlFileName the QML file that will be loaded.
     explicit MInputMethodQuick(MAbstractInputMethodHost *host,
-                               QWidget *mainWindow,
                                const QString &qmlFileName);
     virtual ~MInputMethodQuick();
 

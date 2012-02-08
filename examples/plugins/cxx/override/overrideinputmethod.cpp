@@ -33,8 +33,7 @@ namespace {
 using Maliit::Plugins::AbstractSurface;
 using Maliit::Plugins::AbstractWidgetSurface;
 
-OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host,
-                                         QWidget *)
+OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host)
     : MAbstractInputMethod(host)
     , surface(qSharedPointerDynamicCast<AbstractWidgetSurface>(host->surfaceFactory()->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget)))
     , mainWidget(new QPushButton(surface->widget()))

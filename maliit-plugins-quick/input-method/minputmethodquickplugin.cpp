@@ -75,7 +75,7 @@ QStringList MInputMethodQuickPlugin::qmlImportPaths()
 MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host,
                                                                  QWidget *mainWindow)
 {
-    return new MInputMethodQuick(host, mainWindow, qmlFileName());
+    return new MInputMethodQuick(host, qmlFileName());
 }
 
 QSet<Maliit::HandlerState> MInputMethodQuickPlugin::supportedStates() const

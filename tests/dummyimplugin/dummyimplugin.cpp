@@ -16,9 +16,9 @@ QString DummyImPlugin::name() const
 
 MAbstractInputMethod *
 DummyImPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                 QWidget *mainWindow)
+                                 QWidget *)
 {
-    return new DummyInputMethod(host, mainWindow);
+    return new DummyInputMethod(host);
 }
 
 QSet<Maliit::HandlerState> DummyImPlugin::supportedStates() const

@@ -33,9 +33,9 @@ QString HelloWorldPlugin::name() const
 
 MAbstractInputMethod *
 HelloWorldPlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                    QWidget *mainWindow)
+                                    QWidget *)
 {
-    return new HelloWorldInputMethod(host, mainWindow);
+    return new HelloWorldInputMethod(host);
 }
 
 QSet<Maliit::HandlerState> HelloWorldPlugin::supportedStates() const
