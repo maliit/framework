@@ -32,8 +32,7 @@ QString OverridePlugin::name() const
 }
 
 MAbstractInputMethod *
-OverridePlugin::createInputMethod(MAbstractInputMethodHost *host,
-                                  QWidget *)
+OverridePlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
     return new OverrideInputMethod(host);
 }

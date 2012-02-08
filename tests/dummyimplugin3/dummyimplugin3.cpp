@@ -16,8 +16,7 @@ QString DummyImPlugin3::name() const
 }
 
 MAbstractInputMethod *
-DummyImPlugin3::createInputMethod(MAbstractInputMethodHost *host,
-                                  QWidget *)
+DummyImPlugin3::createInputMethod(MAbstractInputMethodHost *host)
 {
     return new DummyInputMethod3(host);
 }

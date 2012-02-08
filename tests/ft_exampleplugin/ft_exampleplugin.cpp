@@ -71,7 +71,7 @@ void Ft_ExamplePlugin::testFunction()
     Maliit::Plugins::InputMethodPlugin *plugin =  qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
     QVERIFY(plugin != 0);
 
-    plugin->createInputMethod(&host, new QWidget);
+    plugin->createInputMethod(&host);
 
     QCOMPARE(host.lastCommit, QString("Maliit"));
     QCOMPARE(host.sendCommitCount, 1);

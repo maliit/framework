@@ -9,8 +9,7 @@ QString DummyImPlugin2::name() const
 }
 
 MAbstractInputMethod *
-DummyImPlugin2::createInputMethod(MAbstractInputMethodHost *,
-                                  QWidget *)
+DummyImPlugin2::createInputMethod(MAbstractInputMethodHost *)
 {
     return 0;
 }
