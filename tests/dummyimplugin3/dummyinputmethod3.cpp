@@ -5,8 +5,8 @@
 #include <QRegion>
 
 DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *host,
-                                     QWidget *mainWindow)
-    : MAbstractInputMethod(host, mainWindow),
+                                     QWidget *)
+    : MAbstractInputMethod(host),
       setStateCount(0),
       switchContextCallCount(0),
       directionParam(Maliit::SwitchUndefined),

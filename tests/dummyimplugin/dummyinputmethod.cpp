@@ -5,8 +5,8 @@
 #include <maliit/plugins/abstractinputmethodhost.h>
 
 DummyInputMethod::DummyInputMethod(MAbstractInputMethodHost *host,
-                                   QWidget *mainWindow)
-    : MAbstractInputMethod(host, mainWindow),
+                                   QWidget *)
+    : MAbstractInputMethod(host),
       setStateCount(0),
       switchContextCallCount(0),
       directionParam(Maliit::SwitchUndefined),

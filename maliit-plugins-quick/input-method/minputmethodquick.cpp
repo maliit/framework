@@ -215,7 +215,7 @@ public:
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
                                      QWidget *mainWindow,
                                      const QString &qmlFileName)
-    : MAbstractInputMethod(host, mainWindow)
+    : MAbstractInputMethod(host)
     , d_ptr(new MInputMethodQuickPrivate(mainWindow, this))
 {
     Q_D(MInputMethodQuick);
