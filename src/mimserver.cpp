@@ -24,7 +24,9 @@
 #include "mimqpaplatform.h"
 #endif
 
-using namespace std::tr1;
+#include <maliit/plugins/windowedsurfacegroup.h>
+
+using std::tr1::shared_ptr;
 
 class MImServerPrivate
 {
@@ -73,7 +75,9 @@ MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *
     d->platform.reset(new MImQPAPlatform);
 #endif
 
-    d->pluginManager = new MIMPluginManager(d->icConnection, QSharedPointer<Maliit::Plugins::AbstractSurfaceGroupFactory>());
+    QSharedPointer<Maliit::Plugins::AbstractSurfaceGroupFactory> surfaceGroupFactory(new Maliit::Plugins::WindowedSurfaceGroupFactory);
+
+    d->pluginManager = new MIMPluginManager(d->icConnection, surfaceGroupFactory);
 
     connectComponents();
 
