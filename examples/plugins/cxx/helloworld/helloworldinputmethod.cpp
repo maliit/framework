@@ -27,9 +27,10 @@ namespace {
 }
 
 HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host,
-                                             QWidget *mainWindow)
+                                             QWidget *)
     : MAbstractInputMethod(host)
-    , mainWidget(new QPushButton(mainWindow))
+    , surface(host->surfaceFactory()->createWidgetSurface(Maliit::Plugins::SurfacePolicy(Maliit::Plugins::SurfacePositionCenterBottom)))
+    , mainWidget(new QPushButton(surface->widget()))
     , showIsInhibited(false)
     , showRequested(false)
 {

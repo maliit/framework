@@ -19,6 +19,7 @@
 
 #include <mabstractinputmethod.h>
 #include <mtoolbardata.h> /* Only needed for setToolbar() */
+#include <maliit/plugins/abstractsurface.h>
 
 #include <QSet>
 #include <QWidget>
@@ -76,6 +77,7 @@ private Q_SLOTS:
     void handleButtonClicked();
 
 private:
+    QSharedPointer<Maliit::Plugins::AbstractWidgetSurface> surface;
     QPushButton *mainWidget;
     bool showIsInhibited;
     bool showRequested;

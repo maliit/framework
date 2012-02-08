@@ -20,6 +20,7 @@
 #include <mabstractinputmethod.h>
 #include <mtoolbardata.h> /* Only needed for setToolbar() */
 #include <mkeyoverride.h>
+#include <maliit/plugins/abstractsurface.h>
 
 #include <QSet>
 #include <QWidget>
@@ -82,6 +83,7 @@ private Q_SLOTS:
 private:
     void updateActionKey(const MKeyOverride::KeyOverrideAttributes changedAttributes);
 
+    QSharedPointer<Maliit::Plugins::AbstractWidgetSurface> surface;
     QPushButton *mainWidget;
     bool showIsInhibited;
     bool showRequested;

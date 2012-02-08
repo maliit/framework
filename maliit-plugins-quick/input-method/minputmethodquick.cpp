@@ -25,6 +25,7 @@
 #include "mkeyoverridequick.h"
 #include "mkeyoverride.h"
 #include "minputmethodquickplugin.h"
+#include <maliit/plugins/abstractsurface.h>
 
 #include <QKeyEvent>
 #include <QApplication>
@@ -155,6 +156,7 @@ class MInputMethodQuickPrivate
 {
 public:
     MInputMethodQuick *const q_ptr;
+    QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface;
     QGraphicsScene *const scene;
     QGraphicsView *const view;
     MInputMethodQuickLoader *const loader;
@@ -174,11 +176,12 @@ public:
 
     Q_DECLARE_PUBLIC(MInputMethodQuick);
 
-    MInputMethodQuickPrivate(QWidget *mainWindow,
+    MInputMethodQuickPrivate(MAbstractInputMethodHost *host,
                              MInputMethodQuick *im)
         : q_ptr(im)
-        , scene(new QGraphicsScene(computeDisplayRect(), im))
-        , view(new MImGraphicsView(scene, mainWindow))
+        , surface(host->surfaceFactory()->createGraphicsViewSurface(Maliit::Plugins::SurfacePolicy(Maliit::Plugins::SurfacePositionCenterBottom)))
+        , scene(surface->scene())
+        , view(surface->view())
         , loader(new MInputMethodQuickLoader(scene, im))
         , appOrientation(0)
         , haveFocus(false)
@@ -194,8 +197,6 @@ public:
     ~MInputMethodQuickPrivate()
     {
         delete loader;
-        delete view;
-        delete scene;
     }
 
     void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
@@ -215,10 +216,10 @@ public:
 };
 
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
-                                     QWidget *mainWindow,
+                                     QWidget *,
                                      const QString &qmlFileName)
     : MAbstractInputMethod(host)
-    , d_ptr(new MInputMethodQuickPrivate(mainWindow, this))
+    , d_ptr(new MInputMethodQuickPrivate(host, this))
 {
     Q_D(MInputMethodQuick);
 
