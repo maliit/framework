@@ -78,10 +78,8 @@ void Ut_MIMPluginManager::initTestCase()
 
 #ifdef Q_WS_X11
     app = new MImXApplication(argc, argv);
-    proxyWidget = static_cast<MImXApplication*>(app)->pluginsProxyWidget();
 #else
     app = new QApplication(argc, argv);
-    proxyWidget = new QWidget;
 #endif
 
     Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
@@ -116,7 +114,7 @@ void Ut_MIMPluginManager::init()
     activePluginSettings.set(activePlugin);
 
     shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
-    manager = new MIMPluginManager(icConnection, proxyWidget);
+    manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Plugins::AbstractSurfaceGroupFactory>());
 
     subject = manager->d_ptr;
 

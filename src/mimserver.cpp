@@ -73,7 +73,7 @@ MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *
     d->platform.reset(new MImQPAPlatform);
 #endif
 
-    d->pluginManager = new MIMPluginManager(d->icConnection, pluginsWidget());
+    d->pluginManager = new MIMPluginManager(d->icConnection, QSharedPointer<Maliit::Plugins::AbstractSurfaceGroupFactory>());
 
     connectComponents();
 
