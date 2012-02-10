@@ -5,7 +5,6 @@
 #include "mimremotewindow.h"
 #include "mimxextension.h"
 
-#include <memory>
 #include <tr1/functional>
 
 #include <QApplication>
@@ -92,10 +91,10 @@ private:
     bool mBackgroundSuppressed;
     bool mUnconditionalShow;
 
-    std::auto_ptr<MPassThruWindow> mPassThruWindow;
-    std::auto_ptr<QWidget> mPluginsProxyWidget;
-    std::auto_ptr<MImRemoteWindow> mRemoteWindow;
-    std::auto_ptr<MImRotationAnimation> mRotationAnimation;
+    QScopedPointer<MPassThruWindow> mPassThruWindow;
+    QScopedPointer<QWidget> mPluginsProxyWidget;
+    QScopedPointer<MImRemoteWindow> mRemoteWindow;
+    QScopedPointer<MImRotationAnimation> mRotationAnimation;
 
     friend class Ut_PassthroughServer;
 };
