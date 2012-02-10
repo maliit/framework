@@ -54,7 +54,7 @@ MImXApplication::MImXApplication(int &argc, char** argv) :
     parseArguments(argc, argv);
 
     mPassThruWindow.reset(new MPassThruWindow(this));
-    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
+    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.data()));
     mRotationAnimation.reset(new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(), this));
 
 #ifdef HAVE_MEEGOGRAPHICSSYSTEM
@@ -117,7 +117,7 @@ bool MImXApplication::x11EventFilter(XEvent *ev)
 
 void MImXApplication::handleTransientEvents(XEvent *ev)
 {
-    if (not mRemoteWindow.get()) {
+    if (not mRemoteWindow.data()) {
         return;
     }
 
@@ -133,7 +133,7 @@ void MImXApplication::handleTransientEvents(XEvent *ev)
 
 void MImXApplication::handleRemoteWindowEvents(XEvent *event)
 {
-    if (not mRemoteWindow.get()) {
+    if (not mRemoteWindow.data()) {
         return;
     }
 
@@ -148,7 +148,7 @@ void MImXApplication::handlePassThruMapEvent(XEvent *ev)
     if (ev->xmap.window != mPassThruWindow->effectiveWinId())
         return;
 
-    if (not mRemoteWindow.get()) {
+    if (not mRemoteWindow.data()) {
         qWarning() << __PRETTY_FUNCTION__
                    << "No remote window found, but passthru window was mapped.";
         return;
@@ -163,23 +163,23 @@ void MImXApplication::setTransientHint(WId newRemoteWinId)
         return;
     }
 
-    if (mRemoteWindow.get() && mRemoteWindow->id() == newRemoteWinId) {
+    if (mRemoteWindow.data() && mRemoteWindow->id() == newRemoteWinId) {
         return;
     }
 
-    const bool wasRedirected(mRemoteWindow.get() && mRemoteWindow->isRedirected());
+    const bool wasRedirected(mRemoteWindow.data() && mRemoteWindow->isRedirected());
 
     mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this));
     mRemoteWindow->setIMWidget(mPassThruWindow->window());
 
-    connect(mRemoteWindow.get(), SIGNAL(contentUpdated(QRegion)),
+    connect(mRemoteWindow.data(), SIGNAL(contentUpdated(QRegion)),
             this,                SLOT(updatePassThruWindow(QRegion)));
 
     if (wasRedirected) {
         mRemoteWindow->redirect();
     }
 
-    Q_EMIT remoteWindowChanged(mRemoteWindow.get());
+    Q_EMIT remoteWindowChanged(mRemoteWindow.data());
 }
 
 bool MImXApplication::selfComposited() const
@@ -209,17 +209,17 @@ void MImXApplication::setSuppressBackground(bool suppress)
 
 QWidget *MImXApplication::passThruWindow() const
 {
-    return mPassThruWindow.get();
+    return mPassThruWindow.data();
 }
 
 QWidget* MImXApplication::pluginsProxyWidget() const
 {
-    return mPluginsProxyWidget.get();
+    return mPluginsProxyWidget.data();
 }
 
 const QPixmap &MImXApplication::remoteWindowPixmap()
 {
-    if (not mRemoteWindow.get()
+    if (not mRemoteWindow.data()
             || mBackgroundSuppressed
             || not mSelfComposited) {
         static const QPixmap empty;
@@ -266,7 +266,7 @@ void MImXApplication::visitWidgetHierarchy(WidgetVisitor visitor,
 
 void MImXApplication::configureWidgetsForCompositing()
 {
-    visitWidgetHierarchy(configureForCompositing, mPassThruWindow.get());
+    visitWidgetHierarchy(configureForCompositing, mPassThruWindow.data());
 }
 
 void MImXApplication::appOrientationAboutToChange(int toAngle) {
@@ -279,5 +279,5 @@ void MImXApplication::appOrientationChangeFinished(int toAngle) {
 
 MImRemoteWindow *MImXApplication::remoteWindow() const
 {
-    return mRemoteWindow.get();
+    return mRemoteWindow.data();
 }
