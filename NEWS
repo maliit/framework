@@ -1,3 +1,14 @@
+NEXT
+======
+
+CHANGES SINCE 0.81.3
+* Allow pluggable backends to store maliit-server settings.
+* Added a compilation option to disable the GConf settings backend,
+  using QSettings as a fallback.
+
+BUG FIXES
+* Fixes: MALIIT#88 - Remove hard dependency on GConf
+
 0.81.3
 ======
 
