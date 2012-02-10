@@ -233,17 +233,18 @@ void MImSettingsGConfBackendPrivate::notify_trampoline(GConfClient *,
 
 void MImSettingsGConfBackend::update_value(bool emit_signal)
 {
+    Q_D(MImSettingsGConfBackend);
     QVariant new_value;
 
     withClient(client) {
         GError *error = NULL;
-        QByteArray k = convertKey(priv->key);
+        QByteArray k = convertKey(d->key);
         GConfValue *v = gconf_client_get(client, k.data(), &error);
 
         if (error) {
             qWarning() << "MGConfItem" << error->message;
             g_error_free(error);
-            new_value = priv->value;
+            new_value = d->value;
         } else {
             new_value = convertValue(v);
             if (v)
@@ -251,8 +252,8 @@ void MImSettingsGConfBackend::update_value(bool emit_signal)
         }
     }
 
-    if (new_value != priv->value) {
-        priv->value = new_value;
+    if (new_value != d->value) {
+        d->value = new_value;
         if (emit_signal)
             Q_EMIT valueChanged();
     }
@@ -260,21 +261,27 @@ void MImSettingsGConfBackend::update_value(bool emit_signal)
 
 QString MImSettingsGConfBackend::key() const
 {
-    return priv->key;
+    Q_D(const MImSettingsGConfBackend);
+
+    return d->key;
 }
 
 QVariant MImSettingsGConfBackend::value(const QVariant &def) const
 {
-    if (priv->value.isNull())
+    Q_D(const MImSettingsGConfBackend);
+
+    if (d->value.isNull())
         return def;
     else
-        return priv->value;
+        return d->value;
 }
 
 void MImSettingsGConfBackend::set(const QVariant &val)
 {
+    Q_D(MImSettingsGConfBackend);
+
     withClient(client) {
-        QByteArray k = convertKey(priv->key);
+        QByteArray k = convertKey(d->key);
         GConfValue *v;
         if (convertValue(val, &v)) {
             GError *error = NULL;
@@ -289,8 +296,8 @@ void MImSettingsGConfBackend::set(const QVariant &val)
             if (error) {
                 qWarning() << "MGConfItem" << error->message;
                 g_error_free(error);
-            } else if (priv->value != val) {
-                priv->value = val;
+            } else if (d->value != val) {
+                d->value = val;
                 Q_EMIT valueChanged();
             }
 
@@ -306,10 +313,11 @@ void MImSettingsGConfBackend::unset()
 
 QList<QString> MImSettingsGConfBackend::listDirs() const
 {
+    Q_D(const MImSettingsGConfBackend);
     QList<QString> children;
 
     withClient(client) {
-        QByteArray k = convertKey(priv->key);
+        QByteArray k = convertKey(d->key);
         GError *error = NULL;
         GSList *dirs = gconf_client_all_dirs(client, k.data(), &error);
         if(error) {
@@ -330,10 +338,11 @@ QList<QString> MImSettingsGConfBackend::listDirs() const
 
 QList<QString> MImSettingsGConfBackend::listEntries() const
 {
+    Q_D(const MImSettingsGConfBackend);
     QList<QString> children;
 
     withClient(client) {
-        QByteArray k = convertKey(priv->key);
+        QByteArray k = convertKey(d->key);
         GError *error = NULL;
         GSList *entries = gconf_client_all_entries(client, k.data(), &error);
         if(error) {
@@ -353,12 +362,14 @@ QList<QString> MImSettingsGConfBackend::listEntries() const
 }
 
 MImSettingsGConfBackend::MImSettingsGConfBackend(const QString &key, QObject *parent) :
-    MImSettingsBackend(parent)
+    MImSettingsBackend(parent),
+    d_ptr(new MImSettingsGConfBackendPrivate)
 {
-    priv = new MImSettingsGConfBackendPrivate;
-    priv->key = key;
+    Q_D(MImSettingsGConfBackend);
+
+    d->key = key;
     withClient(client) {
-        QByteArray k = convertKey(priv->key);
+        QByteArray k = convertKey(d->key);
         GError *error = NULL;
 
         int index = k.lastIndexOf('/');
@@ -374,26 +385,28 @@ MImSettingsGConfBackend::MImSettingsGConfBackend(const QString &key, QObject *pa
             g_error_free(error);
             return;
         }
-        priv->notify_id = gconf_client_notify_add(client, k.data(),
-                          MImSettingsGConfBackendPrivate::notify_trampoline, this,
-                          NULL, &error);
+        d->notify_id = gconf_client_notify_add(client, k.data(),
+                       MImSettingsGConfBackendPrivate::notify_trampoline, this,
+                       NULL, &error);
         if(error) {
             qWarning() << "MGConfItem" << error->message;
             g_error_free(error);
-            priv->have_gconf = false;
+            d->have_gconf = false;
             return;
         }
         update_value(false);
     }
-    priv->have_gconf = true;
+    d->have_gconf = true;
 }
 
 MImSettingsGConfBackend::~MImSettingsGConfBackend()
 {
-    if(priv->have_gconf) {
+    Q_D(MImSettingsGConfBackend);
+
+    if(d->have_gconf) {
         withClient(client) {
-            QByteArray k = convertKey(priv->key);
-            gconf_client_notify_remove(client, priv->notify_id);
+            QByteArray k = convertKey(d->key);
+            gconf_client_notify_remove(client, d->notify_id);
             GError *error = NULL;
 
             // Use the same dir as in ctor
@@ -406,9 +419,7 @@ MImSettingsGConfBackend::~MImSettingsGConfBackend()
             if(error) {
                 qWarning() << "MGConfItem" << error->message;
                 g_error_free(error);
-                //return; // or priv not deleted
             }
         }
     }
-    delete priv;
 }

@@ -20,6 +20,8 @@
 #include "mimsettings.h"
 
 
+struct MImSettingsGConfBackendPrivate;
+
 class MImSettingsGConfBackend : public MImSettingsBackend
 {
     Q_OBJECT
@@ -36,8 +38,10 @@ public:
     virtual QList<QString> listEntries() const;
 
 private:
-    friend struct MImSettingsGConfBackendPrivate;
-    struct MImSettingsGConfBackendPrivate *priv;
+    QScopedPointer<MImSettingsGConfBackendPrivate> d_ptr;
+
+    Q_DISABLE_COPY(MImSettingsGConfBackend)
+    Q_DECLARE_PRIVATE(MImSettingsGConfBackend)
 
     void update_value(bool emit_signal);
 };
