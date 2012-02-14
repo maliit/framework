@@ -33,7 +33,7 @@ void Ut_MImRotationAnimation::initTestCase()
     // Enforcing raster GS to make test reliable:
     QApplication::setGraphicsSystem("raster");
 
-    app = new MImXApplication(argc, argv);
+    app = new MImXApplication(argc, argv, xOptions);
 
     remote = new MaliitTestUtils::RemoteWindow;
     remote->setGeometry(0, 0, windowSize.width(), windowSize.height());
@@ -52,7 +52,7 @@ void Ut_MImRotationAnimation::testPassthruHiddenDuringRotation()
 {
     QSKIP("Unreliable on Device", SkipAll);
 
-    MImRotationAnimation subject(app->passThruWindow(), 0, app);
+    MImRotationAnimation subject(app->passThruWindow(), 0, app, xOptions);
     app->setTransientHint(remote->window()->effectiveWinId());
 
     subject.appOrientationChangeFinished(0);

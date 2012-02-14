@@ -60,20 +60,15 @@ Q_DECLARE_METATYPE(WidgetCreator);
 
 void Ut_SelfCompositing::initTestCase()
 {
-    static char *argv[2] = { (char *) "Ut_SelfCompositing",
-                             (char *) "-use-self-composition" };
-    static int argc = 2;
+    static char *argv[1] = { (char *) "Ut_SelfCompositing" };
+    static int argc = 1;
 
     // Enforcing raster GS to make test reliable:
     QApplication::setGraphicsSystem("raster");
 
-    app = new MImXApplication(argc, argv);
+    xOptions.selfComposited = true;
 
-#if defined(Q_WS_X11)
-    if (QX11Info::isCompositingManagerRunning()) {
-        QVERIFY(app->selfComposited());
-    }
-#endif
+    app = new MImXApplication(argc, argv, xOptions);
 }
 
 void Ut_SelfCompositing::cleanupTestCase()

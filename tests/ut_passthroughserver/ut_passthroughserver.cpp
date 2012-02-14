@@ -9,7 +9,7 @@ void Ut_PassthroughServer::initTestCase()
     static int argc = 1;
     static char *app_name[1] = { (char *) "ut_passthroughserver" };
 
-    app = new MImXApplication(argc, app_name);
+    app = new MImXApplication(argc, app_name, xOptions);
     app->setStyle(new QCommonStyle);
     app->setTransientHint(1); // remote win id should be non-zero
 }
