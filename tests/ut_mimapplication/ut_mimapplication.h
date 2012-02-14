@@ -1,6 +1,8 @@
 #ifndef UT_MIMAPPLICATION_H
 #define UT_MIMAPPLICATION_H
 
+#include "mimserveroptions.h"
+
 #include <QtTest/QtTest>
 #include <QObject>
 
@@ -28,6 +30,7 @@ private:
 
     MPassThruWindow *subject;
     MImXApplication *app;
+    MImServerXOptions xOptions;
 };
 
 #endif

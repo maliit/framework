@@ -77,7 +77,7 @@ void Ut_MIMPluginManager::initTestCase()
     static int argc = 1;
 
 #ifdef Q_WS_X11
-    app = new MImXApplication(argc, argv);
+    app = new MImXApplication(argc, argv, xOptions);
     proxyWidget = static_cast<MImXApplication*>(app)->pluginsProxyWidget();
 #else
     app = new QApplication(argc, argv);

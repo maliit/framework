@@ -20,7 +20,7 @@ void Ut_MIMApplication::initTestCase()
     static char *argv[1] = { (char *) "ut_mimapplication" };
     static int argc = 1;
 
-    app = new MImXApplication(argc, argv);
+    app = new MImXApplication(argc, argv, xOptions);
     subject = static_cast<MPassThruWindow *>(app->passThruWindow());
 }
 
@@ -31,6 +31,8 @@ void Ut_MIMApplication::cleanupTestCase()
 
 void Ut_MIMApplication::init()
 {
+    xOptions.selfComposited = false;
+
     app->setTransientHint(FakeRemoteWId);
 }
 
@@ -60,6 +62,8 @@ void Ut_MIMApplication::testConfigureWidgetsForCompositing_data()
 void Ut_MIMApplication::testConfigureWidgetsForCompositing()
 {
     QFETCH(bool, selfCompositing);
+
+    xOptions.selfComposited = selfCompositing;
 
     QWidget mainWindow(app->passThruWindow());
     QGraphicsView view(&mainWindow);

@@ -1,6 +1,8 @@
 #ifndef UT_MIMPLUGINLOADER_H
 #define UT_MIMPLUGINLOADER_H
 
+#include "mimserveroptions.h"
+
 #include <QtTest/QtTest>
 #include <QObject>
 
@@ -59,6 +61,7 @@ private:
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;
     QDBusInterface *m_clientInterface;
+    MImServerXOptions xOptions;
 
     void checkHandlerMap(int handler, const QString &name);
 };

@@ -17,6 +17,8 @@
 #ifndef UT_SELFCOMPOSITING_H
 #define UT_SELFCOMPOSITING_H
 
+#include "mimserveroptions.h"
+
 #include <QtTest/QtTest>
 #include <QtCore>
 #include <QtGui>
@@ -39,6 +41,7 @@ private Q_SLOTS:
 
 private:
     MImXApplication *app;
+    MImServerXOptions xOptions;
 };
 
 #endif // UT_SELFCOMPOSITING_H

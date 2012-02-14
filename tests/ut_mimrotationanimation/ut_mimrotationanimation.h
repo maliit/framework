@@ -19,6 +19,7 @@
 
 #include <QtTest/QtTest>
 #include <QObject>
+#include "mimserveroptions.h"
 #include "utils.h"
 
 class MImXApplication;
@@ -36,6 +37,7 @@ private Q_SLOTS:
 private:
     MImXApplication *app;
     MaliitTestUtils::RemoteWindow *remote;
+    MImServerXOptions xOptions;
 };
 
 #endif // UT_MIMROTATIONANIMATION_H

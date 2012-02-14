@@ -1,6 +1,8 @@
 #ifndef UT_PASSTHROUGHSERVER_H
 #define UT_PASSTHROUGHSERVER_H
 
+#include "mimserveroptions.h"
+
 #include <QtTest/QtTest>
 #include <QObject>
 
@@ -34,6 +36,7 @@ private:
 
     MImXApplication *app;
     MPassThruWindow *subject;
+    MImServerXOptions xOptions;
 };
 
 #endif
