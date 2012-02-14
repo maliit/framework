@@ -37,6 +37,9 @@ public:
     bool enableAnimationParam;
     QSharedPointer<const MToolbarData> toolbarParam;
 
+Q_SIGNALS:
+    void showCalled();
+
 private:
     QList<MAbstractInputMethod::MInputMethodSubView> sViews;
     QString activeSView;
