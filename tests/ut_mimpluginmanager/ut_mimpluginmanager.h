@@ -31,6 +31,9 @@ private Q_SLOTS:
 
     void testSwitchToSpecifiedPlugin();
 
+    void testSwitchShow_data();
+    void testSwitchShow();
+
     void testSetActivePlugin();
 
     void testSubViews();

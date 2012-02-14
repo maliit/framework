@@ -612,6 +612,61 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     }
 }
 
+void Ut_MIMPluginManager::testSwitchShow_data()
+{
+    QTest::addColumn<bool>("visible");
+    QTest::addColumn<int>("showCount");
+
+    QTest::newRow("visible") << true << 1;
+    QTest::newRow("hidden") << false << 0;
+}
+
+// see NB#296576 - Vkb is not shown in text field, when swype keyboard is enabled & disabled in a scenario
+// switching a plugin will call show on the new one,
+// if that happens while vkb is shown (which is correct),
+// and shortly after vkb is hidden (which is incorrect)
+void Ut_MIMPluginManager::testSwitchShow()
+{
+    QFETCH(bool, visible);
+    QFETCH(int, showCount);
+
+    // preparation
+    MImSettings enabledPluginsSettings(EnabledPluginsKey);
+    enabledPluginsSettings.set(QStringList()
+                                << pluginId3 << "dummyim3sv1"
+                                << pluginId << "dummyimsv1");
+    subject->setActivePlugin(pluginId, MInputMethod::OnScreen);
+    subject->showActivePlugins();
+
+    // current input method
+    MAbstractInputMethod *im = 0;
+    // the other input method, we will watch it
+    DummyInputMethod3 *dummyIm3 = 0;
+    Q_FOREACH (MIMPluginManagerPrivate::PluginDescription pd, subject->plugins.values()) {
+        MAbstractInputMethod *imi = pd.inputMethod;
+        Q_FOREACH (MAbstractInputMethod::MInputMethodSubView v, imi->subViews()) {
+            if (v.subViewId == "dummyimsv1") {
+                im = imi;
+            }
+            if (v.subViewId == "dummyim3sv1") {
+                dummyIm3 = qobject_cast<DummyInputMethod3*>(imi);
+            }
+        }
+    }
+    QVERIFY(im != 0);
+    QVERIFY(dummyIm3 != 0);
+    // end of preparation
+
+    if (!visible) {
+        subject->hideActivePlugins();
+    }
+
+    QSignalSpy shown(dummyIm3, SIGNAL(showCalled()));
+    // swithching to the dummyIm3
+    subject->switchPlugin(MInputMethod::SwitchForward, im);
+    QCOMPARE(shown.size(), showCount);
+}
+
 void Ut_MIMPluginManager::testSetActivePlugin()
 {
     QVERIFY(subject->activePlugins.size() == 1);
