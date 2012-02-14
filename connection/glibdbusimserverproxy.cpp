@@ -16,6 +16,7 @@
 
 #include "glibdbusimserverproxy.h"
 #include "mdbusglibinputcontextadaptor.h"
+#include "inputcontextdbusaddress.h"
 #include <variantmarshalling.h>
 
 #include <QPoint>
@@ -26,6 +27,8 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QDebug>
+#include <QDBusError>
+#include <QDBusVariant>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -134,9 +137,16 @@ void GlibDBusIMServerProxy::connectToDBus()
 {
     if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
+    mAddress->get(this, SLOT(openDBusConnection(QDBusVariant)), SLOT(connectToDBusFailed(QDBusError)));
+}
 
-    const std::string &address = mAddress->get();
-    if (address.empty()) {
+void GlibDBusIMServerProxy::openDBusConnection(const QDBusVariant &address)
+{
+    const QString &addressString = address.variant().toString();
+
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "Address:" << addressString;
+
+    if (addressString.isEmpty()) {
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
         return;
     }
@@ -147,7 +157,7 @@ void GlibDBusIMServerProxy::connectToDBus()
     // Input contexts should not share the connection to the maliit server with
     // each other (even not when they are in the same application). Therefore,
     // use private connection for IC to server connection.
-    DBusConnection *dbusConnection = dbus_connection_open_private(address.c_str(), &error);
+    DBusConnection *dbusConnection = dbus_connection_open_private(addressString.toLatin1().data(), &error);
     if (!dbusConnection) {
         qWarning("MInputContext: unable to create D-Bus connection: %s", error.message);
         dbus_error_free(&error);
@@ -171,6 +181,13 @@ void GlibDBusIMServerProxy::connectToDBus()
     dbus_g_connection_register_g_object(connection.get(), icAdaptorPath.toAscii().data(), inputContextAdaptor);
 
     Q_EMIT connected();
+}
+
+void GlibDBusIMServerProxy::connectToDBusFailed(const QDBusError &error)
+{
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << error.message();
+
+    QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
 }
 
 void GlibDBusIMServerProxy::onDisconnection()

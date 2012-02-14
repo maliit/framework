@@ -17,7 +17,7 @@
 #ifndef MALIIT_INPUTCONTEXT_DBUS_INPUTCONTEXTDBUSADDRESS_H
 #define MALIIT_INPUTCONTEXT_DBUS_INPUTCONTEXTDBUSADDRESS_H
 
-#include <string>
+class QObject;
 
 namespace Maliit {
 namespace InputContext {
@@ -26,8 +26,7 @@ namespace DBus {
 class Address
 {
 public:
-    explicit Address();
-    virtual const std::string get() const;
+    void get(QObject *receiver, const char *returnMethod, const char *errorMethod);
 };
 
 } // namespace DBus
