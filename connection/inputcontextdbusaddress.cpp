@@ -16,150 +16,35 @@
 
 #include "inputcontextdbusaddress.h"
 
-#ifdef MALIIT_USE_GIO_API
-#include <gio/gio.h>
-#else
-#include <glib-object.h>
-#include <dbus/dbus-glib.h>
-#endif
-#include <tr1/memory>
-#include <tr1/functional>
-#include <QDebug>
-
-/* For glib < 2.30 */
-#ifndef G_VALUE_INIT
-#define G_VALUE_INIT { 0, { { 0 } } }
-#endif
+#include <QDBusConnection>
+#include <QDBusMessage>
 
 namespace {
-const char * const MaliitServerName = "org.maliit.server";
-const char * const MaliitServerObjectPath = "/org/maliit/server/address";
-const char * const MaliitServerInterface = "org.maliit.Server.Address";
-const char * const MaliitServerAddressProperty = "address";
+    const char * const MaliitServerName = "org.maliit.server";
+    const char * const MaliitServerObjectPath = "/org/maliit/server/address";
+    const char * const MaliitServerInterface = "org.maliit.Server.Address";
+    const char * const MaliitServerAddressProperty = "address";
 
-#ifndef MALIIT_USE_GIO_API
-const char * const DBusPropertiesInterface = "org.freedesktop.DBus.Properties";
-const char * const DBusPropertiesGetMethod = "Get";
-#endif
-
-    struct SafeUnref
-    {
-#ifdef MALIIT_USE_GIO_API
-        static inline void cleanup(GDBusProxy *pointer)
-        {
-            if (pointer) {
-                g_object_unref(pointer);
-            }
-        }
-        static inline void cleanup(GVariant *pointer)
-        {
-            if (pointer) {
-                g_variant_unref(pointer);
-            }
-        }
-#else
-        static inline void cleanup(DBusGConnection *pointer)
-        {
-            if (pointer) {
-                dbus_g_connection_unref(pointer);
-            }
-        }
-        static inline void cleanup(DBusGProxy *pointer)
-        {
-            if (pointer) {
-                g_object_unref(pointer);
-            }
-        }
-#endif
-    };
+    const char * const DBusPropertiesInterface = "org.freedesktop.DBus.Properties";
+    const char * const DBusPropertiesGetMethod = "Get";
 }
 
 namespace Maliit {
 namespace InputContext {
 namespace DBus {
 
-Address::Address()
+void Address::get(QObject *receiver, const char *returnMethod, const char *errorMethod)
 {
+    QList<QVariant> arguments;
+    arguments.push_back(QVariant(QString::fromLatin1(MaliitServerInterface)));
+    arguments.push_back(QVariant(QString::fromLatin1(MaliitServerAddressProperty)));
+
+    QDBusMessage message = QDBusMessage::createMethodCall(MaliitServerName, MaliitServerObjectPath, DBusPropertiesInterface, DBusPropertiesGetMethod);
+    message.setArguments(arguments);
+
+    QDBusConnection::sessionBus().callWithCallback(message, receiver, returnMethod, errorMethod);
 }
 
-#ifdef MALIIT_USE_GIO_API
-const std::string Address::get() const
-{
-    GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_NONE;
-
-#if defined(NO_SERVER_DBUS_ACTIVATION)
-    flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
-#endif
-
-    GError *error = NULL;
-
-    QScopedPointer<GDBusProxy, SafeUnref>
-            proxy(g_dbus_proxy_new_for_bus_sync(G_BUS_TYPE_SESSION,
-                                                flags,
-                                                0,
-                                                MaliitServerName,
-                                                MaliitServerObjectPath,
-                                                MaliitServerInterface,
-                                                0, &error));
-
-    if (proxy.isNull()) {
-        qWarning() << __PRETTY_FUNCTION__ << error->message;
-        g_error_free(error);
-        return std::string();
-    }
-
-    QScopedPointer<GVariant, SafeUnref>
-            address(g_dbus_proxy_get_cached_property(proxy.data(),
-                                                     MaliitServerAddressProperty));
-
-    if (address.isNull()) {
-        return std::string();
-    }
-
-    std::string result(g_variant_get_string(address.data(), 0));
-
-    return result;
-}
-#else
-const std::string Address::get() const
-{
-    GValue value = G_VALUE_INIT;
-    GError *error = NULL;
-
-    QScopedPointer<DBusGConnection, SafeUnref>
-            connection(dbus_g_bus_get(DBUS_BUS_SESSION, &error));
-
-    if (connection.isNull()) {
-        qWarning() << __PRETTY_FUNCTION__ << error->message;
-        g_error_free(error);
-        return std::string();
-    }
-
-    QScopedPointer<DBusGProxy, SafeUnref>
-            proxy(dbus_g_proxy_new_for_name(connection.data(),
-                                            MaliitServerName,
-                                            MaliitServerObjectPath,
-                                            DBusPropertiesInterface));
-
-    if (!dbus_g_proxy_call(proxy.data(),
-                           DBusPropertiesGetMethod,
-                           &error,
-                           G_TYPE_STRING, MaliitServerInterface,
-                           G_TYPE_STRING, MaliitServerAddressProperty,
-                           G_TYPE_INVALID,
-                           G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
-
-        qWarning() << __PRETTY_FUNCTION__ << error->message;
-        g_error_free(error);
-        return std::string();
-    }
-
-    std::string result(g_value_get_string(&value));
-    g_value_unset(&value);
-
-    return result;
-}
-#endif
 } // namespace DBus
 } // namespace InputContext
 } // namespace Maliit

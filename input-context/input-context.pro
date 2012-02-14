@@ -27,7 +27,7 @@ HEADERS += minputcontext.h \
 SOURCES += minputcontext.cpp \
     minputcontextplugin.cpp \
 
-QT = core gui
+QT = core gui dbus
 CONFIG += plugin link_pkgconfig
 
 PKGCONFIG += dbus-glib-1

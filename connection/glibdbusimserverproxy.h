@@ -27,17 +27,26 @@
 
 #include "mimserverconnection.h"
 
-#include "inputcontextdbusaddress.h"
-
 namespace Maliit
 {
-    namespace DBusGLib
-    {
-    // std::tr1::shared_ptr allows to specify a deleter. Hiding it behind a typedef,
-    // as we do not really need all the shared pointer semantics here.
-    typedef std::tr1::shared_ptr<DBusGConnection> ConnectionRef;
-    }
+namespace DBusGLib
+{
+// std::tr1::shared_ptr allows to specify a deleter. Hiding it behind a typedef,
+// as we do not really need all the shared pointer semantics here.
+typedef std::tr1::shared_ptr<DBusGConnection> ConnectionRef;
 }
+
+namespace InputContext
+{
+namespace DBus
+{
+class Address;
+}
+}
+}
+
+class QDBusError;
+class QDBusVariant;
 
 /* \brief Glib D-Bus implementation of a connection with the input method server.
  *
@@ -94,6 +103,8 @@ public:
 
 private Q_SLOTS:
     void connectToDBus();
+    void openDBusConnection(const QDBusVariant &address);
+    void connectToDBusFailed(const QDBusError &error);
 
 private:
     void setContextObject(const QString &dbusObjectPath);

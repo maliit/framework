@@ -10,6 +10,8 @@ POST_TARGETDEPS += ../common/libmaliit-common.a
 
 CONFIG += link_pkgconfig staticlib
 
+QT += dbus
+
 # Interface classes
 HEADERS += \
     mimserverconnection.h \
