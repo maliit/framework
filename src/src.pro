@@ -53,6 +53,7 @@ HEADERS += \
         mtoolbaritemfilter.h \
         mimsettingsqsettings.h \
         mimserveroptions.h \
+        mimabstractserverlogic.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -86,6 +87,7 @@ SOURCES += \
         mimsubviewoverride.cpp \
         mtoolbaritemfilter.cpp \
         mimserveroptions.cpp \
+        mimabstractserverlogic.cpp \
 
 !contains(QT_MAJOR_VERSION, 5) {
     HEADERS += \
