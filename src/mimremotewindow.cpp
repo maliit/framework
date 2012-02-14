@@ -15,6 +15,7 @@
  */
 
 #include "mimremotewindow.h"
+#include "mimserveroptions.h"
 
 #include <QDebug>
 #include <QX11Info>
@@ -51,14 +52,17 @@ Atom wmStateAtom()
 
 }
 
-MImRemoteWindow::MImRemoteWindow(WId window, MImXApplication *application) :
+MImRemoteWindow::MImRemoteWindow(WId window,
+                                 MImXApplication *application,
+                                 const MImServerXOptions &options) :
     QObject(0),
     wid(window),
     xpixmap(0),
     damage(0),
     pixmap(),
     redirected(false),
-    mApplication(application)
+    mApplication(application),
+    xOptions(options)
 {
 }
 
@@ -152,7 +156,7 @@ void MImRemoteWindow::redirect()
     if (redirected)
         return;
 
-    if (mApplication->manualRedirection()) {
+    if (xOptions.manualRedirection) {
         MImXErrorTrap xerror(mApplication->compositeExtension(), X_CompositeRedirectWindow);
         XCompositeRedirectWindow(QX11Info::display(),
                                  wid,
@@ -179,7 +183,7 @@ void MImRemoteWindow::unredirect()
     destroyDamage();
     destroyPixmap();
 
-    if (mApplication->manualRedirection()) {
+    if (xOptions.manualRedirection) {
         MImXErrorTrap xerror(mApplication->compositeExtension(), X_CompositeUnredirectWindow);
         XCompositeUnredirectWindow(QX11Info::display(),
                                    wid,

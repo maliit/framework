@@ -25,6 +25,7 @@
 #include <QTimer>
 
 class MImXApplication;
+struct MImServerXOptions;
 
 /*! \internal
  * \ingroup maliitserver
@@ -102,7 +103,11 @@ class MImRotationAnimation : public QGraphicsView {
     Q_OBJECT
 
 public:
-    MImRotationAnimation(QWidget* snapshotWidget, QWidget* passThruWindow, MImXApplication *application);
+    MImRotationAnimation(QWidget* snapshotWidget,
+                         QWidget* passThruWindow,
+                         MImXApplication *application,
+                         const MImServerXOptions &options);
+
     virtual ~MImRotationAnimation();
 
 public Q_SLOTS:
@@ -166,6 +171,7 @@ private:
     MImDamageMonitor* damageMonitor;
 
     MImXApplication* mApplication;
+    const MImServerXOptions &xOptions;
 };
 
 #endif // MIMROTATIONANIMATION_H

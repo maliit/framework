@@ -19,6 +19,7 @@
 #include "mimremotewindow.h"
 #include "mimxapplication.h"
 #include "mpassthruwindow.h"
+#include "mimserveroptions.h"
 
 #include <QBitmap>
 #include <QDesktopWidget>
@@ -136,7 +137,10 @@ namespace {
     }
 }
 
-MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* passThruWindow, MImXApplication *application) :
+MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget,
+                                           QWidget* passThruWindow,
+                                           MImXApplication *application,
+                                           const MImServerXOptions &options) :
         QGraphicsView(new QGraphicsScene(), passThruWindow),
         snapshotWidget(snapshotWidget),
         remoteWindow(0),
@@ -146,7 +150,8 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* pas
         currentOrientationAngle(0),
         aboutToChangeReceived(false),
         damageMonitor(0),
-        mApplication(application)
+        mApplication(application),
+        xOptions(options)
 {
     // Animation plays on top of a black backround,
     // covering up the underlying application.
@@ -419,7 +424,7 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
 
     // Assuming that in self-composited case we don't need
     // extra redirection, we're already redirected.
-    if (not mApplication->selfComposited() && remoteWindow) {
+    if (xOptions.selfComposited && remoteWindow) {
         remoteWindow->redirect();
     }
 
@@ -479,7 +484,7 @@ MImRotationAnimation::startAnimation()
 void MImRotationAnimation::clearScene() {
     // When self-compositing is off, we don't need to maintain
     // the redirection.
-    if (not mApplication->selfComposited() && remoteWindow) {
+    if (not xOptions.selfComposited && remoteWindow) {
         remoteWindow->unredirect();
     }
 

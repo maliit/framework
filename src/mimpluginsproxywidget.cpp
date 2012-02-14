@@ -15,6 +15,7 @@
  */
 
 #include "mimpluginsproxywidget.h"
+#include "mimserveroptions.h"
 
 #if defined(Q_WS_X11)
 #include "mimxapplication.h"
@@ -23,7 +24,8 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
+MImPluginsProxyWidget::MImPluginsProxyWidget(const MImServerXOptions &options,
+                                             QWidget *parent) :
     QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -32,7 +34,7 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
     setBackgroundRole(QPalette::NoRole);
 
 #if defined(Q_WS_X11)
-    if (MImXApplication::instance() && MImXApplication::instance()->selfComposited()) {
+    if (MImXApplication::instance() && options.selfComposited) {
         setAttribute(Qt::WA_OpaquePaintEvent);
         setAttribute(Qt::WA_NoSystemBackground);
     } else {

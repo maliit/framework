@@ -10,6 +10,7 @@
 #include <QApplication>
 
 class MImRotationAnimation;
+struct MImServerXOptions;
 
 /*! \ingroup maliitserver
  * \brief Application abstraction for X applications.
@@ -21,9 +22,9 @@ public:
     //! Walks over widget hierarchy, if used with
     //! MImXApplication::visitWidgetHierarchy. Return true if children of
     //! current widget shall be visited, too.
-    typedef std::tr1::function<bool (QWidget *)> WidgetVisitor;
+    typedef std::tr1::function<bool (QWidget *, const MImServerXOptions &)> WidgetVisitor;
 
-    MImXApplication(int &argc, char** argv);
+    MImXApplication(int &argc, char** argv, const MImServerXOptions &options);
     virtual ~MImXApplication();
     static MImXApplication *instance();
 
@@ -34,11 +35,6 @@ public:
     //! start to work.
     //! \sa setTransientHint(), setPassThruWindow();
     bool x11EventFilter(XEvent *ev);
-
-    virtual bool selfComposited() const;
-    bool manualRedirection() const;
-    bool bypassWMHint() const;
-    bool unconditionalShow() const;
 
     //! Flag that is used to sync between MAbstractInputMethodHost and
     //! rotation animation in order to capture the VKB without
@@ -76,8 +72,6 @@ private Q_SLOTS:
     void appOrientationChangeFinished(int toAngle);
 
 private:
-    void parseArguments(int &argc, char** argv);
-
     void handleTransientEvents(XEvent *ev);
     void handleRemoteWindowEvents(XEvent *ev);
     void handlePassThruMapEvent(XEvent *ev);
@@ -85,16 +79,14 @@ private:
     MImXCompositeExtension mCompositeExtension;
     MImXDamageExtension mDamageExtension;
 
-    bool mSelfComposited;
-    bool mManualRedirection;
-    bool mBypassWMHint;
     bool mBackgroundSuppressed;
-    bool mUnconditionalShow;
 
     QScopedPointer<MPassThruWindow> mPassThruWindow;
     QScopedPointer<QWidget> mPluginsProxyWidget;
     QScopedPointer<MImRemoteWindow> mRemoteWindow;
     MImRotationAnimation *mRotationAnimation;
+
+    const MImServerXOptions & xOptions;
 
     friend class Ut_PassthroughServer;
 };

@@ -18,6 +18,7 @@
 #include "mimdummyinputcontext.h"
 #include "minputcontextglibdbusconnection.h"
 #include "mimserver.h"
+#include "mimserveroptions.h"
 
 #if defined(Q_WS_X11)
 #include "mimxapplication.h"
@@ -91,8 +92,21 @@ int main(int argc, char **argv)
     // server itself, we absolutely need to prevent that.
     disableMInputContextPlugin();
 
+    MImServerXOptions serverXOptions;
+    MImServerCommonOptions serverCommonOptions;
+
+    const bool allRecognized = parseCommandLine(argc, argv);
+    if (serverCommonOptions.showHelp)
+    {
+        printHelpMessage();
+        return 1;
+    } else if (not allRecognized)
+    {
+        printHelpMessage();
+    }
+
 #if defined(Q_WS_X11)
-    MImXApplication app(argc, argv);
+    MImXApplication app(argc, argv, serverXOptions);
 #elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
     QApplication app(argc, argv);
 #endif
