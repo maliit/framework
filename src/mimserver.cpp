@@ -15,7 +15,7 @@
  */
 
 #include "mimserver.h"
-
+#include "mimserveroptions.h"
 #include "mimpluginmanager.h"
 
 #if defined(Q_WS_X11)
@@ -66,10 +66,7 @@ MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *
 
     d->icConnection = icConnection;
 
-#if defined(Q_WS_X11)
-    MImXApplication *app = MImXApplication::instance();
-    qDebug() << (app->selfComposited() ? "Use self composition" : "Use system compositor");
-#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
+#if defined(Q_WS_QPA) || defined(Q_WS_QWS)
     d->platform.reset(new MImQPAPlatform);
 #endif
 
@@ -78,6 +75,7 @@ MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *
     connectComponents();
 
 #if defined(Q_WS_X11)
+    MImXApplication * const app = MImXApplication::instance();
     // Configure widgets loaded during MIMPluginManager construction
     // only needed on X11 for self-compositing
     app->configureWidgetsForCompositing();

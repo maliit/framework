@@ -1,6 +1,7 @@
 #include "mimxapplication.h"
 #include "mimpluginsproxywidget.h"
 #include "mimrotationanimation.h"
+#include "mimserveroptions.h"
 
 #include <QDebug>
 
@@ -14,7 +15,8 @@
 
 namespace
 {
-    bool configureForCompositing(QWidget *w)
+    bool configureForCompositing(QWidget *w,
+                                 const MImServerXOptions &options)
     {
         if (not w) {
             return false;
@@ -27,7 +29,7 @@ namespace
         // QPalette::NoRole - see QTBUG-17924.
         w->setBackgroundRole(QPalette::NoRole);
 
-        if (MImXApplication::instance() && not MImXApplication::instance()->selfComposited()) {
+        if (!options.selfComposited) {
             // Careful: This flag can trigger a call to
             // qt_x11_recreateNativeWidgetsRecursive
             // - which will crash when it tries to get the effective WId
@@ -39,23 +41,21 @@ namespace
     }
 }
 
-MImXApplication::MImXApplication(int &argc, char** argv) :
+MImXApplication::MImXApplication(int &argc,
+                                 char**argv,
+                                 const MImServerXOptions &options) :
     QApplication(argc, argv),
     mCompositeExtension(),
     mDamageExtension(),
-    mSelfComposited(false),
-    mManualRedirection(false),
-    mBypassWMHint(false),
     mBackgroundSuppressed(false),
-    mUnconditionalShow(false),
     mPassThruWindow(),
-    mRemoteWindow()
+    mRemoteWindow(),
+    xOptions(options)
 {
-    parseArguments(argc, argv);
-
-    mPassThruWindow.reset(new MPassThruWindow(this));
-    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.get()));
-    mRotationAnimation.reset(new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(), this));
+    mPassThruWindow.reset(new MPassThruWindow(this, xOptions));
+    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(xOptions, mPassThruWindow.get()));
+    mRotationAnimation.reset(new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(),
+                                                      this, xOptions));
 
 #ifdef HAVE_MEEGOGRAPHICSSYSTEM
     QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
@@ -88,23 +88,6 @@ void MImXApplication::finalize()
     mPluginsProxyWidget.reset();
     mPassThruWindow.reset();
     mRemoteWindow.reset();
-}
-
-void MImXApplication::parseArguments(int &argc, char** argv)
-{
-    for (int i = 1; i < argc; i++) {
-        QLatin1String arg(argv[i]);
-
-        if (arg == "-manual-redirection") {
-            mManualRedirection = true;
-        } else if (arg == "-bypass-wm-hint") {
-            mBypassWMHint = true;
-        } else if (arg == "-use-self-composition") {
-            mSelfComposited = mCompositeExtension.supported(0, 2) && mDamageExtension.supported();
-        } else if (arg == "-unconditional-show") {
-            mUnconditionalShow = true;
-        }
-    }
 }
 
 bool MImXApplication::x11EventFilter(XEvent *ev)
@@ -169,7 +152,7 @@ void MImXApplication::setTransientHint(WId newRemoteWinId)
 
     const bool wasRedirected(mRemoteWindow.get() && mRemoteWindow->isRedirected());
 
-    mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this));
+    mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this, xOptions));
     mRemoteWindow->setIMWidget(mPassThruWindow->window());
 
     connect(mRemoteWindow.get(), SIGNAL(contentUpdated(QRegion)),
@@ -180,26 +163,6 @@ void MImXApplication::setTransientHint(WId newRemoteWinId)
     }
 
     Q_EMIT remoteWindowChanged(mRemoteWindow.get());
-}
-
-bool MImXApplication::selfComposited() const
-{
-    return mSelfComposited;
-}
-
-bool MImXApplication::manualRedirection() const
-{
-    return mManualRedirection;
-}
-
-bool MImXApplication::bypassWMHint() const
-{
-    return mBypassWMHint;
-}
-
-bool MImXApplication::unconditionalShow() const
-{
-    return mUnconditionalShow;
 }
 
 void MImXApplication::setSuppressBackground(bool suppress)
@@ -221,7 +184,7 @@ const QPixmap &MImXApplication::remoteWindowPixmap()
 {
     if (not mRemoteWindow.get()
             || mBackgroundSuppressed
-            || not mSelfComposited) {
+            || not xOptions.selfComposited) {
         static const QPixmap empty;
         return empty;
     }
@@ -253,7 +216,7 @@ void MImXApplication::visitWidgetHierarchy(WidgetVisitor visitor,
         unvisited.pop_front();
 
         // If true, then continue walking the hiearchy of current widget.
-        if (visitor(current)) {
+        if (visitor(current, xOptions)) {
             // Mark children of current widget as unvisited:
             Q_FOREACH (QObject *obj, current->children()) {
                 if (QWidget *w = qobject_cast<QWidget *>(obj)) {

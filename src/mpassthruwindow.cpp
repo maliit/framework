@@ -16,6 +16,7 @@
 #include "mpassthruwindow.h"
 #include "mimxapplication.h"
 #include "mimremotewindow.h"
+#include "mimserveroptions.h"
 
 #include <QDebug>
 #include <QGraphicsView>
@@ -41,7 +42,7 @@ public:
     {
     }
 
-    bool operator()(QWidget *w)
+    bool operator()(QWidget *w, const MImServerXOptions &)
     {
         if (not w) {
             return false;
@@ -78,18 +79,20 @@ public:
     }
 };
 
-MPassThruWindow::MPassThruWindow(MImXApplication *application)
+MPassThruWindow::MPassThruWindow(MImXApplication *application,
+                                 const MImServerXOptions &options)
     : QWidget(0),
       remoteWindow(0),
       mRegion(),
-      mApplication(application)
+      mApplication(application),
+      xOptions(options)
 {
     setWindowTitle("MInputMethod");
     setFocusPolicy(Qt::NoFocus);
 
     Qt::WindowFlags windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
 
-    if (mApplication->bypassWMHint()) {
+    if (xOptions.bypassWMHint) {
         windowFlags |= Qt::X11BypassWindowManagerHint;
     }
 
@@ -133,13 +136,13 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (region.isEmpty()) {
-        if (mApplication->selfComposited() && remoteWindow) {
+        if (xOptions.selfComposited && remoteWindow) {
             remoteWindow->unredirect();
         }
 
         hide();
     } else {
-        if (mApplication->selfComposited() && remoteWindow) {
+        if (xOptions.selfComposited && remoteWindow) {
             remoteWindow->redirect();
         }
 
@@ -153,11 +156,11 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
         // Check can be overidden by the unconditionalShow option. For instance on Ubuntu 11.10 with Unity
         // isVisible() sometimes starts to return true when the window is still unmapped, causing
         // the logic to fail, preventing the input method window to show if done conditionally
-        if (mApplication->unconditionalShow() || (!isVisible() && remoteWindow && !remoteWindow->isIconified())) {
+        if (xOptions.unconditionalShow || (!isVisible() && remoteWindow && !remoteWindow->isIconified())) {
             showFullScreen();
 
             // If bypassing window hint, also do raise to ensure visibility:
-            if (mApplication->bypassWMHint()) {
+            if (xOptions.bypassWMHint) {
                 raise();
             }
         }

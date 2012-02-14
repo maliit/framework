@@ -53,6 +53,7 @@ HEADERS += \
         mimsubviewoverride.h \
         mtoolbaritemfilter.h \
         mimsettingsqsettings.h \
+        mimserveroptions.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -86,6 +87,7 @@ SOURCES += \
         mindicatorserviceclient.cpp \
         mimsubviewoverride.cpp \
         mtoolbaritemfilter.cpp \
+        mimserveroptions.cpp \
 
 x11 {
     HEADERS += \

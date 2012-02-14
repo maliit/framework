@@ -19,6 +19,8 @@
 
 #include <QWidget>
 
+struct MImServerXOptions;
+
 /*! \ingroup maliitserver
  * \brief Proxy QWidget for input method plugins.
  *
@@ -29,7 +31,8 @@ class MImPluginsProxyWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MImPluginsProxyWidget(QWidget *parent = 0);
+    explicit MImPluginsProxyWidget(const MImServerXOptions &options,
+                                   QWidget *parent = 0);
 };
 
 #endif // MIMPLUGINSPROXYWIDGET_H
