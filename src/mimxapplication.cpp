@@ -55,7 +55,7 @@ MImXApplication::MImXApplication(int &argc, char** argv) :
 
     mPassThruWindow.reset(new MPassThruWindow(this));
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.data()));
-    mRotationAnimation.reset(new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(), this));
+    mRotationAnimation = new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(), this);
 
 #ifdef HAVE_MEEGOGRAPHICSSYSTEM
     QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
