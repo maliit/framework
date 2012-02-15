@@ -94,7 +94,7 @@ private:
     QScopedPointer<MPassThruWindow> mPassThruWindow;
     QScopedPointer<QWidget> mPluginsProxyWidget;
     QScopedPointer<MImRemoteWindow> mRemoteWindow;
-    QScopedPointer<MImRotationAnimation> mRotationAnimation;
+    MImRotationAnimation *mRotationAnimation;
 
     friend class Ut_PassthroughServer;
 };
