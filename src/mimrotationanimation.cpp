@@ -136,8 +136,8 @@ namespace {
     }
 }
 
-MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* parent, MImXApplication *application) :
-        QGraphicsView(new QGraphicsScene(), parent),
+MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget, QWidget* passThruWindow, MImXApplication *application) :
+        QGraphicsView(new QGraphicsScene(), passThruWindow),
         snapshotWidget(snapshotWidget),
         remoteWindow(0),
         animationStartPixmapItem(0),
