@@ -22,6 +22,7 @@ SUBDIRS += \
           ut_maliit_inputmethod \
           ut_mimsettings \
           bbt_connection \
+          ut_mimserveroptions \
 
 contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \
