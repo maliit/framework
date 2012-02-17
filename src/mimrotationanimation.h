@@ -80,8 +80,8 @@ private:
 
 
 /*! \internal
- * \brief Top-level graphics view to superimpose the rotation animation
- * on top of application and keyboard widgets.
+ * \brief Graphics view to superimpose the rotation animation on top of
+ * application and keyboard widgets. 
  *
  * This class derives from QGraphicsView for showing the rotation
  * animation. The widget that is used for capturing the start snapshots
@@ -102,7 +102,7 @@ class MImRotationAnimation : public QGraphicsView {
     Q_OBJECT
 
 public:
-    MImRotationAnimation(QWidget* snapshotWidget, QWidget* parent, MImXApplication *application);
+    MImRotationAnimation(QWidget* snapshotWidget, QWidget* passThruWindow, MImXApplication *application);
     virtual ~MImRotationAnimation();
 
 public Q_SLOTS:
