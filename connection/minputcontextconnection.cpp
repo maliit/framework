@@ -259,7 +259,7 @@ MInputContextConnection::updateWidgetInformation(
     unsigned int connectionId, const QMap<QString, QVariant> &stateInfo,
     bool handleFocusChange)
 {
-    QMap<QString, QVariant> &oldState = widgetState;
+    QMap<QString, QVariant> oldState = widgetState;
 
     widgetState = stateInfo;
 
