@@ -17,6 +17,8 @@
 #ifndef MIMSERVEROPTIONS_H
 #define MIMSERVEROPTIONS_H
 
+#include <QtGlobal>
+
 //! \internal
 
 /*! \brief Parse command line arguments and update values of members
@@ -42,6 +44,7 @@ public:
     bool showHelp;
 };
 
+#if defined(Q_WS_X11)
 /*! \ingroup maliitserver
  * \brief Container for command line parameters which are applicable if
  * input method server works with X11.
@@ -71,6 +74,7 @@ public:
     //! regardless of current state of server and remote windows
     bool unconditionalShow;
 };
+#endif
 
 //! \internal_end
 

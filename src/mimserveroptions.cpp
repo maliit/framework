@@ -26,6 +26,7 @@
 
 namespace {
 
+#if defined(Q_WS_X11)
     struct CommandLineXParameter
     {
         const char * name;
@@ -41,6 +42,7 @@ namespace {
                                    "of current state of server and remote windows",
                                    &MImServerXOptions::unconditionalShow }
     };
+#endif
 
     struct IgnoredParameter {
         const char * name;
@@ -136,6 +138,7 @@ namespace {
         MImServerCommonOptions *storage;
     };
 
+#if defined(Q_WS_X11)
     /*!
      * \brief Parser of command line parameters which are applicable if
      * input method server works with X11.
@@ -159,6 +162,7 @@ namespace {
     private:
         MImServerXOptions *storage;
     };
+#endif
 
     struct MImServerIgnoredOptions
     {
@@ -331,7 +335,7 @@ MImServerCommonOptions::~MImServerCommonOptions()
     unregisterParser(this);
 }
 
-
+#if defined(Q_WS_X11)
 ///////////////
 // parser for options related to X windows system
 MImServerXOptionsParser::MImServerXOptionsParser(MImServerXOptions *options)
@@ -389,3 +393,4 @@ MImServerXOptions::~MImServerXOptions()
 {
     unregisterParser(this);
 }
+#endif
