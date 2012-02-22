@@ -14,8 +14,12 @@
  * of this file.
  */
 
+#include <QtGlobal>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include "mimdummyinputcontext.h"
+#endif
+
 #include "minputcontextglibdbusconnection.h"
 #include "mimserver.h"
 #include "mimserveroptions.h"
@@ -35,12 +39,18 @@ using namespace std::tr1;
 namespace {
     void disableMInputContextPlugin()
     {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        // none is a special value for QT_IM_MODULE, which disables loading of any
+        // input method module in Qt 5.
+        setenv("QT_IM_MODULE", "none", true);
+#else
         // prevent loading of minputcontext because we don't need it and starting
         // it might trigger starting of this service by the d-bus. not nice if that is
         // already happening :)
         if (-1 == unsetenv("QT_IM_MODULE")) {
             qWarning("meego-im-uiserver: unable to unset QT_IM_MODULE.");
         }
+#endif
 
         // TODO: Check if hardwiring the QStyle can be removed at a later stage.
         QApplication::setStyle(new QCommonStyle);
@@ -113,10 +123,12 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
 #endif
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     // Set a dummy input context so that Qt does not create a default input
     // context (qimsw-multi) which is expensive and not required by
     // meego-im-uiserver.
     app.setInputContext(new MIMDummyInputContext);
+#endif
 
     // DBus Input Context Connection
     shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection);

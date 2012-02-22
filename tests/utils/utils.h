@@ -17,7 +17,10 @@
 #ifndef UTILS_H__
 #define UTILS_H__
 
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QInputContext>
+#endif
 #include <QWidget>
 
 #include <tr1/functional>
@@ -43,6 +46,7 @@ namespace MaliitTestUtils {
         void paintEvent(QPaintEvent *);
     };
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     template <typename T>
     class EventSpyInputContext : public QInputContext, public std::vector<T>
     {
@@ -65,7 +69,7 @@ namespace MaliitTestUtils {
     private:
         const TransformFunction transform;
     };
-
+#endif
 
     class TestInputMethodHost
         : public MInputMethodHost

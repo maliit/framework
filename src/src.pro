@@ -47,7 +47,6 @@ HEADERS += \
         mimonscreenplugins.h \
         mimhwkeyboardtracker_p.h \
         mimextensionevent_p.h \
-        mimdummyinputcontext.h \
         mimserver.h \
         mindicatorserviceclient.h \
         mimsubviewoverride.h \
@@ -82,12 +81,19 @@ SOURCES += \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
         mimsubviewdescription.cpp \
-        mimdummyinputcontext.cpp \
         mimserver.cpp \
         mindicatorserviceclient.cpp \
         mimsubviewoverride.cpp \
         mtoolbaritemfilter.cpp \
         mimserveroptions.cpp \
+
+contains(QT_MAJOR_VERSION, 4) {
+    HEADERS += \
+        mimdummyinputcontext.h \
+
+    SOURCES += \
+        mimdummyinputcontext.cpp \
+}
 
 x11 {
     HEADERS += \
