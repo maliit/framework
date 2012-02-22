@@ -24,7 +24,9 @@
 #include "utils.h"
 
 using Maliit::InputMethod;
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 using MaliitTestUtils::EventSpyInputContext;
+#endif
 
 namespace {
     const QRect DefaultArea;
@@ -187,10 +189,7 @@ void Ut_Maliit_InputMethod::testEmitKeyRelease()
 
 void Ut_Maliit_InputMethod::testRequestInputMethodPanel()
 {
-#if QT_VERSION >= 0x050000
-    QSKIP("Does not apply to Qt5", QTest::SkipSingle);
-#endif
-
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     EventSpyInputContext<QEvent::Type> *spy = new EventSpyInputContext<QEvent::Type>(std::mem_fun(&QEvent::type));
     qApp->setInputContext(spy);
 
@@ -198,13 +197,13 @@ void Ut_Maliit_InputMethod::testRequestInputMethodPanel()
 
     QVERIFY(spy->size() == 1);
     QCOMPARE(spy->at(0), QEvent::RequestSoftwareInputPanel);
+#endif
 }
 
 void Ut_Maliit_InputMethod::testCloseInputMethodPanel()
 {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     QSKIP("Does not apply to Qt5", QTest::SkipSingle);
-#endif
 
     EventSpyInputContext<QEvent::Type> *spy = new EventSpyInputContext<QEvent::Type>(std::mem_fun(&QEvent::type));
     qApp->setInputContext(spy);
@@ -213,6 +212,7 @@ void Ut_Maliit_InputMethod::testCloseInputMethodPanel()
 
     QVERIFY(spy->size() == 1);
     QCOMPARE(spy->at(0), QEvent::CloseSoftwareInputPanel);
+#endif
 }
 
 QTEST_APPLESS_MAIN(Ut_Maliit_InputMethod)

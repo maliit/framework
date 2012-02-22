@@ -6,7 +6,9 @@
 #include <cstdlib>
 
 #include <QApplication>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QInputContext>
+#endif
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -103,24 +105,30 @@ MainWindow::MainWindow()
 void MainWindow::onTranslucencyToggled(bool value)
 {
     entryWithProperties->setProperty(Maliit::InputMethodQuery::translucentInputMethod, QVariant(value));
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if (QInputContext *ic = qApp->inputContext()) {
         ic->update();
     }
+#endif
 }
 
 void MainWindow::onPreferNumbersToggled(bool value)
 {
     entryWithProperties->setInputMethodHints(value ? (entryWithProperties->inputMethodHints() | Qt::ImhPreferNumbers)
                                                    : (entryWithProperties->inputMethodHints() & ~Qt::ImhPreferNumbers));
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if (QInputContext *ic = qApp->inputContext()) {
         ic->update();
     }
+#endif
 }
 
 void MainWindow::onSuppressionToggled(bool value)
 {
     entryWithProperties->setProperty(Maliit::InputMethodQuery::suppressInputMethod, QVariant(value));
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     if (QInputContext *ic = qApp->inputContext()) {
         ic->update();
     }
+#endif
 }
