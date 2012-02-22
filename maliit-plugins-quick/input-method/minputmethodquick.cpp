@@ -35,9 +35,15 @@
 #include <QPainter>
 #include <QPen>
 #include <QBrush>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtQuick1/QDeclarativeComponent>
+#include <QtQuick1/QDeclarativeContext>
+#include <QtQuick1/QDeclarativeEngine>
+#else
 #include <QDeclarativeComponent>
 #include <QDeclarativeContext>
 #include <QDeclarativeEngine>
+#endif
 #include <QGraphicsTextItem>
 #include <QGraphicsScene>
 #include <QGraphicsObject>
