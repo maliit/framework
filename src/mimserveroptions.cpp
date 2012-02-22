@@ -59,6 +59,8 @@ namespace {
         { "-widgetcount",    false },
         { "-qdebug",         false },
         { "-software",       false },
+        { "-qws",            false },
+        { "-sync",           false },
         // Next parameter is used by Harmattan and we should silently ingore it
         { "-remote-theme",   false }
     };
