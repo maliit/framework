@@ -730,8 +730,11 @@ void Ut_MIMPluginManager::testActiveSubView()
 void Ut_MIMPluginManager::testDBusQueryCalls()
 {
     if (!manager->isDBusConnectionValid()) {
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.",
-              SkipSingle);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.");
+#else
+        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.", SkipSingle);
+#endif
     }
     QVERIFY(subject->activePlugins.size() == 1);
     MInputMethodPlugin *plugin = 0;
@@ -769,8 +772,11 @@ void Ut_MIMPluginManager::testDBusQueryCalls()
 void Ut_MIMPluginManager::testDBusSetCalls()
 {
     if (!manager->isDBusConnectionValid()) {
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.",
-              SkipSingle);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.");
+#else
+        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.", SkipSingle);
+#endif
     }
     QVERIFY(subject->activePlugins.size() == 1);
     MInputMethodPlugin *plugin = 0;
@@ -993,8 +999,11 @@ void Ut_MIMPluginManager::testSubViewsInfo()
 void Ut_MIMPluginManager::testEnableAllSubviews()
 {
     if (!manager->isDBusConnectionValid()) {
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.",
-              SkipSingle);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.");
+#else
+        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.", SkipSingle);
+#endif
     }
 
     //load all subviews provided by all available plugins
