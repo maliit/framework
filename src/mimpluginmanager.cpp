@@ -37,6 +37,7 @@
 #include <QDBusInterface>
 #include <QDBusMetaType>
 #include <QWeakPointer>
+#include <QWidget>
 
 #include <QDebug>
 #include <deque>
