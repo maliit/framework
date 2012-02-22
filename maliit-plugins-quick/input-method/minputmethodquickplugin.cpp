@@ -20,7 +20,11 @@
 #include "maliitquick.h"
 #include "mkeyoverridequick.h"
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QtQuick1/QDeclarativeComponent>
+#else
 #include <QDeclarativeComponent> // needed for qmlRegisterUncreatableType
+#endif
 
 namespace {
 QStringList gQmlImportPaths;
