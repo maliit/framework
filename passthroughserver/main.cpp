@@ -92,7 +92,9 @@ int main(int argc, char **argv)
     // server itself, we absolutely need to prevent that.
     disableMInputContextPlugin();
 
+#if defined(Q_WS_X11)
     MImServerXOptions serverXOptions;
+#endif
     MImServerCommonOptions serverCommonOptions;
 
     const bool allRecognized = parseCommandLine(argc, argv);
