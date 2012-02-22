@@ -28,6 +28,10 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(const MImServerXOptions &options,
                                              QWidget *parent) :
     QWidget(parent)
 {
+#if !defined(Q_WS_X11)
+    Q_UNUSED(options);
+#endif
+
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
     setAutoFillBackground(false);

@@ -153,6 +153,7 @@ void MImRemoteWindow::destroyDamage()
 
 void MImRemoteWindow::redirect()
 {
+#if defined(Q_WS_X11)
     if (redirected)
         return;
 
@@ -171,10 +172,12 @@ void MImRemoteWindow::redirect()
     setupDamage();
 
     Q_EMIT contentUpdated(QRegion(QRect(QPoint(), pixmap.size())));
+#endif
 }
 
 void MImRemoteWindow::unredirect()
 {
+#if defined(Q_WS_X11)
     if (!redirected)
         return;
 
@@ -191,6 +194,7 @@ void MImRemoteWindow::unredirect()
         if (xerror.untrap() == BadAccess)
             qDebug() << "Window " << wid << " was not redirected";
     }
+#endif
 }
 
 void MImRemoteWindow::handleEvent(XEvent *event)

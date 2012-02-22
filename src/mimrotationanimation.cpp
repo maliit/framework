@@ -422,11 +422,13 @@ MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     }
     startOrientationAngle = currentOrientationAngle;
 
+#if defined(Q_WS_X11)
     // Assuming that in self-composited case we don't need
     // extra redirection, we're already redirected.
     if (xOptions.selfComposited && remoteWindow) {
         remoteWindow->redirect();
     }
+#endif
 
     // Capturing initial snapshot that's used for the beginning of the rotation.
     compositeWindowStart = grabComposited();
@@ -482,11 +484,13 @@ MImRotationAnimation::startAnimation()
 }
 
 void MImRotationAnimation::clearScene() {
+#if defined(Q_WS_X11)
     // When self-compositing is off, we don't need to maintain
     // the redirection.
     if (not xOptions.selfComposited && remoteWindow) {
         remoteWindow->unredirect();
     }
+#endif
 
     hide();
 

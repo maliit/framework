@@ -17,6 +17,8 @@
 #ifndef MIMSERVEROPTIONS_H
 #define MIMSERVEROPTIONS_H
 
+#include <QtGlobal>
+
 //! \internal
 
 /*! \brief Parse command line arguments and update values of members
@@ -58,6 +60,7 @@ public:
 
     ~MImServerXOptions();
 
+#if defined(Q_WS_X11)
     //! Contains true if self composition is enabled
     bool selfComposited;
 
@@ -70,6 +73,7 @@ public:
     //! Contains true if show() should be always called for server window
     //! regardless of current state of server and remote windows
     bool unconditionalShow;
+#endif
 };
 
 //! \internal_end

@@ -35,8 +35,8 @@ private Q_SLOTS:
     void init();
     void cleanup();
 
-    void testCommonOptions_data();
-    void testCommonOptions();
+    void testCommonAndXOptions_data();
+    void testCommonAndXOptions();
 
 private:
     QCoreApplication *app;

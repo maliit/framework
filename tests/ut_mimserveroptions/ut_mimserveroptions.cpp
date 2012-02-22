@@ -42,13 +42,11 @@ namespace {
     Args BypassedParameter = { 1, { "name", "-help" } };
 
     Args XOptions1 = { 2, { "", "-manual-redirection" } };
-    Args XOptions2 = { 3, { "", "-manual-redirection", "-bypass-wm-hint" } };
+    Args XOptions2 = { 2, { "", "-bypass-wm-hint" } };
 
-    Args XOptions3 = { 4, { "", "-manual-redirection", "-bypass-wm-hint",
-                            "-use-self-composition"} };
+    Args XOptions3 = { 2, { "", "-use-self-composition"} };
 
-    Args XOptions4 = { 5, { "", "-manual-redirection", "-bypass-wm-hint",
-                            "-use-self-composition", "-unconditional-show"} };
+    Args XOptions4 = { 2, { "", "-unconditional-show"} };
 
     Args Ignored = { 16, { "", "-style", "STYLE", "-session", "SESSION",
                            "-graphicssystem", "GRAPHICSSYSTEM",
@@ -62,6 +60,7 @@ namespace {
         return (x.showHelp == y.showHelp);
     }
 
+#if defined(Q_WS_X11)
     bool operator==(const MImServerXOptions &x,
                     const MImServerXOptions &y)
     {
@@ -70,6 +69,7 @@ namespace {
                && x.selfComposited == y.selfComposited
                && x.unconditionalShow == y.unconditionalShow;
     }
+#endif
 }
 
 
@@ -96,7 +96,7 @@ void Ut_MImServerOptions::cleanup()
     xOptions = MImServerXOptions();
 }
 
-void Ut_MImServerOptions::testCommonOptions_data()
+void Ut_MImServerOptions::testCommonAndXOptions_data()
 {
     QTest::addColumn<Args>("args");
     QTest::addColumn<MImServerCommonOptions>("expectedCommonOptions");
@@ -125,22 +125,39 @@ void Ut_MImServerOptions::testCommonOptions_data()
 
     QTest::newRow("ignored") << Ignored << helpDisabled << allXDisabled << true;
 
-    MImServerXOptions xOptions(allXDisabled);
+    MImServerXOptions xOptions;
+    const bool expectedRecognition =
+#if defined(Q_WS_X11)
+            true;
+#else
+            false;
+#endif
 
+#if defined(Q_WS_X11)
     xOptions.manualRedirection = true;
-    QTest::newRow("x options 1") << XOptions1 << helpDisabled << xOptions << true;
+#endif
+    QTest::newRow("x options 1") << XOptions1 << helpDisabled << xOptions << expectedRecognition;
 
+#if defined(Q_WS_X11)
+    xOptions = MImServerXOptions();
     xOptions.bypassWMHint = true;
-    QTest::newRow("x options 2") << XOptions2 << helpDisabled << xOptions << true;
+#endif
+    QTest::newRow("x options 2") << XOptions2 << helpDisabled << xOptions << expectedRecognition;
 
+#if defined(Q_WS_X11)
+    xOptions = MImServerXOptions();
     xOptions.selfComposited = true;
-    QTest::newRow("x options 3") << XOptions3 << helpDisabled << xOptions << true;
+#endif
+    QTest::newRow("x options 3") << XOptions3 << helpDisabled << xOptions << expectedRecognition;
 
+#if defined(Q_WS_X11)
+    xOptions = MImServerXOptions();
     xOptions.unconditionalShow = true;
-    QTest::newRow("x options 4") << XOptions4 << helpDisabled << xOptions << true;
+#endif
+    QTest::newRow("x options 4") << XOptions4 << helpDisabled << xOptions << expectedRecognition;
 }
 
-void Ut_MImServerOptions::testCommonOptions()
+void Ut_MImServerOptions::testCommonAndXOptions()
 {
     QFETCH(Args, args);
     QFETCH(MImServerCommonOptions, expectedCommonOptions);
@@ -151,7 +168,12 @@ void Ut_MImServerOptions::testCommonOptions()
 
     QCOMPARE(everythingRecognized, expectedRecognition);
     QCOMPARE(commonOptions, expectedCommonOptions);
+
+#if defined(Q_WS_X11)
     QCOMPARE(xOptions, expectedXOptions);
+#else
+    Q_UNUSED(expectedXOptions);
+#endif
 }
 
 QTEST_APPLESS_MAIN(Ut_MImServerOptions)

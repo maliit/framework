@@ -87,14 +87,20 @@ MPassThruWindow::MPassThruWindow(MImXApplication *application,
       mApplication(application),
       xOptions(options)
 {
+#if !defined(Q_WS_X11)
+    Q_UNUSED(options);
+#endif
+
     setWindowTitle("MInputMethod");
     setFocusPolicy(Qt::NoFocus);
 
     Qt::WindowFlags windowFlags = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
 
+#if defined(Q_WS_X11)
     if (xOptions.bypassWMHint) {
         windowFlags |= Qt::X11BypassWindowManagerHint;
     }
+#endif
 
     setWindowFlags(windowFlags);
 
@@ -136,15 +142,19 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
 
     // selective compositing
     if (region.isEmpty()) {
+#if defined(Q_WS_X11)
         if (xOptions.selfComposited && remoteWindow) {
             remoteWindow->unredirect();
         }
+#endif
 
         hide();
     } else {
+#if defined(Q_WS_X11)
         if (xOptions.selfComposited && remoteWindow) {
             remoteWindow->redirect();
         }
+#endif
 
         // Do not call multiple times showFullScreen() because it could
         // break focus from the activateWindow() call. See QTBUG-18130.
@@ -156,13 +166,23 @@ void MPassThruWindow::inputPassthrough(const QRegion &region)
         // Check can be overidden by the unconditionalShow option. For instance on Ubuntu 11.10 with Unity
         // isVisible() sometimes starts to return true when the window is still unmapped, causing
         // the logic to fail, preventing the input method window to show if done conditionally
-        if (xOptions.unconditionalShow || (!isVisible() && remoteWindow && !remoteWindow->isIconified())) {
+
+        const bool enforceShow =
+#if defined(Q_WS_X11)
+            xOptions.unconditionalShow;
+#else
+            false;
+#endif
+
+        if (enforceShow || (!isVisible() && remoteWindow && !remoteWindow->isIconified())) {
             showFullScreen();
 
+#if defined(Q_WS_X11)
             // If bypassing window hint, also do raise to ensure visibility:
             if (xOptions.bypassWMHint) {
                 raise();
             }
+#endif
         }
     }
 }

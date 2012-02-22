@@ -60,13 +60,20 @@ Q_DECLARE_METATYPE(WidgetCreator);
 
 void Ut_SelfCompositing::initTestCase()
 {
+#if !defined(Q_WS_X11)
+    app = 0;
+    QSKIP("Test is useless for your platform", SkipAll);
+#endif
+
     static char *argv[1] = { (char *) "Ut_SelfCompositing" };
     static int argc = 1;
 
     // Enforcing raster GS to make test reliable:
     QApplication::setGraphicsSystem("raster");
 
+#if defined(Q_WS_X11)
     xOptions.selfComposited = true;
+#endif
 
     app = new MImXApplication(argc, argv, xOptions);
 }

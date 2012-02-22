@@ -34,12 +34,14 @@ namespace {
     };
 
     CommandLineXParameter AvailableParameters[] = {
+#if defined(Q_WS_X11)
         { "-manual-redirection",   "Enable manual redirection", &MImServerXOptions::manualRedirection },
         { "-bypass-wm-hint",       "Bypass window manager",     &MImServerXOptions::bypassWMHint },
         { "-use-self-composition", "Enable self composition",   &MImServerXOptions::selfComposited },
         { "-unconditional-show",   "Always use show() for server window regardless "
                                    "of current state of server and remote windows",
                                    &MImServerXOptions::unconditionalShow }
+#endif
     };
 
     struct IgnoredParameter {
@@ -376,16 +378,22 @@ void MImServerXOptionsParser::printAvailableOptions(const char *format)
 }
 
 MImServerXOptions::MImServerXOptions()
+#if defined(Q_WS_X11)
     : selfComposited(false),
     manualRedirection(false),
     bypassWMHint(false),
     unconditionalShow(false)
+#endif
 {
+#if defined(Q_WS_X11)
     const ParserBasePtr p(new MImServerXOptionsParser(this));
     parsers.append(p);
+#endif
 }
 
 MImServerXOptions::~MImServerXOptions()
 {
+#if defined(Q_WS_X11)
     unregisterParser(this);
+#endif
 }

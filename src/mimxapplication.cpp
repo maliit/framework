@@ -18,6 +18,10 @@ namespace
     bool configureForCompositing(QWidget *w,
                                  const MImServerXOptions &options)
     {
+#if !defined(Q_WS_X11)
+        Q_UNUSED(options);
+#endif
+
         if (not w) {
             return false;
         }
@@ -29,14 +33,20 @@ namespace
         // QPalette::NoRole - see QTBUG-17924.
         w->setBackgroundRole(QPalette::NoRole);
 
-        if (!options.selfComposited) {
+        const bool translucent =
+#if defined(Q_WS_X11)
+                !options.selfComposited;
+#else
+                true;
+#endif
+
+        if (translucent) {
             // Careful: This flag can trigger a call to
             // qt_x11_recreateNativeWidgetsRecursive
             // - which will crash when it tries to get the effective WId
             // (as none of widgets have been mapped yet).
             w->setAttribute(Qt::WA_TranslucentBackground);
         }
-
         return true;
     }
 }
@@ -182,9 +192,16 @@ QWidget* MImXApplication::pluginsProxyWidget() const
 
 const QPixmap &MImXApplication::remoteWindowPixmap()
 {
+    const bool selfComposited =
+#if defined(Q_WS_X11)
+            xOptions.selfComposited;
+#else
+            false;
+#endif
+
     if (not mRemoteWindow.data()
             || mBackgroundSuppressed
-            || not xOptions.selfComposited) {
+            || not selfComposited) {
         static const QPixmap empty;
         return empty;
     }
