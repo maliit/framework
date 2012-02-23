@@ -31,8 +31,7 @@ class MImPluginsProxyWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit MImPluginsProxyWidget(const MImServerXOptions &options,
-                                   QWidget *parent = 0);
+    explicit MImPluginsProxyWidget(QWidget *parent = 0);
 };
 
 #endif // MIMPLUGINSPROXYWIDGET_H
