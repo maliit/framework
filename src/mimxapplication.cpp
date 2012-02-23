@@ -53,7 +53,7 @@ MImXApplication::MImXApplication(int &argc,
     xOptions(options)
 {
     mPassThruWindow.reset(new MPassThruWindow(this, xOptions));
-    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(xOptions, mPassThruWindow.data()));
+    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.data()));
     mRotationAnimation = new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(),
                                                   this, xOptions);
 

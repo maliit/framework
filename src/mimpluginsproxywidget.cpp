@@ -24,8 +24,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 
-MImPluginsProxyWidget::MImPluginsProxyWidget(const MImServerXOptions &options,
-                                             QWidget *parent) :
+MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
     QWidget(parent)
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -33,14 +32,8 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(const MImServerXOptions &options,
     setAutoFillBackground(false);
     setBackgroundRole(QPalette::NoRole);
 
-#if defined(Q_WS_X11)
-    if (MImXApplication::instance() && options.selfComposited) {
-        setAttribute(Qt::WA_OpaquePaintEvent);
-        setAttribute(Qt::WA_NoSystemBackground);
-    } else {
-        setAttribute(Qt::WA_TranslucentBackground);
-    }
-#else
+    // X11-specific initialization is performed in MImXApplication()
+#if !defined(Q_WS_X11)
     setAttribute(Qt::WA_TranslucentBackground);
 #endif
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
