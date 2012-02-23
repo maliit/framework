@@ -104,6 +104,26 @@ class MToolbarItem : public QObject
 
 public:
     /*!
+     * \brief This enumeration defines which properties are maintained by MToolbarItem.
+     * Names of items of this enumerations are self-descriptive and mostly matches
+     * with names of qproperties defined for this object.
+     */
+    enum PropertyId {
+        Nothing = 0, //!< Dummy value which does not have correponding property.
+        Visible, // Item's visibility
+        Text, // Item's text
+        TextId, // Item's text id
+        Toggle, // Item's ability to be togglable
+        Pressed, // Item is pressed or released
+        Highlighted, // Item is highlighted or not
+        Enabled, // Item is enabled or disabled
+        Icon, // Item's icon
+        IconId, // Item's icon id
+        ContentAlignment, // Alignment of item's content
+        Size // Item's size
+    };
+
+    /*!
     * \brief Constructor
     */
     MToolbarItem(const QString &name, MInputMethod::ItemType type);
@@ -258,8 +278,17 @@ Q_SIGNALS:
     /*!
      * \brief Emitted when some property is changed
      * \param propertyName Specifies name of changed property
+     *
+     * WARNING: this signal is obsoleted and will be removed.
+     * Please use
      */
     void propertyChanged(const QString &propertyName);
+
+    /*!
+     * \brief Emitted when some property is changed
+     * \param propertyId Specifies identifier of changed property
+     */
+    void propertyChanged(PropertyId propertyId);
 
 protected:
     //! Remove all actions from this item
@@ -285,6 +314,8 @@ private:
     friend class ParseParameters;
     friend class Ut_MToolbarData;
 };
+
+Q_DECLARE_METATYPE(MToolbarItem::PropertyId);
 
 #endif
 

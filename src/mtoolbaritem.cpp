@@ -209,6 +209,7 @@ void MToolbarItem::setVisible(bool newVisible, bool explicitly)
     if (d->visible != newVisible) {
         d->visible = newVisible;
         Q_EMIT propertyChanged("visible");
+        Q_EMIT propertyChanged(Visible);
     }
 }
 
@@ -231,6 +232,7 @@ void MToolbarItem::setText(const QString &text)
     if (d->text != text) {
         d->text = text;
         Q_EMIT propertyChanged("text");
+        Q_EMIT propertyChanged(Text);
     }
 }
 
@@ -247,6 +249,7 @@ void MToolbarItem::setTextId(const QString &textId)
     if (d->textId != textId) {
         d->textId = textId;
         Q_EMIT propertyChanged("textId");
+        Q_EMIT propertyChanged(TextId);
     }
 }
 
@@ -264,6 +267,7 @@ void MToolbarItem::setToggle(bool toggle)
     if (d->toggle != toggle) {
         d->toggle = toggle;
         Q_EMIT propertyChanged("toggle");
+        Q_EMIT propertyChanged(Toggle);
     }
 }
 
@@ -281,6 +285,7 @@ void MToolbarItem::setPressed(bool pressed)
     if (d->pressed != pressed) {
         d->pressed = pressed;
         Q_EMIT propertyChanged("pressed");
+        Q_EMIT propertyChanged(Pressed);
     }
 }
 
@@ -291,6 +296,7 @@ void MToolbarItem::setHighlighted(bool highlighted)
     if (d->highlighted != highlighted) {
         d->highlighted = highlighted;
         Q_EMIT propertyChanged("highlighted");
+        Q_EMIT propertyChanged(Highlighted);
     }
 }
 
@@ -301,6 +307,7 @@ void MToolbarItem::setEnabled(bool enabled)
     if (d->enabled != enabled) {
         d->enabled = enabled;
         Q_EMIT propertyChanged("enabled");
+        Q_EMIT propertyChanged(Enabled);
     }
 }
 
@@ -318,6 +325,7 @@ void MToolbarItem::setIcon(const QString &icon)
     if (d->icon != icon) {
         d->icon = icon;
         Q_EMIT propertyChanged("icon");
+        Q_EMIT propertyChanged(Icon);
     }
 }
 
@@ -335,6 +343,7 @@ void MToolbarItem::setIconId(const QString &iconId)
     if (d->iconId != iconId) {
         d->iconId = iconId;
         Q_EMIT propertyChanged("iconId");
+        Q_EMIT propertyChanged(IconId);
     }
 }
 
@@ -352,6 +361,7 @@ void MToolbarItem::setContentAlignment(Qt::Alignment alignment)
     if (d->contentAlignment != alignment) {
         d->contentAlignment = alignment;
         Q_EMIT propertyChanged("contentAlignment");
+        Q_EMIT propertyChanged(ContentAlignment);
     }
 }
 
@@ -438,6 +448,7 @@ void MToolbarItem::setSize(int size)
     if (d->size != size) {
         d->size = size;
         Q_EMIT propertyChanged("size");
+        Q_EMIT propertyChanged(Size);
     }
 }
 

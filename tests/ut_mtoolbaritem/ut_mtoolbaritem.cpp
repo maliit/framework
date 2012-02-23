@@ -9,6 +9,40 @@
 #include <QDebug>
 
 namespace {
+    // we need for this shortcut due to problems with Qt metatypes
+    typedef MToolbarItem::PropertyId PropertyId;
+
+    QVariant readProperty(MToolbarItem * item, PropertyId id)
+    {
+        switch(id) {
+        case MToolbarItem::Visible:
+            return item->isVisible();
+        case MToolbarItem::Text:
+            return item->text();
+        case MToolbarItem::TextId:
+            return item->textId();
+        case MToolbarItem::Toggle:
+            return item->toggle();
+        case MToolbarItem::Pressed:
+            return item->pressed();
+        case MToolbarItem::Highlighted:
+            return item->highlighted();
+        case MToolbarItem::Enabled:
+            return item->enabled();
+        case MToolbarItem::Icon:
+            return item->icon();
+        case MToolbarItem::IconId:
+            return item->iconId();
+        case MToolbarItem::Size:
+            return item->size();
+        case MToolbarItem::ContentAlignment:
+            return QVariant(item->contentAlignment());
+        case MToolbarItem::Nothing:
+            break;
+        }
+
+        return QVariant();
+    }
 }
 
 void Ut_MToolbarItem::initTestCase()
@@ -18,6 +52,7 @@ void Ut_MToolbarItem::initTestCase()
 
     app = new QCoreApplication(argc, argv);
 
+    qRegisterMetaType<PropertyId>("PropertyId");
 }
 
 void Ut_MToolbarItem::cleanupTestCase()
@@ -36,87 +71,59 @@ void Ut_MToolbarItem::cleanup()
     subject = 0;
 }
 
+void Ut_MToolbarItem::testSetProperty_data()
+{
+    QTest::addColumn<QString>("propertyName");
+    QTest::addColumn<QVariant>("value");
+    QTest::addColumn<PropertyId>("expectedId");
+
+    QTest::newRow("text")    << "text"    << QVariant(QString("some text"))    << MToolbarItem::Text;
+    QTest::newRow("textId")  << "textId"  << QVariant(QString("some text id")) << MToolbarItem::TextId;
+    QTest::newRow("icon")    << "icon"    << QVariant(QString("some icon"))    << MToolbarItem::Icon;
+    QTest::newRow("iconId")  << "iconId"  << QVariant(QString("some icon id")) << MToolbarItem::IconId;
+    QTest::newRow("visible") << "visible" << QVariant(false)                   << MToolbarItem::Visible;
+    QTest::newRow("toggle")  << "toggle"  << QVariant(true)                    << MToolbarItem::Toggle;
+    QTest::newRow("pressed") << "pressed" << QVariant(true)                    << MToolbarItem::Pressed;
+    QTest::newRow("visible") << "visible" << QVariant(false)                   << MToolbarItem::Visible;
+    QTest::newRow("enabled") << "enabled" << QVariant(false)                   << MToolbarItem::Enabled;
+    QTest::newRow("size")    << "size"    << QVariant(50)                      << MToolbarItem::Size;
+
+    QTest::newRow("contentAlignment") << "contentAlignment" << QVariant(Qt::AlignLeft)
+                                      << MToolbarItem::ContentAlignment;
+
+}
+
 void Ut_MToolbarItem::testSetProperty()
 {
-    QSignalSpy spy(subject, SIGNAL(propertyChanged(const QString &)));
+    QFETCH(QString, propertyName);
+    QFETCH(QVariant, value);
+    QFETCH(PropertyId, expectedId);
+
+    QSignalSpy spy(subject, SIGNAL(propertyChanged(PropertyId)));
+    QSignalSpy spyString(subject, SIGNAL(propertyChanged(QString)));
 
     QVERIFY(spy.isValid());
+    QVERIFY(spyString.isValid());
 
-    subject->setProperty("text", QVariant(QString("some text")));
+    subject->setProperty(propertyName.toLatin1().data(), value);
     QVERIFY(spy.count() == 1);
     QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("text"));
-    QCOMPARE(subject->text(), QString("some text"));
+    QCOMPARE(spy.first().first().value<MToolbarItem::PropertyId>(), expectedId);
+    QCOMPARE(readProperty(subject, expectedId), value);
     spy.clear();
+    QVERIFY(spyString.count() == 1);
+    QVERIFY(spyString.first().count() == 1);
+    QCOMPARE(spyString.first().first().toString(), propertyName);
+    spyString.clear();
 
-    subject->setProperty("text", QVariant(QString("some text")));
+    subject->setProperty(propertyName.toLatin1().data(), value);
     QVERIFY(spy.count() == 0);
-
-    subject->setProperty("textId", QVariant(QString("some text id")));
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("textId"));
-    spy.clear();
-
-    subject->setProperty("textId", QVariant(QString("some text id")));
-    QVERIFY(spy.count() == 0);
-
-    subject->setProperty("icon", QVariant(QString("some icon")));
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("icon"));
-    spy.clear();
-
-    subject->setProperty("icon", QVariant(QString("some icon")));
-    QVERIFY(spy.count() == 0);
-
-    subject->setProperty("visible", QVariant(false));
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("visible"));
-    spy.clear();
-
-    subject->setProperty("visible", QVariant(false));
-    QVERIFY(spy.count() == 0);
-
-    subject->setProperty("toggle", QVariant(true));
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("toggle"));
-    spy.clear();
-
-    subject->setProperty("toggle", QVariant(true));
-    QVERIFY(spy.count() == 0);
-
-    subject->setProperty("pressed", QVariant(true));
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("pressed"));
-    spy.clear();
-
-    subject->setProperty("pressed", QVariant(true));
-    QVERIFY(spy.count() == 0);
-    spy.clear();
-
-    subject->setProperty("enabled", QVariant(false));
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("enabled"));
-    spy.clear();
-
-    subject->setProperty("enabled", QVariant(false));
-    QVERIFY(spy.count() == 0);
-
-    subject->setProperty("enabled", QVariant(true));
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("enabled"));
-    spy.clear();
+    QVERIFY(spyString.count() == 0);
 }
 
 void Ut_MToolbarItem::testHighlighted()
 {
-    QSignalSpy spy(subject, SIGNAL(propertyChanged(const QString &)));
+    QSignalSpy spy(subject, SIGNAL(propertyChanged(PropertyId)));
 
     QVERIFY(spy.isValid());
 
@@ -128,7 +135,7 @@ void Ut_MToolbarItem::testHighlighted()
     subject->setHighlighted(true);
     QVERIFY(spy.count() == 1);
     QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("highlighted"));
+    QCOMPARE(spy.first().first().value<MToolbarItem::PropertyId>(), MToolbarItem::Highlighted);
     spy.clear();
 
     subject->setHighlighted(true);
@@ -153,52 +160,6 @@ void Ut_MToolbarItem::testCustom()
     spy.clear();
 
     subject->setCustom(false);
-    QVERIFY(spy.isEmpty());
-}
-
-void Ut_MToolbarItem::testEnabled()
-{
-    QSignalSpy spy(subject, SIGNAL(propertyChanged(const QString &)));
-
-    QVERIFY(spy.isValid());
-
-    QVERIFY(subject->enabled());
-
-    subject->setEnabled(true);
-    QVERIFY(spy.isEmpty());
-
-    subject->setEnabled(false);
-    QVERIFY(!subject->enabled());
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("enabled"));
-    spy.clear();
-
-    subject->setEnabled(false);
-    QVERIFY(!subject->enabled());
-    QVERIFY(spy.isEmpty());
-}
-
-void Ut_MToolbarItem::testContentAlignment()
-{
-    QSignalSpy spy(subject, SIGNAL(propertyChanged(const QString &)));
-
-    QVERIFY(spy.isValid());
-
-    QCOMPARE(subject->contentAlignment(), Qt::AlignCenter);
-
-    subject->setContentAlignment(Qt::AlignCenter);
-    QVERIFY(spy.isEmpty());
-
-    subject->setContentAlignment(Qt::AlignLeft);
-    QCOMPARE(subject->contentAlignment(), Qt::AlignLeft);
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().toString(), QString("contentAlignment"));
-    spy.clear();
-
-    subject->setContentAlignment(Qt::AlignLeft);
-    QCOMPARE(subject->contentAlignment(), Qt::AlignLeft);
     QVERIFY(spy.isEmpty());
 }
 

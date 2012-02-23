@@ -18,11 +18,11 @@ private Q_SLOTS:
     void init();
     void cleanup();
 
+    void testSetProperty_data();
     void testSetProperty();
+
     void testHighlighted();
     void testCustom();
-    void testEnabled();
-    void testContentAlignment();
 
 private:
     QCoreApplication *app;
