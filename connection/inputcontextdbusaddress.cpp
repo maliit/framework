@@ -18,6 +18,8 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDBusVariant>
+#include <QDBusError>
 
 namespace {
     const char * const MaliitServerName = "org.maliit.server";
@@ -33,16 +35,47 @@ namespace Maliit {
 namespace InputContext {
 namespace DBus {
 
-void Address::get(QObject *receiver, const char *returnMethod, const char *errorMethod)
+Address::Address()
+{
+}
+
+Address::~Address()
+{
+}
+
+void DynamicAddress::get()
 {
     QList<QVariant> arguments;
     arguments.push_back(QVariant(QString::fromLatin1(MaliitServerInterface)));
     arguments.push_back(QVariant(QString::fromLatin1(MaliitServerAddressProperty)));
 
-    QDBusMessage message = QDBusMessage::createMethodCall(MaliitServerName, MaliitServerObjectPath, DBusPropertiesInterface, DBusPropertiesGetMethod);
+    QDBusMessage message = QDBusMessage::createMethodCall(MaliitServerName, MaliitServerObjectPath,
+                                                          DBusPropertiesInterface, DBusPropertiesGetMethod);
     message.setArguments(arguments);
 
-    QDBusConnection::sessionBus().callWithCallback(message, receiver, returnMethod, errorMethod);
+    QDBusConnection::sessionBus().callWithCallback(message, this,
+                                                   SLOT(successCallback(QDBusVariant)),
+                                                   SLOT(errorCallback(QDBusError)));
+}
+
+void DynamicAddress::successCallback(const QDBusVariant &address)
+{
+    Q_EMIT addressRecieved(address.variant().toString());
+}
+
+void DynamicAddress::errorCallback(const QDBusError &error)
+{
+    Q_EMIT addressFetchError(error.message());
+}
+
+FixedAddress::FixedAddress(const QString &address)
+    : mAddress(address)
+{
+}
+
+void FixedAddress::get()
+{
+    Q_EMIT this->addressRecieved(mAddress);
 }
 
 } // namespace DBus

@@ -37,7 +37,7 @@ class GlibDBusIMServerProxyPrivate
 {
 
 public:
-    GlibDBusIMServerProxyPrivate();
+    GlibDBusIMServerProxyPrivate(std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address);
     ~GlibDBusIMServerProxyPrivate();
 
 public:
