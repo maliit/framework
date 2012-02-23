@@ -17,16 +17,53 @@
 #ifndef MALIIT_INPUTCONTEXT_DBUS_INPUTCONTEXTDBUSADDRESS_H
 #define MALIIT_INPUTCONTEXT_DBUS_INPUTCONTEXTDBUSADDRESS_H
 
-class QObject;
+#include <QObject>
+
+class QDBusVariant;
+class QDBusError;
 
 namespace Maliit {
 namespace InputContext {
 namespace DBus {
 
-class Address
+class Address : public QObject
 {
+    Q_OBJECT
+
 public:
-    void get(QObject *receiver, const char *returnMethod, const char *errorMethod);
+    Address();
+    virtual ~Address();
+
+    virtual void get() = 0;
+
+Q_SIGNALS:
+    void addressRecieved(const QString &address);
+    void addressFetchError(const QString &errorMessage);
+};
+
+
+class DynamicAddress : public Address
+{
+    Q_OBJECT
+
+public:
+    void get();
+
+private Q_SLOTS:
+    void successCallback(const QDBusVariant &address);
+    void errorCallback(const QDBusError &error);
+};
+
+class FixedAddress : public Address
+{
+    Q_OBJECT
+
+public:
+    FixedAddress(const QString &address);
+    void get();
+
+private:
+    QString mAddress;
 };
 
 } // namespace DBus

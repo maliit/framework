@@ -23,6 +23,9 @@
 #include <QMap>
 
 #include "mimserverconnection.h"
+#include "inputcontextdbusaddress.h"
+
+#include <tr1/memory>
 
 class GlibDBusIMServerProxyPrivate;
 
@@ -41,7 +44,7 @@ class GlibDBusIMServerProxy: public MImServerConnection
     Q_OBJECT
 
 public:
-    GlibDBusIMServerProxy(QObject *parent = 0);
+    GlibDBusIMServerProxy(std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address, QObject *parent = 0);
     virtual ~GlibDBusIMServerProxy();
 
     //! reimpl
@@ -84,8 +87,8 @@ public:
 
 private Q_SLOTS:
     void connectToDBus();
-    void openDBusConnection(const QDBusVariant &address);
-    void connectToDBusFailed(const QDBusError &error);
+    void openDBusConnection(const QString &addressString);
+    void connectToDBusFailed(const QString &errorMessage);
 
 private:
     void onDisconnection();

@@ -29,8 +29,6 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QDebug>
-#include <QDBusError>
-#include <QDBusVariant>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -100,12 +98,11 @@ namespace
     }
 }
 
-
-GlibDBusIMServerProxyPrivate::GlibDBusIMServerProxyPrivate()
+GlibDBusIMServerProxyPrivate::GlibDBusIMServerProxyPrivate(std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address)
     : glibObjectProxy(NULL),
       connection(),
       active(true),
-      mAddress(new Maliit::InputContext::DBus::Address)
+      mAddress(address)
 {
     g_type_init();
 }
@@ -129,9 +126,9 @@ void GlibDBusIMServerProxy::onDisconnectionTrampoline(void */*proxy*/, void *use
 }
 
 
-GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
+GlibDBusIMServerProxy::GlibDBusIMServerProxy(std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address, QObject *parent)
     : MImServerConnection(parent),
-    d_ptr(new GlibDBusIMServerProxyPrivate)
+      d_ptr(new GlibDBusIMServerProxyPrivate(address))
 {
     Q_UNUSED(parent);
     Q_D(GlibDBusIMServerProxy);
@@ -141,6 +138,11 @@ GlibDBusIMServerProxy::GlibDBusIMServerProxy(QObject *parent)
     adaptor->imServerConnection = this;
 
     d->inputContextAdaptor = G_OBJECT(adaptor);
+
+    connect(d->mAddress.get(), SIGNAL(addressRecieved(QString)),
+            this, SLOT(openDBusConnection(QString)));
+    connect(d->mAddress.get(), SIGNAL(addressFetchError(QString)),
+            this, SLOT(connectToDBusFailed(QString)));
 
     dbus_g_thread_init();
 
@@ -167,13 +169,12 @@ void GlibDBusIMServerProxy::connectToDBus()
 
     if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
 
-    d->mAddress->get(this, SLOT(openDBusConnection(QDBusVariant)), SLOT(connectToDBusFailed(QDBusError)));
+    d->mAddress->get();
 }
 
-void GlibDBusIMServerProxy::openDBusConnection(const QDBusVariant &address)
+void GlibDBusIMServerProxy::openDBusConnection(const QString &addressString)
 {
     Q_D(GlibDBusIMServerProxy);
-    const QString &addressString = address.variant().toString();
 
     if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << "Address:" << addressString;
 
@@ -214,9 +215,9 @@ void GlibDBusIMServerProxy::openDBusConnection(const QDBusVariant &address)
     Q_EMIT connected();
 }
 
-void GlibDBusIMServerProxy::connectToDBusFailed(const QDBusError &error)
+void GlibDBusIMServerProxy::connectToDBusFailed(const QString &errorMessage)
 {
-    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << error.message();
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__ << errorMessage;
 
     QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
 }
