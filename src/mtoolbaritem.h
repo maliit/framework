@@ -242,6 +242,10 @@ public:
     //! Return true if item is enabled; otherwise return false.
     bool enabled() const;
 
+    //! Return property name correponding to given \a id
+    //! or NULL if \a id is not valid
+    static const char* propertyName(PropertyId id);
+
 public Q_SLOTS:
     //! Sets new text for item
     void setText(const QString &text);

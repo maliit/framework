@@ -483,6 +483,38 @@ bool MToolbarItem::enabled() const
     return d->enabled;
 }
 
+const char* MToolbarItem::propertyName(PropertyId id)
+{
+    switch(id) {
+    case MToolbarItem::Visible:
+        return "visible";
+    case MToolbarItem::Text:
+        return "text";
+    case MToolbarItem::TextId:
+        return "textId";
+    case MToolbarItem::Toggle:
+        return "toggle";
+    case MToolbarItem::Pressed:
+        return "pressed";
+    case MToolbarItem::Highlighted:
+        return "highlighted";
+    case MToolbarItem::Enabled:
+        return "enabled";
+    case MToolbarItem::Icon:
+        return "icon";
+    case MToolbarItem::IconId:
+        return "iconId";
+    case MToolbarItem::Size:
+        return "size";
+    case MToolbarItem::ContentAlignment:
+        return "contentAlignment";
+    case MToolbarItem::Nothing:
+        break;
+    }
+
+    return 0;
+}
+
 void MToolbarItem::clearActions()
 {
     Q_D(MToolbarItem);

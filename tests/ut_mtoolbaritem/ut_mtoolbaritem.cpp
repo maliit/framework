@@ -121,6 +121,8 @@ void Ut_MToolbarItem::testSetProperty()
     subject->setProperty(propertyName.toLatin1().data(), value);
     QVERIFY(spy.count() == 0);
     QVERIFY(spyString.count() == 0);
+
+    QCOMPARE(propertyName, QString(MToolbarItem::propertyName(expectedId)));
 }
 
 void Ut_MToolbarItem::testCustom()
