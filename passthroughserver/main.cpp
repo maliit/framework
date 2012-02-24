@@ -106,6 +106,7 @@ int main(int argc, char **argv)
     MImServerXOptions serverXOptions;
 #endif
     MImServerCommonOptions serverCommonOptions;
+    MImServerConnectionOptions connectionOptions;
 
     const bool allRecognized = parseCommandLine(argc, argv);
     if (serverCommonOptions.showHelp)
@@ -130,39 +131,18 @@ int main(int argc, char **argv)
     app.setInputContext(new MIMDummyInputContext);
 #endif
 
-
-    // Parse commandline arguments
-    QString overrideAddress;
-    bool expectOverrideAddressValue(false);
-
-    bool allowAnonymous(false);
-
-    Q_FOREACH(const QString &arg, app.arguments()) {
-
-        if (expectOverrideAddressValue) {
-            overrideAddress = arg;
-            expectOverrideAddressValue = false;
-        } else if (arg == "-override-address") {
-            expectOverrideAddressValue = true;
-        } else if (arg == "-allow-anonymous") {
-            allowAnonymous = true;
-        }
-    }
-
-    if (expectOverrideAddressValue) {
-        qWarning() << app.arguments().at(0) << ": no param given for -override-address - ignoring.";
-    }
-
     // DBus Input Context Connection
     shared_ptr<Maliit::Server::DBus::Address> address;
-    if (overrideAddress.isEmpty()) {
+    if (connectionOptions.overriddenAddress.isEmpty()) {
         address.reset(new Maliit::Server::DBus::DynamicAddress);
     } else {
-        address.reset(new Maliit::Server::DBus::FixedAddress(overrideAddress));
+        address.reset(new Maliit::Server::DBus::FixedAddress(connectionOptions.overriddenAddress));
     }
 
-    shared_ptr<MInputContextConnection> icConnection(new MInputContextGlibDBusConnection(address, allowAnonymous));
+    shared_ptr<MInputContextConnection> icConnection;
+    icConnection.reset(new MInputContextGlibDBusConnection(address, connectionOptions.allowAnonymous));
 
+    // The actual server
     MImServer imServer(icConnection);
     Q_UNUSED(imServer);
 

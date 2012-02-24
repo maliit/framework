@@ -18,6 +18,7 @@
 #define MIMSERVEROPTIONS_H
 
 #include <QtGlobal>
+#include <QString>
 
 //! \internal
 
@@ -31,6 +32,17 @@ bool parseCommandLine(int argc, const char * const * argv);
 
 //! Display help message to the screen.
 void printHelpMessage();
+
+struct MImServerConnectionOptions
+{
+public:
+    MImServerConnectionOptions();
+    ~MImServerConnectionOptions();
+
+    //! Contains true if user asks for help or provided incorrect parameter
+    bool allowAnonymous;
+    QString overriddenAddress;
+};
 
 
 struct MImServerCommonOptions
