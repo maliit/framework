@@ -17,6 +17,8 @@
 #ifndef MIMSERVEROPTIONS_H
 #define MIMSERVEROPTIONS_H
 
+#include <QString>
+
 //! \internal
 
 /*! \brief Parse command line arguments and update values of members
@@ -29,6 +31,17 @@ bool parseCommandLine(int argc, const char * const * argv);
 
 //! Display help message to the screen.
 void printHelpMessage();
+
+struct MImServerConnectionOptions
+{
+public:
+    MImServerConnectionOptions();
+    ~MImServerConnectionOptions();
+
+    //! Contains true if user asks for help or provided incorrect parameter
+    bool allowAnonymous;
+    QString overriddenAddress;
+};
 
 
 struct MImServerCommonOptions

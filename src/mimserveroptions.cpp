@@ -42,6 +42,16 @@ namespace {
                                    &MImServerXOptions::unconditionalShow }
     };
 
+    struct CommandLineParameter {
+        const char * name;
+        const char * description;
+    };
+
+    CommandLineParameter AvailableConnectionParameters[] = {
+        { "-allow-anonymous",   "Allow anonymous/unauthenticated use of DBus interface"},
+        { "-override-address",  "Override the DBus peer-to-peer address for input-context"}
+    };
+
     struct IgnoredParameter {
         const char * name;
         bool hasArgument;
@@ -158,6 +168,29 @@ namespace {
 
     private:
         MImServerXOptions *storage;
+    };
+
+    /*!
+     * \brief Parser of command line parameters for the server<->input context connection
+     */
+    struct MImServerConnectionOptionsParser : public MImServerOptionsParserBase
+    {
+        /*! \brief Construct new instance.
+         * Object should be created when application starts and should stay alive until moment
+         * when application will exit, so it is recommnded to create it in main().
+         * \note It does not makes sense tp create more than one object of this class.
+         */
+        MImServerConnectionOptionsParser(MImServerConnectionOptions *options);
+
+        //! \reimp
+        virtual ParsingResult parseParameter(const char * parameter,
+                                             const char * next,
+                                             int *argumentCount);
+        virtual void printAvailableOptions(const char *format);
+        //! \reimp_end
+
+    private:
+        MImServerConnectionOptions *storage;
     };
 
     struct MImServerIgnoredOptions
@@ -331,7 +364,73 @@ MImServerCommonOptions::~MImServerCommonOptions()
     unregisterParser(this);
 }
 
+MImServerConnectionOptionsParser::MImServerConnectionOptionsParser(MImServerConnectionOptions *options)
+    : MImServerOptionsParserBase(options),
+    storage(options)
+{
+}
 
+MImServerOptionsParserBase::ParsingResult
+MImServerConnectionOptionsParser::parseParameter(const char *parameter,
+                                        const char *next,
+                                        int *argumentCount)
+{
+    const int count = sizeof(AvailableConnectionParameters) / sizeof(AvailableConnectionParameters[0]);
+    ParsingResult result = Invalid;
+
+    for (int i = 0; i < count; ++i) {
+        const char * const availableParameter = AvailableConnectionParameters[i].name;
+
+        if (!strcmp(parameter, availableParameter)) {
+
+            result = Ok;
+
+            if (!strcmp(parameter, "-allow-anonymous")) {
+                storage->allowAnonymous = true;
+                *argumentCount = 0;
+            } else if (!strcmp(parameter, "-override-address")) {
+                if (next) {
+                    storage->overriddenAddress = QString::fromUtf8(next);
+                    *argumentCount = 1;
+                } else {
+                    fprintf(stderr, "ERROR: No argument passed to -override-address");
+                    *argumentCount = 0;
+                    result = Invalid;
+                }
+            } else {
+                fprintf(stderr, "ERROR: connection option %s declared but unhandled", parameter);
+                result = Invalid;
+            }
+
+            break;
+        }
+    }
+
+    return result;
+}
+
+void MImServerConnectionOptionsParser::printAvailableOptions(const char *format)
+{
+    const int count = sizeof(AvailableConnectionParameters) / sizeof(AvailableConnectionParameters[0]);
+
+    for (int i = 0; i < count; ++i) {
+        if (AvailableParameters[i].description) {
+            fprintf(stderr, format, AvailableConnectionParameters[i].name,
+                    AvailableConnectionParameters[i].description);
+        }
+    }
+}
+MImServerConnectionOptions::MImServerConnectionOptions()
+    : allowAnonymous(false)
+{
+    const ParserBasePtr p(new MImServerConnectionOptionsParser(this));
+    parsers.append(p);
+}
+
+MImServerConnectionOptions::~MImServerConnectionOptions()
+{
+    unregisterParser(this);
+}
 ///////////////
 // parser for options related to X windows system
 MImServerXOptionsParser::MImServerXOptionsParser(MImServerXOptions *options)
