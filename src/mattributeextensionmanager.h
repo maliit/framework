@@ -30,6 +30,7 @@
 #include "mattributeextensionid.h"
 #include "minputmethodnamespace.h"
 #include "mimsettings.h"
+#include "mtoolbaritem.h"
 
 struct MToolbarItemFilter;
 //! \internal
@@ -43,6 +44,9 @@ class MAttributeExtensionManager : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(MAttributeExtensionManager)
+
+    // workaround to calm QObject::connect()
+    typedef MToolbarItem::PropertyId PropertyId;
 
 public:
     /*!
@@ -125,12 +129,12 @@ private Q_SLOTS:
 
     /*!
      * \brief Handle extended attribute updates which are coming from plugin or framework.
-     * \param attributeName Name of changed attribute.
+     * \param propertyId Identifier of changed property
      *
      * Note: this slot relies on QObject::sender() and should be connected to
      * MToolbarItem only.
      */
-    void handleToolbarItemUpdate(const QString &attributeName);
+    void handleToolbarItemUpdate(PropertyId propertyId);
 
     /*!
      * \brief Disconnect slots and remove all references to toolbar item which is being destroyed.

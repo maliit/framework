@@ -203,13 +203,14 @@ void MAttributeExtensionManager::handlePreferredDomainUpdate()
     }
 }
 
-void MAttributeExtensionManager::handleToolbarItemUpdate(const QString &attributeName)
+void MAttributeExtensionManager::handleToolbarItemUpdate(PropertyId propertyId)
 {
     MToolbarItem *item = qobject_cast<MToolbarItem *>(sender());
     MToolbarItemFilters::iterator iterator(toolbarItemFilters.find(item));
 
     if (iterator != toolbarItemFilters.end()) {
-        const QVariant actualValue = item->property(attributeName.toLatin1().data());
+        const char * const attributeName = MToolbarItem::propertyName(propertyId);
+        const QVariant actualValue = item->property(attributeName);
         const QVariant filterValue = iterator->property(attributeName);
         if (filterValue.isValid() && filterValue != actualValue) {
             iterator->setProperty(attributeName, actualValue);
@@ -391,8 +392,8 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
             iterator = toolbarItemFilters.insert(item.data(),
                                                  MToolbarItemFilter(id));
 
-            connect(item.data(), SIGNAL(propertyChanged(QString)),
-                    this, SLOT(handleToolbarItemUpdate(QString)), Qt::UniqueConnection);
+            connect(item.data(), SIGNAL(propertyChanged(PropertyId)),
+                    this, SLOT(handleToolbarItemUpdate(PropertyId)), Qt::UniqueConnection);
 
             connect(item.data(), SIGNAL(destroyed()),
                     this, SLOT(handleToolbarItemDestroyed()), Qt::UniqueConnection);
