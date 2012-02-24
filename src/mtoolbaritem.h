@@ -101,6 +101,7 @@ class MToolbarItem : public QObject
     Q_PROPERTY(QString iconId READ iconId  WRITE setIconId)
     Q_PROPERTY(bool enabled   READ enabled WRITE setEnabled)
     Q_PROPERTY(Qt::Alignment contentAlignment READ contentAlignment WRITE setContentAlignment)
+    Q_PROPERTY(bool highlighted READ highlighted WRITE setHighlighted)
 
 public:
     /*!

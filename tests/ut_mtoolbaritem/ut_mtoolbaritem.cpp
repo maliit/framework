@@ -88,6 +88,8 @@ void Ut_MToolbarItem::testSetProperty_data()
     QTest::newRow("enabled") << "enabled" << QVariant(false)                   << MToolbarItem::Enabled;
     QTest::newRow("size")    << "size"    << QVariant(50)                      << MToolbarItem::Size;
 
+    QTest::newRow("highlighted") << "highlighted" << QVariant(true) << MToolbarItem::Highlighted;
+
     QTest::newRow("contentAlignment") << "contentAlignment" << QVariant(Qt::AlignLeft)
                                       << MToolbarItem::ContentAlignment;
 
@@ -119,27 +121,6 @@ void Ut_MToolbarItem::testSetProperty()
     subject->setProperty(propertyName.toLatin1().data(), value);
     QVERIFY(spy.count() == 0);
     QVERIFY(spyString.count() == 0);
-}
-
-void Ut_MToolbarItem::testHighlighted()
-{
-    QSignalSpy spy(subject, SIGNAL(propertyChanged(PropertyId)));
-
-    QVERIFY(spy.isValid());
-
-    QVERIFY(!subject->highlighted());
-
-    subject->setHighlighted(false);
-    QVERIFY(spy.isEmpty());
-
-    subject->setHighlighted(true);
-    QVERIFY(spy.count() == 1);
-    QVERIFY(spy.first().count() == 1);
-    QCOMPARE(spy.first().first().value<MToolbarItem::PropertyId>(), MToolbarItem::Highlighted);
-    spy.clear();
-
-    subject->setHighlighted(true);
-    QVERIFY(spy.isEmpty());
 }
 
 void Ut_MToolbarItem::testCustom()

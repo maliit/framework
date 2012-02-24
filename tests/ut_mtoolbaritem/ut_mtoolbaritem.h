@@ -21,7 +21,6 @@ private Q_SLOTS:
     void testSetProperty_data();
     void testSetProperty();
 
-    void testHighlighted();
     void testCustom();
 
 private:
