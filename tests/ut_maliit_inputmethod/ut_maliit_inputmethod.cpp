@@ -205,7 +205,6 @@ void Ut_Maliit_InputMethod::testCloseInputMethodPanel()
 {
     // API not available on Qt 5 anymore
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    QSKIP("Does not apply to Qt5", SkipSingle);
 
     EventSpyInputContext<QEvent::Type> *spy = new EventSpyInputContext<QEvent::Type>(std::mem_fun(&QEvent::type));
     qApp->setInputContext(spy);
