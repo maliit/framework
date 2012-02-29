@@ -418,7 +418,7 @@ void MImServerConnectionOptionsParser::printAvailableOptions(const char *format)
     const int count = sizeof(AvailableConnectionParameters) / sizeof(AvailableConnectionParameters[0]);
 
     for (int i = 0; i < count; ++i) {
-        if (AvailableParameters[i].description) {
+        if (AvailableConnectionParameters[i].description) {
             fprintf(stderr, format, AvailableConnectionParameters[i].name,
                     AvailableConnectionParameters[i].description);
         }
