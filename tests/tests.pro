@@ -15,7 +15,6 @@ SUBDIRS += \
           ut_mtoolbaritem \
           ut_mattributeextensionmanager \
           ut_mkeyoverride \
-          ut_minputmethodquickplugin \
           ft_exampleplugin \
           ut_maliit_attributeextension \
           ut_maliit_attributeextensionregistry \
@@ -27,6 +26,7 @@ contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \
           ut_minputcontext \
           ut_minputcontextplugin \
+          ut_minputmethodquickplugin \
 }
 
 x11 {
