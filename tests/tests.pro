@@ -22,7 +22,6 @@ SUBDIRS += \
           ut_maliit_inputmethod \
           ut_mimsettings \
           bbt_connection \
-          ut_mimserveroptions \
 
 contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \
@@ -36,6 +35,7 @@ x11 {
           ut_passthroughserver \
           ut_selfcompositing \
           ut_mimrotationanimation \
+          ut_mimserveroptions \ #FIXME: split out the common tests (non X11 dependent), so that they are always tested
 }
 
 outputFiles(runtests.sh, gen-tests-xml.sh)

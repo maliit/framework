@@ -64,8 +64,9 @@ private:
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;
     QDBusInterface *m_clientInterface;
+#ifdef Q_WS_X11
     MImServerXOptions xOptions;
-
+#endif
     void checkHandlerMap(int handler, const QString &name);
 };
 
