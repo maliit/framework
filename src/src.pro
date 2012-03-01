@@ -87,7 +87,7 @@ SOURCES += \
         mtoolbaritemfilter.cpp \
         mimserveroptions.cpp \
 
-contains(QT_MAJOR_VERSION, 4) {
+!contains(QT_MAJOR_VERSION, 5) {
     HEADERS += \
         mimdummyinputcontext.h \
 
