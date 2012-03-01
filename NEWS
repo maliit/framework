@@ -1,13 +1,31 @@
-NEXT
+0.90.0
 ======
 
 CHANGES SINCE 0.81.3
 * Allow pluggable backends to store maliit-server settings.
 * Added a compilation option to disable the GConf settings backend,
   using QSettings as a fallback.
+* Notify applications when attribute extensions are changed by Maliit plugins
+  * Typical use case would be buttons in an input method toolbar, where the
+    application needs to know about the button state.
+* New connection directory to isolate all D-Bus dependend code
+  * This will make it easier to use other IPCs (or no IPC at all, in case the
+    application hosts the input method system) in the future.
+* Introduce -h/--help parameter to maliit-server
+  * When giving invalid parameters to maliit-server, it will complain and print
+    a useful help message.
 
 BUG FIXES
 * Fixes: MALIIT#88 - Remove hard dependency on GConf
+* Fixes: NB#298678 - (Regression): Alphabetical VKB shown automatically in "Change security code"-view
+* Fixes: Maliit#92 - maliit-server does not take a -help/-h argument
+* Fixes: NB#298276 - Observed im-ui-server crashes on CITA
+* Fixes: NB#298229 - PIN query appears black for several seconds during startup
+* Fixes: NB#296576 Vkb is not shown in text field, when swype keyboard is enabled & disabled in a scenario
+* Fixes: Maliit#68 - maliit-server does not always notify IC about InputMethodArea changes
+* Fixes: NB#295883 - All input methods are still installed after tapping the
+  emergency keyboard button in the device lock screen and typing the lock code
+  on system startup
 
 0.81.3
 ======
