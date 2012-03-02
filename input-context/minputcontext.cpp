@@ -19,7 +19,9 @@
 #include "maliit/namespaceinternal.h"
 
 #include <QApplication>
+#ifdef Q_WS_X11
 #include <QX11Info>
+#endif
 #include <QInputContext>
 #include <QCoreApplication>
 #include <QKeyEvent>
