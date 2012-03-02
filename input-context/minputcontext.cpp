@@ -15,7 +15,7 @@
  */
 
 #include "minputcontext.h"
-#include "glibdbusimserverproxy.h"
+#include "mimserverconnection.h"
 #include "maliit/namespaceinternal.h"
 
 #include <QApplication>
