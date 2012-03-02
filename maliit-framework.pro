@@ -59,10 +59,7 @@ external-libmaliit {
     !contains(QT_MAJOR_VERSION, 5) {
         # Qt 5 has a new platform input plugin system which already contains
         # support for Maliit.
-        !qws {
-            # FIXME: cannot build input-context for embedded due to use of glib-dbus
-            SUBDIRS += input-context
-        }
+        SUBDIRS += input-context
 
         # Requires QtQuick1 add-on, which might not be present
         # and we should use QML 2 on Qt 5 anyways
