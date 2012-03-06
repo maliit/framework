@@ -9,6 +9,7 @@ SUBDIRS += \
           dummyimplugin2 \
           dummyimplugin3 \
           dummyplugin \
+          sanitychecks \
           ut_mimpluginmanager \
           ft_mimpluginmanager \
           ut_mtoolbardata \
