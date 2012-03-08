@@ -23,6 +23,7 @@
 #include "minputcontextglibdbusconnection.h"
 #include "mimserver.h"
 #include "mimserveroptions.h"
+#include "mimstandaloneserverlogic.h"
 
 #if defined(Q_WS_X11)
 #include "mimxapplication.h"
@@ -120,8 +121,10 @@ int main(int argc, char **argv)
 
 #if defined(Q_WS_X11)
     MImXApplication app(argc, argv, serverXOptions);
+    QSharedPointer<MImAbstractServerLogic> serverLogic(app.serverLogic());
 #elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
     QApplication app(argc, argv);
+    QSharedPointer<MImAbstractServerLogic> serverLogic(new MImStandaloneServerLogic);
 #endif
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -143,7 +146,7 @@ int main(int argc, char **argv)
     icConnection.reset(new MInputContextGlibDBusConnection(address, connectionOptions.allowAnonymous));
 
     // The actual server
-    MImServer imServer(icConnection);
+    MImServer imServer(serverLogic, icConnection);
     Q_UNUSED(imServer);
 
     return app.exec();

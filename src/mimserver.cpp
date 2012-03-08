@@ -15,15 +15,9 @@
  */
 
 #include "mimserver.h"
-#include "mimserveroptions.h"
-#include "mimpluginmanager.h"
 
-#if defined(Q_WS_X11)
-#include "mimxapplication.h"
-#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
-#include "mimqpaplatform.h"
-#endif
-#include "mimxserverlogic.h"
+#include "mimpluginmanager.h"
+#include "mimabstractserverlogic.h"
 
 using namespace std::tr1;
 
@@ -38,9 +32,8 @@ public:
     // Connection to application side (input-context)
     shared_ptr<MInputContextConnection> icConnection;
 
-#if defined(Q_WS_QPA) || defined(Q_WS_QWS)
-    std::auto_ptr<MImQPAPlatform> platform;
-#endif
+    // Platform/deployment specific server logic
+    QSharedPointer<MImAbstractServerLogic> serverLogic;
 
 private:
     Q_DISABLE_COPY(MImServerPrivate)
@@ -49,86 +42,58 @@ private:
 MImServerPrivate::MImServerPrivate()
 {}
 
-// X11:
-// For X11 the toplevel window is a MPassThruWindow (managed by MImXApplication. It
-// contains a MImPluginsProxyWidget as container for all plugin widgets and a
-// MImRotationAnimation, which is used to display the rotation animation. MImXApplication
-// also manages MImRemoteWindows representing the current application window.
-//
-// QPA:
-// For QPA the toplevel window is a MImPluginsProxyWidget containing all plugin
-// widgets. The MImQPAPlatform is used to show/hide that toplevel window when
-// required.
-MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *parent)
+MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
+                     const shared_ptr<MInputContextConnection> &icConnection,
+                     QObject *parent)
   : QObject(parent)
   , d_ptr(new MImServerPrivate)
 {
     Q_D(MImServer);
 
     d->icConnection = icConnection;
-
-#if defined(Q_WS_QPA) || defined(Q_WS_QWS)
-    d->platform.reset(new MImQPAPlatform);
-#endif
-
+    d->serverLogic = serverLogic;
     d->pluginManager = new MIMPluginManager(d->icConnection, pluginsWidget());
 
     connectComponents();
 
-#if defined(Q_WS_X11)
-    MImXApplication * const app = MImXApplication::instance();
-    // Configure widgets loaded during MIMPluginManager construction
-    // only needed on X11 for self-compositing
-    app->serverLogic()->pluginLoaded();
-#endif
+    // Notify server logic about plugins loaded during MIMPluginManager construction
+    d->serverLogic->pluginLoaded();
 }
 
 MImServer::~MImServer()
 {
-
+    // FIXME: MIMPluginManager is never deleted
 }
 
 void MImServer::connectComponents()
 {
     Q_D(MImServer);
 
-#if defined(Q_WS_X11)
-    MImXApplication *app = MImXApplication::instance();
+    // Update visibility of plugins proxy widget
+    QObject::connect(d->pluginManager, SIGNAL(regionUpdated(const QRegion &)),
+                     d->serverLogic.data(), SLOT(inputPassthrough(const QRegion &)));
 
+    // Configure widgets trees of plugins after loading
+    QObject::connect(d->pluginManager, SIGNAL(pluginLoaded()),
+                     d->serverLogic.data(), SLOT(pluginLoaded()));
+
+    // Tracking of application window
     QObject::connect(d->icConnection.get(), SIGNAL(focusChanged(WId)),
-                     app, SLOT(setTransientHint(WId)));
+                     d->serverLogic.data(), SLOT(applicationFocusChanged(WId)));
 
+    // Rotation handling
     QObject::connect(d->icConnection.get(), SIGNAL(appOrientationAboutToChange(int)),
-                     app, SLOT(appOrientationAboutToChange(int)));
+                     d->serverLogic.data(), SLOT(appOrientationAboutToChange(int)));
     QObject::connect(d->icConnection.get(), SIGNAL(appOrientationChanged(int)),
-                     app, SLOT(appOrientationChangeFinished(int)));
+                     d->serverLogic.data(), SLOT(appOrientationChangeFinished(int)));
 
     // Hide active plugins when the application window is gone or iconified.
-    QObject::connect(app, SIGNAL(remoteWindowGone()),
+    QObject::connect(d->serverLogic.data(), SIGNAL(applicationWindowGone()),
                      d->pluginManager, SLOT(hideActivePlugins()));
-
-    // Handle changed used area by plugins
-    QObject::connect(d->pluginManager, SIGNAL(regionUpdated(const QRegion &)),
-                     app->serverLogic()->passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
-
-    // Configure widgets for self compositing after loading
-    QObject::connect(d->pluginManager, SIGNAL(pluginLoaded()),
-                     app, SLOT(configureWidgetsForCompositing()));
-
-#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
-    QObject::connect(d->pluginManager, SIGNAL(regionUpdated(const QRegion &)),
-                     d->platform.get(), SLOT(inputPassthrough(const QRegion &)));
-#endif
 }
 
 QWidget *MImServer::pluginsWidget()
 {
     Q_D(MImServer);
-
-#if defined(Q_WS_X11)
-    Q_UNUSED(d);
-    return MImXApplication::instance()->serverLogic()->pluginsProxyWidget();
-#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
-    return d->platform.get()->pluginsProxyWidget();
-#endif
+    return d->serverLogic->pluginsProxyWidget();
 }

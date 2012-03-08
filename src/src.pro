@@ -54,6 +54,8 @@ HEADERS += \
         mimsettingsqsettings.h \
         mimserveroptions.h \
         mimabstractserverlogic.h \
+        mimapphostedserverlogic.h \
+        mimstandaloneserverlogic.h \
 
 SOURCES += \
         mimabstractpluginfactory.cpp \
@@ -88,6 +90,8 @@ SOURCES += \
         mtoolbaritemfilter.cpp \
         mimserveroptions.cpp \
         mimabstractserverlogic.cpp \
+        mimapphostedserverlogic.cpp \
+        mimstandaloneserverlogic.cpp \
 
 !contains(QT_MAJOR_VERSION, 5) {
     HEADERS += \
