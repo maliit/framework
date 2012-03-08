@@ -53,7 +53,7 @@ Atom wmStateAtom()
 }
 
 MImRemoteWindow::MImRemoteWindow(WId window,
-                                 MImXApplication *application,
+                                 MImXServerLogic *serverLogic,
                                  const MImServerXOptions &options) :
     QObject(0),
     wid(window),
@@ -61,8 +61,8 @@ MImRemoteWindow::MImRemoteWindow(WId window,
     damage(0),
     pixmap(),
     redirected(false),
-    mApplication(application),
-    xOptions(options)
+    xOptions(options),
+    mServerLogic(serverLogic)
 {
 }
 
@@ -157,7 +157,7 @@ void MImRemoteWindow::redirect()
         return;
 
     if (xOptions.manualRedirection) {
-        MImXErrorTrap xerror(mApplication->compositeExtension(), X_CompositeRedirectWindow);
+        MImXErrorTrap xerror(mServerLogic->compositeExtension(), X_CompositeRedirectWindow);
         XCompositeRedirectWindow(QX11Info::display(),
                                  wid,
                                  CompositeRedirectManual);
@@ -184,7 +184,7 @@ void MImRemoteWindow::unredirect()
     destroyPixmap();
 
     if (xOptions.manualRedirection) {
-        MImXErrorTrap xerror(mApplication->compositeExtension(), X_CompositeUnredirectWindow);
+        MImXErrorTrap xerror(mServerLogic->compositeExtension(), X_CompositeUnredirectWindow);
         XCompositeUnredirectWindow(QX11Info::display(),
                                    wid,
                                    CompositeRedirectManual);
@@ -225,7 +225,7 @@ void MImRemoteWindow::update(const QRegion &region)
 
 void MImRemoteWindow::handleDamageEvent(XEvent *event)
 {
-    if (event->type != mApplication->damageExtension().eventBase() + XDamageNotify)
+    if (event->type != mServerLogic->damageExtension().eventBase() + XDamageNotify)
         return;
 
     XDamageNotifyEvent *e = reinterpret_cast<XDamageNotifyEvent*>(event);
@@ -260,7 +260,7 @@ void MImRemoteWindow::setupPixmap()
 {
     destroyPixmap();
 
-    MImXErrorTrap error(mApplication->compositeExtension(), X_CompositeNameWindowPixmap);
+    MImXErrorTrap error(mServerLogic->compositeExtension(), X_CompositeNameWindowPixmap);
     xpixmap = XCompositeNameWindowPixmap(QX11Info::display(), wid);
     if (error.untrap() == BadMatch) {
         qDebug() << "Cannot get offscreen reference for Window " << wid;

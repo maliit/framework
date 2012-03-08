@@ -21,7 +21,9 @@ void Ut_MIMApplication::initTestCase()
     static int argc = 1;
 
     app = new MImXApplication(argc, argv, xOptions);
-    subject = static_cast<MPassThruWindow *>(app->passThruWindow());
+    serverLogic = app->serverLogic();
+
+    subject = static_cast<MPassThruWindow *>(serverLogic->passThruWindow());
 }
 
 void Ut_MIMApplication::cleanupTestCase()
@@ -32,8 +34,7 @@ void Ut_MIMApplication::cleanupTestCase()
 void Ut_MIMApplication::init()
 {
     xOptions.selfComposited = false;
-
-    app->setTransientHint(FakeRemoteWId);
+    serverLogic->applicationFocusChanged(FakeRemoteWId);
 }
 
 void Ut_MIMApplication::cleanup()
@@ -46,7 +47,7 @@ void Ut_MIMApplication::testHandleTransientEvents()
     xevent.type = UnmapNotify;
     xevent.xunmap.event = FakeRemoteWId;
 
-    QSignalSpy spy(app, SIGNAL(remoteWindowChanged(MImRemoteWindow*)));
+    QSignalSpy spy(serverLogic, SIGNAL(remoteWindowChanged(MImRemoteWindow*)));
     app->x11EventFilter(&xevent);
     QCOMPARE(spy.count(), 1);
 }
@@ -65,15 +66,15 @@ void Ut_MIMApplication::testConfigureWidgetsForCompositing()
 
     xOptions.selfComposited = selfCompositing;
 
-    QWidget mainWindow(app->passThruWindow());
+    QWidget mainWindow(subject);
     QGraphicsView view(&mainWindow);
 
     QList<QWidget *> widgets;
     widgets << &mainWindow << &view << view.viewport();
 
-    widgets << app->passThruWindow();
+    widgets << subject;
 
-    app->configureWidgetsForCompositing();
+    serverLogic->pluginLoaded();
 
     Q_FOREACH (QWidget *w, widgets) {
         QVERIFY(w->testAttribute(Qt::WA_NoSystemBackground)

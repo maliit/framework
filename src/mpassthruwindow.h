@@ -21,8 +21,8 @@
 #include <QCloseEvent>
 
 class MImRemoteWindow;
-class MImXApplication;
 struct MImServerXOptions;
+class MImXServerLogic;
 
 /*!
  * \brief MPassThruWindow uses XFixes to redirect mouse events to VKB
@@ -36,7 +36,8 @@ public:
      * \brief Constructor
      * \param p QWidget* parent widget
      */
-    explicit MPassThruWindow(MImXApplication *application,
+
+    explicit MPassThruWindow(MImXServerLogic *serverLogic,
                              const MImServerXOptions &options);
 
     //! Destructor
@@ -66,7 +67,7 @@ private:
 
     MImRemoteWindow *remoteWindow;
     QRegion mRegion;
-    MImXApplication *mApplication;
+    MImXServerLogic *mServerLogic;
     const MImServerXOptions &xOptions;
 
     friend class Ut_PassthroughServer;

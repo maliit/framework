@@ -50,21 +50,11 @@ MImXApplication::MImXApplication(int &argc,
     mBackgroundSuppressed(false),
     mPassThruWindow(),
     mRemoteWindow(),
-    xOptions(options)
+    xOptions(options),
+    mServerLogic(new MImXServerLogic(xOptions))
 {
-    mPassThruWindow.reset(new MPassThruWindow(this, xOptions));
-    mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.data()));
-    mRotationAnimation = new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(),
-                                                  this, xOptions);
-
-#ifdef HAVE_MEEGOGRAPHICSSYSTEM
-    QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
-#endif
-
-    configureWidgetsForCompositing();
-
     connect(this, SIGNAL(aboutToQuit()),
-            this, SLOT(finalize()),
+            mServerLogic.data(), SLOT(finalize()),
             Qt::UniqueConnection);
 }
 
@@ -92,9 +82,7 @@ void MImXApplication::finalize()
 
 bool MImXApplication::x11EventFilter(XEvent *ev)
 {
-    handleTransientEvents(ev);
-    handleRemoteWindowEvents(ev);
-    handlePassThruMapEvent(ev);
+    mServerLogic->x11EventFilter(ev);
     return QApplication::x11EventFilter(ev);
 }
 
@@ -152,7 +140,7 @@ void MImXApplication::setTransientHint(WId newRemoteWinId)
 
     const bool wasRedirected(mRemoteWindow.data() && mRemoteWindow->isRedirected());
 
-    mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this, xOptions));
+    mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this->mServerLogic.data(), xOptions));
     mRemoteWindow->setIMWidget(mPassThruWindow->window());
 
     connect(mRemoteWindow.data(), SIGNAL(contentUpdated(QRegion)),
@@ -244,3 +232,8 @@ MImRemoteWindow *MImXApplication::remoteWindow() const
 {
     return mRemoteWindow.data();
 }
+
+MImXServerLogic *MImXApplication::serverLogic() const
+ {
+    return mServerLogic.data();
+ }

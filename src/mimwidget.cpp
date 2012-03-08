@@ -70,7 +70,7 @@ void MImWidget::paintEvent(QPaintEvent *ev)
     }
 
 #if defined(Q_WS_X11)
-    const QPixmap &bg(MImXApplication::instance()->remoteWindowPixmap());
+    const QPixmap &bg(MImXApplication::instance()->serverLogic()->remoteWindowPixmap());
     if (not bg.isNull()) {
         QPainter p(this);
         p.drawPixmap(ev->rect(), bg, ev->rect());

@@ -138,10 +138,11 @@ namespace {
 }
 
 MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget,
-                                           QWidget* passThruWindow,
-                                           MImXApplication *application,
+                                           QWidget* passThroughWindow,
+                                           MImXServerLogic *serverLogic,
                                            const MImServerXOptions &options) :
-        QGraphicsView(new QGraphicsScene(), passThruWindow),
+        QGraphicsView(new QGraphicsScene(), passThroughWindow),
+
         snapshotWidget(snapshotWidget),
         remoteWindow(0),
         animationStartPixmapItem(0),
@@ -150,8 +151,8 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget,
         currentOrientationAngle(0),
         aboutToChangeReceived(false),
         damageMonitor(0),
-        mApplication(application),
-        xOptions(options)
+        xOptions(options),
+        mServerLogic(serverLogic)
 {
     // Animation plays on top of a black backround,
     // covering up the underlying application.
@@ -177,7 +178,7 @@ MImRotationAnimation::MImRotationAnimation(QWidget* snapshotWidget,
     connect(&rotationAnimationGroup, SIGNAL(finished()),
             this, SLOT(clearScene()));
 
-    connect(mApplication, SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
+    connect(mServerLogic, SIGNAL(remoteWindowChanged(MImRemoteWindow*)),
             this, SLOT(remoteWindowChanged(MImRemoteWindow*)), Qt::UniqueConnection);
 
     damageMonitor = new MImDamageMonitor(remoteWindow, this);
@@ -381,7 +382,7 @@ MImRotationAnimation::grabComposited()
 QPixmap
 MImRotationAnimation::grabVkbOnly()
 {
-    mApplication->setSuppressBackground(true);
+    mServerLogic->setSuppressBackground(true);
     // We need to work with a QImage here, otherwise we lose the
     // transparency of the see-through part of the keyboard image.
     QImage grabImage(size(),QImage::Format_ARGB32);
@@ -394,7 +395,7 @@ MImRotationAnimation::grabVkbOnly()
     // new QPixmap generated from QImage.
     painter.end();
 
-    mApplication->setSuppressBackground(false);
+    mServerLogic->setSuppressBackground(false);
 
     return QPixmap::fromImage(grabImage);
 }
@@ -415,7 +416,7 @@ void
 MImRotationAnimation::appOrientationAboutToChange(int toAngle) {
     qDebug() << __PRETTY_FUNCTION__ << " - toAngle: " << toAngle;
 
-    if (!mApplication->passThruWindow()->isVisible()
+    if (!mServerLogic->passThruWindow()->isVisible()
         || toAngle == currentOrientationAngle
         || aboutToChangeReceived) {
         return;
@@ -458,7 +459,7 @@ MImRotationAnimation::appOrientationChangeFinished(int toAngle) {
 
     currentOrientationAngle = toAngle;
 
-    if (!mApplication->passThruWindow()->isVisible()
+    if (!mServerLogic->passThruWindow()->isVisible()
         || toAngle == startOrientationAngle
         || !aboutToChangeReceived) {
         clearScene();

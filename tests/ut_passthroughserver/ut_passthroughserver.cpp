@@ -10,8 +10,10 @@ void Ut_PassthroughServer::initTestCase()
     static char *app_name[1] = { (char *) "ut_passthroughserver" };
 
     app = new MImXApplication(argc, app_name, xOptions);
+    serverLogic = app->serverLogic();
+
     app->setStyle(new QCommonStyle);
-    app->setTransientHint(1); // remote win id should be non-zero
+    serverLogic->applicationFocusChanged(1); // remote win id should be non-zero
 }
 
 void Ut_PassthroughServer::cleanupTestCase()
@@ -22,7 +24,7 @@ void Ut_PassthroughServer::cleanupTestCase()
 
 void Ut_PassthroughServer::init()
 {
-    subject = static_cast<MPassThruWindow *>(app->passThruWindow());
+    subject = qobject_cast<MPassThruWindow *>(serverLogic->passThruWindow());
 }
 
 void Ut_PassthroughServer::cleanup()
@@ -38,7 +40,7 @@ void Ut_PassthroughServer::testEmergencyHide()
 {
     makeVisible();
 
-    Q_EMIT app->remoteWindowChanged(0);
+    Q_EMIT serverLogic->remoteWindowChanged(0);
 
     QVERIFY(!subject->testAttribute(Qt::WA_Mapped) && !subject->isVisible());
 }

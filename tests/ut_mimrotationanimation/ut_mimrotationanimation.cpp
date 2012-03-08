@@ -52,17 +52,19 @@ void Ut_MImRotationAnimation::testPassthruHiddenDuringRotation()
 {
     QSKIP("Unreliable on Device", SkipAll);
 
-    MImRotationAnimation subject(app->passThruWindow(), 0, app, xOptions);
-    app->setTransientHint(remote->window()->effectiveWinId());
+    MImXServerLogic *serverLogic = app->serverLogic();
+
+    MImRotationAnimation subject(serverLogic->passThruWindow(), 0, serverLogic, xOptions);
+    serverLogic->applicationFocusChanged(remote->window()->effectiveWinId());
 
     subject.appOrientationChangeFinished(0);
 
-    QMetaObject::invokeMethod(app->passThruWindow(), "inputPassthrough", Qt::DirectConnection,
+    QMetaObject::invokeMethod(serverLogic->passThruWindow(), "inputPassthrough", Qt::DirectConnection,
                               Q_ARG(QRegion, QRegion(QRect(QPoint(), QSize(600, 400)))));
     subject.appOrientationAboutToChange(270);
     QVERIFY(subject.isVisible());
 
-    QMetaObject::invokeMethod(app->passThruWindow(), "inputPassthrough", Qt::DirectConnection,
+    QMetaObject::invokeMethod(serverLogic->passThruWindow(), "inputPassthrough", Qt::DirectConnection,
                               Q_ARG(QRegion, QRegion()));
     subject.appOrientationChangeFinished(270);
     QVERIFY(!subject.isVisible());

@@ -83,7 +83,7 @@ void MImGraphicsView::drawBackground(QPainter *painter,
     }
 
 #if defined(Q_WS_X11)
-    const QPixmap &bg(MImXApplication::instance()->remoteWindowPixmap());
+    const QPixmap &bg(MImXApplication::instance()->serverLogic()->remoteWindowPixmap());
     if (not bg.isNull()) {
         painter->drawPixmap(rect.toRect(), bg, rect.toRect());
     }
