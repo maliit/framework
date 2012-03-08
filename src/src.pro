@@ -121,14 +121,6 @@ x11 {
         mimxserverlogic.cpp \
 }
 
-enable-legacy {
-    HEADERS += \
-        mimmeegoindicator.h \
-
-    SOURCES += \
-        mimmeegoindicator.cpp \
-}
-
 !disable-gconf {
     HEADERS += \
         mimsettingsgconf.h \
@@ -181,11 +173,7 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
     M_IM_FRAMEWORK_FEATURE -= M_IM_DISABLE_TRANSLUCENCY
 }
 
-!enable-legacy {
-    outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
-} else {
-    outputFiles(MeegoImFramework.pc, meegoimframework.prf, meego-im-framework.schemas)
-}
+outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
 outputFiles(config.h)
 
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
@@ -197,19 +185,11 @@ enforce-install-prefix {
     QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$M_IM_PREFIX)
 }
 
-install_prf.path = $$QT_PRF_DIR
-install_prf.files = $$OUT_PWD/meegoimframework.prf
-
-!enable-legacy {
-    install_schemas.files = $$OUT_PWD/maliit-framework.schemas
-} else {
-    install_schemas.files = $$OUT_PWD/meego-im-framework.schemas
-}
+install_schemas.files = $$OUT_PWD/maliit-framework.schemas
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
 
 INSTALLS += target \
     headers \
-    install_prf \
     install_pkgconfig \
 
 !disable-gconf {

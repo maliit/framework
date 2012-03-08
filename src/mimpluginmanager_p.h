@@ -25,10 +25,6 @@
 #include "mimhwkeyboardtracker.h"
 #include "mindicatorserviceclient.h"
 
-#ifdef HAVE_LEGACY_NAMES
-#include "mimmeegoindicator.h"
-#endif
-
 #include <QtCore>
 #include <tr1/memory>
 
@@ -179,11 +175,7 @@ public:
 
     MAttributeExtensionId toolbarId;
 
-#ifdef HAVE_LEGACY_NAMES
-    MImMeegoIndicator indicatorService;
-#else
     MIndicatorServiceClient indicatorService;
-#endif
 
     QTimer ensureEmptyRegionWhenHiddenTimer;
 

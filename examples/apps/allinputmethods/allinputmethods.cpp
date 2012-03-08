@@ -22,11 +22,7 @@
 int main(int argc, char** argv)
 {
     // Set input method to MInputContext
-#ifdef HAVE_LEGACY_NAMES
-    setenv("QT_IM_MODULE", "MInputContext", 1);
-#else
     setenv("QT_IM_MODULE", "Maliit", 1);
-#endif
 
     QApplication kit(argc, argv);
 

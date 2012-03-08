@@ -11,7 +11,6 @@ include(./config.pri)
         \\n\\t M_IM_DEFAULT_SUBVIEW : Default onscreen (software) subview name \
         \\n\\t MALIIT_SERVER_ARGUMENTS : Arguments to use for starting maliit-server by D-Bus activation \
         \\nRecognised CONFIG flags: \
-        \\n\\t enable-legacy : Build in legacy mode (for meego-im ABI/API compatability) \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t disable-dbus-activation : Do not use dbus activation support for maliit-server \
         \\n\\t disable-gconf : Disable GConf settings backend (falls back to QSettings) \
@@ -28,7 +27,7 @@ include(./config.pri)
         \\n\\t PKG_CONFIG_PATH : Override standard directories to look for pkg-config information \
         \\nExamples: \
         \\n\\t qmake \
-        \\n\\t qmake M_IM_PREFIX=/usr M_IM_INSTALL_LIBS=/usr/lib64 CONFIG+=enable-legacy CONFIG+=notests \
+        \\n\\t qmake M_IM_PREFIX=/usr M_IM_INSTALL_LIBS=/usr/lib64 CONFIG+=notests \
         \\n\\t qmake M_IM_PREFIX=/usr M_IM_DEFAULT_PLUGIN=libmykeyboard.so M_IM_DEFAULT_SUBVIEW=en.xml
 
     !build_pass:system(echo -e \"$$help_string\")

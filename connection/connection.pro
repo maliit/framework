@@ -105,7 +105,7 @@ glib-dbus-connection {
     OTHER_FILES += minputmethodcontext1interface.xml
 
     # DBus activation
-    !enable-legacy:!disable-dbus-activation {
+    !disable-dbus-activation {
 
         outputFiles(org.maliit.server.service)
 
@@ -119,7 +119,7 @@ glib-dbus-connection {
         install_services.files = org.maliit.server.service
     }
 
-    !enable-legacy:!disable-dbus-activation {
+    !disable-dbus-activation {
         INSTALLS += install_services
     }
 }

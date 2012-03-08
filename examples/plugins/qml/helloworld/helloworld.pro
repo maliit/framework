@@ -30,12 +30,6 @@ contains(BUILD_TYPE, skeleton) {
     INSTALLS += plugin
 }
 
-contains(BUILD_TYPE, skeleton-legacy) {
-    CONFIG += meegoimframework
-    plugin.path += $$system(pkg-config --variable pluginsdir MeegoImFramework)
-    INSTALLS += plugin
-}
-
 contains(BUILD_TYPE, unittest) {
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs

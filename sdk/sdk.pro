@@ -11,11 +11,7 @@ OTHER_FILES = \
     maliit-sdk.in
 
 # Build
-enable-legacy {
-    MODE = legacy
-} else {
-    MODE = normal
-}
+MODE = normal
 
 DUMMY = maliit-sdk
 

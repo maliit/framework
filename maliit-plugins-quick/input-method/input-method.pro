@@ -49,11 +49,7 @@ QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_QUICK_HEADER
 headers.files += $$HEADERSINSTALL
 
-!enable-legacy {
-    outputFiles(maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc)
-} else {
-    outputFiles(meegoimquick.prf)
-}
+outputFiles(maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc)
 
 QT_PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
 QT_PREFIX = $$[QT_INSTALL_PREFIX]
@@ -61,15 +57,11 @@ enforce-install-prefix {
     QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$M_IM_PREFIX)
 }
 
-install_prf.path = $$QT_PRF_DIR
-install_prf.files = $$OUT_PWD/meegoimquick.prf
-
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc
 
 INSTALLS += target \
     headers \
-    install_prf \
     install_pkgconfig \
 
 QMAKE_EXTRA_TARGETS += check

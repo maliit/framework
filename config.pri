@@ -10,11 +10,7 @@ MALIIT_LIB = maliit-$${MALIIT_INTERFACE_VERSION}
 MALIIT_HEADER = maliit/maliit-$${MALIIT_INTERFACE_VERSION}
 MALIIT_FRAMEWORK_HEADER = maliit/framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}
 
-enable-legacy {
-    include(defines-legacy.pri)
-} else {
-    include(defines.pri)
-}
+include(defines.pri)
 
 # Linker optimization for release build
 QMAKE_LFLAGS_RELEASE+=-Wl,--as-needed
@@ -68,27 +64,15 @@ MALIIT_EXTENSIONS_DIR = $$DATADIR/$$MALIIT_ATTRIBUTE_EXTENSIONS/
 DEFINES += MALIIT_EXTENSIONS_DIR=\\\"$$MALIIT_EXTENSIONS_DIR\\\"
 
 isEmpty(M_IM_DEFAULT_HW_PLUGIN) {
-enable-legacy {
-    M_IM_DEFAULT_HW_PLUGIN = libmeego-keyboard.so
-} else {
     M_IM_DEFAULT_HW_PLUGIN = libmaliit-keyboard-plugin.so
-}
 }
 
 isEmpty(M_IM_DEFAULT_PLUGIN) {
-enable-legacy {
-    M_IM_DEFAULT_PLUGIN = libmeego-keyboard.so
-} else {
     M_IM_DEFAULT_PLUGIN = libmaliit-keyboard-plugin.so
-}
 }
 
 isEmpty(M_IM_DEFAULT_SUBVIEW) {
-enable-legacy {
-    M_IM_DEFAULT_SUBVIEW = en_gb.xml
-} else {
     M_IM_DEFAULT_SUBVIEW = en_gb
-}
 }
 
 MALIIT_TEST_DATADIR = $$DATADIR/$$MALIIT_TEST_SUITE
@@ -120,10 +104,6 @@ contains(QT_CONFIG,embedded) {
 # Use x11 on unix systems without lighthouse (qpa) or QWS (qws)
 unix:!qpa:!qws {
     CONFIG += x11
-}
-
-enable-legacy {
-    DEFINES += HAVE_LEGACY_NAMES
 }
 
 contains(QT_MAJOR_VERSION, 4) {

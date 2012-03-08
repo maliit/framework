@@ -32,11 +32,8 @@ case $MODE in
     normal )
         BUILD_TYPE=skeleton
         ;;
-    legacy )
-        BUILD_TYPE=skeleton-legacy
-        ;;
     * )
-        echo "Wrong MODE argument: \"$MODE\". Has to be either \"normal\" or \"legacy\""
+        echo "Wrong MODE argument: \"$MODE\". Has to be \"normal\""
         exit $ERROR_BADARGS
         ;;
 esac
