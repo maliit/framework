@@ -105,6 +105,7 @@ x11 {
         mimxextension.h \
         mimrotationanimation.h \
         mimxapplication.h \
+        mimxserverlogic.h \
 
     SOURCES += \
         mimremotewindow.cpp \
@@ -113,6 +114,7 @@ x11 {
         mpassthruwindow.cpp \
         mimrotationanimation.cpp \
         mimxapplication.cpp \
+        mimxserverlogic.cpp \
 }
 
 qpa|qws {

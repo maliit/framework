@@ -4,9 +4,9 @@
 #include "mpassthruwindow.h"
 #include "mimremotewindow.h"
 #include "mimxextension.h"
+#include "mimxserverlogic.h"
 
 #include <tr1/functional>
-
 #include <QApplication>
 
 class MImRotationAnimation;
@@ -51,6 +51,8 @@ public:
     //! For unittesting purposes
     MImRemoteWindow *remoteWindow() const;
 
+    MImXServerLogic *serverLogic() const;
+
 public Q_SLOTS:
     void setTransientHint(WId remoteWinId);
 
@@ -86,7 +88,8 @@ private:
     QScopedPointer<MImRemoteWindow> mRemoteWindow;
     MImRotationAnimation *mRotationAnimation;
 
-    const MImServerXOptions & xOptions;
+    const MImServerXOptions &xOptions;
+    QScopedPointer<MImXServerLogic> mServerLogic;
 
     friend class Ut_PassthroughServer;
 };

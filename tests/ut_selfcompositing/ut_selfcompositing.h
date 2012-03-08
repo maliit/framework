@@ -24,6 +24,7 @@
 #include <QtGui>
 
 class MImXApplication;
+class MImXServerLogic;
 
 class Ut_SelfCompositing : public QObject
 {
@@ -42,6 +43,7 @@ private Q_SLOTS:
 private:
     MImXApplication *app;
     MImServerXOptions xOptions;
+    MImXServerLogic *serverLogic;
 };
 
 #endif // UT_SELFCOMPOSITING_H

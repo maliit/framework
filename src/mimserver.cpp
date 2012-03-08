@@ -23,6 +23,7 @@
 #elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
 #include "mimqpaplatform.h"
 #endif
+#include "mimxserverlogic.h"
 
 using namespace std::tr1;
 
@@ -78,7 +79,7 @@ MImServer::MImServer(shared_ptr<MInputContextConnection> icConnection, QObject *
     MImXApplication * const app = MImXApplication::instance();
     // Configure widgets loaded during MIMPluginManager construction
     // only needed on X11 for self-compositing
-    app->configureWidgetsForCompositing();
+    app->serverLogic()->pluginLoaded();
 #endif
 }
 
@@ -108,7 +109,7 @@ void MImServer::connectComponents()
 
     // Handle changed used area by plugins
     QObject::connect(d->pluginManager, SIGNAL(regionUpdated(const QRegion &)),
-                     app->passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
+                     app->serverLogic()->passThruWindow(), SLOT(inputPassthrough(const QRegion &)));
 
     // Configure widgets for self compositing after loading
     QObject::connect(d->pluginManager, SIGNAL(pluginLoaded()),
@@ -126,7 +127,7 @@ QWidget *MImServer::pluginsWidget()
 
 #if defined(Q_WS_X11)
     Q_UNUSED(d);
-    return MImXApplication::instance()->pluginsProxyWidget();
+    return MImXApplication::instance()->serverLogic()->pluginsProxyWidget();
 #elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
     return d->platform.get()->pluginsProxyWidget();
 #endif

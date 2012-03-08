@@ -42,7 +42,7 @@ public:
     {
     }
 
-    bool operator()(QWidget *w, const MImServerXOptions &)
+    bool operator()(QWidget *w)
     {
         if (not w) {
             return false;
@@ -79,12 +79,12 @@ public:
     }
 };
 
-MPassThruWindow::MPassThruWindow(MImXApplication *application,
+MPassThruWindow::MPassThruWindow(MImXServerLogic *serverLogic,
                                  const MImServerXOptions &options)
     : QWidget(0),
       remoteWindow(0),
       mRegion(),
-      mApplication(application),
+      mServerLogic(serverLogic),
       xOptions(options)
 {
     setWindowTitle("MInputMethod");
@@ -101,7 +101,7 @@ MPassThruWindow::MPassThruWindow(MImXApplication *application,
     // We do not want input focus for that window.
     setAttribute(Qt::WA_X11DoNotAcceptFocus);
 
-    QObject::connect(mApplication, SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
+    QObject::connect(mServerLogic, SIGNAL(remoteWindowChanged(MImRemoteWindow *)),
                      this, SLOT(setRemoteWindow(MImRemoteWindow *)));
 }
 
@@ -233,7 +233,7 @@ void MPassThruWindow::setRemoteWindow(MImRemoteWindow *newWindow)
 
 void MPassThruWindow::updateFromRemoteWindow(const QRegion &region)
 {
-    mApplication->visitWidgetHierarchy(ForcedWidgetUpdater(region), this);
+    visitWidgetHierarchy(ForcedWidgetUpdater(region), this);
 }
 
 const QRegion & MPassThruWindow::region()

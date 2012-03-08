@@ -6,9 +6,9 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-class MWindow;
 class MImXApplication;
 class MPassThruWindow;
+class MImXServerLogic;
 
 class Ut_PassthroughServer : public QObject
 {
@@ -35,6 +35,7 @@ private:
     void makeInvisible();
 
     MImXApplication *app;
+    MImXServerLogic *serverLogic;
     MPassThruWindow *subject;
     MImServerXOptions xOptions;
 };

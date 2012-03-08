@@ -18,6 +18,7 @@
 #include "mimgraphicsview.h"
 #include "mimwidget.h"
 #include "mimxapplication.h"
+#include "mimremotewindow.h"
 #include "utils.h"
 
 #if defined(Q_WS_X11)
@@ -69,6 +70,7 @@ void Ut_SelfCompositing::initTestCase()
     xOptions.selfComposited = true;
 
     app = new MImXApplication(argc, argv, xOptions);
+    serverLogic = app->serverLogic();
 }
 
 void Ut_SelfCompositing::cleanupTestCase()
@@ -103,14 +105,14 @@ void Ut_SelfCompositing::testSelfCompositing()
     MaliitTestUtils::RemoteWindow remote;
     remote.setGeometry(0, 0, windowSize.width(), windowSize.height());
 
-    QWidget *passthru = app->passThruWindow();
+    QWidget *passthru = serverLogic->passThruWindow();
     passthru->setGeometry(remote.geometry().right() + 10, 0,
                           windowSize.width(), windowSize.height());
 
     QWidget *subject = widgetCreator(passthru);
 
     remote.show();
-    app->setTransientHint(remote.window()->effectiveWinId());
+    serverLogic->applicationFocusChanged(remote.window()->effectiveWinId());
 
     passthru->show();
     QTest::qWaitForWindowShown(remote.window());
@@ -118,7 +120,7 @@ void Ut_SelfCompositing::testSelfCompositing()
     subject->show();
     QTest::qWaitForWindowShown(passthru->window());
     passthru->raise();
-    app->remoteWindow()->redirect();
+    serverLogic->remoteWindow()->redirect();
 
     QApplication::setActiveWindow(passthru);
 
@@ -130,7 +132,7 @@ void Ut_SelfCompositing::testSelfCompositing()
     QImage remoteImage = QPixmap::grabWidget(&remote).toImage();
     QCOMPARE(subjectImage, remoteImage);
 
-    app->remoteWindow()->unredirect();
+    serverLogic->remoteWindow()->unredirect();
 }
 
 QTEST_APPLESS_MAIN(Ut_SelfCompositing)

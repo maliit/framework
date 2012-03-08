@@ -20,8 +20,8 @@
 #include <QObject>
 #include <QWidget>
 
-class MImXApplication;
 struct MImServerXOptions;
+class MImXServerLogic;
 
 /*! \internal
  * \ingroup maliitserver
@@ -32,10 +32,10 @@ class MImRemoteWindow : public QObject
     Q_OBJECT
 public:
     //! Constructs a MImRemoteWindow from a X window.
-    explicit MImRemoteWindow(WId window,
-                             MImXApplication *application,
-                             const MImServerXOptions &options);
 
+    explicit MImRemoteWindow(WId window,
+                             MImXServerLogic *serverLogic,
+                             const MImServerXOptions &options);
     virtual ~MImRemoteWindow();
 
     //! Sets the \a widget transient to the remote application window
@@ -105,8 +105,8 @@ private:
     QPixmap pixmap;
     bool redirected;
 
-    MImXApplication *mApplication;
     const MImServerXOptions &xOptions;
+    MImXServerLogic *mServerLogic;
 };
 //! \internal_end
 

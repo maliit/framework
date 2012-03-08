@@ -8,6 +8,7 @@
 
 class MPassThruWindow;
 class MImXApplication;
+class MImXServerLogic;
 
 class Ut_MIMApplication : public QObject
 {
@@ -31,6 +32,7 @@ private:
     MPassThruWindow *subject;
     MImXApplication *app;
     MImServerXOptions xOptions;
+    MImXServerLogic *serverLogic;
 };
 
 #endif
