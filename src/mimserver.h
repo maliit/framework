@@ -19,10 +19,13 @@
 
 #include <QObject>
 #include <tr1/memory>
+#include <QSharedPointer>
 
 class MInputContextConnection;
 class MImServerPrivate;
 class QWidget;
+
+class MImAbstractServerLogic;
 
 /* MImServer: The Maliit Input Method Server
  *
@@ -35,13 +38,17 @@ class QWidget;
 class MImServer : public QObject
 {
     Q_OBJECT
+
 public:
-    explicit MImServer(std::tr1::shared_ptr<MInputContextConnection> icConnection, QObject *parent = 0);
+    explicit MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
+                       const std::tr1::shared_ptr<MInputContextConnection> &icConnection,
+                       QObject *parent = 0);
     ~MImServer();
+
+    QWidget *pluginsWidget();
 
 private:
     void connectComponents();
-    QWidget *pluginsWidget();
 
     Q_DISABLE_COPY(MImServer)
     Q_DECLARE_PRIVATE(MImServer)
