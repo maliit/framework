@@ -13,11 +13,6 @@ external-libmaliit {
     LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 }
 
-enable-meegotouch {
-    CONFIG  += meegotouch
-    DEFINES += HAVE_MEEGOTOUCH
-}
-
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
 # Input

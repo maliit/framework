@@ -169,8 +169,6 @@ private Q_SLOTS:
 
     void testInvalidScene();
 
-    void testMPreeditInjectionEventCompatibility();
-
     void testPropertyNameNormalization_data();
     void testPropertyNameNormalization();
 
