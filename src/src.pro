@@ -121,14 +121,6 @@ x11 {
         mimxserverlogic.cpp \
 }
 
-qpa|qws {
-    SOURCES += \
-        mimqpaplatform.cpp \
-
-    HEADERS += \
-        mimqpaplatform.h
-}
-
 enable-legacy {
     HEADERS += \
         mimmeegoindicator.h \
