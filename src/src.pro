@@ -163,12 +163,6 @@ target.path += $$M_IM_INSTALL_LIBS
 headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
 headers.files += $$HEADERSINSTALL
 
-contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
-    M_IM_FRAMEWORK_FEATURE += M_IM_DISABLE_TRANSLUCENCY
-} else {
-    M_IM_FRAMEWORK_FEATURE -= M_IM_DISABLE_TRANSLUCENCY
-}
-
 outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
 outputFiles(config.h)
 

@@ -25,11 +25,8 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
-
-#ifndef M_IM_DISABLE_TRANSLUCENCY
 #include <X11/extensions/Xfixes.h>
 #include <X11/extensions/shape.h>
-#endif
 
 class ForcedWidgetUpdater
 {

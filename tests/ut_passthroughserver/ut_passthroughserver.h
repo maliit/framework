@@ -25,11 +25,6 @@ private Q_SLOTS:
 
     void testEmergencyHide();
 
-#if defined(M_IM_DISABLE_TRANSLUCENCY) && defined(M_IM_USE_SHAPE_WINDOW)
-    //! Tests window shape based on region signals
-    void testWindowShape();
-#endif
-
 private:
     void makeVisible();
     void makeInvisible();

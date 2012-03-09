@@ -45,18 +45,6 @@ void Ut_PassthroughServer::testEmergencyHide()
     QVERIFY(!subject->testAttribute(Qt::WA_Mapped) && !subject->isVisible());
 }
 
-#if defined(M_IM_DISABLE_TRANSLUCENCY) && defined(M_IM_USE_SHAPE_WINDOW)
-void Ut_PassthroughServer::testWindowShape()
-{
-    const QRegion region(0, 10, 100, 200);
-
-    QCOMPARE(QRegion(), subject->mask());
-
-    subject->inputPassthrough(region);
-    QCOMPARE(region, subject->mask());
-}
-#endif
-
 void Ut_PassthroughServer::makeVisible()
 {
     QVERIFY(!subject->testAttribute(Qt::WA_Mapped) && !subject->isVisible());
