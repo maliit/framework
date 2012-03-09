@@ -1,0 +1,15 @@
+prefix=@M_IM_PREFIX@
+exec_prefix=@M_IM_PREFIX@
+libdir=@M_IM_INSTALL_LIBS@
+includedir=@M_IM_INSTALL_HEADERS@
+pluginsdir=@M_IM_PLUGINS_DIR@
+pluginsdatadir=@M_IM_PLUGINS_DATA_DIR@
+factorypluginsdir=@M_IM_FACTORY_PLUGINS_DIR@
+
+Name: Maliit Server
+Description: Library for embedding the Maliit IM Server
+Version: @M_IM_VERSION@
+Requires: maliit-framework-0.80 maliit-plugins-0.80 maliit-connection-0.80
+Cflags: -I${includedir}/@MALIIT_SERVER_HEADER@
+Libs: -L${libdir}
+
