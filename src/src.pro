@@ -26,7 +26,6 @@ PLUGIN_HEADERS_PUBLIC = \
         mimgraphicsview.h \
         mimwidget.h \
         mimplugindescription.h \
-        mimsettings.h \ # should not be exposed to plugins, belongs in settings subcomponents
         mattributeextensionid.h \
         mimsubviewdescription.h \
 
@@ -93,7 +92,6 @@ SERVER_HEADERS_PRIVATE += \
         mindicatorserviceclient.h \
         mimsubviewoverride.h \
         mtoolbaritemfilter.h \
-        mimsettingsqsettings.h \
         mimserveroptions.h \
 
 SERVER_SOURCES_PRIVATE += \
@@ -102,8 +100,6 @@ SERVER_SOURCES_PRIVATE += \
         minputmethodhost.cpp \
         mattributeextensionmanager.cpp \
         mtoolbarlayout.cpp \
-        mimsettings.cpp \
-        mimsettingsqsettings.cpp \
         mimhwkeyboardtracker.cpp \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
@@ -112,17 +108,39 @@ SERVER_SOURCES_PRIVATE += \
         mtoolbaritemfilter.cpp \
         mimserveroptions.cpp \
 
+SETTINGS_HEADERS_PRIVATE += \
+        mimsettingsqsettings.h \
+        mimsettings.h \
+
+SETTINGS_SOURCES_PRIVATE += \
+        mimsettings.cpp \
+        mimsettingsqsettings.cpp \
+
+!disable-gconf {
+    SETTINGS_HEADERS_PRIVATE += \
+        mimsettingsgconf.h \
+
+    SETTINGS_SOURCES_PRIVATE += \
+        mimsettingsgconf.cpp \
+}
+
+disable-gconf {
+    DEFINES += M_IM_DISABLE_GCONF
+}
+
 HEADERS += \
         $$PLUGIN_HEADERS_PUBLIC \
         $$PLUGIN_HEADERS_PRIVATE \
         $$SERVER_HEADERS_PUBLIC \
         $$SERVER_HEADERS_PRIVATE \
+        $$SETTINGS_HEADERS_PRIVATE \
 
 SOURCES += \
         $$PLUGIN_SOURCES_PUBLIC \
         $$PLUGIN_SOURCES_PRIVATE \
         $$SERVER_SOURCES_PUBLIC \
         $$SERVER_SOURCES_PRIVATE \
+        $$SETTINGS_SOURCES_PRIVATE
 
 x11 {
     HEADERS += \
@@ -150,18 +168,6 @@ enable-legacy {
 
     SOURCES += \
         mimmeegoindicator.cpp \
-}
-
-!disable-gconf {
-    HEADERS += \
-        mimsettingsgconf.h \
-
-    SOURCES += \
-        mimsettingsgconf.cpp \
-}
-
-disable-gconf {
-    DEFINES += M_IM_DISABLE_GCONF
 }
 
 CONFIG += qdbus link_pkgconfig
