@@ -26,7 +26,6 @@ PLUGIN_HEADERS_PUBLIC = \
         mimgraphicsview.h \
         mimwidget.h \
         mimplugindescription.h \
-        mimsettings.h \ # should not be exposed to plugins, belongs in settings subcomponents
         mattributeextensionid.h \
         mimsubviewdescription.h \
 
@@ -91,7 +90,6 @@ SERVER_HEADERS_PRIVATE += \
         mindicatorserviceclient.h \
         mimsubviewoverride.h \
         mtoolbaritemfilter.h \
-        mimsettingsqsettings.h \
         mimserveroptions.h \
 
 SERVER_SOURCES += \
@@ -100,8 +98,6 @@ SERVER_SOURCES += \
         minputmethodhost.cpp \
         mattributeextensionmanager.cpp \
         mtoolbarlayout.cpp \
-        mimsettings.cpp \
-        mimsettingsqsettings.cpp \
         mimhwkeyboardtracker.cpp \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
@@ -110,15 +106,37 @@ SERVER_SOURCES += \
         mtoolbaritemfilter.cpp \
         mimserveroptions.cpp \
 
+SETTINGS_HEADERS_PRIVATE += \
+        mimsettingsqsettings.h \
+        mimsettings.h \
+
+SETTINGS_SOURCES += \
+        mimsettings.cpp \
+        mimsettingsqsettings.cpp \
+
+!disable-gconf {
+    SETTINGS_HEADERS_PRIVATE += \
+        mimsettingsgconf.h \
+
+    SETTINGS_SOURCES += \
+        mimsettingsgconf.cpp \
+}
+
+disable-gconf {
+    DEFINES += M_IM_DISABLE_GCONF
+}
+
 HEADERS += \
         $$PLUGIN_HEADERS_PUBLIC \
         $$PLUGIN_HEADERS_PRIVATE \
         $$SERVER_HEADERS_PUBLIC \
         $$SERVER_HEADERS_PRIVATE \
+        $$SETTINGS_HEADERS_PRIVATE \
 
 SOURCES += \
         $$PLUGIN_SOURCES \
         $$SERVER_SOURCES \
+        $$SETTINGS_SOURCES \
 
 x11 {
     HEADERS += \
@@ -138,18 +156,6 @@ x11 {
         mimrotationanimation.cpp \
         mimxapplication.cpp \
         mimxserverlogic.cpp \
-}
-
-!disable-gconf {
-    HEADERS += \
-        mimsettingsgconf.h \
-
-    SOURCES += \
-        mimsettingsgconf.cpp \
-}
-
-disable-gconf {
-    DEFINES += M_IM_DISABLE_GCONF
 }
 
 CONFIG += qdbus link_pkgconfig
