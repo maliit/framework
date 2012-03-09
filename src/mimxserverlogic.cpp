@@ -28,10 +28,6 @@
 
 #include <QDebug>
 
-#ifdef HAVE_MEEGOGRAPHICSSYSTEM
-#include <QtMeeGoGraphicsSystemHelper/QMeeGoGraphicsSystemHelper>
-#endif
-
 #include <X11/Xlib.h>
 
 namespace
@@ -89,10 +85,6 @@ MImXServerLogic::MImXServerLogic(const MImServerXOptions &options, QObject *pare
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.data()));
     mRotationAnimation = new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(),
                                                   this, xOptions);
-
-#ifdef HAVE_MEEGOGRAPHICSSYSTEM
-    QMeeGoGraphicsSystemHelper::setSwitchPolicy(QMeeGoGraphicsSystemHelper::NoSwitch);
-#endif
 
     configureWidgetsForCompositing();
 }
