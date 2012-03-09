@@ -6,7 +6,7 @@ TARGET = $$MALIIT_PLUGINS_LIB
 INCLUDEPATH += .. ../common ../connection
 
 # Input
-HEADERSINSTALL = \
+PLUGIN_HEADERS_PUBLIC = \
         minputmethodplugin.h \
         mimabstractpluginfactory.h \
         mabstractinputmethod.h \
@@ -24,82 +24,99 @@ HEADERSINSTALL = \
         mimgraphicsview.h \
         mimwidget.h \
         mimplugindescription.h \
-        mimsettings.h \
+        mimsettings.h \ # should not be exposed to plugins, belongs in settings subcomponents
         mattributeextensionid.h \
         mimsubviewdescription.h \
 
-HEADERS += \
-        $$HEADERSINSTALL \
-        mimpluginmanager.h \
-        mimpluginmanager_p.h \
-        mimpluginmanageradaptor.h \
-        minputmethodhost.h \
-        mtoolbardata_p.h \
-        mtoolbaritem_p.h \
-        mkeyoverride_p.h \
-        mattributeextensionmanager.h \
-        mtoolbarlayout_p.h \
-        mimhwkeyboardtracker.h \
-        mimupdateevent_p.h \
-        mimgraphicsview_p.h \
-        mimwidget_p.h \
-        mimpluginsproxywidget.h \
-        mimonscreenplugins.h \
-        mimhwkeyboardtracker_p.h \
-        mimextensionevent_p.h \
-        mimserver.h \
-        mindicatorserviceclient.h \
-        mimsubviewoverride.h \
-        mtoolbaritemfilter.h \
-        mimsettingsqsettings.h \
-        mimserveroptions.h \
-        mimabstractserverlogic.h \
-        mimapphostedserverlogic.h \
-        mimstandaloneserverlogic.h \
-
-SOURCES += \
+PLUGIN_SOURCES += \
         mimabstractpluginfactory.cpp \
-        mimpluginmanager.cpp \
-        mimpluginmanageradaptor.cpp \
         mabstractinputmethod.cpp \
         mabstractinputmethodhost.cpp \
-        minputmethodhost.cpp \
         mtoolbaritem.cpp \
         mtoolbardata.cpp \
         mkeyoverride.cpp \
         mkeyoverridedata.cpp \
-        mattributeextensionmanager.cpp \
-        mattributeextensionid.cpp \
         mattributeextension.cpp \
-        mtoolbarlayout.cpp \
         mimextensionevent.cpp \
         mimupdateevent.cpp \
         mimupdatereceiver.cpp \
-        mimsettings.cpp \
-        mimsettingsqsettings.cpp \
-        mimhwkeyboardtracker.cpp \
         mimgraphicsview.cpp \
         mimwidget.cpp \
         mimplugindescription.cpp \
-        mimpluginsproxywidget.cpp \
-        mimonscreenplugins.cpp \
+        mattributeextensionid.cpp \
         mimsubviewdescription.cpp \
+
+PLUGIN_HEADERS_PRIVATE += \
+        mtoolbardata_p.h \
+        mtoolbaritem_p.h \
+        mkeyoverride_p.h \
+        mtoolbarlayout_p.h \
+        mimupdateevent_p.h \
+        mimgraphicsview_p.h \
+        mimwidget_p.h \
+        mimextensionevent_p.h \
+
+SERVER_HEADERS_PUBLIC += \
+        mimserver.h \
+        mimabstractserverlogic.h \
+        mimapphostedserverlogic.h \
+        mimstandaloneserverlogic.h \
+
+SERVER_SOURCES += \
         mimserver.cpp \
-        mindicatorserviceclient.cpp \
-        mimsubviewoverride.cpp \
-        mtoolbaritemfilter.cpp \
-        mimserveroptions.cpp \
         mimabstractserverlogic.cpp \
         mimapphostedserverlogic.cpp \
         mimstandaloneserverlogic.cpp \
 
 !contains(QT_MAJOR_VERSION, 5) {
-    HEADERS += \
+    SERVER_HEADERS_PUBLIC += \
         mimdummyinputcontext.h \
 
-    SOURCES += \
+    SERVER_SOURCES += \
         mimdummyinputcontext.cpp \
 }
+
+SERVER_HEADERS_PRIVATE += \
+        mimpluginsproxywidget.h \
+        mimpluginmanager.h \
+        mimpluginmanager_p.h \
+        mimpluginmanageradaptor.h \
+        minputmethodhost.h \
+        mattributeextensionmanager.h \
+        mimhwkeyboardtracker.h \
+        mimonscreenplugins.h \
+        mimhwkeyboardtracker_p.h \
+        mindicatorserviceclient.h \
+        mimsubviewoverride.h \
+        mtoolbaritemfilter.h \
+        mimsettingsqsettings.h \
+        mimserveroptions.h \
+
+SERVER_SOURCES += \
+        mimpluginmanager.cpp \
+        mimpluginmanageradaptor.cpp \
+        minputmethodhost.cpp \
+        mattributeextensionmanager.cpp \
+        mtoolbarlayout.cpp \
+        mimsettings.cpp \
+        mimsettingsqsettings.cpp \
+        mimhwkeyboardtracker.cpp \
+        mimpluginsproxywidget.cpp \
+        mimonscreenplugins.cpp \
+        mindicatorserviceclient.cpp \
+        mimsubviewoverride.cpp \
+        mtoolbaritemfilter.cpp \
+        mimserveroptions.cpp \
+
+HEADERS += \
+        $$PLUGIN_HEADERS_PUBLIC \
+        $$PLUGIN_HEADERS_PRIVATE \
+        $$SERVER_HEADERS_PUBLIC \
+        $$SERVER_HEADERS_PRIVATE \
+
+SOURCES += \
+        $$PLUGIN_SOURCES \
+        $$SERVER_SOURCES \
 
 x11 {
     HEADERS += \
@@ -161,7 +178,7 @@ QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 target.path += $$M_IM_INSTALL_LIBS
 
 headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
-headers.files += $$HEADERSINSTALL
+headers.files += $$PLUGINS_HEADERS_PUBLIC
 
 outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
 outputFiles(config.h)
