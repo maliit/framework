@@ -1,3 +1,9 @@
+unittest_arguments += -graphicssystem raster
+
+qws {
+    unittest_arguments += -qws
+}
+
 QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.commands = \
@@ -5,7 +11,7 @@ check.commands = \
     TESTPLUGIN_PATH=../plugins \
     TESTDATA_PATH=$$IN_PWD \
     LD_LIBRARY_PATH=../../maliit-plugins-quick/input-method:../../maliit-plugins-quick/plugin-factory:../../src:../../input-context/:../../maliit:../plugins:$(LD_LIBRARY_PATH) \
-    ./$$TARGET
+    ./$$TARGET $$unittest_arguments
 
 check.depends += $$TARGET
 
