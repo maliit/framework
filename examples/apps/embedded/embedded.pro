@@ -27,19 +27,7 @@ contains(BUILD_TYPE, unittest) {
     INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common
     LIBS += $$TOP_DIR/maliit/lib$${MALIIT_LIB}.so
 
-    INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common $$TOP_DIR/connection
-    LIBS += $$TOP_DIR/src/lib$${MALIIT_PLUGINS_LIB}.so
-
-    LIBS += $$TOP_DIR/connection/libmaliit-connection.a
-    POST_TARGETDEPS += $$TOP_DIR/connection/libmaliit-connection.a
-
-    #FIXME: a better way to get this
-    CONFIG += link_pkgconfig
-    PKGCONFIG += glib-2.0
-    PKGCONFIG += dbus-glib-1 gio-2.0
-    CONFIG += qdbus
-    # needs to match what the connection lib uses
-
+    include($$TOP_DIR/connection/libmaliit-connection.pri)
 }
 
 SOURCES += \

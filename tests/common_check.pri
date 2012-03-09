@@ -10,7 +10,7 @@ check.commands = \
     TESTING_IN_SANDBOX=1 \
     TESTPLUGIN_PATH=../plugins \
     TESTDATA_PATH=$$IN_PWD \
-    LD_LIBRARY_PATH=../../maliit-plugins-quick/input-method:../../maliit-plugins-quick/plugin-factory:../../src:../../input-context/:../../maliit:../plugins:$(LD_LIBRARY_PATH) \
+    LD_LIBRARY_PATH=../../connection:../../maliit-plugins-quick/input-method:../../maliit-plugins-quick/plugin-factory:../../src:../../input-context/:../../maliit:../plugins:$(LD_LIBRARY_PATH) \
     ./$$TARGET $$unittest_arguments
 
 check.depends += $$TARGET

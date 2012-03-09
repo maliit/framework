@@ -20,8 +20,7 @@ SOURCES += \
     ../stubs/fakeproperty.cpp \
 
 # For MImInputContextConnection pulled in by TestInputMethodHost
-LIBS += ../../connection/libmaliit-connection.a
-POST_TARGETDEPS += ../../connection/libmaliit-connection.a
+include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 CONFIG += plugin qdbus link_pkgconfig
 PKGCONFIG += dbus-glib-1 dbus-1 gconf-2.0

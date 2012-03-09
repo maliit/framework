@@ -1,20 +1,14 @@
 include(../config.pri)
 
+TOP_DIR = ..
+
 TEMPLATE = app
 TARGET = $$MALIIT_SERVER
 target.path = $$M_IM_INSTALL_BIN
 DEPENDPATH += .
 INCLUDEPATH += . .. ../src ../common ../connection
 
-LIBS += ../connection/libmaliit-connection.a
-POST_TARGETDEPS += ../connection/libmaliit-connection.a
-
-# FIXME: a better way to get this info from connection
-CONFIG += link_pkgconfig
-PKGCONFIG += glib-2.0
-PKGCONFIG += dbus-glib-1 gio-2.0
-CONFIG += qdbus
-# needs to match
+include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so
 x11:LIBS += -lXfixes

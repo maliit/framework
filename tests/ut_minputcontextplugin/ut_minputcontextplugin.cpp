@@ -14,12 +14,20 @@
  * of this file.
  */
 
-#include "utils.h"
 #include "ut_minputcontextplugin.h"
+
+#include "utils.h"
 #include "minputcontextplugin.h"
+#include "mimsettings.h"
 
 #include <QInputContext>
 #include <QApplication>
+
+namespace {
+    const QString EnabledPluginsKey = MALIIT_CONFIG_ROOT"onscreen/enabled";
+    const QStringList DefaultEnabledPlugins = QStringList() << "libdummyimplugin.so" << "dummyimsv1";
+    const QString MImPluginPaths = MALIIT_CONFIG_ROOT"paths";
+}
 
 void Ut_MInputContextPlugin::initTestCase()
 {
@@ -43,6 +51,13 @@ void Ut_MInputContextPlugin::init()
 {
     subject = new MInputContextPlugin(0);
     QVERIFY(subject);
+
+    // Make sure that for the direct IC case (maliit server embedded in application)
+    // We don't try to use any plugins outside of our control
+    MImSettings pathConf(MImPluginPaths);
+    pathConf.set(MaliitTestUtils::getTestPluginPath());
+    MImSettings enabledPluginsSettings(EnabledPluginsKey);
+    enabledPluginsSettings.set(DefaultEnabledPlugins);
 }
 
 void Ut_MInputContextPlugin::cleanup()

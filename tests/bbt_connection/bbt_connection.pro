@@ -9,7 +9,6 @@ HEADERS += \
 SOURCES += \
     bbt_connection.cpp \
 
-LIBS += ../../connection/libmaliit-connection.a
-POST_TARGETDEPS += ../../connection/libmaliit-connection.a
+include(../../connection/libmaliit-connection.pri)
 
 include(../common_check.pri)
