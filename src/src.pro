@@ -195,14 +195,23 @@ QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 
 target.path += $$M_IM_INSTALL_LIBS
 
-headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
-headers.files += $$PLUGINS_HEADERS_PUBLIC
+plugins_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER
+plugins_headers.files += $$PLUGIN_HEADERS_PUBLIC
+
+server_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_SERVER_HEADER
+server_headers.files += $$SERVER_HEADERS_PUBLIC
 
 contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
     M_IM_FRAMEWORK_FEATURE += M_IM_DISABLE_TRANSLUCENCY
 } else {
     M_IM_FRAMEWORK_FEATURE -= M_IM_DISABLE_TRANSLUCENCY
 }
+
+OTHER_FILES += \
+    maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc.in \
+    maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc.in \
+
+outputFiles(maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc)
 
 !enable-legacy {
     outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
@@ -212,7 +221,10 @@ contains(DEFINES, M_IM_DISABLE_TRANSLUCENCY) {
 outputFiles(config.h)
 
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
-install_pkgconfig.files = $$OUT_PWD/MeegoImFramework.pc $$OUT_PWD/maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc
+install_pkgconfig.files = \
+    $$OUT_PWD/MeegoImFramework.pc \
+    $$OUT_PWD/maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc \
+    $$OUT_PWD/maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc \
 
 QT_PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
 QT_PREFIX = $$[QT_INSTALL_PREFIX]
@@ -231,7 +243,8 @@ install_prf.files = $$OUT_PWD/meegoimframework.prf
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
 
 INSTALLS += target \
-    headers \
+    plugins_headers \
+    server_headers \
     install_prf \
     install_pkgconfig \
 

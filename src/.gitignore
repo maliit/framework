@@ -2,5 +2,5 @@ meegoimframework.prf
 MeegoImFramework.pc
 meego-im-framework.schemas
 maliit-framework.schemas
-maliit-plugins-*.pc
+maliit-*-*.pc
 config.h
