@@ -4,8 +4,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-
-class MIMApplication;
 class MIMPluginManager;
 class QGraphicsScene;
 
@@ -28,7 +26,6 @@ private Q_SLOTS:
     void testPluginDescriptions();
 
 private:
-    QApplication *app;
     MIMPluginManager *subject;
 };
 

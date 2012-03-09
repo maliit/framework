@@ -8,7 +8,6 @@
 
 class MIMPluginManager;
 class MIMPluginManagerPrivate;
-class QCoreApplication;
 class QDBusInterface;
 
 class Ut_MIMPluginManager : public QObject
@@ -58,15 +57,11 @@ private Q_SLOTS:
 private:
     void handleMessages();
 
-    QApplication *app;
     QWidget *proxyWidget;
     QString pluginPath;
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;
     QDBusInterface *m_clientInterface;
-#ifdef Q_WS_X11
-    MImServerXOptions xOptions;
-#endif
     void checkHandlerMap(int handler, const QString &name);
 };
 

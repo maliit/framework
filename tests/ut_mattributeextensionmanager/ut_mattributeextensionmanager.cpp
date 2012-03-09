@@ -42,13 +42,6 @@ namespace {
 
 void Ut_MAttributeExtensionManager::initTestCase()
 {
-    // Avoid waiting if im server is not responding
-    // MApplication::setLoadMInputContext(false);
-
-    static char *argv[1] = {(char *) "ut_toolbarmanager"};
-    static int argc = 1;
-    app = new QCoreApplication(argc, argv);
-
     Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
     Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
@@ -59,8 +52,6 @@ void Ut_MAttributeExtensionManager::initTestCase()
 
 void Ut_MAttributeExtensionManager::cleanupTestCase()
 {
-    delete app;
-    app = 0;
 }
 
 void Ut_MAttributeExtensionManager::init()
@@ -260,6 +251,4 @@ void Ut_MAttributeExtensionManager::testSendExtendedAttributeBack()
     QVERIFY(spy.isEmpty());
 }
 
-
-QTEST_APPLESS_MAIN(Ut_MAttributeExtensionManager);
-
+QTEST_MAIN(Ut_MAttributeExtensionManager);

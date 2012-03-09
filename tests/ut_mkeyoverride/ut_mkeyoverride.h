@@ -4,7 +4,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-class QCoreApplication;
 class MKeyOverride;
 
 class Ut_MKeyOverride : public QObject
@@ -21,7 +20,6 @@ private Q_SLOTS:
     void testSetProperty();
 
 private:
-    QCoreApplication *app;
     MKeyOverride *subject;
     QString keyId;
 };

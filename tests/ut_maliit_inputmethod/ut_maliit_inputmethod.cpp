@@ -59,22 +59,14 @@ private Q_SLOTS:
     void testEmitKeyRelease();
     void testRequestInputMethodPanel();
     void testCloseInputMethodPanel();
-
-private:
-    QScopedPointer<QApplication> app;
 };
 
 void Ut_Maliit_InputMethod::initTestCase()
 {
-    static char *argv[1] = { (char *) "Ut_Maliit_InputMethod" };
-    static int argc = 1;
-
-    app.reset(new QApplication(argc, argv));
 }
 
 void Ut_Maliit_InputMethod::cleanupTestCase()
 {
-    app.reset();
 }
 
 void Ut_Maliit_InputMethod::testDefaultArea()
@@ -216,6 +208,6 @@ void Ut_Maliit_InputMethod::testCloseInputMethodPanel()
 #endif
 }
 
-QTEST_APPLESS_MAIN(Ut_Maliit_InputMethod)
+QTEST_MAIN(Ut_Maliit_InputMethod)
 
 #include "ut_maliit_inputmethod.moc"

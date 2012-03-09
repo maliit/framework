@@ -1,9 +1,5 @@
 #include "ut_mimpluginmanager.h"
 
-#ifdef Q_WS_X11
-#include "mimxapplication.h"
-#endif
-
 #include "mimsettings_stub.h"
 #include "dummyimplugin.h"
 #include "dummyimplugin3.h"
@@ -73,16 +69,7 @@ namespace {
 
 void Ut_MIMPluginManager::initTestCase()
 {
-    static char *argv[1] = { (char *) "ut_mimpluginloader" };
-    static int argc = 1;
-
-#ifdef Q_WS_X11
-    app = new MImXApplication(argc, argv, xOptions);
-    proxyWidget = static_cast<MImXApplication*>(app)->serverLogic()->pluginsProxyWidget();
-#else
-    app = new QApplication(argc, argv);
     proxyWidget = new QWidget;
-#endif
 
     Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
@@ -92,7 +79,6 @@ void Ut_MIMPluginManager::initTestCase()
 
 void Ut_MIMPluginManager::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ut_MIMPluginManager::init()
@@ -1034,9 +1020,9 @@ void Ut_MIMPluginManager::testEnableAllSubviews()
 void Ut_MIMPluginManager::handleMessages()
 {
     QTest::qWait(100);
-    while (app->hasPendingEvents()) {
-        app->processEvents();
+    while (QCoreApplication::hasPendingEvents()) {
+        QCoreApplication::processEvents();
     }
 }
 
-QTEST_APPLESS_MAIN(Ut_MIMPluginManager)
+QTEST_MAIN(Ut_MIMPluginManager)

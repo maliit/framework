@@ -14,15 +14,12 @@
  * of this file.
  */
 
-
-
 #ifndef UT_MATTRIBUTEEXTENSIONMANAGER_H
 #define UT_MATTRIBUTEEXTENSIONMANAGER_H
 
 #include <QObject>
 #include <QtTest/QTest>
 
-class QCoreApplication;
 class MAttributeExtensionManager;
 
 class Ut_MAttributeExtensionManager : public QObject
@@ -40,9 +37,7 @@ private Q_SLOTS:
     void testSendExtendedAttributeBack();
 
 private:
-    QCoreApplication *app;
     MAttributeExtensionManager *subject;
 };
 
 #endif
-

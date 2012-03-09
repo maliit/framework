@@ -29,19 +29,10 @@ class MIndicatorServiceClient
 
 void Ut_MInputMethodQuickPlugin::initTestCase()
 {
-    static char *argv[2] = { (char *) "Ut_MInputMethodQuickPlugin",
-                             (char *) "-software" };
-    static int argc = 2;
-
-    // Enforcing raster GS to make test reliable:
-    QApplication::setGraphicsSystem("raster");
-
-    app = new QApplication(argc, argv);
 }
 
 void Ut_MInputMethodQuickPlugin::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ut_MInputMethodQuickPlugin::init()
@@ -104,4 +95,4 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     QCOMPARE(host.sendPreeditCount, 1);
 }
 
-QTEST_APPLESS_MAIN(Ut_MInputMethodQuickPlugin)
+QTEST_MAIN(Ut_MInputMethodQuickPlugin)

@@ -1,8 +1,6 @@
 #ifndef UT_MINPUTCONTEXT_H
 #define UT_MINPUTCONTEXT_H
 
-#include <QApplication>
-
 #include <memory>
 #include <QPointer>
 #include <QtTest/QtTest>
@@ -180,7 +178,6 @@ private:
     void waitAndProcessEvents(int waitTime);
 
 private:
-    std::auto_ptr<QApplication> app;
     QPointer<MInputContext> m_subject;
     QPointer<InputMethodServerTestConnection> m_connection;
 };

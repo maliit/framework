@@ -4,7 +4,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-class QCoreApplication;
 class MToolbarItem;
 
 class Ut_MToolbarItem : public QObject
@@ -25,7 +24,6 @@ private Q_SLOTS:
     void testContentAlignment();
 
 private:
-    QCoreApplication *app;
     MToolbarItem *subject;
 };
 

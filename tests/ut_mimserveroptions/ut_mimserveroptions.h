@@ -22,8 +22,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-class QCoreApplication;
-
 class Ut_MImServerOptions : public QObject
 {
     Q_OBJECT
@@ -39,7 +37,6 @@ private Q_SLOTS:
     void testCommonOptions();
 
 private:
-    QCoreApplication *app;
     MImServerCommonOptions commonOptions;
     MImServerXOptions xOptions;
 };

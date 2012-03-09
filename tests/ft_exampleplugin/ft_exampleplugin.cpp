@@ -29,19 +29,10 @@ class MIndicatorServiceClient
 
 void Ft_ExamplePlugin::initTestCase()
 {
-    static char *argv[2] = { (char *) "Ft_ExamplePlugin",
-                             (char *) "-software" };
-    static int argc = 2;
-
-    // Enforcing raster GS to make test reliable:
-    QApplication::setGraphicsSystem("raster");
-
-    app = new QApplication(argc, argv);
 }
 
 void Ft_ExamplePlugin::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ft_ExamplePlugin::init()
@@ -87,4 +78,4 @@ void Ft_ExamplePlugin::testFunction()
     QCOMPARE(host.sendPreeditCount, 1);
 }
 
-QTEST_APPLESS_MAIN(Ft_ExamplePlugin)
+QTEST_MAIN(Ft_ExamplePlugin)

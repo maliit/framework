@@ -5,7 +5,6 @@
 #include <mtoolbardata.h>
 #include <mtoolbarlayout.h>
 #include <mtoolbaritem.h>
-#include <QCoreApplication>
 #include <QFile>
 #include <QDir>
 #include <QDebug>
@@ -21,11 +20,6 @@ namespace {
 
 void Ut_MToolbarData::initTestCase()
 {
-    static char *argv[1] = { (char *) "ut_mimpluginloader" };
-    static int argc = 1;
-
-    app = new QCoreApplication(argc, argv);
-
     Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
     Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
@@ -38,7 +32,6 @@ void Ut_MToolbarData::initTestCase()
 
 void Ut_MToolbarData::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ut_MToolbarData::init()
@@ -310,5 +303,5 @@ void Ut_MToolbarData::testAddItem()
     QVERIFY2(!ok, "Item should not be added twice to the same row");
 }
 
-QTEST_APPLESS_MAIN(Ut_MToolbarData)
+QTEST_MAIN(Ut_MToolbarData)
 

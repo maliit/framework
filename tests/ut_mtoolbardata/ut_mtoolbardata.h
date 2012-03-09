@@ -4,7 +4,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-class QCoreApplication;
 class MToolbarData;
 
 class Ut_MToolbarData : public QObject
@@ -30,7 +29,6 @@ private Q_SLOTS:
     void testAddItem();
 
 private:
-    QCoreApplication *app;
     MToolbarData *subject;
 };
 

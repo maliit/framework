@@ -28,17 +28,11 @@ namespace
 
 void Ut_MImSettings::initTestCase()
 {
-    static char *argv[1] = { (char *) "ut_mimsettings" };
-    static int argc = 1;
-
-    app = new QApplication(argc, argv);
-
     MImSettings::setImplementationFactory(new MImSettingsQSettingsBackendFactory);
 }
 
 void Ut_MImSettings::cleanupTestCase()
 {
-    delete app;
 }
 
 // the test code is generic, by writing a backend-specific
@@ -242,4 +236,4 @@ void Ut_MImSettings::testListEntries()
              QList<QString>());
 }
 
-QTEST_APPLESS_MAIN(Ut_MImSettings)
+QTEST_MAIN(Ut_MImSettings)

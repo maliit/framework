@@ -52,15 +52,10 @@ namespace
 
 void Ft_MIMPluginManager::initTestCase()
 {
-    static char *argv[1] = { (char *) "ut_mimpluginmanager" };
-    static int argc = 1;
-
-    app = new QApplication(argc, argv);
 }
 
 void Ft_MIMPluginManager::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ft_MIMPluginManager::init()
@@ -245,5 +240,5 @@ void Ft_MIMPluginManager::testPluginDescriptions()
     enabledPluginsSettings.set(QStringList());
 }
 
-QTEST_APPLESS_MAIN(Ft_MIMPluginManager)
+QTEST_MAIN(Ft_MIMPluginManager)
 

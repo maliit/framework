@@ -306,19 +306,6 @@ void WidgetStub::sendCopyAvailable(bool yes)
 
 void Ut_MInputContext::initTestCase()
 {
-    static char *argv[2] = { (char *) "ut_minputcontext",
-                             (char *) "-software"};
-    static int argc = 2;
-
-    // QInputContext::setFocusWidget seems to require a valid X11 window.
-    // However, the test crashes with MeeGo GS. That's why we set the graphics
-    // system manually. Should be removed once NB#220339 [1] gets fixed.
-    // [1] "QWidget::create crashes in window-less application"
-    QApplication::setGraphicsSystem("raster");
-
-    QCoreApplication::setLibraryPaths(QStringList("./inputmethods"));
-    app.reset(new QApplication(argc, argv));
-
     m_connection = new InputMethodServerTestConnection(0);
     m_subject = new MInputContext(m_connection, 0);
     m_connection->emitConnected();
@@ -744,8 +731,8 @@ void Ut_MInputContext::testSetRedirectKeys()
 void Ut_MInputContext::waitAndProcessEvents(int waitTime)
 {
     QTest::qWait(waitTime);
-    while (app->hasPendingEvents()) {
-        app->processEvents();
+    while (QCoreApplication::hasPendingEvents()) {
+        QCoreApplication::processEvents();
     }
 }
 
@@ -940,6 +927,4 @@ void Ut_MInputContext::testPropertyNameNormalization()
     QCOMPARE(extracted, expected);
 }
 
-
-QTEST_APPLESS_MAIN(Ut_MInputContext)
-
+QTEST_MAIN(Ut_MInputContext)

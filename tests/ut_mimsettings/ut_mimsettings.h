@@ -20,8 +20,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 
-class QApplication;
-
 class Ut_MImSettings : public QObject
 {
     Q_OBJECT
@@ -39,9 +37,6 @@ private Q_SLOTS:
     void testModifyValueNotification();
     void testListDirs();
     void testListEntries();
-
-private:
-    QApplication *app;
 };
 
 #endif

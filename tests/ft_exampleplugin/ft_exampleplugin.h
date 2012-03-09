@@ -19,7 +19,6 @@
 
 #include <QtTest/QtTest>
 #include <QtCore>
-#include <QtGui>
 
 class Ft_ExamplePlugin 
     : public QObject
@@ -35,10 +34,6 @@ private Q_SLOTS:
 
     void testFunction_data();
     void testFunction();
-
-private:
-    QCoreApplication *app;
-
 };
 
 #endif // FT_EXAMPLEPLUGIN_H

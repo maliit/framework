@@ -1,7 +1,6 @@
 #include "ut_mkeyoverride.h"
 
 #include <mkeyoverride.h>
-#include <QCoreApplication>
 #include <QFile>
 #include <QDir>
 #include <QSignalSpy>
@@ -14,17 +13,12 @@ Q_DECLARE_METATYPE(MKeyOverride::KeyOverrideAttributes)
 
 void Ut_MKeyOverride::initTestCase()
 {
-    char *argv[1] = { (char *) "ut_mkeyoverride" };
-    int argc = 1;
-
-    app = new QCoreApplication(argc, argv);
     qRegisterMetaType< MKeyOverride::KeyOverrideAttribute >("MKeyOverride::KeyOverrideAttribute");
     qRegisterMetaType< MKeyOverride::KeyOverrideAttributes >("MKeyOverride::KeyOverrideAttributes");
 }
 
 void Ut_MKeyOverride::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ut_MKeyOverride::init()
@@ -81,5 +75,5 @@ void Ut_MKeyOverride::testSetProperty()
     spy.clear();
 }
 
-QTEST_APPLESS_MAIN(Ut_MKeyOverride)
+QTEST_MAIN(Ut_MKeyOverride)
 

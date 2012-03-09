@@ -1,7 +1,6 @@
 #include "ut_mtoolbaritem.h"
 
 #include <mtoolbaritem.h>
-#include <QCoreApplication>
 #include <QFile>
 #include <QDir>
 #include <QSignalSpy>
@@ -13,16 +12,10 @@ namespace {
 
 void Ut_MToolbarItem::initTestCase()
 {
-    char *argv[1] = { (char *) "ut_mimpluginloader" };
-    int argc = 1;
-
-    app = new QCoreApplication(argc, argv);
-
 }
 
 void Ut_MToolbarItem::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ut_MToolbarItem::init()
@@ -202,5 +195,5 @@ void Ut_MToolbarItem::testContentAlignment()
     QVERIFY(spy.isEmpty());
 }
 
-QTEST_APPLESS_MAIN(Ut_MToolbarItem)
+QTEST_MAIN(Ut_MToolbarItem)
 

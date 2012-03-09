@@ -75,15 +75,10 @@ namespace {
 
 void Ut_MImServerOptions::initTestCase()
 {
-    char *argv[1] = { (char *) "ut_mimserveroptions" };
-    int argc = 1;
-
-    app = new QCoreApplication(argc, argv);
 }
 
 void Ut_MImServerOptions::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ut_MImServerOptions::init()
@@ -154,5 +149,4 @@ void Ut_MImServerOptions::testCommonOptions()
     QCOMPARE(xOptions, expectedXOptions);
 }
 
-QTEST_APPLESS_MAIN(Ut_MImServerOptions)
-
+QTEST_MAIN(Ut_MImServerOptions)
