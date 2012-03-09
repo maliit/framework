@@ -16,8 +16,7 @@ contains(QT_MAJOR_VERSION, 5) {
 }
 
 # For MImInputContextConnection pulled in by TestInputMethodHost
-LIBS += ../../connection/libmaliit-connection.a
-POST_TARGETDEPS += ../../connection/libmaliit-connection.a
+include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 IN_TREE_TEST_PLUGIN_DIR = $${OUT_PWD}/../../examples/plugins
 DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"

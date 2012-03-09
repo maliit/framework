@@ -29,8 +29,7 @@ SOURCES += \
     ut_minputcontext.cpp \
     $$ICDIR/minputcontext.cpp
 
-LIBS += ../../connection/libmaliit-connection.a
-POST_TARGETDEPS += ../../connection/libmaliit-connection.a
+include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 CONFIG += plugin qdbus link_pkgconfig
 

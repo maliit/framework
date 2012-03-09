@@ -2,22 +2,22 @@ include(../config.pri)
 
 VERSION = 0.1.0
 TEMPLATE = lib
-TARGET = maliit-connection
+TARGET = $$MALIIT_CONNECTION_LIB
 
 INCLUDEPATH += ../common
 LIBS += ../common/libmaliit-common.a
 POST_TARGETDEPS += ../common/libmaliit-common.a
 
-CONFIG += link_pkgconfig staticlib
+CONFIG += link_pkgconfig
 
 QT += dbus
 
 # Interface classes
-HEADERS += \
+PUBLIC_HEADERS += \
     mimserverconnection.h \
     minputcontextconnection.h \
 
-SOURCES += \
+PUBLIC_SOURCES += \
     mimserverconnection.cpp \
     minputcontextconnection.cpp \
 
@@ -25,11 +25,11 @@ SOURCES += \
 CONFIG += direct-connection
 
 direct-connection {
-    SOURCES += \
+    PUBLIC_SOURCES += \
         miminputcontextdirectconnection.cpp \
         mimdirectserverconnection.cpp \
 
-    HEADERS += \
+    PUBLIC_HEADERS += \
         miminputcontextdirectconnection.h \
         mimdirectserverconnection.h \
 }
@@ -46,28 +46,34 @@ glib-dbus-connection {
         DEFINES += NO_DBUS_ACTIVATION
     }
 
-    HEADERS += \
-        \ # common
-        variantmarshalling.h \
+    PUBLIC_HEADERS += \
         \ # input-context
-        mdbusglibinputcontextadaptor.h \
         glibdbusimserverproxy.h \
-        glibdbusimserverproxy_p.h \
         inputcontextdbusaddress.h \
         \ # server
         minputcontextglibdbusconnection.h \
         serverdbusaddress.h \
 
-    SOURCES += \
-        \ # common
-        variantmarshalling.cpp \
-        \ # input-context
-        mdbusglibinputcontextadaptor.cpp \
+    PUBLIC_SOURCES += \
+        # input-context
         glibdbusimserverproxy.cpp \
         inputcontextdbusaddress.cpp \
         \ # server
         minputcontextglibdbusconnection.cpp \
         serverdbusaddress.cpp \
+
+    PRIVATE_HEADERS += \
+        \ # common
+        variantmarshalling.h \
+        \ # input-context
+        mdbusglibinputcontextadaptor.h \
+        glibdbusimserverproxy_p.h \
+
+    PRIVATE_SOURCES += \
+        \ # common
+        variantmarshalling.cpp \
+        \ # input-context
+        mdbusglibinputcontextadaptor.cpp \
 
     PKGCONFIG += dbus-glib-1 gio-2.0
 
@@ -124,5 +130,27 @@ glib-dbus-connection {
     }
 }
 
+HEADERS += \
+    $$PUBLIC_HEADERS \
+    $$PRIVATE_HEADERS \
 
+SOURCES += \
+    $$PUBLIC_SOURCES \
+    $$PRIVATE_SOURCES \
 
+target.path += $$M_IM_INSTALL_LIBS
+
+public_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_CONNECTION_HEADER
+public_headers.files += $$PUBLIC_HEADERS
+
+OTHER_FILES += maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc.in
+outputFiles(maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc)
+
+install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
+install_pkgconfig.files = maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc
+
+INSTALLS += target \
+    public_headers \
+    install_pkgconfig \
+
+OTHER_FILES += libmaliit-connection.pri

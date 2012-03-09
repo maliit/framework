@@ -2,4 +2,4 @@ org.maliit.server.service
 minputmethodserver.service
 mdbusglibicconnectionserviceglue.h
 mdbusglibinputcontextadaptorglue.h
-
+maliit-connection-*.pc

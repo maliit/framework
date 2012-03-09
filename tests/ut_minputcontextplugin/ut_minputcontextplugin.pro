@@ -9,6 +9,8 @@ external-libmaliit {
     LIBS += ../../maliit/lib$${MALIIT_LIB}.so
 }
 
+include($$TOP_DIR/connection/libmaliit-connection.pri)
+
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 
 HEADERS += \
