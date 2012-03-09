@@ -23,16 +23,10 @@ contains(BUILD_TYPE, unittest) {
 
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
-    external-libmaliit {
-        CONFIG += link_pkgconfig
-        PKGCONFIG += maliit-1.0
-    } else {
-        TOP_DIR = ../../..
-        INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common
-        LIBS += $$TOP_DIR/maliit/lib$${MALIIT_LIB}.so
-    }
-
     TOP_DIR = ../../..
+    INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common
+    LIBS += $$TOP_DIR/maliit/lib$${MALIIT_LIB}.so
+
     INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common $$TOP_DIR/connection
     LIBS += $$TOP_DIR/src/lib$${MALIIT_PLUGINS_LIB}.so
 

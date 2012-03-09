@@ -8,12 +8,8 @@ INCLUDEPATH += . .. ../common ../connection
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-external-libmaliit {
-    PKGCONFIG += maliit-1.0
-} else {
-    INCLUDEPATH += ../maliit
-    LIBS += ../maliit/lib$${MALIIT_LIB}.so
-}
+INCLUDEPATH += ../maliit
+LIBS += ../maliit/lib$${MALIIT_LIB}.so
 
 LIBS += ../connection/libmaliit-connection.a
 POST_TARGETDEPS += ../connection/libmaliit-connection.a

@@ -17,8 +17,6 @@ include(./config.pri)
         \\n\\t notests : Do not build tests \
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \
-        \\n\\t only-libmaliit : Only build libmaliit \
-        \\n\\t external-libmaliit : Use external libmaliit (do not build libmaliit) \
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
         \\n\\t enforce-install-prefix : Always use M_IM_PREFIX instead of prefix reported by GTK+, Qt, DBus etc. (used for testing) \
         \\nInfluential environment variables: \
@@ -40,44 +38,30 @@ include(./config.pri)
 CONFIG += ordered
 TEMPLATE = subdirs
 
-!only-libmaliit {
-    SUBDIRS = common connection src passthroughserver
-    TARGET = meego-im-uiserver
+SUBDIRS = common connection src passthroughserver maliit gtk-input-context
+
+!contains(QT_MAJOR_VERSION, 5) {
+    # Qt 5 has a new platform input plugin system which already contains
+    # support for Maliit.
+    SUBDIRS += input-context
+
+    # Requires QtQuick1 add-on, which might not be present
+    # and we should use QML 2 on Qt 5 anyways
+    SUBDIRS += maliit-plugins-quick
 }
 
-external-libmaliit {
-    only-libmaliit:error("CONFIG options only-libmaliit and external-libmaliit does not make sense together!")
-    !system(pkg-config --exists maliit-1.0):error("Could not find maliit-1.0")
-} else {
-    SUBDIRS += maliit
+SUBDIRS += examples
+
+!nodoc {
+    SUBDIRS += doc
 }
 
-!only-libmaliit {
-    SUBDIRS += gtk-input-context
+!nosdk:!nodoc {
+    SUBDIRS += sdk
+}
 
-    !contains(QT_MAJOR_VERSION, 5) {
-        # Qt 5 has a new platform input plugin system which already contains
-        # support for Maliit.
-        SUBDIRS += input-context
-
-        # Requires QtQuick1 add-on, which might not be present
-        # and we should use QML 2 on Qt 5 anyways
-        SUBDIRS += maliit-plugins-quick
-    }
-
-    SUBDIRS += examples
-
-    !nodoc {
-        SUBDIRS += doc
-    }
-
-    !nosdk:!nodoc {
-        SUBDIRS += sdk
-    }
-
-    !notests {
-        SUBDIRS += tests
-    }
+!notests {
+    SUBDIRS += tests
 }
 
 contains(SUBDIRS, input-context) {
