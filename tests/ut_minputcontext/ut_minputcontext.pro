@@ -1,5 +1,6 @@
-include(../../config.pri)
 include(../common_top.pri)
+
+QT += $$QT_WIDGETS
 
 ICDIR = ../../input-context
 INCLUDEPATH += $$ICDIR ../stubs

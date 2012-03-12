@@ -14,30 +14,19 @@
  * of this file.
  */
 
-#ifndef UT_MIMROTATIONANIMATION_H
-#define UT_MIMROTATIONANIMATION_H
+#ifndef CORE_UTILS_H__
+#define CORE_UTILS_H__
 
-#include <QtTest/QtTest>
+#include <QString>
 #include <QObject>
-#include "mimserveroptions.h"
-#include "gui-utils.h"
 
-class MImXApplication;
+namespace MaliitTestUtils {
 
-class Ut_MImRotationAnimation : public QObject
-{
-    Q_OBJECT
+    bool isTestingInSandbox();
+    QString getTestPluginPath();
+    QString getTestDataPath();
+    void waitForSignal(const QObject* object, const char* signal, int timeout);
+    void waitAndProcessEvents(int waitTime);
+}
 
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
-    void testPassthruHiddenDuringRotation();
-
-private:
-    MImXApplication *app;
-    MaliitTestUtils::RemoteWindow *remote;
-    MImServerXOptions xOptions;
-};
-
-#endif // UT_MIMROTATIONANIMATION_H
+#endif // CORE_UTILS_H__

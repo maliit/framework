@@ -14,30 +14,32 @@
  * of this file.
  */
 
-#ifndef UT_MIMROTATIONANIMATION_H
-#define UT_MIMROTATIONANIMATION_H
-
-#include <QtTest/QtTest>
-#include <QObject>
-#include "mimserveroptions.h"
 #include "gui-utils.h"
 
-class MImXApplication;
+#include <QtDebug>
+#include <QtCore>
+#include <QtGui>
+#include <QtTest>
 
-class Ut_MImRotationAnimation : public QObject
+namespace MaliitTestUtils {
+
+RemoteWindow::RemoteWindow(QWidget *p, Qt::WindowFlags f)
+    : QWidget(p, f)
 {
-    Q_OBJECT
+    setWindowFlags(Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint);
+}
 
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
+void RemoteWindow::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    p.setBrush(QBrush(QColor(Qt::green)));
+    p.drawRect(QRect(QPoint(), size()));
+    QFont f;
+    f.setPointSize(32);
+    p.setFont(f);
+    p.drawText(QRect(QPoint(), size()).adjusted(16, 16, -16, -16),
+               QString("Maliit"));
+}
 
-    void testPassthruHiddenDuringRotation();
+}
 
-private:
-    MImXApplication *app;
-    MaliitTestUtils::RemoteWindow *remote;
-    MImServerXOptions xOptions;
-};
-
-#endif // UT_MIMROTATIONANIMATION_H

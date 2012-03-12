@@ -1,10 +1,11 @@
 include(../common_top.pri)
 
+QT += $$QT_WIDGETS
+
 INCLUDEPATH += ../stubs \
                ../dummyimplugin \
 
 SRC_DIR = ../../src
-
 
 # Input
 HEADERS += \

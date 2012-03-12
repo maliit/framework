@@ -1,14 +1,18 @@
 include(../common_top.pri)
 
+QT += $$QT_WIDGETS
+
 INCLUDEPATH += \
     $$SRC_DIR \
 
 # Input
 HEADERS += \
     ut_selfcompositing.h \
+    ../utils/gui-utils.h \
 
 SOURCES += \
     ut_selfcompositing.cpp \
+    ../utils/gui-utils.cpp \
 
 LIBS += \
     $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXcomposite -lXdamage -lXfixes

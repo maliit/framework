@@ -15,7 +15,7 @@
  */
 
 #include "bbt_connection.h"
-#include "utils.h"
+#include "core-utils.h"
 
 // Direct connection backend
 #include <mimdirectserverconnection.h>

@@ -6,7 +6,7 @@ DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 INCLUDEPATH += \
     $$SRC_DIR \
 
-QT += core gui
+QT += gui
 
 # For MImInputContextConnection pulled in by TestInputMethodHost
 include(../../connection/libmaliit-connection.pri)

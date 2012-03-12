@@ -14,8 +14,8 @@
  * of this file.
  */
 
-#ifndef UTILS_H__
-#define UTILS_H__
+#ifndef GUI_UTILS_H__
+#define GUI_UTILS_H__
 
 #include <QtGlobal>
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -31,12 +31,6 @@
 
 
 namespace MaliitTestUtils {
-
-    bool isTestingInSandbox();
-    QString getTestPluginPath();
-    QString getTestDataPath();
-    void waitForSignal(const QObject* object, const char* signal, int timeout);
-    void waitAndProcessEvents(int waitTime);
 
     class RemoteWindow : public QWidget
     {

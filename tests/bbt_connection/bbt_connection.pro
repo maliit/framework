@@ -1,5 +1,7 @@
 include(../common_top.pri)
 
+QT += $$QT_WIDGETS
+
 IC_DIR = $$SRC_DIR/../input-context
 
 # Input

@@ -17,7 +17,7 @@
 
 #include "ut_mattributeextensionmanager.h"
 
-#include "utils.h"
+#include "core-utils.h"
 
 #include <mattributeextensionmanager.h>
 #include <mtoolbardata.h>

@@ -1,5 +1,7 @@
 include(../common_top.pri)
 
+QT += $$QT_WIDGETS
+
 INCLUDEPATH += ../stubs \
                ../dummyimplugin \
                ../dummyimplugin3 \

@@ -1,5 +1,7 @@
 include(../common_top.pri)
 
+QT += $$QT_WIDGETS
+
 INCLUDEPATH += ../../input-context
 LIBS += -L../../input-context -l$$MALIIT_INPUTCONTEXT_TARGETNAME
 

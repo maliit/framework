@@ -14,8 +14,9 @@
  * of this file.
  */
 
-#include "utils.h"
 #include "ut_minputmethodquickplugin.h"
+#include "core-utils.h"
+#include "gui-utils.h"
 
 #include <minputmethodquickplugin.h>
 #include <minputmethodquick.h>

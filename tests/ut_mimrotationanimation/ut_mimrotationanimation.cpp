@@ -19,7 +19,7 @@
 #include "mimxapplication.h"
 #include "mimrotationanimation.h"
 
-#include "utils.h"
+#include "gui-utils.h"
 
 namespace {
     const QSize windowSize(200, 200);

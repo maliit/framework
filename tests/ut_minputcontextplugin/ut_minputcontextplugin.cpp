@@ -16,7 +16,8 @@
 
 #include "ut_minputcontextplugin.h"
 
-#include "utils.h"
+#include "core-utils.h"
+#include "gui-utils.h"
 #include "minputcontextplugin.h"
 #include "mimsettings.h"
 

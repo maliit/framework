@@ -14,11 +14,10 @@
  * of this file.
  */
 
-#include "utils.h"
+#include "core-utils.h"
 
 #include <QtDebug>
 #include <QtCore>
-#include <QtGui>
 #include <QtTest>
 
 namespace {
@@ -132,27 +131,9 @@ void waitForSignal(const QObject* object, const char* signal, int timeout)
 void waitAndProcessEvents(int waitTime)
 {
     QTest::qWait(waitTime);
-    while (QApplication::instance()->hasPendingEvents()) {
-        QApplication::instance()->processEvents();
+    while (QCoreApplication::instance()->hasPendingEvents()) {
+        QCoreApplication::instance()->processEvents();
     }
-}
-
-RemoteWindow::RemoteWindow(QWidget *p, Qt::WindowFlags f)
-    : QWidget(p, f)
-{
-    setWindowFlags(Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint);
-}
-
-void RemoteWindow::paintEvent(QPaintEvent *)
-{
-    QPainter p(this);
-    p.setBrush(QBrush(QColor(Qt::green)));
-    p.drawRect(QRect(QPoint(), size()));
-    QFont f;
-    f.setPointSize(32);
-    p.setFont(f);
-    p.drawText(QRect(QPoint(), size()).adjusted(16, 16, -16, -16),
-               QString("Maliit"));
 }
 
 }
