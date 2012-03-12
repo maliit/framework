@@ -1,5 +1,7 @@
 include(../common_top.pri)
 
+QT += $$QT_WIDGETS
+
 LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
 
 # Input
@@ -8,7 +10,5 @@ HEADERS += \
 
 SOURCES += \
     ut_passthroughserver.cpp \
-
-QT += testlib
 
 include(../common_check.pri)

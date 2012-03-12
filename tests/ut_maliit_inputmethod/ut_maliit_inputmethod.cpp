@@ -21,7 +21,7 @@
 
 #include <maliit/inputmethod.h>
 
-#include "utils.h"
+#include "gui-utils.h"
 
 using Maliit::InputMethod;
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)

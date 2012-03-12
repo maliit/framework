@@ -14,8 +14,9 @@
  * of this file.
  */
 
-#include "utils.h"
 #include "ft_exampleplugin.h"
+#include "core-utils.h"
+#include "gui-utils.h"
 
 #include <minputmethodhost.h>
 #include <minputmethodplugin.h>

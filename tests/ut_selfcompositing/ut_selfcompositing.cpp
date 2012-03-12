@@ -19,7 +19,7 @@
 #include "mimwidget.h"
 #include "mimxapplication.h"
 #include "mimremotewindow.h"
-#include "utils.h"
+#include "gui-utils.h"
 
 #if defined(Q_WS_X11)
 #include <QX11Info>

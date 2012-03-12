@@ -3,7 +3,7 @@
 #include "mkeyboardstatetracker_stub.h"
 #include "dummyimplugin.h"
 #include "dummyinputmethod.h"
-#include "utils.h"
+#include "core-utils.h"
 
 #include <minputcontextconnection.h>
 #include <mimpluginmanager.h>

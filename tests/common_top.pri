@@ -5,7 +5,7 @@ MOC_DIR = .moc
 UTILS_DIR = ../utils
 
 CONFIG += debug
-QT += testlib xml $$QT_WIDGETS
+QT = core testlib
 
 QMAKE_CLEAN += *.log *~
 
@@ -25,10 +25,10 @@ INCLUDEPATH += . \
                $$UTILS_DIR \
 
 HEADERS += \
-           $$UTILS_DIR/utils.h \
+           $$UTILS_DIR/core-utils.h \
 
 SOURCES += \
-           $$UTILS_DIR/utils.cpp \
+           $$UTILS_DIR/core-utils.cpp \
 
 
 code_coverage_option=off

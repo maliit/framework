@@ -16,7 +16,7 @@
 
 #include "sanitychecks.h"
 
-#include "utils.h"
+#include "core-utils.h"
 
 void DeferredSignalEmitter::emitSignal()
 {

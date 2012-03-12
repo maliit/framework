@@ -8,7 +8,7 @@
 #include "fakegconf.h"
 #include "minputcontextconnection.h"
 
-#include "utils.h"
+#include "core-utils.h"
 
 #include <QProcess>
 #include <QGraphicsScene>

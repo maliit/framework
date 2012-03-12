@@ -14,7 +14,8 @@
  * of this file.
  */
 
-#include "utils.h"
+#include "core-utils.h"
+#include "gui-utils.h"
 #include "ut_minputcontextplugin.h"
 #include "minputcontextplugin.h"
 

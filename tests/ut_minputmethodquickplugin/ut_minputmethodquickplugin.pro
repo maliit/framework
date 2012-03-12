@@ -8,12 +8,7 @@ INCLUDEPATH += \
     $$QUICK_IM_DIR \
     $$QUICK_FACTORY_DIR \
 
-QT += core gui
-contains(QT_MAJOR_VERSION, 5) {
-    QT += quick1
-} else {
-    QT += declarative
-}
+QT += $$QT_WIDGETS quick1
 
 # For MImInputContextConnection pulled in by TestInputMethodHost
 LIBS += ../../connection/libmaliit-connection.a
@@ -25,9 +20,11 @@ DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 # Input
 HEADERS += \
     ut_minputmethodquickplugin.h \
+    ../utils/gui-utils.h \
 
 SOURCES += \
     ut_minputmethodquickplugin.cpp \
+    ../utils/gui-utils.cpp \
 
 LIBS += \
     -L$${QUICK_IM_DIR} \
