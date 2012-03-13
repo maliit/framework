@@ -355,7 +355,7 @@ protected:
 
 private:
     /*!
-     * \brief get the X window id of the active app window
+     * \brief get the X window id of the active app window. Warning: Undefined on non-X11 platforms
      */
     WId winId();
 
