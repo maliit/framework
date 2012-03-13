@@ -14,8 +14,6 @@ SOURCES += \
     ut_mimpluginmanager.cpp \
     ../stubs/fakegconf.cpp \
 
-CONFIG += plugin qdbus link_pkgconfig
-
 include(../dummyimplugins.pri)
 include($$TOP_DIR/src/libmaliit-plugins.pri)
 
