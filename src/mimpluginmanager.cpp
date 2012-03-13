@@ -185,6 +185,11 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
+    if (fileName.isEmpty()) {
+        qWarning() << __PRETTY_FUNCTION__ << "Nothing to load: file name is empty.";
+        return false;
+    }
+
     MInputMethodPlugin *plugin = 0;
 
     // Check if we have a specific factory for this plugin
