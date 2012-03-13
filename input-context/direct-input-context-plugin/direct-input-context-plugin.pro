@@ -1,12 +1,11 @@
+TOP_DIR = ../..
+
 include(../input-context.pri)
 
 TARGET = $$MALIIT_DIRECTINPUTCONTEXTPLUGIN_TARGETNAME
 
-INCLUDEPATH += ../maliit-input-context
-LIBS += ../maliit-input-context/lib$${MALIIT_INPUTCONTEXT_TARGETNAME}.a
-
-LIBS += ../../src/lib$${MALIIT_PLUGINS_LIB}.so
-INCLUDEPATH += ../../src
+include($$TOP_DIR/input-context/libmaliit-inputcontext-qt4.pri)
+include($$TOP_DIR/src/libmaliit-plugins.pri)
 
 # Input
 HEADERS += mdirectinputcontextplugin.h \

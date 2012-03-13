@@ -2,10 +2,8 @@ include(../common_top.pri)
 
 QT += $$QT_WIDGETS
 
-INCLUDEPATH += ../stubs \
-               ../dummyimplugin \
-
-SRC_DIR = ../../src
+INCLUDEPATH +=  \
+    ../stubs
 
 # Input
 HEADERS += \
@@ -20,14 +18,13 @@ SOURCES += \
     ../stubs/fakegconf.cpp \
     ../stubs/fakeproperty.cpp \
 
+include($$TOP_DIR/src/libmaliit-plugins.pri)
+
 # For MImInputContextConnection pulled in by TestInputMethodHost
 include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 CONFIG += plugin qdbus link_pkgconfig
 
-LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
-    -L ../plugins/ \
-    -ldummyimplugin \
+include(../dummyimplugins.pri)
 
 include(../common_check.pri)

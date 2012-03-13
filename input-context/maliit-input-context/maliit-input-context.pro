@@ -1,9 +1,9 @@
+TOP_DIR = ../..
+
 include(../input-context.pri)
 
 CONFIG += staticlib
 TARGET = $$MALIIT_INPUTCONTEXT_TARGETNAME
-
-include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 # Input
 HEADERS += minputcontext.h

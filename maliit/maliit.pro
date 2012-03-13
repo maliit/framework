@@ -54,3 +54,6 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 }
 
 QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
+
+OTHER_FILES += \
+    libmaliit.pri

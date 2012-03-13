@@ -21,9 +21,8 @@ contains(BUILD_TYPE, unittest) {
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
     TOP_DIR = ../../..
-    INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common $$TOP_DIR/src
-    LIBS += $$TOP_DIR/src/lib$${MALIIT_PLUGINS_LIB}.so
-
+    include($$TOP_DIR/common/libmaliit-common.pri)
+    include($$TOP_DIR/src/libmaliit-plugins.pri)
     include($$TOP_DIR/connection/libmaliit-connection.pri)
 }
 

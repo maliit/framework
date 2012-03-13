@@ -1,13 +1,13 @@
 include(../../config.pri)
 
+TOP_DIR = ../..
+
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_QUICK_LIB
-INCLUDEPATH_BASE = ../..
-INCLUDEPATH += \
-        $${INCLUDEPATH_BASE} \
-        $${INCLUDEPATH_BASE}/src \
-        $${INCLUDEPATH_BASE}/common \
+
+include($$TOP_DIR/src/libmaliit-plugins.pri)
+include($$TOP_DIR/common/libmaliit-common.pri)
 
 # Input
 HEADERSINSTALL = \
@@ -40,9 +40,6 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 }
 
 target.path += $$M_IM_INSTALL_LIBS
-
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
 
 QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 

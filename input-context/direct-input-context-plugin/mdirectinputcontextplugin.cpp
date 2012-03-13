@@ -22,7 +22,7 @@
 #include "mimdirectserverconnection.h"
 #include "miminputcontextdirectconnection.h"
 
-#include "inputmethod.h"
+#include <maliit/inputmethod.h>
 
 using namespace std::tr1;
 

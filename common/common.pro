@@ -36,3 +36,6 @@ INSTALLS += \
     frameworkheaders \
     install_pkgconfig \
     install_prf \
+
+OTHER_FILES += \
+    libmaliit-common.pri

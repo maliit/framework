@@ -3,8 +3,6 @@ include(../common_top.pri)
 QT += $$QT_WIDGETS
 
 INCLUDEPATH += ../stubs \
-               ../dummyimplugin \
-               ../dummyimplugin3 \
 
 # Input
 HEADERS += \
@@ -18,14 +16,11 @@ SOURCES += \
 
 CONFIG += plugin qdbus link_pkgconfig
 
-# For MImInputContextConnection pulled in by TestInputMethodHost
-include(../../connection/libmaliit-connection.pri)
+include(../dummyimplugins.pri)
+include($$TOP_DIR/src/libmaliit-plugins.pri)
 
-LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
-    -L ../plugins/ \
-    -ldummyimplugin \
-    -ldummyimplugin3 \
+# For MImInputContextConnection pulled in by TestInputMethodHost
+include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 target.files += \
     $$TARGET \

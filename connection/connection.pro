@@ -1,12 +1,12 @@
 include(../config.pri)
 
+TOP_DIR = ..
+
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_CONNECTION_LIB
 
-INCLUDEPATH += ../common
-LIBS += ../common/libmaliit-common.a
-POST_TARGETDEPS += ../common/libmaliit-common.a
+include($$TOP_DIR/common/libmaliit-common.pri)
 
 CONFIG += link_pkgconfig
 
