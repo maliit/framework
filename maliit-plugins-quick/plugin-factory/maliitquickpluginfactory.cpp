@@ -16,7 +16,7 @@
  */
 
 #include "maliitquickpluginfactory.h"
-#include "maliit-plugins-quick/input-method/minputmethodquickplugin.h"
+#include "minputmethodquickplugin.h"
 
 class MyPlugin
     : public MInputMethodQuickPlugin
