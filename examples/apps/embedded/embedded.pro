@@ -10,8 +10,9 @@ BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {
     CONFIG += link_pkgconfig
-    PKGCONFIG += maliit-1.0
+    PKGCONFIG += maliit-1.0 maliit-plugins-0.80
     INCLUDEPATH += $$system(pkg-config --cflags maliit-1.0 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
+    INCLUDEPATH += $$system(pkg-config --cflags maliit-plugins-0.80 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
 
     # FIXME: install MImServer header, and provide a dedicated library and .pc for it
 }
@@ -24,7 +25,7 @@ contains(BUILD_TYPE, unittest) {
     # Used for testing purposes, can be deleted when used as a project skeleton
     # Build against in-tree libs
     TOP_DIR = ../../..
-    INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common
+    INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common $$TOP_DIR/src
     LIBS += $$TOP_DIR/maliit/lib$${MALIIT_LIB}.so
 
     INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common $$TOP_DIR/connection
