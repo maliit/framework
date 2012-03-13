@@ -23,8 +23,6 @@ include($$TOP_DIR/src/libmaliit-plugins.pri)
 # For MImInputContextConnection pulled in by TestInputMethodHost
 include($$TOP_DIR/connection/libmaliit-connection.pri)
 
-CONFIG += plugin qdbus link_pkgconfig
-
 include(../dummyimplugins.pri)
 
 include(../common_check.pri)
