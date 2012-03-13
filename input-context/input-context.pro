@@ -14,3 +14,6 @@ direct-connection {
 
     direct-input-context-plugin.depends = maliit-input-context
 }
+
+OTHER_FILES += \
+    libmaliit-inputcontext-qt4.pri

@@ -5,7 +5,6 @@ TOP_DIR = ..
 VERSION = 0.1.0
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_LIB
-INCLUDEPATH += .. ../common ../connection
 
 # Input
 PLUGIN_HEADERS_PUBLIC = \
@@ -205,6 +204,7 @@ outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-frame
 OTHER_FILES += \
     maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc.in \
     maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc.in \
+    libmaliit-plugins.pri
 
 outputFiles(maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc)
 
@@ -260,3 +260,4 @@ check.depends += lib$${TARGET}.so.$${VERSION}
 x11:LIBS += -lXcomposite -lXdamage -lXfixes
 
 include($$TOP_DIR/connection/libmaliit-connection.pri)
+include($$TOP_DIR/common/libmaliit-common.pri)

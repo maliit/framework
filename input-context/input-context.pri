@@ -1,18 +1,14 @@
 include(../config.pri)
 
-TOP_DIR = ../..
-
 TEMPLATE = lib
 DEPENDPATH += ..
-INCLUDEPATH += .. ../.. ../../common ../../connection
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-INCLUDEPATH += ../../maliit
-LIBS += ../../maliit/lib$${MALIIT_LIB}.so
-
-include($$TOP_DIR/connection/libmaliit-connection.pri)
+include(../common/libmaliit-common.pri)
+include(../maliit/libmaliit.pri)
+include(../connection/libmaliit-connection.pri)
 
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 

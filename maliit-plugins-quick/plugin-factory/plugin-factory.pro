@@ -1,14 +1,13 @@
 include(../../config.pri)
 
+TOP_DIR = ../..
+
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_QUICK_FACTORY
-QUICK_DIR = $${OUT_PWD}/../input-method
 
-INCLUDEPATH_BASE = ../..
-INCLUDEPATH += \
-        $${INCLUDEPATH_BASE} \
-        $${INCLUDEPATH_BASE}/src \
-        $${INCLUDEPATH_BASE}/common \
+include($$TOP_DIR/common/libmaliit-common.pri)
+include($$TOP_DIR/maliit-plugins-quick/libmaliit-plugins-quick.pri)
+include($$TOP_DIR/src/libmaliit-plugins.pri)
 
 CONFIG += plugin
 
@@ -18,10 +17,6 @@ HEADERS += \
 
 SOURCES += \
         maliitquickpluginfactory.cpp \
-
-LIBS += \
-        $$QUICK_DIR/lib$${MALIIT_PLUGINS_QUICK_LIB}.so \
-        $${OUT_PWD}/../../src/lib$${MALIIT_PLUGINS_LIB}.so \
 
 QT = core $$QT_WIDGETS declarative
 

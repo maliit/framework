@@ -6,12 +6,10 @@ TEMPLATE = app
 TARGET = $$MALIIT_SERVER
 target.path = $$M_IM_INSTALL_BIN
 DEPENDPATH += .
-INCLUDEPATH += . .. ../src ../common ../connection
 
+include($$TOP_DIR/src/libmaliit-plugins.pri)
+include($$TOP_DIR/common/libmaliit-common.pri)
 include($$TOP_DIR/connection/libmaliit-connection.pri)
-
-LIBS += ../src/lib$${MALIIT_PLUGINS_LIB}.so
-x11:LIBS += -lXfixes
 
 SOURCES += main.cpp
 

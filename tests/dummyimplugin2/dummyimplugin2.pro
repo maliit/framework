@@ -1,16 +1,15 @@
 include(../../config.pri)
 
+TOP_DIR = ../..
+
 TEMPLATE = lib
-TARGET = ../plugins/$$qtLibraryTarget(dummyimplugin2)
+TARGET = ../plugins/dummyimplugin2
 DEPENDPATH += .
-SRC_DIR = ../../src
-INCLUDEPATH += . ../.. $$SRC_DIR ../../common
-LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so
 
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
+include($$TOP_DIR/common/libmaliit-common.pri)
+include($$TOP_DIR/src/libmaliit-plugins.pri)
 
-CONFIG += debug plugin
+CONFIG += plugin
 
 QT += $$QT_WIDGETS
 

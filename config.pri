@@ -92,6 +92,36 @@ DEFINES += MALIIT_FRAMEWORK_USE_INTERNAL_API
 # conflicts with 3rd party libraries.
 CONFIG += no_keywords
 
+unix {
+    MALIIT_STATIC_PREFIX=lib
+    MALIIT_STATIC_SUFFIX=.a
+    MALIIT_DYNAMIC_PREFIX=lib
+    MALIIT_DYNAMIC_SUFFIX=.so
+}
+
+win32 {
+    # qmake puts libraries in subfolders on Windows
+    release {
+        MALIIT_STATIC_PREFIX=release/lib
+        MALIIT_DYNAMIC_PREFIX=release/
+    }
+    debug {
+        MALIIT_STATIC_PREFIX=debug/lib
+        MALIIT_DYNAMIC_PREFIX=debug/
+    }
+
+    MALIIT_STATIC_SUFFIX=.a
+    MALIIT_DYNAMIC_SUFFIX=.dll
+}
+
+defineReplace(maliitStaticLib) {
+    return($${MALIIT_STATIC_PREFIX}$${1}$${MALIIT_STATIC_SUFFIX})
+}
+
+defineReplace(maliitDynamicLib) {
+    return($${MALIIT_DYNAMIC_PREFIX}$${1}$${MALIIT_DYNAMIC_SUFFIX})
+}
+
 mac {
     # Do mac stuff here
     M_BUILD_FEATURES = debug
