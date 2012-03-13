@@ -86,9 +86,6 @@ public:
     //! Sets \a subViewId as the active subview of the activated plugin for \a state.
     void setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state);
 
-    //! Returns true if the connection to D-Bus is valid and the object is properly usable
-    bool isDBusConnectionValid() const;
-
     //! Switches plugin in according to given \a direction
     void switchPlugin(MInputMethod::SwitchDirection direction, MAbstractInputMethod *initiator);
 

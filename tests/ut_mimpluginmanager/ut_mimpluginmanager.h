@@ -40,9 +40,6 @@ private Q_SLOTS:
     void testSubViews();
     void testActiveSubView();
 
-    void testDBusQueryCalls();
-    void testDBusSetCalls();
-
     void testRegionUpdates();
     void testSetToolbar();
 
@@ -61,7 +58,6 @@ private:
     QString pluginPath;
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;
-    QDBusInterface *m_clientInterface;
     void checkHandlerMap(int handler, const QString &name);
 };
 

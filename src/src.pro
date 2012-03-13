@@ -80,7 +80,6 @@ SERVER_HEADERS_PRIVATE += \
         mimpluginsproxywidget.h \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
-        mimpluginmanageradaptor.h \
         minputmethodhost.h \
         mattributeextensionmanager.h \
         mimhwkeyboardtracker.h \
@@ -93,7 +92,6 @@ SERVER_HEADERS_PRIVATE += \
 
 SERVER_SOURCES += \
         mimpluginmanager.cpp \
-        mimpluginmanageradaptor.cpp \
         minputmethodhost.cpp \
         mattributeextensionmanager.cpp \
         mtoolbarlayout.cpp \
@@ -123,10 +121,6 @@ SETTINGS_SOURCES += \
 
 disable-gconf {
     DEFINES += M_IM_DISABLE_GCONF
-}
-
-disable-dbus {
-    DEFINES += M_IM_DISABLE_DBUS
 }
 
 HEADERS += \
