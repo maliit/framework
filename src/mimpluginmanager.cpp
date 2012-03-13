@@ -16,7 +16,7 @@
 
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
-#include "mimpluginmanageradaptor.h"
+
 #include "minputmethodplugin.h"
 #include "mimabstractpluginfactory.h"
 #include "mattributeextensionmanager.h"
@@ -32,12 +32,7 @@
 #include <QSignalMapper>
 #include <QGraphicsLinearLayout>
 #include <QStandardItemModel>
-
-#if !defined(M_IM_DISABLE_DBUS)
-#include <QDBusAbstractAdaptor>
-#include <QDBusInterface>
-#include <QDBusMetaType>
-#endif
+#include <QWeakPointer>
 #include <QWidget>
 
 #include <QDebug>
@@ -61,9 +56,6 @@ namespace
     const QString PluginRoot           = MALIIT_CONFIG_ROOT"plugins";
     const QString MImAccesoryEnabled   = MALIIT_CONFIG_ROOT"accessoryenabled";
 
-    const char * const DBusServiceName = "com.meego.inputmethodpluginmanager1";
-    const char * const DBusPath        = "/com/meego/inputmethodpluginmanager1";
-
     const int MaxPluginHideTransitionTime(2*1000);
 
     const char * const InputMethodItem = "inputMethod";
@@ -83,9 +75,7 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
     : parent(p),
       mICConnection(connection),
       imAccessoryEnabledConf(0),
-      adaptor(0),
       q_ptr(0),
-      connectionValid(false),
       acceptRegionUpdates(false),
       visible(false),
       indicatorService(),
@@ -416,9 +406,6 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
         if (activeSubViewIdOnScreen != switchedTo->activeSubView(MInputMethod::OnScreen)) {
             // activeSubViewIdOnScreen is invalid, should be initialized.
             activeSubViewIdOnScreen = switchedTo->activeSubView(MInputMethod::OnScreen);
-            if (adaptor) {
-                Q_EMIT adaptor->activeSubViewChanged(MInputMethod::OnScreen);
-            }
         }
         // Save the last active subview
         onScreenPlugins.setActiveSubView(MImOnScreenPlugins::SubView(replacement->pluginId, activeSubViewIdOnScreen));
@@ -948,9 +935,6 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
             if (onScreenPlugins.activeSubView().id != subViewId) {
                 onScreenPlugins.setActiveSubView(MImOnScreenPlugins::SubView(activePluginId, subViewId));
             }
-            if (adaptor) {
-                Q_EMIT adaptor->activeSubViewChanged(MInputMethod::OnScreen);
-            }
 
             break;
         }
@@ -1200,26 +1184,6 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->imAccessoryEnabledConf, SIGNAL(valueChanged()), this, SLOT(updateInputSource()));
 
     updateInputSource();
-
-    d->adaptor = new MIMPluginManagerAdaptor(this);
-    d->connectionValid = true;
-#if !defined(M_IM_DISABLE_DBUS)
-    bool success = QDBusConnection::sessionBus().registerObject(DBusPath, this);
-
-    if (!success) {
-        qDebug() << __PRETTY_FUNCTION__ << " failed to register D-Bus object";
-        d->connectionValid = false;
-    }
-
-    if (!QDBusConnection::sessionBus().registerService(DBusServiceName)) {
-        qDebug() << __PRETTY_FUNCTION__ << " failed to register D-Bus service";
-        qDebug() << QDBusConnection::sessionBus().lastError().message();
-        d->connectionValid = false;
-    }
-
-    qDBusRegisterMetaType<QStringList>();
-    qDBusRegisterMetaType<QMap<QString, QVariant> >();
-#endif
 }
 
 
@@ -1421,12 +1385,6 @@ void MIMPluginManager::setActiveSubView(const QString &subViewId, MInputMethod::
 {
     Q_D(MIMPluginManager);
     d->_q_setActiveSubView(subViewId, state);
-}
-
-bool MIMPluginManager::isDBusConnectionValid() const
-{
-    Q_D(const MIMPluginManager);
-    return d->connectionValid;
 }
 
 void MIMPluginManager::updateKeyOverrides()

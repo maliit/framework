@@ -17,8 +17,6 @@
 #include <QRegExp>
 #include <QCoreApplication>
 #include <QPointer>
-#include <QDBusInterface>
-#include <QDBusReply>
 #include <QTimer>
 #include <QEventLoop>
 #include <QStringList>
@@ -50,10 +48,6 @@ namespace {
     const QString pluginId  = "libdummyimplugin.so";
     const QString pluginId2 = "libdummyimplugin2.so";
     const QString pluginId3 = "libdummyimplugin3.so";
-
-    const char * const DBusMIMPluginManagerServiceName = "com.meego.inputmethodpluginmanager1";
-    const char * const DBusMIMPluginManagerPath = "/com/meego/inputmethodpluginmanager1";
-    const char * const DBusMIMPluginManagerInterface = "com.meego.inputmethodpluginmanager1";
 
     const QString testDirectory = "/ut_mimpluginmanager";
     QString Toolbar1 = "/toolbar1.xml";
@@ -119,24 +113,10 @@ void Ut_MIMPluginManager::init()
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->pluginsChangedSignalCount, 1);
     inputMethod->setStateCount = 0;
-
-    // init dbus client
-    if (!QDBusConnection::sessionBus().isConnected()) {
-        QFAIL("Cannot connect to the DBus session bus");
-    }
-    QDBusConnection connection = QDBusConnection::sessionBus();
-    m_clientInterface = new QDBusInterface(DBusMIMPluginManagerServiceName, DBusMIMPluginManagerPath,
-                                           DBusMIMPluginManagerInterface, connection, 0);
-
-    if (!m_clientInterface->isValid()) {
-        QFAIL(qPrintable(QDBusConnection::sessionBus().lastError().message()));
-    }
 }
 
 void Ut_MIMPluginManager::cleanup()
 {
-    delete m_clientInterface;
-    m_clientInterface = 0;
     delete manager;
     manager = 0;
     subject = 0;
@@ -713,108 +693,6 @@ void Ut_MIMPluginManager::testActiveSubView()
     QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv2"));
 }
 
-void Ut_MIMPluginManager::testDBusQueryCalls()
-{
-    if (!manager->isDBusConnectionValid()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.");
-#else
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.", SkipSingle);
-#endif
-    }
-    QVERIFY(subject->activePlugins.size() == 1);
-    MInputMethodPlugin *plugin = 0;
-    plugin = *subject->activePlugins.begin();
-    QVERIFY(plugin != 0);
-    QCOMPARE(plugin->name(), pluginName);
-    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
-
-    QVERIFY(m_clientInterface);
-    QDBusReply<QStringList> AvailablePluginReply
-        = m_clientInterface->call("queryAvailablePlugins", MInputMethod::OnScreen);
-    QVERIFY(AvailablePluginReply.isValid());
-    QCOMPARE(AvailablePluginReply.value().count(), 2);
-    QVERIFY(AvailablePluginReply.value().contains(pluginId));
-    QVERIFY(AvailablePluginReply.value().contains(pluginId3));
-
-    QDBusReply<QString> ActivePluginReply = m_clientInterface->call("queryActivePlugin",
-                                                                    MInputMethod::OnScreen);
-    QVERIFY(ActivePluginReply.isValid());
-    QCOMPARE(ActivePluginReply.value(), pluginId);
-
-    QDBusReply< QMap<QString, QVariant> > activeSubViewReply
-        = m_clientInterface->call("queryActiveSubView", MInputMethod::OnScreen);
-    QVERIFY(activeSubViewReply.isValid());
-    QVERIFY(activeSubViewReply.value().count() > 0);
-    QCOMPARE(activeSubViewReply.value().values().at(0).toString(), pluginId);
-    QCOMPARE(activeSubViewReply.value().keys().at(0), QString("dummyimsv1"));
-
-    QDBusReply< QMap<QString, QVariant> > subViewsReply
-        = m_clientInterface->call("queryAvailableSubViews", pluginId, MInputMethod::OnScreen);
-    QVERIFY(subViewsReply.isValid());
-    QCOMPARE(subViewsReply.value().count(), 3);
-}
-
-void Ut_MIMPluginManager::testDBusSetCalls()
-{
-    if (!manager->isDBusConnectionValid()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.");
-#else
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.", SkipSingle);
-#endif
-    }
-    QVERIFY(subject->activePlugins.size() == 1);
-    MInputMethodPlugin *plugin = 0;
-    plugin = *subject->activePlugins.begin();
-    QVERIFY(plugin != 0);
-    QCOMPARE(plugin->name(), pluginName);
-    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
-
-    QVERIFY(m_clientInterface);
-
-    m_clientInterface->call(QDBus::NoBlock, "setActivePlugin", pluginId3,
-                            static_cast<int>(MInputMethod::OnScreen));
-    handleMessages();
-
-    QVERIFY(subject->activePlugins.size() == 1);
-    plugin = *subject->activePlugins.begin();
-    QVERIFY(plugin != 0);
-    QCOMPARE(plugin->name(), pluginName3);
-    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv1"));
-
-    // try to set a wrong plugin
-    m_clientInterface->call(QDBus::Block, "setActivePlugin", pluginId2,
-                            static_cast<int>(MInputMethod::OnScreen));
-    handleMessages();
-    QVERIFY(subject->activePlugins.size() == 1);
-    plugin = *subject->activePlugins.begin();
-    QVERIFY(plugin != 0);
-    QCOMPARE(plugin->name(), pluginName3);
-
-    m_clientInterface->call(QDBus::Block, "setActiveSubView", QString("dummyim3sv2"),
-                            static_cast<int>(MInputMethod::OnScreen));
-    handleMessages();
-    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv2"));
-
-    // try to set a wrong subview
-    m_clientInterface->call(QDBus::Block, "setActiveSubView", QString("dummyimisv2"),
-                            static_cast<int>(MInputMethod::OnScreen));
-    handleMessages();
-    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyim3sv2"));
-
-    // try to set both subview id and plugin
-    m_clientInterface->call(QDBus::Block, "setActivePlugin", pluginId,
-                            static_cast<int>(MInputMethod::OnScreen),
-                            QString("dummyimsv1"));
-    handleMessages();
-    QVERIFY(subject->activePlugins.size() == 1);
-    plugin = *subject->activePlugins.begin();
-    QVERIFY(plugin != 0);
-    QCOMPARE(plugin->name(), pluginName);
-    QCOMPARE(subject->activeSubView(MInputMethod::OnScreen), QString("dummyimsv1"));
-}
-
 void Ut_MIMPluginManager::testRegionUpdates()
 {
     MInputMethodPlugin *plugin3 = 0;
@@ -984,14 +862,6 @@ void Ut_MIMPluginManager::testSubViewsInfo()
 
 void Ut_MIMPluginManager::testEnableAllSubviews()
 {
-    if (!manager->isDBusConnectionValid()) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.");
-#else
-        QSKIP("MIMPluginManager dbus connection is not valid. Possibly other program using it running.", SkipSingle);
-#endif
-    }
-
     //load all subviews provided by all available plugins
     manager->setAllSubViewsEnabled(true);
     handleMessages();
