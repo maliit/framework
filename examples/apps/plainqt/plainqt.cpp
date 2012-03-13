@@ -21,13 +21,8 @@
 #include <QInputContextFactory>
 #endif
 
-#include <cstdlib>
-
 int main(int argc, char** argv)
 {
-    // Set input method to MInputContext
-    setenv("QT_IM_MODULE", "Maliit", 1);
-
     QApplication kit(argc, argv);
 #if (defined(Q_WS_QPA) || defined(Q_WS_QWS)) && (QT_VERSION < 0x050000)
     // Workaround for lighthouse Qt

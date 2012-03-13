@@ -21,8 +21,6 @@
 #include <QInputContextFactory>
 #endif
 
-#include <cstdlib>
-
 int main(int argc, char** argv)
 {
     QApplication kit(argc, argv);

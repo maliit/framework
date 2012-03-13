@@ -16,14 +16,10 @@
 
 #include "mainwindow.h"
 
-#include <cstdlib>
 #include <QApplication>
 
 int main(int argc, char** argv)
 {
-    // Set input method to MInputContext
-    setenv("QT_IM_MODULE", "Maliit", 1);
-
     QApplication kit(argc, argv);
 
     MainWindow window;
