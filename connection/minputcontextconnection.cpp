@@ -163,6 +163,10 @@ QRect MInputContextConnection::preeditRectangle(bool &valid)
 
 WId MInputContextConnection::winId()
 {
+#ifdef Q_WS_WIN
+    WId result = 0;
+    return result;
+#else
     QVariant winIdVariant = widgetState[WinId];
     // after transfer by dbus type can change
     switch (winIdVariant.type()) {
@@ -179,7 +183,9 @@ WId MInputContextConnection::winId()
             return winIdVariant.value<WId>();
     }
     return 0;
+#endif
 }
+
 
 int MInputContextConnection::anchorPosition(bool &valid)
 {
@@ -263,9 +269,11 @@ MInputContextConnection::updateWidgetInformation(
 
     widgetState = stateInfo;
 
+#ifndef Q_WS_WIN
     if (handleFocusChange) {
         Q_EMIT focusChanged(winId());
     }
+#endif
 
     Q_EMIT widgetStateChanged(connectionId, widgetState, oldState, handleFocusChange);
 }
