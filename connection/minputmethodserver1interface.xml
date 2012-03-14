@@ -8,57 +8,59 @@
     <method name="hideInputMethod">
     </method>
     <method name="mouseClickedOnPreedit">
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
+      <arg type="i" name="posX"/>
+      <arg type="i" name="posY"/>
+      <arg type="i" name="preeditRectX"/>
+      <arg type="i" name="preeditRectY"/>
+      <arg type="i" name="preeditRectWidth"/>
+      <arg type="i" name="preeditRectHeight"/>
+      <!-- TODO for API change: Change to (ii) pos and (iiii) preeditRect-->
     </method>
     <method name="setPreedit">
-      <arg type="s"/>
-      <arg type="i"/>
+      <arg type="s" name="text"/>
+      <arg type="i" name="cursorPos"/>
     </method>
     <method name="updateWidgetInformation">
-      <arg type="a{sv}"/>
-      <arg type="b"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
+      <arg type="a{sv}" name="stateInformation"/>
+      <arg type="b" name="focusChanged"/>
     </method>
     <method name="reset">
     </method>
     <method name="appOrientationAboutToChange">
-      <arg type="i"/>
+      <arg type="i" name="angle"/>
     </method>
     <method name="appOrientationChanged">
-      <arg type="i"/>
+      <arg type="i" name="angle"/>
     </method>
     <method name="setCopyPasteState">
-      <arg type="b"/>
-      <arg type="b"/>
+      <arg type="b" name="copyAvailable"/>
+      <arg type="b" name="pasteAvailable"/>
     </method>
     <method name="processKeyEvent">
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="i"/>
-      <arg type="s"/>
-      <arg type="b"/>
-      <arg type="i"/>
-      <arg type="u"/>
-      <arg type="u"/>
-      <arg type="u"/>
+      <arg type="i" name="keyType"/>
+      <arg type="i" name="keyCode"/>
+      <arg type="i" name="modifiers"/>
+      <arg type="s" name="text"/>
+      <arg type="b" name="autoRepeat"/>
+      <arg type="i" name="count"/>
+      <arg type="u" name="nativeScanCode"/>
+      <arg type="u" name="nativeModifiers"/>
+      <arg type="u" name="time"/>
     </method>
     <method name="registerAttributeExtension">
-      <arg type="i"/>
-      <arg type="s"/>
+      <arg type="i" name="id"/>
+      <arg type="s" name="fileName"/>
     </method>
     <method name="unregisterAttributeExtension">
-      <arg type="i"/>
+      <arg type="i" name="id"/>
     </method>
     <method name="setExtendedAttribute">
-      <arg type="i"/>
-      <arg type="s"/>
-      <arg type="s"/>
-      <arg type="s"/>
-      <arg type="v"/>
+      <arg type="i" name="id"/>
+      <arg type="s" name="target"/>
+      <arg type="s" name="targetItem"/>
+      <arg type="s" name="attribute"/>
+      <arg type="v" name="value"/>
     </method>
   </interface>
 </node>
