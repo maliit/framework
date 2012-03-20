@@ -69,14 +69,6 @@ SUBDIRS += examples
     SUBDIRS += tests
 }
 
-contains(SUBDIRS, input-context) {
-    !contains(QT_CONFIG, glib) {
-        !disable-dbus|!disable-gconf {
-            error(Qt4 input context requires Qt Glib support)
-        }
-    }
-}
-
 !disable-dbus {
     !system(pkg-config --exists dbus-glib-1 dbus-1):error("Could not find dbus-glib-1 dbus-1")
 }
