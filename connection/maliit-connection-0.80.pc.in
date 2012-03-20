@@ -11,5 +11,5 @@ Description: Shared library for connection between Maliit IC and Maliit Server
 Version: @M_IM_VERSION@
 Requires: maliit-framework-0.80
 Cflags: -I${includedir}/@MALIIT_CONNECTION_HEADER@
-Libs: -L${libdir} -l@MALIIT_CONNECTION_LIB@
+Libs: -L${libdir} -l@MALIIT_CONNECTION_LIB@@MALIIT_ABI_VERSION_MAJOR@
 

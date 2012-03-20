@@ -6,6 +6,7 @@ MALIIT_PLUGINS_QUICK_INTERFACE_VERSION = 0.80
 MALIIT_FRAMEWORK_INTERFACE_VERSION = 0.80
 MALIIT_CONNECTION_INTERFACE_VERSION = 0.80
 MALIIT_SERVER_INTERFACE_VERSION = 0.80
+MALIIT_ABI_VERSION = 0.1.0
 
 # For libmaliit
 MALIIT_LIB = maliit-$${MALIIT_INTERFACE_VERSION}
@@ -97,10 +98,11 @@ unix {
     MALIIT_STATIC_SUFFIX=.a
     MALIIT_DYNAMIC_PREFIX=lib
     MALIIT_DYNAMIC_SUFFIX=.so
+    MALIIT_ABI_VERSION_MAJOR=
 }
 
 win32 {
-    # qmake puts libraries in subfolders on Windows
+    # qmake puts libraries in subfolders in build tree on Windows (installation is unaffected)
     release {
         MALIIT_STATIC_PREFIX=release/lib
         MALIIT_DYNAMIC_PREFIX=release/
@@ -110,8 +112,13 @@ win32 {
         MALIIT_DYNAMIC_PREFIX=debug/
     }
 
+    # one would suspect this to be .lib, but qmake with mingw uses .a
     MALIIT_STATIC_SUFFIX=.a
-    MALIIT_DYNAMIC_SUFFIX=.dll
+
+    # qmake adds the first component of the version as part of the DLL name on Windows
+    MALIIT_ABI_VERSIONS=$$split(MALIIT_ABI_VERSION, ".")
+    MALIIT_ABI_VERSION_MAJOR=$$member(MALIIT_ABI_VERSIONS, 0)
+    MALIIT_DYNAMIC_SUFFIX=$${MALIIT_ABI_VERSION_MAJOR}.dll
 }
 
 defineReplace(maliitStaticLib) {
@@ -196,6 +203,7 @@ defineTest(outputFile) {
                 MALIIT_CONNECTION_HEADER \
                 MALIIT_CONNECTION_LIB \
                 MALIIT_SERVER_HEADER \
+                MALIIT_ABI_VERSION_MAJOR \
 
     command = "sed"
     for(var, variables) {

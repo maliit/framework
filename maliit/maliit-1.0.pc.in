@@ -8,5 +8,4 @@ Description: Maliit provides a flexible and cross platform input method framewor
 Version: @M_IM_VERSION@
 Requires: maliit-framework-0.80
 Cflags: -I${includedir}/@MALIIT_HEADER@
-Libs: -L${libdir} -l@MALIIT_LIB@
-
+Libs: -L${libdir} -l@MALIIT_LIB@@MALIIT_ABI_VERSION_MAJOR@

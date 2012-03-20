@@ -1,6 +1,6 @@
 include(../config.pri)
 
-VERSION = 0.1.0
+VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
 TARGET = $${MALIIT_LIB}
 
@@ -36,6 +36,9 @@ headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER/maliit
 headers.files += $$HEADERSINSTALL
 
 outputFiles(maliit-$${MALIIT_INTERFACE_VERSION}.pc)
+
+OTHER_FILES += \
+    maliit-$${MALIIT_INTERFACE_VERSION}.pc.in
 
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-$${MALIIT_INTERFACE_VERSION}.pc
