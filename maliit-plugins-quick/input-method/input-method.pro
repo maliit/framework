@@ -2,7 +2,7 @@ include(../../config.pri)
 
 TOP_DIR = ../..
 
-VERSION = 0.1.0
+VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
 TARGET = $$MALIIT_PLUGINS_QUICK_LIB
 
