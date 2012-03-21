@@ -19,7 +19,7 @@
 
 
 MIMPluginManagerAdaptor::MIMPluginManagerAdaptor(MIMPluginManager *parent)
-    : QDBusAbstractAdaptor(parent),
+    : MImPluginAdaptorBase(parent),
       owner(parent)
 {
     if (!parent) {

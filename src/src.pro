@@ -126,6 +126,10 @@ disable-gconf {
     DEFINES += M_IM_DISABLE_GCONF
 }
 
+disable-dbus {
+    DEFINES += M_IM_DISABLE_DBUS
+}
+
 HEADERS += \
         $$PLUGIN_HEADERS_PUBLIC \
         $$PLUGIN_HEADERS_PRIVATE \
@@ -158,11 +162,15 @@ x11 {
         mimxserverlogic.cpp \
 }
 
-CONFIG += qdbus link_pkgconfig
+CONFIG += link_pkgconfig
 QT = core $$QT_WIDGETS xml
 
 !disable-gconf {
     PKGCONFIG += gconf-2.0
+}
+
+!disable-dbus {
+    CONFIG += qdbus
 }
 
 enable-contextkit {
