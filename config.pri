@@ -169,7 +169,7 @@ defineTest(outputFile) {
 
     command = "sed"
     for(var, variables) {
-       command += "-e \"s:@$$var@:$$eval($$var):g\""
+       command += "-e \"s;@$$var@;$$eval($$var);g\""
     }
     command += $$in > $$out
 
