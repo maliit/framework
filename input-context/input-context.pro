@@ -1,9 +1,13 @@
 TEMPLATE = subdirs
-SUBDIRS = maliit-input-context input-context-plugin
+SUBDIRS = maliit-input-context
 
 CONFIG += direct-connection
 
-input-context-plugin.depends = maliit-input-context
+!disable-dbus {
+    SUBDIRS += input-context-plugin
+
+    input-context-plugin.depends = maliit-input-context
+}
 
 direct-connection {
     SUBDIRS += direct-input-context-plugin

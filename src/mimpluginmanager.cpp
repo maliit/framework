@@ -33,10 +33,11 @@
 #include <QGraphicsLinearLayout>
 #include <QStandardItemModel>
 
+#if !defined(M_IM_DISABLE_DBUS)
 #include <QDBusAbstractAdaptor>
 #include <QDBusInterface>
 #include <QDBusMetaType>
-#include <QWeakPointer>
+#endif
 #include <QWidget>
 
 #include <QDebug>
@@ -1201,8 +1202,9 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     updateInputSource();
 
     d->adaptor = new MIMPluginManagerAdaptor(this);
-    bool success = QDBusConnection::sessionBus().registerObject(DBusPath, this);
     d->connectionValid = true;
+#if !defined(M_IM_DISABLE_DBUS)
+    bool success = QDBusConnection::sessionBus().registerObject(DBusPath, this);
 
     if (!success) {
         qDebug() << __PRETTY_FUNCTION__ << " failed to register D-Bus object";
@@ -1217,6 +1219,7 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
 
     qDBusRegisterMetaType<QStringList>();
     qDBusRegisterMetaType<QMap<QString, QVariant> >();
+#endif
 }
 
 

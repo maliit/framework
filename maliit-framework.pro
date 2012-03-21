@@ -14,6 +14,7 @@ include(./config.pri)
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t disable-dbus-activation : Do not use dbus activation support for maliit-server \
         \\n\\t disable-gconf : Disable GConf settings backend (falls back to QSettings) \
+        \\n\\t disable-dbus : Disable dbus communication backend \
         \\n\\t notests : Do not build tests \
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \
@@ -38,7 +39,11 @@ include(./config.pri)
 CONFIG += ordered
 TEMPLATE = subdirs
 
-SUBDIRS = common connection src passthroughserver maliit gtk-input-context
+SUBDIRS = common connection src maliit
+
+!disable-dbus {
+    SUBDIRS += passthroughserver gtk-input-context
+}
 
 !contains(QT_MAJOR_VERSION, 5) {
     # Qt 5 has a new platform input plugin system which already contains
@@ -66,11 +71,15 @@ SUBDIRS += examples
 
 contains(SUBDIRS, input-context) {
     !contains(QT_CONFIG, glib) {
-        error(Qt4 input context requires Qt Glib support)
+        !disable-dbus|!disable-gconf {
+            error(Qt4 input context requires Qt Glib support)
+        }
     }
 }
 
-!system(pkg-config --exists dbus-glib-1 dbus-1):error("Could not find dbus-glib-1 dbus-1")
+!disable-dbus {
+    !system(pkg-config --exists dbus-glib-1 dbus-1):error("Could not find dbus-glib-1 dbus-1")
+}
 
 !disable-gconf {
     !system(pkg-config --exists gconf-2.0):error("Could not find gconf-2.0")

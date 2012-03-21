@@ -10,8 +10,6 @@ POST_TARGETDEPS += ../common/libmaliit-common.a
 
 CONFIG += link_pkgconfig
 
-QT += dbus
-
 # Interface classes
 PUBLIC_HEADERS += \
     mimserverconnection.h \
@@ -35,9 +33,12 @@ direct-connection {
 }
 
 # Default to building glib-dbus based connection
-CONFIG += glib-dbus-connection
+!disable-dbus {
+    CONFIG += glib-dbus-connection
+}
 
 glib-dbus-connection {
+    QT += dbus
 
     # Used for serverdbusaddress
     CONFIG += qdbus

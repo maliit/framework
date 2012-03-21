@@ -18,7 +18,14 @@
 #define MIMPLUGINMANAGERADAPTOR_H
 
 #include <QObject>
+#if !defined(M_IM_DISABLE_DBUS)
 #include <QDBusAbstractAdaptor>
+typedef QDBusAbstractAdaptor MImPluginAdaptorBase;
+#else
+typedef QObject              MImPluginAdaptorBase;
+#define Q_NOREPLY /**/
+#endif
+#include <QVariant>
 #include <QString>
 #include <QStringList>
 #include <QMap>
@@ -30,7 +37,7 @@ class MIMPluginManager;
 /*! \ingroup maliitserver
  * \brief Manage available and active plugins.
  */
-class MIMPluginManagerAdaptor: public QDBusAbstractAdaptor
+class MIMPluginManagerAdaptor: public MImPluginAdaptorBase
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.meego.inputmethodpluginmanager1")

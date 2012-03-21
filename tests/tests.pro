@@ -10,8 +10,6 @@ SUBDIRS += \
           dummyimplugin3 \
           dummyplugin \
           sanitychecks \
-          ut_mimpluginmanager \
-          ft_mimpluginmanager \
           ut_mtoolbardata \
           ut_mtoolbaritem \
           ut_mattributeextensionmanager \
@@ -26,8 +24,12 @@ SUBDIRS += \
 contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \
           ut_minputcontext \
-          ut_minputcontextplugin \
           ut_minputmethodquickplugin \
+
+    !disable-dbus {
+        SUBDIRS += \
+              ut_minputcontextplugin \
+    }
 }
 
 x11 {
@@ -37,6 +39,12 @@ x11 {
           ut_selfcompositing \
           ut_mimrotationanimation \
           ut_mimserveroptions \ #FIXME: split out the common tests (non X11 dependent), so that they are always tested
+}
+
+!disable-dbus {
+    SUBDIRS += \
+          ut_mimpluginmanager \
+          ft_mimpluginmanager \
 }
 
 outputFiles(runtests.sh, gen-tests-xml.sh)
