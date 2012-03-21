@@ -105,3 +105,18 @@ void MImInputContextDirectConnection::setSelection(int start, int length)
 {
     Q_EMIT mServerConnection->setSelection(start, length);
 }
+
+void MImInputContextDirectConnection::updateInputMethodArea(const QRegion &region)
+{
+    Q_EMIT mServerConnection->updateInputMethodArea(region.boundingRect());
+}
+
+void MImInputContextDirectConnection::notifyExtendedAttributeChanged(int id,
+                                                                     const QString &target,
+                                                                     const QString &targetItem,
+                                                                     const QString &attribute,
+                                                                     const QVariant &value)
+{
+    Q_EMIT mServerConnection->extendedAttributeChanged(id, target, targetItem,
+                                                       attribute, value);
+}

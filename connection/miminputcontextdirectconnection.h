@@ -50,6 +50,12 @@ public:
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void setGlobalCorrectionEnabled(bool enabled);
     virtual void setSelection(int start, int length);
+    virtual void updateInputMethodArea(const QRegion &region);
+    virtual void notifyExtendedAttributeChanged(int id,
+                                                const QString &target,
+                                                const QString &targetItem,
+                                                const QString &attribute,
+                                                const QVariant &value);
     //! reimpl end
 
 private:
