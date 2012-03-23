@@ -201,6 +201,7 @@ OTHER_FILES += \
 outputFiles(maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc)
 
 outputFiles(config.h)
+outputFiles(maliit-plugins.prf maliit-defines.prf)
 
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = \
@@ -208,11 +209,8 @@ install_pkgconfig.files = \
     $$OUT_PWD/maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc \
     $$OUT_PWD/maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc \
 
-QT_PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
-QT_PREFIX = $$[QT_INSTALL_PREFIX]
-enforce-install-prefix {
-    QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$M_IM_PREFIX)
-}
+install_prf.path = $$M_IM_INSTALL_PRF
+install_prf.files = $$OUT_PWD/maliit-plugins.prf $$OUT_PWD/maliit-defines.prf
 
 install_schemas.files = $$OUT_PWD/maliit-framework.schemas
 install_schemas.path = $$M_IM_INSTALL_SCHEMAS
@@ -221,6 +219,7 @@ INSTALLS += \
     target \
     plugins_headers \
     server_headers \
+    install_prf \
     install_pkgconfig \
 
 !disable-gconf {
