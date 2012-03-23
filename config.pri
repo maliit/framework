@@ -114,6 +114,11 @@ contains(QT_MAJOR_VERSION, 4) {
     QT_WIDGETS = gui widgets
 }
 
+M_IM_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
+enforce-install-prefix {
+    M_IM_INSTALL_PRF = $$replace(M_IM_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$M_IM_PREFIX)
+}
+
 defineTest(outputFile) {
     out = $$OUT_PWD/$$1
     in = $$PWD/$${1}.in

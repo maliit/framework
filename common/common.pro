@@ -6,6 +6,7 @@ TARGET = maliit-common
 CONFIG += staticlib
 
 outputFiles(maliit-framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}.pc)
+outputFiles(maliit-framework.prf)
 
 HEADERSINSTALL = \
     minputmethodnamespace.h \
@@ -27,7 +28,11 @@ frameworkheaders.files += $$FRAMEWORKHEADERSINSTALL
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}.pc
 
+install_prf.path = $$M_IM_INSTALL_PRF
+install_prf.files = $$OUT_PWD/maliit-framework.prf
+
 INSTALLS += \
     headers \
     frameworkheaders \
     install_pkgconfig \
+    install_prf \
