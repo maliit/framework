@@ -21,6 +21,7 @@ SOURCES += \
 
 LIBS += \
         $$QUICK_DIR/lib$${MALIIT_PLUGINS_QUICK_LIB}.so \
+        $${OUT_PWD}/../../src/lib$${MALIIT_PLUGINS_LIB}.so \
 
 QT = core $$QT_WIDGETS declarative
 
