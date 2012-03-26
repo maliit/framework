@@ -1,12 +1,12 @@
 #include "ut_mimpluginmanager.h"
 
-#include "mimsettings_stub.h"
 #include "dummyimplugin.h"
 #include "dummyimplugin3.h"
 #include "dummyinputmethod.h"
 #include "dummyinputmethod3.h"
-#include "fakegconf.h"
+
 #include "minputcontextconnection.h"
+#include "mimsettingsqsettings.h"
 
 #include "core-utils.h"
 
@@ -64,6 +64,8 @@ namespace {
 void Ut_MIMPluginManager::initTestCase()
 {
     proxyWidget = new QWidget;
+
+    MImSettings::setImplementationFactory(new MImSettingsQSettingsTemporaryBackendFactory);
 
     Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
