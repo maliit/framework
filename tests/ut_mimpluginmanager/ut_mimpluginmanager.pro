@@ -7,12 +7,9 @@ INCLUDEPATH += ../stubs \
 # Input
 HEADERS += \
     ut_mimpluginmanager.h \
-    ../stubs/mimsettings_stub.h \
-    ../stubs/fakegconf.h \
 
 SOURCES += \
     ut_mimpluginmanager.cpp \
-    ../stubs/fakegconf.cpp \
 
 include(../dummyimplugins.pri)
 include($$TOP_DIR/src/libmaliit-plugins.pri)

@@ -1,9 +1,10 @@
 #include "ft_mimpluginmanager.h"
-#include "mimsettings_stub.h"
+
 #include "mkeyboardstatetracker_stub.h"
 #include "dummyimplugin.h"
 #include "dummyinputmethod.h"
 #include "core-utils.h"
+#include "mimsettingsqsettings.h"
 
 #include <minputcontextconnection.h>
 #include <mimpluginmanager.h>
@@ -52,6 +53,7 @@ namespace
 
 void Ft_MIMPluginManager::initTestCase()
 {
+    MImSettings::setImplementationFactory(new MImSettingsQSettingsTemporaryBackendFactory);
 }
 
 void Ft_MIMPluginManager::cleanupTestCase()

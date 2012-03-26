@@ -1,17 +1,11 @@
 include(../common_top.pri)
 
-INCLUDEPATH += ../stubs \
-
 # Input
 HEADERS += \
     ut_mattributeextensionmanager.h \
-    ../stubs/mimsettings_stub.h \
-    ../stubs/fakegconf.h \
-
 
 SOURCES += \
     ut_mattributeextensionmanager.cpp \
-    ../stubs/fakegconf.cpp \
 
 CONFIG += plugin qdbus
 
