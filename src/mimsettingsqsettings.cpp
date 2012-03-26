@@ -44,6 +44,7 @@ namespace
 struct MImSettingsQSettingsBackendPrivate {
     QString key;
     static ItemMap registry;
+    QSettings *settingsInstance;
 
     void registerInstance(MImSettingsQSettingsBackend *instance)
     {
@@ -91,65 +92,65 @@ QString MImSettingsQSettingsBackend::key() const
 QVariant MImSettingsQSettingsBackend::value(const QVariant &def) const
 {
     Q_D(const MImSettingsQSettingsBackend);
-    QSettings settings(ORGANIZATION, APPLICATION);
 
-    if (!settings.contains(d->key))
+    if (!d->settingsInstance->contains(d->key))
         return MImSettings::defaults().value(d->key, def);
 
-    return settings.value(d->key, def);
+    return d->settingsInstance->value(d->key, def);
 }
 
 void MImSettingsQSettingsBackend::set(const QVariant &val)
 {
     Q_D(MImSettingsQSettingsBackend);
-    QSettings settings(ORGANIZATION, APPLICATION);
 
-    if (val == settings.value(d->key))
+    if (val == d->settingsInstance->value(d->key))
         return;
 
-    settings.setValue(d->key, val);
+    d->settingsInstance->setValue(d->key, val);
     d->notify();
 }
 
 void MImSettingsQSettingsBackend::unset()
 {
     Q_D(MImSettingsQSettingsBackend);
-    QSettings settings(ORGANIZATION, APPLICATION);
 
-    if (!settings.contains(d->key))
+    if (!d->settingsInstance->contains(d->key))
         return;
 
-    settings.remove(d->key);
+    d->settingsInstance->remove(d->key);
     d->notify();
 }
 
 QList<QString> MImSettingsQSettingsBackend::listDirs() const
 {
     Q_D(const MImSettingsQSettingsBackend);
-    QSettings settings(ORGANIZATION, APPLICATION);
 
-    settings.beginGroup(d->key);
+    d->settingsInstance->beginGroup(d->key);
+    QList<QString> result = makeAbsolute(d->key, d->settingsInstance->childGroups());
+    d->settingsInstance->endGroup();
 
-    return makeAbsolute(d->key, settings.childGroups());
+    return result;
 }
 
 QList<QString> MImSettingsQSettingsBackend::listEntries() const
 {
     Q_D(const MImSettingsQSettingsBackend);
-    QSettings settings(ORGANIZATION, APPLICATION);
 
-    settings.beginGroup(d->key);
+    d->settingsInstance->beginGroup(d->key);
+    QList<QString> result = makeAbsolute(d->key, d->settingsInstance->childKeys());
+    d->settingsInstance->endGroup();
 
-    return makeAbsolute(d->key, settings.childKeys());
+    return result;
 }
 
-MImSettingsQSettingsBackend::MImSettingsQSettingsBackend(const QString &key, QObject *parent) :
+MImSettingsQSettingsBackend::MImSettingsQSettingsBackend(QSettings *settingsInstance, const QString &key, QObject *parent) :
     MImSettingsBackend(parent),
     d_ptr(new MImSettingsQSettingsBackendPrivate)
 {
     Q_D(MImSettingsQSettingsBackend);
 
     d->key = key;
+    d->settingsInstance = settingsInstance;
     d->registerInstance(this);
 }
 
@@ -160,8 +161,38 @@ MImSettingsQSettingsBackend::~MImSettingsQSettingsBackend()
     d->unregisterInstance(this);
 }
 
+/* QSettings backend backed by the native settings store for the Maliit Server org. and app. */
+MImSettingsQSettingsBackendFactory::MImSettingsQSettingsBackendFactory()
+    : mSettings(ORGANIZATION, APPLICATION)
+{
+}
+
+MImSettingsQSettingsBackendFactory::~MImSettingsQSettingsBackendFactory()
+{
+}
 
 MImSettingsBackend *MImSettingsQSettingsBackendFactory::create(const QString &key, QObject *parent)
 {
-    return new MImSettingsQSettingsBackend(key, parent);
+    return new MImSettingsQSettingsBackend(&mSettings, key, parent);
+}
+
+/* QSettings backend backed by a temporary file */
+MImSettingsQSettingsTemporaryBackendFactory::MImSettingsQSettingsTemporaryBackendFactory()
+    : mTempFile()
+{
+    // Force backing file to be created, otherwise fileName() returns empty
+    mTempFile.open();
+    mTempFile.close();
+
+    mSettings.reset(new QSettings(mTempFile.fileName(), QSettings::IniFormat));
+}
+
+MImSettingsQSettingsTemporaryBackendFactory::~MImSettingsQSettingsTemporaryBackendFactory()
+{
+}
+
+MImSettingsBackend *MImSettingsQSettingsTemporaryBackendFactory::create(const QString &key, QObject *parent)
+{
+
+    return new MImSettingsQSettingsBackend(mSettings.data(), key, parent);
 }

@@ -20,7 +20,8 @@
 #include "mimsettings.h"
 
 #include <QScopedPointer>
-
+#include <QSettings>
+#include <QTemporaryFile>
 
 //! \internal
 
@@ -31,7 +32,7 @@ class MImSettingsQSettingsBackend : public MImSettingsBackend
     Q_OBJECT
 
 public:
-    explicit MImSettingsQSettingsBackend(const QString &key, QObject *parent = 0);
+    explicit MImSettingsQSettingsBackend(QSettings *settingsInstance, const QString &key, QObject *parent = 0);
     virtual ~MImSettingsQSettingsBackend();
 
     virtual QString key() const;
@@ -54,7 +55,24 @@ private:
 class MImSettingsQSettingsBackendFactory : public MImSettingsBackendFactory
 {
 public:
+    explicit MImSettingsQSettingsBackendFactory();
+    virtual ~MImSettingsQSettingsBackendFactory();
     virtual MImSettingsBackend *create(const QString &key, QObject *parent);
+
+private:
+    QSettings mSettings;
+};
+
+class MImSettingsQSettingsTemporaryBackendFactory : public MImSettingsBackendFactory
+{
+public:
+    explicit MImSettingsQSettingsTemporaryBackendFactory();
+    virtual ~MImSettingsQSettingsTemporaryBackendFactory();
+    virtual MImSettingsBackend *create(const QString &key, QObject *parent);
+
+private:
+    QTemporaryFile mTempFile;
+    QScopedPointer<QSettings> mSettings;
 };
 
 #endif // MIMSETTINGSQSETTINGS_H
