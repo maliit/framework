@@ -25,7 +25,7 @@
 #include "mimserverconnection.h"
 #include "inputcontextdbusaddress.h"
 
-#include <tr1/memory>
+#include <QSharedPointer>
 
 class GlibDBusIMServerProxyPrivate;
 
@@ -44,7 +44,7 @@ class GlibDBusIMServerProxy: public MImServerConnection
     Q_OBJECT
 
 public:
-    GlibDBusIMServerProxy(std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address, QObject *parent = 0);
+    GlibDBusIMServerProxy(const QSharedPointer<Maliit::InputContext::DBus::Address> &address, QObject *parent = 0);
     virtual ~GlibDBusIMServerProxy();
 
     //! reimpl

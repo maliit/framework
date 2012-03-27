@@ -16,8 +16,7 @@
 
 #include "minputcontextplugin.h"
 
-#include "glibdbusimserverproxy.h"
-#include "inputcontextdbusaddress.h"
+#include "connectionfactory.h"
 
 #include <minputcontext.h>
 #include <QString>
@@ -46,17 +45,15 @@ QInputContext *MInputContextPlugin::create(const QString &key)
     QInputContext *ctx = NULL;
 
     if (key == MaliitInputContextName) {
-        std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address;
+        MImServerConnection *serverConnection;
 
         const QByteArray overriddenAddress = qgetenv(ServerAddressEnv);
 
         if (overriddenAddress.isEmpty()) {
-            address.reset(new Maliit::InputContext::DBus::DynamicAddress);
+            serverConnection = Maliit::DBus::createServerConnectionWithDynamicAddress();
         } else {
-            address.reset(new Maliit::InputContext::DBus::FixedAddress(overriddenAddress));
+            serverConnection = Maliit::DBus::createServerConnectionWithFixedAddress(overriddenAddress);
         }
-
-        MImServerConnection *serverConnection = new GlibDBusIMServerProxy(address, 0);
 
         ctx = new MInputContext(serverConnection, MaliitInputContextName, this);
         serverConnection->setParent(ctx); // Tie lifetime of server connection to the inputcontext

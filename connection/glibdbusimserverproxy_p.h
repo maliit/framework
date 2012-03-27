@@ -18,8 +18,10 @@
 #define GLIBDBUSIMSERVERPROXY_P_H
 
 #include <QSet>
-#include <tr1/memory>
+#include <QSharedPointer>
 #include <dbus/dbus-glib.h>
+
+#include <tr1/memory>
 
 #include "inputcontextdbusaddress.h"
 
@@ -37,7 +39,7 @@ class GlibDBusIMServerProxyPrivate
 {
 
 public:
-    GlibDBusIMServerProxyPrivate(std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address);
+    GlibDBusIMServerProxyPrivate(const QSharedPointer<Maliit::InputContext::DBus::Address> &address);
     ~GlibDBusIMServerProxyPrivate();
 
 public:
@@ -49,7 +51,7 @@ public:
     GObject *inputContextAdaptor;
     bool active;
     QSet<DBusGProxyCall *> pendingResetCalls;
-    const std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> mAddress;
+    const QSharedPointer<Maliit::InputContext::DBus::Address> mAddress;
 };
 
 
