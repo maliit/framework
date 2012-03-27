@@ -19,16 +19,6 @@
 #include "glibdbusimserverproxy.h"
 #include "inputcontextdbusaddress.h"
 
-#include "mimserver.h"
-#include "mimapphostedserverlogic.h"
-
-#include "mimdirectserverconnection.h"
-#include "miminputcontextdirectconnection.h"
-
-#include "inputmethod.h"
-
-using namespace std::tr1;
-
 #include <minputcontext.h>
 #include <QString>
 #include <QStringList>
@@ -36,7 +26,6 @@ using namespace std::tr1;
 namespace {
     const char * const ServerAddressEnv("MALIIT_SERVER_ADDRESS");
     const QString MaliitInputContextName(MALIIT_INPUTCONTEXT_NAME);
-    const QString MaliitDirectInputContextName(MALIIT_INPUTCONTEXT_NAME"Direct");
 }
 
 MInputContextPlugin::MInputContextPlugin(QObject *parent)
@@ -52,8 +41,6 @@ MInputContextPlugin::~MInputContextPlugin()
 }
 
 
-// TODO: split the two different cases into different classes
-// and build separately, so that the non-direct IC does not have to link against server code
 QInputContext *MInputContextPlugin::create(const QString &key)
 {
     QInputContext *ctx = NULL;
@@ -73,24 +60,8 @@ QInputContext *MInputContextPlugin::create(const QString &key)
 
         ctx = new MInputContext(serverConnection, MaliitInputContextName, this);
         serverConnection->setParent(ctx); // Tie lifetime of server connection to the inputcontext
-
-    } else if (key == MaliitDirectInputContextName) {
-
-        MImDirectServerConnection *serverConnection = new MImDirectServerConnection(0);
-        MImInputContextDirectConnection *icConnection = new MImInputContextDirectConnection(0);
-        serverConnection->connectTo(icConnection);
-
-        shared_ptr<MInputContextConnection> icConn(icConnection);
-        QSharedPointer<MImAbstractServerLogic> serverLogic(new MImAppHostedServerLogic);
-        MImServer *imServer = new MImServer(serverLogic, icConn);
-
-        Maliit::InputMethod::instance()->setWidget(imServer->pluginsWidget());
-
-        ctx = new MInputContext(serverConnection, MaliitDirectInputContextName, this);
-        serverConnection->setParent(ctx);
-        imServer->setParent(ctx);
     } else {
-        qCritical() << "Unknown plugin name";
+        qCritical() << "Unknown plugin name" << key;
     }
 
     return ctx;
@@ -116,9 +87,7 @@ QString MInputContextPlugin::displayName(const QString &s)
 
 QStringList MInputContextPlugin::keys() const
 {
-    QStringList list = QStringList(MaliitInputContextName);
-    list << QString(MaliitDirectInputContextName);
-    return list;
+    return QStringList(MaliitInputContextName);
 }
 
 
