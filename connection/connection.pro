@@ -40,43 +40,30 @@ direct-connection {
 glib-dbus-connection {
     QT += dbus
 
-    # Used for serverdbusaddress
-    CONFIG += qdbus
-
     disable-dbus-activation {
         DEFINES += NO_DBUS_ACTIVATION
     }
-
-    PUBLIC_HEADERS += \
-        \ # input-context
-        glibdbusimserverproxy.h \
-        inputcontextdbusaddress.h \
-        \ # server
-        minputcontextglibdbusconnection.h \
-        serverdbusaddress.h \
-
-    PUBLIC_SOURCES += \
-        # input-context
-        glibdbusimserverproxy.cpp \
-        inputcontextdbusaddress.cpp \
-        \ # server
-        minputcontextglibdbusconnection.cpp \
-        serverdbusaddress.cpp \
 
     PRIVATE_HEADERS += \
         \ # common
         variantmarshalling.h \
         \ # input-context
+        glibdbusimserverproxy.h \
         mdbusglibinputcontextadaptor.h \
         glibdbusimserverproxy_p.h \
+        \ # server
+        minputcontextglibdbusconnection.h \
 
     PRIVATE_SOURCES += \
         \ # common
         variantmarshalling.cpp \
         \ # input-context
+        glibdbusimserverproxy.cpp \
         mdbusglibinputcontextadaptor.cpp \
+        \ # server
+        minputcontextglibdbusconnection.cpp \
 
-    PKGCONFIG += dbus-glib-1 gio-2.0
+    PKGCONFIG += dbus-glib-1
 
     # Generate dbus glue for server side
     QMAKE_EXTRA_TARGETS += dbus_glue_server
@@ -110,10 +97,31 @@ glib-dbus-connection {
     fake_dbus_glue_inputcontext.depends = dbus_glue_inputcontext
 
     OTHER_FILES += minputmethodcontext1interface.xml
+}
+
+glib-dbus-connection {
+    QT += dbus
+
+    disable-dbus-activation {
+        DEFINES += NO_DBUS_ACTIVATION
+    }
+
+    PUBLIC_HEADERS += \
+        connectionfactory.h \
+
+    PUBLIC_SOURCES += \
+        connectionfactory.cpp \
+
+    PRIVATE_HEADERS += \
+        inputcontextdbusaddress.h \
+        serverdbusaddress.h \
+
+    PRIVATE_SOURCES += \
+        inputcontextdbusaddress.cpp \
+        serverdbusaddress.cpp \
 
     # DBus activation
     !disable-dbus-activation {
-
         outputFiles(org.maliit.server.service)
 
         DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
@@ -124,9 +132,6 @@ glib-dbus-connection {
 
         install_services.path = $$DBUS_SERVICES_DIR
         install_services.files = org.maliit.server.service
-    }
-
-    !disable-dbus-activation {
         INSTALLS += install_services
     }
 }
@@ -155,3 +160,4 @@ INSTALLS += target \
     install_pkgconfig \
 
 OTHER_FILES += libmaliit-connection.pri
+

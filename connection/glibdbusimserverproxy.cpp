@@ -98,7 +98,7 @@ namespace
     }
 }
 
-GlibDBusIMServerProxyPrivate::GlibDBusIMServerProxyPrivate(std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address)
+GlibDBusIMServerProxyPrivate::GlibDBusIMServerProxyPrivate(const QSharedPointer<Maliit::InputContext::DBus::Address> &address)
     : glibObjectProxy(NULL),
       connection(),
       active(true),
@@ -126,7 +126,7 @@ void GlibDBusIMServerProxy::onDisconnectionTrampoline(void */*proxy*/, void *use
 }
 
 
-GlibDBusIMServerProxy::GlibDBusIMServerProxy(std::tr1::shared_ptr<Maliit::InputContext::DBus::Address> address, QObject *parent)
+GlibDBusIMServerProxy::GlibDBusIMServerProxy(const QSharedPointer<Maliit::InputContext::DBus::Address> &address, QObject *parent)
     : MImServerConnection(parent),
       d_ptr(new GlibDBusIMServerProxyPrivate(address))
 {
@@ -139,9 +139,9 @@ GlibDBusIMServerProxy::GlibDBusIMServerProxy(std::tr1::shared_ptr<Maliit::InputC
 
     d->inputContextAdaptor = G_OBJECT(adaptor);
 
-    connect(d->mAddress.get(), SIGNAL(addressRecieved(QString)),
+    connect(d->mAddress.data(), SIGNAL(addressRecieved(QString)),
             this, SLOT(openDBusConnection(QString)));
-    connect(d->mAddress.get(), SIGNAL(addressFetchError(QString)),
+    connect(d->mAddress.data(), SIGNAL(addressFetchError(QString)),
             this, SLOT(connectToDBusFailed(QString)));
 
     dbus_g_thread_init();

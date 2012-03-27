@@ -22,8 +22,7 @@
 #include <miminputcontextdirectconnection.h>
 
 // GlibDBus connection backend
-#include <minputcontextglibdbusconnection.h>
-#include <glibdbusimserverproxy.h>
+#include <connectionfactory.h>
 
 #include <QtCore>
 #include <limits>

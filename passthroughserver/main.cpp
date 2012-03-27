@@ -20,7 +20,7 @@
 #include "mimdummyinputcontext.h"
 #endif
 
-#include "minputcontextglibdbusconnection.h"
+#include "connectionfactory.h"
 #include "mimserver.h"
 #include "mimserveroptions.h"
 #include "mimstandaloneserverlogic.h"
@@ -135,15 +135,12 @@ int main(int argc, char **argv)
 #endif
 
     // DBus Input Context Connection
-    shared_ptr<Maliit::Server::DBus::Address> address;
-    if (connectionOptions.overriddenAddress.isEmpty()) {
-        address.reset(new Maliit::Server::DBus::DynamicAddress);
-    } else {
-        address.reset(new Maliit::Server::DBus::FixedAddress(connectionOptions.overriddenAddress));
-    }
-
     shared_ptr<MInputContextConnection> icConnection;
-    icConnection.reset(new MInputContextGlibDBusConnection(address, connectionOptions.allowAnonymous));
+    if (connectionOptions.overriddenAddress.isEmpty()) {
+        icConnection.reset(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
+    } else {
+        icConnection.reset(Maliit::DBus::createInputContextConnectionWithFixedAddress(connectionOptions.overriddenAddress, connectionOptions.allowAnonymous));
+    }
 
     // The actual server
     MImServer imServer(serverLogic, icConnection);

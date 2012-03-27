@@ -12,12 +12,5 @@ SOURCES += minputcontextplugin.cpp \
 
 CONFIG += plugin
 
-PKGCONFIG += dbus-glib-1
-QT += dbus
-system(pkg-config gio-2.0 --atleast-version 2.26) {
-    DEFINES   += MALIIT_USE_GIO_API
-    PKGCONFIG += gio-2.0
-}
-
 INSTALLS    += target
 target.path += $$QT_IM_PLUGIN_PATH
