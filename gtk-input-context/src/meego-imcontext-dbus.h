@@ -57,7 +57,7 @@ void meego_imcontext_dbusobj_connect(MeegoIMContextDbusObj *obj, gpointer connec
 gboolean meego_imcontext_client_activation_lost_event(MeegoIMContextDbusObj *obj);
 gboolean meego_imcontext_client_im_initiated_hide(MeegoIMContextDbusObj *obj);
 gboolean meego_imcontext_client_commit_string(MeegoIMContextDbusObj *obj, char *string);
-gboolean meego_imcontext_client_update_preedit(MeegoIMContextDbusObj *obj, char *string, int preedit_face);
+gboolean meego_imcontext_client_update_preedit(MeegoIMContextDbusObj *obj, const char *string, GPtrArray *formatListData, gint32 replaceStart, gint32 replaceLength, gint32 cursorPos, GError **error);
 gboolean meego_imcontext_client_key_event(MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
         gboolean auto_repeat, int count);
 gboolean meego_imcontext_client_update_input_method_area(MeegoIMContextDbusObj *obj, GPtrArray *data);
