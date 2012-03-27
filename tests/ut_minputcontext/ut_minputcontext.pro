@@ -25,6 +25,4 @@ include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 CONFIG += plugin qdbus link_pkgconfig
 
-PKGCONFIG += dbus-glib-1
-
 include(../common_check.pri)
