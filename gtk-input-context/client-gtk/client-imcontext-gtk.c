@@ -454,20 +454,35 @@ meego_imcontext_client_commit_string(MeegoIMContextDbusObj *obj, char *string)
 {
     UNUSED(obj);
     DBG("string is:%s", string);
-    if (focused_imcontext)
+    if (focused_imcontext) {
+        g_free(focused_imcontext->preedit_str);
+        focused_imcontext->preedit_str = g_strdup("");
+        focused_imcontext->preedit_cursor_pos = 0;
+        g_signal_emit_by_name(focused_imcontext, "preedit-changed");
         g_signal_emit_by_name(focused_imcontext, "commit", string);
+    }
 
     return TRUE;
 }
 
 
 gboolean
-meego_imcontext_client_update_preedit(MeegoIMContextDbusObj *obj, char *string, int preedit_face)
+meego_imcontext_client_update_preedit(MeegoIMContextDbusObj *obj, const char *string, GPtrArray *formatListData, gint32 replaceStart, gint32 replaceLength, gint32 cursorPos, GError **error)
 {
-    UNUSED(obj);
-    UNUSED(string);
-    UNUSED(preedit_face);
     STEP();
+    UNUSED(obj);
+    UNUSED(formatListData)
+    UNUSED(replaceStart)
+    UNUSED(replaceLength)
+    UNUSED(error)
+
+    if (focused_imcontext) {
+        g_free(focused_imcontext->preedit_str);
+        focused_imcontext->preedit_str = g_strdup(string);
+        focused_imcontext->preedit_cursor_pos = cursorPos + g_utf8_strlen(string, -1) + 1;
+        g_signal_emit_by_name(focused_imcontext, "preedit-changed");
+    }
+
     return TRUE;
 }
 

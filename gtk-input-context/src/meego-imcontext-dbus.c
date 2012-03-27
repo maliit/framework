@@ -33,7 +33,7 @@ gboolean meego_imcontext_dbus_activation_lost_event(MeegoIMContextDbusObj *obj, 
 gboolean meego_imcontext_dbus_im_initiated_hide(MeegoIMContextDbusObj *obj, GError **error);
 gboolean meego_imcontext_dbus_commit_string(MeegoIMContextDbusObj *obj, char *string, gint replacement_start,
         int replacement_length, int cursor_pos, GError **error);
-gboolean meego_imcontext_dbus_update_preedit(MeegoIMContextDbusObj *obj, char *string, int preedit_face, GError **error);
+gboolean meego_imcontext_dbus_update_preedit(MeegoIMContextDbusObj *obj, const char *string, GPtrArray *formatListData, gint32 replaceStart, gint32 replaceLength, gint32 cursorPos, GError** error);
 gboolean meego_imcontext_dbus_key_event(MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
                                         gboolean auto_repeat, int count, GError **error);
 gboolean meego_imcontext_dbus_update_input_method_area(MeegoIMContextDbusObj *obj, GPtrArray *data, GError **error);
@@ -108,16 +108,16 @@ gboolean
 meego_imcontext_dbus_commit_string(MeegoIMContextDbusObj *obj, char *string, gint replacement_start,
                                    int replacement_length, int cursor_pos, GError **error)
 {
-    DBG("string is:%s", string);
+    DBG("commit string: %s", string);
     return meego_imcontext_client_commit_string(obj, string);
 }
 
 
 gboolean
-meego_imcontext_dbus_update_preedit(MeegoIMContextDbusObj *obj, char *string, int preedit_face, GError **error)
+meego_imcontext_dbus_update_preedit(MeegoIMContextDbusObj *obj, const char *string, GPtrArray *formatListData, gint32 replaceStart, gint32 replaceLength, gint32 cursorPos, GError **error)
 {
-    STEP();
-    return TRUE;
+    DBG("preedit string: %s", string);
+    return meego_imcontext_client_update_preedit(obj, string, formatListData, replaceStart, replaceLength, cursorPos, error);
 }
 
 
