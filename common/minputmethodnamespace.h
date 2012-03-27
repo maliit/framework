@@ -248,5 +248,6 @@ Q_DECLARE_METATYPE(MInputMethod::Orientation)
 Q_DECLARE_METATYPE(MInputMethod::OrientationAngle)
 Q_DECLARE_METATYPE(MInputMethod::InputMethodMode)
 Q_DECLARE_METATYPE(MInputMethod::InputMethodQueryExtensions)
+Q_DECLARE_METATYPE(QList<MInputMethod::PreeditTextFormat>)
 
 #endif
