@@ -280,9 +280,9 @@ MInputContextConnection::receivedAppOrientationAboutToChange(unsigned int connec
     // Needs to be passed to the MImRotationAnimation listening
     // to this signal first before the plugins. This ensures
     // that the rotation animation can be painted sufficiently early.
-    Q_EMIT appOrientationAboutToChange(angle);
+    Q_EMIT contentOrientationAboutToChange(angle);
 
-    Q_EMIT appOrientationAboutToChangeCompleted(angle);
+    Q_EMIT contentOrientationAboutToChangeCompleted(angle);
 }
 
 
@@ -294,9 +294,9 @@ void MInputContextConnection::receivedAppOrientationChanged(unsigned int connect
 
     // Handle orientation changes through MImRotationAnimation with priority.
     // That's needed for getting the correct rotated pixmap buffers.
-    Q_EMIT appOrientationChanged(angle);
+    Q_EMIT contentOrientationChanged(angle);
 
-    Q_EMIT appOrientationChangeCompleted(angle);
+    Q_EMIT contentOrientationChangeCompleted(angle);
 }
 
 
