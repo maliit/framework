@@ -1126,10 +1126,10 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mICConnection.get(), SIGNAL(clientActivated(uint)),
             this, SLOT(handleClientChange()));
 
-    connect(d->mICConnection.get(), SIGNAL(appOrientationAboutToChangeCompleted(int)),
+    connect(d->mICConnection.get(), SIGNAL(contentOrientationAboutToChangeCompleted(int)),
             this, SLOT(handleAppOrientationAboutToChange(int)));
 
-    connect(d->mICConnection.get(), SIGNAL(appOrientationChangeCompleted(int)),
+    connect(d->mICConnection.get(), SIGNAL(contentOrientationChangeCompleted(int)),
             this, SLOT(handleAppOrientationChanged(int)));
 
     connect(d->mICConnection.get(), SIGNAL(preeditChanged(QString,int)),

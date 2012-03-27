@@ -82,9 +82,9 @@ void MImServer::connectComponents()
                      d->serverLogic.data(), SLOT(applicationFocusChanged(WId)));
 
     // Rotation handling
-    QObject::connect(d->icConnection.get(), SIGNAL(appOrientationAboutToChange(int)),
+    QObject::connect(d->icConnection.get(), SIGNAL(contentOrientationAboutToChange(int)),
                      d->serverLogic.data(), SLOT(appOrientationAboutToChange(int)));
-    QObject::connect(d->icConnection.get(), SIGNAL(appOrientationChanged(int)),
+    QObject::connect(d->icConnection.get(), SIGNAL(contentOrientationChanged(int)),
                      d->serverLogic.data(), SLOT(appOrientationChangeFinished(int)));
 
     // Hide active plugins when the application window is gone or iconified.

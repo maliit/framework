@@ -307,11 +307,11 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     /* Emitted first */
-    void appOrientationAboutToChange(int angle);
-    void appOrientationChanged(int angle);
+    void contentOrientationAboutToChange(int angle);
+    void contentOrientationChanged(int angle);
     /* Emitted later */
-    void appOrientationAboutToChangeCompleted(int angle);
-    void appOrientationChangeCompleted(int angle);
+    void contentOrientationAboutToChangeCompleted(int angle);
+    void contentOrientationChangeCompleted(int angle);
 
     void focusChanged(WId id);
 
