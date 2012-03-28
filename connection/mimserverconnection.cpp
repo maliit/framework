@@ -18,6 +18,8 @@
 
 /* Dummy class that does nothing. */
 MImServerConnection::MImServerConnection(QObject *parent)
+    : QObject(parent)
+    , d(0)
 {
     Q_UNUSED(parent);
 }

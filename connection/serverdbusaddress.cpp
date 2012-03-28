@@ -19,7 +19,11 @@
 #include <QDebug>
 #include <QDBusConnection>
 
+#ifdef HAVE_GLIB_DBUS
 #include <dbus/dbus.h>
+#else
+#include <QDBusServer>
+#endif
 
 #include <cstdlib>
 
@@ -62,6 +66,7 @@ Address::~Address()
 DynamicAddress::DynamicAddress()
 {}
 
+#ifdef HAVE_GLIB_DBUS
 DBusServer* DynamicAddress::connect()
 {
     std::string dbusAddress("unix:tmpdir=/tmp/maliit-server");
@@ -80,7 +85,20 @@ DBusServer* DynamicAddress::connect()
 
     return server;
 }
+#else
+QDBusServer* DynamicAddress::connect()
+{
+    QLatin1String dbusAddress("unix:tmpdir=/tmp/maliit-server");
 
+    QDBusServer *server = new QDBusServer(dbusAddress);
+
+    publisher.reset(new AddressPublisher(server->address()));
+
+    return server;
+}
+#endif
+
+#ifdef HAVE_GLIB_DBUS
 DBusServer* FixedAddress::connect()
 {
     DBusError error;
@@ -93,7 +111,14 @@ DBusServer* FixedAddress::connect()
 
     return server;
 }
+#else
+QDBusServer* FixedAddress::connect()
+{
+    QDBusServer *server = new QDBusServer(mAddress);
 
+    return server;
+}
+#endif
 
 FixedAddress::FixedAddress(const QString &address)
     : mAddress(address)
