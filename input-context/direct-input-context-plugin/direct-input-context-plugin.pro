@@ -15,5 +15,5 @@ SOURCES += mdirectinputcontextplugin.cpp \
 
 CONFIG += plugin
 
-INSTALLS    += target \
+INSTALLS    += target
 target.path += $$QT_IM_PLUGIN_PATH

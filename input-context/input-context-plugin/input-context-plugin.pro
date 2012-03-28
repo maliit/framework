@@ -19,5 +19,5 @@ system(pkg-config gio-2.0 --atleast-version 2.26) {
     PKGCONFIG += gio-2.0
 }
 
-INSTALLS    += target \
+INSTALLS    += target
 target.path += $$QT_IM_PLUGIN_PATH
