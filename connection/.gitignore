@@ -3,3 +3,11 @@ minputmethodserver.service
 mdbusglibicconnectionserviceglue.h
 mdbusglibinputcontextadaptorglue.h
 maliit-connection-*.pc
+minputmethodcontext1interface_adaptor.cpp
+minputmethodcontext1interface_adaptor.h
+minputmethodcontext1interface_interface.cpp
+minputmethodcontext1interface_interface.h
+minputmethodserver1interface_adaptor.cpp
+minputmethodserver1interface_adaptor.h
+minputmethodserver1interface_interface.cpp
+minputmethodserver1interface_interface.h
