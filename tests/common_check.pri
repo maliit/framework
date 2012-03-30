@@ -1,4 +1,6 @@
-unittest_arguments += -graphicssystem raster
+contains(QT_MAJOR_VERSION, 4) {
+    unittest_arguments += -graphicssystem raster
+}
 
 qws {
     unittest_arguments += -qws
