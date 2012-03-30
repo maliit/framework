@@ -30,11 +30,3 @@ QT_PREFIX = $$[QT_INSTALL_PREFIX]
 enforce-install-prefix {
     QT_IM_PLUGIN_PATH = $$replace(QT_IM_PLUGIN_PATH, $$QT_PREFIX, $$M_IM_PREFIX)
 }
-
-QMAKE_EXTRA_TARGETS += check-xml
-check-xml.target = check-xml
-check-xml.depends += lib$${TARGET}.so
-
-QMAKE_EXTRA_TARGETS += check
-check.target = check
-check.depends += lib$${TARGET}.so
