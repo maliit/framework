@@ -205,6 +205,11 @@ outputFiles(maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc)
 outputFiles(config.h)
 outputFiles(maliit-plugins.prf maliit-defines.prf)
 
+OTHER_FILES += \
+    config.h.in \
+    maliit-plugins.prf.in \
+    maliit-defines.prf.in \
+
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = \
     $$OUT_PWD/MeegoImFramework.pc \

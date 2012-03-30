@@ -8,6 +8,10 @@ CONFIG += staticlib
 outputFiles(maliit-framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}.pc)
 outputFiles(maliit-framework.prf)
 
+OTHER_FILES += \
+    maliit-framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}.pc.in \
+    maliit-framework.prf.in \
+
 HEADERSINSTALL = \
     minputmethodnamespace.h \
 
