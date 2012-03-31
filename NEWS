@@ -1,3 +1,33 @@
+0.91.0
+======
+
+CHANGES SINCE 0.90.0
+* Removed legacy support for MeeGo Harmattan:
+  - CONFIG+=enable-legacy removed,
+  - No longer uses MeeGo graphics system,
+  - No longer reads GConf configuration under /meegotouch/inputmethods,
+  - No longer installs meego-im-uiserver,
+  - No longer uses /usr/lib/meego-im-plugins for Maliit plugins
+* Allow to run Maliit server and plugins in application process:
+  - See examples/apps/embedded or examples/apps/server-embedded. The former
+    uses a special input context that will load the server, MaliitDirect,
+    whereas the second example shows how to load the server directly, without
+    the special input context.
+* Clean up tests to use minimal dependencies:
+  - Same as with maliit-keyboard in plugins repo, most tests should be able to
+    run without QtGui or QWidget dependencies.
+* Experimental QtDBus support
+* Add preedit supoprt for GTK+ applications
+* Improve Windows build
+
+BUG FIXES
+* Fix ft_exampleplugin on Qt 5
+* Fix ut_minputcontextplugin not finding libmaliit-qt4.so
+* Fix dependency issues for make check
+* Fixed build error caused by commit "Split the DBus and direct Qt4 input
+  context plugins.".
+
+
 0.90.0
 ======
 
@@ -6,13 +36,13 @@ CHANGES SINCE 0.81.3
 * Added a compilation option to disable the GConf settings backend,
   using QSettings as a fallback.
 * Notify applications when attribute extensions are changed by Maliit plugins
-  * Typical use case would be buttons in an input method toolbar, where the
+  - Typical use case would be buttons in an input method toolbar, where the
     application needs to know about the button state.
 * New connection directory to isolate all D-Bus dependend code
-  * This will make it easier to use other IPCs (or no IPC at all, in case the
+  - This will make it easier to use other IPCs (or no IPC at all, in case the
     application hosts the input method system) in the future.
 * Introduce -h/--help parameter to maliit-server
-  * When giving invalid parameters to maliit-server, it will complain and print
+  - When giving invalid parameters to maliit-server, it will complain and print
     a useful help message.
 
 BUG FIXES
@@ -37,7 +67,7 @@ CHANGES SINCE 0.81.2
   to start and keep maliit-server alive
 * Improved support for Qt Embedded (QWS)
 * Make framework compile on older platforms
-  * With the fix of MALIIT#14, latest version of framework will now compile on
+  - With the fix of MALIIT#14, latest version of framework will now compile on
     Maemo Fremantle again (might require skipping the tests still).
 
 BUG FIXES
