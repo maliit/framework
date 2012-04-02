@@ -10,8 +10,6 @@ SUBDIRS += \
           dummyimplugin3 \
           dummyplugin \
           sanitychecks \
-          ut_mtoolbardata \
-          ut_mtoolbaritem \
           ut_mattributeextensionmanager \
           ut_mkeyoverride \
           ft_exampleplugin \

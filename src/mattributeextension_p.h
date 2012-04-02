@@ -20,7 +20,6 @@
 
 #include <QSharedPointer>
 #include "mattributeextensionid.h"
-class MToolbarData;
 class MKeyOverrideData;
 
 class MAttributeExtensionPrivate {
@@ -30,7 +29,6 @@ public:
 
 private:
     MAttributeExtensionId id;
-    QSharedPointer<MToolbarData> toolbarData;
     QSharedPointer<MKeyOverrideData> keyOverrideData;
 
     MAttributeExtension *q_ptr;

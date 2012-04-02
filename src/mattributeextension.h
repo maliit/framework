@@ -27,7 +27,6 @@
 
 class MAttributeExtensionId;
 class MAttributeExtensionPrivate;
-class MToolbarData;
 class MKeyOverrideData;
 
 /*! \ingroup pluginapi
@@ -51,17 +50,8 @@ public:
 
     MAttributeExtensionId id() const;
 
-    //! Return the pointer to toolbar data.
-    QSharedPointer<MToolbarData> toolbarData() const;
-
     //! Return the pointer to key override data.
     QSharedPointer<MKeyOverrideData> keyOverrideData() const;
-
-private:
-    /*!
-     * \brief Returns new toolbar which is loaded from specified file \a name.
-     */
-    QSharedPointer<MToolbarData> createToolbar(const QString &name);
 
 protected:
     Q_DECLARE_PRIVATE(MAttributeExtension)

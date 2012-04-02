@@ -19,9 +19,6 @@
 
 #include "mabstractinputmethodhost.h"
 #include "mimgraphicsview.h"
-#include "mtoolbardata.h"
-#include "mtoolbarlayout.h"
-#include "mtoolbaritem.h"
 #include "mkeyoverridequick.h"
 #include "mkeyoverride.h"
 #include "minputmethodquickplugin.h"
@@ -118,11 +115,6 @@ public:
         }
 
         m_content->hide();
-    }
-
-    void setToolbar(const QSharedPointer<const MToolbarData>&)
-    {
-        // Not implemented yet.
     }
 
     void loadQmlFile(const QString &qmlFileName)
@@ -285,13 +277,6 @@ void MInputMethodQuick::hide()
     d->loader->hideUI();
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
-}
-
-void MInputMethodQuick::setToolbar(QSharedPointer<const MToolbarData> toolbar)
-{
-    Q_D(MInputMethodQuick);
-
-    d->loader->setToolbar(toolbar);
 }
 
 void MInputMethodQuick::handleAppOrientationChanged(int angle)

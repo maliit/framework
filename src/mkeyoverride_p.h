@@ -18,7 +18,6 @@
 #ifndef MKEYOVERRIDE_P_H
 #define MKEYOVERRIDE_P_H
 
-class MToolbarData;
 class MWidgetData;
 
 class MKeyOverridePrivate {

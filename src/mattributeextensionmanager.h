@@ -25,13 +25,11 @@
 #include <QSharedPointer>
 
 #include "mkeyoverridedata.h"
-#include "mtoolbardata.h"
 #include "mattributeextension.h"
 #include "mattributeextensionid.h"
 #include "minputmethodnamespace.h"
 #include "mimsettings.h"
 
-struct MToolbarItemFilter;
 //! \internal
 /*! \ingroup maliitserver
  \brief The MAttributeExtensionManager class manager the virtual keyboard attribute extensions.
@@ -80,12 +78,6 @@ public:
     QSharedPointer<MAttributeExtension> attributeExtension(const MAttributeExtensionId &id) const;
 
     /*!
-     *\brief Returns toolbar definition for gived \a id.
-     */
-    QSharedPointer<MToolbarData> toolbarData(const MAttributeExtensionId &id) const;
-
-
-    /*!
      *\brief Returns key overrides definition for gived \a id.
      */
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides(const MAttributeExtensionId &id) const;
@@ -118,27 +110,6 @@ public Q_SLOTS:
                                        const QString &target, const QString &targetName,
                                        const QString &attribute, const QVariant &value);
     void handleWidgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState, const QMap<QString, QVariant> &oldState, bool focusChanged);
-
-private Q_SLOTS:
-    //! \brief Handle preferred_domain GConf setting updates.
-    void handlePreferredDomainUpdate();
-
-    /*!
-     * \brief Handle extended attribute updates which are coming from plugin or framework.
-     * \param attributeName Name of changed attribute.
-     *
-     * Note: this slot relies on QObject::sender() and should be connected to
-     * MToolbarItem only.
-     */
-    void handleToolbarItemUpdate(const QString &attributeName);
-
-    /*!
-     * \brief Disconnect slots and remove all references to toolbar item which is being destroyed.
-     *
-     * Note: this slot relies on QObject::sender() and should be connected to
-     * MToolbarItem only.
-     */
-    void handleToolbarItemDestroyed();
 
 Q_SIGNALS:
     //! This signal is emited when a new key override is created.
@@ -181,28 +152,6 @@ private:
      */
     QList<MAttributeExtensionId> attributeExtensionIdList() const;
 
-
-    //! Create standard widget data which contains standard attribute extension
-    void createStandardObjects();
-
-    /*!
-     * \brief Add standard toolbar items to the custom toolbar.
-     * \param toolbarData Custom toolbar data
-     */
-    void addStandardButtons(const QSharedPointer<MToolbarData> &toolbarData);
-
-    //! This overloaded function provided for convinience
-    void addStandardButtons(const QSharedPointer<MToolbarLayout> &layout,
-                            const QSharedPointer<MToolbarData> &toolbarData);
-
-    //! \brief Update the text of a button named _domain in \a toolbar to match the configuration.
-    void updateDomain(QSharedPointer<MToolbarData> &toolbar);
-
-    /*!
-     * \brief Disconnect slots and remove all references to toolbar item which is being destroyed.
-     */
-    void unwatchItem(MToolbarItem *item);
-
     typedef QHash<MAttributeExtensionId, QSharedPointer<MAttributeExtension> > AttributeExtensionContainer;
     //! all registered attribute extensions
     AttributeExtensionContainer attributeExtensions;
@@ -210,25 +159,8 @@ private:
     MAttributeExtensionId attributeExtensionId; //current attribute extension id
     QSet<MAttributeExtensionId> attributeExtensionIds; //all attribute extension ids
 
-    //! Standard close button
-    QSharedPointer<MToolbarItem> close;
-
-    //! Standard copy/paste button
-    QSharedPointer<MToolbarItem> copyPaste;
-
-    //! Standard AttributeExtension contaning standard toolbar buttons only
-    QSharedPointer<MAttributeExtension> standardAttributeExtension;
-
     //! Copy/paste button status
     MInputMethod::CopyPasteState copyPasteStatus;
-
-    //! Preferred domain for URL and Email toolbar domain buttons.
-    MImSettings preferredDomainSetting;
-
-    typedef QMap<MToolbarItem *, MToolbarItemFilter> MToolbarItemFilters;
-    //! Allow us to decide which changes in toolbar should be sent
-    //! to the application side
-    MToolbarItemFilters toolbarItemFilters;
 
     friend class Ut_MAttributeExtensionManager;
 };

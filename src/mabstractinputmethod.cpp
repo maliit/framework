@@ -125,12 +125,6 @@ void MAbstractInputMethod::handleAppOrientationChanged(int angle)
     Q_UNUSED(angle);
 }
 
-void MAbstractInputMethod::setToolbar(QSharedPointer<const MToolbarData> toolbar)
-{
-    // empty default implementation
-    Q_UNUSED(toolbar);
-}
-
 void MAbstractInputMethod::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                            Qt::KeyboardModifiers modifiers,
                                            const QString &text, bool autoRepeat, int count,

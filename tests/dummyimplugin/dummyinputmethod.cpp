@@ -98,9 +98,3 @@ QString DummyInputMethod::activeSubView(MInputMethod::HandlerState state) const
     else
         return QString();
 }
-
-void DummyInputMethod::setToolbar(QSharedPointer<const MToolbarData> toolbar)
-{
-    toolbarParam = toolbar;
-}
-

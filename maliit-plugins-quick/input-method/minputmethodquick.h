@@ -83,7 +83,6 @@ public:
     virtual void handleAppOrientationChanged(int angle);
     virtual void setState(const QSet<MInputMethod::HandlerState> &state);
 
-    virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
     virtual void handleFocusChange(bool focusIn);
     //! \reimp_end

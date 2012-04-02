@@ -388,10 +388,6 @@ void MIMPluginManagerPrivate::replacePlugin(MInputMethod::SwitchDirection direct
     if (source) {
         plugins[source].lastSwitchDirection = direction;
     }
-    QSharedPointer<const MToolbarData> toolbar =
-        attributeExtensionManager->toolbarData(toolbarId);
-    switchedTo->setToolbar(toolbar);
-
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
         attributeExtensionManager->keyOverrides(toolbarId);
     switchedTo->setKeyOverrides(keyOverrides);
@@ -1316,9 +1312,6 @@ void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
     // Record MAttributeExtensionId for switch Plugin
     d->toolbarId = id;
 
-    QSharedPointer<const MToolbarData> toolbar =
-        d->attributeExtensionManager->toolbarData(id);
-
     QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
         d->attributeExtensionManager->keyOverrides(id);
 
@@ -1340,7 +1333,6 @@ void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
     const bool callKeyOverrides(!(!focusState && mapEmpty));
 
     Q_FOREACH (MInputMethodPlugin *plugin, d->activePlugins) {
-        d->plugins.value(plugin).inputMethod->setToolbar(toolbar);
         if (callKeyOverrides)
         {
             d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);

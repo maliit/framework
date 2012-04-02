@@ -63,9 +63,7 @@ protected:
     typedef QMap<QString, QSharedPointer<MKeyOverride> > KeyOverrides;
     KeyOverrides mKeyOverrides;
 
-    friend class MToolbarManager;
     friend class Ut_MKeyOverrideData;
-    friend class Ut_MToolbarManager;
 };
 
 #endif

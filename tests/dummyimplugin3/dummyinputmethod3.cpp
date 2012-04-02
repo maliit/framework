@@ -77,9 +77,3 @@ void DummyInputMethod3::show()
     inputMethodHost()->setScreenRegion(QRegion(0, 0, 100, 100));
     Q_EMIT showCalled();
 }
-
-void DummyInputMethod3::setToolbar(QSharedPointer<const MToolbarData> toolbar)
-{
-    toolbarParam = toolbar;
-}
-

@@ -31,10 +31,7 @@ private Q_SLOTS:
     void cleanupTestCase();
     void init();
     void cleanup();
-    void testLoadToolbar();
-    void testSetItemAttribute();
     void testSetExtendedAttribute();
-    void testSendExtendedAttributeBack();
 
 private:
     MAttributeExtensionManager *subject;

@@ -5,8 +5,6 @@
 #include <QSet>
 #include <QWidget>
 
-#include "mtoolbardata.h"
-
 class DummyInputMethod3 : public MAbstractInputMethod
 {
     Q_OBJECT
@@ -25,7 +23,6 @@ public:
                                   MInputMethod::HandlerState state = MInputMethod::OnScreen);
     virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
     virtual void show();
-    virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
     //! \reimp_end
 
 public:
@@ -35,7 +32,6 @@ public:
     int switchContextCallCount;
     MInputMethod::SwitchDirection directionParam;
     bool enableAnimationParam;
-    QSharedPointer<const MToolbarData> toolbarParam;
 
 Q_SIGNALS:
     void showCalled();

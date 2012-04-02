@@ -18,7 +18,6 @@
 #define HELLO_WORLD_INPUT_METHOD_H
 
 #include <mabstractinputmethod.h>
-#include <mtoolbardata.h> /* Only needed for setToolbar() */
 
 #include <QSet>
 #include <QWidget>
@@ -66,7 +65,6 @@ public:
                                  Qt::KeyboardModifiers modifiers, const QString &text,
                                  bool autoRepeat, int count, quint32 nativeScanCode,
                                  quint32 nativeModifiers, unsigned long time);
-    virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
     virtual void handleMouseClickOnPreedit(const QPoint &pos, const QRect &preeditRect);
     */

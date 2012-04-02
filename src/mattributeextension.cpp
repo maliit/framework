@@ -18,7 +18,6 @@
 #include "mattributeextension.h"
 #include "mattributeextension_p.h"
 #include "mkeyoverridedata.h"
-#include "mtoolbardata.h"
 
 #include <QDebug>
 
@@ -27,14 +26,11 @@ MAttributeExtensionPrivate::MAttributeExtensionPrivate()
 {
 }
 
-MAttributeExtension::MAttributeExtension(const MAttributeExtensionId &id, const QString &fileName)
+MAttributeExtension::MAttributeExtension(const MAttributeExtensionId &id, const QString &)
     : d_ptr(new MAttributeExtensionPrivate())
 {
     Q_D(MAttributeExtension);
     d->id = id;
-    if (!fileName.isEmpty()) {
-        d->toolbarData = createToolbar(fileName);
-    }
     d->keyOverrideData = QSharedPointer<MKeyOverrideData>(new MKeyOverrideData());
 }
 
@@ -48,27 +44,6 @@ MAttributeExtensionId MAttributeExtension::id() const
 {
     Q_D(const MAttributeExtension);
     return d->id;
-}
-
-QSharedPointer<MToolbarData> MAttributeExtension::createToolbar(const QString &name)
-{
-    // load a toolbar
-    QSharedPointer<MToolbarData> toolbar(new MToolbarData);
-    const bool loaded = toolbar->loadToolbarXml(name);
-
-    if (!loaded) {
-        qWarning() << "MAttributeExtension toolbar load error: "
-                   << name;
-        toolbar.clear();
-    }
-
-    return toolbar;
-}
-
-QSharedPointer<MToolbarData> MAttributeExtension::toolbarData() const
-{
-    Q_D(const MAttributeExtension);
-    return d->toolbarData;
 }
 
 QSharedPointer<MKeyOverrideData> MAttributeExtension::keyOverrideData() const

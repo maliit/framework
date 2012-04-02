@@ -31,7 +31,6 @@ class QRect;
 class QGraphicsScene;
 class MAbstractInputMethodHost;
 class MAbstractInputMethodPrivate;
-class MToolbarData;
 class MKeyOverride;
 class MImExtensionEvent;
 
@@ -155,15 +154,6 @@ public:
      * \param angle The angle in degrees. Possible values: 0, 90, 180, 270. 0 is the normal orientation of the display server.
      */
     virtual void handleAppOrientationChanged(int angle);
-
-    /*!
-     * \brief Uses a custom toolbar which is defined by given parameter.
-     *
-     * Reimplementing this method is optional. It is used by Meego Keyboard.
-     *
-     * \param toolbar Pointer to toolbar definition.
-     */
-    virtual void setToolbar(QSharedPointer<const MToolbarData> toolbar);
 
     /*!
      * \brief Process a key event redirected from hardware keyboard to input method.

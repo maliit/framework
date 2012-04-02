@@ -12,13 +12,10 @@ PLUGIN_HEADERS_PUBLIC = \
         mimabstractpluginfactory.h \
         mabstractinputmethod.h \
         mabstractinputmethodhost.h \
-        mtoolbaritem.h \
-        mtoolbardata.h \
         mkeyoverride.h \
         mkeyoverridedata.h \
         mattributeextension.h \
         mabstractinputmethodsettings.h \
-        mtoolbarlayout.h \
         mimextensionevent.h \
         mimupdateevent.h \
         mimupdatereceiver.h \
@@ -32,8 +29,6 @@ PLUGIN_SOURCES += \
         mimabstractpluginfactory.cpp \
         mabstractinputmethod.cpp \
         mabstractinputmethodhost.cpp \
-        mtoolbaritem.cpp \
-        mtoolbardata.cpp \
         mkeyoverride.cpp \
         mkeyoverridedata.cpp \
         mattributeextension.cpp \
@@ -47,10 +42,7 @@ PLUGIN_SOURCES += \
         mimsubviewdescription.cpp \
 
 PLUGIN_HEADERS_PRIVATE += \
-        mtoolbardata_p.h \
-        mtoolbaritem_p.h \
         mkeyoverride_p.h \
-        mtoolbarlayout_p.h \
         mimupdateevent_p.h \
         mimgraphicsview_p.h \
         mimwidget_p.h \
@@ -87,20 +79,17 @@ SERVER_HEADERS_PRIVATE += \
         mimhwkeyboardtracker_p.h \
         mindicatorserviceclient.h \
         mimsubviewoverride.h \
-        mtoolbaritemfilter.h \
         mimserveroptions.h \
 
 SERVER_SOURCES += \
         mimpluginmanager.cpp \
         minputmethodhost.cpp \
         mattributeextensionmanager.cpp \
-        mtoolbarlayout.cpp \
         mimhwkeyboardtracker.cpp \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
         mindicatorserviceclient.cpp \
         mimsubviewoverride.cpp \
-        mtoolbaritemfilter.cpp \
         mimserveroptions.cpp \
 
 SETTINGS_HEADERS_PRIVATE += \

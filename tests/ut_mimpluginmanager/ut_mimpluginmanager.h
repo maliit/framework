@@ -41,7 +41,6 @@ private Q_SLOTS:
     void testActiveSubView();
 
     void testRegionUpdates();
-    void testSetToolbar();
 
     void testLoadedPluginsInfo_data();
     void testLoadedPluginsInfo();
