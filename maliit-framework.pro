@@ -15,6 +15,7 @@ include(./config.pri)
         \\n\\t disable-dbus-activation : Do not use dbus activation support for maliit-server \
         \\n\\t disable-gconf : Disable GConf settings backend (falls back to QSettings) \
         \\n\\t disable-dbus : Disable dbus communication backend \
+        \\n\\t enable-qdbus : Enable QtDBus implementation for the DBus communication backend \
         \\n\\t notests : Do not build tests \
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \

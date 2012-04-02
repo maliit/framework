@@ -34,7 +34,11 @@ direct-connection {
 
 # Default to building glib-dbus based connection
 !disable-dbus {
-    CONFIG += glib-dbus-connection
+    enable-qdbus {
+        CONFIG += qdbus-dbus-connection
+    } else {
+        CONFIG += glib-dbus-connection
+    }
 }
 
 qdbus-dbus-connection {
