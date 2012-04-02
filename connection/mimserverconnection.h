@@ -17,7 +17,7 @@
 #ifndef MIMSERVERCONNECTION_H
 #define MIMSERVERCONNECTION_H
 
-#include "minputmethodnamespace.h"
+#include <maliit/namespace.h>
 
 #include <QtCore>
 
@@ -110,13 +110,13 @@ public:
      * \param cursorPos Cursor position. If it is less than 0, then the cursor will be hidden.
      *
      */
-    Q_SIGNAL void updatePreedit(const QString &string, const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+    Q_SIGNAL void updatePreedit(const QString &string, const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
 
     //! \brief Sends a non-printable key event. Parameters as in QKeyEvent constructor
     Q_SIGNAL void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
-                          int count, MInputMethod::EventRequestType requestType
-                          = MInputMethod::EventRequestBoth);
+                          int count, Maliit::EventRequestType requestType
+                          = Maliit::EventRequestBoth);
 
     //!
     // \brief Updates the input method window area

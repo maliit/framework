@@ -34,12 +34,12 @@ class MInputMethodQuickPluginPrivate
 {
 public:
     QStringList languages;  // supported languages
-    QSet<MInputMethod::HandlerState> supportedStates;
+    QSet<Maliit::HandlerState> supportedStates;
 
     MInputMethodQuickPluginPrivate()
     {
         languages << "en" << "fi_FI" << "en_US" << "en_GB" << "ru_RU";
-        supportedStates << MInputMethod::OnScreen << MInputMethod::Hardware;
+        supportedStates << Maliit::OnScreen << Maliit::Hardware;
     }
 };
 
@@ -94,7 +94,7 @@ MAbstractInputMethodSettings *MInputMethodQuickPlugin::createInputMethodSettings
     return 0;
 }
 
-QSet<MInputMethod::HandlerState> MInputMethodQuickPlugin::supportedStates() const
+QSet<Maliit::HandlerState> MInputMethodQuickPlugin::supportedStates() const
 {
     Q_D(const MInputMethodQuickPlugin);
 

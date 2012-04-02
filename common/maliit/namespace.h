@@ -155,7 +155,9 @@ namespace Maliit {
     enum PreeditFace {
         PreeditDefault,
         PreeditNoCandidates,
-        PreeditKeyPress           //! Used for displaying the hwkbd key just pressed
+        PreeditKeyPress,      //!< Used for displaying the hwkbd key just pressed
+        PreeditUnconvertible, //!< Inactive preedit region, not clickable
+        PreeditActive,        //!< Preedit region with active suggestions
     };
 
     enum HandlerState {
@@ -270,5 +272,6 @@ Q_DECLARE_METATYPE(Maliit::Orientation)
 Q_DECLARE_METATYPE(Maliit::OrientationAngle)
 Q_DECLARE_METATYPE(Maliit::InputMethodMode)
 Q_DECLARE_METATYPE(Maliit::InputMethodQueryExtensions)
+Q_DECLARE_METATYPE(QList<Maliit::PreeditTextFormat>)
 
 #endif

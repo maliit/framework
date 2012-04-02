@@ -136,7 +136,7 @@ void MAbstractInputMethod::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode
                                               count));
 }
 
-void MAbstractInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
+void MAbstractInputMethod::setState(const QSet<Maliit::HandlerState> &state)
 {
     // empty default implementation
     Q_UNUSED(state);
@@ -147,7 +147,7 @@ void MAbstractInputMethod::handleClientChange()
     // empty default implementation
 }
 
-void MAbstractInputMethod::switchContext(MInputMethod::SwitchDirection direction,
+void MAbstractInputMethod::switchContext(Maliit::SwitchDirection direction,
                                          bool enableAnimation)
 {
     // empty default implementation
@@ -156,7 +156,7 @@ void MAbstractInputMethod::switchContext(MInputMethod::SwitchDirection direction
 }
 
 QList<MAbstractInputMethod::MInputMethodSubView>
-MAbstractInputMethod::subViews(MInputMethod::HandlerState state) const
+MAbstractInputMethod::subViews(Maliit::HandlerState state) const
 {
     Q_UNUSED(state);
     QList<MInputMethodSubView> sVs;
@@ -164,14 +164,14 @@ MAbstractInputMethod::subViews(MInputMethod::HandlerState state) const
 }
 
 void MAbstractInputMethod::setActiveSubView(const QString &subViewId,
-                                            MInputMethod::HandlerState state)
+                                            Maliit::HandlerState state)
 {
     // empty default implementation
     Q_UNUSED(subViewId);
     Q_UNUSED(state);
 }
 
-QString MAbstractInputMethod::activeSubView(MInputMethod::HandlerState state) const
+QString MAbstractInputMethod::activeSubView(Maliit::HandlerState state) const
 {
     Q_UNUSED(state);
     return QString();

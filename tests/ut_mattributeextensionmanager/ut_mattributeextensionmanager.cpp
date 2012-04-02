@@ -28,7 +28,7 @@
 
 
 
-Q_DECLARE_METATYPE(MInputMethod::ActionType);
+Q_DECLARE_METATYPE(Maliit::ActionType);
 
 namespace {
     const QString testDirectory = "/ut_mattributeextensionmanager";

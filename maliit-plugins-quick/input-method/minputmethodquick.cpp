@@ -161,7 +161,7 @@ public:
     bool haveFocus;
 
     //! current active state
-    MInputMethod::HandlerState activeState;
+    Maliit::HandlerState activeState;
 
     //! In practice show() and hide() correspond to application SIP (close)
     //! requests.  We track the current shown/SIP requested state using these variables.
@@ -180,7 +180,7 @@ public:
         , loader(new MInputMethodQuickLoader(scene, im))
         , appOrientation(0)
         , haveFocus(false)
-        , activeState(MInputMethod::OnScreen)
+        , activeState(Maliit::OnScreen)
         , sipRequested(false)
         , sipIsInhibited(false)
         , actionKeyOverride(new MKeyOverrideQuick())
@@ -260,7 +260,7 @@ void MInputMethodQuick::show()
 
     handleAppOrientationChanged(d->appOrientation);
     
-    if (d->activeState == MInputMethod::OnScreen) {
+    if (d->activeState == Maliit::OnScreen) {
       d->loader->showUI();
       const QRegion r(inputMethodArea());
       d->handleInputMethodAreaUpdate(inputMethodHost(), r);
@@ -298,7 +298,7 @@ void MInputMethodQuick::handleAppOrientationChanged(int angle)
     }
 }
 
-void MInputMethodQuick::setState(const QSet<MInputMethod::HandlerState> &state)
+void MInputMethodQuick::setState(const QSet<Maliit::HandlerState> &state)
 {
     Q_D(MInputMethodQuick);
 
@@ -306,8 +306,8 @@ void MInputMethodQuick::setState(const QSet<MInputMethod::HandlerState> &state)
         return;
     }
 
-    if (state.contains(MInputMethod::OnScreen)) {
-        d->activeState = MInputMethod::OnScreen;
+    if (state.contains(Maliit::OnScreen)) {
+        d->activeState = Maliit::OnScreen;
         if (d->sipRequested && !d->sipIsInhibited) {
             show(); // Force reparent of client widgets.
         }
@@ -389,7 +389,7 @@ void MInputMethodQuick::setInputMethodArea(const QRect &area)
 
 void MInputMethodQuick::sendPreedit(const QString &text)
 {
-    QList<MInputMethod::PreeditTextFormat> lst;
+    QList<Maliit::PreeditTextFormat> lst;
     inputMethodHost()->sendPreeditString(text, lst, text.length());
 }
 
@@ -410,7 +410,7 @@ void MInputMethodQuick::sendCommit(const QString &text)
 void MInputMethodQuick::pluginSwitchRequired(int switchDirection)
 {
     inputMethodHost()->switchPlugin(
-        static_cast<MInputMethod::SwitchDirection>(switchDirection));
+        static_cast<Maliit::SwitchDirection>(switchDirection));
 }
 
 void MInputMethodQuick::userHide()

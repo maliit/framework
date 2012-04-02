@@ -25,11 +25,11 @@ MAbstractInputMethodSettings *DummyImPlugin2::createInputMethodSettings()
     return 0;
 }
 
-QSet<MInputMethod::HandlerState> DummyImPlugin2::supportedStates() const
+QSet<Maliit::HandlerState> DummyImPlugin2::supportedStates() const
 {
-    QSet<MInputMethod::HandlerState> result;
+    QSet<Maliit::HandlerState> result;
 
-    result << MInputMethod::OnScreen << MInputMethod::Hardware << MInputMethod::Accessory;
+    result << Maliit::OnScreen << Maliit::Hardware << Maliit::Accessory;
     return result;
 }
 

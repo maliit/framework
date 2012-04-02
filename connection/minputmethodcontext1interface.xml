@@ -12,7 +12,7 @@
       <arg type="i"/>
     </method>
     <method name="updatePreedit">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="QList&lt;MInputMethod::PreeditTextFormat&gt;"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="QList&lt;Maliit::PreeditTextFormat&gt;"/>
       <arg type="s"/>
       <arg type="a(iii)"/>
       <arg type="i"/>
@@ -20,7 +20,7 @@
       <arg type="i"/>
     </method>
     <method name="keyEvent">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In6" value="MInputMethod::EventRequestType"/>
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In6" value="Maliit::EventRequestType"/>
       <arg type="i"/>
       <arg type="i"/>
       <arg type="i"/>

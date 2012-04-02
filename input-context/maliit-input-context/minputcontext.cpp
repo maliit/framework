@@ -213,12 +213,12 @@ void MInputContext::connectInputMethodServer()
             this, SLOT(commitString(QString,int,int,int)));
 
     connect(imServer,
-            SIGNAL(updatePreedit(QString,QList<MInputMethod::PreeditTextFormat>,int,int,int)),
-            this, SLOT(updatePreedit(QString,QList<MInputMethod::PreeditTextFormat>,int,int,int)));
+            SIGNAL(updatePreedit(QString,QList<Maliit::PreeditTextFormat>,int,int,int)),
+            this, SLOT(updatePreedit(QString,QList<Maliit::PreeditTextFormat>,int,int,int)));
 
     connect(imServer,
-            SIGNAL(keyEvent(int,int,int,QString,bool,int,MInputMethod::EventRequestType)),
-            this, SLOT(keyEvent(int,int,int,QString,bool,int,MInputMethod::EventRequestType)));
+            SIGNAL(keyEvent(int,int,int,QString,bool,int,Maliit::EventRequestType)),
+            this, SLOT(keyEvent(int,int,int,QString,bool,int,Maliit::EventRequestType)));
 
     connect(imServer,
             SIGNAL(updateInputMethodArea(QRect)),
@@ -292,9 +292,9 @@ bool MInputContext::handlePreeditInjectionEvent(const PreeditInjectionEvent *eve
         // Note: plugin could change the preedit style in imServer->setPreedit().
         // The cursor is hidden for preedit by default. The input method server can decide
         // whether it needs the cursor.
-        QList<MInputMethod::PreeditTextFormat> preeditFormats;
-        MInputMethod::PreeditTextFormat preeditFormat(0, event->preedit().length(),
-                                                      MInputMethod::PreeditDefault);
+        QList<Maliit::PreeditTextFormat> preeditFormats;
+        Maliit::PreeditTextFormat preeditFormat(0, event->preedit().length(),
+                                                      Maliit::PreeditDefault);
         preeditFormats << preeditFormat;
         // TODO: updatePreeditInternally() below causes update() to be called which
         // communicates new cursor position (among other things) to the active
@@ -433,7 +433,7 @@ void MInputContext::mouseHandler(int x, QMouseEvent *event)
 
         if (focused) {
             Qt::InputMethodQuery query
-                = static_cast<Qt::InputMethodQuery>(MInputMethod::PreeditRectangleQuery);
+                = static_cast<Qt::InputMethodQuery>(Maliit::PreeditRectangleQuery);
             preeditRect = focused->inputMethodQuery(query).toRect();
         }
 
@@ -730,7 +730,7 @@ void MInputContext::commitString(const QString &string, int replacementStart,
 
 
 void MInputContext::updatePreedit(const QString &string,
-                                  const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                  const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                   int replacementStart, int replacementLength, int cursorPos)
 {
     if (debug) {
@@ -748,14 +748,14 @@ void MInputContext::updatePreedit(const QString &string,
 }
 
 void MInputContext::updatePreeditInternally(const QString &string,
-                                            const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                            const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                             int replacementStart, int replacementLength, int cursorPos)
 {
     preedit = string;
     preeditCursorPos = cursorPos;
 
     QList<QInputMethodEvent::Attribute> attributes;
-    Q_FOREACH (const MInputMethod::PreeditTextFormat &preeditFormat, preeditFormats) {
+    Q_FOREACH (const Maliit::PreeditTextFormat &preeditFormat, preeditFormats) {
 
         // set proper formatting
         QTextCharFormat format;
@@ -763,19 +763,19 @@ void MInputContext::updatePreeditInternally(const QString &string,
 
         // update style mode
         switch (preeditFormat.preeditFace) {
-        case MInputMethod::PreeditNoCandidates:
+        case Maliit::PreeditNoCandidates:
             format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
             format.setUnderlineColor(QColor(255, 0, 0));
             break;
-        case MInputMethod::PreeditUnconvertible:
+        case Maliit::PreeditUnconvertible:
             format.setForeground(QBrush(QColor(128, 128, 128)));
             break;
-        case MInputMethod::PreeditActive:
+        case Maliit::PreeditActive:
             format.setForeground(QBrush(QColor(153, 50, 204)));
             format.setFontWeight(QFont::Bold);
             break;
-        case MInputMethod::PreeditKeyPress:
-        case MInputMethod::PreeditDefault:
+        case Maliit::PreeditKeyPress:
+        case Maliit::PreeditDefault:
             format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
             format.setUnderlineColor(QColor(0, 0, 0));
             break;
@@ -800,7 +800,7 @@ void MInputContext::updatePreeditInternally(const QString &string,
 
 void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
                              bool autoRepeat, int count,
-                             MInputMethod::EventRequestType requestType)
+                             Maliit::EventRequestType requestType)
 {
     if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
@@ -810,7 +810,7 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
                     static_cast<Qt::KeyboardModifiers>(modifiers),
                     text, autoRepeat, count);
 
-    if (requestType != MInputMethod::EventRequestEventOnly) {
+    if (requestType != Maliit::EventRequestEventOnly) {
         if (eventType == QEvent::KeyPress) {
             InputMethod::instance()->emitKeyPress(event);
         } else if (eventType == QEvent::KeyRelease) {
@@ -818,7 +818,7 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
         }
     }
 
-    if (focusWidget() != 0 && requestType != MInputMethod::EventRequestSignalOnly) {
+    if (focusWidget() != 0 && requestType != Maliit::EventRequestSignalOnly) {
         QCoreApplication::sendEvent(focusWidget(), &event);
     }
 }
@@ -1019,19 +1019,19 @@ void MInputContext::notifyExtendedAttributeChanged(int id, const QString &key, c
     notifyExtendedAttributeChanged(id, target, targetItem, attribute, value);
 }
 
-MInputMethod::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
+Maliit::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
 {
-    MInputMethod::TextContentType type = MInputMethod::FreeTextContentType;
+    Maliit::TextContentType type = Maliit::FreeTextContentType;
     hints &= Qt::ImhExclusiveInputMask;
 
     if (hints == Qt::ImhFormattedNumbersOnly || hints == Qt::ImhDigitsOnly) {
-        type = MInputMethod::NumberContentType;
+        type = Maliit::NumberContentType;
     } else if (hints == Qt::ImhDialableCharactersOnly) {
-        type = MInputMethod::PhoneNumberContentType;
+        type = Maliit::PhoneNumberContentType;
     } else if (hints == Qt::ImhEmailCharactersOnly) {
-        type = MInputMethod::EmailContentType;
+        type = Maliit::EmailContentType;
     } else if (hints == Qt::ImhUrlCharactersOnly) {
-        type = MInputMethod::UrlContentType;
+        type = Maliit::UrlContentType;
     }
 
     return type;
@@ -1086,7 +1086,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         if (!queryResult.isValid()) {
 
             queryResult = focused->inputMethodQuery(
-                        static_cast<Qt::InputMethodQuery>(MInputMethod::VisualizationPriorityQuery));
+                        static_cast<Qt::InputMethodQuery>(Maliit::VisualizationPriorityQuery));
         }
     }
 

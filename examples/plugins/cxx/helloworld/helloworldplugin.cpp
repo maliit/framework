@@ -23,7 +23,7 @@
 HelloWorldPlugin::HelloWorldPlugin()
 {
     /* This helloworld plugin is an on screen input method */
-    allowedStates << MInputMethod::OnScreen;
+    allowedStates << Maliit::OnScreen;
 }
 
 QString HelloWorldPlugin::name() const
@@ -48,7 +48,7 @@ MAbstractInputMethodSettings *HelloWorldPlugin::createInputMethodSettings()
     /* This plugin does not have a settings widget */
     return 0;
 }
-QSet<MInputMethod::HandlerState> HelloWorldPlugin::supportedStates() const
+QSet<Maliit::HandlerState> HelloWorldPlugin::supportedStates() const
 {
     return allowedStates;
 }

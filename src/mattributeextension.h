@@ -21,9 +21,7 @@
 
 #include <QObject>
 #include <QList>
-
-#include "minputmethodnamespace.h"
-
+#include <QSharedPointer>
 
 class MAttributeExtensionId;
 class MAttributeExtensionPrivate;

@@ -240,7 +240,7 @@ void DBusServerConnection::setExtendedAttribute(int id, const QString &target, c
 
 void DBusServerConnection::keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat, int count, uchar requestType)
 {
-    keyEvent(type, key, modifiers, text, autoRepeat, count, static_cast<MInputMethod::EventRequestType>(requestType));
+    keyEvent(type, key, modifiers, text, autoRepeat, count, static_cast<Maliit::EventRequestType>(requestType));
 }
 
 void DBusServerConnection::notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value)

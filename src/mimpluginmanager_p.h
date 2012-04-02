@@ -17,7 +17,8 @@
 #ifndef MIMPLUGINMANAGER_P_H
 #define MIMPLUGINMANAGER_P_H
 
-#include "minputmethodnamespace.h"
+#include <maliit/namespace.h>
+
 #include "mattributeextensionid.h"
 #include "minputmethodhost.h"
 #include "mimonscreenplugins.h"
@@ -44,7 +45,7 @@ class MIMPluginManagerPrivate
 {
     Q_DECLARE_PUBLIC(MIMPluginManager)
 public:
-    typedef QSet<MInputMethod::HandlerState> PluginState;
+    typedef QSet<Maliit::HandlerState> PluginState;
     typedef QWeakPointer<QWidget> WeakWidget;
 
     enum ShowInputMethodRequest {
@@ -56,14 +57,14 @@ public:
         MAbstractInputMethod *inputMethod;
         MInputMethodHost *imHost;
         PluginState state;
-        MInputMethod::SwitchDirection lastSwitchDirection;
+        Maliit::SwitchDirection lastSwitchDirection;
         WeakWidget centralWidget;
         QString pluginId; // the library filename is used as ID
     };
 
     typedef QMap<MInputMethodPlugin *, PluginDescription> Plugins;
     typedef QSet<MInputMethodPlugin *> ActivePlugins;
-    typedef QMap<MInputMethod::HandlerState, MInputMethodPlugin *> HandlerMap;
+    typedef QMap<Maliit::HandlerState, MInputMethodPlugin *> HandlerMap;
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
     MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, WeakWidget proxyWidget, MIMPluginManager *p);
@@ -73,42 +74,42 @@ public:
     void loadPlugins();
     bool loadPlugin(const QDir &dir, const QString &fileName);
     bool loadFactoryPlugin(const QDir &dir, const QString &fileName);
-    void addHandlerMap(MInputMethod::HandlerState state, const QString &pluginName);
-    void setActiveHandlers(const QSet<MInputMethod::HandlerState> &states);
-    QSet<MInputMethod::HandlerState> activeHandlers() const;
+    void addHandlerMap(Maliit::HandlerState state, const QString &pluginName);
+    void setActiveHandlers(const QSet<Maliit::HandlerState> &states);
+    QSet<Maliit::HandlerState> activeHandlers() const;
     void deactivatePlugin(MInputMethodPlugin *plugin);
 
-    void replacePlugin(MInputMethod::SwitchDirection direction, MInputMethodPlugin *source,
+    void replacePlugin(Maliit::SwitchDirection direction, MInputMethodPlugin *source,
                        Plugins::iterator replacement, const QString &subViewId);
-    bool switchPlugin(MInputMethod::SwitchDirection direction, MAbstractInputMethod *initiator);
+    bool switchPlugin(Maliit::SwitchDirection direction, MAbstractInputMethod *initiator);
     bool switchPlugin(const QString &name,
                       MAbstractInputMethod *initiator,
                       const QString &subViewId = QString());
-    bool trySwitchPlugin(MInputMethod::SwitchDirection direction,
+    bool trySwitchPlugin(Maliit::SwitchDirection direction,
                          MInputMethodPlugin *source,
                          Plugins::iterator replacement,
                          const QString &subViewId = QString());
     void changeHandlerMap(MInputMethodPlugin *origin,
                           MInputMethodPlugin *replacement,
-                          QSet<MInputMethod::HandlerState> states);
+                          QSet<Maliit::HandlerState> states);
 
     QStringList loadedPluginsNames() const;
-    QStringList loadedPluginsNames(MInputMethod::HandlerState state) const;
-    QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState) const;
+    QStringList loadedPluginsNames(Maliit::HandlerState state) const;
+    QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState) const;
     Plugins::const_iterator findEnabledPlugin(Plugins::const_iterator current,
-                                              MInputMethod::SwitchDirection direction,
-                                              MInputMethod::HandlerState state) const;
+                                              Maliit::SwitchDirection direction,
+                                              Maliit::HandlerState state) const;
     void filterEnabledSubViews(QMap<QString, QString> &subViews,
                                const QString &pluginId,
-                               MInputMethod::HandlerState state) const;
+                               Maliit::HandlerState state) const;
     void append(QList<MImSubViewDescription> &list,
                 const QMap<QString, QString> &map,
                 const QString &pluginId) const;
-    QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
+    QList<MImSubViewDescription> surroundingSubViewDescriptions(Maliit::HandlerState state) const;
     QStringList activePluginsNames() const;
-    QString activePluginsName(MInputMethod::HandlerState state) const;
+    QString activePluginsName(Maliit::HandlerState state) const;
     void loadHandlerMap();
-    MInputMethodPlugin *activePlugin(MInputMethod::HandlerState state) const;
+    MInputMethodPlugin *activePlugin(Maliit::HandlerState state) const;
     void hideActivePlugins();
     void showActivePlugins();
     void ensureActivePluginsVisible(ShowInputMethodRequest request);
@@ -116,7 +117,7 @@ public:
     /*!
      * This method is called when one of the gconf about handler map is changed
      * to synchronize the handlerToPluginConfs.
-     * \param state (can be cast to MInputMethod::HandlerState) indicates which state of the
+     * \param state (can be cast to Maliit::HandlerState) indicates which state of the
      * handler map is changed.
      */
     void _q_syncHandlerMap(int state);
@@ -124,7 +125,7 @@ public:
     /*!
      * \brief This method is called when activeSubview is changed by settings or plugin.
      */
-    void _q_setActiveSubView(const QString &, MInputMethod::HandlerState);
+    void _q_setActiveSubView(const QString &, Maliit::HandlerState);
 
     //! Called a moment after hideActivePlugins is called to disable region
     //! updates and force an empty region in case of badly behaving plugins.
@@ -136,14 +137,14 @@ public:
     void _q_onScreenSubViewChanged();
 
     QMap<QString, QString> availableSubViews(const QString &plugin,
-                                             MInputMethod::HandlerState state
-                                              = MInputMethod::OnScreen) const;
-    QList<MImOnScreenPlugins::SubView> availablePluginsAndSubViews(MInputMethod::HandlerState state
-                                                                    = MInputMethod::OnScreen) const;
-    QString activeSubView(MInputMethod::HandlerState state) const;
-    void setActivePlugin(const QString &pluginName, MInputMethod::HandlerState state);
+                                             Maliit::HandlerState state
+                                              = Maliit::OnScreen) const;
+    QList<MImOnScreenPlugins::SubView> availablePluginsAndSubViews(Maliit::HandlerState state
+                                                                    = Maliit::OnScreen) const;
+    QString activeSubView(Maliit::HandlerState state) const;
+    void setActivePlugin(const QString &pluginName, Maliit::HandlerState state);
 
-    QString inputSourceName(MInputMethod::HandlerState source) const;
+    QString inputSourceName(Maliit::HandlerState source) const;
 
     MIMPluginManager *parent;
     shared_ptr<MInputContextConnection> mICConnection;
@@ -170,7 +171,7 @@ public:
     bool acceptRegionUpdates;
     bool visible;
 
-    typedef QMap<MInputMethod::HandlerState, QString> InputSourceToNameMap;
+    typedef QMap<Maliit::HandlerState, QString> InputSourceToNameMap;
     InputSourceToNameMap inputSourceToNameMap;
 
     MAttributeExtensionId toolbarId;

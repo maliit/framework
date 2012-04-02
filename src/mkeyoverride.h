@@ -24,8 +24,6 @@
 #include <QString>
 #include <QStringList>
 
-#include "minputmethodnamespace.h"
-
 class MKeyOverridePrivate;
 
 /*! \ingroup maliitserver

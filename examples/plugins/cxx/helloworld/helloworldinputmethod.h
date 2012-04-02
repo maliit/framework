@@ -42,17 +42,17 @@ public:
     virtual void handleClientChange();
     virtual void handleAppOrientationAboutToChange(int angle);
     virtual void handleAppOrientationChanged(int angle);
-    virtual QList<MInputMethodSubView> subViews(MInputMethod::HandlerState state
-                                                = MInputMethod::OnScreen) const;
+    virtual QList<MInputMethodSubView> subViews(Maliit::HandlerState state
+                                                = Maliit::OnScreen) const;
     virtual void setActiveSubView(const QString &subViewId,
-                                  MInputMethod::HandlerState state = MInputMethod::OnScreen);
-    virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
-    virtual void setState(const QSet<MInputMethod::HandlerState> &state);
+                                  Maliit::HandlerState state = Maliit::OnScreen);
+    virtual QString activeSubView(Maliit::HandlerState state = Maliit::OnScreen) const;
+    virtual void setState(const QSet<Maliit::HandlerState> &state);
 
     /* Optional, often used */
     virtual void update();
     virtual void reset();
-    virtual void switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation);
+    virtual void switchContext(Maliit::SwitchDirection direction, bool enableAnimation);
     virtual void handleFocusChange(bool focusIn);
     virtual void setPreedit(const QString &preeditString, int cursorPos);
 

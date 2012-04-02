@@ -18,6 +18,7 @@
 #define MALIIT_QUICK_KEY_OVERRIDE_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 #include <mkeyoverride.h>
 

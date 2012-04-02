@@ -9,7 +9,7 @@ DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *host,
     : MAbstractInputMethod(host, mainWindow),
       setStateCount(0),
       switchContextCallCount(0),
-      directionParam(MInputMethod::SwitchUndefined),
+      directionParam(Maliit::SwitchUndefined),
       enableAnimationParam(false)
 {
     MAbstractInputMethod::MInputMethodSubView sv1;
@@ -25,14 +25,14 @@ DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *host,
     activeSView = "dummyim3sv1";
 }
 
-void DummyInputMethod3::setState(const QSet<MInputMethod::HandlerState> &state)
+void DummyInputMethod3::setState(const QSet<Maliit::HandlerState> &state)
 {
     qDebug() << __PRETTY_FUNCTION__ << state;
     ++setStateCount;
     setStateParam = state;
 }
 
-void DummyInputMethod3::switchContext(MInputMethod::SwitchDirection direction,
+void DummyInputMethod3::switchContext(Maliit::SwitchDirection direction,
                               bool enableAnimation)
 {
     ++switchContextCallCount;
@@ -41,20 +41,20 @@ void DummyInputMethod3::switchContext(MInputMethod::SwitchDirection direction,
 }
 
 QList<MAbstractInputMethod::MInputMethodSubView>
-DummyInputMethod3::subViews(MInputMethod::HandlerState state) const
+DummyInputMethod3::subViews(Maliit::HandlerState state) const
 {
     qDebug() << __PRETTY_FUNCTION__;
     QList<MAbstractInputMethod::MInputMethodSubView> svs;
-    if (state == MInputMethod::OnScreen) {
+    if (state == Maliit::OnScreen) {
         svs = sViews;
     }
     return svs;
 }
 
-void DummyInputMethod3::setActiveSubView(const QString &sVId, MInputMethod::HandlerState state)
+void DummyInputMethod3::setActiveSubView(const QString &sVId, Maliit::HandlerState state)
 {
     qDebug() << __PRETTY_FUNCTION__;
-    if (state == MInputMethod::OnScreen) {
+    if (state == Maliit::OnScreen) {
         Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &sv, sViews) {
             if (sv.subViewId == sVId) {
                 activeSView = sVId;
@@ -63,10 +63,10 @@ void DummyInputMethod3::setActiveSubView(const QString &sVId, MInputMethod::Hand
     }
 }
 
-QString DummyInputMethod3::activeSubView(MInputMethod::HandlerState state) const
+QString DummyInputMethod3::activeSubView(Maliit::HandlerState state) const
 {
     qDebug() << __PRETTY_FUNCTION__;
-    if (state == MInputMethod::OnScreen)
+    if (state == Maliit::OnScreen)
         return activeSView;
     else
         return QString();

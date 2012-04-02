@@ -5,8 +5,6 @@
 #include <QSet>
 #include <QWidget>
 
-#include "minputmethodnamespace.h"
-
 class DummyInputMethod : public MAbstractInputMethod
 {
     Q_OBJECT
@@ -17,22 +15,22 @@ public:
                      QWidget *mainWindow);
 
     //! \reimp
-    virtual void setState(const QSet<MInputMethod::HandlerState> &state);
-    virtual void switchContext(MInputMethod::SwitchDirection direction,
+    virtual void setState(const QSet<Maliit::HandlerState> &state);
+    virtual void switchContext(Maliit::SwitchDirection direction,
                                bool enableAnimation);
-    virtual QList<MAbstractInputMethod::MInputMethodSubView> subViews(MInputMethod::HandlerState state
-                                                                   = MInputMethod::OnScreen) const;
+    virtual QList<MAbstractInputMethod::MInputMethodSubView> subViews(Maliit::HandlerState state
+                                                                   = Maliit::OnScreen) const;
     virtual void setActiveSubView(const QString &,
-                                  MInputMethod::HandlerState state = MInputMethod::OnScreen);
-    virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
+                                  Maliit::HandlerState state = Maliit::OnScreen);
+    virtual QString activeSubView(Maliit::HandlerState state = Maliit::OnScreen) const;
     //! \reimp_end
 
 public:
     int setStateCount;
-    QSet<MInputMethod::HandlerState> setStateParam;
+    QSet<Maliit::HandlerState> setStateParam;
 
     int switchContextCallCount;
-    MInputMethod::SwitchDirection directionParam;
+    Maliit::SwitchDirection directionParam;
     bool enableAnimationParam;
 
     int pluginsChangedSignalCount;

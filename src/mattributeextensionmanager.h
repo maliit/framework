@@ -24,10 +24,11 @@
 #include <QPointer>
 #include <QSharedPointer>
 
+#include <maliit/namespace.h>
+
 #include "mkeyoverridedata.h"
 #include "mattributeextension.h"
 #include "mattributeextensionid.h"
-#include "minputmethodnamespace.h"
 #include "mimsettings.h"
 
 //! \internal
@@ -160,7 +161,7 @@ private:
     QSet<MAttributeExtensionId> attributeExtensionIds; //all attribute extension ids
 
     //! Copy/paste button status
-    MInputMethod::CopyPasteState copyPasteStatus;
+    Maliit::CopyPasteState copyPasteStatus;
 
     friend class Ut_MAttributeExtensionManager;
 };

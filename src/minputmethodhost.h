@@ -65,14 +65,14 @@ public:
     virtual bool hiddenText(bool &valid);
     virtual QString selection(bool &valid);
     virtual void sendPreeditString(const QString &string,
-                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                   const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                    int replacementStart = 0, int replacementLength = 0,
                                    int cursorPos = -1);
     virtual void sendCommitString(const QString &string, int replaceStart = 0,
                                   int replaceLength = 0, int cursorPos = -1);
     virtual void sendKeyEvent(const QKeyEvent &keyEvent,
-                              MInputMethod::EventRequestType requestType
-                               = MInputMethod::EventRequestBoth);
+                              Maliit::EventRequestType requestType
+                               = Maliit::EventRequestBoth);
     virtual void notifyImInitiatedHiding();
     virtual void copy();
     virtual void paste();
@@ -80,16 +80,16 @@ public:
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void setGlobalCorrectionEnabled(bool enabled);
 
-    virtual void setInputModeIndicator(MInputMethod::InputModeIndicator mode);
+    virtual void setInputModeIndicator(Maliit::InputModeIndicator mode);
 
-    virtual void switchPlugin(MInputMethod::SwitchDirection direction);
+    virtual void switchPlugin(Maliit::SwitchDirection direction);
     virtual void switchPlugin(const QString &pluginName);
     virtual void setScreenRegion(const QRegion &region);
     virtual void setInputMethodArea(const QRegion &region);
     virtual void setSelection(int start, int length);
-    virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const;
+    virtual QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState state) const;
     virtual int preeditClickPos(bool &valid) const;
-    virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
+    virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(Maliit::HandlerState state) const;
     virtual void setLanguage(const QString &language);
 
     //! Only empty implementation provided.

@@ -404,9 +404,9 @@ void MInputContextConnection::sendCommitString(const QString &string, int replac
 }
 
 void MInputContextConnection::sendKeyEvent(const QKeyEvent &keyEvent,
-                                           MInputMethod::EventRequestType requestType)
+                                           Maliit::EventRequestType requestType)
 {
-    if (requestType != MInputMethod::EventRequestSignalOnly
+    if (requestType != Maliit::EventRequestSignalOnly
         && preedit.isEmpty()
         && keyEvent.key() == Qt::Key_Backspace
         && keyEvent.type() == QEvent::KeyPress) {
@@ -471,7 +471,7 @@ void MInputContextConnection::activateContext(unsigned int connectionId)
 /* */
 
 void MInputContextConnection::sendPreeditString(const QString &string,
-                                                const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                                const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                                 int replaceStart, int replaceLength,
                                                 int cursorPos)
 {

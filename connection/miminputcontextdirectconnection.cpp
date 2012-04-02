@@ -41,7 +41,7 @@ void MImInputContextDirectConnection::connectTo(MImDirectServerConnection *serve
 }
 
 void MImInputContextDirectConnection::sendPreeditString(const QString &string,
-                                                        const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                                        const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                                         int replacementStart,
                                                         int replacementLength,
                                                         int cursorPos)
@@ -57,7 +57,7 @@ void MImInputContextDirectConnection::sendCommitString(const QString &string, in
 }
 
 void MImInputContextDirectConnection::sendKeyEvent(const QKeyEvent &keyEvent,
-                                                   MInputMethod::EventRequestType requestType)
+                                                   Maliit::EventRequestType requestType)
 {
     const int type = static_cast<int>(keyEvent.type());
     const int key = static_cast<int>(keyEvent.key());

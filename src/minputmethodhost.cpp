@@ -116,7 +116,7 @@ bool MInputMethodHost::hiddenText(bool &valid)
 }
 
 void MInputMethodHost::sendPreeditString(const QString &string,
-                                         const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                         const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                          int replacementStart, int replacementLength,
                                          int cursorPos)
 {
@@ -134,7 +134,7 @@ void MInputMethodHost::sendCommitString(const QString &string, int replaceStart,
 }
 
 void MInputMethodHost::sendKeyEvent(const QKeyEvent &keyEvent,
-                                    MInputMethod::EventRequestType requestType)
+                                    Maliit::EventRequestType requestType)
 {
     if (enabled) {
         connection->sendKeyEvent(keyEvent, requestType);
@@ -183,14 +183,14 @@ void MInputMethodHost::setGlobalCorrectionEnabled(bool correctionEnabled)
     }
 }
 
-void MInputMethodHost::setInputModeIndicator(MInputMethod::InputModeIndicator mode)
+void MInputMethodHost::setInputModeIndicator(Maliit::InputModeIndicator mode)
 {
     if (enabled) {
         indicatorService.setInputModeIndicator(static_cast<Maliit::InputModeIndicator>(mode));
     }
 }
 
-void MInputMethodHost::switchPlugin(MInputMethod::SwitchDirection direction)
+void MInputMethodHost::switchPlugin(Maliit::SwitchDirection direction)
 {
     if (enabled) {
         pluginManager->switchPlugin(direction, inputMethod);
@@ -225,13 +225,13 @@ void MInputMethodHost::setSelection(int start, int length)
     }
 }
 
-QList<MImPluginDescription> MInputMethodHost::pluginDescriptions(MInputMethod::HandlerState state) const
+QList<MImPluginDescription> MInputMethodHost::pluginDescriptions(Maliit::HandlerState state) const
 {
     return pluginManager->pluginDescriptions(state);
 }
 
 QList<MImSubViewDescription>
-MInputMethodHost::surroundingSubViewDescriptions(MInputMethod::HandlerState state) const
+MInputMethodHost::surroundingSubViewDescriptions(Maliit::HandlerState state) const
 {
     return pluginManager->surroundingSubViewDescriptions(state);
 }

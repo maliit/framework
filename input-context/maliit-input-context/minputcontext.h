@@ -17,7 +17,6 @@
 #ifndef MINPUTCONTEXT_H
 #define MINPUTCONTEXT_H
 
-#include <minputmethodnamespace.h>
 #include <maliit/namespace.h>
 
 #include <QObject>
@@ -78,12 +77,12 @@ public Q_SLOTS:
     void commitString(const QString &string, int replacementStart = 0,
                               int replacementLength = 0, int cursorPos = -1);
 
-    void updatePreedit(const QString &string, const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+    void updatePreedit(const QString &string, const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
 
     void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
-                          int count, MInputMethod::EventRequestType requestType
-                          = MInputMethod::EventRequestBoth);
+                          int count, Maliit::EventRequestType requestType
+                          = Maliit::EventRequestBoth);
 
     void updateInputMethodArea(const QRect &rect);
 
@@ -176,7 +175,7 @@ private:
     };
 
     void updatePreeditInternally(const QString &string,
-                                 const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                 const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                  int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
 
     /* Hook up signals on the imServer to our slots. Used in constructor. */
@@ -188,7 +187,7 @@ private:
     void notifyCopyPasteState();
 
     //! returns content type corresponding to specified hints
-    MInputMethod::TextContentType contentType(Qt::InputMethodHints hints) const;
+    Maliit::TextContentType contentType(Qt::InputMethodHints hints) const;
 
     //! returns the D-Bus object path for this instance
     QString dbusObjectPath() const;

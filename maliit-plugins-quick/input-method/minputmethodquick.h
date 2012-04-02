@@ -81,7 +81,7 @@ public:
     virtual void handleVisualizationPriorityChange(bool priority);
     virtual void handleClientChange();
     virtual void handleAppOrientationChanged(int angle);
-    virtual void setState(const QSet<MInputMethod::HandlerState> &state);
+    virtual void setState(const QSet<Maliit::HandlerState> &state);
 
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
     virtual void handleFocusChange(bool focusIn);

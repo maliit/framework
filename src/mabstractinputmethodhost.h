@@ -17,11 +17,11 @@
 #ifndef MABSTRACTINPUTMETHODHOST_H
 #define MABSTRACTINPUTMETHODHOST_H
 
-#include "minputmethodnamespace.h"
-
 #include <QRect>
 #include <QObject>
 #include <QPixmap>
+
+#include <maliit/namespace.h>
 
 class QString;
 class QRegion;
@@ -135,7 +135,7 @@ public Q_SLOTS:
      * \param cursorPos The cursur position inside preedit
      */
     virtual void sendPreeditString(const QString &string,
-                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                   const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                    int replacementStart = 0,
                                    int replacementLength = 0,
                                    int cursorPos = -1) = 0;
@@ -166,8 +166,8 @@ public Q_SLOTS:
      * \param signalOnly only the signal should be emitted.
      */
     virtual void sendKeyEvent(const QKeyEvent &keyEvent,
-                              MInputMethod::EventRequestType requestType
-                               = MInputMethod::EventRequestBoth) = 0;
+                              Maliit::EventRequestType requestType
+                               = Maliit::EventRequestBoth) = 0;
 
     /*!
      * \brief Notifies about hiding initiated by the input method.
@@ -210,12 +210,12 @@ public Q_SLOTS:
      * \param mode Input mode indicator state.
      * \sa InputModeIndicator.
      */
-    virtual void setInputModeIndicator(MInputMethod::InputModeIndicator mode) = 0;
+    virtual void setInputModeIndicator(Maliit::InputModeIndicator mode) = 0;
 
     /*!
      * Asks environment to change active plugin according to \a direction.
      */
-    virtual void switchPlugin(MInputMethod::SwitchDirection direction) = 0;
+    virtual void switchPlugin(Maliit::SwitchDirection direction) = 0;
 
     /*!
      * Asks environment to change active plugin to specified one.
@@ -261,7 +261,7 @@ public:
      *
      * \sa MImPluginDesription
      */
-    virtual QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const = 0;
+    virtual QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState state) const = 0;
 
     /*!
      * \brief returns the current cursor position within the preedit region
@@ -278,7 +278,7 @@ public:
      *
      * \sa MImSubViewDescription
      */
-    virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
+    virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(Maliit::HandlerState state) const;
 
     /*!
      * \brief Sets current input method language.

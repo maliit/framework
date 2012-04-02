@@ -6,7 +6,7 @@
 
 DummyImPlugin::DummyImPlugin()
 {
-    allowedStates << MInputMethod::OnScreen << MInputMethod::Hardware << MInputMethod::Accessory;
+    allowedStates << Maliit::OnScreen << Maliit::Hardware << Maliit::Accessory;
 }
 
 QString DummyImPlugin::name() const
@@ -31,7 +31,7 @@ MAbstractInputMethodSettings *DummyImPlugin::createInputMethodSettings()
     return 0;
 }
 
-QSet<MInputMethod::HandlerState> DummyImPlugin::supportedStates() const
+QSet<Maliit::HandlerState> DummyImPlugin::supportedStates() const
 {
     return allowedStates;
 }

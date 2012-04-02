@@ -39,7 +39,7 @@ HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host,
 
     // Used only for unittest/sanity test
     inputMethodHost()->sendCommitString("Maliit");
-    inputMethodHost()->sendPreeditString("Mali", QList<MInputMethod::PreeditTextFormat>(), 0, 6);
+    inputMethodHost()->sendPreeditString("Mali", QList<Maliit::PreeditTextFormat>(), 0, 6);
 }
 
 HelloWorldInputMethod::~HelloWorldInputMethod()
@@ -87,11 +87,11 @@ void HelloWorldInputMethod::hide()
 }
 
 QList<MAbstractInputMethod::MInputMethodSubView>
-HelloWorldInputMethod::subViews(MInputMethod::HandlerState state) const
+HelloWorldInputMethod::subViews(Maliit::HandlerState state) const
 {
     QList<MAbstractInputMethod::MInputMethodSubView> subViews;
 
-    if (state == MInputMethod::OnScreen) {
+    if (state == Maliit::OnScreen) {
         MAbstractInputMethod::MInputMethodSubView subView1;
         subView1.subViewId = exampleSubViewId;
         subView1.subViewTitle = "Example plugin subview 1";
@@ -100,15 +100,15 @@ HelloWorldInputMethod::subViews(MInputMethod::HandlerState state) const
     return subViews;
 }
 
-QString HelloWorldInputMethod::activeSubView(MInputMethod::HandlerState state) const
+QString HelloWorldInputMethod::activeSubView(Maliit::HandlerState state) const
 {
-    QString subView = (state == MInputMethod::OnScreen) ? exampleSubViewId : "";
+    QString subView = (state == Maliit::OnScreen) ? exampleSubViewId : "";
     return subView;
 }
 
-void HelloWorldInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
+void HelloWorldInputMethod::setState(const QSet<Maliit::HandlerState> &state)
 {
-    if (state.contains(MInputMethod::OnScreen)) {
+    if (state.contains(Maliit::OnScreen)) {
         if (showRequested && !showIsInhibited) {
             mainWidget->show();
         }
@@ -169,7 +169,7 @@ void HelloWorldInputMethod::handleFocusChange(bool focusIn)
     Q_UNUSED(focusIn);
 }
 
-void HelloWorldInputMethod::switchContext(MInputMethod::SwitchDirection direction,
+void HelloWorldInputMethod::switchContext(Maliit::SwitchDirection direction,
                                           bool enableAnimation)
 {
     // empty default implementation
@@ -184,7 +184,7 @@ void HelloWorldInputMethod::setPreedit(const QString &preeditString, int cursorP
     Q_UNUSED(cursorPos);
 }
 
-void HelloWorldInputMethod::setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state)
+void HelloWorldInputMethod::setActiveSubView(const QString &subViewId, Maliit::HandlerState state)
 {
     // Ignored as input method only support one subview
     Q_UNUSED(subViewId);

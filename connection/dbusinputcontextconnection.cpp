@@ -86,7 +86,7 @@ DBusInputContextConnection::onDisconnection()
 
 void
 DBusInputContextConnection::sendPreeditString(const QString &string,
-                                              const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                              const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                               int replacementStart, int replacementLength,
                                               int cursorPos)
 {
@@ -116,7 +116,7 @@ DBusInputContextConnection::sendCommitString(const QString &string, int replaceS
 
 void
 DBusInputContextConnection::sendKeyEvent(const QKeyEvent &keyEvent,
-                                         MInputMethod::EventRequestType requestType)
+                                         Maliit::EventRequestType requestType)
 {
     if (activeConnection) {
         MInputContextConnection::sendKeyEvent(keyEvent, requestType);

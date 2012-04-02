@@ -22,8 +22,8 @@
 #include <QObject>
 #include <QList>
 #include <QMap>
+#include <QSharedPointer>
 
-#include "minputmethodnamespace.h"
 #include "mkeyoverride.h"
 
 

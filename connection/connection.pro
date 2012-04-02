@@ -99,7 +99,7 @@ qdbus-dbus-connection {
         return("$$lower($$section($$list($$basename(1)),.,-2,-2))_adaptor.cpp")
     }
 
-    interface_header.commands = $$QMAKE_QDBUSXML2CPP -i minputmethodnamespace.h -p ${QMAKE_FILE_OUT}: ${QMAKE_FILE_IN}
+    interface_header.commands = $$QMAKE_QDBUSXML2CPP -i maliit/namespace.h -p ${QMAKE_FILE_OUT}: ${QMAKE_FILE_IN}
     interface_header.output_function = dbus_interface_header_output
     interface_header.name = DBUSXML2CPP INTERFACE HEADER ${QMAKE_FILE_IN}
     interface_header.variable_out = DBUS_INTERFACE_HEADERS

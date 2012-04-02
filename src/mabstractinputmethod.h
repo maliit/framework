@@ -22,7 +22,7 @@
 #include <QVariant>
 #include <QMap>
 
-#include "minputmethodnamespace.h"
+#include <maliit/namespace.h>
 
 class QWidget;
 class QRegion;
@@ -177,7 +177,7 @@ public:
      *
      * \param state set of current states for this plugin
      */
-    virtual void setState(const QSet<MInputMethod::HandlerState> &state);
+    virtual void setState(const QSet<Maliit::HandlerState> &state);
 
     /*! \brief This method is called when target client (application) has changed.
      */
@@ -188,13 +188,13 @@ public:
      *
      * If the input method arranges the subviews horizontally (like Meego Keyboard does) it
      * should first try to change its subviews in the direction indicated. If there are no
-     * more subviews in the given direction, MInputMethodHost::switchPlugin(MInputMethod::SwitchDirection )
+     * more subviews in the given direction, MInputMethodHost::switchPlugin(Maliit::SwitchDirection )
      * should be called.
      *
      * \param direction Switching direction
      * \param enableAnimation Contains true if swipe should be animated
      */
-    virtual void switchContext(MInputMethod::SwitchDirection direction, bool enableAnimation);
+    virtual void switchContext(Maliit::SwitchDirection direction, bool enableAnimation);
 
     /*! \brief Returns all subviews (IDs and titles) which are supported for \a state.
      *
@@ -202,8 +202,8 @@ public:
      * method for the specified state. An input method must return at least one subview
      * for a supported state.
      */
-    virtual QList<MInputMethodSubView> subViews(MInputMethod::HandlerState state
-                                                 = MInputMethod::OnScreen) const;
+    virtual QList<MInputMethodSubView> subViews(Maliit::HandlerState state
+                                                 = Maliit::OnScreen) const;
 
     /*!
      * \brief Sets \a subViewId as the active subview for \a state.
@@ -216,7 +216,7 @@ public:
      * \param state the state which \a subViewId belongs to.
      */
     virtual void setActiveSubView(const QString &subViewId,
-                                  MInputMethod::HandlerState state = MInputMethod::OnScreen);
+                                  Maliit::HandlerState state = Maliit::OnScreen);
 
     /*!
      * \brief Returns current active subview ID for \a state.
@@ -224,7 +224,7 @@ public:
      *  Implement this method to inform input method plugins manager about current active subview
      *  for specified state.
      */
-    virtual QString activeSubView(MInputMethod::HandlerState state = MInputMethod::OnScreen) const;
+    virtual QString activeSubView(Maliit::HandlerState state = Maliit::OnScreen) const;
 
     /*! \brief Show notification to user informing about current language/subview
      *
@@ -266,7 +266,7 @@ Q_SIGNALS:
      * \param state the state which \a subViewId belongs to.
      */
     void activeSubViewChanged(const QString &subViewId,
-                              MInputMethod::HandlerState state = MInputMethod::OnScreen);
+                              Maliit::HandlerState state = Maliit::OnScreen);
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethod)

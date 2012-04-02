@@ -26,13 +26,13 @@ public:
 
     virtual MAbstractInputMethodSettings *createInputMethodSettings();
 
-    virtual QSet<MInputMethod::HandlerState> supportedStates() const;
+    virtual QSet<Maliit::HandlerState> supportedStates() const;
     //! \reimp_end
 
 public:
     int setStateCount;
-    QList<MInputMethod::HandlerState> setStateParam;
-    QSet<MInputMethod::HandlerState> allowedStates;
+    QList<Maliit::HandlerState> setStateParam;
+    QSet<Maliit::HandlerState> allowedStates;
 };
 
 #endif

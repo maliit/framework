@@ -43,7 +43,7 @@ OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host,
 
     // Used only for unittest/sanity test
     inputMethodHost()->sendCommitString("Maliit");
-    inputMethodHost()->sendPreeditString("Mali", QList<MInputMethod::PreeditTextFormat>(), 0, 6);
+    inputMethodHost()->sendPreeditString("Mali", QList<Maliit::PreeditTextFormat>(), 0, 6);
 }
 
 OverrideInputMethod::~OverrideInputMethod()
@@ -93,11 +93,11 @@ void OverrideInputMethod::hide()
 }
 
 QList<MAbstractInputMethod::MInputMethodSubView>
-OverrideInputMethod::subViews(MInputMethod::HandlerState state) const
+OverrideInputMethod::subViews(Maliit::HandlerState state) const
 {
     QList<MAbstractInputMethod::MInputMethodSubView> subViews;
 
-    if (state == MInputMethod::OnScreen) {
+    if (state == Maliit::OnScreen) {
         MAbstractInputMethod::MInputMethodSubView subView1;
         subView1.subViewId = overrideSubViewId;
         subView1.subViewTitle = "Override plugin subview 1";
@@ -106,15 +106,15 @@ OverrideInputMethod::subViews(MInputMethod::HandlerState state) const
     return subViews;
 }
 
-QString OverrideInputMethod::activeSubView(MInputMethod::HandlerState state) const
+QString OverrideInputMethod::activeSubView(Maliit::HandlerState state) const
 {
-    QString subView = (state == MInputMethod::OnScreen) ? overrideSubViewId : "";
+    QString subView = (state == Maliit::OnScreen) ? overrideSubViewId : "";
     return subView;
 }
 
-void OverrideInputMethod::setState(const QSet<MInputMethod::HandlerState> &state)
+void OverrideInputMethod::setState(const QSet<Maliit::HandlerState> &state)
 {
-    if (state.contains(MInputMethod::OnScreen)) {
+    if (state.contains(Maliit::OnScreen)) {
         if (showRequested && !showIsInhibited) {
             mainWidget->show();
         }
@@ -175,7 +175,7 @@ void OverrideInputMethod::handleFocusChange(bool focusIn)
     Q_UNUSED(focusIn);
 }
 
-void OverrideInputMethod::switchContext(MInputMethod::SwitchDirection direction,
+void OverrideInputMethod::switchContext(Maliit::SwitchDirection direction,
                                         bool enableAnimation)
 {
     // empty default implementation
@@ -192,7 +192,7 @@ void OverrideInputMethod::setPreedit(const QString &preeditString,
 }
 
 void OverrideInputMethod::setActiveSubView(const QString &subViewId,
-                                           MInputMethod::HandlerState state)
+                                           Maliit::HandlerState state)
 {
     // Ignored as input method only support one subview
     Q_UNUSED(subViewId);

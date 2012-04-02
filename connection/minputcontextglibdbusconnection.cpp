@@ -41,7 +41,7 @@ namespace
     const char * const DBusClientPath = "/com/meego/inputmethod/inputcontext";
     const char * const DBusClientInterface = "com.meego.inputmethod.inputcontext1";
 
-    bool encodePreeditFormats(GType *typeDest, GPtrArray **dataDest, const QList<MInputMethod::PreeditTextFormat> &preeditFormats)
+    bool encodePreeditFormats(GType *typeDest, GPtrArray **dataDest, const QList<Maliit::PreeditTextFormat> &preeditFormats)
     {
         // dbus datatype is a(iii)
 
@@ -64,7 +64,7 @@ namespace
             qWarning() << Q_FUNC_INFO << "failed to initalize PreeditTextFormat container";
             return false;
         }
-        Q_FOREACH (MInputMethod::PreeditTextFormat formatItem, preeditFormats) {
+        Q_FOREACH (Maliit::PreeditTextFormat formatItem, preeditFormats) {
             GValueArray *itemData = (GValueArray*)dbus_g_type_specialized_construct(itemType);
             if (itemData == 0) {
                 qWarning() << Q_FUNC_INFO << "failed to initalize PreeditTextFormat item";
@@ -448,7 +448,7 @@ MDBusGlibICConnection *MInputContextGlibDBusConnection::connectionObj(unsigned i
 
 // Server -> input context...................................................
 
-QDataStream &operator<<(QDataStream &s, const MInputMethod::PreeditTextFormat &t)
+QDataStream &operator<<(QDataStream &s, const Maliit::PreeditTextFormat &t)
 {
     s << (qint32)t.start << (qint32)t.length
       << (qint32)t.preeditFace;
@@ -456,7 +456,7 @@ QDataStream &operator<<(QDataStream &s, const MInputMethod::PreeditTextFormat &t
 }
 
 void MInputContextGlibDBusConnection::sendPreeditString(const QString &string,
-                                                        const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                                        const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                                         int replaceStart, int replaceLength,
                                                         int cursorPos)
 {
@@ -500,7 +500,7 @@ void MInputContextGlibDBusConnection::sendCommitString(const QString &string, in
 
 
 void MInputContextGlibDBusConnection::sendKeyEvent(const QKeyEvent &keyEvent,
-                                                   MInputMethod::EventRequestType requestType)
+                                                   Maliit::EventRequestType requestType)
 {
     if (activeConnection) {
         MInputContextConnection::sendKeyEvent(keyEvent, requestType);

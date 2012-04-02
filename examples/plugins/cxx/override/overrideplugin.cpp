@@ -23,7 +23,7 @@
 OverridePlugin::OverridePlugin()
 {
     /* This override plugin is an on screen input method */
-    allowedStates << MInputMethod::OnScreen;
+    allowedStates << Maliit::OnScreen;
 }
 
 QString OverridePlugin::name() const
@@ -48,7 +48,7 @@ MAbstractInputMethodSettings *OverridePlugin::createInputMethodSettings()
     /* This plugin does not have a settings widget */
     return 0;
 }
-QSet<MInputMethod::HandlerState> OverridePlugin::supportedStates() const
+QSet<Maliit::HandlerState> OverridePlugin::supportedStates() const
 {
     return allowedStates;
 }

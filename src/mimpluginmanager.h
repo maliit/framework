@@ -22,7 +22,7 @@
 #include <QList>
 #include <tr1/memory>
 
-#include "minputmethodnamespace.h"
+#include <maliit/namespace.h>
 #include "mimplugindescription.h"
 #include "mattributeextensionid.h"
 #include "mimsubviewdescription.h"
@@ -56,38 +56,38 @@ public:
     QStringList loadedPluginsNames() const;
 
     //! Returns names of loaded plugins which support \a state
-    QStringList loadedPluginsNames(MInputMethod::HandlerState state) const;
+    QStringList loadedPluginsNames(Maliit::HandlerState state) const;
 
     //! \brief Return information about loaded input method plugins which could work in specified \a state.
-    QList<MImPluginDescription> pluginDescriptions(MInputMethod::HandlerState state) const;
+    QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState state) const;
 
     //! \brief Return information about previous, current and next subviews.
     //!
     //! \sa MAbstractInputMethodHost::surroundingSubViewDescriptions()
-    QList<MImSubViewDescription> surroundingSubViewDescriptions(MInputMethod::HandlerState state) const;
+    QList<MImSubViewDescription> surroundingSubViewDescriptions(Maliit::HandlerState state) const;
 
     //! Returns names of activated plugins
     QStringList activePluginsNames() const;
 
     //! Returns names of activated plugin for \a state
-    QString activePluginsName(MInputMethod::HandlerState state) const;
+    QString activePluginsName(Maliit::HandlerState state) const;
 
     //! Returns all subviews (IDs and titles) of loaded plugins which support \a state.
     QMap<QString, QString> availableSubViews(const QString &plugin,
-                                             MInputMethod::HandlerState state
-                                              = MInputMethod::OnScreen) const;
+                                             Maliit::HandlerState state
+                                              = Maliit::OnScreen) const;
 
     //! Returns the ID of active subview of the activated plugin for \a state.
-    QString activeSubView(MInputMethod::HandlerState state) const;
+    QString activeSubView(Maliit::HandlerState state) const;
 
     //! Sets \a pluginName as the activated plugin for \a state.
-    void setActivePlugin(const QString &pluginName, MInputMethod::HandlerState state);
+    void setActivePlugin(const QString &pluginName, Maliit::HandlerState state);
 
     //! Sets \a subViewId as the active subview of the activated plugin for \a state.
-    void setActiveSubView(const QString &subViewId, MInputMethod::HandlerState state);
+    void setActiveSubView(const QString &subViewId, Maliit::HandlerState state);
 
     //! Switches plugin in according to given \a direction
-    void switchPlugin(MInputMethod::SwitchDirection direction, MAbstractInputMethod *initiator);
+    void switchPlugin(Maliit::SwitchDirection direction, MAbstractInputMethod *initiator);
 
     //! Switches active plugin to inactive plugin with given \a name
     void switchPlugin(const QString &name, MAbstractInputMethod *initiator);
@@ -164,7 +164,7 @@ private:
     Q_DISABLE_COPY(MIMPluginManager)
     Q_DECLARE_PRIVATE(MIMPluginManager)
     Q_PRIVATE_SLOT(d_func(), void _q_syncHandlerMap(int));
-    Q_PRIVATE_SLOT(d_func(), void _q_setActiveSubView(const QString &, MInputMethod::HandlerState));
+    Q_PRIVATE_SLOT(d_func(), void _q_setActiveSubView(const QString &, Maliit::HandlerState));
     Q_PRIVATE_SLOT(d_func(), void _q_ensureEmptyRegionWhenHidden());
     Q_PRIVATE_SLOT(d_func(), void _q_onScreenSubViewChanged());
 

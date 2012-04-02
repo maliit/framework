@@ -90,7 +90,7 @@ namespace MaliitTestUtils {
         }
 
         void sendPreeditString(const QString &string,
-                               const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                               const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                int start, int length, int cursorPos)
         {
             lastPreedit = string;

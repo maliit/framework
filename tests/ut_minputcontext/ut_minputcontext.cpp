@@ -375,11 +375,11 @@ void Ut_MInputContext::testReset()
     WidgetStub widget(0);
     QInputMethodEvent event;
     QString preeditString("");
-    QList<MInputMethod::PreeditTextFormat> preeditFormats;
-    MInputMethod::PreeditTextFormat preeditFormat;
+    QList<Maliit::PreeditTextFormat> preeditFormats;
+    Maliit::PreeditTextFormat preeditFormat;
 
     preeditFormat.start = 0;
-    preeditFormat.preeditFace = MInputMethod::PreeditDefault;
+    preeditFormat.preeditFace = Maliit::PreeditDefault;
     m_subject->setFocusWidget(&widget);
     gFocusedWidget = &widget;
 
@@ -433,7 +433,7 @@ void Ut_MInputContext::testMouseHandler()
 
     m_subject->setFocusWidget(&widget);
     // need to make sure there is really preedit on top of which mouse events happen
-    QList<MInputMethod::PreeditTextFormat> preeditFormats;
+    QList<Maliit::PreeditTextFormat> preeditFormats;
     m_subject->updatePreedit("aaaaaaaaa", preeditFormats);
     m_subject->mouseHandler(x, &event);
 
@@ -509,9 +509,9 @@ void Ut_MInputContext::testUpdatePreedit()
     //test preedit with traditional style
     m_subject->setFocusWidget(&widget);
     gFocusedWidget = &widget;
-    QList<MInputMethod::PreeditTextFormat> preeditFormats;
-    MInputMethod::PreeditTextFormat preeditFormat(0, updateString.length(),
-                                                  MInputMethod::PreeditDefault);
+    QList<Maliit::PreeditTextFormat> preeditFormats;
+    Maliit::PreeditTextFormat preeditFormat(0, updateString.length(),
+                                                  Maliit::PreeditDefault);
     preeditFormats << preeditFormat;
     m_subject->updatePreedit(updateString, preeditFormats, -1);
 
@@ -528,7 +528,7 @@ void Ut_MInputContext::testUpdatePreedit()
     preeditFormats.clear();
     preeditFormat.start = 0;
     preeditFormat.length = updateString.length();
-    preeditFormat.preeditFace = MInputMethod::PreeditNoCandidates;
+    preeditFormat.preeditFace = Maliit::PreeditNoCandidates;
     preeditFormats << preeditFormat;
     m_subject->updatePreedit(updateString, preeditFormats, -1);
 

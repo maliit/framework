@@ -73,7 +73,7 @@ QPixmap MAbstractInputMethodHost::background() const
 }
 
 QList<MImSubViewDescription>
-MAbstractInputMethodHost::surroundingSubViewDescriptions(MInputMethod::HandlerState /*state*/) const
+MAbstractInputMethodHost::surroundingSubViewDescriptions(Maliit::HandlerState /*state*/) const
 {
     return QList<MImSubViewDescription>();
 }

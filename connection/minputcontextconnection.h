@@ -17,7 +17,7 @@
 #ifndef MINPUTCONTEXTCONNECTION_H
 #define MINPUTCONTEXTCONNECTION_H
 
-#include "minputmethodnamespace.h"
+#include <maliit/namespace.h>
 
 #include <QtCore>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -121,7 +121,7 @@ public:
      * \param cursorPos The cursor position inside preedit
      */
     virtual void sendPreeditString(const QString &string,
-                                   const QList<MInputMethod::PreeditTextFormat> &preeditFormats,
+                                   const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                    int replacementStart = 0,
                                    int replacementLength = 0,
                                    int cursorPos = -1);
@@ -151,8 +151,8 @@ public:
      * \param requestType The type of the request: event, signal, or both.
      */
     virtual void sendKeyEvent(const QKeyEvent &keyEvent,
-                              MInputMethod::EventRequestType requestType
-                              = MInputMethod::EventRequestBoth);
+                              Maliit::EventRequestType requestType
+                              = Maliit::EventRequestBoth);
 
     /*!
      * \brief notifies about hiding initiated by the input method server side

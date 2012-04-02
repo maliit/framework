@@ -39,7 +39,7 @@ namespace {
 }
 
 MAttributeExtensionManager::MAttributeExtensionManager()
-    : copyPasteStatus(MInputMethod::InputMethodNoCopyPaste)
+    : copyPasteStatus(Maliit::InputMethodNoCopyPaste)
 {
 }
 
@@ -68,12 +68,12 @@ bool  MAttributeExtensionManager::contains(const MAttributeExtensionId &id) cons
 
 void MAttributeExtensionManager::setCopyPasteState(bool copyAvailable, bool pasteAvailable)
 {
-    MInputMethod::CopyPasteState newStatus = MInputMethod::InputMethodNoCopyPaste;
+    Maliit::CopyPasteState newStatus = Maliit::InputMethodNoCopyPaste;
 
     if (copyAvailable) {
-        newStatus = MInputMethod::InputMethodCopy;
+        newStatus = Maliit::InputMethodCopy;
     } else if (pasteAvailable) {
-        newStatus = MInputMethod::InputMethodPaste;
+        newStatus = Maliit::InputMethodPaste;
     }
 
     if (copyPasteStatus == newStatus)
@@ -81,11 +81,11 @@ void MAttributeExtensionManager::setCopyPasteState(bool copyAvailable, bool past
 
     copyPasteStatus = newStatus;
     switch (newStatus) {
-    case MInputMethod::InputMethodNoCopyPaste:
+    case Maliit::InputMethodNoCopyPaste:
         break;
-    case MInputMethod::InputMethodCopy:
+    case Maliit::InputMethodCopy:
         break;
-    case MInputMethod::InputMethodPaste:
+    case Maliit::InputMethodPaste:
         break;
     }
 }

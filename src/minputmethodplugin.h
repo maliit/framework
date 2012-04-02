@@ -21,7 +21,7 @@
 #include <QtPlugin>
 #include <QSet>
 
-#include "minputmethodnamespace.h"
+#include <maliit/namespace.h>
 
 class MAbstractInputMethod;
 class MAbstractInputMethodSettings;
@@ -66,7 +66,7 @@ public:
      * WARNING: If result is empty then this plugin will not be loaded
      * during startup.
      */
-    virtual QSet<MInputMethod::HandlerState> supportedStates() const = 0;
+    virtual QSet<Maliit::HandlerState> supportedStates() const = 0;
 };
 
 Q_DECLARE_INTERFACE(MInputMethodPlugin,

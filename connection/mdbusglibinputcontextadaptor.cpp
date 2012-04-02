@@ -17,7 +17,6 @@
 #include "mdbusglibinputcontextadaptor.h"
 #include "mimserverconnection.h"
 
-#include <minputmethodnamespace.h>
 #include <variantmarshalling.h>
 
 #include <dbus/dbus.h>
@@ -48,13 +47,13 @@ static gboolean m_dbus_glib_input_context_adaptor_commit_string(
     return TRUE;
 }
 
-QDataStream &operator>>(QDataStream &s, MInputMethod::PreeditTextFormat &t)
+QDataStream &operator>>(QDataStream &s, Maliit::PreeditTextFormat &t)
 {
     int preeditFace;
     s >> t.start;
     s >> t.length;
     s >> preeditFace;
-    t.preeditFace = static_cast<MInputMethod::PreeditFace>(preeditFace);
+    t.preeditFace = static_cast<Maliit::PreeditFace>(preeditFace);
     return s;
 }
 
@@ -65,13 +64,13 @@ static gboolean m_dbus_glib_input_context_adaptor_update_preedit(MDBusGlibInputC
                                                                  gint32 replaceLength,
                                                                  gint32 cursorPos, GError **/*error*/)
 {
-    QList<MInputMethod::PreeditTextFormat> formatList;
+    QList<Maliit::PreeditTextFormat> formatList;
     for (guint i = 0; i < formatListData->len; ++i) {
         GValueArray *itemData = ((GValueArray**)formatListData->pdata)[i];
-        formatList.push_back(MInputMethod::PreeditTextFormat(
+        formatList.push_back(Maliit::PreeditTextFormat(
                                     g_value_get_int(g_value_array_get_nth(itemData, 0)),
                                     g_value_get_int(g_value_array_get_nth(itemData, 1)),
-                                    MInputMethod::PreeditFace(
+                                    Maliit::PreeditFace(
                                         g_value_get_int(g_value_array_get_nth(itemData, 2)))));
     }
     Q_EMIT obj->imServerConnection->updatePreedit(QString::fromUtf8(string),
@@ -88,7 +87,7 @@ static gboolean m_dbus_glib_input_context_adaptor_key_event(
 {
     Q_EMIT obj->imServerConnection->keyEvent(type, key, modifiers, QString::fromUtf8(text),
                                 autoRepeat == TRUE, count,
-                                static_cast<MInputMethod::EventRequestType>(requestType));
+                                static_cast<Maliit::EventRequestType>(requestType));
     return TRUE;
 }
 
