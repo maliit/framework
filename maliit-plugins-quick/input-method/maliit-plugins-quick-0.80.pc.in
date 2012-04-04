@@ -6,7 +6,7 @@ includedir=@M_IM_INSTALL_HEADERS@
 Name: Maliit Plugins Quick
 Description: Maliit provides a flexible and cross platform input method framework. It is usable on all MeeGo user experiences, and in other GNU/Linux distributions as well.
 Version: @M_IM_VERSION@
-Requires: maliit-plugins-0.80
+Requires: maliit-plugins-1.0
 Cflags: -I${includedir}/@MALIIT_PLUGINS_QUICK_HEADER@
 Libs: -L${libdir} -l@MALIIT_PLUGINS_QUICK_LIB@
 
