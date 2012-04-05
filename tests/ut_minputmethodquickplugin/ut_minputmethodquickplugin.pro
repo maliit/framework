@@ -25,12 +25,8 @@ SOURCES += \
     ut_minputmethodquickplugin.cpp \
     ../utils/gui-utils.cpp \
 
-LIBS += \
-    -L$${QUICK_IM_DIR} \
-    -L$${QUICK_FACTORY_DIR} \
-    -L$${SRC_DIR} \
-    -l$${MALIIT_PLUGINS_LIB} \
-    -l$${MALIIT_PLUGINS_QUICK_LIB} \
-    -l$${MALIIT_PLUGINS_QUICK_FACTORY} \
+include($$TOP_DIR/src/libmaliit-plugins.pri)
+include($$TOP_DIR/maliit-plugins-quick/libmaliit-plugins-quick.pri)
+include($$TOP_DIR/maliit-plugins-quick/plugin-factory/libmaliit-plugins-quick-factory.pri)
 
 include(../common_check.pri)
