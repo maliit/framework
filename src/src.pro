@@ -19,7 +19,6 @@ PLUGIN_HEADERS_PUBLIC = \
         mimupdateevent.h \
         mimupdatereceiver.h \
         mimplugindescription.h \
-        mattributeextensionid.h \
         mimsubviewdescription.h \
 
 PLUGIN_SOURCES += \
@@ -33,7 +32,6 @@ PLUGIN_SOURCES += \
         mimupdateevent.cpp \
         mimupdatereceiver.cpp \
         mimplugindescription.cpp \
-        mattributeextensionid.cpp \
         mimsubviewdescription.cpp \
 
 PLUGIN_HEADERS_PRIVATE += \
@@ -66,6 +64,7 @@ SERVER_HEADERS_PRIVATE += \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
         minputmethodhost.h \
+        mattributeextensionid.h \
         mattributeextensionmanager.h \
         mimhwkeyboardtracker.h \
         mimonscreenplugins.h \
@@ -77,6 +76,7 @@ SERVER_HEADERS_PRIVATE += \
 SERVER_SOURCES += \
         mimpluginmanager.cpp \
         minputmethodhost.cpp \
+        mattributeextensionid.cpp \
         mattributeextensionmanager.cpp \
         mimhwkeyboardtracker.cpp \
         mimpluginsproxywidget.cpp \
