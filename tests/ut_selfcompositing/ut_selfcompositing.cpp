@@ -15,8 +15,6 @@
  */
 
 #include "ut_selfcompositing.h"
-#include "mimgraphicsview.h"
-#include "mimwidget.h"
 #include "mimxapplication.h"
 #include "mimremotewindow.h"
 #include "gui-utils.h"
@@ -27,37 +25,7 @@
 
 namespace
 {
-    const QSize windowSize(200, 200);
-
-    QWidget *createGraphicsView(QWidget *parent)
-    {
-        MImGraphicsView *subject = new MImGraphicsView(new QGraphicsScene(parent), parent);
-        subject->setSceneRect(QRect(QPoint(), windowSize));
-        subject->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        subject->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-        subject->setFrameStyle(0);
-        subject->setAttribute(Qt::WA_OpaquePaintEvent);
-        subject->setAttribute(Qt::WA_NoSystemBackground);
-        subject->viewport()->setAttribute(Qt::WA_OpaquePaintEvent);
-        subject->viewport()->setAttribute(Qt::WA_NoSystemBackground);
-        subject->resize(parent->size());
-        subject->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
-        subject->setCacheMode(QGraphicsView::CacheNone);
-        return subject;
-    }
-
-    QWidget *createWidget(QWidget *parent)
-    {
-        MImWidget *subject = new MImWidget(parent);
-        subject->setAttribute(Qt::WA_OpaquePaintEvent);
-        subject->setAttribute(Qt::WA_NoSystemBackground);
-        subject->resize(parent->size());
-        return subject;
-    }
 }
-
-typedef QWidget * (* WidgetCreator)(QWidget *parent);
-Q_DECLARE_METATYPE(WidgetCreator);
 
 void Ut_SelfCompositing::initTestCase()
 {
@@ -83,56 +51,5 @@ void Ut_SelfCompositing::init()
 
 void Ut_SelfCompositing::cleanup()
 {}
-
-void Ut_SelfCompositing::testSelfCompositing_data()
-{
-    QTest::addColumn<WidgetCreator>("widgetCreator");
-    QTest::newRow("MImWidget") << &createWidget;
-    QTest::newRow("MImGraphicsView") << &createGraphicsView;
-}
-
-void Ut_SelfCompositing::testSelfCompositing()
-{
-#if defined(Q_WS_X11)
-    if (not QX11Info::isCompositingManagerRunning()) {
-        QSKIP("Not running a compositing windowmanager", SkipSingle);
-    }
-#endif
-
-
-    QFETCH(WidgetCreator, widgetCreator);
-
-    MaliitTestUtils::RemoteWindow remote;
-    remote.setGeometry(0, 0, windowSize.width(), windowSize.height());
-
-    QWidget *passthru = serverLogic->passThruWindow();
-    passthru->setGeometry(remote.geometry().right() + 10, 0,
-                          windowSize.width(), windowSize.height());
-
-    QWidget *subject = widgetCreator(passthru);
-
-    remote.show();
-    serverLogic->applicationFocusChanged(remote.window()->effectiveWinId());
-
-    passthru->show();
-    QTest::qWaitForWindowShown(remote.window());
-
-    subject->show();
-    QTest::qWaitForWindowShown(passthru->window());
-    passthru->raise();
-    serverLogic->remoteWindow()->redirect();
-
-    QApplication::setActiveWindow(passthru);
-
-    remote.update(); // Not strictly required, due to our window attributes.
-    QCoreApplication::processEvents();
-
-    QGraphicsView *view = qobject_cast<QGraphicsView *>(subject);
-    QImage subjectImage = QPixmap::grabWidget(view  ? view->viewport() : subject).toImage();
-    QImage remoteImage = QPixmap::grabWidget(&remote).toImage();
-    QCOMPARE(subjectImage, remoteImage);
-
-    serverLogic->remoteWindow()->unredirect();
-}
 
 QTEST_APPLESS_MAIN(Ut_SelfCompositing)

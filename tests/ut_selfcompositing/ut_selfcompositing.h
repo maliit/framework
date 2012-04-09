@@ -37,9 +37,6 @@ private Q_SLOTS:
     void init();
     void cleanup();
 
-    void testSelfCompositing_data();
-    void testSelfCompositing();
-
 private:
     MImXApplication *app;
     MImServerXOptions xOptions;

@@ -18,7 +18,6 @@
 #include "minputmethodquick.h"
 
 #include "mabstractinputmethodhost.h"
-#include "mimgraphicsview.h"
 #include "mkeyoverridequick.h"
 #include "mkeyoverride.h"
 #include "minputmethodquickplugin.h"
@@ -176,7 +175,7 @@ public:
                              MInputMethodQuick *im)
         : q_ptr(im)
         , scene(new QGraphicsScene(computeDisplayRect(), im))
-        , view(new MImGraphicsView(scene, mainWindow))
+        , view(new QGraphicsView(scene, mainWindow))
         , loader(new MInputMethodQuickLoader(scene, im))
         , appOrientation(0)
         , haveFocus(false)

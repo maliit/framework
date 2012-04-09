@@ -16,8 +16,6 @@
 
 #include "mabstractinputmethod.h"
 #include "mabstractinputmethodhost.h"
-#include "mimgraphicsview.h"
-#include "mimwidget.h"
 
 #include <QKeyEvent>
 #include <QWidget>

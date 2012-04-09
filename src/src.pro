@@ -18,8 +18,6 @@ PLUGIN_HEADERS_PUBLIC = \
         mimextensionevent.h \
         mimupdateevent.h \
         mimupdatereceiver.h \
-        mimgraphicsview.h \
-        mimwidget.h \
         mimplugindescription.h \
         mattributeextensionid.h \
         mimsubviewdescription.h \
@@ -34,8 +32,6 @@ PLUGIN_SOURCES += \
         mimextensionevent.cpp \
         mimupdateevent.cpp \
         mimupdatereceiver.cpp \
-        mimgraphicsview.cpp \
-        mimwidget.cpp \
         mimplugindescription.cpp \
         mattributeextensionid.cpp \
         mimsubviewdescription.cpp \
@@ -43,8 +39,6 @@ PLUGIN_SOURCES += \
 PLUGIN_HEADERS_PRIVATE += \
         mkeyoverride_p.h \
         mimupdateevent_p.h \
-        mimgraphicsview_p.h \
-        mimwidget_p.h \
         mimextensionevent_p.h \
 
 SERVER_HEADERS_PUBLIC += \
