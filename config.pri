@@ -221,6 +221,10 @@ defineTest(outputFile) {
     system($$command)
     system(chmod --reference=$$in $$out)
 
+    QMAKE_DISTCLEAN += $$1
+
+    export(QMAKE_DISTCLEAN)
+
     return(true)
 }
 
