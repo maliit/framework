@@ -15,8 +15,8 @@ SOURCES += \
 
 CONFIG += plugin qdbus
 
-LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
+include($$TOP_DIR/src/libmaliit-plugins.pri)
+include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 target.files += \
     $$TARGET \

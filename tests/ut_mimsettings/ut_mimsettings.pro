@@ -7,7 +7,7 @@ HEADERS += \
 SOURCES += \
     ut_mimsettings.cpp \
 
-LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
+include($$TOP_DIR/src/libmaliit-plugins.pri)
+include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 include(../common_check.pri)
