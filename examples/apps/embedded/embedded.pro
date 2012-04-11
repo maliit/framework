@@ -14,6 +14,8 @@ contains(BUILD_TYPE, skeleton) {
     INCLUDEPATH += $$system(pkg-config --cflags maliit-1.0 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
 
     # FIXME: install MImServer header, and provide a dedicated library and .pc for it
+    QMAKE_LIBDIR_QT -= /usr/lib64
+    QMAKE_LIBDIR_QT -= /usr/lib
 }
 
 contains(BUILD_TYPE, unittest) {
