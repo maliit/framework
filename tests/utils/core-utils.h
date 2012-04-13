@@ -20,6 +20,9 @@
 #include <QString>
 #include <QObject>
 
+#include "abstractsurfacegroup.h"
+#include "abstractsurfacegroupfactory.h"
+
 namespace MaliitTestUtils {
 
     bool isTestingInSandbox();
@@ -27,6 +30,28 @@ namespace MaliitTestUtils {
     QString getTestDataPath();
     void waitForSignal(const QObject* object, const char* signal, int timeout);
     void waitAndProcessEvents(int waitTime);
+
+    class TestSurfaceGroup : public Maliit::Server::AbstractSurfaceGroup {
+    public:
+        TestSurfaceGroup() {}
+
+        Maliit::Plugins::AbstractSurfaceFactory *factory() { return 0; }
+
+        void activate() {}
+        void deactivate() {}
+
+        void setRotation(Maliit::OrientationAngle) {}
+    };
+
+    class TestSurfaceGroupFactory : public Maliit::Server::AbstractSurfaceGroupFactory {
+    public:
+        TestSurfaceGroupFactory() {}
+
+        QSharedPointer<Maliit::Server::AbstractSurfaceGroup> createSurfaceGroup()
+        {
+            return QSharedPointer<Maliit::Server::AbstractSurfaceGroup>(new TestSurfaceGroup);
+        }
+    };
 }
 
 #endif // CORE_UTILS_H__
