@@ -71,15 +71,15 @@ void Ft_MIMPluginManager::init()
 
     MImSettings enabledPluginsSettings(EnabledPluginsKey);
     QStringList enabledPlugins;
-    enabledPlugins << pluginId << "dummyimsv1";
-    enabledPlugins << pluginId << "dummyimsv2";
-    enabledPlugins << pluginId3 << "dummyim3sv1";
-    enabledPlugins << pluginId3 << "dummyim3sv2";
+    enabledPlugins << pluginId + ":" + "dummyimsv1";
+    enabledPlugins << pluginId + ":" + "dummyimsv2";
+    enabledPlugins << pluginId3 + ":" + "dummyim3sv1";
+    enabledPlugins << pluginId3 + ":" + "dummyim3sv2";
     enabledPluginsSettings.set(enabledPlugins);
 
     MImSettings activePluginSettings(ActivePluginKey);
-    QStringList activePlugin;
-    activePlugin << pluginId << "dummyimsv1";
+    QString activePlugin;
+    activePlugin = pluginId + ":" + "dummyimsv1";
     activePluginSettings.set(activePlugin);
 
     gMKeyboardStateTrackerStub->setOpenState(false);
@@ -202,7 +202,7 @@ void Ft_MIMPluginManager::testPluginDescriptions()
     QStringList enabledPlugins;
     const MImPluginDescription *description = 0;
 
-    enabledPlugins << pluginId << "dummyimsv1";
+    enabledPlugins << pluginId + ":" + "dummyimsv1";
     enabledPluginsSettings.set(enabledPlugins);
     QCOMPARE(spy.count(), 1);
 
@@ -214,7 +214,7 @@ void Ft_MIMPluginManager::testPluginDescriptions()
     QVERIFY(!description->enabled());
     description = 0;
 
-    enabledPlugins << pluginId << "dummyimsv2";
+    enabledPlugins << pluginId + ":" + "dummyimsv2";
     enabledPluginsSettings.set(enabledPlugins);
     QCOMPARE(spy.count(), 2);
 
@@ -226,7 +226,7 @@ void Ft_MIMPluginManager::testPluginDescriptions()
     QVERIFY(!description->enabled());
     description = 0;
 
-    enabledPlugins << pluginId3 << "dummyim3sv2";
+    enabledPlugins << pluginId3 + ":" + "dummyim3sv2";
     enabledPluginsSettings.set(enabledPlugins);
     QCOMPARE(spy.count(), 3);
 
