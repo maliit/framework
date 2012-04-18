@@ -45,8 +45,7 @@ namespace
         QStringList result;
 
         Q_FOREACH(const MImOnScreenPlugins::SubView &subView, subViews) {
-            result.push_back(subView.plugin);
-            result.push_back(subView.id);
+            result.push_back(subView.plugin + ":" + subView.id);
         }
 
         return result;
@@ -56,15 +55,11 @@ namespace
     {
         QList<MImOnScreenPlugins::SubView> result;
 
-        QString first;
-        unsigned int i = 0;
         Q_FOREACH (const QString &value, list) {
-            if (i % 2 == 0)
-                first = value;
-            else {
-                result.push_back(MImOnScreenPlugins::SubView(first, value));
-            }
-            i++;
+            QString plugin = value.section(':', 0, 0);
+            QString subview = value.section(':', 1, -1);
+
+            result.push_back(MImOnScreenPlugins::SubView(plugin, subview));
         }
 
         return result;
@@ -166,11 +161,11 @@ void MImOnScreenPlugins::updateEnabledSubviews()
 
 void MImOnScreenPlugins::updateActiveSubview()
 {
-    const QStringList &list = mActiveSubViewSettings.value().toStringList();
-    if (list.empty())
+    const QString &active = mActiveSubViewSettings.value().toString();
+    if (active.isEmpty())
         return;
 
-    const QList<SubView> &activeList = fromSettings(list);
+    const QList<SubView> &activeList = fromSettings(QStringList() << active);
     if (activeList.empty())
         return;
 

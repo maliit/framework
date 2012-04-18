@@ -26,7 +26,7 @@
 
 namespace {
     const QString EnabledPluginsKey = MALIIT_CONFIG_ROOT"onscreen/enabled";
-    const QStringList DefaultEnabledPlugins = QStringList() << "libdummyimplugin.so" << "dummyimsv1";
+    const QStringList DefaultEnabledPlugins = QStringList() << "libdummyimplugin.so" ":" "dummyimsv1";
     const QString MImPluginPaths = MALIIT_CONFIG_ROOT"paths";
 }
 

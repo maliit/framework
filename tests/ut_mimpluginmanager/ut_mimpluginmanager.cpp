@@ -54,10 +54,10 @@ namespace {
     QString Toolbar2 = "/toolbar2.xml";
 
     const QStringList DefaultEnabledPlugins = QStringList()
-                                              << pluginId << "dummyimsv1"
-                                              << pluginId << "dummyimsv2"
-                                              << pluginId3 << "dummyim3sv1"
-                                              << pluginId3 << "dummyim3sv2";
+                                              << pluginId + ":" + "dummyimsv1"
+                                              << pluginId + ":" + "dummyimsv2"
+                                              << pluginId3 + ":" + "dummyim3sv1"
+                                              << pluginId3 + ":" + "dummyim3sv2";
 }
 
 
@@ -94,7 +94,7 @@ void Ut_MIMPluginManager::init()
 
     MImSettings activePluginSettings(ActivePluginKey);
     QStringList activePlugin;
-    activePlugin << pluginId << "dummyimsv1";
+    activePlugin << pluginId + ":" + "dummyimsv1";
     activePluginSettings.set(activePlugin);
 
     shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
@@ -516,7 +516,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
 
     // nothing should be changed
     subject->switchPlugin(pluginId, inputMethod);
-    QCOMPARE(QString("dummyimsv1"), lastActiveSubviewGconf.value().toStringList().last());
+    QCOMPARE(QString("dummyimsv1"), lastActiveSubviewGconf.value().toString().section(':', 1));
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->switchContextCallCount, 0);
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, Maliit::SwitchUndefined);
@@ -526,10 +526,10 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
         QVERIFY(handler == plugin);
     }
 
-    QCOMPARE(lastActiveSubviewGconf.value().toStringList().last(), QString("dummyimsv1"));
+    QCOMPARE(lastActiveSubviewGconf.value().toString().section(':', 1), QString("dummyimsv1"));
     // switch to another plugin
     subject->switchPlugin(pluginId3, inputMethod);
-    QCOMPARE(lastActiveSubviewGconf.value().toStringList().last(), QString("dummyim3sv1"));
+    QCOMPARE(lastActiveSubviewGconf.value().toString().section(':', 1), QString("dummyim3sv1"));
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, Maliit::SwitchUndefined);
     QVERIFY(inputMethod != 0);
 
@@ -572,8 +572,8 @@ void Ut_MIMPluginManager::testSwitchShow()
     // preparation
     MImSettings enabledPluginsSettings(EnabledPluginsKey);
     enabledPluginsSettings.set(QStringList()
-                                << pluginId3 << "dummyim3sv1"
-                                << pluginId << "dummyimsv1");
+                                << pluginId3 + ":" + "dummyim3sv1"
+                                << pluginId + ":" + "dummyimsv1");
     subject->setActivePlugin(pluginId, Maliit::OnScreen);
     subject->showActivePlugins();
 
@@ -618,7 +618,7 @@ void Ut_MIMPluginManager::testSetActivePlugin()
 
     // check gconf item
     MImSettings handlerItem(ActivePluginKey);
-    QCOMPARE(handlerItem.value().toStringList().first(), pluginId3);
+    QCOMPARE(handlerItem.value().toString().section(':', 0, 0), pluginId3);
 
     QVERIFY(subject->activePlugins.size() == 1);
     plugin = *subject->activePlugins.begin();
@@ -759,11 +759,11 @@ void Ut_MIMPluginManager::testSubViewsInfo_data()
                                  << "dummyimsv1"
                                  << QStringList();
 
-    QTest::newRow("one subview") << (QStringList() << pluginId << "dummyimsv1")
+    QTest::newRow("one subview") << (QStringList() << pluginId + ":" + "dummyimsv1")
                                  << "dummyimsv1"
                                  << QStringList();
 
-    QTest::newRow("two subviews") << (QStringList() << pluginId << "dummyimsv1" << pluginId << "dummyimsv2")
+    QTest::newRow("two subviews") << (QStringList() << pluginId + ":" + "dummyimsv1" << pluginId + ":" + "dummyimsv2")
                                   << "dummyimsv1"
                                   << (QStringList() << "dummyimsv2" << "dummyimsv2");
 
@@ -807,7 +807,7 @@ void Ut_MIMPluginManager::testEnableAllSubviews()
     Q_FOREACH(Maliit::Plugins::InputMethodPlugin * p, subject->plugins.keys()) {
         Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &s,
                    subject->plugins[p].inputMethod->subViews(Maliit::OnScreen)) {
-                allSubViews << subject->plugins[p].pluginId << s.subViewId;
+                allSubViews << subject->plugins[p].pluginId + ":" + s.subViewId;
         }
     }
 
@@ -815,11 +815,9 @@ void Ut_MIMPluginManager::testEnableAllSubviews()
     QStringList enabledSubViews = enabledPluginsSettings.value().value<QStringList>();
 
     // every available subview should be enabled
-    // and it should be placed after correct plugin id
-    for (int n = 0; n < allSubViews.count() - 1; n += 2) {
+    for (int n = 0; n < allSubViews.count() - 1; ++n) {
         int index = enabledSubViews.indexOf(allSubViews.at(n + 1));
         QVERIFY(index > 0);
-        QCOMPARE(enabledSubViews.at(index - 1), allSubViews.at(n));
     }
 }
 
