@@ -1,11 +1,16 @@
+TOP_DIR = ..
 
 include(../config.pri)
+include(../connection/libmaliit-connection.pri)
+include(../maliit/libmaliit.pri)
 
 VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
-TARGET = $${MALIIT_LIB}
+TARGET = $${MALIIT_SETTINGS_LIB}
 
-INCLUDEPATH += .. ../common
+DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
+INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common
+LIBS += $$TOP_DIR/common/$$maliitStaticLib(maliit-common)
 
 QT = core gui
 
@@ -13,36 +18,30 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
 HEADERSINSTALL = \
-    preeditinjectionevent.h \
-    inputmethod.h \
-    attributeextension.h \
+    settingsentry.h \
+    pluginsettings.h \
+    settingsmanager.h \
 
 HEADERS += \
     $$HEADERSINSTALL \
-    preeditinjectionevent_p.h \
-    inputmethod_p.h \
-    attributeextension_p.h \
-    attributeextensionregistry_p.h \
-    attributeextensionregistry.h \
 
 SOURCES += \
-    preeditinjectionevent.cpp \
-    inputmethod.cpp \
-    attributeextension.cpp \
-    attributeextensionregistry.cpp \
+    settingsentry.cpp \
+    pluginsettings.cpp \
+    settingsmanager.cpp \
 
 target.path += $$M_IM_INSTALL_LIBS
 
 headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER/maliit
 headers.files += $$HEADERSINSTALL
 
-outputFiles(maliit-$${MALIIT_INTERFACE_VERSION}.pc)
+outputFiles(maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc)
 
 OTHER_FILES += \
-    maliit-$${MALIIT_INTERFACE_VERSION}.pc.in
+    maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc.in
 
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
-install_pkgconfig.files = $$OUT_PWD/maliit-$${MALIIT_INTERFACE_VERSION}.pc
+install_pkgconfig.files = $$OUT_PWD/maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc
 
 INSTALLS += \
     target \
@@ -60,4 +59,4 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
 QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 
 OTHER_FILES += \
-    libmaliit.pri
+    libmaliit-settings.pri

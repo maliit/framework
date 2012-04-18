@@ -1,0 +1,97 @@
+/* * This file is part of meego-im-framework *
+ *
+ * Copyright (C) 2012 Mattia Barbon <mattia@develer.com>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License version 2.1 as published by the Free Software Foundation
+ * and appearing in the file LICENSE.LGPL included in the packaging
+ * of this file.
+ */
+
+#include "settingsmanager.h"
+
+#include <maliit/settingdata.h>
+#include <maliit/attributeextension.h>
+#include "mimserverconnection.h"
+#include "pluginsettings.h"
+
+namespace Maliit {
+
+struct SettingsManagerPrivate
+{
+    QSharedPointer<AttributeExtension> settings_list_changed;
+    MImServerConnection *connection;
+};
+
+
+QString SettingsManager::preferred_description_locale = "en";
+
+void SettingsManager::setPreferredDescriptionLocale(const QString &localeName)
+{
+    preferred_description_locale = localeName;
+}
+
+QString SettingsManager::preferredDescriptionLocale()
+{
+    return preferred_description_locale;
+}
+
+SettingsManager::SettingsManager(MImServerConnection *connection) :
+    d_ptr(new SettingsManagerPrivate)
+{
+    Q_D(SettingsManager);
+
+    d->connection = connection;
+
+    connect(d->connection, SIGNAL(pluginSettingsReceived(QList<MImPluginSettingsInfo>)),
+            this, SLOT(onPluginSettingsReceived(QList<MImPluginSettingsInfo>)));
+    connect(d->connection, SIGNAL(connected()), this, SIGNAL(connected()));
+    connect(d->connection, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+}
+
+SettingsManager::~SettingsManager()
+{
+}
+
+void SettingsManager::loadPluginSettings() const
+{
+    Q_D(const SettingsManager);
+
+    d->connection->loadPluginSettings(preferredDescriptionLocale());
+}
+
+void SettingsManager::onPluginSettingsReceived(const QList<MImPluginSettingsInfo> &settings)
+{
+    Q_D(SettingsManager);
+
+    QList<QSharedPointer<PluginSettings> > result;
+    QHash<int, QSharedPointer<AttributeExtension> > extensions;
+
+    Q_FOREACH (const MImPluginSettingsInfo &plugin_info, settings)
+    {
+        QSharedPointer<AttributeExtension> extension;
+
+        // special case for the attribute extension used to monitor changes in the settings list
+        if (plugin_info.plugin_name == "@settings") {
+            d->settings_list_changed = QSharedPointer<AttributeExtension>(AttributeExtension::create(plugin_info.extension_id));
+
+            connect(d->settings_list_changed.data(), SIGNAL(extendedAttributeChanged(QString,QVariant)),
+                    this, SLOT(loadPluginSettings()));
+
+            continue;
+        }
+
+        if (extensions.contains(plugin_info.extension_id))
+            extension = extensions[plugin_info.extension_id];
+        else
+            extension = extensions[plugin_info.extension_id] =
+                AttributeExtension::create(plugin_info.extension_id);
+
+        result.append(QSharedPointer<PluginSettings>(new PluginSettings(plugin_info, extension)));
+    }
+
+    Q_EMIT pluginSettingsReceived(result);
+}
+
+}
