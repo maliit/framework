@@ -77,6 +77,7 @@ SERVER_HEADERS_PRIVATE += \
         minputmethodhost.h \
         mattributeextensionid.h \
         mattributeextensionmanager.h \
+        msharedattributeextensionmanager.h \
         mimhwkeyboardtracker.h \
         mimonscreenplugins.h \
         mimhwkeyboardtracker_p.h \
@@ -93,6 +94,7 @@ SERVER_SOURCES += \
         minputmethodhost.cpp \
         mattributeextensionid.cpp \
         mattributeextensionmanager.cpp \
+        msharedattributeextensionmanager.cpp \
         mimhwkeyboardtracker.cpp \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \

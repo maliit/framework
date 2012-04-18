@@ -19,12 +19,14 @@
 #include <maliit/plugins/inputmethodplugin.h>
 #include <maliit/plugins/abstractpluginfactory.h>
 #include "mattributeextensionmanager.h"
+#include "msharedattributeextensionmanager.h"
 #include <maliit/plugins/abstractinputmethod.h>
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
 #include <maliit/plugins/updateevent.h>
 #include "mimsubviewoverride.h"
 #include "maliit/namespaceinternal.h"
+#include <maliit/settingdata.h>
 
 #include <QDir>
 #include <QPluginLoader>
@@ -81,7 +83,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnect
       onScreenPlugins(),
       mSurfaceGroupFactory(surfaceGroupFactory),
       lastOrientation(0),
-      attributeExtensionManager(new MAttributeExtensionManager)
+      attributeExtensionManager(new MAttributeExtensionManager),
+      sharedAttributeExtensionManager(new MSharedAttributeExtensionManager)
 {
     inputSourceToNameMap[Maliit::Hardware] = "hardware";
     inputSourceToNameMap[Maliit::Accessory] = "accessory";
@@ -277,6 +280,71 @@ void MIMPluginManagerPrivate::addHandlerMap(Maliit::HandlerState state,
         }
     }
     qWarning() << __PRETTY_FUNCTION__ << "Could not find plugin:" << pluginId;
+}
+
+
+MImPluginSettingsInfo MIMPluginManagerPrivate::globalSettings() const
+{
+    QStringList domain, descriptions;
+
+    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, plugins.keys()) {
+        const MIMPluginManagerPrivate::PluginDescription &descr = plugins[plugin];
+        QList<MAbstractInputMethod::MInputMethodSubView> subviews = descr.inputMethod->subViews();
+
+        Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &subview, subviews) {
+            domain.append(descr.pluginId + ":" + subview.subViewId);
+            descriptions.append(plugin->name() + " - " + subview.subViewTitle);
+        }
+    }
+
+    MImPluginSettingsEntry active_subviews;
+
+    active_subviews.extension_key = MALIIT_CONFIG_ROOT"onscreen/active";
+    active_subviews.description = QT_TRANSLATE_NOOP("maliit", "Active subview");
+    active_subviews.type = Maliit::StringType;
+    active_subviews.attributes[Maliit::SettingEntryAttributes::valueDomain] = domain;
+    active_subviews.attributes[Maliit::SettingEntryAttributes::valueDomainDescriptions] = descriptions;
+
+    MImPluginSettingsEntry enabled_subviews;
+
+    enabled_subviews.extension_key = MALIIT_CONFIG_ROOT"onscreen/enabled";
+    enabled_subviews.description = QT_TRANSLATE_NOOP("maliit", "Enabled subviews");
+    enabled_subviews.type = Maliit::StringListType;
+    enabled_subviews.attributes[Maliit::SettingEntryAttributes::valueDomain] = domain;
+    enabled_subviews.attributes[Maliit::SettingEntryAttributes::valueDomainDescriptions] = descriptions;
+
+    MImPluginSettingsInfo global;
+
+    global.plugin_description = QT_TRANSLATE_NOOP("maliit", "Global");
+    global.plugin_name = "server";
+    global.extension_id = MSharedAttributeExtensionManager::PluginSettings;
+    global.entries.append(active_subviews);
+    global.entries.append(enabled_subviews);
+
+    return global;
+}
+
+
+void MIMPluginManagerPrivate::registerSettings()
+{
+    // not exposed to final user, merely used to listen for settings list changes
+    MImPluginSettingsInfo settings_list;
+
+    settings_list.plugin_name = "@settings";
+    settings_list.extension_id = MSharedAttributeExtensionManager::PluginSettingsList;
+
+    settings.append(settings_list);
+
+    // global settings
+    settings.append(globalSettings());
+
+    // TODO plugin settings
+
+    Q_FOREACH (const MImPluginSettingsInfo &setting, settings) {
+        Q_FOREACH (const MImPluginSettingsEntry &entry, setting.entries) {
+            sharedAttributeExtensionManager->registerPluginSetting(entry.extension_key, entry.type, entry.attributes);
+        }
+    }
 }
 
 
@@ -1144,6 +1212,24 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
             d->attributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
 
+    connect(d->mICConnection.get(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
+            d->sharedAttributeExtensionManager.data(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
+
+    connect(d->mICConnection.get(), SIGNAL(attributeExtensionUnregistered(uint, int)),
+            d->sharedAttributeExtensionManager.data(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
+
+    connect(d->mICConnection.get(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
+            d->sharedAttributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
+
+    connect(d->sharedAttributeExtensionManager.data(), SIGNAL(notifyExtensionAttributeChanged(QList<int>, int, QString, QString, QString, QVariant)),
+            d->mICConnection.get(), SLOT(notifyExtendedAttributeChanged(QList<int>, int, QString, QString, QString, QVariant)));
+
+    connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
+            d->sharedAttributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
+
+    connect(d->mICConnection.get(), SIGNAL(pluginSettingsRequested(int,QString)),
+            this, SLOT(pluginSettingsRequested(int,QString)));
+
     // Connect from MAttributeExtensionManager to our handlers
     connect(d->attributeExtensionManager.data(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
             this, SLOT(setToolbar(const MAttributeExtensionId &)));
@@ -1160,6 +1246,8 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     d->loadPlugins();
 
     d->loadHandlerMap();
+
+    d->registerSettings();
 
     connect(&d->onScreenPlugins, SIGNAL(activeSubViewChanged()),
             this, SLOT(_q_onScreenSubViewChanged()));
@@ -1537,6 +1625,27 @@ void MIMPluginManager::onGlobalAttributeChanged(const MAttributeExtensionId &id,
 
         setAllSubViewsEnabled(value.toBool());
     }
+}
+
+void MIMPluginManager::pluginSettingsRequested(int clientId, const QString &descriptionLanguage)
+{
+    Q_D(MIMPluginManager);
+
+    QList<MImPluginSettingsInfo> settings = d->settings;
+
+    for (int i = 0; i < settings.count(); ++i) {
+        QList<MImPluginSettingsEntry> &entries = settings[i].entries;
+
+        // TODO translate descriptions using descriptionLanguage
+        settings[i].description_language = descriptionLanguage;
+
+        for (int j = 0; j < entries.count(); ++j) {
+            // TODO translate descriptions using descriptionLanguage
+            entries[j].value = MImSettings(entries[j].extension_key).value();
+        }
+    }
+
+    d->mICConnection->pluginSettingsLoaded(clientId, settings);
 }
 
 #include "moc_mimpluginmanager.cpp"
