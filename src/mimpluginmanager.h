@@ -146,6 +146,8 @@ private Q_SLOTS:
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
+    void pluginSettingsRequested(int clientId, const QString &descriptionLanguage);
+
     /*!
      * \brief Handle global attribute change
      * \param id id of the attribute extension that triggered this change

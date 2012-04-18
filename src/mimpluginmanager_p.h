@@ -25,6 +25,7 @@
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
 #include "mindicatorserviceclient.h"
+#include <maliit/settingdata.h>
 
 #include "abstractsurfacegroup.h"
 
@@ -40,6 +41,7 @@ class MImAbstractPluginFactory;
 class MInputContextConnection;
 class MIMPluginManager;
 class MAttributeExtensionManager;
+class MSharedAttributeExtensionManager;
 class MImSettings;
 class MAbstractInputMethod;
 class MIMPluginManagerAdaptor;
@@ -83,6 +85,8 @@ public:
     bool loadPlugin(const QDir &dir, const QString &fileName);
     bool loadFactoryPlugin(const QDir &dir, const QString &fileName);
     void addHandlerMap(Maliit::HandlerState state, const QString &pluginName);
+    void registerSettings();
+    MImPluginSettingsInfo globalSettings() const;
     void setActiveHandlers(const QSet<Maliit::HandlerState> &states);
     QSet<Maliit::HandlerState> activeHandlers() const;
     void deactivatePlugin(Maliit::Plugins::InputMethodPlugin *plugin);
@@ -161,6 +165,7 @@ public:
     ActivePlugins activePlugins;
     QSet<MAbstractInputMethod *> targets;
     PluginsFactory factories;
+    QList<MImPluginSettingsInfo> settings;
 
     QStringList paths;
     QStringList blacklist;
@@ -195,6 +200,7 @@ public:
     int lastOrientation;
 
     QScopedPointer<MAttributeExtensionManager> attributeExtensionManager;
+    QScopedPointer<MSharedAttributeExtensionManager> sharedAttributeExtensionManager;
 };
 
 #endif
