@@ -46,7 +46,7 @@ SUBDIRS = common
     SUBDIRS += dbus_interfaces
 }
 
-SUBDIRS += connection src maliit maliit-glib
+SUBDIRS += connection src maliit maliit-settings maliit-glib
 
 !disable-dbus {
     SUBDIRS += passthroughserver gtk-input-context

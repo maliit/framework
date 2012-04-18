@@ -10,6 +10,7 @@ MALIIT_ABI_VERSION = 0.1.0
 
 # For libmaliit
 MALIIT_LIB = maliit-$${MALIIT_INTERFACE_VERSION}
+MALIIT_SETTINGS_LIB = maliit-settings-$${MALIIT_INTERFACE_VERSION}
 MALIIT_HEADER = maliit/maliit-$${MALIIT_INTERFACE_VERSION}
 MALIIT_FRAMEWORK_HEADER = maliit/framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}
 # For libmaliit-glib
@@ -198,6 +199,7 @@ defineTest(outputFile) {
                 MALIIT_PLUGINS_QUICK_LIB \
                 MALIIT_PLUGINS_QUICK_HEADER \
                 MALIIT_PLUGINS_QUICK_FACTORY \
+                MALIIT_SETTINGS_LIB \
                 MALIIT_TEST_SUITE \
                 MALIIT_TEST_DATADIR \
                 MALIIT_TEST_LIBDIR \
