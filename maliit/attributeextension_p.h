@@ -27,6 +27,7 @@ namespace Maliit {
 class AttributeExtensionPrivate {
 public:
     AttributeExtensionPrivate(const QString &fileName);
+    AttributeExtensionPrivate(int id);
     ~AttributeExtensionPrivate();
 
     static int createId();

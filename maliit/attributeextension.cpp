@@ -34,6 +34,14 @@ AttributeExtensionPrivate::AttributeExtensionPrivate(const QString &fileName) :
 {
 }
 
+AttributeExtensionPrivate::AttributeExtensionPrivate(int id) :
+    id(id),
+    fileName(),
+    values(),
+    registry(AttributeExtensionRegistry::instance())
+{
+}
+
 AttributeExtensionPrivate::~AttributeExtensionPrivate()
 {
 }
@@ -56,6 +64,28 @@ AttributeExtension::AttributeExtension(const QString &fileName)
     if (AttributeExtensionRegistry *r = d->registry.data()) {
         r->addExtension(this);
     }
+}
+
+AttributeExtension::AttributeExtension(int id, bool registerExtension)
+    : QObject(),
+      d_ptr(new AttributeExtensionPrivate(id))
+{
+    Q_D(AttributeExtension);
+
+    AttributeExtensionRegistry *r = d->registry.data();
+
+    if (r && registerExtension) {
+        r->addExtension(this);
+    }
+}
+
+QSharedPointer<AttributeExtension> AttributeExtension::create(int id)
+{
+    QSharedPointer<AttributeExtension> res(new AttributeExtension(id, false));
+
+    AttributeExtensionRegistry::instance()->addExtension(res);
+
+    return res;
 }
 
 AttributeExtension::~AttributeExtension()

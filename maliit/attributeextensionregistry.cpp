@@ -91,6 +91,14 @@ void AttributeExtensionRegistry::addExtension(AttributeExtension *extension)
     Q_EMIT extensionRegistered(extension->id(), extension->fileName());
 }
 
+void AttributeExtensionRegistry::addExtension(QSharedPointer<AttributeExtension> extension)
+{
+    Q_D(AttributeExtensionRegistry);
+
+    d->extensions.push_back(QWeakPointer<AttributeExtension>(extension));
+    Q_EMIT extensionRegistered(extension->id(), extension->fileName());
+}
+
 void AttributeExtensionRegistry::removeExtension(AttributeExtension *extension)
 {
     Q_D(AttributeExtensionRegistry);

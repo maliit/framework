@@ -22,6 +22,7 @@
 #include <QMap>
 #include <QObject>
 #include <QScopedPointer>
+#include <QSharedPointer>
 #include <QString>
 #include <QVariant>
 
@@ -45,7 +46,11 @@ public:
      * \return the registered unique identifier of this attribute extension.
      */
     explicit AttributeExtension(const QString &fileName = QString());
+    explicit AttributeExtension(int id, bool registerExtension = true);
     virtual ~AttributeExtension();
+
+    // same as the constructors above, but returning a QSharedPointer
+    static QSharedPointer<AttributeExtension> create(int id);
 
     // providing target name -> (item name -> (attribute name -> attribute value))
     typedef QMap<QString, QVariant> ExtendedAttributeMap;
