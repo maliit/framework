@@ -42,6 +42,7 @@ public:
     static AttributeExtensionRegistry *instance();
 
     void addExtension(AttributeExtension *extension);
+    void addExtension(QSharedPointer<AttributeExtension> extension);
 
     void removeExtension(AttributeExtension *extension);
 
