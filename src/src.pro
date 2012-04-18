@@ -67,6 +67,8 @@ SERVER_SOURCES += \
 }
 
 SERVER_HEADERS_PRIVATE += \
+        abstractsurfacegroup.h \
+        abstractsurfacegroupfactory.h \
         mimpluginsproxywidget.h \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
@@ -81,6 +83,8 @@ SERVER_HEADERS_PRIVATE += \
         mimserveroptions.h \
 
 SERVER_SOURCES += \
+        abstractsurfacegroup.cpp \
+        abstractsurfacegroupfactory.cpp \
         mimpluginmanager.cpp \
         minputmethodhost.cpp \
         mattributeextensionid.cpp \
