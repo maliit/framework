@@ -22,6 +22,7 @@
 #include <QtCore>
 
 class MImServerConnectionPrivate;
+class MImPluginSettingsInfo;
 
 class MImServerConnection : public QObject
 {
@@ -66,6 +67,8 @@ public:
 
     virtual void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                               const QString &attribute, const QVariant &value);
+
+    virtual void loadPluginSettings(const QString &descriptionLanguage);
 
 public:
     /*! \brief Notifies about connection to server being established.
@@ -203,6 +206,8 @@ public:
                                            const QString &targetItem,
                                            const QString &attribute,
                                            const QVariant &value);
+
+    Q_SIGNAL void pluginSettingsReceived(const QList<MImPluginSettingsInfo> &info);
 
 private:
     Q_DISABLE_COPY(MImServerConnection)

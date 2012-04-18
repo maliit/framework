@@ -265,6 +265,23 @@ namespace Maliit {
         //! \sa Maliit::VisualizationPriorityQuery
         const char* const suppressInputMethod = "maliit-suppress-input-method";
     }
+
+    enum SettingEntryType
+    {
+        StringType     = 1,
+        IntType        = 2,
+        BoolType       = 3,
+        StringListType = 4,
+        IntListType    = 5
+    };
+
+    namespace SettingEntryAttributes
+    {
+        const char* const valueDomain = "valueDomain";
+        const char* const valueDomainDescriptions = "valueDomainDescriptions";
+        const char* const valueRangeMin = "valueRangeMin";
+        const char* const valueRangeMax = "valueRangeMax";
+    }
 }
 
 Q_DECLARE_METATYPE(Maliit::TextContentType)

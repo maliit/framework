@@ -14,10 +14,14 @@ OTHER_FILES += \
 
 FRAMEWORKHEADERSINSTALL = \
     maliit/namespace.h \
+    maliit/settingdata.h \
 
 HEADERS += \
     $$FRAMEWORKHEADERSINSTALL \
     maliit/namespaceinternal.h \
+
+SOURCES += \
+    maliit/settingdata.cpp \
 
 frameworkheaders.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_FRAMEWORK_HEADER/maliit
 frameworkheaders.files += $$FRAMEWORKHEADERSINSTALL
