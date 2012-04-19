@@ -83,6 +83,8 @@ public:
 
     virtual void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                               const QString &attribute, const QVariant &value);
+
+    virtual void loadPluginSettings(const QString &descriptionLanguage);
     //! reimpl end
 
 private Q_SLOTS:

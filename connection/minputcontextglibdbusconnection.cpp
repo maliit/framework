@@ -19,6 +19,7 @@
 #include "minputcontextglibdbusconnection.h"
 #include "serverdbusaddress.h"
 #include <variantmarshalling.h>
+#include <maliit/settingdata.h>
 
 #include <QDataStream>
 #include <QDebug>
@@ -91,23 +92,104 @@ namespace
         return true;
     }
 
-    bool mapFromGHashTable(QMap<QString, QVariant> *dest, GHashTable *source, QString *error_message)
+    bool encodeSettings(GType *typeDest, GPtrArray **dataDest, const QList<MImPluginSettingsInfo> &settings)
     {
-        dest->clear();
-        GHashTableIter iterator;
-        gchar *keyData;
-        GValue *valueData;
-        g_hash_table_iter_init(&iterator, source);
-        while (g_hash_table_iter_next(&iterator, (void**)(&keyData), (void**)(&valueData))) {
-            QString key = QString::fromUtf8(keyData);
-            QVariant value;
-            if (!decodeVariant(&value, valueData, error_message)) {
-                if (error_message != 0)
-                    *error_message = "[\"" + key + "\"]" + *error_message;
+        GType attrMapType = dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE);
+        GType entryType = dbus_g_type_get_struct("GValueArray",
+                                                 G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT,
+                                                 G_TYPE_BOOLEAN, G_TYPE_VALUE, attrMapType,
+                                                 G_TYPE_INVALID);
+        GType entryArrayType = dbus_g_type_get_collection("GPtrArray", entryType);
+        GType pluginType = dbus_g_type_get_struct("GValueArray",
+                                                  G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INT, entryArrayType,
+                                                  G_TYPE_INVALID);
+        *typeDest = dbus_g_type_get_collection("GPtrArray", pluginType);
+
+        *dataDest = (GPtrArray*)dbus_g_type_specialized_construct(*typeDest);
+
+        if (*dataDest == 0) {
+            qWarning() << Q_FUNC_INFO << "failed to initalize MImPluginSettingsInfo container";
+            return false;
+        }
+        Q_FOREACH (const MImPluginSettingsInfo &plugin, settings) {
+            GPtrArray *entryArray = (GPtrArray*)dbus_g_type_specialized_construct(entryArrayType);
+            if (entryArray == 0) {
+                qWarning() << Q_FUNC_INFO << "failed to initalize MImPluginSettingsEntry container";
+                dbus_g_type_collection_peek_vtable(*typeDest)->base_vtable.free_func(*typeDest, *dataDest);
                 return false;
             }
 
-            dest->insert(key, value);
+            Q_FOREACH (const MImPluginSettingsEntry &entry, plugin.entries) {
+                GHashTable *attributes = encodeVariantMap(entry.attributes);
+                GValueArray *entryData = (GValueArray*)dbus_g_type_specialized_construct(entryType);
+
+                if (entryData == 0) {
+                    qWarning() << Q_FUNC_INFO << "failed to initalize MImPluginSettingsEntry item";
+                    dbus_g_type_collection_peek_vtable(entryArrayType)->base_vtable.free_func(entryArrayType, entryArray);
+                    dbus_g_type_collection_peek_vtable(*typeDest)->base_vtable.free_func(*typeDest, *dataDest);
+                    return false;
+                }
+                GValue *current_value = g_new0(GValue, 1);
+                if (!entry.value.isValid()) {
+                    // any type/value will do, validity is encoded in a separate boolean
+                    g_value_init(current_value, G_TYPE_INT);
+                } else if (!encodeVariant(current_value, entry.value)) {
+                    g_free(current_value);
+                    dbus_g_type_collection_peek_vtable(entryType)->base_vtable.free_func(entryType, entryData);
+                    dbus_g_type_collection_peek_vtable(entryArrayType)->base_vtable.free_func(entryArrayType, entryArray);
+                    dbus_g_type_collection_peek_vtable(*typeDest)->base_vtable.free_func(*typeDest, *dataDest);
+                    return 0;
+                }
+                GValue entryDataWrap =  {0, {{0}, {0}}};
+                g_value_init(&entryDataWrap, entryType);
+                g_value_set_static_boxed(&entryDataWrap, entryData);
+                if (!dbus_g_type_struct_set(&entryDataWrap,
+                                            0, entry.description.toUtf8().data(),
+                                            1, entry.extension_key.toUtf8().data(),
+                                            2, entry.type,
+                                            3, entry.value.isValid(),
+                                            4, current_value,
+                                            5, attributes,
+                                            G_MAXUINT)) {
+                    qWarning() << Q_FUNC_INFO << "failed to fill MImPluginSettingsEntry item";
+                    g_value_array_free(entryData);
+                    g_value_unset(&entryDataWrap);
+                    dbus_g_type_collection_peek_vtable(entryType)->base_vtable.free_func(entryType, entryData);
+                    dbus_g_type_collection_peek_vtable(entryArrayType)->base_vtable.free_func(entryArrayType, entryArray);
+                    dbus_g_type_collection_peek_vtable(*typeDest)->base_vtable.free_func(*typeDest, *dataDest);
+                    return false;
+                }
+                g_value_reset(&entryDataWrap);
+                g_ptr_array_add(entryArray, entryData);
+            }
+
+            GValueArray *pluginData = (GValueArray*)dbus_g_type_specialized_construct(pluginType);
+            if (pluginData == 0) {
+                qWarning() << Q_FUNC_INFO << "failed to initalize MImPluginSettingsInfo item";
+                dbus_g_type_collection_peek_vtable(entryArrayType)->base_vtable.free_func(entryArrayType, entryArray);
+                dbus_g_type_collection_peek_vtable(*typeDest)->base_vtable.free_func(*typeDest, *dataDest);
+                return false;
+            }
+            GValue pluginDataWrap =  {0, {{0}, {0}}};
+            g_value_init(&pluginDataWrap, pluginType);
+            g_value_set_static_boxed(&pluginDataWrap, pluginData);
+            if (!dbus_g_type_struct_set(&pluginDataWrap,
+                                        0, plugin.description_language.toUtf8().data(),
+                                        1, plugin.plugin_name.toUtf8().data(),
+                                        2, plugin.plugin_description.toUtf8().data(),
+                                        3, plugin.extension_id,
+                                        4, entryArray,
+                                        G_MAXUINT)) {
+                qWarning() << Q_FUNC_INFO << "failed to fill MImPluginSettingsInfo item";
+                g_value_array_free(pluginData);
+                g_value_unset(&pluginDataWrap);
+                dbus_g_type_collection_peek_vtable(pluginType)->base_vtable.free_func(pluginType, pluginData);
+                dbus_g_type_collection_peek_vtable(entryArrayType)->base_vtable.free_func(entryArrayType, entryArray);
+                dbus_g_type_collection_peek_vtable(*typeDest)->base_vtable.free_func(*typeDest, *dataDest);
+                return false;
+            }
+            g_value_reset(&pluginDataWrap);
+            g_ptr_array_add(*dataDest, pluginData);
         }
 
         return true;
@@ -197,7 +279,7 @@ m_dbus_glib_ic_connection_update_widget_information(MDBusGlibICConnection *obj,
 {
     QMap<QString, QVariant> stateMap;
     QString error_message;
-    if (mapFromGHashTable(&stateMap, stateInformation, &error_message)) {
+    if (decodeVariantMap(&stateMap, stateInformation, &error_message)) {
         obj->icConnection->updateWidgetInformation(obj->connectionNumber, stateMap, focusChanged == TRUE);
     } else {
         qWarning() << "updateWidgetInformation.arg[0]" + error_message;
@@ -286,6 +368,14 @@ m_dbus_glib_ic_connection_set_extended_attribute(MDBusGlibICConnection *obj, gin
     } else {
         qWarning() << "setExtendedAttribute.arg[4]" + error_message;
     }
+    return TRUE;
+}
+
+static gboolean
+m_dbus_glib_ic_connection_load_plugin_settings(MDBusGlibICConnection *obj, const char *descriptionLanguage,
+                                               GError **/*error*/)
+{
+    obj->icConnection->loadPluginSettings(obj->connectionNumber, QString::fromUtf8(descriptionLanguage));
     return TRUE;
 }
 
@@ -696,6 +786,49 @@ void MInputContextGlibDBusConnection::notifyExtendedAttributeChanged(int id,
                                G_TYPE_VALUE, &valueData,
                                G_TYPE_INVALID);
     g_value_unset(&valueData);
+}
+
+void MInputContextGlibDBusConnection::notifyExtendedAttributeChanged(const QList<int> &clientIds,
+                                                                     int id,
+                                                                     const QString &target,
+                                                                     const QString &targetItem,
+                                                                     const QString &attribute,
+                                                                     const QVariant &value)
+{
+    GValue valueData = {0, {{0}, {0}}};
+    if (!encodeVariant(&valueData, value)) {
+        return;
+    }
+    Q_FOREACH (int clientId, clientIds) {
+        dbus_g_proxy_call_no_reply(connectionObj(clientId)->inputContextProxy, "notifyExtendedAttributeChanged",
+                                   G_TYPE_INT, id,
+                                   G_TYPE_STRING, target.toUtf8().data(),
+                                   G_TYPE_STRING, targetItem.toUtf8().data(),
+                                   G_TYPE_STRING, attribute.toUtf8().data(),
+                                   G_TYPE_VALUE, &valueData,
+                                   G_TYPE_INVALID);
+    }
+    g_value_unset(&valueData);
+}
+
+
+void MInputContextGlibDBusConnection::pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info)
+{
+    MDBusGlibICConnection *client = connectionObj(clientId);
+    if (!client) {
+        return;
+    }
+
+    GType settingsType;
+    GPtrArray *settingsData;
+    if (!encodeSettings(&settingsType, &settingsData, info)) {
+        return;
+    }
+
+    dbus_g_proxy_call_no_reply(client->inputContextProxy, "pluginSettingsLoaded",
+                               settingsType, settingsData,
+                               G_TYPE_INVALID);
+    dbus_g_type_collection_peek_vtable(settingsType)->base_vtable.free_func(settingsType, settingsData);
 }
 
 

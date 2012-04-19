@@ -16,6 +16,7 @@
 
 #include "mdbusglibinputcontextadaptor.h"
 #include "mimserverconnection.h"
+#include <maliit/settingdata.h>
 
 #include <variantmarshalling.h>
 
@@ -200,6 +201,54 @@ static gboolean m_dbus_glib_input_context_adaptor_notify_extended_attribute_chan
     } else {
         qWarning() << "notify_extended_attribute_changed.arg[4]" + error_message;
     }
+    return TRUE;
+}
+
+static gboolean m_dbus_glib_input_context_adaptor_plugin_settings_loaded(MDBusGlibInputContextAdaptor *obj,
+                                                                         GPtrArray *settingsData, GError **/*error*/)
+{
+    QList<MImPluginSettingsInfo> settings;
+    for (guint i = 0; i < settingsData->len; ++i) {
+        GValueArray *plugin_data = ((GValueArray**)settingsData->pdata)[i];
+        MImPluginSettingsInfo plugin;
+        GPtrArray *entries_data = (GPtrArray *)g_value_get_boxed(g_value_array_get_nth(plugin_data, 4));
+
+        plugin.description_language = QString::fromUtf8(g_value_get_string(g_value_array_get_nth(plugin_data, 0)));
+        plugin.plugin_name = QString::fromUtf8(g_value_get_string(g_value_array_get_nth(plugin_data, 1)));
+        plugin.plugin_description = QString::fromUtf8(g_value_get_string(g_value_array_get_nth(plugin_data, 2)));
+        plugin.extension_id = g_value_get_int(g_value_array_get_nth(plugin_data, 3));
+
+        for (guint i = 0; i < entries_data->len; ++i) {
+            GValueArray *entry_data = ((GValueArray**)entries_data->pdata)[i];
+            MImPluginSettingsEntry entry;
+
+            QString error_message;
+            if (!decodeVariantMap(&entry.attributes, (GHashTable *)g_value_get_boxed(g_value_array_get_nth(entry_data, 5)), &error_message)) {
+                qWarning() << "m_dbus_glib_input_context_adaptor_plugin_settings_loaded entry attributes:" + error_message;
+
+                return FALSE;
+            }
+
+            entry.description = QString::fromUtf8(g_value_get_string(g_value_array_get_nth(entry_data, 0)));
+            entry.extension_key = QString::fromUtf8(g_value_get_string(g_value_array_get_nth(entry_data, 1)));
+            entry.type = static_cast<Maliit::SettingEntryType>(g_value_get_int(g_value_array_get_nth(entry_data, 2)));
+
+            bool valid = g_value_get_boolean(g_value_array_get_nth(entry_data, 3));
+
+            if (!valid) {
+                entry.value = QVariant();
+            } else if (!decodeVariant(&entry.value, g_value_array_get_nth(entry_data, 4), &error_message)) {
+                qWarning() << "m_dbus_glib_input_context_adaptor_plugin_settings_loaded entry value:" + error_message;
+                return FALSE;
+            }
+
+            plugin.entries.append(entry);
+        }
+
+        settings.append(plugin);
+    }
+    Q_EMIT obj->imServerConnection->pluginSettingsReceived(settings);
+
     return TRUE;
 }
 

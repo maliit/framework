@@ -51,29 +51,6 @@ namespace
                                                dbus_g_connection_unref);
     }
 
-    void destroyGValue(GValue *value)
-    {
-        g_value_unset(value);
-        g_free(value);
-    }
-
-    GHashTable *encodeVariantMap(const QMap<QString, QVariant> &source)
-    {
-        GHashTable* result = g_hash_table_new_full(&g_str_hash, &g_str_equal,
-                                                   &g_free, GDestroyNotify(&destroyGValue));
-        Q_FOREACH (QString key, source.keys()) {
-            GValue *valueVariant = g_new0(GValue, 1);
-            if (!encodeVariant(valueVariant, source[key])) {
-                g_free(valueVariant);
-                g_hash_table_unref(result);
-                return 0;
-            }
-            g_hash_table_insert(result, g_strdup(key.toUtf8().constData()), valueVariant);
-        }
-        return result;
-    }
-
-
     static bool debugEnabled()
     {
         static bool enabled = false;
@@ -453,4 +430,16 @@ void GlibDBusIMServerProxy::setExtendedAttribute(int id, const QString &target, 
                                G_TYPE_VALUE, &valueData,
                                G_TYPE_INVALID);
     g_value_unset(&valueData);
+}
+
+void GlibDBusIMServerProxy::loadPluginSettings(const QString &descriptionLanguage)
+{
+    Q_D(GlibDBusIMServerProxy);
+
+    if (!d->glibObjectProxy) {
+        return;
+    }
+    dbus_g_proxy_call_no_reply(d->glibObjectProxy, "loadPluginSettings",
+                               G_TYPE_STRING, descriptionLanguage.toUtf8().data(),
+                               G_TYPE_INVALID);
 }
