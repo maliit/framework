@@ -23,7 +23,6 @@
 #include <QStringList>
 
 namespace {
-    const char * const ServerAddressEnv("MALIIT_SERVER_ADDRESS");
     const QString MaliitInputContextName(MALIIT_INPUTCONTEXT_NAME);
 }
 
@@ -45,18 +44,7 @@ QInputContext *MInputContextPlugin::create(const QString &key)
     QInputContext *ctx = NULL;
 
     if (key == MaliitInputContextName) {
-        MImServerConnection *serverConnection;
-
-        const QByteArray overriddenAddress = qgetenv(ServerAddressEnv);
-
-        if (overriddenAddress.isEmpty()) {
-            serverConnection = Maliit::DBus::createServerConnectionWithDynamicAddress();
-        } else {
-            serverConnection = Maliit::DBus::createServerConnectionWithFixedAddress(overriddenAddress);
-        }
-
-        ctx = new MInputContext(serverConnection, MaliitInputContextName, this);
-        serverConnection->setParent(ctx); // Tie lifetime of server connection to the inputcontext
+        ctx = new MInputContext(Maliit::createServerConnection(MaliitInputContextName), MaliitInputContextName, this);
     } else {
         qCritical() << "Unknown plugin name" << key;
     }

@@ -302,7 +302,7 @@ void WidgetStub::sendCopyAvailable(bool yes)
 
 void Ut_MInputContext::initTestCase()
 {
-    m_connection = new InputMethodServerTestConnection(0);
+    m_connection = QSharedPointer<InputMethodServerTestConnection>(new InputMethodServerTestConnection(0));
     m_subject = new MInputContext(m_connection, 0);
     m_connection->emitConnected();
     QVERIFY(m_subject != 0);
@@ -317,7 +317,7 @@ void Ut_MInputContext::initTestCase()
 void Ut_MInputContext::cleanupTestCase()
 {
     delete m_subject;
-    delete m_connection;
+    m_connection = QSharedPointer<InputMethodServerTestConnection>();
 }
 
 

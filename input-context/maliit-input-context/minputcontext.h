@@ -47,7 +47,7 @@ class MInputContext : public QInputContext
 
 public:
     //! \brief Constructor
-    explicit MInputContext(MImServerConnection *imServer, const QString &name, QObject *parent = 0);
+    explicit MInputContext(QSharedPointer<MImServerConnection> imServer, const QString &name, QObject *parent = 0);
 
     //! \brief Destructor
     virtual ~MInputContext();
@@ -221,7 +221,7 @@ private:
      */
     QTimer sipHideTimer;
 
-    MImServerConnection *imServer;
+    QSharedPointer<MImServerConnection> imServer;
 
     bool correctionEnabled;
 

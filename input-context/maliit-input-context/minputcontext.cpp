@@ -113,7 +113,7 @@ bool MInputContext::debug = false;
 // MApplication or classes relying on it being initialized.
 
 
-MInputContext::MInputContext(MImServerConnection *newImServer, const QString &name, QObject *parent)
+MInputContext::MInputContext(QSharedPointer<MImServerConnection> newImServer, const QString &name, QObject *parent)
     : QInputContext(parent),
       active(false),
       inputPanelState(InputPanelHidden),
@@ -161,7 +161,7 @@ MInputContext::MInputContext(MImServerConnection *newImServer, const QString &na
     connectInputMethodServer();
     connectInputMethodExtension();
 
-    bool ok = connect(imServer,
+    bool ok = connect(imServer.data(),
                       SIGNAL(extendedAttributeChanged(int,QString,QString,QString,QVariant)),
                       Maliit::AttributeExtensionRegistry::instance(),
                       SLOT(updateAttribute(int,QString,QString,QString,QVariant)));
@@ -200,57 +200,57 @@ void MInputContext::connectInputMethodExtension()
 
 void MInputContext::connectInputMethodServer()
 {
-    connect(imServer, SIGNAL(connected()), this, SLOT(onDBusConnection()));
-    connect(imServer, SIGNAL(disconnected()), this, SLOT(onDBusDisconnection()));
+    connect(imServer.data(), SIGNAL(connected()), this, SLOT(onDBusConnection()));
+    connect(imServer.data(), SIGNAL(disconnected()), this, SLOT(onDBusDisconnection()));
 
     /* Hook up incoming communication from input method server */
-    connect(imServer, SIGNAL(activationLostEvent()), this, SLOT(activationLostEvent()));
+    connect(imServer.data(), SIGNAL(activationLostEvent()), this, SLOT(activationLostEvent()));
 
-    connect(imServer, SIGNAL(imInitiatedHide()), this, SLOT(imInitiatedHide()));
+    connect(imServer.data(), SIGNAL(imInitiatedHide()), this, SLOT(imInitiatedHide()));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(commitString(QString,int,int,int)),
             this, SLOT(commitString(QString,int,int,int)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(updatePreedit(QString,QList<Maliit::PreeditTextFormat>,int,int,int)),
             this, SLOT(updatePreedit(QString,QList<Maliit::PreeditTextFormat>,int,int,int)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(keyEvent(int,int,int,QString,bool,int,Maliit::EventRequestType)),
             this, SLOT(keyEvent(int,int,int,QString,bool,int,Maliit::EventRequestType)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(updateInputMethodArea(QRect)),
             this, SLOT(updateInputMethodArea(QRect)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(setGlobalCorrectionEnabled(bool)),
             this, SLOT(setGlobalCorrectionEnabled(bool)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(getPreeditRectangle(QRect&,bool&)),
             this, SLOT(getPreeditRectangle(QRect&,bool&)));
 
-    connect(imServer, SIGNAL(copy()), this, SLOT(copy()));
+    connect(imServer.data(), SIGNAL(copy()), this, SLOT(copy()));
 
-    connect(imServer, SIGNAL(paste()), this, SLOT(paste()));
+    connect(imServer.data(), SIGNAL(paste()), this, SLOT(paste()));
 
-    connect(imServer, SIGNAL(setRedirectKeys(bool)), this, SLOT(setRedirectKeys(bool)));
+    connect(imServer.data(), SIGNAL(setRedirectKeys(bool)), this, SLOT(setRedirectKeys(bool)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(setDetectableAutoRepeat(bool)),
             this, SLOT(setDetectableAutoRepeat(bool)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(setSelection(int,int)),
             this, SLOT(setSelection(int,int)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(getSelection(QString&,bool&)),
             this, SLOT(getSelection(QString&, bool&)));
 
-    connect(imServer,
+    connect(imServer.data(),
             SIGNAL(setLanguage(QString)),
             this, SLOT(setLanguage(QString)));
 }

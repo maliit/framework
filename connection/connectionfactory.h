@@ -21,6 +21,7 @@
 #include "minputcontextconnection.h"
 
 namespace Maliit {
+#ifndef M_IM_DISABLE_DBUS
 namespace DBus {
 
 MImServerConnection *createServerConnectionWithDynamicAddress();
@@ -30,6 +31,19 @@ MInputContextConnection *createInputContextConnectionWithDynamicAddress();
 MInputContextConnection *createInputContextConnectionWithFixedAddress(const QString &fixedAddress, bool allowAnonymous);
 
 } // namespace DBus
+#endif
+
+/*!
+    \brief Create a connection to Maliit server
+    \param connectionType input context name (same as in QT_IM_MODULE environment variable)
+
+    Might return a cached connection.
+
+    If \a connectionType is "Maliit", and MALIIT_SERVER_ADDRESS environment variable is set,
+    uses its value as the server address.
+*/
+QSharedPointer<MImServerConnection> createServerConnection(const QString &connectionType);
+
 } // namespace Maliit
 
 #endif // MALIIT_DBUS_CONNECTIONFACTORY_H

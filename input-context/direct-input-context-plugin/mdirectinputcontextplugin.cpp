@@ -19,6 +19,7 @@
 #include "mimserver.h"
 #include "mimapphostedserverlogic.h"
 
+#include "connectionfactory.h"
 #include "mimdirectserverconnection.h"
 #include "miminputcontextdirectconnection.h"
 
@@ -53,8 +54,9 @@ QInputContext *MDirectInputContextPlugin::create(const QString &key)
 
     if (key == MaliitDirectInputContextName) {
 
-        MImDirectServerConnection *serverConnection = new MImDirectServerConnection(0);
-        MImInputContextDirectConnection *icConnection = new MImInputContextDirectConnection(0);
+        QSharedPointer<MImDirectServerConnection> serverConnection =
+                qSharedPointerObjectCast<MImDirectServerConnection>(Maliit::createServerConnection(MaliitDirectInputContextName));
+        MImInputContextDirectConnection *icConnection = new MImInputContextDirectConnection;
         serverConnection->connectTo(icConnection);
 
         shared_ptr<MInputContextConnection> icConn(icConnection);
@@ -64,7 +66,6 @@ QInputContext *MDirectInputContextPlugin::create(const QString &key)
         Maliit::InputMethod::instance()->setWidget(imServer->pluginsWidget());
 
         ctx = new MInputContext(serverConnection, MaliitDirectInputContextName, this);
-        serverConnection->setParent(ctx);
         imServer->setParent(ctx);
     } else {
         qCritical() << "Unknown plugin name";

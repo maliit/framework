@@ -177,7 +177,7 @@ private:
 
 private:
     QPointer<MInputContext> m_subject;
-    QPointer<InputMethodServerTestConnection> m_connection;
+    QSharedPointer<InputMethodServerTestConnection> m_connection;
 };
 
 
