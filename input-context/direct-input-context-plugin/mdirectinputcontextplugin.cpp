@@ -53,8 +53,8 @@ QInputContext *MDirectInputContextPlugin::create(const QString &key)
 
     if (key == MaliitDirectInputContextName) {
 
-        MImDirectServerConnection *serverConnection = new MImDirectServerConnection(0);
-        MImInputContextDirectConnection *icConnection = new MImInputContextDirectConnection(0);
+        MImDirectServerConnection *serverConnection = MImDirectServerConnection::instance();
+        MImInputContextDirectConnection *icConnection = MImInputContextDirectConnection::instance();
         serverConnection->connectTo(icConnection);
 
         shared_ptr<MInputContextConnection> icConn(icConnection);

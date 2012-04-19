@@ -27,6 +27,8 @@ class MImDirectServerConnection : public MImServerConnection
     Q_OBJECT
 
 public:
+    static MImDirectServerConnection *instance();
+
     //! \brief Constructor
     explicit MImDirectServerConnection(QObject *parent = 0);
 

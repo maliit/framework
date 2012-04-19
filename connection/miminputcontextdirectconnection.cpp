@@ -21,6 +21,13 @@
 #include <QtCore>
 #include <QtGui/QKeyEvent>
 
+MImInputContextDirectConnection *MImInputContextDirectConnection::instance()
+{
+    static MImInputContextDirectConnection singleton;
+
+    return &singleton;
+}
+
 MImInputContextDirectConnection::MImInputContextDirectConnection(QObject *parent)
     : MInputContextConnection(parent)
     , mServerConnection(0)

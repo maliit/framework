@@ -30,6 +30,8 @@ class MImInputContextDirectConnection : public MInputContextConnection
 public:
     explicit MImInputContextDirectConnection(QObject *parent = 0);
 
+    static MImInputContextDirectConnection *instance();
+
     void connectTo(MImDirectServerConnection *mServerConnection);
 
     //! reimpl

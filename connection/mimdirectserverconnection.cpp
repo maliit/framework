@@ -22,6 +22,13 @@ namespace {
     const int firstConnectionId = 1;
 }
 
+MImDirectServerConnection *MImDirectServerConnection::instance()
+{
+    static MImDirectServerConnection singleton;
+
+    return &singleton;
+}
+
 MImDirectServerConnection::MImDirectServerConnection(QObject *parent)
     : MImServerConnection(parent)
     , mIcConnection(0)
