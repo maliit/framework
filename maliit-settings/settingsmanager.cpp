@@ -14,14 +14,16 @@
 #include <maliit/settingdata.h>
 #include <maliit/attributeextension.h>
 #include "mimserverconnection.h"
+#include "connectionfactory.h"
 #include "pluginsettings.h"
+
 
 namespace Maliit {
 
 struct SettingsManagerPrivate
 {
     QSharedPointer<AttributeExtension> settings_list_changed;
-    MImServerConnection *connection;
+    QSharedPointer<MImServerConnection> connection;
 };
 
 
@@ -37,17 +39,22 @@ QString SettingsManager::preferredDescriptionLocale()
     return preferred_description_locale;
 }
 
-SettingsManager::SettingsManager(MImServerConnection *connection) :
+SettingsManager *SettingsManager::create()
+{
+    return new SettingsManager(createServerConnection(qgetenv("QT_IM_MODULE")));
+}
+
+SettingsManager::SettingsManager(QSharedPointer<MImServerConnection> connection) :
     d_ptr(new SettingsManagerPrivate)
 {
     Q_D(SettingsManager);
 
     d->connection = connection;
 
-    connect(d->connection, SIGNAL(pluginSettingsReceived(QList<MImPluginSettingsInfo>)),
+    connect(d->connection.data(), SIGNAL(pluginSettingsReceived(QList<MImPluginSettingsInfo>)),
             this, SLOT(onPluginSettingsReceived(QList<MImPluginSettingsInfo>)));
-    connect(d->connection, SIGNAL(connected()), this, SIGNAL(connected()));
-    connect(d->connection, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+    connect(d->connection.data(), SIGNAL(connected()), this, SIGNAL(connected()));
+    connect(d->connection.data(), SIGNAL(disconnected()), this, SIGNAL(disconnected()));
 }
 
 SettingsManager::~SettingsManager()
