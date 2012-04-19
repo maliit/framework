@@ -57,8 +57,7 @@ sed -i -e s/"^BUILD_TYPE.*=.*"/"BUILD_TYPE = $BUILD_TYPE"/ `grep -r --files-with
 if [ -f Makefile ]
 then
     ${QMAKE_EXEC} -r || exit 1
-    make clean -j2 || exit 1
-    find ./ -name Makefile -exec rm {} \;
+    make distclean || exit 1
     find ./ -type d \( -name ".obj" -o -name ".moc" \) -print0 | xargs -0 /bin/rmdir
 fi
 
