@@ -31,7 +31,8 @@ class SettingsManager : public QObject
     Q_OBJECT
 
 public:
-    SettingsManager(MImServerConnection *connection);
+    static SettingsManager *create();
+
     virtual ~SettingsManager();
 
     Q_SLOT void loadPluginSettings() const;
@@ -46,6 +47,8 @@ Q_SIGNALS:
     void disconnected();
 
 private:
+    SettingsManager(MImServerConnection *connection);
+
     Q_SLOT void onPluginSettingsReceived(const QList<MImPluginSettingsInfo> &settings);
 
     static QString preferred_description_locale;

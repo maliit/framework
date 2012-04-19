@@ -14,7 +14,9 @@
 #include <maliit/settingdata.h>
 #include <maliit/attributeextension.h>
 #include "mimserverconnection.h"
+#include "mimdirectserverconnection.h"
 #include "pluginsettings.h"
+
 
 namespace Maliit {
 
@@ -35,6 +37,14 @@ void SettingsManager::setPreferredDescriptionLocale(const QString &localeName)
 QString SettingsManager::preferredDescriptionLocale()
 {
     return preferred_description_locale;
+}
+
+SettingsManager *SettingsManager::create()
+{
+    // TODO allow DBus connection
+    MImServerConnection *connection = MImDirectServerConnection::instance();
+
+    return new SettingsManager(connection);
 }
 
 SettingsManager::SettingsManager(MImServerConnection *connection) :
