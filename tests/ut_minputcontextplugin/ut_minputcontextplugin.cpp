@@ -32,20 +32,10 @@ namespace {
 
 void Ut_MInputContextPlugin::initTestCase()
 {
-    // This is a hack to prevent Qt from loading the plugin from
-    // /usr/lib/qt4/plugins/inputmethods/ when we are testing in a
-    // sandbox.
-    if (MaliitTestUtils::isTestingInSandbox())
-        QCoreApplication::setLibraryPaths(QStringList("/tmp"));
-
-    static int argc = 1;
-    static char *argv[1] = { (char *) "ut_minputcontextplugin" };
-    app = new QApplication(argc, argv);
 }
 
 void Ut_MInputContextPlugin::cleanupTestCase()
 {
-    delete app;
 }
 
 void Ut_MInputContextPlugin::init()
@@ -101,4 +91,13 @@ void Ut_MInputContextPlugin::testOther()
     }
 }
 
-QTEST_APPLESS_MAIN(Ut_MInputContextPlugin)
+void disableImLoading()
+{
+    // This is a hack to prevent Qt from loading the plugin from
+    // /usr/lib/qt4/plugins/inputmethods/ when we are testing in a
+    // sandbox.
+    if (MaliitTestUtils::isTestingInSandbox())
+        QCoreApplication::setLibraryPaths(QStringList("/tmp"));
+}
+
+MALIIT_TESTUTILS_GUI_MAIN_WITH_SETUP(Ut_MInputContextPlugin, disableImLoading)

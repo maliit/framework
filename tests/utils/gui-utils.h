@@ -178,4 +178,15 @@ namespace MaliitTestUtils {
 
 }
 
+// For cases where we need to run code _before_ QApplication is created
+#define MALIIT_TESTUTILS_GUI_MAIN_WITH_SETUP(TestObject, setupFunc) \
+int main(int argc, char *argv[]) \
+{ \
+    setupFunc();\
+    QApplication app(argc, argv);\
+    Q_UNUSED(app);\
+    TestObject tc;\
+    return QTest::qExec(&tc, argc, argv);\
+}
+
 #endif // UTILS_H__

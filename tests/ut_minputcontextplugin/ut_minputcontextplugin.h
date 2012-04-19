@@ -37,7 +37,6 @@ private Q_SLOTS:
 
 private:
     MInputContextPlugin *subject;
-    QApplication *app;
 };
 
 #endif // __UT_MINPUTCONTEXTPLUGIN_H__
