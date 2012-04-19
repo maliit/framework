@@ -129,3 +129,7 @@ void MImDirectServerConnection::setExtendedAttribute(int id, const QString &targ
     mIcConnection->setExtendedAttribute(mConnectionId, id, target, targetItem, attribute, value);
 }
 
+void MImDirectServerConnection::loadPluginSettings(const QString &descriptionLanguage)
+{
+    mIcConnection->loadPluginSettings(mConnectionId, descriptionLanguage);
+}
