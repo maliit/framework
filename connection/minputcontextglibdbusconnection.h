@@ -76,6 +76,13 @@ public Q_SLOTS:
                                                 const QString &targetItem,
                                                 const QString &attribute,
                                                 const QVariant &value);
+    virtual void notifyExtendedAttributeChanged(const QList<int> &clientIds,
+                                                int id,
+                                                const QString &target,
+                                                const QString &targetItem,
+                                                const QString &attribute,
+                                                const QVariant &value);
+    virtual void pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info);
     //! \reimp_end
 
 private:

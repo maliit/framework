@@ -73,5 +73,8 @@
       <arg type="s"/>
       <arg type="v"/>
     </method>
+    <method name="pluginSettingsLoaded">
+      <arg type="a(sssia(ssibva{sv}))"/>
+    </method>
   </interface>
 </node>

@@ -20,6 +20,16 @@
 #include <QString>
 #include <QRect>
 #include <QDebug>
+#include <QStringList>
+
+namespace
+{
+    void destroyGValue(GValue *value)
+    {
+        g_value_unset(value);
+        g_free(value);
+    }
+}
 
 bool decodeVariant(QVariant *dest, GValue *source, QString *error_message)
 {
@@ -73,12 +83,47 @@ bool decodeVariant(QVariant *dest, GValue *source, QString *error_message)
             }
             *dest = QRect(left, top, width, height);
             return true;
+        } else if (G_VALUE_TYPE(source) == G_TYPE_STRV) {
+            QStringList strings;
+
+            gchar **array = (gchar**)g_value_get_boxed(source);
+
+            for (guint i = 0; array[i]; ++i) {
+                strings.append(QString::fromUtf8(array[i]));
+            }
+
+            *dest = strings;
+            return true;
+        } else if (G_VALUE_TYPE(source) == G_TYPE_VALUE) {
+            return decodeVariant(dest, (GValue*)g_value_get_boxed(source), error_message);
         } else {
             if (error_message != 0)
                 *error_message = QString(": unknown data type: ") + G_VALUE_TYPE_NAME(source);
             return false;
         }
     }
+}
+
+bool decodeVariantMap(QVariantMap *dest, GHashTable *source, QString *error_message)
+{
+    dest->clear();
+    GHashTableIter iterator;
+    gchar *keyData;
+    GValue *valueData;
+    g_hash_table_iter_init(&iterator, source);
+    while (g_hash_table_iter_next(&iterator, (void**)(&keyData), (void**)(&valueData))) {
+        QString key = QString::fromUtf8(keyData);
+        QVariant value;
+        if (!decodeVariant(&value, valueData, error_message)) {
+            if (error_message != 0)
+                *error_message = "[\"" + key + "\"]" + *error_message;
+            return false;
+        }
+
+        dest->insert(key, value);
+    }
+
+    return true;
 }
 
 bool encodeVariant(GValue *dest, const QVariant &source)
@@ -144,9 +189,45 @@ bool encodeVariant(GValue *dest, const QVariant &source)
         g_value_init(dest, G_TYPE_ULONG);
         g_value_set_ulong(dest, source.value<ulong>());
         return true;
+    case QMetaType::QStringList:
+        {
+            QStringList strings = source.toStringList();
+            gchar **array = g_new(gchar *, strings.count() + 1);
+
+            array[strings.count()] = 0;
+
+            g_value_init(dest, G_TYPE_STRV);
+            g_value_take_boxed(dest, array);
+
+            Q_FOREACH (const QString &string, source.toStringList()) {
+                gchar *dup = g_strdup(string.toUtf8().data());
+
+                *array++ = dup;
+            }
+            return true;
+        }
+    case QMetaType::Void:
+        g_value_init(dest, G_TYPE_INVALID);
+        return true;
     default:
         qWarning() << Q_FUNC_INFO << "unsupported data:" << source.type() << source;
         return false;
     }
+}
+
+GHashTable *encodeVariantMap(const QMap<QString, QVariant> &source)
+{
+    GHashTable* result = g_hash_table_new_full(&g_str_hash, &g_str_equal,
+                                               &g_free, GDestroyNotify(&destroyGValue));
+    Q_FOREACH (QString key, source.keys()) {
+        GValue *valueVariant = g_new0(GValue, 1);
+        if (!encodeVariant(valueVariant, source[key])) {
+            g_free(valueVariant);
+            g_hash_table_unref(result);
+            return 0;
+        }
+        g_hash_table_insert(result, g_strdup(key.toUtf8().constData()), valueVariant);
+    }
+    return result;
 }
 

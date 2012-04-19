@@ -21,8 +21,8 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib.h>
 
-class QVariant;
-class QString;
+#include <QVariant>
+
 
 /*!
  * \brief Convert data from GValue into QVariant.
@@ -34,10 +34,27 @@ bool decodeVariant(QVariant *dest, GValue *source, QString *error_message);
 
 
 /*!
+ * \brief Convert data from GHashTable into QVariantMap.
+ * \param[out] dest Variable to get result to.
+ * \param[in] source Original value.
+ * \param[out] error_message Contains error description if original value could not be decoded.
+ */
+bool decodeVariantMap(QVariantMap *dest, GHashTable *source, QString *error_message);
+
+
+/*!
  * \brief Convert data from QVariant into GValue.
  * \param[out] dest Variable to get result to.
  * \param[in] source Original value.
  */
 bool encodeVariant(GValue *dest, const QVariant &source);
+
+
+/*!
+ * \brief Convert data from QVariantMap into GHashTable.
+ * \param[in] source Original value.
+ * \return a newly-allocated hash table, or 0 on failure
+ */
+GHashTable *encodeVariantMap(const QVariantMap &source);
 
 #endif
