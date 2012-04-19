@@ -120,3 +120,23 @@ void MImInputContextDirectConnection::notifyExtendedAttributeChanged(int id,
     Q_EMIT mServerConnection->extendedAttributeChanged(id, target, targetItem,
                                                        attribute, value);
 }
+
+void MImInputContextDirectConnection::notifyExtendedAttributeChanged(const QList<int> &clientIds,
+                                                                     int id,
+                                                                     const QString &target,
+                                                                     const QString &targetItem,
+                                                                     const QString &attribute,
+                                                                     const QVariant &value)
+{
+    Q_UNUSED(clientIds);
+
+    Q_EMIT mServerConnection->extendedAttributeChanged(id, target, targetItem,
+                                                       attribute, value);
+}
+
+void MImInputContextDirectConnection::pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info)
+{
+    Q_UNUSED(clientId);
+
+    Q_EMIT mServerConnection->pluginSettingsReceived(info);
+}
