@@ -154,19 +154,6 @@ public:
         setAttribute(Qt::WA_TranslucentBackground);
         viewport()->setAutoFillBackground(false);
     }
-
-    bool event(QEvent *e)
-    {
-        if (e->type() == QEvent::WinIdChange) {
-    #if QT_VERSION >= 0x050000
-            QWindow *win = window()->windowHandle();
-            if (win)
-                QGuiApplication::platformNativeInterface()->setWindowProperty(win->handle(), "AcceptFocus", QVariant(false));
-    #endif
-        }
-        return QWidget::event(e);
-    }
-
 };
 
 class RootItem
