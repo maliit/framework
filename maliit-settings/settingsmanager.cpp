@@ -15,6 +15,9 @@
 #include <maliit/attributeextension.h>
 #include "mimserverconnection.h"
 #include "mimdirectserverconnection.h"
+#ifndef M_IM_DISABLE_DBUS
+#include "connectionfactory.h"
+#endif
 #include "pluginsettings.h"
 
 
@@ -41,10 +44,30 @@ QString SettingsManager::preferredDescriptionLocale()
 
 SettingsManager *SettingsManager::create()
 {
-    // TODO allow DBus connection
-    MImServerConnection *connection = MImDirectServerConnection::instance();
+    QByteArray im_module = qgetenv("QT_IM_MODULE");
+    MImServerConnection *serverConnection;
 
-    return new SettingsManager(connection);
+    if (im_module == MALIIT_INPUTCONTEXT_NAME"Direct") {
+        serverConnection = MImDirectServerConnection::instance();
+    } else if (im_module == MALIIT_INPUTCONTEXT_NAME) {
+#ifndef M_IM_DISABLE_DBUS
+        const QByteArray overriddenAddress = qgetenv("MALIIT_SERVER_ADDRESS");
+
+        if (overriddenAddress.isEmpty()) {
+            serverConnection = Maliit::DBus::createServerConnectionWithDynamicAddress();
+        } else {
+            serverConnection = Maliit::DBus::createServerConnectionWithFixedAddress(overriddenAddress);
+        }
+#else
+        qCritical("This QT_IM_MODULE is not available since DBus support is disabled");
+#endif
+    } else {
+        qCritical("Invalid value for QT_IM_MODULE, unable to create connection for settings");
+
+        return 0;
+    }
+
+    return new SettingsManager(serverConnection);
 }
 
 SettingsManager::SettingsManager(MImServerConnection *connection) :
