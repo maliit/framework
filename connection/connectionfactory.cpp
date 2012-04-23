@@ -64,6 +64,7 @@ MInputContextConnection *createInputContextConnectionWithFixedAddress(const QStr
     std::tr1::shared_ptr<Maliit::Server::DBus::Address> address(new Maliit::Server::DBus::FixedAddress(fixedAddress));
     return new MInputContextGlibDBusConnection(address, allowAnonymous);
 #else
+    Q_UNUSED(allowAnonymous);
     QSharedPointer<Maliit::Server::DBus::Address> address(new Maliit::Server::DBus::FixedAddress(fixedAddress));
     return new DBusInputContextConnection(address);
 #endif
