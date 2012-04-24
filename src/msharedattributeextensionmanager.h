@@ -21,6 +21,12 @@
 
 class MSharedAttributeExtensionManagerPluginSetting;
 
+//! \internal
+/*! \ingroup maliitserver
+ * \brief Manages attribute extensions shared between clients.
+ *
+ * Currently handles only plugin settings, backed by MImSettings.
+ */
 class MSharedAttributeExtensionManager : public QObject
 {
     Q_OBJECT
@@ -35,6 +41,11 @@ public:
     MSharedAttributeExtensionManager();
     virtual ~MSharedAttributeExtensionManager();
 
+    /*!
+     * \brief Add a new setting entry to the extension manager
+     *
+     * \sa Maliit::SettingsEntry, MImPluginSettingsEntry
+     */
     void registerPluginSetting(const QString &fullName, Maliit::SettingEntryType type, QVariantMap attributes);
 
 public Q_SLOTS:
@@ -46,6 +57,15 @@ public Q_SLOTS:
                                        const QString &attribute, const QVariant &value);
 
 Q_SIGNALS:
+    /*!
+     * \brief Emitted when setting value is changed
+     * \param clientIds list of clients subscribed to the value
+     * \param id the unique identifier of a registered extended attribute.
+     * \param target a string specifying the target for the attribute.
+     * \param targetItem the item name.
+     * \param attribute attribute to be changed.
+     * \param value new value.
+     */
     void notifyExtensionAttributeChanged(const QList<int> &clientIds,
                                          int id,
                                          const QString &target,

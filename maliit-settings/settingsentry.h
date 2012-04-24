@@ -24,6 +24,10 @@ namespace Maliit {
 class SettingsEntryPrivate;
 class AttributeExtension;
 
+
+/*!
+ * \brief Configuration entry for an input method plugin
+ */
 class SettingsEntry : public QObject
 {
     Q_OBJECT
@@ -31,17 +35,41 @@ class SettingsEntry : public QObject
 public:
     virtual ~SettingsEntry();
 
+    /*!
+     * \brief Returns the current value of this item, as a QVariant.
+     */
     QVariant value() const;
 
+    /*!
+     * \brief Returns the current value of this item, as a QVariant.  If
+     * there is no value for this item, return \a def instead.
+     */
     QVariant value(const QVariant &def) const;
 
+    //! Sets a new value for this configuration entry
     void set(const QVariant &val);
+
+    //! Checks whether \val is a valid value for this configuration entry
     bool isValid(const QVariant &val);
 
-
     QString key() const;
+
+    //! Human-readable description for this configuration entry
     QString description() const;
+
+    //! Value type for this configuration entry
     SettingEntryType type() const;
+
+    /*!
+     * \brief Metadata for this configuration entry; keys can be:
+     *
+     * - valueDomain: list of allowed values for the entry
+     * - valueDomainDescriptions: list of descriptions for the values in valueDomain
+     * - valueRangeMin: minimum integer value (inclusive) for the entry
+     * - valueRangeMsx: maximum integer value (inclusive) for the entry
+     *
+     * \sa Maliit::SettingEntryAttributes
+     */
     QVariantMap attributes() const;
 
 Q_SIGNALS:

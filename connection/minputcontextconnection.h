@@ -292,6 +292,9 @@ public: // Inbound communication handlers
     void setExtendedAttribute(unsigned int clientId, int id, const QString &target,
                               const QString &targetItem, const QString &attribute, const QVariant &value);
 
+    /*!
+     * \brief Requests information about plugin/server settings.
+     */
     void loadPluginSettings(int connectionId, const QString &descriptionLanguage);
 
 public Q_SLOTS:
@@ -299,7 +302,7 @@ public Q_SLOTS:
     virtual void updateInputMethodArea(const QRegion &region);
 
     /*!
-     *\brief Informs application that input method servers has changed the \a attribute of the \a targetItem
+     * \brief Informs current application that input method servers has changed the \a attribute of the \a targetItem
      * in the attribute extension \a target which has unique \a id to \a value.
      */
     virtual void notifyExtendedAttributeChanged(int id,
@@ -308,6 +311,10 @@ public Q_SLOTS:
                                                 const QString &attribute,
                                                 const QVariant &value);
 
+    /*!
+     * \brief Informs a list of clients that input method servers has changed the \a attribute of the \a targetItem
+     * in the attribute extension \a target which has unique \a id to \a value.
+     */
     virtual void notifyExtendedAttributeChanged(const QList<int> &clientIds,
                                                 int id,
                                                 const QString &target,
@@ -315,6 +322,9 @@ public Q_SLOTS:
                                                 const QString &attribute,
                                                 const QVariant &value);
 
+    /*!
+     * \brief Sends the list of plugin/server settings to the specified client.
+     */
     virtual void pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info);
 
 Q_SIGNALS:

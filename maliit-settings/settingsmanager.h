@@ -26,21 +26,36 @@ class PluginSettings;
 class AttributeExtension;
 
 
+/*!
+ * \brief Entry point to the settings API
+ *
+ * Retrieves the list of server/plugin settings from maliit-server
+ */
 class SettingsManager : public QObject
 {
     Q_OBJECT
 
 public:
+    /*!
+     * \brief Creates a new settings instance,
+     *
+     * Uses QT_IM_MODULE to determine the connection type (direct, DBus, ...) to maliit-server
+     */
     static SettingsManager *create();
 
     virtual ~SettingsManager();
 
+    //! Request the list of settings from maliit-server
     Q_SLOT void loadPluginSettings() const;
 
+    //! Sets the preferred locale for human-readable description
     static void setPreferredDescriptionLocale(const QString &localeName);
+
+    //! Gets the preferred locale for human-readable description
     static QString preferredDescriptionLocale();
 
 Q_SIGNALS:
+    //! Emitted after \a loadPluginSettings() and when the plugin list changes on the server.
     void pluginSettingsReceived(const QList<QSharedPointer<Maliit::PluginSettings> > &settings);
 
     void connected();

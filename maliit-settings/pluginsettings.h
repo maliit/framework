@@ -25,16 +25,30 @@ class SettingsEntry;
 class AttributeExtension;
 
 
-class PluginSettings : public QObject
+/*!
+ * \brief Configuration entries for an input method plugin
+ */
+    class PluginSettings : public QObject
 {
     Q_OBJECT
 
 public:
     virtual ~PluginSettings();
 
+    /*!
+     * \brief Lanaguage used for the plugin description.
+     *
+     * Could be either the preferred description language or a fallback chosen by the server.
+     */
     QString descriptionLanguage() const;
+
+    //! Internal plugin name
     QString pluginName() const;
+
+    //! Human-readable plugin description
     QString pluginDescription() const;
+
+    //! List of configuration entries for this plugin
     QList<QSharedPointer<SettingsEntry> > configurationEntries() const;
 
 private:

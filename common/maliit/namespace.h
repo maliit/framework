@@ -277,9 +277,17 @@ namespace Maliit {
 
     namespace SettingEntryAttributes
     {
+        //! Name of setting entry attribute which holds the list of values that can be assigned to the entry.
+        //! \sa Maliit::SettingsEntry
         const char* const valueDomain = "valueDomain";
+        //! Name of setting entry attribute which holds the descriptions for the values in valueDomain.
+        //! \sa Maliit::SettingsEntry
         const char* const valueDomainDescriptions = "valueDomainDescriptions";
+        //! Name of setting entry attribute which holds the minimum valid value (inclusive) for an integer property.
+        //! \sa Maliit::SettingsEntry
         const char* const valueRangeMin = "valueRangeMin";
+        //! Name of setting entry attribute which holds the maximum valid value (inclusive) for an integer property.
+        //! \sa Maliit::SettingsEntry
         const char* const valueRangeMax = "valueRangeMax";
     }
 }
