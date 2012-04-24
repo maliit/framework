@@ -207,6 +207,13 @@ public:
                                            const QString &attribute,
                                            const QVariant &value);
 
+    /*!
+     * \brief Updates the list of server settings known to the application.
+     * \param info list of server and plugin settings
+     *
+     * Sent in response to \a loadPluginSettings().  Might be sent spontaneously by
+     * the server in response to external events (plugin loaded/unloaded, ...).
+     */
     Q_SIGNAL void pluginSettingsReceived(const QList<MImPluginSettingsInfo> &info);
 
 private:

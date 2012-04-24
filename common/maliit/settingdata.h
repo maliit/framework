@@ -20,7 +20,9 @@
 
 
 /*!
- * \brief Single configuration entry for Maliit server plugin
+ * \brief Single configuration entry for Maliit input method plugin
+ *
+ * \sa Maliit::SettingsEntry
  */
 struct MImPluginSettingsEntry
 {
@@ -38,7 +40,7 @@ struct MImPluginSettingsEntry
 
 
 /*!
- * \brief Settings for a Maliit server plugin
+ * \brief Settings for a Maliit input method plugin
  */
 struct MImPluginSettingsInfo
 {
