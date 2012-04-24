@@ -25,6 +25,7 @@
 #include <maliit/plugins/inputmethodplugin.h>
 
 #include "mattributeextensionmanager.h"
+#include "msharedattributeextensionmanager.h"
 
 using namespace std::tr1;
 
@@ -59,6 +60,42 @@ namespace {
                                               << pluginId3 + ":" + "dummyim3sv1"
                                               << pluginId3 + ":" + "dummyim3sv2";
 }
+
+class MInputContextTestConnection : public MInputContextConnection
+{
+public:
+    MInputContextTestConnection() :
+        pluginSettingsLoaded_called(0),
+        notifyExtendedAttributeChanged_called(0)
+    {
+    }
+
+    void pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info)
+    {
+        pluginSettingsLoaded_called++;
+        pluginSettingsLoaded_clientId = clientId;
+        pluginSettingsLoaded_settings = info;
+    }
+
+    void notifyExtendedAttributeChanged(const QList<int> &clientIds, int id, const QString &target, const QString &targetItem, const QString &attribute, const QVariant &value)
+    {
+        Q_UNUSED(id);
+
+        notifyExtendedAttributeChanged_called++;
+        notifyExtendedAttributeChanged_clientIds = clientIds;
+        notifyExtendedAttributeChanged_key = QString("%1/%2/%3").arg(target).arg(targetItem).arg(attribute);
+        notifyExtendedAttributeChanged_value = value;
+    }
+
+    int pluginSettingsLoaded_called;
+    int pluginSettingsLoaded_clientId;
+    QList<MImPluginSettingsInfo> pluginSettingsLoaded_settings;
+
+    int notifyExtendedAttributeChanged_called;
+    QList<int> notifyExtendedAttributeChanged_clientIds;
+    QString notifyExtendedAttributeChanged_key;
+    QVariant notifyExtendedAttributeChanged_value;
+};
 
 
 void Ut_MIMPluginManager::initTestCase()
@@ -97,9 +134,10 @@ void Ut_MIMPluginManager::init()
     activePlugin << pluginId + ":" + "dummyimsv1";
     activePluginSettings.set(activePlugin);
 
-    shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
+    shared_ptr<MInputContextTestConnection> icConnection(new MInputContextTestConnection);
     manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
 
+    connection = icConnection.get();
     subject = manager->d_ptr;
 
     QVERIFY(subject->activePlugins.size() == 1);
@@ -827,6 +865,91 @@ void Ut_MIMPluginManager::handleMessages()
     while (QCoreApplication::hasPendingEvents()) {
         QCoreApplication::processEvents();
     }
+}
+
+void Ut_MIMPluginManager::testPluginSettingsList()
+{
+    manager->pluginSettingsRequested(42, QString());
+    QCOMPARE(connection->pluginSettingsLoaded_called, 1);
+    QCOMPARE(connection->pluginSettingsLoaded_clientId, 42);
+    QVERIFY(connection->pluginSettingsLoaded_settings.count() >= 2);
+
+    MImPluginSettingsInfo server, list;
+
+    Q_FOREACH (const MImPluginSettingsInfo &plugin, connection->pluginSettingsLoaded_settings) {
+        if (plugin.plugin_name == "@settings")
+            list = plugin;
+        else if (plugin.plugin_name == "server")
+            server = plugin;
+    }
+
+    QVERIFY(!server.plugin_name.isEmpty() && !list.plugin_name.isEmpty());
+
+    QCOMPARE(list.extension_id, (int)MSharedAttributeExtensionManager::PluginSettingsList);
+
+    QCOMPARE(server.extension_id, (int)MSharedAttributeExtensionManager::PluginSettings);
+    QVERIFY(server.entries.count() >= 2);
+}
+
+void Ut_MIMPluginManager::testPluginSettingsUpdate()
+{
+    manager->pluginSettingsRequested(42, QString());
+    QCOMPARE(connection->pluginSettingsLoaded_called, 1);
+    QCOMPARE(connection->pluginSettingsLoaded_clientId, 42);
+
+    MImPluginSettingsInfo server;
+    MImPluginSettingsEntry enabled;
+    QString test_key = "/maliit/onscreen/active";
+    QVariant original_value, new_value;
+
+    Q_FOREACH (const MImPluginSettingsInfo &plugin, connection->pluginSettingsLoaded_settings) {
+        if (plugin.plugin_name != "server")
+            continue;
+
+        server = plugin;
+
+        Q_FOREACH (const MImPluginSettingsEntry &entry, plugin.entries) {
+            if (entry.extension_key == test_key)
+                enabled = entry;
+        }
+    }
+
+    original_value = enabled.value;
+
+    QVERIFY(!enabled.description.isEmpty());
+    QVERIFY(enabled.value.isValid());
+    QCOMPARE(enabled.value, MImSettings(test_key).value());
+    QCOMPARE(enabled.type, Maliit::StringType);
+
+    Q_FOREACH (const QVariant &v, enabled.attributes[Maliit::SettingEntryAttributes::valueDomain].toList()) {
+        if (v != original_value) {
+            new_value = v;
+            break;
+        }
+    }
+
+    subject->sharedAttributeExtensionManager->handleAttributeExtensionRegistered(42, server.extension_id, QString());
+    subject->sharedAttributeExtensionManager->handleAttributeExtensionRegistered(43, server.extension_id, QString());
+
+    // change value from client
+    subject->sharedAttributeExtensionManager->handleExtendedAttributeUpdate(42, server.extension_id, "/maliit", "onscreen",
+                                                                            "active", new_value);
+
+    QCOMPARE(connection->notifyExtendedAttributeChanged_called, 1);
+    QCOMPARE(connection->notifyExtendedAttributeChanged_clientIds, QList<int>() << 42 << 43);
+    QCOMPARE(connection->notifyExtendedAttributeChanged_key, test_key);
+    QCOMPARE(connection->notifyExtendedAttributeChanged_value, new_value);
+
+    // check unsubscription
+    subject->sharedAttributeExtensionManager->handleAttributeExtensionUnregistered(43, server.extension_id);
+
+    // change value from server
+    MImSettings(test_key).set(original_value);
+
+    QCOMPARE(connection->notifyExtendedAttributeChanged_called, 2);
+    QCOMPARE(connection->notifyExtendedAttributeChanged_clientIds, QList<int>() << 42);
+    QCOMPARE(connection->notifyExtendedAttributeChanged_key, test_key);
+    QCOMPARE(connection->notifyExtendedAttributeChanged_value, original_value);
 }
 
 QTEST_MAIN(Ut_MIMPluginManager)

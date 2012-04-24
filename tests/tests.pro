@@ -16,6 +16,7 @@ SUBDIRS += \
           ut_maliit_attributeextension \
           ut_maliit_attributeextensionregistry \
           ut_maliit_inputmethod \
+          ut_maliit_settings \
           ut_mimsettings \
           bbt_connection \
 

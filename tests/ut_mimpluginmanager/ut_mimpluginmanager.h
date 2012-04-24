@@ -8,6 +8,7 @@
 
 class MIMPluginManager;
 class MIMPluginManagerPrivate;
+class MInputContextTestConnection;
 class QDBusInterface;
 
 class Ut_MIMPluginManager : public QObject
@@ -50,6 +51,9 @@ private Q_SLOTS:
 
     void testEnableAllSubviews();
 
+    void testPluginSettingsList();
+    void testPluginSettingsUpdate();
+
 private:
     void handleMessages();
 
@@ -57,6 +61,7 @@ private:
     QString pluginPath;
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;
+    MInputContextTestConnection *connection;
     void checkHandlerMap(int handler, const QString &name);
 };
 
