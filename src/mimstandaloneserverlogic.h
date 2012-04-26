@@ -41,6 +41,8 @@ public:
 
     //! reimpl
     QWidget *pluginsProxyWidget() const;
+    QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const;
+    //! reimpl_end
 
 public Q_SLOTS:
     //! reimpl
@@ -53,6 +55,7 @@ public Q_SLOTS:
 
 private:
     std::auto_ptr<QWidget> mProxyWidget;
+    QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> mSurfaceGroupFactory;
 };
 
 #endif // MIMQPAPLATFORM_H

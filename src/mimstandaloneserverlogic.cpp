@@ -18,12 +18,15 @@
 
 #include "mimpluginsproxywidget.h"
 
+#include "windowedsurfacegroup.h"
+
 #include <QDebug>
 #include <QWidget>
 
 MImStandaloneServerLogic::MImStandaloneServerLogic() :
     MImAbstractServerLogic(0),
-    mProxyWidget(new MImPluginsProxyWidget())
+    mProxyWidget(new MImPluginsProxyWidget()),
+    mSurfaceGroupFactory(new Maliit::Server::WindowedSurfaceGroupFactory)
 {
 }
 
@@ -43,6 +46,11 @@ void MImStandaloneServerLogic::inputPassthrough(const QRegion &region)
 QWidget *MImStandaloneServerLogic::pluginsProxyWidget() const
 {
     return mProxyWidget.get();
+}
+
+QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> MImStandaloneServerLogic::surfaceGroupFactory() const
+{
+    return mSurfaceGroupFactory;
 }
 
 void MImStandaloneServerLogic::pluginLoaded()

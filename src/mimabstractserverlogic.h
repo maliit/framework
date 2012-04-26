@@ -19,6 +19,7 @@
 
 #include <QObject>
 #include <QRegion>
+#include <QSharedPointer>
 
 #include <tr1/functional>
 
@@ -29,6 +30,11 @@ typedef std::tr1::function<bool (QWidget *)> WidgetVisitor;
 
 void visitWidgetHierarchy(WidgetVisitor visitor, QWidget *widget);
 
+namespace Maliit {
+namespace Server {
+    class AbstractSurfaceGroupFactory;
+}
+}
 
 class MImAbstractServerLogic : public QObject
 {
@@ -39,6 +45,9 @@ public:
     virtual ~MImAbstractServerLogic() = 0;
 
     virtual QWidget *pluginsProxyWidget() const = 0;
+
+    //! Return factory for creating surface groups
+    virtual QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const = 0;
 
 public Q_SLOTS:
     virtual void inputPassthrough(const QRegion &region) = 0;

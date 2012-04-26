@@ -14,6 +14,8 @@ public:
 
     //! reimpl
     virtual QWidget *pluginsProxyWidget() const;
+    virtual QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const;
+    //! reimpl_end
 
 public Q_SLOTS:
     //! reimpl
@@ -31,6 +33,7 @@ private:
      * This lets destruction of the plugins proxy widget work in the same way for both cases. */
     QWidget mDefaultParent;
     QWidget *mPluginsWidget;
+    QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> mSurfaceGroupFactory;
 };
 
 #endif // MIMAPPHOSTEDSERVERLOGIC_H
