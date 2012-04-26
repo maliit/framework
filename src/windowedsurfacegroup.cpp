@@ -34,6 +34,8 @@ public:
 
     virtual void setRotation(Maliit::OrientationAngle angle);
 
+    void applicationFocusChanged(WId winId);
+
 private:
     QScopedPointer<WindowedSurfaceFactory> mSurfaceFactory;
 };
@@ -63,11 +65,28 @@ void WindowedSurfaceGroup::setRotation(Maliit::OrientationAngle)
 {
 }
 
-QSharedPointer<AbstractSurfaceGroup> WindowedSurfaceGroupFactory::createSurfaceGroup()
+void WindowedSurfaceGroup::applicationFocusChanged(WId winId)
 {
-    return QSharedPointer<AbstractSurfaceGroup>(new WindowedSurfaceGroup);
+    mSurfaceFactory->applicationFocusChanged(winId);
 }
 
+QSharedPointer<AbstractSurfaceGroup> WindowedSurfaceGroupFactory::createSurfaceGroup()
+{
+    QSharedPointer<WindowedSurfaceGroup> group(new WindowedSurfaceGroup);
+    mGroups.push_back(group);
+
+    return group;
+}
+
+void WindowedSurfaceGroupFactory::applicationFocusChanged(WId winId)
+{
+    Q_FOREACH(QWeakPointer<WindowedSurfaceGroup> weakGroup, mGroups) {
+        QSharedPointer<WindowedSurfaceGroup> group = weakGroup.toStrongRef();
+        if (group) {
+            group->applicationFocusChanged(winId);
+        }
+    }
+}
 
 } // namespace Plugins
 } // namespace Maliit

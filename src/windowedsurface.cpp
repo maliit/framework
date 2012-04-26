@@ -33,6 +33,11 @@
 #include <QWindow>
 #endif
 
+#ifdef Q_WS_X11
+#include <QX11Info>
+#include <X11/Xlib.h>
+#endif
+
 using Maliit::Plugins::AbstractSurface;
 
 namespace Maliit {
@@ -119,6 +124,20 @@ public:
     {
         mActive = active;
         updateVisibility();
+    }
+
+
+    void applicationFocusChanged(WId winId)
+    {
+        if (mParent)
+            return;
+#ifdef Q_WS_X11
+        XSetTransientForHint(QX11Info::display(),
+                             mToplevel->window()->effectiveWinId(),
+                             winId);
+#else
+        Q_UNUSED(winId);
+#endif
     }
 
 private:
@@ -311,6 +330,16 @@ void WindowedSurfaceFactory::deactivate()
         QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
         if (surface)
             surface->setActive(false);
+    }
+}
+
+void WindowedSurfaceFactory::applicationFocusChanged(WId winId)
+{
+    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
+        QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
+        if (surface) {
+            surface->applicationFocusChanged(winId);
+        }
     }
 }
 

@@ -19,13 +19,28 @@
 
 #include "abstractsurfacegroupfactory.h"
 
+#include <QList>
+#include <QWeakPointer>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QWindow>
+#else
+#include <QWidget> // For WId
+#endif
+
 namespace Maliit {
 namespace Server {
+
+class WindowedSurfaceGroup;
 
 class WindowedSurfaceGroupFactory : public AbstractSurfaceGroupFactory
 {
 public:
-    virtual QSharedPointer<AbstractSurfaceGroup> createSurfaceGroup();
+    QSharedPointer<AbstractSurfaceGroup> createSurfaceGroup();
+
+    void applicationFocusChanged(WId winId);
+
+private:
+    QList<QWeakPointer<WindowedSurfaceGroup> > mGroups;
 };
 
 } // namespace Server

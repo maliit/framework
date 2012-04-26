@@ -19,6 +19,12 @@
 
 #include <QWeakPointer>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <QWindow>
+#else
+#include <QWidget> // For WId
+#endif
+
 #include <vector>
 
 #include <maliit/plugins/abstractsurfacefactory.h>
@@ -39,6 +45,8 @@ public:
 
     void activate();
     void deactivate();
+
+    void applicationFocusChanged(WId winId);
 
 private:
     std::vector<QWeakPointer<WindowedSurface> > surfaces;

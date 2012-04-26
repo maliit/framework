@@ -172,7 +172,10 @@ void MImXServerLogic::applicationFocusChanged(WId newRemoteWinId)
     const bool wasRedirected(mRemoteWindow.data() && mRemoteWindow->isRedirected());
 
     mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this, xOptions));
-    mRemoteWindow->setIMWidget(mPassThruWindow->window());
+
+    QSharedPointer<Maliit::Server::WindowedSurfaceGroupFactory> windowedSurfaceGroupFactory = qSharedPointerDynamicCast<Maliit::Server::WindowedSurfaceGroupFactory>(mSurfaceGroupFactory);
+    if (windowedSurfaceGroupFactory)
+        windowedSurfaceGroupFactory->applicationFocusChanged(newRemoteWinId);
 
     connect(mRemoteWindow.data(), SIGNAL(contentUpdated(QRegion)),
             this,                SLOT(updatePassThruWindow(QRegion)));
