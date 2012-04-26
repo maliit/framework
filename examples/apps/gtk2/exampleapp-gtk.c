@@ -34,7 +34,12 @@ main(gint    argc,
     entry = gtk_entry_new();
     text_view = gtk_text_view_new();
     gtk_widget_set_size_request(text_view, 150, 200);
+
+#if GTK_MAJOR_VERSION >= 3
+    vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+#else
     vbox = gtk_vbox_new(FALSE, 10);
+#endif
 
     gtk_box_pack_start(GTK_BOX(vbox), button, FALSE, FALSE, 0);
     gtk_box_pack_start(GTK_BOX(vbox), entry, FALSE, FALSE, 0);
