@@ -18,7 +18,6 @@
 
 #include "mimpluginmanager.h"
 #include "mimabstractserverlogic.h"
-#include "windowedsurfacegroup.h"
 
 using namespace std::tr1;
 
@@ -53,8 +52,7 @@ MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
 
     d->icConnection = icConnection;
     d->serverLogic = serverLogic;
-    QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceFactory(new Maliit::Server::WindowedSurfaceGroupFactory);
-    d->pluginManager = new MIMPluginManager(d->icConnection, surfaceFactory);
+    d->pluginManager = new MIMPluginManager(d->icConnection, serverLogic->surfaceGroupFactory());
 
     connectComponents();
 

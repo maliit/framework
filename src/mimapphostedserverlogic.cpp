@@ -1,5 +1,7 @@
 #include "mimapphostedserverlogic.h"
 
+#include "windowedsurfacegroup.h"
+
 #include <QtDebug>
 
 #include <deque>
@@ -20,6 +22,7 @@ namespace
 MImAppHostedServerLogic::MImAppHostedServerLogic(QObject *parent)
     : MImAbstractServerLogic(parent)
     , mPluginsWidget(new QWidget(&mDefaultParent))
+    , mSurfaceGroupFactory(new Maliit::Server::WindowedSurfaceGroupFactory)
 {
     mPluginsWidget->setAutoFillBackground(false);
     mPluginsWidget->setBackgroundRole(QPalette::NoRole);
@@ -42,6 +45,11 @@ void MImAppHostedServerLogic::inputPassthrough(const QRegion &region)
 QWidget *MImAppHostedServerLogic::pluginsProxyWidget() const
 {
     return mPluginsWidget;
+}
+
+QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> MImAppHostedServerLogic::surfaceGroupFactory() const
+{
+    return mSurfaceGroupFactory;
 }
 
 void MImAppHostedServerLogic::pluginLoaded()

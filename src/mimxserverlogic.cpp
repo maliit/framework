@@ -26,6 +26,8 @@
 #include "mimrotationanimation.h"
 #include "mimserveroptions.h"
 
+#include "windowedsurfacegroup.h"
+
 #include <QDebug>
 
 #include <X11/Xlib.h>
@@ -79,7 +81,8 @@ MImXServerLogic::MImXServerLogic(const MImServerXOptions &options, QObject *pare
     mCompositeExtension(),
     mDamageExtension(),
     mPassThruWindow(),
-    mRemoteWindow()
+    mRemoteWindow(),
+    mSurfaceGroupFactory(new Maliit::Server::WindowedSurfaceGroupFactory)
 {
     mPassThruWindow.reset(new MPassThruWindow(this, xOptions));
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.data()));
@@ -194,6 +197,11 @@ QWidget *MImXServerLogic::passThruWindow() const
 QWidget* MImXServerLogic::pluginsProxyWidget() const
 {
     return mPluginsProxyWidget.data();
+}
+
+QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> MImXServerLogic::surfaceGroupFactory() const
+{
+    return mSurfaceGroupFactory;
 }
 
 const QPixmap &MImXServerLogic::remoteWindowPixmap()
