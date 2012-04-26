@@ -71,10 +71,6 @@ void MImServer::connectComponents()
 {
     Q_D(MImServer);
 
-    // Update visibility of plugins proxy widget
-    QObject::connect(d->pluginManager, SIGNAL(regionUpdated(const QRegion &)),
-                     d->serverLogic.data(), SLOT(inputPassthrough(const QRegion &)));
-
     // Configure widgets trees of plugins after loading
     QObject::connect(d->pluginManager, SIGNAL(pluginLoaded()),
                      d->serverLogic.data(), SLOT(pluginLoaded()));
