@@ -54,6 +54,8 @@ public:
     virtual void setRelativePosition(const QPoint &position) = 0;
 
     virtual QSharedPointer<AbstractSurface> parent() const = 0;
+
+    virtual QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractSurface::Options)

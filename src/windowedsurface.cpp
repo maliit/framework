@@ -120,6 +120,18 @@ public:
         return mParent;
     }
 
+    QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const
+    {
+        if (!eventSurface)
+            return eventPosition;
+
+        QSharedPointer<WindowedSurface> windowedSurface = qSharedPointerDynamicCast<WindowedSurface>(eventSurface);
+        if (!windowedSurface)
+            return QPoint();
+
+        return -mToplevel->pos() + eventPosition + windowedSurface->mToplevel->pos();
+    }
+
     void setActive(bool active)
     {
         mActive = active;

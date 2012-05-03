@@ -91,6 +91,8 @@ namespace MaliitTestUtils {
 
         QSharedPointer<AbstractSurface> parent() const { return QSharedPointer<AbstractSurface>(); }
 
+        QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> & = QSharedPointer<AbstractSurface>()) const { return eventPosition; }
+
         QWidget *widget() const { return 0; }
     };
 
@@ -114,6 +116,8 @@ namespace MaliitTestUtils {
         void setRelativePosition(const QPoint &) {}
 
         QSharedPointer<AbstractSurface> parent() const { return QSharedPointer<AbstractSurface>(); }
+
+        QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> & = QSharedPointer<AbstractSurface>()) const { return eventPosition; }
 
         QGraphicsScene *scene() const { return mGraphicsView->scene(); }
         QGraphicsView *view() const { return mGraphicsView.data(); }
