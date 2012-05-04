@@ -27,19 +27,45 @@ class QWidget;
 namespace Maliit {
 namespace Plugins {
 
+/*!
+ * \brief The AbstractWidgetSurface class provides an AbstractSurface backed by a QWidget
+ */
 class AbstractWidgetSurface : public virtual AbstractSurface
 {
 public:
+    /*!
+     * \brief returns a QWidget to put children widgets into it
+     * \return the QWidget backing this surface
+     */
     virtual QWidget *widget() const = 0;
 };
 
+/*!
+ * \brief The AbstractGraphicsViewSurface class provides an AbstractSurface backed by a QGraphicsView
+ */
 class AbstractGraphicsViewSurface : public virtual AbstractSurface
 {
 public:
+    /*!
+     * \brief returns the QGraphicsScene of the surface
+     * \return the QGraphicsScene of the surface
+     */
     virtual QGraphicsScene *scene() const = 0;
+    /*!
+     * \brief returns the QGraphicsView of the surface
+     * \return the QGraphicsView of the surface
+     */
     virtual QGraphicsView *view() const = 0;
 
+    /*!
+     * \brief returns the root QGraphicsItem of the surface
+     * \return the root QGraphicsItem of the surface
+     */
     virtual QGraphicsItem *root() const = 0;
+
+    /*!
+     * \brief clear this surface
+     */
     virtual void clear() = 0;
 };
 

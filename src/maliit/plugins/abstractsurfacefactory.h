@@ -24,15 +24,41 @@ class QSize;
 namespace Maliit {
 namespace Plugins {
 
+/*! \ingroup pluginapi
+ * \brief The AbstractSurfaceFactory class is used to create AbstractSurface instances
+ */
 class AbstractSurfaceFactory
 {
 public:
+    /*!
+     * \brief ~AbstractSurfaceFactory
+     */
     virtual ~AbstractSurfaceFactory();
 
+    /*!
+     * \brief returns the available size in landscape orientation
+     * \return the size in landscape orientation
+     */
     virtual QSize screenLandscapeSize() const;
+    /*!
+     * \brief returns the available size in portrait orientation
+     * \return the size in portrait orientation
+     */
     virtual QSize screenPortraitSize() const;
 
+    /*!
+     * \brief returns if a surface with options can be created
+     * \param options the options the surface should have
+     * \return true if such a surface can be created
+     */
     virtual bool supported(AbstractSurface::Options options) const = 0;
+
+    /*!
+     * \brief creates a new AbstractSurface instance with options and parent
+     * \param options the options the surface should have
+     * \param parent the parent of the new surface
+     * \return a new AbstarctSurface
+     */
     virtual QSharedPointer<AbstractSurface> create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>()) = 0;
 };
 
