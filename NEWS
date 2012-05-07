@@ -1,3 +1,43 @@
+0.92.0
+======
+
+CHANGES SINCE 0.91.0
+* Update maliit plugin interface from 0.80 to 1.0
+* Add surfaces API for abstracting window/widget management for plugins
+  - Add surfaces implementation for windowed widgets
+* Removed legacy support for MeeGo Harmattan:
+  - Remove Toolbar API
+  - Remove legacy minputmethodnamespace.h
+* Cleanup plugin API:
+  - Rename MInputMethodPlugin to InputMethodPlugin
+  - Remove MAbstractInputMethodSettings
+  - Remove InputMethodPlugin::languages()
+  - Remove MImWidget and MImGraphicsView
+  - Move plugin headers and sources to maliit/plugins
+  - Remove unused parameter from MAbstractInputMethod
+  - Remove unused widget parameters from InputMethods
+* Add config switch to enable QtDBus implementation
+  - Use qmake CONFIG+=enable-qdbus to enable the QtDBus based DBus
+    connection backend
+* Add backend for QSettings backed by temporary file
+
+BUG FIXES
+* Fixes: MALIIT#118 - Child surfaces need to be working correctly
+* Fixes: MALIIT#117 - Window surfaces need to be transient to the application window
+* Fixes: MALIIT#101 - Allow to build without QtDbus (for non-*nix platforms)
+* Fixes: MALIIT#23 - Maliit should work without a compositing window manager under X11
+* Fixes: MALIIT#20 - Ubuntu's login screen (lightdm) is completely black apart from the Maliit keyboard 
+* Fix unused parameter warning
+* Fix clipping bug
+* Fix compile error on Arch Linux current
+* Fix warning when creating sdk
+* Fix MAttributeExtensionId module
+* Explicitly link to libmaliit-connection
+* Add dependency in maliit-plugins pkg-config file
+* Use .pri files in ut_minputmethodquickplugin
+* Fix maliit-plugins pkg-config dependencies
+* Fix include path in maliit-plugins.prf
+
 0.91.0
 ======
 
