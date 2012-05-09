@@ -77,4 +77,13 @@ private:
     void update_value(bool emit_signal);
 };
 
+
+//! \internal
+
+class MImSettingsGConfBackendFactory : public MImSettingsBackendFactory
+{
+public:
+    virtual MImSettingsBackend *create(const QString &key, QObject *parent);
+};
+
 #endif // MIMSETTINGSGCONF_H
