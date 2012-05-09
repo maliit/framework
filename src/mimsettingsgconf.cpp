@@ -423,3 +423,9 @@ MImSettingsGConfBackend::~MImSettingsGConfBackend()
         }
     }
 }
+
+
+MImSettingsBackend *MImSettingsGConfBackendFactory::create(const QString &key, QObject *parent)
+{
+    return new MImSettingsGConfBackend(key, parent);
+}

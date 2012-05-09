@@ -30,6 +30,11 @@
 #include <QVariant>
 #include <QDebug>
 
+#if defined(M_IM_DISABLE_GCONF)
+typedef MImSettingsQSettingsBackendFactory MImSettingsDefaultBackendFactory;
+#else
+typedef MImSettingsGConfBackendFactory MImSettingsDefaultBackendFactory;
+#endif
 
 QScopedPointer<MImSettingsBackendFactory> MImSettings::factory;
 
@@ -86,15 +91,10 @@ QList<QString> MImSettings::listEntries() const
 MImSettings::MImSettings(const QString &key, QObject *parent)
     : QObject(parent)
 {
-    if (factory) {
-        backend.reset(factory->create(key, this));
-    } else {
-#if defined(M_IM_DISABLE_GCONF)
-        backend.reset(new MImSettingsQSettingsBackend(key, this));
-#else
-        backend.reset(new MImSettingsGConfBackend(key, this));
-#endif
-    }
+    if (!factory)
+        factory.reset(new MImSettingsDefaultBackendFactory);
+
+    backend.reset(factory->create(key, this));
 
     connect(backend.data(), SIGNAL(valueChanged()), this, SIGNAL(valueChanged()));
 }
