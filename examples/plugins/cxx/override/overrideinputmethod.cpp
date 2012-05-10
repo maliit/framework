@@ -17,7 +17,6 @@
 #include "overrideinputmethod.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
-#include <maliit/plugins/abstractsurfacefactory.h>
 
 #include <QDebug>
 #include <QApplication>
@@ -35,7 +34,8 @@ using Maliit::Plugins::AbstractWidgetSurface;
 
 OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host)
     : MAbstractInputMethod(host)
-    , surface(qSharedPointerDynamicCast<AbstractWidgetSurface>(host->surfaceFactory()->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget)))
+    , surfaceFactory(host->surfaceFactory())
+    , surface(qSharedPointerDynamicCast<AbstractWidgetSurface>(surfaceFactory->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget)))
     , mainWidget(new QPushButton(surface->widget()))
     , showIsInhibited(false)
     , showRequested(false)
@@ -48,6 +48,8 @@ OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host)
     // Used only for unittest/sanity test
     inputMethodHost()->sendCommitString("Maliit");
     inputMethodHost()->sendPreeditString("Mali", QList<Maliit::PreeditTextFormat>(), 0, 6);
+
+    mainWidget->show();
 }
 
 OverrideInputMethod::~OverrideInputMethod()
@@ -68,19 +70,12 @@ void OverrideInputMethod::show()
         return;
     }
 
-    // Set size of our container to screen size
-    const QSize screenSize = QApplication::desktop()->screenGeometry().size();
-    mainWidget->parentWidget()->resize(screenSize);
-
     // Set size of the input method
-    const QRect imGeometry(0, screenSize.height() - 200, screenSize.width(), 200);
-    mainWidget->setGeometry(imGeometry);
+    const QSize &screenSize = surfaceFactory->screenLandscapeSize();
+    surface->setSize(QSize(screenSize.width() - 200, 200));
+    mainWidget->resize(mainWidget->parentWidget()->size());
 
-    // Tell input method server about our size
-    inputMethodHost()->setScreenRegion(QRegion(mainWidget->geometry()));
-    inputMethodHost()->setInputMethodArea(QRegion(mainWidget->geometry()));
-
-    mainWidget->show();
+    surface->show();
 }
 
 void OverrideInputMethod::hide()
@@ -90,10 +85,7 @@ void OverrideInputMethod::hide()
     }
     showRequested = false;
 
-    mainWidget->hide();
-
-    inputMethodHost()->setScreenRegion(QRegion());
-    inputMethodHost()->setInputMethodArea(QRegion());
+    surface->hide();
 }
 
 QList<MAbstractInputMethod::MInputMethodSubView>
@@ -120,10 +112,10 @@ void OverrideInputMethod::setState(const QSet<Maliit::HandlerState> &state)
 {
     if (state.contains(Maliit::OnScreen)) {
         if (showRequested && !showIsInhibited) {
-            mainWidget->show();
+            surface->show();
         }
     } else {
-        mainWidget->hide();
+        surface->hide();
     }
 }
 
@@ -143,9 +135,9 @@ void OverrideInputMethod::handleVisualizationPriorityChange(bool inhibitShow)
 
     if (showRequested) {
         if (inhibitShow) {
-            mainWidget->hide();
+            surface->hide();
         } else {
-            mainWidget->show();
+            surface->show();
         }
     }
 }
