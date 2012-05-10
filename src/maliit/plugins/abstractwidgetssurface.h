@@ -33,6 +33,8 @@ namespace Plugins {
 class AbstractWidgetSurface : public virtual AbstractSurface
 {
 public:
+    virtual ~AbstractWidgetSurface();
+
     /*!
      * \brief returns a QWidget to put children widgets into it
      * \return the QWidget backing this surface
@@ -46,11 +48,14 @@ public:
 class AbstractGraphicsViewSurface : public virtual AbstractSurface
 {
 public:
+    virtual ~AbstractGraphicsViewSurface();
+
     /*!
      * \brief returns the QGraphicsScene of the surface
      * \return the QGraphicsScene of the surface
      */
     virtual QGraphicsScene *scene() const = 0;
+
     /*!
      * \brief returns the QGraphicsView of the surface
      * \return the QGraphicsView of the surface
