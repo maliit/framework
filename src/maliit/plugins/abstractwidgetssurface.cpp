@@ -19,5 +19,13 @@
 namespace Maliit {
 namespace Plugins {
 
+AbstractWidgetSurface::~AbstractWidgetSurface()
+{
+}
+
+AbstractGraphicsViewSurface::~AbstractGraphicsViewSurface()
+{
+}
+
 } // namespace Plugins
 } // namespace Maliit
