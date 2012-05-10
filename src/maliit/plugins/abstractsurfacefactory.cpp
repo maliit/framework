@@ -21,22 +21,13 @@
 namespace Maliit {
 namespace Plugins {
 
+AbstractSurfaceFactory::AbstractSurfaceFactory()
+    : QObject()
+{
+}
+
 AbstractSurfaceFactory::~AbstractSurfaceFactory()
 {
-}
-
-QSize AbstractSurfaceFactory::screenLandscapeSize() const
-{
-    return QApplication::desktop()->size();
-}
-
-QSize AbstractSurfaceFactory::screenPortraitSize() const
-{
-    QSize size(QApplication::desktop()->size());
-
-    size.transpose();
-
-    return size;
 }
 
 } // namespace Plugins

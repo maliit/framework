@@ -134,6 +134,8 @@ namespace MaliitTestUtils {
     public:
         TestSurfaceFactory() {}
 
+        QSize screenSize() const { return QSize(); }
+
         bool supported(AbstractSurface::Options options) const { return options & (AbstractSurface::TypeGraphicsView | AbstractSurface::TypeWidget); }
 
         QSharedPointer<AbstractSurface> create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &) {

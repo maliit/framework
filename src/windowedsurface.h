@@ -40,6 +40,8 @@ public:
     WindowedSurfaceFactory();
     virtual ~WindowedSurfaceFactory();
 
+    QSize screenSize() const;
+
     bool supported(Maliit::Plugins::AbstractSurface::Options options) const;
     QSharedPointer<Maliit::Plugins::AbstractSurface> create(Maliit::Plugins::AbstractSurface::Options options, const QSharedPointer<Maliit::Plugins::AbstractSurface> &parent);
 

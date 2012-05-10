@@ -91,7 +91,7 @@ public:
 
     void setSize(const QSize &size)
     {
-        const QSize& desktopSize = QApplication::desktop()->size();
+        const QSize& desktopSize = QApplication::desktop()->screenGeometry().size();
 
         if (mOptions & PositionCenterBottom) {
             mToplevel->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2, desktopSize.height() - size.height()), size));
@@ -305,6 +305,11 @@ WindowedSurfaceFactory::WindowedSurfaceFactory()
 
 WindowedSurfaceFactory::~WindowedSurfaceFactory()
 {
+}
+
+QSize WindowedSurfaceFactory::screenSize() const
+{
+    return QApplication::desktop()->screenGeometry().size();
 }
 
 bool WindowedSurfaceFactory::supported(Maliit::Plugins::AbstractSurface::Options options) const

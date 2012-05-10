@@ -27,24 +27,21 @@ namespace Plugins {
 /*! \ingroup pluginapi
  * \brief The AbstractSurfaceFactory class is used to create AbstractSurface instances
  */
-class AbstractSurfaceFactory
+class AbstractSurfaceFactory : public QObject
 {
+    Q_OBJECT
 public:
+    AbstractSurfaceFactory();
     /*!
      * \brief ~AbstractSurfaceFactory
      */
     virtual ~AbstractSurfaceFactory();
 
     /*!
-     * \brief returns the available size in landscape orientation
-     * \return the size in landscape orientation
+     * \brief returns the available screen size in current screen orientation
+     * \return the size in current screen orientation
      */
-    virtual QSize screenLandscapeSize() const;
-    /*!
-     * \brief returns the available size in portrait orientation
-     * \return the size in portrait orientation
-     */
-    virtual QSize screenPortraitSize() const;
+    virtual QSize screenSize() const = 0;
 
     /*!
      * \brief returns if a surface with options can be created
@@ -60,6 +57,13 @@ public:
      * \return a new AbstarctSurface
      */
     virtual QSharedPointer<AbstractSurface> create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>()) = 0;
+
+Q_SIGNALS:
+    /*!
+     * \brief signaled when the screen size changed
+     * \param newSize the new screen size
+     */
+    void screenSizeChanged(const QSize &newSize);
 };
 
 } // namespace Plugins

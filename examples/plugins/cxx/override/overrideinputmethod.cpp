@@ -71,7 +71,7 @@ void OverrideInputMethod::show()
     }
 
     // Set size of the input method
-    const QSize &screenSize = surfaceFactory->screenLandscapeSize();
+    const QSize &screenSize = surfaceFactory->screenSize();
     surface->setSize(QSize(screenSize.width() - 200, 200));
     mainWidget->resize(mainWidget->parentWidget()->size());
 
