@@ -52,7 +52,8 @@ public:
           mParent(parent),
           mToplevel(toplevel),
           mActive(false),
-          mVisible(false)
+          mVisible(false),
+          mRelativePosition()
     {
         QWidget *parentWidget = 0;
         if (parent) {
@@ -102,16 +103,17 @@ public:
 
     QPoint relativePosition() const
     {
-        return mToplevel->pos();
+        return mRelativePosition;
     }
 
     void setRelativePosition(const QPoint &position)
     {
-        QPoint parentPosition;
+        mRelativePosition = position;
+        QPoint parentPosition(0, 0);
         if (mParent) {
-            parentPosition = mParent->relativePosition();
+            parentPosition = mParent->mToplevel->pos();
         }
-        mToplevel->move(parentPosition + position);
+        mToplevel->move(parentPosition + mRelativePosition);
     }
 
 
@@ -168,6 +170,7 @@ protected:
     QScopedPointer<QWidget> mToplevel;
     bool mActive;
     bool mVisible;
+    QPoint mRelativePosition;
 };
 
 class GraphicsView : public QGraphicsView
