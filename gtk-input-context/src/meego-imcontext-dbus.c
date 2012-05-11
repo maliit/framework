@@ -45,6 +45,7 @@ gboolean meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GVal
 gboolean meego_imcontext_dbus_set_language (MeegoIMContextDbusObj *obj,
                                             const gchar *language_id,
                                             GError **error);
+
 gboolean meego_imcontext_dbus_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj,
                                                                  gint id,
                                                                  const gchar *target,
@@ -217,7 +218,7 @@ meego_imcontext_dbus_set_language (MeegoIMContextDbusObj *obj,
                                    GError **error)
 {
     STEP();
-    return TRUE;
+    return meego_imcontext_client_set_language (obj, language_id, error);
 }
 
 gboolean
@@ -230,5 +231,11 @@ meego_imcontext_dbus_notify_extended_attribute_changed (MeegoIMContextDbusObj *o
                                                         GError **error)
 {
     STEP();
-    return TRUE;
+    return meego_imcontext_client_notify_extended_attribute_changed (obj,
+                                                                     id,
+                                                                     target,
+                                                                     target_item,
+                                                                     key,
+                                                                     value,
+                                                                     error);
 }

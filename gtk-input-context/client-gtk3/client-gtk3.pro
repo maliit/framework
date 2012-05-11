@@ -1,4 +1,6 @@
-include(../../config.pri)
+TOP_DIR = ../..
+
+include($$TOP_DIR/config.pri)
 
 TEMPLATE = lib
 TARGET = im-maliit
@@ -7,9 +9,11 @@ CONFIG += plugin
 CONFIG += link_pkgconfig
 PKGCONFIG += gtk+-3.0
 
+include($$TOP_DIR/maliit-glib/libmaliit-glib.pri)
+
 DEFINES += G_LOG_DOMAIN=\\\"Maliit\\\"
 
-INCLUDEPATH = ../src
+INCLUDEPATH += ../src
 
 HEADERS += \
     ../client-gtk/client-imcontext-gtk.h \
