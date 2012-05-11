@@ -372,6 +372,9 @@ void WindowedSurfaceFactory::screenResized(int)
         QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
         if (surface) {
             surface->setSize(surface->size());
+            if (surface->parent()) {
+                surface->setRelativePosition(surface->relativePosition());
+            }
         }
     }
     Q_EMIT screenSizeChanged(screenSize());
