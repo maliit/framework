@@ -36,6 +36,8 @@ class WindowedSurface;
 
 class WindowedSurfaceFactory : public Maliit::Plugins::AbstractSurfaceFactory
 {
+    Q_OBJECT
+
 public:
     WindowedSurfaceFactory();
     virtual ~WindowedSurfaceFactory();
@@ -51,6 +53,8 @@ public:
     void applicationFocusChanged(WId winId);
 
 private:
+    Q_SLOT void screenResized(int screen);
+
     std::vector<QWeakPointer<WindowedSurface> > surfaces;
 };
 

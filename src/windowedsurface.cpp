@@ -302,8 +302,11 @@ public:
 };
 
 WindowedSurfaceFactory::WindowedSurfaceFactory()
-    : surfaces()
+    : AbstractSurfaceFactory()
+    , surfaces()
 {
+    connect(QApplication::desktop(), SIGNAL(resized(int)),
+            this, SLOT(screenResized(int)));
 }
 
 WindowedSurfaceFactory::~WindowedSurfaceFactory()
@@ -361,6 +364,17 @@ void WindowedSurfaceFactory::applicationFocusChanged(WId winId)
             surface->applicationFocusChanged(winId);
         }
     }
+}
+
+void WindowedSurfaceFactory::screenResized(int)
+{
+    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
+        QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
+        if (surface) {
+            surface->setSize(surface->size());
+        }
+    }
+    Q_EMIT screenSizeChanged(screenSize());
 }
 
 } // namespace Server
