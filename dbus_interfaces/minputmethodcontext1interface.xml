@@ -74,6 +74,7 @@
       <arg type="v"/>
     </method>
     <method name="pluginSettingsLoaded">
+      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QList&lt;MImPluginSettingsInfo&gt;"/>
       <arg type="a(sssia(ssibva{sv}))"/>
     </method>
   </interface>

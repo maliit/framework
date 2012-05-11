@@ -16,8 +16,11 @@
 
 #include "dbusserverconnection.h"
 
+#include <maliit/settingdata.h>
+
 #include "minputmethodcontext1interface_adaptor.h"
 #include "minputmethodserver1interface_interface.h"
+#include "dbuscustomarguments.h"
 
 #include <QDBusConnection>
 #include <QDebug>
@@ -41,6 +44,10 @@ DBusServerConnection::DBusServerConnection(const QSharedPointer<Maliit::InputCon
   , pendingResetCalls()
 {
     new Inputcontext1Adaptor(this);
+
+    qDBusRegisterMetaType<MImPluginSettingsEntry>();
+    qDBusRegisterMetaType<MImPluginSettingsInfo>();
+    qDBusRegisterMetaType<QList<MImPluginSettingsInfo> >();
 
     connect(mAddress.data(), SIGNAL(addressRecieved(QString)),
             this, SLOT(openDBusConnection(QString)));
@@ -236,6 +243,20 @@ void DBusServerConnection::setExtendedAttribute(int id, const QString &target, c
         return;
 
     mProxy->setExtendedAttribute(id, target, targetItem, attribute, QDBusVariant(value));
+}
+
+void DBusServerConnection::loadPluginSettings(const QString &descriptionLanguage)
+{
+    if (!mProxy)
+        return;
+
+    mProxy->loadPluginSettings(descriptionLanguage);
+}
+
+
+void DBusServerConnection::pluginSettingsLoaded(const QList<MImPluginSettingsInfo> &info)
+{
+    pluginSettingsReceived(info);
 }
 
 void DBusServerConnection::keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat, int count, uchar requestType)

@@ -62,4 +62,8 @@ struct MImPluginSettingsInfo
  */
 bool validateSettingValue(Maliit::SettingEntryType type, const QVariantMap attributes, const QVariant &value);
 
+Q_DECLARE_METATYPE(MImPluginSettingsEntry)
+Q_DECLARE_METATYPE(MImPluginSettingsInfo)
+Q_DECLARE_METATYPE(QList<MImPluginSettingsInfo>)
+
 #endif

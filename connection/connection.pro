@@ -52,12 +52,14 @@ qdbus-dbus-connection {
     IC_ADAPTOR_LIST += $$DBUS_CONTEXT_XML
 
     PRIVATE_HEADERS += \
+        dbuscustomarguments.h \
         \ # input-context
         dbusserverconnection.h \
         \ # server
         dbusinputcontextconnection.h \
 
     PRIVATE_SOURCES += \
+        dbuscustomarguments.cpp \
         \ # input-context
         dbusserverconnection.cpp \
         \ # server
@@ -104,7 +106,7 @@ qdbus-dbus-connection {
         return("$$lower($$section($$list($$basename(1)),.,-2,-2))_adaptor.cpp")
     }
 
-    interface_header.commands = $$QMAKE_QDBUSXML2CPP -i maliit/namespace.h -p ${QMAKE_FILE_OUT}: ${QMAKE_FILE_IN}
+    interface_header.commands = $$QMAKE_QDBUSXML2CPP -i maliit/namespace.h -i maliit/settingdata.h -p ${QMAKE_FILE_OUT}: ${QMAKE_FILE_IN}
     interface_header.output_function = dbus_interface_header_output
     interface_header.name = DBUSXML2CPP INTERFACE HEADER ${QMAKE_FILE_IN}
     interface_header.variable_out = DBUS_INTERFACE_HEADERS

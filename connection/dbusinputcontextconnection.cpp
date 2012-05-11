@@ -18,6 +18,7 @@
 
 #include "minputmethodserver1interface_adaptor.h"
 #include "minputmethodcontext1interface_interface.h"
+#include "dbuscustomarguments.h"
 
 #include <QDBusConnection>
 #include <QDBusServer>
@@ -45,6 +46,10 @@ DBusInputContextConnection::DBusInputContextConnection(const QSharedPointer<Mali
     , lastLanguage()
 {
     connect(mServer.data(), SIGNAL(newConnection(QDBusConnection)), this, SLOT(newConnection(QDBusConnection)));
+
+    qDBusRegisterMetaType<MImPluginSettingsEntry>();
+    qDBusRegisterMetaType<MImPluginSettingsInfo>();
+    qDBusRegisterMetaType<QList<MImPluginSettingsInfo> >();
 
     new Uiserver1Adaptor(this);
 }
@@ -267,6 +272,31 @@ DBusInputContextConnection::notifyExtendedAttributeChanged(int id,
     }
 }
 
+void
+DBusInputContextConnection::notifyExtendedAttributeChanged(const QList<int> &clientIds,
+                                                           int id,
+                                                           const QString &target,
+                                                           const QString &targetItem,
+                                                           const QString &attribute,
+                                                           const QVariant &value)
+{
+    Q_FOREACH (int clientId, clientIds) {
+        ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(clientId);
+        if (proxy) {
+            proxy->notifyExtendedAttributeChanged(id, target, targetItem, attribute, QDBusVariant(value));
+        }
+    }
+}
+
+void
+DBusInputContextConnection::pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info)
+{
+    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(clientId);
+    if (proxy) {
+        proxy->pluginSettingsLoaded(info);
+    }
+}
+
 
 unsigned int
 DBusInputContextConnection::connectionNumber()
@@ -342,4 +372,9 @@ void DBusInputContextConnection::unregisterAttributeExtension(int id)
 void DBusInputContextConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value)
 {
     MInputContextConnection::setExtendedAttribute(connectionNumber(), id, target, targetItem, attribute, value.variant());
+}
+
+void DBusInputContextConnection::loadPluginSettings(const QString &descriptionLanguage)
+{
+    MInputContextConnection::loadPluginSettings(connectionNumber(), descriptionLanguage);
 }
