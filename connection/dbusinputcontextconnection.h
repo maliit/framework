@@ -62,6 +62,13 @@ public:
                                                 const QString &targetItem,
                                                 const QString &attribute,
                                                 const QVariant &value);
+    virtual void notifyExtendedAttributeChanged(const QList<int> &clientIds,
+                                                int id,
+                                                const QString &target,
+                                                const QString &targetItem,
+                                                const QString &attribute,
+                                                const QVariant &value);
+    virtual void pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info);
     //! \reimp_end
 
     void activateContext();
@@ -78,6 +85,7 @@ public:
     void registerAttributeExtension(int id, const QString &fileName);
     void unregisterAttributeExtension(int id);
     void setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value);
+    void loadPluginSettings(const QString &descriptionLanguage);
 
 private Q_SLOTS:
     void newConnection(const QDBusConnection &connection);

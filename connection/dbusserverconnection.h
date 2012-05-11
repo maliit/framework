@@ -55,6 +55,7 @@ public:
     virtual void unregisterAttributeExtension(int id);
     virtual void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                               const QString &attribute, const QVariant &value);
+    virtual void loadPluginSettings(const QString &descriptionLanguage);
     //! reimpl end
 
     //! forwarding methods for InputContextAdaptor
@@ -67,6 +68,7 @@ public:
                                         const QString &targetItem,
                                         const QString &attribute,
                                         const QDBusVariant &value);
+    void pluginSettingsLoaded(const QList<MImPluginSettingsInfo> &info);
 
     bool preeditRectangle(int &x, int &y, int &width, int &height) const;
     bool selection(QString &selection) const;
