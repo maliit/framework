@@ -70,4 +70,18 @@ gboolean meego_imcontext_dbus_set_detectable_auto_repeat(MeegoIMContextDbusObj *
 gboolean meego_imcontext_dbus_set_selection(MeegoIMContextDbusObj *obj, int start, int length, GError **error);
 gboolean meego_imcontext_dbus_selection(MeegoIMContextDbusObj *obj, gboolean *valid, gchar **gdata, GError **error);
 
+gboolean
+meego_imcontext_client_set_language (MeegoIMContextDbusObj *obj,
+                                     const gchar *language_id,
+                                     GError **error);
+
+gboolean
+meego_imcontext_client_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj,
+                                                          gint id,
+                                                          const gchar *target,
+                                                          const gchar *targetItem,
+                                                          const gchar *key,
+                                                          GValue *value,
+                                                          GError **error);
+
 #endif /* _MEEGO_IMCONTEXT_DBUS_H */

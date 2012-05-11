@@ -77,6 +77,23 @@ gboolean meego_im_proxy_set_copy_paste_state(MeegoIMProxy *proxy, const gboolean
 gboolean meego_im_proxy_set_preedit(MeegoIMProxy *proxy, const char *text, const gint cursor_pos);
 gboolean meego_im_proxy_show_input_method(MeegoIMProxy *proxy);
 
+gboolean
+meego_im_proxy_register_extension (MeegoIMProxy *proxy,
+                                   gint id,
+                                   const gchar *filename);
+
+gboolean
+meego_im_proxy_unregister_extension (MeegoIMProxy *proxy,
+                                     gint id);
+
+gboolean
+meego_im_proxy_set_extended_attribute (MeegoIMProxy *proxy,
+                                       gint id,
+                                       const gchar *target,
+                                       const gchar* target_item,
+                                       const gchar *attribute,
+                                       GValue *value);
+
 G_END_DECLS
 
 #endif //_MEEGO_IM_PROXY_H

@@ -6,8 +6,11 @@ TEMPLATE = lib
 TARGET = maliit-gtk-im-common
 CONFIG += staticlib
 
+
 CONFIG += link_pkgconfig
 PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1
+
+include($$TOP_DIR/maliit-glib/libmaliit-glib.pri)
 
 system(pkg-config gio-2.0 --atleast-version 2.26) {
     DEFINES   += MALIIT_USE_GIO_API
@@ -75,4 +78,3 @@ dbus_glue_imcontext.commands = \
 QMAKE_EXTRA_TARGETS += fake_dbus_glue_imcontext
 fake_dbus_glue_imcontext.target = meego-imcontext-dbus-glue.h
 fake_dbus_glue_imcontext.depends = dbus_glue_imcontext
-

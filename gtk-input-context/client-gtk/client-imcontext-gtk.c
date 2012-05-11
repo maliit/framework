@@ -22,11 +22,11 @@
 
 #include <X11/keysym.h>
 #include <gdk/gdkx.h> // For retrieving XID
+#include <maliit-glib/maliitattributeextensionprivate.h>
 
 #include "client-imcontext-gtk.h"
 #include "qt-gtk-translate.h"
 #include "debug.h"
-
 
 static GType _meego_imcontext_type = 0;
 static GtkIMContextClass *parent_class = NULL;
@@ -55,6 +55,8 @@ static GtkIMContext *meego_imcontext_get_slave_imcontext(void);
 
 static const gchar *const WIDGET_INFO_WIN_ID = "winId";
 static const gchar *const WIDGET_INFO_FOCUS_STATE = "focusState";
+static const gchar *const WIDGET_INFO_ATTRIBUTE_EXTENSION_ID = "toolbarId";
+static const gchar *const WIDGET_INFO_ATTRIBUTE_EXTENSION_FILENAME = "toolbar";
 
 void destroy_g_value(GValue *value)
 {
@@ -185,6 +187,9 @@ meego_imcontext_finalize(GObject *object)
     if (imcontext->client_window)
         g_object_unref(imcontext->client_window);
 
+    if (imcontext->registry)
+        g_object_unref(imcontext->registry);
+
     G_OBJECT_CLASS(parent_class)->finalize(object);
 }
 
@@ -234,6 +239,7 @@ meego_imcontext_init(MeegoIMContext *self)
     self->dbusobj = meego_imcontext_dbusobj_get_singleton();
     self->proxy = meego_im_proxy_get_singleton();
     self->connector = meego_im_connector_get_singleton();
+    self->registry = maliit_attribute_extension_registry_get_instance();
 }
 
 
@@ -395,6 +401,9 @@ meego_imcontext_set_cursor_location(GtkIMContext *context, GdkRectangle *area)
 void
 meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
 {
+    GValue *focus_value;
+
+    g_hash_table_remove_all (imcontext->widget_state);
 
     /* Window ID */
     if (imcontext->client_window) {
@@ -403,15 +412,46 @@ meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
         g_value_init(xid_value, G_TYPE_UINT64);
         g_value_set_uint64(xid_value, xid);
         g_hash_table_insert(imcontext->widget_state, g_strdup(WIDGET_INFO_WIN_ID), xid_value);
-    } else {
-        g_hash_table_remove(imcontext->widget_state, WIDGET_INFO_WIN_ID);
     }
 
     /* Focus state */
-    GValue *focus_value = g_new0(GValue, 1);
+    focus_value = g_new0(GValue, 1);
     g_value_init(focus_value, G_TYPE_BOOLEAN);
     g_value_set_boolean(focus_value, imcontext->focus_state);
     g_hash_table_insert(imcontext->widget_state, g_strdup(WIDGET_INFO_FOCUS_STATE), focus_value);
+
+    /* Attribute extensions */
+    if (imcontext->client_window) {
+        gpointer user_data = NULL;
+        GtkWidget* widget = NULL;
+        MaliitAttributeExtension *extension;
+        GValue *id_value;
+        GValue *filename_value;
+
+        gdk_window_get_user_data (imcontext->client_window, &user_data);
+
+        widget = GTK_WIDGET (user_data);
+
+        user_data = g_object_get_qdata (G_OBJECT (widget),
+                                        MALIIT_ATTRIBUTE_EXTENSION_DATA_QUARK);
+
+        if (user_data) {
+            extension = MALIIT_ATTRIBUTE_EXTENSION (user_data);
+            id_value = g_new0 (GValue, 1);
+            filename_value = g_new0 (GValue, 1);
+
+            g_value_init (id_value, G_TYPE_INT);
+            g_value_set_int (id_value, maliit_attribute_extension_get_id (extension));
+            g_value_init (filename_value, G_TYPE_STRING);
+            g_value_set_string (filename_value, maliit_attribute_extension_get_filename (extension));
+            g_hash_table_replace (imcontext->widget_state,
+                                  g_strdup(WIDGET_INFO_ATTRIBUTE_EXTENSION_ID),
+                                  id_value);
+            g_hash_table_replace (imcontext->widget_state,
+                                  g_strdup(WIDGET_INFO_ATTRIBUTE_EXTENSION_FILENAME),
+                                  filename_value);
+        }
+    }
 }
 
 // Call back functions for dbus obj
@@ -618,3 +658,41 @@ meego_imcontext_client_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray
     return TRUE;
 }
 
+gboolean
+meego_imcontext_client_set_language (MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                                     const gchar *language_id G_GNUC_UNUSED,
+                                     GError **error G_GNUC_UNUSED)
+{
+    STEP();
+    return TRUE;
+}
+
+gboolean
+meego_imcontext_client_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                                                          gint id,
+                                                          const gchar *target,
+                                                          const gchar *target_item,
+                                                          const gchar *attribute,
+                                                          GValue *value,
+                                                          GError **error G_GNUC_UNUSED)
+{
+    if (focused_imcontext) {
+        GVariant *variant_value = dbus_g_value_build_g_variant (value);
+
+        if (variant_value) {
+            if (g_variant_is_floating (variant_value)) {
+                g_variant_ref_sink (variant_value);
+            }
+            maliit_attribute_extension_registry_update_attribute (focused_imcontext->registry,
+                                                                  id,
+                                                                  target,
+                                                                  target_item,
+                                                                  attribute,
+                                                                  variant_value);
+            g_variant_unref (variant_value);
+            return TRUE;
+        }
+        g_warning ("Unknown data type: %s", G_VALUE_TYPE_NAME (value));
+    }
+    return FALSE;
+}
