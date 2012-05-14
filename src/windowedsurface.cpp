@@ -157,11 +157,7 @@ public:
 private:
     void updateVisibility()
     {
-        if (mActive && mVisible) {
-            mToplevel->show();
-        } else {
-            mToplevel->hide();
-        }
+        mToplevel->setVisible(mActive && mVisible);
     }
 
 protected:
