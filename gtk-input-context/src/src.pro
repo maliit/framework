@@ -1,4 +1,6 @@
-include(../../config.pri)
+TOP_DIR = ../..
+
+include($$TOP_DIR/config.pri)
 
 TEMPLATE = lib
 TARGET = maliit-gtk-im-common
@@ -40,20 +42,18 @@ SOURCES += \
     qt-keysym-map.cpp \
     debug.c \
 
-EXTRA_FILES = \
-    meego-im-client.xml \
-    meego-imcontext-dbus.xml
+include($$TOP_DIR/dbus_interfaces/dbus_interfaces.pri)
 
 # improxy
 # Generate dbus glue
 QMAKE_EXTRA_TARGETS += dbus_glue_improxy
 dbus_glue_improxy.target = $$OUT_PWD/meego-im-proxy-glue.h
 dbus_glue_improxy.output = $$OUT_PWD/meego-im-proxy-glue.h
-dbus_glue_improxy.depends = $$IN_PWD/meego-im-client.xml
+dbus_glue_improxy.depends = $$DBUS_SERVER_XML
 dbus_glue_improxy.commands = \
     dbus-binding-tool --prefix=meego_im_proxy --mode=glib-client \
         --output=$$OUT_PWD/meego-im-proxy-glue.h \
-        $$IN_PWD/meego-im-client.xml
+        $$DBUS_SERVER_XML
 
 # Use to work around the fact that qmake looks up the target for the generated header wrong
 QMAKE_EXTRA_TARGETS += fake_dbus_glue_improxy
@@ -65,11 +65,11 @@ fake_dbus_glue_improxy.depends = dbus_glue_improxy
 QMAKE_EXTRA_TARGETS += dbus_glue_imcontext
 dbus_glue_imcontext.target = $$OUT_PWD/meego-imcontext-dbus-glue.h
 dbus_glue_imcontext.output = $$OUT_PWD/meego-imcontext-dbus-glue.h
-dbus_glue_imcontext.depends = $$IN_PWD/meego-imcontext-dbus.xml
+dbus_glue_imcontext.depends = $$DBUS_CONTEXT_XML
 dbus_glue_imcontext.commands = \
     dbus-binding-tool --prefix=meego_imcontext_dbus --mode=glib-server \
         --output=$$OUT_PWD/meego-imcontext-dbus-glue.h \
-        $$IN_PWD/meego-imcontext-dbus.xml
+        $$DBUS_CONTEXT_XML
 
 # Use to work around the fact that qmake looks up the target for the generated header wrong
 QMAKE_EXTRA_TARGETS += fake_dbus_glue_imcontext
