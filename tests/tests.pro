@@ -45,9 +45,6 @@ x11 {
           ft_mimpluginmanager \
 }
 
-target.CONFIG += no_check_exist
-INSTALLS += target
-
 QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.CONFIG = recursive
