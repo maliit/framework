@@ -59,7 +59,7 @@ public:
         if (parent) {
             parentWidget = parent->mToplevel.data();
         }
-        mToplevel->setParent(parentWidget, static_cast<Qt::WindowFlags>(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint));
+        mToplevel->setParent(parentWidget, static_cast<Qt::WindowFlags>(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
         mToplevel->setAttribute(Qt::WA_X11DoNotAcceptFocus);
         mToplevel->setAutoFillBackground(false);
         mToplevel->setBackgroundRole(QPalette::NoRole);
