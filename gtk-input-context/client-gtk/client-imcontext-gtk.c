@@ -304,13 +304,17 @@ meego_imcontext_focus_out(GtkIMContext *context)
     MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
     DBG("imcontext = %p", imcontext);
 
-    meego_im_proxy_hide_input_method(imcontext->proxy);
-
-    // TODO: anything else than call "hideInputMethod" ?
-
     imcontext->focus_state = FALSE;
     focused_imcontext = NULL;
     focused_widget = NULL;
+
+    meego_imcontext_update_widget_info(imcontext);
+    meego_im_proxy_update_widget_info(imcontext->proxy,
+                                      imcontext->widget_state, TRUE);
+
+    meego_im_proxy_hide_input_method(imcontext->proxy);
+
+    // TODO: anything else than call "hideInputMethod" ?
 }
 
 
@@ -429,9 +433,17 @@ meego_imcontext_set_cursor_location(GtkIMContext *context, GdkRectangle *area)
 void
 meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
 {
-    GValue *focus_value;
+    /* Clear table */
+    g_hash_table_remove_all(imcontext->widget_state);
 
-    g_hash_table_remove_all (imcontext->widget_state);
+    /* Focus state */
+    GValue *focus_value = g_new0(GValue, 1);
+    g_value_init(focus_value, G_TYPE_BOOLEAN);
+    g_value_set_boolean(focus_value, imcontext->focus_state);
+    g_hash_table_insert(imcontext->widget_state, g_strdup(WIDGET_INFO_FOCUS_STATE), focus_value);
+
+    if (!imcontext->focus_state)
+        return;
 
     /* Window ID */
     if (imcontext->client_window) {
@@ -441,12 +453,6 @@ meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
         g_value_set_uint64(xid_value, xid);
         g_hash_table_insert(imcontext->widget_state, g_strdup(WIDGET_INFO_WIN_ID), xid_value);
     }
-
-    /* Focus state */
-    focus_value = g_new0(GValue, 1);
-    g_value_init(focus_value, G_TYPE_BOOLEAN);
-    g_value_set_boolean(focus_value, imcontext->focus_state);
-    g_hash_table_insert(imcontext->widget_state, g_strdup(WIDGET_INFO_FOCUS_STATE), focus_value);
 
     /* Attribute extensions */
     if (imcontext->client_window) {
