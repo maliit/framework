@@ -42,7 +42,16 @@ gboolean meego_imcontext_dbus_copy(MeegoIMContextDbusObj *obj, GError **error);
 gboolean meego_imcontext_dbus_paste(MeegoIMContextDbusObj *obj, GError **error);
 gboolean meego_imcontext_dbus_set_redirect_keys(MeegoIMContextDbusObj *obj, gboolean enabled, GError **error);
 gboolean meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray **rect, gboolean *valid, GError **error);
-
+gboolean meego_imcontext_dbus_set_language (MeegoIMContextDbusObj *obj,
+                                            const gchar *language_id,
+                                            GError **error);
+gboolean meego_imcontext_dbus_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj,
+                                                                 gint id,
+                                                                 const gchar *target,
+                                                                 const gchar *target_item,
+                                                                 const gchar *key,
+                                                                 GValue *value,
+                                                                 GError **error);
 
 #include "meego-imcontext-dbus-glue.h"
 
@@ -202,3 +211,24 @@ meego_imcontext_dbus_selection(MeegoIMContextDbusObj *obj, gboolean *valid, gcha
     return TRUE;
 }
 
+gboolean
+meego_imcontext_dbus_set_language (MeegoIMContextDbusObj *obj,
+                                   const gchar *language_id,
+                                   GError **error)
+{
+    STEP();
+    return TRUE;
+}
+
+gboolean
+meego_imcontext_dbus_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj,
+                                                        gint id,
+                                                        const gchar *target,
+                                                        const gchar *target_item,
+                                                        const gchar *key,
+                                                        GValue *value,
+                                                        GError **error)
+{
+    STEP();
+    return TRUE;
+}

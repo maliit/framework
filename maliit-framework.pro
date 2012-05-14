@@ -40,7 +40,13 @@ include(./config.pri)
 CONFIG += ordered
 TEMPLATE = subdirs
 
-SUBDIRS = common connection src maliit
+SUBDIRS = common
+
+!disable-dbus {
+    SUBDIRS += dbus_interfaces
+}
+
+SUBDIRS += connection src maliit
 
 !disable-dbus {
     SUBDIRS += passthroughserver gtk-input-context
