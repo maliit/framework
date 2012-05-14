@@ -8,7 +8,13 @@ INCLUDEPATH += \
     $$QUICK_IM_DIR \
     $$QUICK_FACTORY_DIR \
 
-QT += $$QT_WIDGETS quick1
+QT += $$QT_WIDGETS
+
+contains(QT_MAJOR_VERSION, 5) {
+    QT += quick1
+} else {
+    QT += declarative
+}
 
 # For MImInputContextConnection pulled in by TestInputMethodHost
 include($$TOP_DIR/connection/libmaliit-connection.pri)
