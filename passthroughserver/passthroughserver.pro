@@ -27,7 +27,6 @@ QMAKE_CLEAN += *.gcno *.gcda
 
 INSTALLS += target
 
-
 QMAKE_EXTRA_TARGETS += check-xml
 check-xml.target = check-xml
 check-xml.depends += $$TARGET
@@ -35,7 +34,3 @@ check-xml.depends += $$TARGET
 QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.depends += $$TARGET
-
-system(dpkg-architecture -ei386):SOFTWARE="-software -bypass-wm-hint "
-message(Argument added to im server: $$SOFTWARE $$TARGETDEVICE)
-
