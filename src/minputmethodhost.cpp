@@ -213,11 +213,9 @@ void MInputMethodHost::setScreenRegion(const QRegion &region)
     }
 }
 
-void MInputMethodHost::setInputMethodArea(const QRegion &region)
+void MInputMethodHost::setInputMethodArea(const QRegion &)
 {
-    if (enabled) {
-        connection->updateInputMethodArea(region);
-    }
+    // TODO: remove function since it is handled by surfaces now
 }
 
 void MInputMethodHost::setSelection(int start, int length)
