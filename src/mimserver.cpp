@@ -87,9 +87,3 @@ void MImServer::connectComponents()
     QObject::connect(d->serverLogic.data(), SIGNAL(applicationWindowGone()),
                      d->pluginManager, SLOT(hideActivePlugins()));
 }
-
-QWidget *MImServer::pluginsWidget()
-{
-    Q_D(MImServer);
-    return d->serverLogic->pluginsProxyWidget();
-}

@@ -45,8 +45,6 @@ public:
                        QObject *parent = 0);
     ~MImServer();
 
-    QWidget *pluginsWidget();
-
 private:
     void connectComponents();
 
