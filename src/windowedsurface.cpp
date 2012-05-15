@@ -121,7 +121,13 @@ public:
         mRelativePosition = position;
         QPoint parentPosition(0, 0);
         if (mParent) {
-            parentPosition = mParent->mToplevel->pos();
+            if (isWindow() && !mParent->isWindow()) {
+                parentPosition = mParent->mapToGlobal(QPoint(0, 0));
+            } else if (!isWindow() && mParent->isWindow()) {
+                // do nothing
+            } else {
+                parentPosition = mParent->mToplevel->pos();
+            }
         }
         mToplevel->move(parentPosition + mRelativePosition);
         mFactory->updateInputMethodArea();
@@ -182,6 +188,7 @@ private:
 
 protected:
     bool isWindow() const { return mToplevel->isWindow(); }
+    QPoint mapToGlobal(const QPoint &pos) const { return mToplevel->mapToGlobal(pos); }
 
     WindowedSurfaceFactory *mFactory;
     Options mOptions;
