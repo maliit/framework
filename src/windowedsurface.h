@@ -56,6 +56,7 @@ public:
 
 Q_SIGNALS:
     void inputMethodAreaChanged(const QRegion &region);
+    void surfaceWidgetCreated(QWidget *widget, int options);
 
 private:
     Q_SLOT void screenResized(int screen);
@@ -63,7 +64,6 @@ private:
     std::vector<QWeakPointer<WindowedSurface> > surfaces;
     bool mActive;
 };
-
 
 } // namespace Server
 } // namespace Maliit

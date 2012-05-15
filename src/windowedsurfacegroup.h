@@ -32,12 +32,17 @@ namespace Server {
 
 class WindowedSurfaceGroup;
 
-class WindowedSurfaceGroupFactory : public AbstractSurfaceGroupFactory
+class WindowedSurfaceGroupFactory : public QObject, public AbstractSurfaceGroupFactory
 {
+    Q_OBJECT
+
 public:
     QSharedPointer<AbstractSurfaceGroup> createSurfaceGroup();
 
     void applicationFocusChanged(WId winId);
+
+Q_SIGNALS:
+    void surfaceWidgetCreated(QWidget *widget, int options);
 
 private:
     QList<QWeakPointer<WindowedSurfaceGroup> > mGroups;
