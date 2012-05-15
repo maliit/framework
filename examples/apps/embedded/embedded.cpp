@@ -41,16 +41,11 @@ void MainWindow::initUI()
     if (imWidget) {
         imWidget->setParent(centralWidget());
         vbox->addWidget(imWidget);
-
-        // FIXME: hack to work around the fact that plugins expect a desktop sized widget
-        QSize desktopSize = QApplication::desktop()->size();
-        imWidget->setMinimumSize(desktopSize.width(), desktopSize.height() - 150);
     } else {
         qCritical() << "Unable to embedded Maliit input method widget";
     }
 
     centralWidget()->setLayout(vbox);
     show();
-    imWidget->hide();
 }
 
