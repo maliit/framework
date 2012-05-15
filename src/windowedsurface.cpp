@@ -15,6 +15,7 @@
  */
 
 #include "windowedsurface.h"
+#include "mimdummyinputcontext.h"
 #include "mimapphostedserverlogic.h"
 
 #include <maliit/plugins/abstractwidgetssurface.h>
@@ -238,14 +239,18 @@ public:
           AbstractGraphicsViewSurface(),
           mRoot(0)
     {
+        MIMDummyInputContext dummy;
+
         QGraphicsView *view = static_cast<QGraphicsView*>(mToplevel.data());
         view->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
         view->setOptimizationFlags(QGraphicsView::DontClipPainter | QGraphicsView::DontSavePainterState);
         view->setFrameShape(QFrame::NoFrame);
         view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        view->setInputContext(&dummy);
         QGraphicsScene *scene = new QGraphicsScene(view);
         view->setScene(scene);
+        view->setInputContext(0);
     }
 
     ~WindowedGraphicsViewSurface() {}
