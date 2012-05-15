@@ -97,9 +97,15 @@ public:
     {
         const QSize& desktopSize = QApplication::desktop()->screenGeometry().size();
 
-        if (mOptions & PositionCenterBottom) {
-            mToplevel->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2, desktopSize.height() - size.height()), size));
+        if (isWindow()) {
+            // stand-alone Maliit server
+            if (mOptions & PositionCenterBottom) {
+                mToplevel->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2, desktopSize.height() - size.height()), size));
+            } else {
+                mToplevel->resize(size);
+            }
         } else {
+            // application-hosted Maliit server
             mToplevel->resize(size);
         }
         mFactory->updateInputMethodArea();
@@ -175,6 +181,8 @@ private:
     }
 
 protected:
+    bool isWindow() const { return mToplevel->isWindow(); }
+
     WindowedSurfaceFactory *mFactory;
     Options mOptions;
     QSharedPointer<WindowedSurface> mParent;
