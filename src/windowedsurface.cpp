@@ -15,6 +15,7 @@
  */
 
 #include "windowedsurface.h"
+#include "mimapphostedserverlogic.h"
 
 #include <maliit/plugins/abstractwidgetssurface.h>
 
@@ -337,12 +338,14 @@ QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::
 {
     QSharedPointer<WindowedSurface> defaultSurfaceParent(qSharedPointerDynamicCast<WindowedSurface>(parent));
     if (options & Maliit::Plugins::AbstractSurface::TypeGraphicsView) {
-        QSharedPointer<WindowedSurface> newSurface(new WindowedGraphicsViewSurface(this, options, defaultSurfaceParent));
+        QSharedPointer<WindowedGraphicsViewSurface> newSurface(new WindowedGraphicsViewSurface(this, options, defaultSurfaceParent));
         surfaces.push_back(newSurface);
+        Q_EMIT surfaceWidgetCreated(newSurface->view(), options);
         return newSurface;
     } else if (options & Maliit::Plugins::AbstractSurface::TypeWidget) {
-        QSharedPointer<WindowedSurface> newSurface(new WindowedWidgetSurface(this, options, defaultSurfaceParent));
+        QSharedPointer<WindowedWidgetSurface> newSurface(new WindowedWidgetSurface(this, options, defaultSurfaceParent));
         surfaces.push_back(newSurface);
+        Q_EMIT surfaceWidgetCreated(newSurface->widget(), options);
         return newSurface;
     }
     return QSharedPointer<AbstractSurface>();

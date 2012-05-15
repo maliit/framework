@@ -53,17 +53,16 @@ QInputContext *MDirectInputContextPlugin::create(const QString &key)
     QInputContext *ctx = NULL;
 
     if (key == MaliitDirectInputContextName) {
-
         QSharedPointer<MImDirectServerConnection> serverConnection =
                 qSharedPointerObjectCast<MImDirectServerConnection>(Maliit::createServerConnection(MaliitDirectInputContextName));
         MImInputContextDirectConnection *icConnection = new MImInputContextDirectConnection;
         serverConnection->connectTo(icConnection);
 
         shared_ptr<MInputContextConnection> icConn(icConnection);
-        QSharedPointer<MImAbstractServerLogic> serverLogic(new MImAppHostedServerLogic);
+        QSharedPointer<MImAppHostedServerLogic> serverLogic(new MImAppHostedServerLogic);
         MImServer *imServer = new MImServer(serverLogic, icConn);
 
-        Maliit::InputMethod::instance()->setWidget(imServer->pluginsWidget());
+        Maliit::InputMethod::instance()->setWidget(serverLogic->pluginsProxyWidget());
 
         ctx = new MInputContext(serverConnection, MaliitDirectInputContextName, this);
         imServer->setParent(ctx);

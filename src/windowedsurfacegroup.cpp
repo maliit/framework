@@ -25,7 +25,7 @@ namespace Server {
 class WindowedSurfaceGroup : public AbstractSurfaceGroup
 {
 public:
-    WindowedSurfaceGroup();
+    WindowedSurfaceGroup(WindowedSurfaceFactory *surfaceFactory);
 
     virtual Maliit::Plugins::AbstractSurfaceFactory *factory();
 
@@ -40,9 +40,9 @@ private:
     QScopedPointer<WindowedSurfaceFactory> mSurfaceFactory;
 };
 
-WindowedSurfaceGroup::WindowedSurfaceGroup()
+WindowedSurfaceGroup::WindowedSurfaceGroup(WindowedSurfaceFactory *surfaceFactory)
     : AbstractSurfaceGroup(),
-      mSurfaceFactory(new WindowedSurfaceFactory)
+      mSurfaceFactory(surfaceFactory)
 {
     connect(mSurfaceFactory.data(), SIGNAL(inputMethodAreaChanged(QRegion)),
             this, SIGNAL(inputMethodAreaChanged(QRegion)));
@@ -74,7 +74,12 @@ void WindowedSurfaceGroup::applicationFocusChanged(WId winId)
 
 QSharedPointer<AbstractSurfaceGroup> WindowedSurfaceGroupFactory::createSurfaceGroup()
 {
-    QSharedPointer<WindowedSurfaceGroup> group(new WindowedSurfaceGroup);
+    WindowedSurfaceFactory *factory = new WindowedSurfaceFactory;
+
+    connect(factory, SIGNAL(surfaceWidgetCreated(QWidget*,int)),
+            this, SIGNAL(surfaceWidgetCreated(QWidget*,int)));
+
+    QSharedPointer<WindowedSurfaceGroup> group(new WindowedSurfaceGroup(factory));
     mGroups.push_back(group);
 
     return group;
