@@ -15,6 +15,7 @@
  */
 
 #include "windowedsurface.h"
+#include "mimdummyinputcontext.h"
 #include "mimapphostedserverlogic.h"
 
 #include <maliit/plugins/abstractwidgetssurface.h>
@@ -238,14 +239,22 @@ public:
           AbstractGraphicsViewSurface(),
           mRoot(0)
     {
+        MIMDummyInputContext dummy;
+
         QGraphicsView *view = static_cast<QGraphicsView*>(mToplevel.data());
         view->setViewportUpdateMode(QGraphicsView::MinimalViewportUpdate);
         view->setOptimizationFlags(QGraphicsView::DontClipPainter | QGraphicsView::DontSavePainterState);
         view->setFrameShape(QFrame::NoFrame);
         view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        // Calling QGraphicsView::setScene() indirectly calls QWidget::inputContext() on the view.  If there isn't
+        // an input context set on the widget, this calls QApplication::inputContext(), which leads to infinite
+        // recursion if surface creation happens during input method creation and QT_IM_MODULE is set (for example
+        // when embedding maliit-server in the application)
+        view->setInputContext(&dummy);
         QGraphicsScene *scene = new QGraphicsScene(view);
         view->setScene(scene);
+        view->setInputContext(0);
     }
 
     ~WindowedGraphicsViewSurface() {}
