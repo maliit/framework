@@ -228,6 +228,11 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     PluginDescription desc = { im, host, PluginState(),
                                Maliit::SwitchUndefined, fileName, surfaceGroup };
+
+    // Connect surface group signals
+    QObject::connect(surfaceGroup.data(), SIGNAL(inputMethodAreaChanged(QRegion)),
+                     mICConnection.get(), SLOT(updateInputMethodArea(QRegion)));
+
     plugins.insert(plugin, desc);
     host->setInputMethod(im);
 

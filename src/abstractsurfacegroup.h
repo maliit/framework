@@ -20,18 +20,27 @@
 #include <maliit/namespace.h>
 #include <maliit/plugins/abstractsurfacefactory.h>
 
+#include <QObject>
+
 namespace Maliit {
 namespace Server {
 
-class AbstractSurfaceGroup
+class AbstractSurfaceGroup : public QObject
 {
+    Q_OBJECT
+
 public:
+    AbstractSurfaceGroup();
+
     virtual Maliit::Plugins::AbstractSurfaceFactory *factory() = 0;
 
     virtual void activate() = 0;
     virtual void deactivate() = 0;
 
     virtual void setRotation(Maliit::OrientationAngle angle) = 0;
+
+Q_SIGNALS:
+    void inputMethodAreaChanged(const QRegion &inputMethodArea);
 };
 
 } // namespace Server

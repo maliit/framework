@@ -19,5 +19,10 @@
 namespace Maliit {
 namespace Server {
 
+AbstractSurfaceGroup::AbstractSurfaceGroup()
+    : QObject()
+{
+}
+
 }
 }

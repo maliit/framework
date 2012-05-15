@@ -52,10 +52,16 @@ public:
 
     void applicationFocusChanged(WId winId);
 
+    void updateInputMethodArea();
+
+Q_SIGNALS:
+    void inputMethodAreaChanged(const QRegion &region);
+
 private:
     Q_SLOT void screenResized(int screen);
 
     std::vector<QWeakPointer<WindowedSurface> > surfaces;
+    bool mActive;
 };
 
 
