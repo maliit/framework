@@ -44,6 +44,8 @@ WindowedSurfaceGroup::WindowedSurfaceGroup()
     : AbstractSurfaceGroup(),
       mSurfaceFactory(new WindowedSurfaceFactory)
 {
+    connect(mSurfaceFactory.data(), SIGNAL(inputMethodAreaChanged(QRegion)),
+            this, SIGNAL(inputMethodAreaChanged(QRegion)));
 }
 
 Maliit::Plugins::AbstractSurfaceFactory *WindowedSurfaceGroup::factory()

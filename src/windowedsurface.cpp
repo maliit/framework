@@ -46,8 +46,9 @@ namespace Server {
 class WindowedSurface : public virtual Maliit::Plugins::AbstractSurface
 {
 public:
-    WindowedSurface(AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent, QWidget *toplevel)
+    WindowedSurface(WindowedSurfaceFactory *factory, AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent, QWidget *toplevel)
         : AbstractSurface(),
+          mFactory(factory),
           mOptions(options),
           mParent(parent),
           mToplevel(toplevel),
@@ -99,6 +100,7 @@ public:
         } else {
             mToplevel->resize(size);
         }
+        mFactory->updateInputMethodArea();
     }
 
     QPoint relativePosition() const
@@ -114,6 +116,7 @@ public:
             parentPosition = mParent->mToplevel->pos();
         }
         mToplevel->move(parentPosition + mRelativePosition);
+        mFactory->updateInputMethodArea();
     }
 
 
@@ -154,13 +157,23 @@ public:
 #endif
     }
 
+    QRegion inputMethodArea()
+    {
+        if (!mToplevel->isVisible())
+            return QRegion();
+
+        return QRegion(mToplevel->geometry());
+    }
+
 private:
     void updateVisibility()
     {
         mToplevel->setVisible(mActive && mVisible);
+        mFactory->updateInputMethodArea();
     }
 
 protected:
+    WindowedSurfaceFactory *mFactory;
     Options mOptions;
     QSharedPointer<WindowedSurface> mParent;
     QScopedPointer<QWidget> mToplevel;
@@ -219,8 +232,8 @@ public:
 class WindowedGraphicsViewSurface : public WindowedSurface, public Maliit::Plugins::AbstractGraphicsViewSurface
 {
 public:
-    WindowedGraphicsViewSurface(AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent)
-        : WindowedSurface(options, parent, new GraphicsView),
+    WindowedGraphicsViewSurface(WindowedSurfaceFactory *factory, AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent)
+        : WindowedSurface(factory, options, parent, new GraphicsView),
           AbstractGraphicsViewSurface(),
           mRoot(0)
     {
@@ -287,8 +300,8 @@ private:
 class WindowedWidgetSurface : public WindowedSurface, public Maliit::Plugins::AbstractWidgetSurface
 {
 public:
-    WindowedWidgetSurface(AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent)
-        : WindowedSurface(options, parent, new QWidget),
+    WindowedWidgetSurface(WindowedSurfaceFactory *factory, AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent)
+        : WindowedSurface(factory, options, parent, new QWidget),
           AbstractWidgetSurface()
     {}
 
@@ -300,6 +313,7 @@ public:
 WindowedSurfaceFactory::WindowedSurfaceFactory()
     : AbstractSurfaceFactory()
     , surfaces()
+    , mActive(false)
 {
     connect(QApplication::desktop(), SIGNAL(resized(int)),
             this, SLOT(screenResized(int)));
@@ -323,11 +337,11 @@ QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::
 {
     QSharedPointer<WindowedSurface> defaultSurfaceParent(qSharedPointerDynamicCast<WindowedSurface>(parent));
     if (options & Maliit::Plugins::AbstractSurface::TypeGraphicsView) {
-        QSharedPointer<WindowedSurface> newSurface(new WindowedGraphicsViewSurface(options, defaultSurfaceParent));
+        QSharedPointer<WindowedSurface> newSurface(new WindowedGraphicsViewSurface(this, options, defaultSurfaceParent));
         surfaces.push_back(newSurface);
         return newSurface;
     } else if (options & Maliit::Plugins::AbstractSurface::TypeWidget) {
-        QSharedPointer<WindowedSurface> newSurface(new WindowedWidgetSurface(options, defaultSurfaceParent));
+        QSharedPointer<WindowedSurface> newSurface(new WindowedWidgetSurface(this, options, defaultSurfaceParent));
         surfaces.push_back(newSurface);
         return newSurface;
     }
@@ -336,6 +350,8 @@ QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::
 
 void WindowedSurfaceFactory::activate()
 {
+    mActive = true;
+
     Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
         QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
         if (surface)
@@ -345,6 +361,8 @@ void WindowedSurfaceFactory::activate()
 
 void WindowedSurfaceFactory::deactivate()
 {
+    mActive = false;
+
     Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
         QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
         if (surface)
@@ -374,6 +392,23 @@ void WindowedSurfaceFactory::screenResized(int)
         }
     }
     Q_EMIT screenSizeChanged(screenSize());
+}
+
+void WindowedSurfaceFactory::updateInputMethodArea()
+{
+    if (!mActive)
+        return;
+
+    QRegion inputMethodArea;
+
+    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
+        QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
+        if (surface && !surface->parent()) {
+            inputMethodArea |= surface->inputMethodArea();
+        }
+    }
+
+    Q_EMIT inputMethodAreaChanged(inputMethodArea);
 }
 
 } // namespace Server
