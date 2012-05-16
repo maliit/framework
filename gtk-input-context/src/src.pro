@@ -78,3 +78,21 @@ dbus_glue_imcontext.commands = \
 QMAKE_EXTRA_TARGETS += fake_dbus_glue_imcontext
 fake_dbus_glue_imcontext.target = meego-imcontext-dbus-glue.h
 fake_dbus_glue_imcontext.depends = dbus_glue_imcontext
+
+GLIB_GENMARSHAL_LIST += maliitmarshalers.list
+
+OTHER_FILES += maliitmarshalers.list
+
+glib_genmarshal_header.name = glib-genmarshal header ${QMAKE_FILE_IN}
+glib_genmarshal_header.commands = glib-genmarshal --prefix=_maliit_marshal --header --g-fatal-warnings ${QMAKE_FILE_IN} > ${QMAKE_FILE_OUT}
+glib_genmarshal_header.output = ${QMAKE_FILE_IN_BASE}.h
+glib_genmarshal_header.variable_out = HEADERS
+glib_genmarshal_header.input = GLIB_GENMARSHAL_LIST
+
+glib_genmarshal_source.name = glib-genmarshal source ${QMAKE_FILE_IN}
+glib_genmarshal_source.commands = glib-genmarshal --prefix=_maliit_marshal --body --g-fatal-warnings ${QMAKE_FILE_IN} > ${QMAKE_FILE_OUT}
+glib_genmarshal_source.output = ${QMAKE_FILE_IN_BASE}.c
+glib_genmarshal_source.variable_out = SOURCES
+glib_genmarshal_source.input = GLIB_GENMARSHAL_LIST
+
+QMAKE_EXTRA_COMPILERS += glib_genmarshal_header glib_genmarshal_source
