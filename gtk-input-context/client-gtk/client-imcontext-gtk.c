@@ -51,6 +51,17 @@ static void meego_imcontext_set_client_window(GtkIMContext *context, GdkWindow *
 static void meego_imcontext_set_cursor_location(GtkIMContext *context, GdkRectangle *area);
 static void meego_imcontext_update_widget_info(MeegoIMContext *imcontext);
 
+static void meego_imcontext_im_initiated_hide(MeegoIMContextDbusObj *obj, gpointer user_data);
+static void meego_imcontext_commit_string(MeegoIMContextDbusObj *obj, char *string, int replacement_start,
+                                          int replacement_length, int cursor_pos, gpointer user_data);
+static void meego_imcontext_update_preedit(MeegoIMContextDbusObj *obj, const char *string, GPtrArray *formatListData, gint32 replaceStart, gint32 replaceLength, gint32 cursorPos, gpointer user_data);
+static void meego_imcontext_key_event(MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
+                                      gboolean auto_repeat, int count, gpointer user_data);
+static void meego_imcontext_copy(MeegoIMContextDbusObj *obj, gpointer user_data);
+static void meego_imcontext_paste(MeegoIMContextDbusObj *obj, gpointer user_data);
+static void meego_imcontext_set_redirect_keys(MeegoIMContextDbusObj *obj, gboolean enabled, gpointer user_data);
+static void meego_imcontext_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj, gint id, const gchar *target, const gchar *target_item, const gchar *attribute, GVariant *variant_value, gpointer user_data);
+
 static GtkIMContext *meego_imcontext_get_slave_imcontext(void);
 
 static const gchar *const WIDGET_INFO_WIN_ID = "winId";
@@ -240,6 +251,23 @@ meego_imcontext_init(MeegoIMContext *self)
     self->proxy = meego_im_proxy_get_singleton();
     self->connector = meego_im_connector_get_singleton();
     self->registry = maliit_attribute_extension_registry_get_instance();
+
+    g_signal_connect(self->dbusobj, "im-initiated-hide",
+                     G_CALLBACK(meego_imcontext_im_initiated_hide), self);
+    g_signal_connect(self->dbusobj, "commit-string",
+                     G_CALLBACK(meego_imcontext_commit_string), self);
+    g_signal_connect(self->dbusobj, "update-preedit",
+                     G_CALLBACK(meego_imcontext_update_preedit), self);
+    g_signal_connect(self->dbusobj, "key-event",
+                     G_CALLBACK(meego_imcontext_key_event), self);
+    g_signal_connect(self->dbusobj, "copy",
+                     G_CALLBACK(meego_imcontext_copy), self);
+    g_signal_connect(self->dbusobj, "paste",
+                     G_CALLBACK(meego_imcontext_paste), self);
+    g_signal_connect(self->dbusobj, "set-redirect-keys",
+                     G_CALLBACK(meego_imcontext_set_redirect_keys), self);
+    g_signal_connect(self->dbusobj, "notify-extended-attribute-changed",
+                     G_CALLBACK(meego_imcontext_notify_extended_attribute_changed), self);
 }
 
 
@@ -455,20 +483,14 @@ meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
 }
 
 // Call back functions for dbus obj
-
-gboolean
-meego_imcontext_client_activation_lost_event(MeegoIMContextDbusObj *obj)
+void
+meego_imcontext_im_initiated_hide(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                                  gpointer user_data)
 {
-    UNUSED(obj);
-    STEP();
-    return TRUE;
-}
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+    if (imcontext != focused_imcontext)
+        return;
 
-
-gboolean
-meego_imcontext_client_im_initiated_hide(MeegoIMContextDbusObj *obj)
-{
-    UNUSED(obj);
     if (focused_imcontext && focused_imcontext->client_window) {
         gpointer user_data = NULL;
         GtkWidget* parent_widget = NULL;
@@ -482,18 +504,25 @@ meego_imcontext_client_im_initiated_hide(MeegoIMContextDbusObj *obj)
         }
         if (parent_widget) {
             gtk_window_set_focus (GTK_WINDOW (parent_widget), NULL);
-            return TRUE;
+            return;
         }
     }
-    return FALSE;
 }
 
-
-gboolean
-meego_imcontext_client_commit_string(MeegoIMContextDbusObj *obj, char *string)
+void
+meego_imcontext_commit_string(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                              char *string,
+                              int replacement_start G_GNUC_UNUSED,
+                              int replacement_length G_GNUC_UNUSED,
+                              int cursor_pos G_GNUC_UNUSED,
+                              gpointer user_data)
 {
-    UNUSED(obj);
     DBG("string is:%s", string);
+
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+    if (imcontext != focused_imcontext)
+        return;
+
     if (focused_imcontext) {
         g_free(focused_imcontext->preedit_str);
         focused_imcontext->preedit_str = g_strdup("");
@@ -501,20 +530,22 @@ meego_imcontext_client_commit_string(MeegoIMContextDbusObj *obj, char *string)
         g_signal_emit_by_name(focused_imcontext, "preedit-changed");
         g_signal_emit_by_name(focused_imcontext, "commit", string);
     }
-
-    return TRUE;
 }
 
-
-gboolean
-meego_imcontext_client_update_preedit(MeegoIMContextDbusObj *obj, const char *string, GPtrArray *formatListData, gint32 replaceStart, gint32 replaceLength, gint32 cursorPos, GError **error)
+void
+meego_imcontext_update_preedit(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                               const char *string,
+                               GPtrArray *formatListData G_GNUC_UNUSED,
+                               gint32 replaceStart G_GNUC_UNUSED,
+                               gint32 replaceLength G_GNUC_UNUSED,
+                               gint32 cursorPos,
+                               gpointer user_data)
 {
     STEP();
-    UNUSED(obj);
-    UNUSED(formatListData)
-    UNUSED(replaceStart)
-    UNUSED(replaceLength)
-    UNUSED(error)
+
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+    if (imcontext != focused_imcontext)
+        return;
 
     if (focused_imcontext) {
         g_free(focused_imcontext->preedit_str);
@@ -522,65 +553,52 @@ meego_imcontext_client_update_preedit(MeegoIMContextDbusObj *obj, const char *st
         focused_imcontext->preedit_cursor_pos = cursorPos + g_utf8_strlen(string, -1) + 1;
         g_signal_emit_by_name(focused_imcontext, "preedit-changed");
     }
-
-    return TRUE;
 }
 
-
-gboolean
-meego_imcontext_client_key_event(MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
-                                 gboolean auto_repeat, int count)
+void
+meego_imcontext_key_event(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                          int type,
+                          int key,
+                          int modifiers,
+                          char *text,
+                          gboolean auto_repeat G_GNUC_UNUSED,
+                          int count G_GNUC_UNUSED,
+                          gpointer user_data)
 {
-    UNUSED(obj);
-    UNUSED(count);
-    UNUSED(auto_repeat);
     GdkEventKey *event = NULL;
     GdkWindow *window = NULL;
 
     STEP();
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+    if (imcontext != focused_imcontext)
+        return;
+
     if (focused_imcontext)
         window = focused_imcontext->client_window;
 
     event = qt_key_event_to_gdk(type, key, modifiers, text, window);
     if (!event)
-        return TRUE;
+        return;
+
     event->send_event = TRUE;
     event->state |= IM_FORWARD_MASK;
 
     gdk_event_put((GdkEvent *)event);
     gdk_event_free((GdkEvent *)event);
-    return TRUE;
 }
 
-
-gboolean
-meego_imcontext_client_update_input_method_area(MeegoIMContextDbusObj *obj, GPtrArray *data)
+void
+meego_imcontext_copy(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                     gpointer user_data)
 {
-    UNUSED(obj);
-    UNUSED(data);
-    STEP();
-    return TRUE;
-}
-
-
-gboolean
-meego_imcontext_client_set_global_correction_enabled(MeegoIMContextDbusObj *obj, gboolean correction)
-{
-    UNUSED(obj);
-    UNUSED(correction);
-    STEP();
-    return TRUE;
-}
-
-
-gboolean
-meego_imcontext_client_copy(MeegoIMContextDbusObj *obj)
-{
-    UNUSED(obj);
     GdkWindow *window = NULL;
     GdkEventKey *event = NULL;
 
     STEP();
+
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+    if (imcontext != focused_imcontext)
+        return;
 
     if (focused_imcontext)
         window = focused_imcontext->client_window;
@@ -600,19 +618,20 @@ meego_imcontext_client_copy(MeegoIMContextDbusObj *obj)
         gdk_event_put((GdkEvent *)event);
         gdk_event_free((GdkEvent *)event);
     }
-
-    return TRUE;
 }
 
-
-gboolean
-meego_imcontext_client_paste(MeegoIMContextDbusObj *obj)
+void
+meego_imcontext_paste(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                      gpointer user_data)
 {
-    UNUSED(obj);
     GdkWindow *window = NULL;
     GdkEventKey *event = NULL;
 
     STEP();
+
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+    if (imcontext != focused_imcontext)
+        return;
 
     if (focused_imcontext)
         window = focused_imcontext->client_window;
@@ -632,67 +651,34 @@ meego_imcontext_client_paste(MeegoIMContextDbusObj *obj)
         gdk_event_put((GdkEvent *)event);
         gdk_event_free((GdkEvent *)event);
     }
-
-
-    return TRUE;
 }
 
-
-gboolean
-meego_imcontext_client_set_redirect_keys(MeegoIMContextDbusObj *obj, gboolean enabled)
+void
+meego_imcontext_set_redirect_keys(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                                  gboolean enabled,
+                                  gpointer user_data G_GNUC_UNUSED)
 {
-    UNUSED(obj);
     DBG("enabled = %d", enabled);
     redirect_keys = enabled;
-    return TRUE;
 }
 
-
-gboolean
-meego_imcontext_client_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray **rect, gboolean *valid)
+void
+meego_imcontext_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                                                   gint id,
+                                                   const gchar *target,
+                                                   const gchar *target_item,
+                                                   const gchar *attribute,
+                                                   GVariant *variant_value,
+                                                   gpointer user_data G_GNUC_UNUSED)
 {
-    UNUSED(obj);
-    UNUSED(rect);
-    UNUSED(valid);
-    STEP();
-    return TRUE;
-}
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+    if (imcontext != focused_imcontext)
+        return;
 
-gboolean
-meego_imcontext_client_set_language (MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
-                                     const gchar *language_id G_GNUC_UNUSED,
-                                     GError **error G_GNUC_UNUSED)
-{
-    STEP();
-    return TRUE;
-}
-
-gboolean
-meego_imcontext_client_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
-                                                          gint id,
-                                                          const gchar *target,
-                                                          const gchar *target_item,
-                                                          const gchar *attribute,
-                                                          GValue *value,
-                                                          GError **error G_GNUC_UNUSED)
-{
-    if (focused_imcontext) {
-        GVariant *variant_value = dbus_g_value_build_g_variant (value);
-
-        if (variant_value) {
-            if (g_variant_is_floating (variant_value)) {
-                g_variant_ref_sink (variant_value);
-            }
-            maliit_attribute_extension_registry_update_attribute (focused_imcontext->registry,
-                                                                  id,
-                                                                  target,
-                                                                  target_item,
-                                                                  attribute,
-                                                                  variant_value);
-            g_variant_unref (variant_value);
-            return TRUE;
-        }
-        g_warning ("Unknown data type: %s", G_VALUE_TYPE_NAME (value));
-    }
-    return FALSE;
+    maliit_attribute_extension_registry_update_attribute (focused_imcontext->registry,
+                                                          id,
+                                                          target,
+                                                          target_item,
+                                                          attribute,
+                                                          variant_value);
 }
