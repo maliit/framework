@@ -20,13 +20,15 @@
 #include <QtDebug>
 
 
-MainWindow::MainWindow()
+MainWindow::MainWindow() :
+    enable_all("Enable all keyboard layouts")
 {
     QGridLayout *l = new QGridLayout(this);
 
     l->setColumnStretch(1, 1);
     l->addWidget(new QLabel("Layout"), 0, 0);
     l->addWidget(&language_selector, 0, 1);
+    l->addWidget(&enable_all, 1, 1);
 
     maliit_settings = Maliit::SettingsManager::create();
     maliit_settings->setParent(this);
@@ -37,6 +39,8 @@ MainWindow::MainWindow()
             this, SLOT(connected()));
     connect(&language_selector, SIGNAL(currentIndexChanged(int)),
             this, SLOT(setLanguage(int)));
+    connect(&enable_all, SIGNAL(clicked()),
+            this, SLOT(enableAllLayouts()));
 }
 
 void MainWindow::connected()
@@ -56,8 +60,7 @@ void MainWindow::pluginSettingsReceived(const QList<QSharedPointer<Maliit::Plugi
 
         Q_FOREACH (const QSharedPointer<Maliit::SettingsEntry> &entry, setting->configurationEntries()) {
             if (entry->key() == "/maliit/onscreen/enabled") {
-                // force-activate all layouts, for testing
-                entry->set(entry->attributes()[Maliit::SettingEntryAttributes::valueDomain]);
+                enabled_entry = entry;
             } else if (entry->key() == "/maliit/onscreen/active") {
                 language_entry = entry;
 
@@ -85,6 +88,11 @@ void MainWindow::setLanguage(int index)
     qDebug() << "Setting layout" << language_selector.itemData(index);
 
     language_entry->set(language_selector.itemData(index));
+}
+
+void MainWindow::enableAllLayouts()
+{
+    enabled_entry->set(enabled_entry->attributes()[Maliit::SettingEntryAttributes::valueDomain]);
 }
 
 void MainWindow::languageChanged()

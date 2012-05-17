@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include <QComboBox>
+#include <QPushButton>
 
 
 class MainWindow : public QWidget
@@ -32,11 +33,13 @@ private Q_SLOTS:
 
     void setLanguage(int index);
     void languageChanged();
+    void enableAllLayouts();
 
 private:
     Maliit::SettingsManager *maliit_settings;
-    QSharedPointer<Maliit::SettingsEntry> language_entry;
+    QSharedPointer<Maliit::SettingsEntry> language_entry, enabled_entry;
     QComboBox language_selector;
+    QPushButton enable_all;
 };
 
 #endif
