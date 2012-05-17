@@ -23,6 +23,7 @@
 #include "dbusserverconnection.h"
 #include "dbusinputcontextconnection.h"
 #endif
+#include "mimdirectserverconnection.h"
 
 namespace Maliit {
 namespace DBus {
@@ -71,4 +72,41 @@ MInputContextConnection *createInputContextConnectionWithFixedAddress(const QStr
 }
 
 } // namespace DBus
+
+QSharedPointer<MImServerConnection> createServerConnection(const QString &connectionType)
+{
+    typedef QSharedPointer<MImServerConnection> ConnectionPtr;
+    static QWeakPointer<MImServerConnection> cached_connection;
+
+    if (ConnectionPtr connection = cached_connection.toStrongRef())
+        return connection;
+
+    if (connectionType == MALIIT_INPUTCONTEXT_NAME) {
+#ifndef M_IM_DISABLE_DBUS
+        const QByteArray overriddenAddress = qgetenv("MALIIT_SERVER_ADDRESS");
+        ConnectionPtr connection;
+
+        if (overriddenAddress.isEmpty()) {
+            cached_connection = connection = ConnectionPtr(Maliit::DBus::createServerConnectionWithDynamicAddress());
+        } else {
+            cached_connection = connection = ConnectionPtr(Maliit::DBus::createServerConnectionWithFixedAddress(overriddenAddress));
+        }
+
+        return connection;
+#else
+        qCritical("This connection type to Maliit server is not available since DBus support is disabled");
+#endif
+    } else if (connectionType == MALIIT_INPUTCONTEXT_NAME"Direct") {
+        ConnectionPtr connection(new MImDirectServerConnection);
+
+        cached_connection = connection;
+
+        return connection;
+    } else {
+        qCritical("Invalid connection type, unable to create connection to Maliit server");
+
+        return ConnectionPtr();
+    }
+}
+
 } // namespace Maliit

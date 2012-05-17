@@ -14,10 +14,7 @@
 #include <maliit/settingdata.h>
 #include <maliit/attributeextension.h>
 #include "mimserverconnection.h"
-#include "mimdirectserverconnection.h"
-#ifndef M_IM_DISABLE_DBUS
 #include "connectionfactory.h"
-#endif
 #include "pluginsettings.h"
 
 
@@ -26,7 +23,7 @@ namespace Maliit {
 struct SettingsManagerPrivate
 {
     QSharedPointer<AttributeExtension> settings_list_changed;
-    MImServerConnection *connection;
+    QSharedPointer<MImServerConnection> connection;
 };
 
 
@@ -44,43 +41,20 @@ QString SettingsManager::preferredDescriptionLocale()
 
 SettingsManager *SettingsManager::create()
 {
-    QByteArray im_module = qgetenv("QT_IM_MODULE");
-    MImServerConnection *serverConnection;
-
-    if (im_module == MALIIT_INPUTCONTEXT_NAME"Direct") {
-        serverConnection = MImDirectServerConnection::instance();
-    } else if (im_module == MALIIT_INPUTCONTEXT_NAME) {
-#ifndef M_IM_DISABLE_DBUS
-        const QByteArray overriddenAddress = qgetenv("MALIIT_SERVER_ADDRESS");
-
-        if (overriddenAddress.isEmpty()) {
-            serverConnection = Maliit::DBus::createServerConnectionWithDynamicAddress();
-        } else {
-            serverConnection = Maliit::DBus::createServerConnectionWithFixedAddress(overriddenAddress);
-        }
-#else
-        qCritical("This QT_IM_MODULE is not available since DBus support is disabled");
-#endif
-    } else {
-        qCritical("Invalid value for QT_IM_MODULE, unable to create connection for settings");
-
-        return 0;
-    }
-
-    return new SettingsManager(serverConnection);
+    return new SettingsManager(createServerConnection(qgetenv("QT_IM_MODULE")));
 }
 
-SettingsManager::SettingsManager(MImServerConnection *connection) :
+SettingsManager::SettingsManager(QSharedPointer<MImServerConnection> connection) :
     d_ptr(new SettingsManagerPrivate)
 {
     Q_D(SettingsManager);
 
     d->connection = connection;
 
-    connect(d->connection, SIGNAL(pluginSettingsReceived(QList<MImPluginSettingsInfo>)),
+    connect(d->connection.data(), SIGNAL(pluginSettingsReceived(QList<MImPluginSettingsInfo>)),
             this, SLOT(onPluginSettingsReceived(QList<MImPluginSettingsInfo>)));
-    connect(d->connection, SIGNAL(connected()), this, SIGNAL(connected()));
-    connect(d->connection, SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+    connect(d->connection.data(), SIGNAL(connected()), this, SIGNAL(connected()));
+    connect(d->connection.data(), SIGNAL(disconnected()), this, SIGNAL(disconnected()));
 }
 
 SettingsManager::~SettingsManager()

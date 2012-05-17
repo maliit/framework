@@ -8,14 +8,17 @@ TARGET = $$MALIIT_CONNECTION_LIB
 
 include($$TOP_DIR/common/libmaliit-common.pri)
 
+DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 CONFIG += link_pkgconfig
 
 # Interface classes
 PUBLIC_HEADERS += \
+    connectionfactory.h \
     mimserverconnection.h \
     minputcontextconnection.h \
 
 PUBLIC_SOURCES += \
+    connectionfactory.cpp \
     mimserverconnection.cpp \
     minputcontextconnection.cpp \
 
@@ -192,12 +195,6 @@ qdbus-dbus-connection|glib-dbus-connection {
     disable-dbus-activation {
         DEFINES += NO_DBUS_ACTIVATION
     }
-
-    PUBLIC_HEADERS += \
-        connectionfactory.h \
-
-    PUBLIC_SOURCES += \
-        connectionfactory.cpp \
 
     PRIVATE_HEADERS += \
         inputcontextdbusaddress.h \

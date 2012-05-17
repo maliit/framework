@@ -62,7 +62,7 @@ Q_SIGNALS:
     void disconnected();
 
 private:
-    SettingsManager(MImServerConnection *connection);
+    SettingsManager(QSharedPointer<MImServerConnection> connection);
 
     Q_SLOT void onPluginSettingsReceived(const QList<MImPluginSettingsInfo> &settings);
 
