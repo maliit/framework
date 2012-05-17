@@ -22,7 +22,7 @@ system(mkdir -p $$SDK_BUILD_DIR)
 
 # When creating the SDK, qmake will complain (and fail on newer Qt)
 # if the referenced pkg-config IDs cannot be found
-PKG_CONFIG_PATH = $$OUT_PWD/../maliit/:$$OUT_PWD/../src/:$$OUT_PWD/../common/:$$OUT_PWD/../connection/::$$OUT_PWD/../maliit-plugins-quick/input-method
+PKG_CONFIG_PATH = $$OUT_PWD/../maliit/:$$OUT_PWD/../maliit-glib/:$$OUT_PWD/../src/:$$OUT_PWD/../common/:$$OUT_PWD/../connection/:$$OUT_PWD/../maliit-plugins-quick/input-method
 
 sdk.name = create_sdk
 sdk.CONFIG += target_predeps no_link
