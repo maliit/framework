@@ -1,3 +1,18 @@
+NEXT
+======
+
+CHANGES SINCE 0.92.0
+* Add settings API
+  - Add client API in libmaliit to enumarate and update settings
+  - Allow changing enabled/active Maliit plugins
+* Changed the format for onscreen/enabled and onscreen/active settings:
+  onscreen/active is a single string with format <plugin id>:<subview id>
+  (es. "libmaliit-keyboard-plugin.so:en_gb") and onscreen/enabled is a list
+  of strings in the same format as onscreen/active
+
+BUG FIXES
+* Fixes: MALIIT#127 - Add settings API, as an integration point for settings applets
+
 0.92.0
 ======
 
