@@ -22,8 +22,7 @@ HEADERS += \
 
 SOURCES += \
     maliitattributeextension.c \
-    maliitattributeextensionregistry.c \
-    maliitmarshallers.c
+    maliitattributeextensionregistry.c
 
 target.path += $$M_IM_INSTALL_LIBS
 
@@ -61,25 +60,20 @@ OTHER_FILES += \
     libmaliit-glib.pri
 
 # generate marshallers
+GLIB_GENMARSHAL_LIST += maliitmarshallers.list
 
-QMAKE_EXTRA_TARGETS += maliit_marshallers_h maliit_marshallers_c
-mallit_marshallers_h.target = $$OUT_PWD/maliitmarshallers.h
-maliit_marshallers_h.output = $$OUT_PWD/maliitmarshallers.h
-maliit_marshallers_h.depends = $$IN_PWD/maliitmarshallers.list
-maliit_marshallers_h.commands = \
-    glib-genmarshal --prefix=maliit_marshal --header --internal --g-fatal-warnings --stdinc $$IN_PWD/maliitmarshallers.list >$$OUT_PWD/maliitmarshallers.h
+OTHER_FILES += maliitmarshallers.list
 
-mallit_marshallers_c.target = $$OUT_PWD/maliitmarshallers.c
-maliit_marshallers_c.output = $$OUT_PWD/maliitmarshallers.c
-maliit_marshallers_c.depends = $$IN_PWD/maliitmarshallers.list
-maliit_marshallers_c.commands = \
-    glib-genmarshal --prefix=maliit_marshal --body --internal --g-fatal-warnings --stdinc $$IN_PWD/maliitmarshallers.list >$$OUT_PWD/maliitmarshallers.c
+glib_genmarshal_header.name = glib-genmarshal header ${QMAKE_FILE_IN}
+glib_genmarshal_header.commands = glib-genmarshal --prefix=maliit_marshal --header --g-fatal-warnings ${QMAKE_FILE_IN} > ${QMAKE_FILE_OUT}
+glib_genmarshal_header.output = ${QMAKE_FILE_IN_BASE}.h
+glib_genmarshal_header.variable_out = HEADERS
+glib_genmarshal_header.input = GLIB_GENMARSHAL_LIST
 
-# Use to work around the fact that qmake looks up the target for the generated header wrong
-QMAKE_EXTRA_TARGETS += fake_maliit_marshallers_h fake_maliit_marshallers_c
+glib_genmarshal_source.name = glib-genmarshal source ${QMAKE_FILE_IN}
+glib_genmarshal_source.commands = glib-genmarshal --prefix=maliit_marshal --body --g-fatal-warnings ${QMAKE_FILE_IN} > ${QMAKE_FILE_OUT}
+glib_genmarshal_source.output = ${QMAKE_FILE_IN_BASE}.c
+glib_genmarshal_source.variable_out = SOURCES
+glib_genmarshal_source.input = GLIB_GENMARSHAL_LIST
 
-fake_maliit_marshallers_h.target = maliitmarshallers.h
-fake_maliit_marshallers_h.depends = maliit_marshallers_h
-
-fake_maliit_marshallers_c.target = maliitmarshallers.c
-fake_maliit_marshallers_c.depends = maliit_marshallers_c
+QMAKE_EXTRA_COMPILERS += glib_genmarshal_header glib_genmarshal_source
