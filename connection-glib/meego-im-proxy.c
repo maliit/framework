@@ -25,8 +25,6 @@
 #include "meego-im-proxy-glue.h"
 #include "debug.h"
 
-#include <maliit-glib/maliitattributeextensionregistry.h>
-
 #include <dbus/dbus-glib.h>
 G_DEFINE_TYPE(MeegoIMProxy, meego_im_proxy, G_TYPE_OBJECT);
 
@@ -39,6 +37,7 @@ static void meego_im_proxy_init(MeegoIMProxy *meego_im_proxy);
 
 enum {
     SIGNAL_CONNECTION_DROPPED = 0,
+    SIGNAL_CONNECTION_ESTABLISHED,
     N_SIGNALS
 };
 
@@ -47,10 +46,6 @@ static guint meego_im_proxy_signals[N_SIGNALS];
 /* Private struct */
 struct _MeegoImProxyPrivate {
     DBusGProxy *dbusproxy;
-    MaliitAttributeExtensionRegistry *registry;
-    guint extension_registered_id;
-    guint extension_unregistered_id;
-    guint extension_changed_id;
 };
 
 static void
@@ -79,21 +74,6 @@ meego_im_proxy_finalize(GObject *object)
     MeegoIMProxy *proxy = MEEGO_IM_PROXY (object);
     MeegoImProxyPrivate *priv = proxy->priv;
 
-    if (priv->extension_registered_id) {
-        g_signal_handler_disconnect (priv->registry, priv->extension_registered_id);
-        priv->extension_registered_id = 0;
-    }
-    if (priv->extension_unregistered_id) {
-        g_signal_handler_disconnect (priv->registry, priv->extension_unregistered_id);
-        priv->extension_unregistered_id = 0;
-    }
-    if (priv->extension_changed_id) {
-        g_signal_handler_disconnect (priv->registry, priv->extension_changed_id);
-        priv->extension_changed_id = 0;
-    }
-
-    g_clear_object (&priv->registry);
-
     G_OBJECT_CLASS(meego_im_proxy_parent_class)->finalize(object);
 }
 
@@ -109,64 +89,11 @@ meego_im_proxy_class_init(MeegoIMProxyClass *klass)
         g_signal_new("connection-dropped", G_TYPE_FROM_CLASS(klass),
                      0, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 
+    meego_im_proxy_signals[SIGNAL_CONNECTION_ESTABLISHED] =
+        g_signal_new("connection-established", G_TYPE_FROM_CLASS(klass),
+                     0, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+
     g_type_class_add_private(klass, sizeof(MeegoImProxyPrivate));
-}
-
-static void
-meego_im_proxy_extension_registered (MeegoIMProxy *proxy,
-                                     gint id,
-                                     const gchar *filename,
-                                     gpointer user_data G_GNUC_UNUSED)
-{
-    meego_im_proxy_register_extension (proxy, id, filename);
-}
-
-static void
-meego_im_proxy_extension_unregistered (MeegoIMProxy *proxy,
-                                       gint id,
-                                       gpointer user_data G_GNUC_UNUSED)
-{
-    meego_im_proxy_unregister_extension (proxy, id);
-}
-
-#ifndef G_VALUE_INIT
-#define G_VALUE_INIT  { 0, { { 0 } } }
-#endif
-
-static void
-meego_im_proxy_extension_changed (MeegoIMProxy *proxy,
-                                  gint id,
-                                  const gchar *key,
-                                  GVariant *value,
-                                  gpointer user_data G_GNUC_UNUSED)
-{
-    /* key + 1 so we won't split the first slash */
-    gchar **parts = g_strsplit (key + 1, "/", -1);
-
-    STEP ();
-
-    if (parts) {
-        if (g_strv_length (parts) == 3) {
-            GValue g_value = G_VALUE_INIT;
-
-            dbus_g_value_parse_g_variant (value, &g_value);
-            if (G_VALUE_TYPE (&g_value) != G_TYPE_INVALID) {
-                gchar *target = g_strdup_printf ("/%s", parts[0]);
-
-                meego_im_proxy_set_extended_attribute (proxy,
-                                                       id,
-                                                       target,
-                                                       parts[1],
-                                                       parts[2],
-                                                       &g_value);
-                g_free (target);
-                g_value_unset (&g_value);
-            } else {
-              g_warning ("Could not convert variant into value");
-            }
-        }
-        g_strfreev (parts);
-    }
 }
 
 static void
@@ -175,54 +102,7 @@ meego_im_proxy_init(MeegoIMProxy *self)
     MeegoImProxyPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (self, MEEGO_TYPE_IM_PROXY, MeegoImProxyPrivate);
 
     priv->dbusproxy = NULL;
-    priv->registry = maliit_attribute_extension_registry_get_instance ();
-    priv->extension_registered_id = g_signal_connect_swapped (priv->registry,
-                                                              "extension-registered",
-                                                              G_CALLBACK (meego_im_proxy_extension_registered),
-                                                              self);
-    priv->extension_unregistered_id = g_signal_connect_swapped (priv->registry,
-                                                                "extension-unregistered",
-                                                                G_CALLBACK (meego_im_proxy_extension_unregistered),
-                                                                self);
-    priv->extension_changed_id = g_signal_connect_swapped (priv->registry,
-                                                           "extension-changed",
-                                                           G_CALLBACK (meego_im_proxy_extension_changed),
-                                                           self);
     self->priv = priv;
-}
-
-static void
-register_all_extensions (MeegoIMProxy *proxy)
-{
-    GList *extensions = maliit_attribute_extension_registry_get_extensions (proxy->priv->registry);
-    GList *iter;
-
-    STEP();
-
-    for (iter = extensions; iter; iter = iter->next) {
-        MaliitAttributeExtension *extension = MALIIT_ATTRIBUTE_EXTENSION (iter->data);
-
-        DBG("registering maliit extension attribute - id: %d", maliit_attribute_extension_get_id (extension));
-        if (!meego_im_proxy_register_extension (proxy,
-                                                maliit_attribute_extension_get_id (extension),
-                                                maliit_attribute_extension_get_filename (extension))) {
-            g_warning ("could not register an extension in mass registerer - no proxy");
-        } else {
-            GHashTable *attributes = maliit_attribute_extension_get_attributes (extension);
-            GHashTableIter attributes_iter;
-            gpointer key;
-            gpointer value;
-            gint id = maliit_attribute_extension_get_id (extension);
-
-            g_hash_table_iter_init (&attributes_iter, attributes);
-
-            while (g_hash_table_iter_next (&attributes_iter, &key, &value)) {
-                meego_im_proxy_extension_changed (proxy, id, key, value, NULL);
-            }
-        }
-    }
-
-    g_list_free (extensions);
 }
 
 void
@@ -248,7 +128,7 @@ meego_im_proxy_connect(MeegoIMProxy *proxy, gpointer connection)
 
     proxy->priv->dbusproxy = dbusproxy;
 
-    register_all_extensions (proxy);
+    g_signal_emit(proxy, meego_im_proxy_signals[SIGNAL_CONNECTION_ESTABLISHED], 0);
 }
 
 gboolean

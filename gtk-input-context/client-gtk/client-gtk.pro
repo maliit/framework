@@ -10,10 +10,9 @@ CONFIG += link_pkgconfig
 PKGCONFIG += gtk+-2.0
 
 include($$TOP_DIR/maliit-glib/libmaliit-glib.pri)
+include($$TOP_DIR/connection-glib/libmaliit-connection-glib.pri)
 
 DEFINES += G_LOG_DOMAIN=\\\"Maliit\\\"
-
-INCLUDEPATH += ../src
 
 HEADERS += \
     ../client-gtk/client-imcontext-gtk.h \
@@ -23,10 +22,6 @@ SOURCES += \
     ../client-gtk/gtk-imcontext-plugin.c \
     ../client-gtk/client-imcontext-gtk.c \
     ../client-gtk/qt-gtk-translate.cpp \
-
-# DBus code
-LIBS += ../src/libmaliit-gtk-im-common.a
-PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1 gio-2.0
 
 GTK2_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-2.0)
 GTK2_PREFIX = $$system(pkg-config --variable prefix gtk+-2.0)

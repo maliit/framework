@@ -1,16 +1,13 @@
-TOP_DIR = ../..
+TOP_DIR = ..
 
 include($$TOP_DIR/config.pri)
 
 TEMPLATE = lib
-TARGET = maliit-gtk-im-common
+TARGET = $$MALIIT_CONNECTION_GLIB_LIB
 CONFIG += staticlib
-
 
 CONFIG += link_pkgconfig
 PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1
-
-include($$TOP_DIR/maliit-glib/libmaliit-glib.pri)
 
 system(pkg-config gio-2.0 --atleast-version 2.26) {
     DEFINES   += MALIIT_USE_GIO_API

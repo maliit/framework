@@ -22,6 +22,7 @@
 
 #include "maliitattributeextensionregistry.h"
 #include "maliitmarshallers.h"
+#include "meego-im-connector.h"
 
 struct _MaliitAttributeExtensionRegistryPrivate
 {
@@ -31,17 +32,6 @@ struct _MaliitAttributeExtensionRegistryPrivate
 static MaliitAttributeExtensionRegistry *global_singleton;
 
 G_DEFINE_TYPE (MaliitAttributeExtensionRegistry, maliit_attribute_extension_registry, G_TYPE_OBJECT)
-
-enum
-{
-    EXTENSION_REGISTERED,
-    EXTENSION_UNREGISTERED,
-    EXTENSION_CHANGED,
-
-    LAST_SIGNAL
-};
-
-guint signals[LAST_SIGNAL] = { 0 };
 
 static void
 maliit_attribute_extension_registry_finalize (GObject *object)
@@ -118,42 +108,6 @@ maliit_attribute_extension_registry_class_init (MaliitAttributeExtensionRegistry
     g_object_class->dispose = maliit_attribute_extension_registry_dispose;
     g_object_class->constructor = maliit_attribute_extension_registry_constructor;
 
-    signals[EXTENSION_REGISTERED] = g_signal_new ("extension-registered",
-                                                  MALIIT_TYPE_ATTRIBUTE_EXTENSION_REGISTRY,
-                                                  G_SIGNAL_RUN_FIRST,
-                                                  0,
-                                                  NULL,
-                                                  NULL,
-                                                  maliit_marshal_VOID__INT_STRING,
-                                                  G_TYPE_NONE,
-                                                  2,
-                                                  G_TYPE_INT,
-                                                  G_TYPE_STRING);
-
-    signals[EXTENSION_UNREGISTERED] = g_signal_new ("extension-unregistered",
-                                                    MALIIT_TYPE_ATTRIBUTE_EXTENSION_REGISTRY,
-                                                    G_SIGNAL_RUN_FIRST,
-                                                    0,
-                                                    NULL,
-                                                    NULL,
-                                                    g_cclosure_marshal_VOID__INT,
-                                                    G_TYPE_NONE,
-                                                    1,
-                                                    G_TYPE_INT);
-
-    signals[EXTENSION_CHANGED] = g_signal_new ("extension-changed",
-                                               MALIIT_TYPE_ATTRIBUTE_EXTENSION_REGISTRY,
-                                               G_SIGNAL_RUN_FIRST,
-                                               0,
-                                               NULL,
-                                               NULL,
-                                               maliit_marshal_VOID__INT_STRING_VARIANT,
-                                               G_TYPE_NONE,
-                                               3,
-                                               G_TYPE_INT,
-                                               G_TYPE_STRING,
-                                               G_TYPE_VARIANT);
-
     g_type_class_add_private (registry_class, sizeof (MaliitAttributeExtensionRegistryPrivate));
 }
 
@@ -176,8 +130,41 @@ extension_weak_unref_global (gpointer data)
 }
 
 static void
+register_all_extensions (MeegoIMProxy *proxy, gpointer user_data)
+{
+    MaliitAttributeExtensionRegistry *registry = user_data;
+    GList *extensions = maliit_attribute_extension_registry_get_extensions (registry);
+    GList *iter;
+
+    for (iter = extensions; iter; iter = iter->next) {
+        MaliitAttributeExtension *extension = MALIIT_ATTRIBUTE_EXTENSION (iter->data);
+
+        if (!meego_im_proxy_register_extension (proxy,
+                                                maliit_attribute_extension_get_id (extension),
+                                                maliit_attribute_extension_get_filename (extension))) {
+            g_warning ("could not register an extension in mass registerer - no proxy");
+        } else {
+            GHashTable *attributes = maliit_attribute_extension_get_attributes (extension);
+            GHashTableIter attributes_iter;
+            gpointer key;
+            gpointer value;
+
+            g_hash_table_iter_init (&attributes_iter, attributes);
+
+            while (g_hash_table_iter_next (&attributes_iter, &key, &value)) {
+                maliit_attribute_extension_registry_extension_changed(registry, extension, key, value);
+            }
+        }
+    }
+
+    g_list_free (extensions);
+}
+
+static void
 maliit_attribute_extension_registry_init (MaliitAttributeExtensionRegistry *registry)
 {
+    MeegoImConnector *connector = meego_im_connector_get_singleton();
+
     MaliitAttributeExtensionRegistryPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (registry,
                                                                                  MALIIT_TYPE_ATTRIBUTE_EXTENSION_REGISTRY,
                                                                                  MaliitAttributeExtensionRegistryPrivate);
@@ -187,6 +174,9 @@ maliit_attribute_extension_registry_init (MaliitAttributeExtensionRegistry *regi
                                               NULL,
                                               extension_weak_unref_global);
     registry->priv = priv;
+
+    g_signal_connect(connector->proxy, "connection-established",
+                     G_CALLBACK(register_all_extensions), registry);
 }
 
 MaliitAttributeExtensionRegistry *
@@ -210,6 +200,8 @@ maliit_attribute_extension_registry_add_extension (MaliitAttributeExtensionRegis
     id = maliit_attribute_extension_get_id (extension);
 
     if (!g_hash_table_lookup_extended (extensions, GINT_TO_POINTER (id), NULL, NULL)) {
+        MeegoImConnector *connector = meego_im_connector_get_singleton();
+
         g_object_weak_ref (G_OBJECT (extension),
                            extension_notify,
                            registry);
@@ -217,11 +209,9 @@ maliit_attribute_extension_registry_add_extension (MaliitAttributeExtensionRegis
         g_hash_table_insert (extensions,
                              GINT_TO_POINTER (id),
                              extension);
-        g_signal_emit (registry,
-                       signals[EXTENSION_REGISTERED],
-                       0,
-                       id,
-                       maliit_attribute_extension_get_filename (extension));
+        meego_im_proxy_register_extension(connector->proxy,
+                                          id,
+                                          maliit_attribute_extension_get_filename (extension));
     }
 }
 
@@ -239,12 +229,12 @@ maliit_attribute_extension_registry_remove_extension (MaliitAttributeExtensionRe
     id = maliit_attribute_extension_get_id (extension);
 
     if (g_hash_table_lookup_extended (extensions, GINT_TO_POINTER (id), NULL, NULL)) {
+        MeegoImConnector *connector = meego_im_connector_get_singleton();
+
         g_hash_table_remove (extensions,
                              GINT_TO_POINTER (id));
-        g_signal_emit (registry,
-                       signals[EXTENSION_UNREGISTERED],
-                       0,
-                       id);
+        meego_im_proxy_unregister_extension(connector->proxy,
+                                            id);
     }
 }
 
@@ -254,17 +244,39 @@ maliit_attribute_extension_registry_extension_changed (MaliitAttributeExtensionR
                                                        const gchar *key,
                                                        GVariant *value)
 {
+    gchar **parts;
+
     g_return_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION_REGISTRY (registry));
     g_return_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION (extension));
     g_return_if_fail (key != NULL);
     g_return_if_fail (value != NULL);
 
-    g_signal_emit (registry,
-                   signals[EXTENSION_CHANGED],
-                   0,
-                   maliit_attribute_extension_get_id (extension),
-                   key,
-                   value);
+    parts = g_strsplit (key + 1, "/", -1);
+
+    if (!parts)
+        return;
+
+    if (g_strv_length (parts) == 3) {
+        GValue g_value = G_VALUE_INIT;
+
+        dbus_g_value_parse_g_variant (value, &g_value);
+        if (G_VALUE_TYPE (&g_value) != G_TYPE_INVALID) {
+            MeegoImConnector *connector = meego_im_connector_get_singleton();
+            gchar *target = g_strdup_printf ("/%s", parts[0]);
+
+            meego_im_proxy_set_extended_attribute (connector->proxy,
+                                                   maliit_attribute_extension_get_id(extension),
+                                                   target,
+                                                   parts[1],
+                                                   parts[2],
+                                                   &g_value);
+            g_free (target);
+            g_value_unset (&g_value);
+        } else {
+            g_warning ("Could not convert variant into value");
+        }
+    }
+    g_strfreev (parts);
 }
 
 static void

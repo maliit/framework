@@ -1,3 +1,5 @@
+TOP_DIR = ..
+
 include(../config.pri)
 
 VERSION = $$MALIIT_ABI_VERSION
@@ -7,9 +9,9 @@ TARGET = $${MALIIT_GLIB_LIB}
 CONFIG += link_pkgconfig
 PKGCONFIG += gobject-2.0
 
-INCLUDEPATH += ..
-
 CONFIG -= qt
+
+include($$TOP_DIR/connection-glib/libmaliit-connection-glib.pri)
 
 HEADERSINSTALL += \
     maliitattributeextension.h \
