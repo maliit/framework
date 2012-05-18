@@ -23,8 +23,11 @@
 #include <glib.h>
 
 #include "meego-imcontext-dbus.h"
+
 #include "debug.h"
 #include "maliitmarshalers.h"
+
+#include <dbus/dbus-glib.h>
 
 #define MEEGO_IMCONTEXT_DBUSOBJ_SERVICE_OBJECT_PATH "/com/meego/inputmethod/inputcontext"
 
