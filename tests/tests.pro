@@ -23,7 +23,12 @@ SUBDIRS += \
 contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \
           ut_minputcontext \
-          ut_minputmethodquickplugin \
+
+    !noqml {
+          SUBDIRS += \
+                ut_minputmethodquickplugin \
+
+    }
 
     !disable-dbus {
         SUBDIRS += \
