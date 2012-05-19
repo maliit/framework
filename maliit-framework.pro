@@ -17,6 +17,7 @@ include(./config.pri)
         \\n\\t disable-dbus : Disable dbus communication backend \
         \\n\\t enable-qdbus : Enable QtDBus implementation for the DBus communication backend \
         \\n\\t notests : Do not build tests \
+        \\n\\t noqml : Do not build Quick QML Plugins Interface\
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
@@ -59,7 +60,9 @@ SUBDIRS += connection src maliit maliit-settings maliit-glib
 
     # Requires QtQuick1 add-on, which might not be present
     # and we should use QML 2 on Qt 5 anyways
-    SUBDIRS += maliit-plugins-quick
+    !noqml {
+        SUBDIRS += maliit-plugins-quick
+    }
 }
 
 SUBDIRS += examples
