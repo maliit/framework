@@ -58,6 +58,8 @@ gboolean meego_imcontext_dbus_notify_extended_attribute_changed (MeegoIMContextD
                                                                  GValue *value,
                                                                  GError **error);
 
+gboolean meego_imcontext_dbus_plugin_settings_loaded (MeegoIMContextDbusObj *obj, GPtrArray *settings_data, GError **error);
+
 enum {
     ACTIVATION_LOST_EVENT,
     IM_INITIATED_HIDE,
@@ -466,4 +468,13 @@ meego_imcontext_dbus_notify_extended_attribute_changed (MeegoIMContextDbusObj *o
     g_warning ("Unknown data type: %s", G_VALUE_TYPE_NAME (value));
 
     return TRUE;
+}
+
+gboolean
+meego_imcontext_dbus_plugin_settings_loaded (MeegoIMContextDbusObj *obj, GPtrArray *settings_data, GError **error)
+{
+	UNUSED(obj);
+	UNUSED(settings_data);
+	UNUSED(error);
+	return TRUE;
 }
