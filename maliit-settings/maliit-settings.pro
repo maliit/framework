@@ -43,10 +43,6 @@ OTHER_FILES += \
 install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc
 
-disable-dbus {
-    DEFINES += M_IM_DISABLE_DBUS
-}
-
 INSTALLS += \
     target \
     headers \

@@ -36,7 +36,9 @@ direct-connection {
 }
 
 # Default to building glib-dbus based connection
-!disable-dbus {
+disable-dbus {
+    DEFINES += M_IM_DISABLE_DBUS
+} else {
     enable-qdbus {
         CONFIG += qdbus-dbus-connection
     } else {
