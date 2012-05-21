@@ -36,10 +36,12 @@ public:
      * \brief The Option enum describes the postioning and type of a surface
      */
     enum Option {
-        PositionOverlay = 0x0,
-        PositionCenterBottom = 0x1,
-        PositionLeftBottom = 0x2,
-        PositionRightBottom = 0x4,
+        None = 0x0,
+
+        PositionOverlay = 0x1,
+        PositionCenterBottom = 0x2,
+        PositionLeftBottom = 0x4,
+        PositionRightBottom = 0x8,
 
         TypeWidget = 0x100,
         TypeGraphicsView = 0x200,
