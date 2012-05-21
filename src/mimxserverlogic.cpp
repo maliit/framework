@@ -86,7 +86,7 @@ MImXServerLogic::MImXServerLogic(const MImServerXOptions &options, QObject *pare
 {
     mPassThruWindow.reset(new MPassThruWindow(this, xOptions));
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.data()));
-    mRotationAnimation = new MImRotationAnimation(pluginsProxyWidget(), passThruWindow(),
+    mRotationAnimation = new MImRotationAnimation(mPluginsProxyWidget.data(), passThruWindow(),
                                                   this, xOptions);
 
     configureWidgetsForCompositing();
@@ -195,11 +195,6 @@ void MImXServerLogic::setSuppressBackground(bool suppress)
 QWidget *MImXServerLogic::passThruWindow() const
 {
     return mPassThruWindow.data();
-}
-
-QWidget* MImXServerLogic::pluginsProxyWidget() const
-{
-    return mPluginsProxyWidget.data();
 }
 
 QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> MImXServerLogic::surfaceGroupFactory() const

@@ -53,8 +53,6 @@ public:
     void setSuppressBackground(bool suppress);
 
     QWidget *passThruWindow() const;
-    //! reimpl
-    virtual QWidget *pluginsProxyWidget() const;
 
     //! reimpl
     virtual QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const;

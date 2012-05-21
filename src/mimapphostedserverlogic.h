@@ -19,9 +19,10 @@ public:
     virtual ~MImAppHostedServerLogic();
 
     //! reimpl
-    virtual QWidget *pluginsProxyWidget() const;
     virtual QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const;
     //! reimpl_end
+
+    virtual QWidget *pluginsProxyWidget() const;
 
 public Q_SLOTS:
     //! reimpl

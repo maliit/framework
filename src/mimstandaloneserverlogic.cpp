@@ -43,11 +43,6 @@ void MImStandaloneServerLogic::inputPassthrough(const QRegion &region)
         mProxyWidget->show();
 }
 
-QWidget *MImStandaloneServerLogic::pluginsProxyWidget() const
-{
-    return mProxyWidget.get();
-}
-
 QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> MImStandaloneServerLogic::surfaceGroupFactory() const
 {
     return mSurfaceGroupFactory;

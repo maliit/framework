@@ -44,8 +44,6 @@ public:
     explicit MImAbstractServerLogic(QObject *parent = 0);
     virtual ~MImAbstractServerLogic() = 0;
 
-    virtual QWidget *pluginsProxyWidget() const = 0;
-
     //! Return factory for creating surface groups
     virtual QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const = 0;
 

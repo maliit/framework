@@ -40,7 +40,6 @@ public:
     ~MImStandaloneServerLogic();
 
     //! reimpl
-    QWidget *pluginsProxyWidget() const;
     QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const;
     //! reimpl_end
 
