@@ -2,7 +2,6 @@
 #define _DEBUG_H
 
 #include <glib.h>
-#include <glib/gprintf.h>
 
 G_BEGIN_DECLS
 
