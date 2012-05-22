@@ -15,16 +15,18 @@ include($$TOP_DIR/connection-glib/libmaliit-connection-glib.pri)
 
 HEADERSINSTALL += \
     maliitattributeextension.h \
+    maliitinputmethod.h \
 
 HEADERS += \
     $$HEADERSINSTALL \
     maliitattributeextensionregistry.h \
     maliitattributeextensionprivate.h \
-    maliitmarshallers.h
+    maliitmarshallers.h \
 
 SOURCES += \
     maliitattributeextension.c \
-    maliitattributeextensionregistry.c
+    maliitattributeextensionregistry.c \
+    maliitinputmethod.c \
 
 target.path += $$M_IM_INSTALL_LIBS
 
