@@ -40,7 +40,7 @@ gboolean meego_imcontext_dbus_commit_string(MeegoIMContextDbusObj *obj, char *st
 gboolean meego_imcontext_dbus_update_preedit(MeegoIMContextDbusObj *obj, const char *string, GPtrArray *formatListData, gint32 replaceStart, gint32 replaceLength, gint32 cursorPos, GError** error);
 gboolean meego_imcontext_dbus_key_event(MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
                                         gboolean auto_repeat, int count, GError **error);
-gboolean meego_imcontext_dbus_update_input_method_area(MeegoIMContextDbusObj *obj, GPtrArray *data, GError **error);
+gboolean meego_imcontext_dbus_update_input_method_area(MeegoIMContextDbusObj *obj, int x, int y, int width, int height, GError **error);
 gboolean meego_imcontext_dbus_set_global_correction_enabled(MeegoIMContextDbusObj *obj, gboolean correction, GError **error);
 gboolean meego_imcontext_dbus_copy(MeegoIMContextDbusObj *obj, GError **error);
 gboolean meego_imcontext_dbus_paste(MeegoIMContextDbusObj *obj, GError **error);
@@ -156,9 +156,12 @@ meego_imcontext_dbusobj_class_init(MeegoIMContextDbusObjClass *klass)
                                                                G_SIGNAL_RUN_FIRST,
                                                                0,
                                                                NULL, NULL,
-                                                               g_cclosure_marshal_VOID__BOXED,
-                                                               G_TYPE_NONE, 1,
-                                                               G_TYPE_PTR_ARRAY);
+                                                               _maliit_marshal_VOID__INT_INT_INT_INT,
+                                                               G_TYPE_NONE, 4,
+                                                               G_TYPE_INT,
+                                                               G_TYPE_INT,
+                                                               G_TYPE_INT,
+                                                               G_TYPE_INT);
     imcontext_signals[SET_GLOBAL_CORRECTION] = g_signal_new("set-global-correction",
                                                             G_TYPE_FROM_CLASS(klass),
                                                             G_SIGNAL_RUN_FIRST,
@@ -327,13 +330,12 @@ meego_imcontext_dbus_key_event(MeegoIMContextDbusObj *obj, int type, int key, in
     return TRUE;
 }
 
-
 gboolean
-meego_imcontext_dbus_update_input_method_area(MeegoIMContextDbusObj *obj, GPtrArray *data, GError **error)
+meego_imcontext_dbus_update_input_method_area(MeegoIMContextDbusObj *obj, int x, int y, int width, int height, GError **error G_GNUC_UNUSED)
 {
     STEP();
 
-    // TODO emit UPDATE_INPUT_METHOD_AREA signal
+    g_signal_emit(obj, imcontext_signals[UPDATE_INPUT_METHOD_AREA], 0, x, y, width, height);
 
     return TRUE;
 }
