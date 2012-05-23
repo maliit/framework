@@ -16,7 +16,7 @@
 
 #include "windowedsurface.h"
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include "mimdummyinputcontext.h"
 #endif
 
@@ -258,7 +258,7 @@ public:
           AbstractGraphicsViewSurface(),
           mRoot(0)
     {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         MIMDummyInputContext dummy;
 #endif
         QGraphicsView *view = static_cast<QGraphicsView*>(mToplevel.data());
@@ -268,7 +268,7 @@ public:
         view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         // Calling QGraphicsView::setScene() indirectly calls QWidget::inputContext() on the view.  If there isn't
         // an input context set on the widget, this calls QApplication::inputContext(), which leads to infinite
         // recursion if surface creation happens during input method creation and QT_IM_MODULE is set (for example
@@ -278,7 +278,7 @@ public:
         QGraphicsScene *scene = new QGraphicsScene(view);
         view->setScene(scene);
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         view->setInputContext(0);
 #endif
     }
