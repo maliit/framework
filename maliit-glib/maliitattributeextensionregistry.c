@@ -238,6 +238,11 @@ maliit_attribute_extension_registry_remove_extension (MaliitAttributeExtensionRe
     }
 }
 
+/* For glib < 2.30 */
+#ifndef G_VALUE_INIT
+#define G_VALUE_INIT { 0, { { 0 } } }
+#endif
+
 void
 maliit_attribute_extension_registry_extension_changed (MaliitAttributeExtensionRegistry *registry,
                                                        MaliitAttributeExtension *extension,
