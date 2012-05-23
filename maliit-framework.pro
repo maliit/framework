@@ -50,7 +50,11 @@ SUBDIRS = common
 SUBDIRS += connection src maliit maliit-settings
 
 !disable-dbus {
-    SUBDIRS += passthroughserver connection-glib maliit-glib maliit-glib/maliit-glib-docs.pro gtk-input-context
+    SUBDIRS += passthroughserver connection-glib maliit-glib
+    !nodoc {
+        SUBDIRS += maliit-glib/maliit-glib-docs.pro
+    }
+    SUBDIRS += gtk-input-context
 }
 
 !contains(QT_MAJOR_VERSION, 5) {
