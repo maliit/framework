@@ -1,3 +1,7 @@
 maliit-*.pc
 maliitmarshallers.h
 maliitmarshallers.c
+Makefile.*
+*.stamp
+maliit/
+reference/
