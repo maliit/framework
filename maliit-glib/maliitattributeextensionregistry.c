@@ -281,7 +281,7 @@ maliit_attribute_extension_registry_extension_changed (MaliitAttributeExtensionR
             g_warning ("Could not convert variant into value");
         }
     } else {
-        g_warning("Key `%s' is not valid. It needs to be `/target/item/key'");
+        g_warning("Key `%s' is not valid. It needs to be `/target/item/key'", key);
     }
     g_strfreev (parts);
 }
