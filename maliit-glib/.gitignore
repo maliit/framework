@@ -5,3 +5,5 @@ Makefile.*
 *.stamp
 maliit/
 reference/
+Maliit-1.0.gir
+Maliit-1.0.typelib
