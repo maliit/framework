@@ -182,6 +182,7 @@ maliit_input_method_show (MaliitInputMethod *input_method)
 {
     g_return_if_fail (MALIIT_IS_INPUT_METHOD (input_method));
 
+    meego_im_proxy_activate_context(input_method->priv->maliit_proxy);
     meego_im_proxy_show_input_method (input_method->priv->maliit_proxy);
 }
 
@@ -196,5 +197,6 @@ maliit_input_method_hide (MaliitInputMethod *input_method)
 {
     g_return_if_fail (MALIIT_IS_INPUT_METHOD (input_method));
 
+    meego_im_proxy_activate_context(input_method->priv->maliit_proxy);
     meego_im_proxy_hide_input_method (input_method->priv->maliit_proxy);
 }
