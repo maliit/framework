@@ -71,9 +71,6 @@ meego_im_proxy_get_singleton(void)
 static void
 meego_im_proxy_finalize(GObject *object)
 {
-    MeegoIMProxy *proxy = MEEGO_IM_PROXY (object);
-    MeegoImProxyPrivate *priv = proxy->priv;
-
     G_OBJECT_CLASS(meego_im_proxy_parent_class)->finalize(object);
 }
 
