@@ -10,5 +10,5 @@ system(pkg-config gtk+-2.0):!disable-dbus {
 }
 
 system(pkg-config gtk+-3.0):!disable-dbus {
-    SUBDIRS += gtk3 gtk3-overrides
+    SUBDIRS += gtk3 gtk3-overrides gtk3-python
 }
