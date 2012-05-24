@@ -5,8 +5,10 @@ include(../config.pri)
 TEMPLATE=lib
 TARGET=dummy
 
-HEADERS += \
+GOBJECTFILES += \
+    maliitattributeextension.c \
     maliitattributeextension.h \
+    maliitinputmethod.c \
     maliitinputmethod.h \
 
 
@@ -15,7 +17,7 @@ gtk_doc.name = gtk-doc
 gtk_doc.CONFIG += target_predeps no_link combine
 gtk_doc.output = $${OUT_PWD}/maliit/index.html
 gtk_doc.clean_commands = rm -rf $${OUT_PWD}/maliit $${OUT_PWD}/reference
-gtk_doc.input = HEADERS
+gtk_doc.input = GOBJECTFILES
 gtk_doc.commands += mkdir -p reference &&
 gtk_doc.commands += cp $$IN_PWD/maliit-sections.txt $$IN_PWD/maliit-docs.xml $$OUT_PWD/reference &&
 gtk_doc.commands += cd reference &&
@@ -26,11 +28,42 @@ gtk_doc.commands += gtkdoc-mkdb --module=maliit --source-dir=$${IN_PWD} --output
 gtk_doc.commands += mkdir -p maliit && cd maliit && gtkdoc-mkhtml maliit ../reference/maliit-docs.xml && cd .. &&
 gtk_doc.commands += cd reference && gtkdoc-fixxref --module=maliit --module-dir=../maliit && cd ..
 
+GIR_DIR = $$system(pkg-config --variable=girdir gobject-introspection-1.0)
+TYPELIB_DIR = $$system(pkg-config --variable=typelibdir gobject-introspection-1.0)
+GIR_PREFIX = $$system(pkg-config --variable=prefix gobject-introspection-1.0)
+enforce-install-prefix {
+    GIR_DIR = $$replace(GIR_DIR, $$GIR_PREFIX, $$M_IM_PREFIX)
+    TYPELIB_DIR = $$replace(TYPELIB_DIR, $$GIR_PREFIX, $$M_IM_PREFIX)
+}
+
+gir_scanner.name = g-ir-scanner
+gir_scanner.CONFIG += no_link combine
+gir_scanner.output = $${OUT_PWD}/Maliit-1.0.gir
+gir_scanner.input = GOBJECTFILES
+gir_scanner.commands += g-ir-scanner -n Maliit --no-libtool -L$${OUT_PWD} --library=maliit-glib-1.0 --include=Gio-2.0 --pkg=gio-2.0 --nsversion=1.0 --output=${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
+
+GIR_FILES = $${OUT_PWD}/Maliit-1.0.gir
+
+gir_compiler.name = g-ir-compiler
+gir_compiler.CONFIG += target_predeps no_link
+gir_compiler.output = $${OUT_PWD}/Maliit-1.0.typelib
+gir_compiler.input = GIR_FILES
+gir_compiler.commands += g-ir-compiler -m Maliit --output=${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
+
 docs.files = $${OUT_PWD}/maliit
 docs.path = $$DATADIR/gtk-doc/html
 docs.CONFIG += no_check_exist directory
-INSTALLS += docs
 
-QMAKE_EXTRA_COMPILERS += gtk_doc
+gir.files = $${OUT_PWD}/Maliit-1.0.gir
+gir.path = $$GIR_DIR
+gir.CONFIG += no_check_exist
+
+typelib.files = $${OUT_PWD}/Maliit-1.0.typelib
+typelib.path = $$TYPELIB_DIR
+typelib.CONFIG += no_check_exist
+
+INSTALLS += docs gir typelib
+
+QMAKE_EXTRA_COMPILERS += gtk_doc gir_scanner gir_compiler
 
 OTHER_FILES += maliit-sections.txt maliit-docs.xml
