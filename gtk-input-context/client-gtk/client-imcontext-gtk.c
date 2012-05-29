@@ -304,6 +304,8 @@ meego_imcontext_focus_out(GtkIMContext *context)
     MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
     DBG("imcontext = %p", imcontext);
 
+    meego_imcontext_reset(context);
+
     imcontext->focus_state = FALSE;
     focused_imcontext = NULL;
     focused_widget = NULL;
@@ -354,9 +356,11 @@ meego_imcontext_reset(GtkIMContext *context)
     MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
     DBG("imcontext = %p", imcontext);
 
-    if (imcontext != focused_imcontext)
+    if (imcontext != focused_imcontext) {
         return;
+    }
 
+    /* Commit preedit if it is not empty */
     if (focused_imcontext && focused_imcontext->preedit_str && focused_imcontext->preedit_str[0]) {
         char *commit_string = focused_imcontext->preedit_str;
         focused_imcontext->preedit_str = g_strdup("");
