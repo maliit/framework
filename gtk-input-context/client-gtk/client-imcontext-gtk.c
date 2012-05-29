@@ -68,6 +68,8 @@ static const gchar *const WIDGET_INFO_WIN_ID = "winId";
 static const gchar *const WIDGET_INFO_FOCUS_STATE = "focusState";
 static const gchar *const WIDGET_INFO_ATTRIBUTE_EXTENSION_ID = "toolbarId";
 static const gchar *const WIDGET_INFO_ATTRIBUTE_EXTENSION_FILENAME = "toolbar";
+static const gchar *const WIDGET_INFO_SURROUNDING_TEXT = "surroundingText";
+static const gchar *const WIDGET_INFO_CURSOR_POSITION = "cursorPosition";
 
 void destroy_g_value(GValue *value)
 {
@@ -499,6 +501,26 @@ meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
                                   g_strdup(WIDGET_INFO_ATTRIBUTE_EXTENSION_FILENAME),
                                   filename_value);
         }
+    }
+
+    /* Surrounding text */
+    GtkIMContext *context = GTK_IM_CONTEXT(imcontext);
+    gchar *surrounding_text;
+    gint cursor_index;
+    if (gtk_im_context_get_surrounding(context, &surrounding_text, &cursor_index))
+    {
+        GValue *surrounding_text_value = g_new0 (GValue, 1);
+        GValue *cursor_position_value = g_new0 (GValue, 1);
+
+        g_value_init (surrounding_text_value, G_TYPE_STRING);
+        g_value_take_string (surrounding_text_value, surrounding_text);
+
+        g_hash_table_replace(imcontext->widget_state, g_strdup(WIDGET_INFO_SURROUNDING_TEXT), surrounding_text_value);
+
+        g_value_init (cursor_position_value, G_TYPE_INT);
+        g_value_take_string (cursor_position_value, cursor_index);
+
+        g_hash_table_replace(imcontext->widget_state, g_strdup(WIDGET_INFO_CURSOR_POSITION), cursor_position_value);
     }
 }
 
