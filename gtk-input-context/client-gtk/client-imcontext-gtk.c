@@ -561,16 +561,19 @@ meego_imcontext_update_preedit(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
                                gint32 cursorPos,
                                gpointer user_data)
 {
-    STEP();
-
     MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
     if (imcontext != focused_imcontext)
         return;
 
+    DBG("imcontext = %p string = %s cursorPos = %d", imcontext, string, cursorPos);
+
     if (focused_imcontext) {
         g_free(focused_imcontext->preedit_str);
         focused_imcontext->preedit_str = g_strdup(string);
-        focused_imcontext->preedit_cursor_pos = cursorPos + g_utf8_strlen(string, -1) + 1;
+        if (cursorPos == -1) {
+            cursorPos = g_utf8_strlen(string, -1);
+        }
+        focused_imcontext->preedit_cursor_pos = cursorPos;
         g_signal_emit_by_name(focused_imcontext, "preedit-changed");
     }
 }
