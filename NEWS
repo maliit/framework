@@ -2,13 +2,22 @@ NEXT
 ======
 
 CHANGES SINCE 0.92.0
-* Add settings API
-  - Add client API in libmaliit to enumarate and update settings
+* Added settings API
+  - Added client API in libmaliit to enumarate and update settings
   - Allow changing enabled/active Maliit plugins
 * Changed the format for onscreen/enabled and onscreen/active settings:
   onscreen/active is a single string with format <plugin id>:<subview id>
   (es. "libmaliit-keyboard-plugin.so:en_gb") and onscreen/enabled is a list
   of strings in the same format as onscreen/active
+* Added libmaliit-glib
+  - Allows GTK+ applications to control certain features of the input method
+    directly (currently show/hide, but feature parity with libmaliit is the
+    goal).
+  - Uses gtk-doc instead of doxygen (which is normally used in framework), but
+    will also be disabled when using CONFIG+=nodoc.
+  - Comes with GObject instrospection. As a proof-of-concept, there's a GTK+
+    Python demo app that can explicitly show and hide the virtual keyboard. See
+    examples/apps/gtk3-python for more.
 
 BUG FIXES
 * Fixes: MALIIT#127 - Add settings API, as an integration point for settings applets
