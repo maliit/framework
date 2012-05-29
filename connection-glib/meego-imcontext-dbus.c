@@ -123,9 +123,12 @@ meego_imcontext_dbusobj_class_init(MeegoIMContextDbusObjClass *klass)
                                                     G_SIGNAL_RUN_FIRST,
                                                     0,
                                                     NULL, NULL,
-                                                    g_cclosure_marshal_VOID__STRING,
-                                                    G_TYPE_NONE, 1,
-                                                    G_TYPE_STRING);
+                                                    _maliit_marshal_VOID__STRING_INT_INT_INT,
+                                                    G_TYPE_NONE, 4,
+                                                    G_TYPE_STRING,
+                                                    G_TYPE_INT,
+                                                    G_TYPE_INT,
+                                                    G_TYPE_INT);
     imcontext_signals[UPDATE_PREEDIT] = g_signal_new("update-preedit",
                                                      G_TYPE_FROM_CLASS(klass),
                                                      G_SIGNAL_RUN_FIRST,
