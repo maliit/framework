@@ -304,6 +304,8 @@ meego_imcontext_focus_out(GtkIMContext *context)
     MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
     DBG("imcontext = %p", imcontext);
 
+    meego_imcontext_reset(context);
+
     imcontext->focus_state = FALSE;
     focused_imcontext = NULL;
     focused_widget = NULL;
