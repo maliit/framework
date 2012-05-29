@@ -354,6 +354,18 @@ meego_imcontext_reset(GtkIMContext *context)
     MeegoIMContext *imcontext = MEEGO_IMCONTEXT(context);
     DBG("imcontext = %p", imcontext);
 
+    if (imcontext != focused_imcontext)
+        return;
+
+    if (focused_imcontext && focused_imcontext->preedit_str && focused_imcontext->preedit_str[0]) {
+        char *commit_string = focused_imcontext->preedit_str;
+        focused_imcontext->preedit_str = g_strdup("");
+        focused_imcontext->preedit_cursor_pos = 0;
+        g_signal_emit_by_name(focused_imcontext, "preedit-changed");
+        g_signal_emit_by_name(focused_imcontext, "commit", commit_string);
+        g_free(commit_string);
+    }
+
     meego_im_proxy_reset(imcontext->proxy);
 }
 
