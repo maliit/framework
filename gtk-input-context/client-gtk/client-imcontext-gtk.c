@@ -516,12 +516,10 @@ meego_imcontext_update_widget_info(MeegoIMContext *imcontext)
 
         g_value_init (surrounding_text_value, G_TYPE_STRING);
         g_value_take_string (surrounding_text_value, surrounding_text);
-
         g_hash_table_replace(imcontext->widget_state, g_strdup(WIDGET_INFO_SURROUNDING_TEXT), surrounding_text_value);
 
         g_value_init (cursor_position_value, G_TYPE_INT);
-        g_value_take_string (cursor_position_value, cursor_index);
-
+        g_value_set_int(cursor_position_value, cursor_index);
         g_hash_table_replace(imcontext->widget_state, g_strdup(WIDGET_INFO_CURSOR_POSITION), cursor_position_value);
     }
 }
