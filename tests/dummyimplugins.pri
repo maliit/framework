@@ -1,8 +1,9 @@
 
 LIBS += \
-    $$TOP_DIR/tests/plugins/$$maliitDynamicLib(dummyimplugin) \
-    $$TOP_DIR/tests/plugins/$$maliitDynamicLib(dummyimplugin2) \
-    $$TOP_DIR/tests/plugins/$$maliitDynamicLib(dummyimplugin3) \
+    -L$$TOP_DIR/tests/plugins \
+    -ldummyimplugin \
+    -ldummyimplugin2 \
+    -ldummyimplugin3 \
 
 INCLUDEPATH += \
     $$TOP_DIR/tests/dummyimplugin \
