@@ -1,4 +1,4 @@
-NEXT
+0.92.1
 ======
 
 CHANGES SINCE 0.92.0
@@ -21,6 +21,19 @@ CHANGES SINCE 0.92.0
 
 BUG FIXES
 * Fixes: MALIIT#127 - Add settings API, as an integration point for settings applets
+* Fixes library dependencies for tests linked to plugins
+* Fix commit-string signal in connection-glib
+* Fixes: MALIIT#140 - Add method to explicit show/hide the keyboard to libmaliit-glib
+* Fixes OOT build by using extra compilers instead of targets
+* Add maliit-glib to PKG_CONFIG path of sdk
+* Fixes: MALIIT#144 - Empty region reported by inputMethodAreaChanged
+* Remove INSTALLs from tests.pro
+* Fixes: MALIIT#67 - Keyboard does not auto-show after a few auto hides
+* Fixes: warning during qmake's run about unknown quick1.
+* Fix position of overlay surfaces after rotation
+* Fix geometry of surfaces after screen size change
+* Fix WindowedSurface::relativePosition()
+* Fix AbstractSurfaceFactory's screen size API
 
 0.92.0
 ======
