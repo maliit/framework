@@ -212,9 +212,7 @@ qdbus-dbus-connection|glib-dbus-connection {
 
         DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
         DBUS_SERVICES_PREFIX = $$system(pkg-config --variable prefix dbus-1)
-        enforce-install-prefix {
-            DBUS_SERVICES_DIR = $$replace(DBUS_SERVICES_DIR, $$DBUS_SERVICES_PREFIX, $$PREFIX)
-        }
+        DBUS_SERVICES_DIR = $$replace(DBUS_SERVICES_DIR, $$DBUS_SERVICES_PREFIX, $$PREFIX)
 
         install_services.path = $$DBUS_SERVICES_DIR
         install_services.files = org.maliit.server.service

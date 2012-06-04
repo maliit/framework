@@ -25,9 +25,7 @@ SOURCES += \
 
 GTK3_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-3.0)
 GTK3_PREFIX = $$system(pkg-config --variable prefix gtk+-3.0)
-enforce-install-prefix {
-    GTK3_IM_LIBDIR = $$replace(GTK3_IM_LIBDIR, $$GTK3_PREFIX, $$PREFIX)
-}
+GTK3_IM_LIBDIR = $$replace(GTK3_IM_LIBDIR, $$GTK3_PREFIX, $$PREFIX)
 
 GTK3_BINARY_VERSION = $$system(pkg-config --variable=gtk_binary_version gtk+-3.0)
 GTK3_DIR = $$GTK3_IM_LIBDIR/gtk-3.0/$$GTK3_BINARY_VERSION
