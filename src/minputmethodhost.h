@@ -30,6 +30,7 @@ class QRegion;
 
 using std::tr1::shared_ptr;
 using Maliit::Plugins::AbstractSurfaceFactory;
+using Maliit::Plugins::AbstractPluginSetting;
 
 /*! \internal
  * \ingroup maliitserver
@@ -42,7 +43,7 @@ class MInputMethodHost: public MAbstractInputMethodHost
 public:
     MInputMethodHost(shared_ptr<MInputContextConnection> inputContextConnection,
                      MIMPluginManager *pluginManager, MIndicatorServiceClient &indicatorService,
-                     AbstractSurfaceFactory *surfaceFactory);
+                     AbstractSurfaceFactory *surfaceFactory, const QString &plugin, const QString &description);
     virtual ~MInputMethodHost();
 
     //! if enabled, the plugin associated with this host are allowed to communicate
@@ -96,6 +97,10 @@ public:
     //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);
     virtual AbstractSurfaceFactory *surfaceFactory();
+    virtual AbstractPluginSetting *registerPluginSetting(const QString &key,
+                                                         const QString &description,
+                                                         Maliit::SettingEntryType type,
+                                                         const QVariantMap &attributes);
     // \reimp_end
 
 private:
@@ -107,6 +112,8 @@ private:
     bool enabled;
     MIndicatorServiceClient &indicatorService;
     AbstractSurfaceFactory *mSurfaceFactory;
+    QString pluginId;
+    QString pluginDescription;
 };
 
 //! \internal_end

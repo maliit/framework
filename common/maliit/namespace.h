@@ -289,6 +289,9 @@ namespace Maliit {
         //! Name of setting entry attribute which holds the maximum valid value (inclusive) for an integer property.
         //! \sa Maliit::SettingsEntry
         const char* const valueRangeMax = "valueRangeMax";
+        //! Name of setting entry attribute which holds the default value for a setting entry.
+        //! \sa Maliit::SettingsEntry
+        const char* const defaultValue = "defaultValue";
     }
 }
 

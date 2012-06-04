@@ -60,12 +60,12 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
 void Ut_MInputMethodQuickPlugin::testQmlSetup()
 {
     MIndicatorServiceClient fakeService;
-    MaliitTestUtils::TestInputMethodHost host(fakeService);
     QFETCH(QString, testPluginPath);
 
     const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ?
                 QDir(IN_TREE_TEST_PLUGIN_DIR"/qml") : QDir(MALIIT_TEST_PLUGINS_DIR"/examples/qml");
     const QString pluginPath = pluginDir.absoluteFilePath(testPluginPath);
+    const QString pluginId = QFileInfo(testPluginPath).baseName();
     QVERIFY(pluginDir.exists(pluginPath));
 
     QObject *pluginInstance = 0;
@@ -83,6 +83,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
 
     QVERIFY(plugin != 0);
 
+    MaliitTestUtils::TestInputMethodHost host(fakeService, pluginId, plugin->name());
     MInputMethodQuick *testee = static_cast<MInputMethodQuick *>(
         plugin->createInputMethod(&host));
 

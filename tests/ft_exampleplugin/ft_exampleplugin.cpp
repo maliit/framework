@@ -57,11 +57,11 @@ void Ft_ExamplePlugin::testFunction()
     QFETCH(QString, testPluginPath);
 
     MIndicatorServiceClient fakeService;
-    MaliitTestUtils::TestInputMethodHost host(fakeService);
 
     const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ?
                 QDir(IN_TREE_TEST_PLUGIN_DIR"/cxx") : QDir(MALIIT_TEST_PLUGINS_DIR"/examples/cxx");
     const QString pluginPath = pluginDir.absoluteFilePath(testPluginPath);
+    const QString pluginId = QFileInfo(testPluginPath).baseName();
     QVERIFY(pluginDir.exists(pluginPath));
 
     QPluginLoader loader(pluginPath);
@@ -71,6 +71,7 @@ void Ft_ExamplePlugin::testFunction()
     Maliit::Plugins::InputMethodPlugin *plugin =  qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
     QVERIFY(plugin != 0);
 
+    MaliitTestUtils::TestInputMethodHost host(fakeService, pluginId, plugin->name());
     plugin->createInputMethod(&host);
 
     QCOMPARE(host.lastCommit, QString("Maliit"));

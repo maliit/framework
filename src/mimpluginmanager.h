@@ -37,6 +37,13 @@ class MAttributeExtensionId;
 class MAbstractInputMethod;
 class MAttributeExtensionManager;
 
+namespace Maliit {
+namespace Plugins {
+    class AbstractPluginSetting;
+}
+}
+using Maliit::Plugins::AbstractPluginSetting;
+
 //! \internal
 /*! \ingroup maliitserver
  * \brief Manager of MInputMethodPlugin instances.
@@ -97,6 +104,14 @@ public:
 
     //! Enables all installed subviews
     void setAllSubViewsEnabled(bool enable);
+
+    //! Register a setting entry for the specified plugin
+    AbstractPluginSetting *registerPluginSetting(const QString &pluginId,
+                                                 const QString &pluginDescription,
+                                                 const QString &key,
+                                                 const QString &description,
+                                                 Maliit::SettingEntryType type,
+                                                 const QVariantMap &attributes);
 
 Q_SIGNALS:
     //!

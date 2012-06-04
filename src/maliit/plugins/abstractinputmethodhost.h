@@ -20,6 +20,7 @@
 #include <QRect>
 #include <QObject>
 #include <QPixmap>
+#include <QVariant>
 
 #include <maliit/namespace.h>
 
@@ -34,6 +35,7 @@ class MAbstractInputMethodHostPrivate;
 namespace Maliit {
 namespace Plugins {
     class AbstractSurfaceFactory;
+    class AbstractPluginSetting;
 }
 }
 
@@ -297,6 +299,22 @@ public:
     /*!
       */
     virtual Maliit::Plugins::AbstractSurfaceFactory* surfaceFactory() = 0;
+
+    /*!
+     * \brief Register a new plugin setting
+     * \param key name for the entry
+     * \param type value type
+     * \param attributes attribute map, the same used in SettingsEntry
+     *
+     * Returns an object (owned by the plugin) that can be used to manipulate the setting entry.
+     *
+     * \sa Maliit::SettingEntryAttributes
+     * \sa Maliit::SettingsEntry
+     */
+    virtual Maliit::Plugins::AbstractPluginSetting *registerPluginSetting(const QString &key,
+                                                                          const QString &description,
+                                                                          Maliit::SettingEntryType type,
+                                                                          const QVariantMap &attributes) = 0;
 
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
