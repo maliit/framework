@@ -1,3 +1,16 @@
+NEXT
+======
+
+CHANGES SINCE 0.92.1
+* Use common environment variables to configure install behaviour of framework
+  files.
+  - Use PREFIX to specify install prefix and LIBDIR ($PREFIX/lib, by default)
+    to specify library install directory (for example /usr/lib64 on x64, for
+    Fedora systems). All other M_IM_INSTALL_SOMETHING variables have been
+    changed to SOMETHINGDIR. Use qmake HELP=1 to see the configure options.
+* Rename M_IM_DEFAULT_* environment variables for default plugin configuration
+  to MALIIT_DEFAULT_*.
+
 0.92.1
 ======
 
