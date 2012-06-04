@@ -119,7 +119,7 @@ SETTINGS_SOURCES += \
 }
 
 disable-gconf {
-    DEFINES += M_IM_DISABLE_GCONF
+    DEFINES += MALIIT_DISABLE_GCONF
 }
 
 HEADERS += \
@@ -183,12 +183,12 @@ MOC_DIR = .moc
 
 QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 
-target.path += $$M_IM_INSTALL_LIBS
+target.path += $$LIBDIR
 
-plugins_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_HEADER/maliit/plugins
+plugins_headers.path += $$INCLUDEDIR/$$MALIIT_PLUGINS_HEADER/maliit/plugins
 plugins_headers.files += $$PLUGIN_HEADERS_PUBLIC
 
-server_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_SERVER_HEADER
+server_headers.path += $$INCLUDEDIR/$$MALIIT_SERVER_HEADER
 server_headers.files += $$SERVER_HEADERS_PUBLIC
 
 outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
@@ -209,17 +209,17 @@ OTHER_FILES += \
     maliit-plugins.prf.in \
     maliit-defines.prf.in \
 
-install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
+install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = \
     $$OUT_PWD/MeegoImFramework.pc \
     $$OUT_PWD/maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc \
     $$OUT_PWD/maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc \
 
-install_prf.path = $$M_IM_INSTALL_PRF
+install_prf.path = $$MALIIT_INSTALL_PRF
 install_prf.files = $$OUT_PWD/maliit-plugins.prf $$OUT_PWD/maliit-defines.prf
 
 install_schemas.files = $$OUT_PWD/maliit-framework.schemas
-install_schemas.path = $$M_IM_INSTALL_SCHEMAS
+install_schemas.path = $$SCHEMADIR
 
 INSTALLS += \
     target \

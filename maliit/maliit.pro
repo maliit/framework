@@ -31,9 +31,9 @@ SOURCES += \
     attributeextension.cpp \
     attributeextensionregistry.cpp \
 
-target.path += $$M_IM_INSTALL_LIBS
+target.path += $$LIBDIR
 
-headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER/maliit
+headers.path += $$INCLUDEDIR/$$MALIIT_HEADER/maliit
 headers.files += $$HEADERSINSTALL
 
 outputFiles(maliit-$${MALIIT_INTERFACE_VERSION}.pc)
@@ -41,7 +41,7 @@ outputFiles(maliit-$${MALIIT_INTERFACE_VERSION}.pc)
 OTHER_FILES += \
     maliit-$${MALIIT_INTERFACE_VERSION}.pc.in
 
-install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
+install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-$${MALIIT_INTERFACE_VERSION}.pc
 
 INSTALLS += \

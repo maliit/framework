@@ -33,7 +33,7 @@ isEmpty(DOXYGEN_BIN) {
 
     # Install rules
     htmldocs.files = $$HTML_BUILD_DIR
-    htmldocs.path = $$M_IM_INSTALL_DOCS/$$MALIIT_PACKAGENAME
+    htmldocs.path = $$DOCDIR/$$MALIIT_PACKAGENAME
     htmldocs.CONFIG += no_check_exist directory
     INSTALLS += htmldocs
 }

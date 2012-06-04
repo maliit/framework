@@ -57,8 +57,8 @@ system(pkg-config gobject-introspection-1.0) {
     TYPELIB_DIR = $$system(pkg-config --variable=typelibdir gobject-introspection-1.0)
     GIR_PREFIX = $$system(pkg-config --variable=prefix gobject-introspection-1.0)
     enforce-install-prefix {
-        GIR_DIR = $$replace(GIR_DIR, $$GIR_PREFIX, $$M_IM_PREFIX)
-        TYPELIB_DIR = $$replace(TYPELIB_DIR, $$GIR_PREFIX, $$M_IM_PREFIX)
+        GIR_DIR = $$replace(GIR_DIR, $$GIR_PREFIX, $$PREFIX)
+        TYPELIB_DIR = $$replace(TYPELIB_DIR, $$GIR_PREFIX, $$PREFIX)
     }
 
     gir.files = $${OUT_PWD}/Maliit-1.0.gir

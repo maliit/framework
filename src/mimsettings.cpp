@@ -18,7 +18,7 @@
 ****************************************************************************/
 
 #include "mimsettings.h"
-#if !defined(M_IM_DISABLE_GCONF)
+#if !defined(MALIIT_DISABLE_GCONF)
 #include "mimsettingsgconf.h"
 #endif
 #include "mimsettingsqsettings.h"
@@ -30,7 +30,7 @@
 #include <QVariant>
 #include <QDebug>
 
-#if defined(M_IM_DISABLE_GCONF)
+#if defined(MALIIT_DISABLE_GCONF)
 typedef MImSettingsQSettingsBackendFactory MImSettingsDefaultBackendFactory;
 #else
 typedef MImSettingsGConfBackendFactory MImSettingsDefaultBackendFactory;
@@ -113,13 +113,13 @@ QHash<QString, QVariant> MImSettings::defaults()
     QHash<QString, QVariant> defaults;
 
     defaults[MALIIT_CONFIG_ROOT"plugins/hardware"] =
-        M_IM_DEFAULT_HW_PLUGIN;
+        MALIIT_DEFAULT_HW_PLUGIN;
     defaults[MALIIT_CONFIG_ROOT"accessoryenabled"] = false;
-    defaults[MALIIT_CONFIG_ROOT"multitouch/enabled"] = M_IM_ENABLE_MULTITOUCH;
+    defaults[MALIIT_CONFIG_ROOT"multitouch/enabled"] = MALIIT_ENABLE_MULTITOUCH;
     defaults[MALIIT_CONFIG_ROOT"onscreen/enabled"] =
-        QStringList() << M_IM_DEFAULT_PLUGIN ":" M_IM_DEFAULT_SUBVIEW;
+        QStringList() << MALIIT_DEFAULT_PLUGIN ":" MALIIT_DEFAULT_SUBVIEW;
     defaults[MALIIT_CONFIG_ROOT"onscreen/active"] =
-        M_IM_DEFAULT_PLUGIN ":" M_IM_DEFAULT_SUBVIEW;
+        MALIIT_DEFAULT_PLUGIN ":" MALIIT_DEFAULT_SUBVIEW;
 
     return defaults;
 }

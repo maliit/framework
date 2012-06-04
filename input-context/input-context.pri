@@ -28,5 +28,5 @@ QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 QT_IM_PLUGIN_PATH = $$[QT_INSTALL_PLUGINS]/inputmethods
 QT_PREFIX = $$[QT_INSTALL_PREFIX]
 enforce-install-prefix {
-    QT_IM_PLUGIN_PATH = $$replace(QT_IM_PLUGIN_PATH, $$QT_PREFIX, $$M_IM_PREFIX)
+    QT_IM_PLUGIN_PATH = $$replace(QT_IM_PLUGIN_PATH, $$QT_PREFIX, $$PREFIX)
 }

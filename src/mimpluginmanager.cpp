@@ -43,8 +43,8 @@ using namespace std::tr1;
 
 namespace
 {
-    const QString DefaultPluginLocation(M_IM_PLUGINS_DIR);
-    const QString DefaultFactoryPluginLocation(M_IM_FACTORY_PLUGINS_DIR);
+    const QString DefaultPluginLocation(MALIIT_PLUGINS_DIR);
+    const QString DefaultFactoryPluginLocation(MALIIT_FACTORY_PLUGINS_DIR);
 
     const char * const VisualizationAttribute = "visualizationPriority";
     const char * const FocusStateAttribute = "focusState";

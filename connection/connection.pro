@@ -37,7 +37,7 @@ direct-connection {
 
 # Default to building glib-dbus based connection
 disable-dbus {
-    DEFINES += M_IM_DISABLE_DBUS
+    DEFINES += MALIIT_DISABLE_DBUS
 } else {
     enable-qdbus {
         CONFIG += qdbus-dbus-connection
@@ -213,7 +213,7 @@ qdbus-dbus-connection|glib-dbus-connection {
         DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
         DBUS_SERVICES_PREFIX = $$system(pkg-config --variable prefix dbus-1)
         enforce-install-prefix {
-            DBUS_SERVICES_DIR = $$replace(DBUS_SERVICES_DIR, $$DBUS_SERVICES_PREFIX, $$M_IM_PREFIX)
+            DBUS_SERVICES_DIR = $$replace(DBUS_SERVICES_DIR, $$DBUS_SERVICES_PREFIX, $$PREFIX)
         }
 
         install_services.path = $$DBUS_SERVICES_DIR
@@ -230,15 +230,15 @@ SOURCES += \
     $$PUBLIC_SOURCES \
     $$PRIVATE_SOURCES \
 
-target.path += $$M_IM_INSTALL_LIBS
+target.path += $$LIBDIR
 
-public_headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_CONNECTION_HEADER
+public_headers.path += $$INCLUDEDIR/$$MALIIT_CONNECTION_HEADER
 public_headers.files += $$PUBLIC_HEADERS
 
 OTHER_FILES += maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc.in
 outputFiles(maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc)
 
-install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
+install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc
 
 INSTALLS += target \

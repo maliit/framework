@@ -30,9 +30,9 @@ SOURCES += \
     pluginsettings.cpp \
     settingsmanager.cpp \
 
-target.path += $$M_IM_INSTALL_LIBS
+target.path += $$LIBDIR
 
-headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER/maliit
+headers.path += $$INCLUDEDIR/$$MALIIT_HEADER/maliit
 headers.files += $$HEADERSINSTALL
 
 outputFiles(maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc)
@@ -40,7 +40,7 @@ outputFiles(maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc)
 OTHER_FILES += \
     maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc.in
 
-install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
+install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc
 
 INSTALLS += \

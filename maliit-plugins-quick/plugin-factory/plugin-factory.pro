@@ -28,7 +28,7 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
     }
 }
 
-target.path += $${M_IM_FACTORY_PLUGINS_DIR}
+target.path += $${MALIIT_FACTORY_PLUGINS_DIR}
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc

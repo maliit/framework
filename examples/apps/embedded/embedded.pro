@@ -20,7 +20,7 @@ contains(BUILD_TYPE, skeleton) {
 
 contains(BUILD_TYPE, unittest) {
     include(../../../config.pri)
-    target.path = $$M_IM_INSTALL_BIN
+    target.path = $$BINDIR
     INSTALLS += target
 
     # Used for testing purposes, can be deleted when used as a project skeleton

@@ -2,8 +2,8 @@
 
 ### This script will allow user to get started using the Maliit SDK
 
-DOC_START_PATH=@M_IM_INSTALL_DOCS@/@MALIIT_PACKAGENAME@/html/index.html
-SDK_PATH=@M_IM_INSTALL_DOCS@/@MALIIT_PACKAGENAME@/maliit-sdk/
+DOC_START_PATH=@DOCDIR@/@MALIIT_PACKAGENAME@/html/index.html
+SDK_PATH=@DOCDIR@/@MALIIT_PACKAGENAME@/maliit-sdk/
 
 MINIMUM_ARGS=1
 
