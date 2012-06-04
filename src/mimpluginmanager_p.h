@@ -86,6 +86,7 @@ public:
     bool loadFactoryPlugin(const QDir &dir, const QString &fileName);
     void addHandlerMap(Maliit::HandlerState state, const QString &pluginName);
     void registerSettings();
+    void registerSettings(const MImPluginSettingsInfo &info);
     MImPluginSettingsInfo globalSettings() const;
     void setActiveHandlers(const QSet<Maliit::HandlerState> &states);
     QSet<Maliit::HandlerState> activeHandlers() const;
