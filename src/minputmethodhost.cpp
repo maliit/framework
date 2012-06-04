@@ -28,14 +28,18 @@
 MInputMethodHost::MInputMethodHost(shared_ptr<MInputContextConnection> inputContextConnection,
                                    MIMPluginManager *pluginManager,
                                    MIndicatorServiceClient &indicatorService,
-                                   AbstractSurfaceFactory *surfaceFactory)
+                                   AbstractSurfaceFactory *surfaceFactory,
+                                   const QString &plugin,
+                                   const QString &description)
     : MAbstractInputMethodHost(),
       connection(inputContextConnection),
       pluginManager(pluginManager),
       inputMethod(0),
       enabled(false),
       indicatorService(indicatorService),
-      mSurfaceFactory(surfaceFactory)
+      mSurfaceFactory(surfaceFactory),
+      pluginId(plugin),
+      pluginDescription(description)
 {
     // nothing
 }
@@ -256,4 +260,12 @@ int MInputMethodHost::anchorPosition(bool &valid)
 AbstractSurfaceFactory *MInputMethodHost::surfaceFactory()
 {
     return mSurfaceFactory;
+}
+
+AbstractPluginSetting *MInputMethodHost::registerPluginSetting(const QString &key,
+                                                               const QString &description,
+                                                               Maliit::SettingEntryType type,
+                                                               const QVariantMap &attributes)
+{
+    return pluginManager->registerPluginSetting(pluginId, pluginDescription, key, description, type, attributes);
 }

@@ -55,6 +55,7 @@ namespace
     const QString MImPluginFactories   = ConfigRoot + "factories";
 
     const QString PluginRoot           = MALIIT_CONFIG_ROOT"plugins";
+    const QString PluginSettings       = MALIIT_CONFIG_ROOT"pluginsettings";
     const QString MImAccesoryEnabled   = MALIIT_CONFIG_ROOT"accessoryenabled";
 
     const int MaxPluginHideTransitionTime(2*1000);
@@ -215,7 +216,8 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, surfaceGroup->factory());
+    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, surfaceGroup->factory(),
+                                                  fileName, plugin->name());
 
     MAbstractInputMethod *im = plugin->createInputMethod(host);
 
@@ -1656,11 +1658,68 @@ void MIMPluginManager::pluginSettingsRequested(int clientId, const QString &desc
 
         for (int j = 0; j < entries.count(); ++j) {
             // TODO translate descriptions using descriptionLanguage
-            entries[j].value = MImSettings(entries[j].extension_key).value();
+            entries[j].value = MImSettings(entries[j].extension_key).value(entries[j].attributes.value(Maliit::SettingEntryAttributes::defaultValue));
         }
     }
 
     d->mICConnection->pluginSettingsLoaded(clientId, settings);
+}
+
+AbstractPluginSetting *MIMPluginManager::registerPluginSetting(const QString &pluginId,
+                                                               const QString &pluginDescription,
+                                                               const QString &key,
+                                                               const QString &description,
+                                                               Maliit::SettingEntryType type,
+                                                               const QVariantMap &attributes)
+{
+    Q_D(MIMPluginManager);
+
+    MImPluginSettingsEntry entry;
+    entry.description = description;
+    entry.type = type;
+    entry.extension_key = PluginSettings + "/" + pluginId + "/" + key;
+    entry.attributes = attributes;
+
+    MImPluginSettingsInfo info;
+    info.plugin_name = pluginId;
+    info.plugin_description = pluginDescription;
+    info.extension_id = MSharedAttributeExtensionManager::PluginSettings;
+    info.entries.append(entry);
+
+    d->registerSettings(info);
+
+    return new PluginSetting(key, entry.extension_key, entry.attributes.value(Maliit::SettingEntryAttributes::defaultValue));
+}
+
+PluginSetting::PluginSetting(const QString &shortKey, const QString &fullKey, const QVariant &value) :
+    pluginKey(shortKey), setting(fullKey), defaultValue(value)
+{
+    connect(&setting, SIGNAL(valueChanged()), this, SIGNAL(valueChanged()));
+}
+
+QString PluginSetting::key() const
+{
+    return pluginKey;
+}
+
+QVariant PluginSetting::value() const
+{
+    return setting.value(defaultValue);
+}
+
+QVariant PluginSetting::value(const QVariant &def) const
+{
+    return setting.value(def.isValid() ? def : defaultValue);
+}
+
+void PluginSetting::set(const QVariant &val)
+{
+    setting.set(val);
+}
+
+void PluginSetting::unset()
+{
+    setting.unset();
 }
 
 #include "moc_mimpluginmanager.cpp"
