@@ -23,6 +23,7 @@ PLUGIN_HEADERS_PUBLIC = \
         maliit/plugins/updatereceiver.h \
         maliit/plugins/plugindescription.h \
         maliit/plugins/subviewdescription.h \
+        maliit/plugins/abstractpluginsetting.h \
 
 PLUGIN_SOURCES += \
         maliit/plugins/abstractsurface.cpp \
