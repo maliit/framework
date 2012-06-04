@@ -21,7 +21,6 @@ include(./config.pri)
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
-        \\n\\t enforce-install-prefix : Always use PREFIX instead of prefix reported by GTK+, Qt, DBus etc. (used for testing) \
         \\nInfluential environment variables: \
         \\n\\t GCONF_CONFIG_SOURCE : Specify custom gconf source2 \
         \\n\\t GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL : Do not register gconf schemas (used for packaging) \

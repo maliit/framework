@@ -50,9 +50,7 @@ outputFiles(maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc)
 
 QT_PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
 QT_PREFIX = $$[QT_INSTALL_PREFIX]
-enforce-install-prefix {
-    QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$PREFIX)
-}
+QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$PREFIX)
 
 install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc
