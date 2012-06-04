@@ -39,11 +39,11 @@ for(OPTION,$$list($$lower($$COV_OPTION))){
     }
 }
 
-target.path += $$M_IM_INSTALL_LIBS
+target.path += $$LIBDIR
 
 QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 
-headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_PLUGINS_QUICK_HEADER
+headers.path += $$INCLUDEDIR/$$MALIIT_PLUGINS_QUICK_HEADER
 headers.files += $$HEADERSINSTALL
 
 outputFiles(maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc)
@@ -51,10 +51,10 @@ outputFiles(maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc)
 QT_PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
 QT_PREFIX = $$[QT_INSTALL_PREFIX]
 enforce-install-prefix {
-    QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$M_IM_PREFIX)
+    QT_PRF_DIR = $$replace(QT_PRF_DIR, $$QT_PREFIX, $$PREFIX)
 }
 
-install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
+install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc
 
 INSTALLS += target \

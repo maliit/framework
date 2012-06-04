@@ -23,13 +23,13 @@ HEADERS += \
 SOURCES += \
     maliit/settingdata.cpp \
 
-frameworkheaders.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_FRAMEWORK_HEADER/maliit
+frameworkheaders.path += $$INCLUDEDIR/$$MALIIT_FRAMEWORK_HEADER/maliit
 frameworkheaders.files += $$FRAMEWORKHEADERSINSTALL
 
-install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
+install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-framework-$${MALIIT_FRAMEWORK_INTERFACE_VERSION}.pc
 
-install_prf.path = $$M_IM_INSTALL_PRF
+install_prf.path = $$MALIIT_INSTALL_PRF
 install_prf.files = $$OUT_PWD/maliit-framework.prf
 
 INSTALLS += \

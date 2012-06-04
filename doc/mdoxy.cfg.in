@@ -45,7 +45,7 @@ WARN_LOGFILE          = "doxygen.log"
 # configuration options related to the input files
 #---------------------------------------------------------------------------
 
-FILE_VERSION_FILTER   = "echo @M_IM_VERSION@"
+FILE_VERSION_FILTER   = "echo @MALIIT_VERSION@"
 INPUT                 = @MALIIT_IN_DIR@/../src/ \
                         @MALIIT_IN_DIR@/../maliit/ \
                         @MALIIT_IN_DIR@/../common/maliit/ \

@@ -4,7 +4,7 @@ TOP_DIR = ..
 
 TEMPLATE = app
 TARGET = $$MALIIT_SERVER
-target.path = $$M_IM_INSTALL_BIN
+target.path = $$BINDIR
 DEPENDPATH += .
 
 include($$TOP_DIR/src/libmaliit-plugins.pri)

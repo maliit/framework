@@ -10,4 +10,4 @@ HEADERS += minputcontext.h
 
 SOURCES += minputcontext.cpp
 
-target.path += $$M_IM_INSTALL_LIBS
+target.path += $$LIBDIR

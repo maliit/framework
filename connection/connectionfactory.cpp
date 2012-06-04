@@ -16,7 +16,7 @@
 
 #include "connectionfactory.h"
 
-#ifndef M_IM_DISABLE_DBUS
+#ifndef MALIIT_DISABLE_DBUS
 #ifdef HAVE_GLIB_DBUS
 #include "glibdbusimserverproxy.h"
 #include "minputcontextglibdbusconnection.h"
@@ -28,7 +28,7 @@
 #include "mimdirectserverconnection.h"
 
 namespace Maliit {
-#ifndef M_IM_DISABLE_DBUS
+#ifndef MALIIT_DISABLE_DBUS
 namespace DBus {
 
 MImServerConnection *createServerConnectionWithDynamicAddress()
@@ -75,7 +75,7 @@ MInputContextConnection *createInputContextConnectionWithFixedAddress(const QStr
 }
 
 } // namespace DBus
-#endif // M_IM_DISABLE_DBUS
+#endif // MALIIT_DISABLE_DBUS
 
 QSharedPointer<MImServerConnection> createServerConnection(const QString &connectionType)
 {
@@ -86,7 +86,7 @@ QSharedPointer<MImServerConnection> createServerConnection(const QString &connec
         return connection;
 
     if (connectionType == MALIIT_INPUTCONTEXT_NAME) {
-#ifndef M_IM_DISABLE_DBUS
+#ifndef MALIIT_DISABLE_DBUS
         const QByteArray overriddenAddress = qgetenv("MALIIT_SERVER_ADDRESS");
         ConnectionPtr connection;
 

@@ -21,7 +21,7 @@
 #include "minputcontextconnection.h"
 
 namespace Maliit {
-#ifndef M_IM_DISABLE_DBUS
+#ifndef MALIIT_DISABLE_DBUS
 namespace DBus {
 
 MImServerConnection *createServerConnectionWithDynamicAddress();

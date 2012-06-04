@@ -84,7 +84,7 @@ public:
         Q_ASSERT(m_controller);
 
         m_engine->rootContext()->setContextProperty("MInputMethodQuick", m_controller);
-        m_engine->addImportPath(M_IM_PLUGINS_DATA_DIR);
+        m_engine->addImportPath(MALIIT_PLUGINS_DATA_DIR);
 
         Q_FOREACH (const QString &path, MInputMethodQuickPlugin::qmlImportPaths()) {
             m_engine->addImportPath(path);

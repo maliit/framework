@@ -35,13 +35,13 @@ QMAKE_EXTRA_COMPILERS += sdk
 
 # Install
 sdk_install.files = $$SDK_BUILD_DIR
-sdk_install.path = $$M_IM_INSTALL_DOCS/$$MALIIT_PACKAGENAME
+sdk_install.path = $$DOCDIR/$$MALIIT_PACKAGENAME
 sdk_install.CONFIG += no_check_exist directory
 sdk_install.depends += build
 
 sdk_executable.CONFIG += no_check_exist
 sdk_executable.files = $$OUT_PWD/maliit-sdk
-sdk_executable.path = $$M_IM_INSTALL_BIN
+sdk_executable.path = $$BINDIR
 
 INSTALLS += sdk_install sdk_executable
 

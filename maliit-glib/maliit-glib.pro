@@ -28,9 +28,9 @@ SOURCES += \
     maliitattributeextensionregistry.c \
     maliitinputmethod.c \
 
-target.path += $$M_IM_INSTALL_LIBS
+target.path += $$LIBDIR
 
-headers.path += $$M_IM_INSTALL_HEADERS/$$MALIIT_HEADER/maliit-glib
+headers.path += $$INCLUDEDIR/$$MALIIT_HEADER/maliit-glib
 headers.files += $$HEADERSINSTALL
 
 outputFiles(maliit-glib-$${MALIIT_INTERFACE_VERSION}.pc)
@@ -38,7 +38,7 @@ outputFiles(maliit-glib-$${MALIIT_INTERFACE_VERSION}.pc)
 OTHER_FILES += \
     maliit-glib-$${MALIIT_INTERFACE_VERSION}.pc.in
 
-install_pkgconfig.path = $${M_IM_INSTALL_LIBS}/pkgconfig
+install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = $$OUT_PWD/maliit-glib-$${MALIIT_INTERFACE_VERSION}.pc
 
 INSTALLS += \

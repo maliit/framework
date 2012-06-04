@@ -28,68 +28,68 @@ QMAKE_CFLAGS_DEBUG+=-Werror -O0
 OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
-isEmpty(M_IM_VERSION) {
-    M_IM_VERSION=$$MALIIT_VERSION
+isEmpty(MALIIT_VERSION) {
+    MALIIT_VERSION=$$MALIIT_VERSION
 }
 
-isEmpty(M_IM_PREFIX) {
-    M_IM_PREFIX = /usr
+isEmpty(PREFIX) {
+    PREFIX = /usr
 }
-isEmpty(M_IM_INSTALL_BIN) {
-    M_IM_INSTALL_BIN = $$M_IM_PREFIX/bin
+isEmpty(BINDIR) {
+    BINDIR = $$PREFIX/bin
 }
-isEmpty(M_IM_INSTALL_LIBS) {
-    M_IM_INSTALL_LIBS = $$M_IM_PREFIX/lib
+isEmpty(LIBDIR) {
+    LIBDIR = $$PREFIX/lib
 }
-isEmpty(M_IM_INSTALL_HEADERS) {
-    M_IM_INSTALL_HEADERS = $$M_IM_PREFIX/include
+isEmpty(INCLUDEDIR) {
+    INCLUDEDIR = $$PREFIX/include
 }
-DATADIR = $$M_IM_PREFIX/share
-isEmpty(M_IM_INSTALL_SCHEMAS) {
-    M_IM_INSTALL_SCHEMAS = $$DATADIR/gconf/schemas
-}
-
-isEmpty(M_IM_INSTALL_DOCS) {
-    M_IM_INSTALL_DOCS = $$DATADIR/doc
+DATADIR = $$PREFIX/share
+isEmpty(SCHEMADIR) {
+    SCHEMADIR = $$DATADIR/gconf/schemas
 }
 
-isEmpty(M_IM_PLUGINS_DIR) {
-    M_IM_PLUGINS_DIR = $$M_IM_INSTALL_LIBS/$$MALIIT_PLUGINS
+isEmpty(DOCDIR) {
+    DOCDIR = $$DATADIR/doc
 }
-DEFINES += M_IM_PLUGINS_DIR=\\\"$$M_IM_PLUGINS_DIR\\\"
 
-isEmpty(M_IM_PLUGINS_DATA_DIR) {
-    M_IM_PLUGINS_DATA_DIR = $$DATADIR/$$MALIIT_PLUGINS_DATA
+isEmpty(MALIIT_PLUGINS_DIR) {
+    MALIIT_PLUGINS_DIR = $$LIBDIR/$$MALIIT_PLUGINS
 }
-DEFINES += M_IM_PLUGINS_DATA_DIR=\\\"$$M_IM_PLUGINS_DATA_DIR\\\"
+DEFINES += MALIIT_PLUGINS_DIR=\\\"$$MALIIT_PLUGINS_DIR\\\"
 
-isEmpty(M_IM_FACTORY_PLUGINS_DIR) {
-    M_IM_FACTORY_PLUGINS_DIR = $$M_IM_PLUGINS_DIR/factories
+isEmpty(MALIIT_PLUGINS_DATA_DIR) {
+    MALIIT_PLUGINS_DATA_DIR = $$DATADIR/$$MALIIT_PLUGINS_DATA
 }
-DEFINES += M_IM_FACTORY_PLUGINS_DIR=\\\"$$M_IM_FACTORY_PLUGINS_DIR\\\"
+DEFINES += MALIIT_PLUGINS_DATA_DIR=\\\"$$MALIIT_PLUGINS_DATA_DIR\\\"
 
-isEmpty(M_IM_ENABLE_MULTITOUCH) {
+isEmpty(MALIIT_FACTORY_PLUGINS_DIR) {
+    MALIIT_FACTORY_PLUGINS_DIR = $$MALIIT_PLUGINS_DIR/factories
+}
+DEFINES += MALIIT_FACTORY_PLUGINS_DIR=\\\"$$MALIIT_FACTORY_PLUGINS_DIR\\\"
 
-    M_IM_ENABLE_MULTITOUCH=true
+isEmpty(MALIIT_ENABLE_MULTITOUCH) {
+
+    MALIIT_ENABLE_MULTITOUCH=true
 }
 
 MALIIT_EXTENSIONS_DIR = $$DATADIR/$$MALIIT_ATTRIBUTE_EXTENSIONS/
 DEFINES += MALIIT_EXTENSIONS_DIR=\\\"$$MALIIT_EXTENSIONS_DIR\\\"
 
-isEmpty(M_IM_DEFAULT_HW_PLUGIN) {
-    M_IM_DEFAULT_HW_PLUGIN = libmaliit-keyboard-plugin.so
+isEmpty(MALIIT_DEFAULT_HW_PLUGIN) {
+    MALIIT_DEFAULT_HW_PLUGIN = libmaliit-keyboard-plugin.so
 }
 
-isEmpty(M_IM_DEFAULT_PLUGIN) {
-    M_IM_DEFAULT_PLUGIN = libmaliit-keyboard-plugin.so
+isEmpty(MALIIT_DEFAULT_PLUGIN) {
+    MALIIT_DEFAULT_PLUGIN = libmaliit-keyboard-plugin.so
 }
 
-isEmpty(M_IM_DEFAULT_SUBVIEW) {
-    M_IM_DEFAULT_SUBVIEW = en_gb
+isEmpty(MALIIT_DEFAULT_SUBVIEW) {
+    MALIIT_DEFAULT_SUBVIEW = en_gb
 }
 
 MALIIT_TEST_DATADIR = $$DATADIR/$$MALIIT_TEST_SUITE
-MALIIT_TEST_LIBDIR = $$M_IM_INSTALL_LIBS/$$MALIIT_TEST_SUITE
+MALIIT_TEST_LIBDIR = $$LIBDIR/$$MALIIT_TEST_SUITE
 MALIIT_TEST_TMPDIR = /tmp/$$MALIIT_TEST_SUITE
 MALIIT_TEST_PLUGINS_DIR = $$MALIIT_TEST_LIBDIR/plugins
 
@@ -161,9 +161,9 @@ contains(QT_MAJOR_VERSION, 4) {
     QT_WIDGETS = gui widgets
 }
 
-M_IM_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
+MALIIT_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
 enforce-install-prefix {
-    M_IM_INSTALL_PRF = $$replace(M_IM_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$M_IM_PREFIX)
+    MALIIT_INSTALL_PRF = $$replace(MALIIT_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$PREFIX)
 }
 
 defineTest(outputFile) {
@@ -178,21 +178,21 @@ defineTest(outputFile) {
     MALIIT_IN_DIR = $$IN_PWD
     MALIIT_OUT_DIR = $$OUT_PWD
 
-    variables = M_IM_FRAMEWORK_FEATURE \
-                M_IM_PREFIX \
-                M_IM_INSTALL_BIN \
-                M_IM_INSTALL_HEADERS \
-                M_IM_INSTALL_LIBS \
-                M_IM_INSTALL_DOCS \
-                M_IM_PLUGINS_DIR \
-                M_IM_PLUGINS_DATA_DIR \
-                M_IM_FACTORY_PLUGINS_DIR \
-                M_IM_VERSION \
-                M_IM_ENABLE_MULTITOUCH \
-                M_IM_DEFAULT_HW_PLUGIN \
-                M_IM_DEFAULT_PLUGIN \
-                M_IM_DEFAULT_SUBVIEW \
-                M_IM_QUICK_FEATURE \
+    variables = MALIIT_FRAMEWORK_FEATURE \
+                PREFIX \
+                BINDIR \
+                INCLUDEDIR \
+                LIBDIR \
+                DOCDIR \
+                MALIIT_PLUGINS_DIR \
+                MALIIT_PLUGINS_DATA_DIR \
+                MALIIT_FACTORY_PLUGINS_DIR \
+                MALIIT_VERSION \
+                MALIIT_ENABLE_MULTITOUCH \
+                MALIIT_DEFAULT_HW_PLUGIN \
+                MALIIT_DEFAULT_PLUGIN \
+                MALIIT_DEFAULT_SUBVIEW \
+                MALIIT_QUICK_FEATURE \
                 MALIIT_PLUGINS_LIB \
                 MALIIT_PLUGINS_HEADER \
                 MALIIT_LIB \
