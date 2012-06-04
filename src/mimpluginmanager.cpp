@@ -333,17 +333,32 @@ void MIMPluginManagerPrivate::registerSettings()
     settings_list.plugin_name = "@settings";
     settings_list.extension_id = MSharedAttributeExtensionManager::PluginSettingsList;
 
-    settings.append(settings_list);
+    registerSettings(settings_list);
 
     // global settings
-    settings.append(globalSettings());
+    registerSettings(globalSettings());
+}
 
-    // TODO plugin settings
 
-    Q_FOREACH (const MImPluginSettingsInfo &setting, settings) {
-        Q_FOREACH (const MImPluginSettingsEntry &entry, setting.entries) {
-            sharedAttributeExtensionManager->registerPluginSetting(entry.extension_key, entry.type, entry.attributes);
+void MIMPluginManagerPrivate::registerSettings(const MImPluginSettingsInfo &info)
+{
+    bool found = false;
+
+    for (int i = 0; i < settings.size(); ++i) {
+        if (settings[i].plugin_name == info.plugin_name) {
+            found = true;
+            settings[i].entries.append(info.entries);
+            break;
         }
+    }
+
+    // No setting info for this plugin yet: add the whole entry
+    if (!found) {
+        settings.append(info);
+    }
+
+    Q_FOREACH (const MImPluginSettingsEntry &entry, info.entries) {
+        sharedAttributeExtensionManager->registerPluginSetting(entry.extension_key, entry.type, entry.attributes);
     }
 }
 
