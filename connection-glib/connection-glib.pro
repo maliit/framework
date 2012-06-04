@@ -18,7 +18,7 @@ debug{
     DEFINES += ENABLE_DEBUG
 }
 
-disable-dbus-activation {
+!enable-dbus-activation {
     DEFINES += NO_DBUS_ACTIVATION
 }
 
