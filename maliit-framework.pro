@@ -12,7 +12,7 @@ include(./config.pri)
         \\n\\t MALIIT_SERVER_ARGUMENTS : Arguments to use for starting maliit-server by D-Bus activation \
         \\nRecognised CONFIG flags: \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
-        \\n\\t disable-dbus-activation : Do not use dbus activation support for maliit-server \
+        \\n\\t enable-dbus-activation : Enable dbus activation support for maliit-server \
         \\n\\t disable-gconf : Disable GConf settings backend (falls back to QSettings) \
         \\n\\t disable-dbus : Disable dbus communication backend \
         \\n\\t enable-qdbus : Enable QtDBus implementation for the DBus communication backend \

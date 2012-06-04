@@ -194,7 +194,7 @@ glib-dbus-connection {
 qdbus-dbus-connection|glib-dbus-connection {
     QT += dbus
 
-    disable-dbus-activation {
+    !enable-dbus-activation {
         DEFINES += NO_DBUS_ACTIVATION
     }
 
@@ -207,7 +207,7 @@ qdbus-dbus-connection|glib-dbus-connection {
         serverdbusaddress.cpp \
 
     # DBus activation
-    !disable-dbus-activation {
+    enable-dbus-activation {
         outputFiles(org.maliit.server.service)
 
         DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
