@@ -37,10 +37,17 @@ INSTALLS += target
 
 !disable-gtk-cache-update {
     DISTRO = $$system(lsb_release -s -i)
+    DISTRO_VERSION = $$system(lsb_release -s -r)
+
     isEqual(DISTRO, Ubuntu) {
-        update-im-cache.path = $$GTK3_DIR/
-        update-im-cache.extra = gtk-query-immodules-3.0 --update-cache
-        update-im-cache.uninstall = gtk-query-immodules-3.0 --update-cache
+        QUERY_IM_BIN = gtk-query-immodules-3.0
+        greaterThan(DISTRO_VERSION, 11) {
+            QUERY_IM_BIN = $$GTK3_IM_LIBDIR/libgtk-3-0/gtk-query-immodules-3.0
+        }
+
+        update-im-cache.path = $$GTK2_DIR/
+        update-im-cache.extra = $$QUERY_IM_BIN > $$GTK3_DIR/gtk.immodules
+        update-im-cache.uninstall = $$QUERY_IM_BIN > $$GTK3_DIR/gtk.immodules
 
         INSTALLS *= update-im-cache
     }

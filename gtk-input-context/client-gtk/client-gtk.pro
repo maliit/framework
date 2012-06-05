@@ -37,10 +37,18 @@ INSTALLS += target
 
 !disable-gtk-cache-update {
     DISTRO = $$system(lsb_release -s -i)
+    DISTRO_VERSION = $$system(lsb_release -s -r)
+
     isEqual(DISTRO, Ubuntu) {
+        QUERY_IM_BIN = gtk-query-immodules-2.0
+
+        greaterThan(DISTRO_VERSION, 11) {
+            QUERY_IM_BIN = $$GTK2_IM_LIBDIR/libgtk2.0-0/gtk-query-immodules-2.0
+        }
+
         update-im-cache.path = $$GTK2_DIR/
-        update-im-cache.extra = gtk-query-immodules-2.0 > $$GTK2_DIR/gtk.immodules
-        update-im-cache.uninstall = gtk-query-immodules-2.0 > $$GTK2_DIR/gtk.immodules
+        update-im-cache.extra = $$QUERY_IM_BIN > $$GTK2_DIR/gtk.immodules
+        update-im-cache.uninstall = $$QUERY_IM_BIN > $$GTK2_DIR/gtk.immodules
 
         INSTALLS *= update-im-cache
     }
