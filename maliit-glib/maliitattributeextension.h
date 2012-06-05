@@ -50,6 +50,10 @@ struct _MaliitAttributeExtension
     MaliitAttributeExtensionPrivate *priv;
 };
 
+/**
+  * MaliitAttributeExtensionClass:
+  * @parent_cass: The parent class.
+  **/
 struct _MaliitAttributeExtensionClass
 {
     GObjectClass parent_class;

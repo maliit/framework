@@ -46,6 +46,9 @@ struct _MaliitInputMethod
     MaliitInputMethodPrivate *priv;
 };
 
+/** MaliitInputMethodClass:
+  * @parent_class: The parent class.
+  **/
 struct _MaliitInputMethodClass
 {
     GObjectClass parent_class;
