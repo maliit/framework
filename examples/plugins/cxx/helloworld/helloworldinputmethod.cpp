@@ -37,8 +37,19 @@ HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host)
     , showIsInhibited(false)
     , showRequested(false)
 {
+    // Register setting
+    QVariantMap buttonTextAttributes;
+
+    buttonTextAttributes[Maliit::SettingEntryAttributes::defaultValue] = "Hello World!";
+
+    buttonText.reset(host->registerPluginSetting("button_text", QT_TR_NOOP("Button text"),
+                                                 Maliit::StringType, buttonTextAttributes));
+
+    connect(buttonText.data(), SIGNAL(valueChanged()),
+            this,              SLOT(handleButtonTextChanged()));
+
     // Set up UI
-    mainWidget->setText("Hello World!");
+    mainWidget->setText(buttonText->value().toString());
     connect(mainWidget, SIGNAL(clicked()), this, SLOT(handleButtonClicked()));
 
     // Used only for unittest/sanity test
@@ -53,6 +64,11 @@ HelloWorldInputMethod::~HelloWorldInputMethod()
 void HelloWorldInputMethod::handleButtonClicked()
 {
     inputMethodHost()->sendCommitString(mainWidget->text());
+}
+
+void HelloWorldInputMethod::handleButtonTextChanged()
+{
+    mainWidget->setText(buttonText->value().toString());
 }
 
 void HelloWorldInputMethod::show()

@@ -19,6 +19,7 @@
 
 #include <maliit/plugins/abstractinputmethod.h>
 #include <maliit/plugins/abstractwidgetssurface.h>
+#include <maliit/plugins/abstractpluginsetting.h>
 
 #include <QSet>
 #include <QWidget>
@@ -72,9 +73,11 @@ public:
 
 private Q_SLOTS:
     void handleButtonClicked();
+    void handleButtonTextChanged();
 
 private:
     QSharedPointer<Maliit::Plugins::AbstractWidgetSurface> surface;
+    QScopedPointer<Maliit::Plugins::AbstractPluginSetting> buttonText;
     QPushButton *mainWidget;
     bool showIsInhibited;
     bool showRequested;
