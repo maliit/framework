@@ -71,3 +71,50 @@ maliit-exampleapp-plainqt (or maliit-exampleapp-gtk{2,3})
 Where xxx.xxx.xxx.xxx is IP address of computer where maliit-server is ran
 and yyyyy is port number < 65536.
 
+
+LOCAL BUILD, INSTALL AND RUN
+
+Gtk+ paths and executable names may differ between distros and
+architectures, check them on your own.
+
+# framework build
+
+export GCONF_CONFIG_SOURCE="xml:merged:$HOME/.gconf/gconf.xml.defaults"
+cd maliit-framework
+qmake-qt4 -r PREFIX="$HOME/maliit-local" LIBDIR="$HOME/maliit-local/lib64" CONFIG+=disable-gtk-cache-update
+make -j4
+
+# framework install
+
+make install
+export LD_LIBRARY_PATH="$HOME/maliit-local/lib64"
+GTK_PATH="$HOME/maliit-local/lib64/gtk-2.0" /usr/bin/gtk-query-immodules-2.0-64 >"$HOME/maliit-local/lib64/gtk-2.0/2.10.0/gtk.immodules"
+GTK_PATH="$HOME/maliit-local/lib64/gtk-3.0" /usr/bin/gtk-query-immodules-3.0-64 >"$HOME/maliit-local/lib64/gtk-3.0/3.0.0/gtk.immodules"
+
+# plugins build
+
+cd ../maliit-plugins
+export QMAKEFEATURES="$HOME/maliit-local/mkspecs/features"
+qmake-qt4 -r
+make -j4
+
+# plugins install
+
+make install
+
+# server run
+
+"$HOME/maliit-local/bin/maliit-server" &
+
+# qt app run
+
+export QT_PLUGIN_PATH="$HOME/maliit-local/plugins"
+QT_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-plainqt"
+
+# gtk2 app run
+
+GTK_IM_MODULE_FILE="$HOME/maliit-local/lib64/gtk-2.0/2.10.0/gtk.immodules" GTK_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-gtk2"
+
+# gtk3 app run
+
+GTK_IM_MODULE_FILE="$HOME/maliit-local/lib64/gtk-3.0/3.0.0/gtk.immodules" GTK_IM_MODULE=Maliit "$HOME/maliit-local/bin/maliit-exampleapp-gtk3"
