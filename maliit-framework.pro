@@ -5,7 +5,7 @@ include(./config.pri)
     help_string = \
         Important build options: \
         \\n\\t PREFIX : Install prefix (default: /usr) \
-        \\n\\t {BIN,LIB,INCLUDE,SCHEMA DOC}DIR : Install prefix for specific types of files \
+        \\n\\t {BIN,LIB,INCLUDE,SCHEMA,DOC}DIR : Install prefix for specific types of files \
         \\n\\t MALIIT_DEFAULT_PLUGIN : Default onscreen (virtual) keyboard plugin \
         \\n\\t MALIIT_DEFAULT_HW_PLUGIN : Default hardware keyboard plugin \
         \\n\\t MALIIT_DEFAULT_SUBVIEW : Default onscreen (software) subview name \
