@@ -1,6 +1,6 @@
 /* This file is part of Maliit framework
  *
- * Copyright (C) 2012 Openismus GmbH
+ * Copyright (C) 2012 One Laptop per Child Association
  *
  * Contact: maliit-discuss@lists.maliit.org
  *

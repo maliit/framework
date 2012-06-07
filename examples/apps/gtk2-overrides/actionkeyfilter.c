@@ -1,8 +1,8 @@
 /* This file is part of Maliit framework
  *
- * Copyright (C) 2012 Openismus GmbH
+ * Copyright (C) 2012 One Laptop per Child Association
  *
- * Contact: project@maliit.org
+ * Contact: maliit-discuss@lists.maliit.org
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
