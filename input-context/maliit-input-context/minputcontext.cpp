@@ -764,8 +764,8 @@ void MInputContext::updatePreeditInternally(const QString &string,
         // update style mode
         switch (preeditFormat.preeditFace) {
         case Maliit::PreeditNoCandidates:
-            format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-            format.setUnderlineColor(QColor(255, 0, 0));
+            format.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
+            format.setUnderlineColor(Qt::red);
             break;
         case Maliit::PreeditUnconvertible:
             format.setForeground(QBrush(QColor(128, 128, 128)));
