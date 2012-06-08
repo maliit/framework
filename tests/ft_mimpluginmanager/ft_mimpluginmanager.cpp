@@ -2,13 +2,16 @@
 
 #include "mkeyboardstatetracker_stub.h"
 #include "dummyimplugin.h"
+#include "dummyimplugin3.h"
 #include "dummyinputmethod.h"
+#include "dummyinputmethod3.h"
 #include "core-utils.h"
 #include "mimsettingsqsettings.h"
 
 #include <minputcontextconnection.h>
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
+#include <msharedattributeextensionmanager.h>
 
 #include <QProcess>
 #include <QGraphicsScene>
@@ -34,6 +37,7 @@ namespace
     const QString MImPluginDisabled = ConfigRoot + "disabledpluginfiles";
 
     const QString PluginRoot         = MALIIT_CONFIG_ROOT"plugins/";
+    const QString PluginSettings     = MALIIT_CONFIG_ROOT"pluginsettings";
     const QString MImAccesoryEnabled = MALIIT_CONFIG_ROOT"accessoryenabled";
 
     const MImPluginDescription* findPluginDescriptions(const QList<MImPluginDescription> &list, const QString &pluginName)
@@ -240,6 +244,94 @@ void Ft_MIMPluginManager::testPluginDescriptions()
 
     //at least we should not crash here
     enabledPluginsSettings.set(QStringList());
+}
+
+Q_DECLARE_METATYPE(QList<int>)
+
+void Ft_MIMPluginManager::testPluginSetting()
+{
+    qRegisterMetaType<QList<int> >();
+
+    QString pluginId;
+    QSignalSpy spy(subject->d_ptr->sharedAttributeExtensionManager.data(),
+                   SIGNAL(notifyExtensionAttributeChanged(QList<int>,int,QString,QString,QString,QVariant)));
+    QList<QVariant> arguments;
+
+    DummyImPlugin3 *plugin = 0;
+    DummyInputMethod3 *inputMethod = 0;
+
+    for (MIMPluginManagerPrivate::Plugins::iterator iterator(subject->d_ptr->plugins.begin());
+            iterator != subject->d_ptr->plugins.end();
+            ++iterator) {
+        if (pluginName3 == iterator.key()->name()) {
+            plugin = dynamic_cast<DummyImPlugin3 *>(iterator.key());
+            pluginId = iterator.value().pluginId;
+        }
+    }
+
+    QVERIFY(plugin != 0);
+    inputMethod = dynamic_cast<DummyInputMethod3 *>(subject->d_ptr->plugins[plugin].inputMethod);
+    QVERIFY(inputMethod != 0);
+
+    QCOMPARE(inputMethod->setting->value(), QVariant("Test"));
+
+    QString settingKey = PluginSettings + "/" + pluginId + "/setting";
+
+    // tests
+    // - that plugin settings are registered in a per-plugin namespace
+    // - that they are correctly registered in the shared attribute extension manager
+    // - that the data returned to clients reflects plugin settings
+    // - that changing setting value notifies both subscribed clients and the plugin
+
+    // setting registered in global setting list
+    bool setting_registered = false;
+
+    Q_FOREACH (const MImPluginSettingsInfo &info, subject->d_ptr->settings) {
+        if (info.plugin_name == pluginId) {
+            setting_registered = true;
+
+            QCOMPARE(info.plugin_description, QString("DummyImPlugin3"));
+            QCOMPARE(info.entries.count(), 1);
+            QCOMPARE(info.entries[0].description, QString("Example setting"));
+            QCOMPARE(info.entries[0].extension_key, settingKey);
+            QCOMPARE(info.entries[0].type, Maliit::StringType);
+            QCOMPARE(info.entries[0].attributes[Maliit::SettingEntryAttributes::defaultValue], QVariant("Test"));
+            break;
+        }
+    }
+
+    QVERIFY(setting_registered);
+
+    // simulate client susbcription
+    subject->d_ptr->sharedAttributeExtensionManager->handleAttributeExtensionRegistered(12, MSharedAttributeExtensionManager::PluginSettings, settingKey);
+
+    MImSettings setting(settingKey);
+
+    // setting the value from the server
+    setting.set("Test1");
+
+    QCOMPARE(spy.count(), 1);
+    QCOMPARE(inputMethod->setting->value(), QVariant("Test1"));
+    QCOMPARE(inputMethod->localSettingValue, QVariant("Test1"));
+
+    arguments = spy[0];
+    QCOMPARE(arguments[2], QVariant("/maliit"));
+    QCOMPARE(arguments[3], QVariant("pluginsettings/" + pluginId));
+    QCOMPARE(arguments[4], QVariant("setting"));
+    QCOMPARE(arguments[5].value<QVariant>(), QVariant("Test1"));
+
+    // setting the value from the plugin
+    inputMethod->setting->set("Test2");
+
+    QCOMPARE(spy.count(), 2);
+    QCOMPARE(setting.value(), QVariant("Test2"));
+    QCOMPARE(inputMethod->localSettingValue, QVariant("Test2"));
+
+    arguments = spy[1];
+    QCOMPARE(arguments[2], QVariant("/maliit"));
+    QCOMPARE(arguments[3], QVariant("pluginsettings/" + pluginId));
+    QCOMPARE(arguments[4], QVariant("setting"));
+    QCOMPARE(arguments[5].value<QVariant>(), QVariant("Test2"));
 }
 
 QTEST_MAIN(Ft_MIMPluginManager)
