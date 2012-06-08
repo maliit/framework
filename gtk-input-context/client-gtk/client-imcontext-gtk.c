@@ -575,10 +575,52 @@ meego_imcontext_commit_string(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
     }
 }
 
+typedef enum
+{
+    MaliitPreeditDefault,
+    MaliitPreeditNoCandidates,
+    MaliitPreeditKeyPress,
+    MaliitPreeditUnconvertible,
+    MaliitPreeditActive
+} MaliitPreeditFace;
+
+static void
+get_byte_range_from_unicode_offsets (const gchar *string,
+                                     gint         utf8_start,
+                                     gint         utf8_length,
+                                     gint        *byte_start,
+                                     gint        *byte_end)
+{
+    gint start;
+    gint end;
+
+    /* we provide start index and length in utf8 characters, but pango
+     * expects start and end indices in bytes.
+     */
+    if (g_utf8_validate (string, -1, NULL)) {
+        const gchar * const start_pointer = g_utf8_offset_to_pointer (string, utf8_start);
+        const gchar * const end_pointer = g_utf8_offset_to_pointer (string, utf8_start + utf8_length);
+
+        /* pointer arithmetics, there you have it. */
+        start = start_pointer - string;
+        end = end_pointer - string;
+    } else {
+        start = utf8_start;
+        end = utf8_start + utf8_length;
+    }
+
+    if (byte_start) {
+        *byte_start = start;
+    }
+    if (*byte_end) {
+        *byte_end = end;
+    }
+}
+
 void
 meego_imcontext_update_preedit(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
                                const char *string,
-                               GPtrArray *formatListData G_GNUC_UNUSED,
+                               GPtrArray *formatListData,
                                gint32 replaceStart G_GNUC_UNUSED,
                                gint32 replaceLength G_GNUC_UNUSED,
                                gint32 cursorPos,
@@ -591,6 +633,9 @@ meego_imcontext_update_preedit(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
     DBG("imcontext = %p string = %s cursorPos = %d", imcontext, string, cursorPos);
 
     if (focused_imcontext) {
+        guint iter;
+        PangoAttrList* attrs;
+
         g_free(focused_imcontext->preedit_str);
         focused_imcontext->preedit_str = g_strdup(string);
         /* If cursorPos is -1 explicitly set it to the end of the preedit */
@@ -598,6 +643,61 @@ meego_imcontext_update_preedit(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
             cursorPos = g_utf8_strlen(string, -1);
         }
         focused_imcontext->preedit_cursor_pos = cursorPos;
+
+        /* attributes */
+        attrs = pango_attr_list_new();
+
+        for (iter = 0; iter < formatListData->len; ++iter) {
+            GValueArray *text_format = g_ptr_array_index (formatListData, iter);
+            gint start = g_value_get_int(g_value_array_get_nth(text_format, 0));
+            gint length = g_value_get_int(g_value_array_get_nth(text_format, 1));
+            MaliitPreeditFace preedit_face = (MaliitPreeditFace)g_value_get_int(g_value_array_get_nth(text_format, 2));
+            gint byte_start;
+            gint byte_end;
+            PangoAttribute* new_attrs[2] = { NULL, NULL };
+            gint attr_iter;
+
+            get_byte_range_from_unicode_offsets(string, start, length, &byte_start, &byte_end);
+
+            switch (preedit_face) {
+            case MaliitPreeditNoCandidates:
+                new_attrs[0] = pango_attr_underline_new (PANGO_UNDERLINE_ERROR);
+                new_attrs[1] = pango_attr_underline_color_new (65535, 0, 0);
+                break;
+
+            case MaliitPreeditUnconvertible: {
+                const gint gray = (2 << 15) - 1; /* halfway from 0 to 65535 */
+
+                new_attrs[0] = pango_attr_foreground_new (gray, gray, gray);
+            } break;
+
+            case MaliitPreeditActive:
+                new_attrs[0] = pango_attr_foreground_new(39168, 12800, 52224);
+                new_attrs[1] = pango_attr_weight_new(PANGO_WEIGHT_BOLD);
+                break;
+
+            case MaliitPreeditKeyPress:
+            case MaliitPreeditDefault:
+                new_attrs[0] = pango_attr_underline_new(PANGO_UNDERLINE_SINGLE);
+                new_attrs[1] = pango_attr_underline_color_new(0, 0, 0);
+                break;
+            }
+
+            for (attr_iter = 0; attr_iter < 2; ++attr_iter) {
+                if (new_attrs[attr_iter]) {
+                    new_attrs[attr_iter]->start_index = byte_start;
+                    new_attrs[attr_iter]->end_index = byte_end;
+
+                    pango_attr_list_insert(attrs, new_attrs[attr_iter]);
+                }
+            }
+        }
+
+        if (focused_imcontext->preedit_attrs) {
+            pango_attr_list_unref (focused_imcontext->preedit_attrs);
+        }
+        focused_imcontext->preedit_attrs = attrs;
+
         g_signal_emit_by_name(focused_imcontext, "preedit-changed");
     }
 }
