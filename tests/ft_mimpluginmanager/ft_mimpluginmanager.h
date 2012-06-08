@@ -24,6 +24,7 @@ private Q_SLOTS:
     void testSwitchPluginBySignal();
     void testSwitchToSpecifiedPlugin();
     void testPluginDescriptions();
+    void testPluginSetting();
 
 private:
     MIMPluginManager *subject;

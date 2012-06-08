@@ -2,6 +2,7 @@
 #define DUMMYINPUTMETHOD3_H
 
 #include <maliit/plugins/abstractinputmethod.h>
+#include <maliit/plugins/abstractpluginsetting.h>
 #include <QSet>
 #include <QWidget>
 
@@ -32,10 +33,15 @@ public:
     Maliit::SwitchDirection directionParam;
     bool enableAnimationParam;
 
+    QVariant localSettingValue;
+    QScopedPointer<Maliit::Plugins::AbstractPluginSetting> setting;
+
 Q_SIGNALS:
     void showCalled();
 
 private:
+    Q_SLOT void handleSettingChanged();
+
     QList<MAbstractInputMethod::MInputMethodSubView> sViews;
     QString activeSView;
 };
