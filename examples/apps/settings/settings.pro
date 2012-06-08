@@ -8,6 +8,12 @@ DEPENDPATH += .
 
 BUILD_TYPE = unittest
 
+contains(QT_MAJOR_VERSION, 4) {
+    QT += core gui
+} else {
+    QT += core gui widgets
+}
+
 contains(BUILD_TYPE, skeleton) {
     CONFIG += link_pkgconfig
     PKGCONFIG += maliit-settings-1.0
