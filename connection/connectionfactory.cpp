@@ -107,7 +107,7 @@ QSharedPointer<MImServerConnection> createServerConnection(const QString &connec
 
         return connection;
     } else {
-        qCritical("Invalid connection type, unable to create connection to Maliit server");
+        qCritical() << __PRETTY_FUNCTION__ << "Invalid connection type (" + connectionType + "), unable to create connection to Maliit server";
 
         return ConnectionPtr();
     }
