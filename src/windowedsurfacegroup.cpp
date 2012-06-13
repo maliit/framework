@@ -7,6 +7,8 @@
  * If you have questions regarding the use of this file, please contact
  * Nokia at directui@nokia.com.
  *
+ * Copyright (C) 2012 Openismus GmbH
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License version 2.1 as published by the Free Software Foundation
