@@ -39,12 +39,14 @@ QString SettingsManager::preferredDescriptionLocale()
     return preferred_description_locale;
 }
 
-SettingsManager *SettingsManager::create()
+SettingsManager *SettingsManager::create(QObject *parent)
 {
-    return new SettingsManager(createServerConnection(qgetenv("QT_IM_MODULE")));
+    return new SettingsManager(createServerConnection(qgetenv("QT_IM_MODULE")), parent);
 }
 
-SettingsManager::SettingsManager(QSharedPointer<MImServerConnection> connection) :
+SettingsManager::SettingsManager(QSharedPointer<MImServerConnection> connection,
+                                 QObject *parent) :
+    QObject(parent),
     d_ptr(new SettingsManagerPrivate)
 {
     Q_D(SettingsManager);

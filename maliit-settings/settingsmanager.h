@@ -41,7 +41,7 @@ public:
      *
      * Uses QT_IM_MODULE to determine the connection type (direct, DBus, ...) to maliit-server
      */
-    static SettingsManager *create();
+    static SettingsManager *create(QObject *parent = 0);
 
     virtual ~SettingsManager();
 
@@ -62,7 +62,7 @@ Q_SIGNALS:
     void disconnected();
 
 private:
-    SettingsManager(QSharedPointer<MImServerConnection> connection);
+    SettingsManager(QSharedPointer<MImServerConnection> connection, QObject *parent);
 
     Q_SLOT void onPluginSettingsReceived(const QList<MImPluginSettingsInfo> &settings);
 
