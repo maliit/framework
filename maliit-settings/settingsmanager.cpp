@@ -53,10 +53,14 @@ SettingsManager::SettingsManager(QSharedPointer<MImServerConnection> connection,
 
     d->connection = connection;
 
-    connect(d->connection.data(), SIGNAL(pluginSettingsReceived(QList<MImPluginSettingsInfo>)),
-            this, SLOT(onPluginSettingsReceived(QList<MImPluginSettingsInfo>)));
-    connect(d->connection.data(), SIGNAL(connected()), this, SIGNAL(connected()));
-    connect(d->connection.data(), SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+    if (d->connection) {
+        connect(d->connection.data(), SIGNAL(pluginSettingsReceived(QList<MImPluginSettingsInfo>)),
+                this, SLOT(onPluginSettingsReceived(QList<MImPluginSettingsInfo>)));
+        connect(d->connection.data(), SIGNAL(connected()), this, SIGNAL(connected()));
+        connect(d->connection.data(), SIGNAL(disconnected()), this, SIGNAL(disconnected()));
+    } else {
+        qCritical() << __PRETTY_FUNCTION__ << "No connection established";
+    }
 }
 
 SettingsManager::~SettingsManager()
@@ -67,7 +71,11 @@ void SettingsManager::loadPluginSettings() const
 {
     Q_D(const SettingsManager);
 
-    d->connection->loadPluginSettings(preferredDescriptionLocale());
+    if (d->connection) {
+        d->connection->loadPluginSettings(preferredDescriptionLocale());
+    } else {
+        qCritical() << "Could not load plugin settings - no connection to server";
+    }
 }
 
 void SettingsManager::onPluginSettingsReceived(const QList<MImPluginSettingsInfo> &settings)
