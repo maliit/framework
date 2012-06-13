@@ -66,7 +66,7 @@ public:
      * - valueDomain: list of allowed values for the entry
      * - valueDomainDescriptions: list of descriptions for the values in valueDomain
      * - valueRangeMin: minimum integer value (inclusive) for the entry
-     * - valueRangeMsx: maximum integer value (inclusive) for the entry
+     * - valueRangeMax: maximum integer value (inclusive) for the entry
      *
      * \sa Maliit::SettingEntryAttributes
      */
