@@ -1,6 +1,5 @@
 /* This file is part of Maliit framework
  *
- * Copyright (C) 2012 Mattia Barbon <mattia@develer.com>
  * Copyright (C) 2012 Openismus GmbH
  *
  * Contact: maliit-discuss@lists.maliit.org
@@ -21,38 +20,23 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MALIIT_SETTINGS_EXAMPLE_BOOL_ENTRY_CHECK_BOX_H
+#define MALIIT_SETTINGS_EXAMPLE_BOOL_ENTRY_CHECK_BOX_H
 
-#include "settingsmanager.h"
+#include <QCheckBox>
+
 #include "settingsentry.h"
 
-#include <QWidget>
-#include <QComboBox>
-#include <QPushButton>
-#include <QLabel>
-
-class MainWindow : public QWidget
+class BoolEntryCheckBox : public QCheckBox
 {
     Q_OBJECT
-
 public:
-    MainWindow();
+    BoolEntryCheckBox(const QSharedPointer<Maliit::SettingsEntry>& entry);
 
-private Q_SLOTS:
-    void pluginSettingsReceived(const QList<QSharedPointer<Maliit::PluginSettings> > &settings);
-    void connected();
-
-    void setLanguage(int index);
-    void languageChanged();
-    void enableAllLayouts();
+    Q_SLOT void onStateChanged();
 
 private:
-    Maliit::SettingsManager *maliit_settings;
-    QSharedPointer<Maliit::SettingsEntry> language_entry, enabled_entry;
-    QComboBox* language_selector;
-    QPushButton* enable_all;
-    QTabWidget tabs;
+    QSharedPointer<Maliit::SettingsEntry> m_entry;
 };
 
-#endif
+#endif // MALIIT_SETTINGS_EXAMPLE_STRING_ENTRY_EDIT_H

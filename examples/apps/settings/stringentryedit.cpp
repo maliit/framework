@@ -1,6 +1,5 @@
 /* This file is part of Maliit framework
  *
- * Copyright (C) 2012 Mattia Barbon <mattia@develer.com>
  * Copyright (C) 2012 Openismus GmbH
  *
  * Contact: maliit-discuss@lists.maliit.org
@@ -21,38 +20,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "stringentryedit.h"
 
-#include "settingsmanager.h"
-#include "settingsentry.h"
-
-#include <QWidget>
-#include <QComboBox>
-#include <QPushButton>
-#include <QLabel>
-
-class MainWindow : public QWidget
+StringEntryEdit::StringEntryEdit(const QSharedPointer<Maliit::SettingsEntry>& entry)
+    : QLineEdit(entry ? entry->value().toString() : "")
+    , m_entry(entry)
 {
-    Q_OBJECT
+    if (entry) {
+        connect (this, SIGNAL(returnPressed()),
+                 this, SLOT(onReturnPressed()));
+    } else {
+        setDisabled(true);
+    }
+}
 
-public:
-    MainWindow();
+void StringEntryEdit::onReturnPressed()
+{
+    if (m_entry) {
+        QVariant string_value(text());
 
-private Q_SLOTS:
-    void pluginSettingsReceived(const QList<QSharedPointer<Maliit::PluginSettings> > &settings);
-    void connected();
-
-    void setLanguage(int index);
-    void languageChanged();
-    void enableAllLayouts();
-
-private:
-    Maliit::SettingsManager *maliit_settings;
-    QSharedPointer<Maliit::SettingsEntry> language_entry, enabled_entry;
-    QComboBox* language_selector;
-    QPushButton* enable_all;
-    QTabWidget tabs;
-};
-
-#endif
+        if (m_entry->isValid(string_value)) {
+            m_entry->set(string_value);
+        }
+    }
+}

@@ -37,8 +37,14 @@ contains(BUILD_TYPE, unittest) {
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    stringentryedit.cpp \
+    selectentrycombobox.cpp \
+    boolentrycheckbox.cpp \
 
 HEADERS += \
     mainwindow.h \
+    stringentryedit.h \
+    selectentrycombobox.h \
+    boolentrycheckbox.h \
 
 QMAKE_CLEAN += maliit-exampleapp-settings

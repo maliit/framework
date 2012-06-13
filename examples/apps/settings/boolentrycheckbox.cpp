@@ -1,6 +1,5 @@
 /* This file is part of Maliit framework
  *
- * Copyright (C) 2012 Mattia Barbon <mattia@develer.com>
  * Copyright (C) 2012 Openismus GmbH
  *
  * Contact: maliit-discuss@lists.maliit.org
@@ -21,38 +20,32 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#include "boolentrycheckbox.h"
 
-#include "settingsmanager.h"
-#include "settingsentry.h"
-
-#include <QWidget>
-#include <QComboBox>
-#include <QPushButton>
-#include <QLabel>
-
-class MainWindow : public QWidget
+BoolEntryCheckBox::BoolEntryCheckBox(const QSharedPointer<Maliit::SettingsEntry>& entry)
+    : m_entry(entry)
 {
-    Q_OBJECT
+    if (m_entry) {
+        const bool value(m_entry->value().toBool());
 
-public:
-    MainWindow();
+        connect(this, SIGNAL(stateChanged(int)),
+                this, SLOT(onStateChanged()));
 
-private Q_SLOTS:
-    void pluginSettingsReceived(const QList<QSharedPointer<Maliit::PluginSettings> > &settings);
-    void connected();
+        setChecked(value);
+    } else {
+        setDisabled(true);
+    }
+}
 
-    void setLanguage(int index);
-    void languageChanged();
-    void enableAllLayouts();
-
-private:
-    Maliit::SettingsManager *maliit_settings;
-    QSharedPointer<Maliit::SettingsEntry> language_entry, enabled_entry;
-    QComboBox* language_selector;
-    QPushButton* enable_all;
-    QTabWidget tabs;
-};
-
-#endif
+void BoolEntryCheckBox::onStateChanged()
+{
+    if (m_entry) {
+        if (isChecked()) {
+            setText("True");
+            m_entry->set(true);
+        } else {
+            setText("False");
+            m_entry->set(false);
+        }
+    }
+}
