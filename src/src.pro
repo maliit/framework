@@ -52,12 +52,14 @@ SERVER_HEADERS_PUBLIC += \
         mimabstractserverlogic.h \
         mimapphostedserverlogic.h \
         mimstandaloneserverlogic.h \
+        testsurfacefactory.h \
 
 SERVER_SOURCES += \
         mimserver.cpp \
         mimabstractserverlogic.cpp \
         mimapphostedserverlogic.cpp \
         mimstandaloneserverlogic.cpp \
+        testsurfacefactory.cpp \
 
 !contains(QT_MAJOR_VERSION, 5) {
     SERVER_HEADERS_PUBLIC += \
