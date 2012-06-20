@@ -20,6 +20,7 @@
 #define ATTRIBUTEEXTENSIONREGISTRY_P_H
 
 #include "attributeextensionregistry.h"
+#include "mimserverconnection.h"
 
 namespace Maliit {
 
@@ -29,6 +30,7 @@ public:
     ~AttributeExtensionRegistryPrivate();
 
     ExtensionList extensions;
+    QSharedPointer<MImServerConnection> connection;
 
     AttributeExtension * find(int id);
 };

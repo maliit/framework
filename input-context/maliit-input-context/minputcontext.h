@@ -146,22 +146,6 @@ private Q_SLOTS:
     //! \note this method is called when the orientation change is finished
     void notifyOrientationChanged(Maliit::OrientationAngle orientation);
 
-    //! Notify input method plugin about a new attribute extension which is defined in \a fileName and with the unique \a id to be registered.
-    //! \note empty string for \a fileName is acceptable, it means don't load any content, just register a new id.
-    void notifyAttributeExtensionRegistered(int id, const QString &fileName);
-
-    //! Notify input method plugin about an attribute extension which has a unique identifier \a id to be unregistered.
-    void notifyAttributeExtensionUnregistered(int id);
-
-    //! Notify input method plugin about the \attribute of the \a item in the custom toolbar which has the unique \a id is changed to \a value.
-    void notifyToolbarItemAttributeChanged(int id, const QString &item, const QString &attribute, const QVariant& value);
-
-    //! Notify input method plugin about the \attribute of the \a keyId in the extended attribute which has the unique \a id is changed to \a value.
-    void notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem, const QString &attribute, const QVariant& value);
-
-    //! Notify input method plugin about the \attribute of the \a key in the extended attribute which has the unique \a id is changed to \a value.
-    void notifyExtendedAttributeChanged(int id, const QString &key, const QVariant& value);
-
     //! Checks whether there is someting to paste in the clipboard and notifies input method plugin about it.
     void handleClipboardDataChange();
 
@@ -194,9 +178,6 @@ private:
 
     //! returns state for currently focused widget, key is attribute name.
     QMap<QString, QVariant> getStateInformation() const;
-
-    //! registers existing attribute extensions to input method server and updates their state
-    void registerExistingAttributeExtensions();
 
     //! finds focus scope item for item
     static QGraphicsItem *findFocusScopeItem(QGraphicsItem *item);

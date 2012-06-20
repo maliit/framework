@@ -42,7 +42,7 @@ public:
     static AttributeExtensionRegistry *instance();
 
     void addExtension(AttributeExtension *extension);
-    void addExtension(QSharedPointer<AttributeExtension> extension);
+    void addExtension(const QSharedPointer<AttributeExtension> &extension);
 
     void removeExtension(AttributeExtension *extension);
 
@@ -78,6 +78,8 @@ private:
     const QScopedPointer<AttributeExtensionRegistryPrivate> d_ptr;
 
     Q_DECLARE_PRIVATE(AttributeExtensionRegistry)
+
+    Q_SLOT void registerExistingAttributeExtensions();
 };
 
 } // namespace Maliit

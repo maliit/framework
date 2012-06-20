@@ -45,7 +45,6 @@
 #endif
 
 using Maliit::AttributeExtension;
-using Maliit::AttributeExtensionRegistry;
 using Maliit::InputMethod;
 
 namespace
@@ -160,17 +159,6 @@ MInputContext::MInputContext(QSharedPointer<MImServerConnection> newImServer, co
 
     connectInputMethodServer();
     connectInputMethodExtension();
-
-    bool ok = connect(imServer.data(),
-                      SIGNAL(extendedAttributeChanged(int,QString,QString,QString,QVariant)),
-                      Maliit::AttributeExtensionRegistry::instance(),
-                      SLOT(updateAttribute(int,QString,QString,QString,QVariant)));
-
-    if (!ok) {
-        qCritical() << __PRETTY_FUNCTION__
-                    << "could not establish connection between InputMethod and AttributeExtension";
-    }
-
 }
 
 MInputContext::~MInputContext()
@@ -179,23 +167,12 @@ MInputContext::~MInputContext()
 
 void MInputContext::connectInputMethodExtension()
 {
-
     connect(InputMethod::instance(),
             SIGNAL(orientationAngleAboutToChange(Maliit::OrientationAngle)),
             this, SLOT(notifyOrientationAboutToChange(Maliit::OrientationAngle)));
     connect(InputMethod::instance(),
             SIGNAL(orientationAngleChanged(Maliit::OrientationAngle)),
             this, SLOT(notifyOrientationChanged(Maliit::OrientationAngle)));
-
-    connect(AttributeExtensionRegistry::instance(),
-            SIGNAL(extensionRegistered(int,QString)),
-            this, SLOT(notifyAttributeExtensionRegistered(int,QString)));
-    connect(AttributeExtensionRegistry::instance(),
-            SIGNAL(extensionUnregistered(int)),
-            this, SLOT(notifyAttributeExtensionUnregistered(int)));
-    connect(AttributeExtensionRegistry::instance(),
-            SIGNAL(extensionChanged(int,QString,QVariant)),
-            this, SLOT(notifyExtendedAttributeChanged(int,QString,QVariant)));
 }
 
 void MInputContext::connectInputMethodServer()
@@ -916,8 +893,6 @@ void MInputContext::onDBusConnection()
 {
     if (debug) qDebug() << __PRETTY_FUNCTION__;
 
-    registerExistingAttributeExtensions();
-
     // There could already be focused item when the connection to the uiserver is
     // established. Show keyboard immediately in that case.
     QWidget *widget = qApp->focusWidget();
@@ -981,42 +956,6 @@ void MInputContext::notifyOrientationChanged(Maliit::OrientationAngle angle)
     if (active) {
         imServer->appOrientationChanged(static_cast<int>(angle));
     }
-}
-
-void MInputContext::notifyAttributeExtensionRegistered(int id, const QString &fileName)
-{
-    imServer->registerAttributeExtension(id, fileName);
-}
-
-void MInputContext::notifyAttributeExtensionUnregistered(int id)
-{
-    imServer->unregisterAttributeExtension(id);
-}
-
-void MInputContext::notifyToolbarItemAttributeChanged(int id, const QString &item,
-                                                      const QString &attribute,
-                                                      const QVariant& value)
-{
-    imServer->setExtendedAttribute(id, ToolbarTarget, item,
-                                   attribute, value);
-}
-
-void MInputContext::notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem,
-                                                   const QString &attribute, const QVariant& value)
-{
-    if (debug) qDebug() << __PRETTY_FUNCTION__;
-
-    imServer->setExtendedAttribute(id, target, targetItem,
-                                   attribute, value);
-}
-
-void MInputContext::notifyExtendedAttributeChanged(int id, const QString &key, const QVariant& value)
-{
-    const QString &target = QString::fromLatin1("/") + key.section('/', 1, 1);
-    const QString &targetItem = key.section('/', 2, -2);
-    const QString &attribute = key.section('/', -1, -1);
-
-    notifyExtendedAttributeChanged(id, target, targetItem, attribute, value);
 }
 
 Maliit::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) const
@@ -1298,25 +1237,6 @@ bool MInputContext::isVisible(const QRect &cursorRect, const QGraphicsView *view
     // here would be transition of visibleRect to global coordinates, but they appear to be always the same as scene's
 
     return visibleRect.isValid() && cursorRect.intersects(visibleRect);
-}
-
-void MInputContext::registerExistingAttributeExtensions()
-{
-    const Maliit::ExtensionList &extensions = AttributeExtensionRegistry::instance()->extensions();
-
-    Q_FOREACH (const QWeakPointer<AttributeExtension> &extensionRef, extensions) {
-        AttributeExtension *extension = extensionRef.data();
-        if (!extension)
-            continue;
-
-        imServer->registerAttributeExtension(extension->id(), extension->fileName());
-
-        const AttributeExtension::ExtendedAttributeMap &attributes = extension->attributes();
-
-        for (AttributeExtension::ExtendedAttributeMap::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter) {
-            notifyExtendedAttributeChanged(extension->id(), iter.key(), iter.value());
-        }
-    }
 }
 
 void MInputContext::setSelection(int start, int length)

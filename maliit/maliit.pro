@@ -5,6 +5,9 @@ VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
 TARGET = $${MALIIT_LIB}
 
+TOP_DIR = ..
+
+include($$TOP_DIR/connection/libmaliit-connection.pri)
 INCLUDEPATH += .. ../common
 
 QT = core gui
