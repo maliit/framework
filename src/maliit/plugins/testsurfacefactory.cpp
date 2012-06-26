@@ -15,9 +15,9 @@
 #include "windowedsurface.h"
 
 namespace Maliit {
-namespace Server {
+namespace Plugins {
 
-//! \ingroup maliitserver
+//! \ingroup pluginapi
 //! \brief Allows to create a surface without a running maliit-server instance. Useful for tests.
 //!
 //! \note Plugins must not use this, but should instead use the Maliit::Plugins::AbstractSurfaceFactory
@@ -26,14 +26,14 @@ namespace Server {
 //! \param options the options the surface should have
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractSurface
-QSharedPointer<Maliit::Plugins::AbstractSurface> createTestSurface(Maliit::Plugins::AbstractSurface::Options options, const QSharedPointer<Maliit::Plugins::AbstractSurface> &parent)
+QSharedPointer<AbstractSurface> createTestSurface(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent)
 {
     static Maliit::Server::WindowedSurfaceFactory factory;
 
     return factory.create(options, parent);
 }
 
-//! \ingroup maliitserver
+//! \ingroup pluginapi
 //! \brief Allows to create a graphics view surface without a running maliit-server instance. Useful for tests.
 //!
 //! \note Plugins must not use this, but should instead use the Maliit::Plugins::AbstractSurfaceFactory
@@ -41,20 +41,20 @@ QSharedPointer<Maliit::Plugins::AbstractSurface> createTestSurface(Maliit::Plugi
 //!
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractGraphicsViewSurface
-QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const QSharedPointer<Maliit::Plugins::AbstractSurface> &parent)
+QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const QSharedPointer<AbstractSurface> &parent)
 {
-    QSharedPointer<Maliit::Plugins::AbstractSurface> surface;
+    QSharedPointer<AbstractSurface> surface;
 
     if (parent) {
-        surface = createTestSurface(Maliit::Plugins::AbstractSurface::PositionOverlay | Maliit::Plugins::AbstractSurface::TypeGraphicsView, parent);
+        surface = createTestSurface(AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView, parent);
     } else {
-        surface = createTestSurface(Maliit::Plugins::AbstractSurface::PositionCenterBottom | Maliit::Plugins::AbstractSurface::TypeGraphicsView, parent);
+        surface = createTestSurface(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeGraphicsView, parent);
     }
 
-    return qSharedPointerDynamicCast<Maliit::Plugins::AbstractGraphicsViewSurface>(surface);
+    return qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(surface);
 }
 
-//! \ingroup maliitserver
+//! \ingroup pluginapi
 //! \brief Allows to create a widget surface without a running maliit-server instance. Useful for tests.
 //!
 //! \note Plugins must not use this, but should instead use the Maliit::Plugins::AbstractSurfaceFactory
@@ -62,17 +62,17 @@ QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> createTestGraphicsV
 //!
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractWidgetSurface
-QSharedPointer<Maliit::Plugins::AbstractWidgetSurface> createTestWidgetSurface(const QSharedPointer<Maliit::Plugins::AbstractSurface> &parent)
+QSharedPointer<AbstractWidgetSurface> createTestWidgetSurface(const QSharedPointer<AbstractSurface> &parent)
 {
-    QSharedPointer<Maliit::Plugins::AbstractSurface> surface;
+    QSharedPointer<AbstractSurface> surface;
 
     if (parent) {
-        surface = createTestSurface(Maliit::Plugins::AbstractSurface::PositionOverlay | Maliit::Plugins::AbstractSurface::TypeWidget, parent);
+        surface = createTestSurface(AbstractSurface::PositionOverlay | AbstractSurface::TypeWidget, parent);
     } else {
-        surface = createTestSurface(Maliit::Plugins::AbstractSurface::PositionCenterBottom | Maliit::Plugins::AbstractSurface::TypeWidget, parent);
+        surface = createTestSurface(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget, parent);
     }
 
-    return qSharedPointerDynamicCast<Maliit::Plugins::AbstractWidgetSurface>(surface);
+    return qSharedPointerDynamicCast<AbstractWidgetSurface>(surface);
 }
 
 } // namespace Plugins

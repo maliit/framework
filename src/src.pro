@@ -24,6 +24,7 @@ PLUGIN_HEADERS_PUBLIC = \
         maliit/plugins/plugindescription.h \
         maliit/plugins/subviewdescription.h \
         maliit/plugins/abstractpluginsetting.h \
+        maliit/plugins/testsurfacefactory.h \
 
 PLUGIN_SOURCES += \
         maliit/plugins/abstractsurface.cpp \
@@ -40,6 +41,7 @@ PLUGIN_SOURCES += \
         maliit/plugins/updatereceiver.cpp \
         maliit/plugins/plugindescription.cpp \
         maliit/plugins/subviewdescription.cpp \
+        maliit/plugins/testsurfacefactory.cpp \
 
 PLUGIN_HEADERS_PRIVATE += \
         maliit/plugins/keyoverride_p.h \
@@ -52,14 +54,12 @@ SERVER_HEADERS_PUBLIC += \
         mimabstractserverlogic.h \
         mimapphostedserverlogic.h \
         mimstandaloneserverlogic.h \
-        testsurfacefactory.h \
 
 SERVER_SOURCES += \
         mimserver.cpp \
         mimabstractserverlogic.cpp \
         mimapphostedserverlogic.cpp \
         mimstandaloneserverlogic.cpp \
-        testsurfacefactory.cpp \
 
 !contains(QT_MAJOR_VERSION, 5) {
     SERVER_HEADERS_PUBLIC += \
