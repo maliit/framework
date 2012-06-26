@@ -612,7 +612,7 @@ get_byte_range_from_unicode_offsets (const gchar *string,
     if (byte_start) {
         *byte_start = start;
     }
-    if (*byte_end) {
+    if (byte_end) {
         *byte_end = end;
     }
 }
