@@ -4,6 +4,6 @@ QT += $$QT_WIDGETS
 
 SOURCES += ut_maliit_inputmethod.cpp \
 
-LIBS += $$TOP_DIR/maliit/libmaliit-1.0.so
+include ($$TOP_DIR/maliit/libmaliit.pri)
 
 include(../common_check.pri)
