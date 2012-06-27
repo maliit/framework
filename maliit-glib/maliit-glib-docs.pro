@@ -10,6 +10,14 @@ GOBJECTFILES += \
     maliitattributeextension.h \
     maliitinputmethod.c \
     maliitinputmethod.h \
+    maliitsettingsmanager.c \
+    maliitsettingsmanager.h \
+    maliitsettingsentry.c \
+    maliitsettingsentry.h \
+    maliitpluginsettings.c \
+    maliitpluginsettings.h \
+    maliitsettingdata.c \
+    maliitsettingdata.h \
 
 
 # The resulting html docs go into ./maliit, and the temporary build files to ./reference/
