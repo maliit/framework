@@ -63,6 +63,8 @@ struct _MeegoIMContext {
     gint preedit_cursor_pos;
     GHashTable *widget_state; /* Mapping between string and GValues with properties of the focused widget */
     gboolean focus_state; /* TRUE means a widget is focused, FALSE means no widget is focused */
+
+    GdkRectangle keyboard_area;
 };
 
 struct _MeegoIMContextClass {

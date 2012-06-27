@@ -62,6 +62,8 @@ static void meego_imcontext_copy(MeegoIMContextDbusObj *obj, gpointer user_data)
 static void meego_imcontext_paste(MeegoIMContextDbusObj *obj, gpointer user_data);
 static void meego_imcontext_set_redirect_keys(MeegoIMContextDbusObj *obj, gboolean enabled, gpointer user_data);
 static void meego_imcontext_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj, gint id, const gchar *target, const gchar *target_item, const gchar *attribute, GVariant *variant_value, gpointer user_data);
+static void meego_imcontext_update_input_method_area (MeegoIMContextDbusObj *obj, int x, int y, int width, int height, gpointer user_data);
+
 
 static GtkIMContext *meego_imcontext_get_slave_imcontext(void);
 
@@ -271,6 +273,8 @@ meego_imcontext_init(MeegoIMContext *self)
                      G_CALLBACK(meego_imcontext_set_redirect_keys), self);
     g_signal_connect(self->dbusobj, "notify-extended-attribute-changed",
                      G_CALLBACK(meego_imcontext_notify_extended_attribute_changed), self);
+    g_signal_connect(self->dbusobj, "update-input-method-area",
+                     G_CALLBACK(meego_imcontext_update_input_method_area), self);
 }
 
 
@@ -828,4 +832,42 @@ meego_imcontext_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj G_
                                                           target_item,
                                                           attribute,
                                                           variant_value);
+}
+
+void
+meego_imcontext_update_input_method_area (MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                                          int x,
+                                          int y,
+                                          int width,
+                                          int height,
+                                          gpointer user_data)
+{
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+    GdkRectangle cursor_rect, osk_rect = { x, y, width, height };
+    guint clear_area_id;
+
+    if (!imcontext->client_window)
+      return;
+
+    if (imcontext->keyboard_area.x == x &&
+        imcontext->keyboard_area.y == y &&
+        imcontext->keyboard_area.width == width &&
+        imcontext->keyboard_area.height == height)
+      return;
+
+    clear_area_id = g_signal_lookup ("clear-area", GTK_TYPE_IM_CONTEXT);
+
+    if (clear_area_id == 0)
+      return;
+
+    imcontext->keyboard_area = osk_rect;
+
+    gdk_window_get_root_coords (imcontext->client_window,
+                                imcontext->cursor_location.x,
+                                imcontext->cursor_location.y,
+                                &cursor_rect.x, &cursor_rect.y);
+    cursor_rect.width = imcontext->cursor_location.width;
+    cursor_rect.height = imcontext->cursor_location.height;
+
+    g_signal_emit (imcontext, clear_area_id, 0, &osk_rect, &cursor_rect);
 }
