@@ -16,17 +16,27 @@ include($$TOP_DIR/connection-glib/libmaliit-connection-glib.pri)
 HEADERSINSTALL += \
     maliitattributeextension.h \
     maliitinputmethod.h \
+    maliitsettingsmanager.h \
+    maliitsettingsentry.h \
+    maliitpluginsettings.h \
+    maliitsettingdata.h \
 
 HEADERS += \
     $$HEADERSINSTALL \
     maliitattributeextensionregistry.h \
     maliitattributeextensionprivate.h \
     maliitmarshallers.h \
+    maliitpluginsettingsprivate.h \
+    maliitsettingsentryprivate.h \
 
 SOURCES += \
     maliitattributeextension.c \
     maliitattributeextensionregistry.c \
     maliitinputmethod.c \
+    maliitsettingsmanager.c \
+    maliitsettingsentry.c \
+    maliitpluginsettings.c \
+    maliitsettingdata.c \
 
 target.path += $$LIBDIR
 
