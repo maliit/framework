@@ -421,3 +421,29 @@ meego_im_proxy_set_extended_attribute (MeegoIMProxy *proxy,
 
     return ret;
 }
+
+gboolean
+meego_im_proxy_load_plugin_settings (MeegoIMProxy *proxy,
+                                     const gchar *locale_name)
+{
+    GError *error;
+    gboolean ret;
+
+    g_return_val_if_fail (MEEGO_IS_IM_PROXY (proxy), FALSE);
+
+    if (!proxy->priv->dbusproxy) {
+        return FALSE;
+    }
+
+    error = NULL;
+    ret = com_meego_inputmethod_uiserver1_load_plugin_settings (proxy->priv->dbusproxy,
+                                                                locale_name,
+                                                                &error);
+
+    if (error) {
+        g_warning ("%s", error->message);
+        g_error_free (error);
+    }
+
+    return ret;
+}

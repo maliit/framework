@@ -94,6 +94,10 @@ meego_im_proxy_set_extended_attribute (MeegoIMProxy *proxy,
                                        const gchar *attribute,
                                        GValue *value);
 
+gboolean
+meego_im_proxy_load_plugin_settings (MeegoIMProxy *proxy,
+                                     const gchar *locale_name);
+
 G_END_DECLS
 
 #endif //_MEEGO_IM_PROXY_H

@@ -81,6 +81,7 @@ enum {
     SELECTION,
     SET_LANGUAGE,
     NOTIFY_EXTENDED_ATTRIBUTE_CHANGED,
+    PLUGIN_SETTINGS_LOADED,
     LAST_SIGNAL
 };
 
@@ -247,6 +248,18 @@ meego_imcontext_dbusobj_class_init(MeegoIMContextDbusObjClass *klass)
                                                                         G_TYPE_STRING,
                                                                         G_TYPE_STRING,
                                                                         G_TYPE_VARIANT);
+
+    imcontext_signals[PLUGIN_SETTINGS_LOADED] =
+        g_signal_new ("plugin-settings-loaded",
+                      G_TYPE_FROM_CLASS(klass),
+                      G_SIGNAL_RUN_FIRST,
+                      0,
+                      NULL,
+                      NULL,
+                      g_cclosure_marshal_VOID__BOXED,
+                      G_TYPE_NONE,
+                      1,
+                      G_TYPE_PTR_ARRAY);
 }
 
 void
@@ -480,10 +493,10 @@ meego_imcontext_dbus_notify_extended_attribute_changed (MeegoIMContextDbusObj *o
 }
 
 gboolean
-meego_imcontext_dbus_plugin_settings_loaded (MeegoIMContextDbusObj *obj, GPtrArray *settings_data, GError **error)
+meego_imcontext_dbus_plugin_settings_loaded (MeegoIMContextDbusObj *obj,
+                                             GPtrArray *settings_data,
+                                             GError **error G_GNUC_UNUSED)
 {
-	UNUSED(obj);
-	UNUSED(settings_data);
-	UNUSED(error);
-	return TRUE;
+    g_signal_emit(obj, imcontext_signals[PLUGIN_SETTINGS_LOADED], 0, settings_data);
+    return TRUE;
 }
