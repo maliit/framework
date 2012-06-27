@@ -35,10 +35,6 @@ G_BEGIN_DECLS
 #define MALIIT_IS_ATTRIBUTE_EXTENSION_CLASS(obj)  (G_TYPE_CHECK_CLASS_TYPE(obj, MALIIT_TYPE_ATTRIBUTE_EXTENSION))
 #define MALIIT_ATTRIBUTE_EXTENSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS((obj), MALIIT_TYPE_ATTRIBUTE_EXTENSION, MaliitAttributeExtensionClass))
 
-#define MALIIT_ATTRIBUTE_EXTENSION_DATA "maliit-attribute-extension"
-
-#define MALIIT_ATTRIBUTE_EXTENSION_DATA_QUARK (g_quark_from_string (MALIIT_ATTRIBUTE_EXTENSION_DATA))
-
 typedef struct _MaliitAttributeExtension MaliitAttributeExtension;
 typedef struct _MaliitAttributeExtensionClass MaliitAttributeExtensionClass;
 typedef struct _MaliitAttributeExtensionPrivate MaliitAttributeExtensionPrivate;
