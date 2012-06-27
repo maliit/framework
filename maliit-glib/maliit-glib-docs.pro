@@ -40,7 +40,7 @@ gir_scanner.name = g-ir-scanner
 gir_scanner.CONFIG += no_link combine
 gir_scanner.output = $${OUT_PWD}/Maliit-1.0.gir
 gir_scanner.input = GOBJECTFILES
-gir_scanner.commands += g-ir-scanner -n Maliit --no-libtool -L$${OUT_PWD} --library=maliit-glib-1.0 --include=Gio-2.0 --pkg=gio-2.0 --nsversion=1.0 --output=${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
+gir_scanner.commands += g-ir-scanner --warn-all -n Maliit --no-libtool -L$${OUT_PWD} --library=maliit-glib-1.0 --include=Gio-2.0 --pkg=gio-2.0 --nsversion=1.0 --output=${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
 
 GIR_FILES = $${OUT_PWD}/Maliit-1.0.gir
 
