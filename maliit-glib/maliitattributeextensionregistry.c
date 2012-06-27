@@ -142,7 +142,7 @@ register_all_extensions (MeegoIMProxy *proxy, gpointer user_data)
         if (!meego_im_proxy_register_extension (proxy,
                                                 maliit_attribute_extension_get_id (extension),
                                                 maliit_attribute_extension_get_filename (extension))) {
-            g_warning ("could not register an extension in mass registerer - no proxy");
+            g_warning ("Could not register an extension in mass registerer - no proxy");
         } else {
             GHashTable *attributes = maliit_attribute_extension_get_attributes (extension);
             GHashTableIter attributes_iter;
@@ -256,7 +256,7 @@ maliit_attribute_extension_registry_extension_changed (MaliitAttributeExtensionR
     g_return_if_fail (key != NULL);
     g_return_if_fail (value != NULL);
 
-    parts = g_strsplit (key + 1, "/", -1);
+    parts = g_strsplit (key + 1, "/", 3);
 
     if (!parts)
         return;

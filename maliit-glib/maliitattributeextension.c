@@ -96,13 +96,17 @@ maliit_attribute_extension_set_property (GObject *object,
                                          GParamSpec *pspec)
 {
     MaliitAttributeExtension *extension = MALIIT_ATTRIBUTE_EXTENSION (object);
+    MaliitAttributeExtensionPrivate *priv = extension->priv;
 
     switch (prop_id) {
+    case PROP_ID:
+        priv->id = g_value_get_int (value);
+        break;
     case PROP_FILENAME:
         g_free (extension->priv->filename);
-        extension->priv->filename = g_value_dup_string (value);
+        priv->filename = g_value_dup_string (value);
         break;
-        /* PROP_ID and PROP_ATTRIBUTES are read only. */
+        /* PROP_ATTRIBUTES is read only. */
     default:
         G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
         break;
@@ -136,8 +140,13 @@ maliit_attribute_extension_get_property (GObject *object,
 static void
 maliit_attribute_extension_constructed (GObject *object)
 {
+    static int id_counter = 0;
     MaliitAttributeExtension *extension = MALIIT_ATTRIBUTE_EXTENSION (object);
     MaliitAttributeExtensionPrivate *priv = extension->priv;
+
+    if (priv->id == 0) {
+        priv->id = id_counter++;
+    }
 
     maliit_attribute_extension_registry_add_extension (priv->registry,
                                                        extension);
@@ -166,10 +175,12 @@ maliit_attribute_extension_class_init (MaliitAttributeExtensionClass *extension_
                                      g_param_spec_int ("id",
                                                        "ID", /* TODO: mark as translatable? */
                                                        "ID of the extension", /* TODO: mark as translatable? */
-                                                       0,
+                                                       G_MININT,
                                                        G_MAXINT,
                                                        0,
                                                        G_PARAM_READABLE |
+                                                       G_PARAM_WRITABLE |
+                                                       G_PARAM_CONSTRUCT_ONLY |
                                                        G_PARAM_STATIC_NAME |
                                                        G_PARAM_STATIC_BLURB |
                                                        G_PARAM_STATIC_NICK));
@@ -231,12 +242,11 @@ maliit_attribute_extension_class_init (MaliitAttributeExtensionClass *extension_
 static void
 maliit_attribute_extension_init (MaliitAttributeExtension *extension)
 {
-    static int id_counter = 0;
     MaliitAttributeExtensionPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (extension,
                                                                          MALIIT_TYPE_ATTRIBUTE_EXTENSION,
                                                                          MaliitAttributeExtensionPrivate);
 
-    priv->id = id_counter++;
+    priv->id = 0;
     priv->filename = NULL;
     priv->attributes = g_hash_table_new_full (g_str_hash,
                                               g_str_equal,
@@ -259,6 +269,24 @@ MaliitAttributeExtension *
 maliit_attribute_extension_new (void)
 {
     return MALIIT_ATTRIBUTE_EXTENSION (g_object_new (MALIIT_TYPE_ATTRIBUTE_EXTENSION,
+                                                     NULL));
+}
+
+/**
+ * maliit_attribute_extension_new_with_id: (skip)
+ * @id: An overriden id.
+ *
+ * Creates a new attribute extension with already existing id. Used
+ * internally by #MaliitSettingsManager.
+ *
+ * Returns: (transfer full): The newly created
+ * #MaliitAttributeExtension.
+ */
+MaliitAttributeExtension *
+maliit_attribute_extension_new_with_id (int id)
+{
+    return MALIIT_ATTRIBUTE_EXTENSION (g_object_new (MALIIT_TYPE_ATTRIBUTE_EXTENSION,
+                                                     "id", id,
                                                      NULL));
 }
 
