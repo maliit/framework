@@ -45,9 +45,14 @@ struct _MaliitAttributeExtensionRegistry
 {
     GObject parent;
 
+    /*< private >*/
     MaliitAttributeExtensionRegistryPrivate *priv;
 };
 
+/**
+ * MaliitAttributeExtensionRegistryClass:
+ * @parent_class: The parent class.
+ */
 struct _MaliitAttributeExtensionRegistryClass
 {
     GObjectClass parent_class;

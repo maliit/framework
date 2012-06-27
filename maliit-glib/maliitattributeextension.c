@@ -25,6 +25,18 @@
 #include "maliitattributeextensionregistry.h"
 #include "maliitmarshallers.h"
 
+/**
+ * SECTION:maliitattributeextension
+ * @short_description: attribute extensions
+ * @title: MaliitAttributeExtension
+ * @stability: Stable
+ * @include: maliit/maliitattributeextension.h
+ *
+ * #MaliitAttributeExtension class can be used by application to
+ * override some aspect of IM plugin currently used, like the looks of
+ * action key.
+ */
+
 struct _MaliitAttributeExtensionPrivate
 {
     int id;

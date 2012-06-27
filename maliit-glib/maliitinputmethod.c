@@ -25,6 +25,18 @@
 
 #include "meego-im-connector.h"
 
+/**
+ * SECTION:maliitinputmethod
+ * @short_description: input method handling
+ * @title: MaliitInputMethod
+ * @stability: Stable
+ * @include: maliit/maliitinputmethod.h
+ *
+ * #MaliitInputMethod class can be used by application to query
+ * maliit-server for currently shown IM plugin area and to request
+ * maliit-server to show or hide the IM plugin.
+ */
+
 struct _MaliitInputMethodPrivate
 {
     int area[4];
