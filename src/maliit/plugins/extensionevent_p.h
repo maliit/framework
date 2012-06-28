@@ -1,7 +1,7 @@
 #ifndef MIMEXTENSIONEVENT_P_H
 #define MIMEXTENSIONEVENT_P_H
 
-/* * This file is part of meego-im-framework *
+/* * This file is part of maliit-framework *
  *
  * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
