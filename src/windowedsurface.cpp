@@ -1,11 +1,9 @@
-/* * This file is part of maliit-framework *
+/* * This file is part of Maliit framework *
  *
  * Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
- * Contact: Nokia Corporation (directui@nokia.com)
  *
- * If you have questions regarding the use of this file, please contact
- * Nokia at directui@nokia.com.
+ * Contact: maliit-discuss@lists.maliit.org
  *
  * Copyright (C) 2012 One Laptop per Child Association
  *
