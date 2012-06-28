@@ -1,12 +1,9 @@
-/* * This file is part of maliit-framework *
+/* * This file is part of Maliit framework *
  *
  * Copyright (C) 2011 Nokia Corporation and/or its subsidiary(-ies).
  * All rights reserved.
  *
- * Contact: Kimmo Surakka <kimmo.surakka@nokia.com>
- *
- * If you have questions regarding the use of this file, please contact
- * Nokia at directui@nokia.com.
+ * Contact: maliit-discuss@lists.maliit.org
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

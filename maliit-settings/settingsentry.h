@@ -1,4 +1,4 @@
-/* * This file is part of maliit-framework *
+/* * This file is part of Maliit framework *
  *
  * Copyright (C) 2012 Mattia Barbon <mattia@develer.com>
  *
