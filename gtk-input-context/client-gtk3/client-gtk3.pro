@@ -23,9 +23,9 @@ SOURCES += \
     ../client-gtk/client-imcontext-gtk.c \
     ../client-gtk/qt-gtk-translate.cpp \
 
-GTK3_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-3.0)
+ORIGINAL_GTK3_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-3.0)
 GTK3_PREFIX = $$system(pkg-config --variable prefix gtk+-3.0)
-GTK3_IM_LIBDIR = $$replace(GTK3_IM_LIBDIR, $$GTK3_PREFIX, $$PREFIX)
+GTK3_IM_LIBDIR = $$replace(ORIGINAL_GTK3_IM_LIBDIR, $$GTK3_PREFIX, $$PREFIX)
 
 GTK3_BINARY_VERSION = $$system(pkg-config --variable=gtk_binary_version gtk+-3.0)
 GTK3_DIR = $$GTK3_IM_LIBDIR/gtk-3.0/$$GTK3_BINARY_VERSION
@@ -42,7 +42,7 @@ INSTALLS += target
     isEqual(DISTRO, Ubuntu) {
         QUERY_IM_BIN = gtk-query-immodules-3.0
         greaterThan(DISTRO_VERSION, 11) {
-            QUERY_IM_BIN = $$GTK3_IM_LIBDIR/libgtk-3-0/gtk-query-immodules-3.0
+            QUERY_IM_BIN = $$ORIGINAL_GTK3_IM_LIBDIR/libgtk-3-0/gtk-query-immodules-3.0
         }
 
         update-im-cache.path = $$GTK2_DIR/
