@@ -45,7 +45,7 @@ INSTALLS += target
             QUERY_IM_BIN = $$ORIGINAL_GTK3_IM_LIBDIR/libgtk-3-0/gtk-query-immodules-3.0
         }
 
-        update-im-cache.path = $$GTK2_DIR/
+        update-im-cache.path = $$GTK3_DIR/
         update-im-cache.extra = $$QUERY_IM_BIN > $$GTK3_DIR/gtk.immodules
         update-im-cache.uninstall = $$QUERY_IM_BIN > $$GTK3_DIR/gtk.immodules
 
