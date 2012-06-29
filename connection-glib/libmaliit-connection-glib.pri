@@ -6,3 +6,7 @@ LIBS += $$TOP_DIR/connection-glib/$$maliitStaticLib($${MALIIT_CONNECTION_GLIB_LI
 POST_TARGETDEPS += $$TOP_DIR/connection-glib/$$maliitStaticLib($${MALIIT_CONNECTION_GLIB_LIB})
 INCLUDEPATH += $$TOP_DIR/connection-glib
 PKGCONFIG += glib-2.0 gthread-2.0 dbus-glib-1
+
+system(pkg-config gio-2.0 --atleast-version 2.26) {
+    PKGCONFIG += gio-2.0
+}
