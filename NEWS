@@ -1,4 +1,4 @@
-NEXT
+0.92.2
 ======
 
 CHANGES SINCE 0.92.1
@@ -10,6 +10,16 @@ CHANGES SINCE 0.92.1
     changed to SOMETHINGDIR. Use qmake HELP=1 to see the configure options.
 * Rename M_IM_DEFAULT_* environment variables for default plugin configuration
   to MALIIT_DEFAULT_*.
+* Add settings API to maliit-glib, too.
+* Add plugin settings API:
+  - Plugins can export their settings to applications via the settings API, see
+    the settings example for more.
+
+BUG FIXES
+* Fixes: Some examples and tests fail to link.
+* Fixes: Settings are not propagated to plugins in some cases.
+* Fixes: MALIIT#169 - Custom install prefix not respected for GTK, QT input context plugins
+* Fixes: MALIIT#57 - Remove prefix from M_IM_* configure variables
 
 0.92.1
 ======
