@@ -1,3 +1,12 @@
+0.92.2.1
+========
+
+CHANGES SINCE 0.92.2
+* Revert to old install prefix behavior (<=0.92.1). By default the install prefix for
+  files extending GTK+, Qt, gconf follows what the respective system component reports.
+  For installing not system-wide, use CONFIG+=local-install. See INSTALL.local for details.
+  This is equivalent to the old CONFIG+=enforce-install-prefix option.
+
 0.92.2
 ======
 
