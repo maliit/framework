@@ -9,7 +9,7 @@ The description below was tested on Fedora 15 (Lovelock) 64-bit.
 
 1. export GCONF_CONFIG_SOURCE="xml:merged:$HOME/.gconf/gconf.xml.defaults"
 2. cd maliit-framework
-3. qmake-qt4 -r PREFIX="$HOME/maliit-local" LIBDIR="$HOME/maliit-local/lib64" CONFIG+=disable-gtk-cache-update
+3. qmake-qt4 -r CONFIG+=local-install PREFIX="$HOME/maliit-local" LIBDIR="$HOME/maliit-local/lib64" CONFIG+=disable-gtk-cache-update
 4. make -j4
 
 # framework install
