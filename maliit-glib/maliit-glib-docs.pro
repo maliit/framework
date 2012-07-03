@@ -64,7 +64,7 @@ system(pkg-config gobject-introspection-1.0) {
     GIR_DIR = $$system(pkg-config --variable=girdir gobject-introspection-1.0)
     TYPELIB_DIR = $$system(pkg-config --variable=typelibdir gobject-introspection-1.0)
     GIR_PREFIX = $$system(pkg-config --variable=prefix gobject-introspection-1.0)
-    enforce-install-prefix {
+    local-install {
         GIR_DIR = $$replace(GIR_DIR, $$GIR_PREFIX, $$PREFIX)
         TYPELIB_DIR = $$replace(TYPELIB_DIR, $$GIR_PREFIX, $$PREFIX)
     }

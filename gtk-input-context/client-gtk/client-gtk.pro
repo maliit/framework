@@ -25,7 +25,7 @@ SOURCES += \
 
 GTK2_IM_LIBDIR = $$system(pkg-config --variable=libdir gtk+-2.0)
 GTK2_PREFIX = $$system(pkg-config --variable prefix gtk+-2.0)
-enforce-install-prefix {
+local-install {
     GTK2_IM_LIBDIR = $$replace(GTK2_IM_LIBDIR, $$GTK2_PREFIX, $$PREFIX)
 }
 

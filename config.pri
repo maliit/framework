@@ -162,7 +162,7 @@ contains(QT_MAJOR_VERSION, 4) {
 }
 
 MALIIT_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
-enforce-install-prefix {
+local-install {
     MALIIT_INSTALL_PRF = $$replace(MALIIT_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$PREFIX)
 }
 

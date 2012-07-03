@@ -212,7 +212,7 @@ qdbus-dbus-connection|glib-dbus-connection {
 
         DBUS_SERVICES_DIR = $$system(pkg-config --variable session_bus_services_dir dbus-1)
         DBUS_SERVICES_PREFIX = $$system(pkg-config --variable prefix dbus-1)
-        enforce-install-prefix {
+        local-install {
             DBUS_SERVICES_DIR = $$replace(DBUS_SERVICES_DIR, $$DBUS_SERVICES_PREFIX, $$PREFIX)
         }
 
