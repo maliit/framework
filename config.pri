@@ -162,7 +162,9 @@ contains(QT_MAJOR_VERSION, 4) {
 }
 
 MALIIT_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
-MALIIT_INSTALL_PRF = $$replace(MALIIT_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$PREFIX)
+enforce-install-prefix {
+    MALIIT_INSTALL_PRF = $$replace(MALIIT_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$PREFIX)
+}
 
 defineTest(outputFile) {
     out = $$OUT_PWD/$$1
