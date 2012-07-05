@@ -926,12 +926,6 @@ void MIMPluginManagerPrivate::_q_onScreenSubViewChanged()
 {
     const MImOnScreenPlugins::SubView &subView = onScreenPlugins.activeSubView();
 
-    if (!onScreenPlugins.isSubViewEnabled(subView)) {
-        qWarning() << __PRETTY_FUNCTION__
-                   <<  "Cannot switch to" << subView.plugin << subView.id << "because it is not enabled";
-        return;
-    }
-
     Maliit::Plugins::InputMethodPlugin *currentPlugin = activePlugin(Maliit::OnScreen);
 
     if (currentPlugin && subView.plugin == plugins.value(currentPlugin).pluginId && activePlugins.contains(currentPlugin)) {
