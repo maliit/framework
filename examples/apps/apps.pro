@@ -2,7 +2,15 @@ TEMPLATE = subdirs
 SUBDIRS = embedded
 
 !disable-dbus {
-    SUBDIRS += plainqt twofields widgetproperties allinputmethods server-embedded settings
+    SUBDIRS += \
+        plainqt \
+        twofields \
+        widgetproperties \
+        allinputmethods \
+        server-embedded \
+        settings \
+        settings-python3 \
+
 }
 
 system(pkg-config gtk+-2.0):!disable-dbus {
