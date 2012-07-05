@@ -520,7 +520,6 @@ maliit_settings_entry_new_from_dbus_data (GValueArray *info,
                                                  "attributes", attributes,
                                                  NULL));
 
-    g_hash_table_unref (attributes);
     g_variant_unref (value);
     return entry;
 }
