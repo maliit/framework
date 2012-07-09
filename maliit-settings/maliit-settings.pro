@@ -3,14 +3,13 @@ TOP_DIR = ..
 include(../config.pri)
 include(../connection/libmaliit-connection.pri)
 include(../maliit/libmaliit.pri)
+include(../common/libmaliit-common.pri)
 
 VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
-TARGET = $${MALIIT_SETTINGS_LIB}
+TARGET = $$TOP_DIR/lib/$${MALIIT_SETTINGS_LIB}
 
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
-INCLUDEPATH += $$TOP_DIR $$TOP_DIR/common
-LIBS += $$TOP_DIR/common/$$maliitStaticLib(maliit-common)
 
 QT = core gui
 

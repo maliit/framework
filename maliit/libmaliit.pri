@@ -4,6 +4,6 @@
 
 include($$TOP_DIR/connection/libmaliit-connection.pri)
 
-LIBS += $$TOP_DIR/maliit/$$maliitDynamicLib($${MALIIT_LIB})
-POST_TARGETDEPS += $$TOP_DIR/maliit/$$maliitDynamicLib($${MALIIT_LIB})
+LIBS += $$TOP_DIR/lib/$$maliitDynamicLib($${MALIIT_LIB})
+POST_TARGETDEPS += $$TOP_DIR/lib/$$maliitDynamicLib($${MALIIT_LIB})
 INCLUDEPATH += $$TOP_DIR

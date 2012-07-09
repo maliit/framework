@@ -4,7 +4,7 @@ include(../config.pri)
 
 VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
-TARGET = $${MALIIT_GLIB_LIB}
+TARGET = $$TOP_DIR/lib/$${MALIIT_GLIB_LIB}
 
 CONFIG += link_pkgconfig
 PKGCONFIG += gobject-2.0

@@ -20,6 +20,8 @@ GOBJECTFILES += \
     maliitsettingdata.h \
 
 
+LIB_DIR = $$OUT_PWD/$$TOP_DIR/lib
+
 # The resulting html docs go into ./maliit, and the temporary build files to ./reference/
 gtk_doc.name = gtk-doc
 gtk_doc.CONFIG += target_predeps no_link combine
@@ -30,7 +32,7 @@ gtk_doc.commands += mkdir -p reference &&
 gtk_doc.commands += cp $$IN_PWD/maliit-sections.txt $$IN_PWD/maliit-docs.xml $$OUT_PWD/reference &&
 gtk_doc.commands += cd reference &&
 gtk_doc.commands += gtkdoc-scan --module=maliit --source-dir=$${IN_PWD} --rebuild-types  &&
-gtk_doc.commands += LD_LIBRARY_PATH=\"$${OUT_PWD}\" CFLAGS=\"$$system(pkg-config --cflags gio-2.0)\" LDFLAGS=\"-L$${OUT_PWD} -l$${MALIIT_GLIB_LIB} $$system(pkg-config --libs gio-2.0)\"
+gtk_doc.commands += LD_LIBRARY_PATH=\"$${LIB_DIR}\" CFLAGS=\"$$system(pkg-config --cflags gio-2.0)\" LDFLAGS=\"-L$${LIB_DIR} -l$${MALIIT_GLIB_LIB} $$system(pkg-config --libs gio-2.0)\"
 gtk_doc.commands += gtkdoc-scangobj --module=maliit &&
 gtk_doc.commands += gtkdoc-mkdb --module=maliit --source-dir=$${IN_PWD} --output-format=xml && cd .. &&
 gtk_doc.commands += mkdir -p maliit && cd maliit && gtkdoc-mkhtml maliit ../reference/maliit-docs.xml && cd .. &&
@@ -40,7 +42,7 @@ gir_scanner.name = g-ir-scanner
 gir_scanner.CONFIG += no_link combine
 gir_scanner.output = $${OUT_PWD}/Maliit-1.0.gir
 gir_scanner.input = GOBJECTFILES
-gir_scanner.commands += g-ir-scanner --warn-all -n Maliit --no-libtool -L$${OUT_PWD} --library=maliit-glib-1.0 --include=Gio-2.0 --pkg=gio-2.0 --pkg-export=maliit-glib-1.0 --nsversion=1.0 --output=${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
+gir_scanner.commands += LD_LIBRARY_PATH=\"$${LIB_DIR}\" g-ir-scanner --warn-all -n Maliit --no-libtool -L$${LIB_DIR} --library=maliit-glib-1.0 --include=Gio-2.0 --pkg=gio-2.0 --pkg-export=maliit-glib-1.0 --nsversion=1.0 --output=${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
 
 GIR_FILES = $${OUT_PWD}/Maliit-1.0.gir
 

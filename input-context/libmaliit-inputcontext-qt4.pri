@@ -3,5 +3,5 @@
 # to the top-level source/build directory, and include config.pri
 
 INCLUDEPATH += $$TOP_DIR/input-context/maliit-input-context
-LIBS += $$TOP_DIR/input-context/maliit-input-context/$$maliitStaticLib($${MALIIT_INPUTCONTEXT_TARGETNAME})
-POST_TARGETDEPS += $$TOP_DIR/input-context/maliit-input-context/$$maliitStaticLib($${MALIIT_INPUTCONTEXT_TARGETNAME})
+LIBS += $$TOP_DIR/lib/$$maliitStaticLib($${MALIIT_INPUTCONTEXT_TARGETNAME})
+POST_TARGETDEPS += $$TOP_DIR/lib/$$maliitStaticLib($${MALIIT_INPUTCONTEXT_TARGETNAME})

@@ -4,7 +4,7 @@ TOP_DIR = ../..
 
 VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
-TARGET = $$MALIIT_PLUGINS_QUICK_LIB
+TARGET = $$TOP_DIR/lib/$$MALIIT_PLUGINS_QUICK_LIB
 
 include($$TOP_DIR/src/libmaliit-plugins.pri)
 include($$TOP_DIR/common/libmaliit-common.pri)
@@ -61,6 +61,3 @@ INSTALLS += target \
     headers \
     install_pkgconfig \
 
-QMAKE_EXTRA_TARGETS += check
-check.target = check
-check.depends += lib$${TARGET}.so.$${VERSION}

@@ -2,7 +2,7 @@ TOP_DIR = ../..
 
 include(../input-context.pri)
 
-TARGET = $$MALIIT_DIRECTINPUTCONTEXTPLUGIN_TARGETNAME
+TARGET = $$TOP_DIR/lib/plugins/$$MALIIT_DIRECTINPUTCONTEXTPLUGIN_TARGETNAME
 
 include($$TOP_DIR/input-context/libmaliit-inputcontext-qt4.pri)
 include($$TOP_DIR/src/libmaliit-plugins.pri)

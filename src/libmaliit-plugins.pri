@@ -3,5 +3,5 @@
 # to the top-level source/build directory, and include config.pri
 
 INCLUDEPATH += $$TOP_DIR/src
-LIBS += $$TOP_DIR/src/$$maliitDynamicLib($${MALIIT_PLUGINS_LIB})
-POST_TARGETDEPS += $$TOP_DIR/src/$$maliitDynamicLib($${MALIIT_PLUGINS_LIB})
+LIBS += $$TOP_DIR/lib/$$maliitDynamicLib($${MALIIT_PLUGINS_LIB})
+POST_TARGETDEPS += $$TOP_DIR/lib/$$maliitDynamicLib($${MALIIT_PLUGINS_LIB})

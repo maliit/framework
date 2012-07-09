@@ -3,5 +3,5 @@
 # to the top-level source/build directory, and include config.pri
 
 INCLUDEPATH += $$TOP_DIR/common
-LIBS += $$TOP_DIR/common/$$maliitStaticLib(maliit-common)
-POST_TARGETDEPS += $$TOP_DIR/common/$$maliitStaticLib(maliit-common)
+LIBS += $$TOP_DIR/lib/$$maliitStaticLib(maliit-common)
+POST_TARGETDEPS += $$TOP_DIR/lib/$$maliitStaticLib(maliit-common)
