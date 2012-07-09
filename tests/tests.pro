@@ -19,6 +19,7 @@ SUBDIRS += \
           ut_maliit_settings \
           ut_mimsettings \
           bbt_connection \
+          ut_maliit_glib_settings \
 
 contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \
