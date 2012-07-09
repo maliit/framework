@@ -47,7 +47,9 @@ MeegoImConnector *meego_im_connector_new();
 static gboolean
 try_reconnect(MeegoImConnector *connector)
 {
-    meego_im_connector_run(connector);
+    if (connector->try_reconnect) {
+        meego_im_connector_run(connector);
+    }
     return FALSE; // _run is responsible for setting up a new timeout if needed
 }
 
@@ -170,6 +172,7 @@ meego_im_connector_new()
     self->priv->connection = NULL;
     self->dbusobj = meego_imcontext_dbusobj_get_singleton();
     self->proxy = meego_im_proxy_get_singleton();
+    self->try_reconnect = TRUE;
 
     g_signal_connect(self->proxy, "connection-dropped",
                      G_CALLBACK(connection_dropped), (gpointer)self);
@@ -187,12 +190,22 @@ meego_im_connector_free(MeegoImConnector *self)
     g_free(self);
 }
 
+
+static MeegoImConnector *meego_im_connector_singleton = NULL;
+
+void
+meego_im_connector_set_singleton(MeegoImConnector *self)
+{
+    meego_im_connector_singleton = self;
+}
+
 MeegoImConnector *
 meego_im_connector_get_singleton()
 {
-    static MeegoImConnector *connector = NULL;
+    MeegoImConnector *connector = meego_im_connector_singleton;
     if (!connector) {
         connector = meego_im_connector_new();
+        meego_im_connector_set_singleton(connector);
         meego_im_connector_run(connector);
     }
     return connector;
