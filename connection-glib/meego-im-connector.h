@@ -15,12 +15,13 @@
 #include "meego-im-proxy.h"
 #include "meego-imcontext-dbus.h"
 
-#include <dbus/dbus-glib.h>
+typedef struct _MeegoImConnectorPrivate MeegoImConnectorPrivate;
 
 typedef struct {
     MeegoIMProxy *proxy;
     MeegoIMContextDbusObj *dbusobj;
-    DBusGConnection *connection;
+    MeegoImConnectorPrivate *priv;
+    gboolean try_connect;
 } MeegoImConnector;
 
 void meego_im_connector_run(MeegoImConnector *self);
