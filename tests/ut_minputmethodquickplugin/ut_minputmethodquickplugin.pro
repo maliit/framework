@@ -1,13 +1,5 @@
 include(../common_top.pri)
 
-QUICK_DIR = ../../maliit-plugins-quick
-QUICK_IM_DIR = $${QUICK_DIR}/input-method
-QUICK_FACTORY_DIR = $${QUICK_DIR}/plugin-factory
-INCLUDEPATH += \
-    $$SRC_DIR \
-    $$QUICK_IM_DIR \
-    $$QUICK_FACTORY_DIR \
-
 QT += $$QT_WIDGETS
 
 contains(QT_MAJOR_VERSION, 5) {

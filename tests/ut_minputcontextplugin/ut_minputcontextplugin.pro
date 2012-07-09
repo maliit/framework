@@ -2,8 +2,7 @@ include(../common_top.pri)
 
 QT += $$QT_WIDGETS
 
-INCLUDEPATH += ../../input-context/input-context-plugin
-LIBS += -L../../input-context/input-context-plugin -l$$MALIIT_INPUTCONTEXTPLUGIN_TARGETNAME
+include($$TOP_DIR/input-context/input-context-plugin/libmaliit-qt4.pri) # Plugin
 
 include($$TOP_DIR/maliit/libmaliit.pri)
 include($$TOP_DIR/common/libmaliit-common.pri)

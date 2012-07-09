@@ -3,10 +3,9 @@ include(../common_top.pri)
 IN_TREE_TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins
 DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 
-INCLUDEPATH += \
-    $$SRC_DIR \
-
 QT += $$QT_WIDGETS
+
+include(../../src/libmaliit-plugins.pri)
 
 # For MImInputContextConnection pulled in by TestInputMethodHost
 include(../../connection/libmaliit-connection.pri)
@@ -17,8 +16,5 @@ HEADERS += \
 
 SOURCES += \
     ft_exampleplugin.cpp \
-
-LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so \
 
 include(../common_check.pri)
