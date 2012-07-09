@@ -334,6 +334,7 @@ maliit_settings_manager_new (void)
  * @manager: (transfer none): The #MaliitSettingsManager.
  *
  * Request the list of settings from maliit-server.
+ * The settings will be returned async via the MaliitServerManager::plugin-settings-recieved signal
  */
 void
 maliit_settings_manager_load_plugin_settings (MaliitSettingsManager *manager)
@@ -348,7 +349,9 @@ maliit_settings_manager_load_plugin_settings (MaliitSettingsManager *manager)
  * maliit_settings_manager_set_preferred_description_locale:
  * @locale_name: (transfer none): The new preferred locale.
  *
- * Sets the preferred locale for human-readable description.
+ * Sets the preferred locale for human-readable descriptions. The setting is
+ * valid for all instances of #MaliitSettingsManager in the process.
+ * Note that the server may not always be able to return info in the requested locale.
  */
 void
 maliit_settings_manager_set_preferred_description_locale (const gchar *locale_name)
