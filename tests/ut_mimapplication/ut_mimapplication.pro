@@ -2,7 +2,7 @@ include(../common_top.pri)
 
 QT += $$QT_WIDGETS
 
-INCLUDEPATH += ../../src \
+include(../../src/libmaliit-plugins.pri)
 
 # Input
 HEADERS += \
@@ -14,6 +14,6 @@ SOURCES += \
 CONFIG += plugin qdbus
 
 LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
+        -lXfixes
 
 include(../common_check.pri)

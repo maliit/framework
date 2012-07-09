@@ -2,7 +2,9 @@ include(../common_top.pri)
 
 QT += $$QT_WIDGETS
 
-LIBS += $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXfixes
+include(../../src/libmaliit-plugins.pri)
+
+LIBS += -lXfixes
 
 HEADERS += \
     ut_mimrotationanimation.h \

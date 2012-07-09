@@ -2,8 +2,7 @@ include(../common_top.pri)
 
 QT += $$QT_WIDGETS
 
-INCLUDEPATH += \
-    $$SRC_DIR \
+include(../../src/libmaliit-plugins.pri)
 
 # Input
 HEADERS += \
@@ -15,6 +14,6 @@ SOURCES += \
     ../utils/gui-utils.cpp \
 
 LIBS += \
-    $$SRC_DIR/lib$${MALIIT_PLUGINS_LIB}.so -lXcomposite -lXdamage -lXfixes
+    -lXcomposite -lXdamage -lXfixes
 
 include(../common_check.pri)
