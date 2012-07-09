@@ -38,10 +38,16 @@ typedef struct _MeegoImProxyPrivate MeegoImProxyPrivate;
 #define MEEGO_IM_PROXY_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), MEEGO_TYPE_IM_PROXY, MeegoIMProxyClass))
 
 
+typedef gboolean (*MeegoIMProxyLoadPluginSettingsFunction) (MeegoIMProxy *proxy, const gchar *locale_name);
+
 struct _MeegoIMProxy {
     GObject parent;
-
     MeegoImProxyPrivate *priv;
+
+    /* Used to observe calls during testing
+     * Over time it may make sense to convert all functions into
+     * c/glib style vfuncs to allow "inheritance" */
+    MeegoIMProxyLoadPluginSettingsFunction load_plugin_settings_observer;
 };
 
 struct _MeegoIMProxyClass {
