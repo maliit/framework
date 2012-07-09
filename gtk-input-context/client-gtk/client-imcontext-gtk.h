@@ -51,7 +51,6 @@ struct _MeegoIMContext {
     GtkIMContext parent;
 
     MeegoIMProxy *proxy;
-    MeegoIMContextDbusObj *dbusobj;
     MeegoImConnector *connector;
     MaliitAttributeExtensionRegistry *registry;
 

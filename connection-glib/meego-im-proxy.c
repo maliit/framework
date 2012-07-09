@@ -59,12 +59,9 @@ handle_disconnect(gpointer instance, MeegoIMProxy *im_proxy)
 }
 
 MeegoIMProxy *
-meego_im_proxy_get_singleton(void)
+meego_im_proxy_new(void)
 {
-    static MeegoIMProxy *proxy = NULL;
-    if (!proxy)
-        proxy = g_object_new(MEEGO_TYPE_IM_PROXY, NULL);
-    return proxy;
+    return g_object_new(MEEGO_TYPE_IM_PROXY, NULL);
 }
 
 

@@ -248,32 +248,29 @@ meego_imcontext_init(MeegoIMContext *self)
                          &g_free, (GDestroyNotify)destroy_g_value);
     self->focus_state = FALSE;
 
-    /* The singletons are used to let them have the same lifetime as
-     * the application. GTK inputcontexts are destroyed when focus
-     * is removed from the GTK widget they are attached to */
-    /* TODO: use one singleton instead of tree separate ones */
-    self->dbusobj = meego_imcontext_dbusobj_get_singleton();
-    self->proxy = meego_im_proxy_get_singleton();
     self->connector = meego_im_connector_get_singleton();
+    self->proxy = self->connector->proxy;
+
     self->registry = maliit_attribute_extension_registry_get_instance();
 
-    g_signal_connect(self->dbusobj, "im-initiated-hide",
+    MeegoIMContextDbusObj *dbusobj = self->connector->dbusobj;
+    g_signal_connect(dbusobj, "im-initiated-hide",
                      G_CALLBACK(meego_imcontext_im_initiated_hide), self);
-    g_signal_connect(self->dbusobj, "commit-string",
+    g_signal_connect(dbusobj, "commit-string",
                      G_CALLBACK(meego_imcontext_commit_string), self);
-    g_signal_connect(self->dbusobj, "update-preedit",
+    g_signal_connect(dbusobj, "update-preedit",
                      G_CALLBACK(meego_imcontext_update_preedit), self);
-    g_signal_connect(self->dbusobj, "key-event",
+    g_signal_connect(dbusobj, "key-event",
                      G_CALLBACK(meego_imcontext_key_event), self);
-    g_signal_connect(self->dbusobj, "copy",
+    g_signal_connect(dbusobj, "copy",
                      G_CALLBACK(meego_imcontext_copy), self);
-    g_signal_connect(self->dbusobj, "paste",
+    g_signal_connect(dbusobj, "paste",
                      G_CALLBACK(meego_imcontext_paste), self);
-    g_signal_connect(self->dbusobj, "set-redirect-keys",
+    g_signal_connect(dbusobj, "set-redirect-keys",
                      G_CALLBACK(meego_imcontext_set_redirect_keys), self);
-    g_signal_connect(self->dbusobj, "notify-extended-attribute-changed",
+    g_signal_connect(dbusobj, "notify-extended-attribute-changed",
                      G_CALLBACK(meego_imcontext_notify_extended_attribute_changed), self);
-    g_signal_connect(self->dbusobj, "update-input-method-area",
+    g_signal_connect(dbusobj, "update-input-method-area",
                      G_CALLBACK(meego_imcontext_update_input_method_area), self);
 }
 

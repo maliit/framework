@@ -49,7 +49,7 @@ GType meego_imcontext_dbusobj_get_type(void);
         (G_TYPE_INSTANCE_GET_CLASS((obj), MEEGO_IMCONTEXT_TYPE_DBUSOBJ, MeegoIMContextDbusObjClass))
 
 
-MeegoIMContextDbusObj *meego_imcontext_dbusobj_get_singleton(void);
+MeegoIMContextDbusObj *meego_imcontext_dbusobj_new(void);
 void meego_imcontext_dbusobj_connect(MeegoIMContextDbusObj *obj, gpointer connection);
 
 #endif /* _MEEGO_IMCONTEXT_DBUS_H */
