@@ -98,6 +98,8 @@ meego_im_proxy_init(MeegoIMProxy *self)
 {
     MeegoImProxyPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (self, MEEGO_TYPE_IM_PROXY, MeegoImProxyPrivate);
 
+    self->load_plugin_settings_observer = NULL;
+
     priv->dbusproxy = NULL;
     self->priv = priv;
 }
@@ -430,6 +432,10 @@ meego_im_proxy_load_plugin_settings (MeegoIMProxy *proxy,
     gboolean ret;
 
     g_return_val_if_fail (MEEGO_IS_IM_PROXY (proxy), FALSE);
+
+    if (proxy->load_plugin_settings_observer) {
+        proxy->load_plugin_settings_observer(proxy, locale_name);
+    }
 
     if (!proxy->priv->dbusproxy) {
         return FALSE;
