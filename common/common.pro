@@ -1,7 +1,9 @@
 include(../config.pri)
 
+TOP_DIR = ..
+
 TEMPLATE = lib
-TARGET = maliit-common
+TARGET = $$TOP_DIR/lib/maliit-common
 
 CONFIG += staticlib
 

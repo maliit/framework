@@ -4,7 +4,7 @@ TOP_DIR = ..
 
 VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
-TARGET = $$MALIIT_CONNECTION_LIB
+TARGET = $$TOP_DIR/lib/$$MALIIT_CONNECTION_LIB
 
 include($$TOP_DIR/common/libmaliit-common.pri)
 

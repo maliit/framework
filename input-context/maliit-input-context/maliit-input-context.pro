@@ -3,7 +3,7 @@ TOP_DIR = ../..
 include(../input-context.pri)
 
 CONFIG += staticlib
-TARGET = $$MALIIT_INPUTCONTEXT_TARGETNAME
+TARGET = $$TOP_DIR/lib/$$MALIIT_INPUTCONTEXT_TARGETNAME
 
 # Input
 HEADERS += minputcontext.h

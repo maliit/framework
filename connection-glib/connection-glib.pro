@@ -3,7 +3,7 @@ TOP_DIR = ..
 include($$TOP_DIR/config.pri)
 
 TEMPLATE = lib
-TARGET = $$MALIIT_CONNECTION_GLIB_LIB
+TARGET = $$TOP_DIR/lib/$$MALIIT_CONNECTION_GLIB_LIB
 CONFIG += staticlib
 
 CONFIG += link_pkgconfig

@@ -3,7 +3,7 @@ include(../../config.pri)
 TOP_DIR = ../..
 
 TEMPLATE = lib
-TARGET = $$MALIIT_PLUGINS_QUICK_FACTORY
+TARGET = $$TOP_DIR/lib/plugins/$$MALIIT_PLUGINS_QUICK_FACTORY
 
 include($$TOP_DIR/common/libmaliit-common.pri)
 include($$TOP_DIR/maliit-plugins-quick/libmaliit-plugins-quick.pri)

@@ -1,11 +1,10 @@
-
 include(../config.pri)
+
+TOP_DIR = ..
 
 VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
-TARGET = $${MALIIT_LIB}
-
-TOP_DIR = ..
+TARGET = $$TOP_DIR/lib/$${MALIIT_LIB}
 
 include($$TOP_DIR/connection/libmaliit-connection.pri)
 INCLUDEPATH += .. ../common

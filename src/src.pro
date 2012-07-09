@@ -4,7 +4,7 @@ TOP_DIR = ..
 
 VERSION = $$MALIIT_ABI_VERSION
 TEMPLATE = lib
-TARGET = $$MALIIT_PLUGINS_LIB
+TARGET = $$TOP_DIR/lib/$$MALIIT_PLUGINS_LIB
 
 # Input
 PLUGIN_HEADERS_PUBLIC = \
@@ -248,15 +248,6 @@ QMAKE_EXTRA_TARGETS += register_schemas
 register_schemas.target = register_schemas
 register_schemas.commands += GCONF_CONFIG_SOURCE=$$gconf_config_source $$gconftool --makefile-install-rule $$install_schemas.files
 install_schemas.depends += register_schemas
-
-# Check targets
-QMAKE_EXTRA_TARGETS += check-xml
-check-xml.target = check-xml
-check-xml.depends += lib$${TARGET}.so.$${VERSION}
-
-QMAKE_EXTRA_TARGETS += check
-check.target = check
-check.depends += lib$${TARGET}.so.$${VERSION}
 
 x11:LIBS += -lXcomposite -lXdamage -lXfixes
 
