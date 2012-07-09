@@ -350,7 +350,7 @@ maliit_settings_entry_class_init (MaliitSettingsEntryClass *entry_class)
                                      g_param_spec_boxed ("attributes",
                                                          "Attributes", /* TODO: mark as translatable? */
                                                          "Attributes of the entry", /* TODO: mark as translatable? */
-                                                         G_TYPE_PTR_ARRAY,
+                                                         G_TYPE_HASH_TABLE,
                                                          G_PARAM_READABLE |
                                                          G_PARAM_WRITABLE |
                                                          G_PARAM_CONSTRUCT_ONLY |
