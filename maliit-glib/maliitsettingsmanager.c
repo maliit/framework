@@ -25,6 +25,8 @@
 #include "maliitattributeextensionprivate.h"
 #include "meego-im-connector.h"
 
+#include <dbus/dbus-glib.h>
+
 /**
  * SECTION:maliitsettingsmanager
  * @short_description: settings manager

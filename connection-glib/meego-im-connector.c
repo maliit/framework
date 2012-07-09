@@ -18,6 +18,7 @@
 #include <gio/gio.h>
 
 #include <dbus/dbus.h>
+#include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
 #define MALIIT_SERVER_NAME "org.maliit.server"
@@ -37,6 +38,10 @@
 #define G_VALUE_INIT { 0, { { 0 } } }
 #endif
 
+struct _MeegoImConnectorPrivate {
+    DBusGConnection *connection;
+};
+
 MeegoImConnector *meego_im_connector_new();
 
 static gboolean
@@ -50,8 +55,8 @@ try_reconnect(MeegoImConnector *connector)
 static void
 connection_dropped(gpointer instance, MeegoImConnector *connector)
 {
-    if (connector->connection) {
-        dbus_g_connection_unref(connector->connection);
+    if (connector->priv->connection) {
+        dbus_g_connection_unref(connector->priv->connection);
     }
     try_reconnect(connector);
 }
@@ -160,8 +165,9 @@ MeegoImConnector *
 meego_im_connector_new()
 {
     MeegoImConnector *self = g_new(MeegoImConnector, 1);
+    self->priv = g_new(MeegoImConnectorPrivate, 1);
 
-    self->connection = NULL;
+    self->priv->connection = NULL;
     self->dbusobj = meego_imcontext_dbusobj_get_singleton();
     self->proxy = meego_im_proxy_get_singleton();
 
@@ -174,9 +180,10 @@ meego_im_connector_new()
 void
 meego_im_connector_free(MeegoImConnector *self)
 {
-    if (self->connection) {
-        dbus_g_connection_unref(self->connection);
+    if (self->priv->connection) {
+        dbus_g_connection_unref(self->priv->connection);
     }
+    g_free(self->priv);
     g_free(self);
 }
 
@@ -229,8 +236,8 @@ meego_im_connector_run(MeegoImConnector *self)
     dbus_connection_setup_with_g_main(dbus_connection, NULL);
     connection = dbus_connection_get_g_connection(dbus_connection);
 
-    self->connection = connection;
+    self->priv->connection = connection;
 
-    meego_im_proxy_connect(self->proxy, (gpointer)self->connection);
-    meego_imcontext_dbusobj_connect(self->dbusobj, (gpointer)self->connection);
+    meego_im_proxy_connect(self->proxy, (gpointer)self->priv->connection);
+    meego_imcontext_dbusobj_connect(self->dbusobj, (gpointer)self->priv->connection);
 }
