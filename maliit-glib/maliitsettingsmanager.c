@@ -130,7 +130,7 @@ maliit_settings_manager_class_init (MaliitSettingsManagerClass *manager_class)
      *
      * Emitted when connection to maliit-server is broken.
      */
-    signals[CONNECTED] =
+    signals[DISCONNECTED] =
         g_signal_new ("disconnected",
                       MALIIT_TYPE_SETTINGS_MANAGER,
                       G_SIGNAL_RUN_FIRST,
