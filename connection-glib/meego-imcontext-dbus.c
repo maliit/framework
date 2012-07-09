@@ -246,13 +246,9 @@ meego_imcontext_dbusobj_connect(MeegoIMContextDbusObj *obj, gpointer connection)
 }
 
 MeegoIMContextDbusObj *
-meego_imcontext_dbusobj_get_singleton(void)
+meego_imcontext_dbusobj_new(void)
 {
-    static MeegoIMContextDbusObj *dbusobj = NULL;
-
-    if (!dbusobj)
-        dbusobj = g_object_new(MEEGO_IMCONTEXT_TYPE_DBUSOBJ, NULL);
-    return dbusobj;
+    return g_object_new(MEEGO_IMCONTEXT_TYPE_DBUSOBJ, NULL);
 }
 
 

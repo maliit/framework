@@ -56,7 +56,7 @@ struct _MeegoIMProxyClass {
 
 GType meego_im_proxy_get_type(void);
 
-MeegoIMProxy *meego_im_proxy_get_singleton(void);
+MeegoIMProxy *meego_im_proxy_new(void);
 void meego_im_proxy_connect(MeegoIMProxy *proxy, gpointer connection);
 gboolean meego_im_proxy_activate_context(MeegoIMProxy *proxy);
 gboolean meego_im_proxy_app_orientation_changed(MeegoIMProxy *proxy, const gint angle);

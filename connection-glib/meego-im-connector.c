@@ -170,8 +170,8 @@ meego_im_connector_new()
     self->priv = g_new(MeegoImConnectorPrivate, 1);
 
     self->priv->connection = NULL;
-    self->dbusobj = meego_imcontext_dbusobj_get_singleton();
-    self->proxy = meego_im_proxy_get_singleton();
+    self->dbusobj = meego_imcontext_dbusobj_new();
+    self->proxy = meego_im_proxy_new();
     self->try_reconnect = TRUE;
 
     g_signal_connect(self->proxy, "connection-dropped",
@@ -186,6 +186,9 @@ meego_im_connector_free(MeegoImConnector *self)
     if (self->priv->connection) {
         dbus_g_connection_unref(self->priv->connection);
     }
+    g_object_unref(self->dbusobj);
+    g_object_unref(self->proxy);
+
     g_free(self->priv);
     g_free(self);
 }
