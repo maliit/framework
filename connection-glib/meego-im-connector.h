@@ -21,7 +21,7 @@ typedef struct {
     MeegoIMProxy *proxy;
     MeegoIMContextDbusObj *dbusobj;
     MeegoImConnectorPrivate *priv;
-    gboolean try_connect;
+    gboolean try_reconnect;
 } MeegoImConnector;
 
 void meego_im_connector_run(MeegoImConnector *self);
