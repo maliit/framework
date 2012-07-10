@@ -23,24 +23,28 @@
 #include "boolentrycheckbox.h"
 
 BoolEntryCheckBox::BoolEntryCheckBox(const QSharedPointer<Maliit::SettingsEntry>& entry)
-    : m_entry(entry)
+    : QCheckBox()
+    , m_entry(entry)
 {
     if (m_entry) {
         const bool value(m_entry->value().toBool());
 
-        connect(this, SIGNAL(stateChanged(int)),
-                this, SLOT(onStateChanged()));
-
+        // we are setting the checked value and text manually without
+        // relying on signal emission, because signal is not emitted
+        // when there is no actual change of state.
         setChecked(value);
+        setText(value ? "True" : "False");
+        connect(this, SIGNAL(toggled(bool)),
+                this, SLOT(onToggled(bool)));
     } else {
         setDisabled(true);
     }
 }
 
-void BoolEntryCheckBox::onStateChanged()
+void BoolEntryCheckBox::onToggled(bool checked)
 {
     if (m_entry) {
-        if (isChecked()) {
+        if (checked) {
             setText("True");
             m_entry->set(true);
         } else {

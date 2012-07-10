@@ -33,7 +33,7 @@ class BoolEntryCheckBox : public QCheckBox
 public:
     BoolEntryCheckBox(const QSharedPointer<Maliit::SettingsEntry>& entry);
 
-    Q_SLOT void onStateChanged();
+    Q_SLOT void onToggled(bool checked);
 
 private:
     QSharedPointer<Maliit::SettingsEntry> m_entry;
