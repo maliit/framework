@@ -34,6 +34,9 @@ typedef QList<QWeakPointer<AttributeExtension> > ExtensionList;
 class AttributeExtensionRegistry : public QObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(AttributeExtensionRegistry)
+    Q_DECLARE_PRIVATE(AttributeExtensionRegistry)
+
 public:
     //! \brief Get singleton instance
     //! \return singleton instance
@@ -71,11 +74,8 @@ public Q_SLOTS:
 private:
     AttributeExtensionRegistry();
     ~AttributeExtensionRegistry();
-    Q_DISABLE_COPY(AttributeExtensionRegistry)
 
     const QScopedPointer<AttributeExtensionRegistryPrivate> d_ptr;
-
-    Q_DECLARE_PRIVATE(AttributeExtensionRegistry)
 
     Q_SLOT void registerExistingAttributeExtensions();
 };
