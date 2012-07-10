@@ -80,8 +80,8 @@ AttributeExtensionRegistry::AttributeExtensionRegistry() :
                 SIGNAL(extendedAttributeChanged(int,QString,QString,QString,QVariant)),
                 this,
                 SLOT(updateAttribute(int,QString,QString,QString,QVariant)));
-	connect(d->connection.data(), SIGNAL(connected()),
-		this,                 SLOT(registerExistingAttributeExtensions()));
+        connect(d->connection.data(), SIGNAL(connected()),
+                this,                 SLOT(registerExistingAttributeExtensions()));
     }
 }
 
@@ -186,19 +186,19 @@ void AttributeExtensionRegistry::registerExistingAttributeExtensions()
     if (d->connection) {
         Q_FOREACH (const QWeakPointer<AttributeExtension> &extension_ref, d->extensions) {
             AttributeExtension *extension = extension_ref.data();
-	    if (!extension)
-	        continue;
+            if (!extension)
+                continue;
 
-	    d->connection->registerAttributeExtension(extension->id(), extension->fileName());
+            d->connection->registerAttributeExtension(extension->id(), extension->fileName());
 
-	    const AttributeExtension::ExtendedAttributeMap &attributes = extension->attributes();
+            const AttributeExtension::ExtendedAttributeMap &attributes = extension->attributes();
 
-	    for (AttributeExtension::ExtendedAttributeMap::const_iterator iter(attributes.begin()), attributes_end(attributes.end());
-		 iter != attributes_end;
-		 ++iter) {
-	        extensionChanged(extension->id(), iter.key(), iter.value());
-	    }
-	}
+            for (AttributeExtension::ExtendedAttributeMap::const_iterator iter(attributes.begin()), attributes_end(attributes.end());
+                 iter != attributes_end;
+                 ++iter) {
+                extensionChanged(extension->id(), iter.key(), iter.value());
+            }
+        }
     }
 }
 
