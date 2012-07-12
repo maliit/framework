@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""Command-line based settings application for Maliit.
+Allows to introspect and configure settings using the
+maliit-glib settings API"""
+
+# Note: This script is written to be compatible with both Python 2.6+ and Python 3.0+
+# Here this mostly means using the new style syntax for exceptions and using the print function
+# See http://python3porting.com/noconv.html2 for some details
+
 from __future__ import print_function
 
 from gi.repository import GObject, GLib
@@ -139,7 +147,7 @@ def variant_from_string(string, maliit_setting_type):
             value.append(int_from_string(item)[1])
 
     else:
-        raise NotImplementedError, "Unable to create variant for %s" % repr(maliit_settings_type)
+        raise NotImplementedError("Unable to create variant for %s" % repr(maliit_settings_type))
 
     variant = GLib.Variant(variant_format, value)
     return variant
@@ -195,6 +203,7 @@ def set_plugin_settings_received(settings_manager, settings,
         # TODO: print valid range/domain, to help user find the correct value
         print ('Value %s is not valid for setting %s' % (setting_value_variant, setting_name))
         loop.quit()
+        return
 
     setting_entry.set_value(setting_value_variant)
     loop.quit()
@@ -206,6 +215,7 @@ def get_plugin_settings_received(settings_manager, settings,
 
     if not setting_entry:
         loop.quit()
+        return
 
     print (setting_entry.get_value().unpack())
     loop.quit()
@@ -227,7 +237,7 @@ def about_handle(args, settings_manager, loop):
     elif len(args) == 0:
         plugin_name = "server"
     else:
-        raise ValueError, 'Incorrect number of arguments'
+        raise ValueError('Incorrect number of arguments')
 
     settings_manager.connect('plugin-settings-received',
                              about_plugin_settings_received, plugin_name, loop)
@@ -246,7 +256,7 @@ def set_handle(args, settings_manager, loop):
         setting_name, setting_value = args
         plugin_name = "server"
     else:
-        raise ValueError, 'Incorrect number of arguments'
+        raise ValueError('Incorrect number of arguments')
 
     settings_manager.connect('plugin-settings-received', set_plugin_settings_received,
                              plugin_name, setting_name, setting_value, loop)
@@ -264,7 +274,7 @@ def get_handle(args, settings_manager, loop):
         setting_name = args
         plugin_name = "server"
     else:
-        raise ValueError, 'Incorrect number of arguments'
+        raise ValueError('Incorrect number of arguments')
 
     settings_manager.connect('plugin-settings-received', get_plugin_settings_received,
                              plugin_name, setting_name, loop)
@@ -320,7 +330,7 @@ def main():
         if len(sys.argv) >= 2:
             subcommand = sys.argv[1]
         print_help(subcommand_handlers, subcommand)
-        sys.exit (1)
+        sys.exit (0)
 
     subcommand = sys.argv[1]
     arguments = sys.argv[2:]
@@ -336,7 +346,7 @@ def main():
 
     try:
         handler(arguments, settings_manager, loop)
-    except ValueError, e:
+    except ValueError as e:
         print (e, '\n')
         print_help(subcommand_handlers, subcommand)
         sys.exit(1)
