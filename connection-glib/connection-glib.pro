@@ -34,6 +34,7 @@ HEADERS += \
     meego-im-connector.h \
     qt-keysym-map.h \
     debug.h \
+    meego-imcontext-dbus-private.h \
     meego-im-connector-private.h \
 
 SOURCES += \
