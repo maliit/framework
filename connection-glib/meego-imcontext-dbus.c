@@ -34,35 +34,7 @@
 
 G_DEFINE_TYPE(MeegoIMContextDbusObj, meego_imcontext_dbusobj, G_TYPE_OBJECT);
 
-gboolean meego_imcontext_dbus_activation_lost_event(MeegoIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_im_initiated_hide(MeegoIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_commit_string(MeegoIMContextDbusObj *obj, char *string, gint replacement_start,
-        int replacement_length, int cursor_pos, GError **error);
-gboolean meego_imcontext_dbus_update_preedit(MeegoIMContextDbusObj *obj, const char *string, GPtrArray *formatListData, gint32 replaceStart, gint32 replaceLength, gint32 cursorPos, GError** error);
-gboolean meego_imcontext_dbus_key_event(MeegoIMContextDbusObj *obj, int type, int key, int modifiers, char *text,
-                                        gboolean auto_repeat, int count, GError **error);
-gboolean meego_imcontext_dbus_update_input_method_area(MeegoIMContextDbusObj *obj, int x, int y, int width, int height, GError **error);
-gboolean meego_imcontext_dbus_set_global_correction_enabled(MeegoIMContextDbusObj *obj, gboolean correction, GError **error);
-gboolean meego_imcontext_dbus_copy(MeegoIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_paste(MeegoIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_set_redirect_keys(MeegoIMContextDbusObj *obj, gboolean enabled, GError **error);
-gboolean meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray **rect, gboolean *valid, GError **error);
-gboolean meego_imcontext_dbus_set_language (MeegoIMContextDbusObj *obj,
-                                            const gchar *language_id,
-                                            GError **error);
-gboolean meego_imcontext_dbus_set_detectable_auto_repeat(MeegoIMContextDbusObj *obj, gboolean enabled, GError **error);
-gboolean meego_imcontext_dbus_set_selection(MeegoIMContextDbusObj *obj, int start, int length, GError **error);
-gboolean meego_imcontext_dbus_selection(MeegoIMContextDbusObj *obj, gboolean *valid, gchar **gdata, GError **error);
-
-gboolean meego_imcontext_dbus_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj,
-                                                                 gint id,
-                                                                 const gchar *target,
-                                                                 const gchar *target_item,
-                                                                 const gchar *key,
-                                                                 GValue *value,
-                                                                 GError **error);
-
-gboolean meego_imcontext_dbus_plugin_settings_loaded (MeegoIMContextDbusObj *obj, GPtrArray *settings_data, GError **error);
+#include "meego-imcontext-dbus-private.h"
 
 enum {
     ACTIVATION_LOST_EVENT,
