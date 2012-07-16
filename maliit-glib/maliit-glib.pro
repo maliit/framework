@@ -9,6 +9,8 @@ TARGET = $$TOP_DIR/lib/$${MALIIT_GLIB_LIB}
 CONFIG += link_pkgconfig
 PKGCONFIG += gobject-2.0
 
+PKGCONFIG += dbus-glib-1 # Used by MaliitSettingsManager / MaliitSettingsEntry
+
 CONFIG -= qt
 
 include($$TOP_DIR/connection-glib/libmaliit-connection-glib.pri)
