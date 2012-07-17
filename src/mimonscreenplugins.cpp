@@ -89,8 +89,8 @@ MImOnScreenPlugins::MImOnScreenPlugins():
             this, SLOT(updateEnabledSubviews()));
     connect(&mActiveSubViewSettings, SIGNAL(valueChanged()),
             this, SLOT(updateActiveSubview()));
-    updateActiveSubview();
     updateEnabledSubviews();
+    updateActiveSubview();
 }
 
 bool MImOnScreenPlugins::isEnabled(const QString &plugin) const
