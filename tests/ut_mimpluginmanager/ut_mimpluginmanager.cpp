@@ -59,6 +59,9 @@ namespace {
                                               << pluginId + ":" + "dummyimsv2"
                                               << pluginId3 + ":" + "dummyim3sv1"
                                               << pluginId3 + ":" + "dummyim3sv2";
+
+    const QStringList DefaultActivePlugin = QStringList() << pluginId + ":" + "dummyimsv1";
+    const QStringList DefaultBlackList = QStringList() << "libdummyimplugin2.so" << "libmeego-keyboard.so";
 }
 
 class MInputContextTestConnection : public MInputContextConnection
@@ -118,21 +121,15 @@ void Ut_MIMPluginManager::init()
 {
     MImSettings pathConf(MImPluginPaths);
     pathConf.set(MaliitTestUtils::getTestPluginPath());
-    MImSettings blackListConf(MImPluginDisabled);
 
-    QStringList blackList;
-    blackList << "libdummyimplugin2.so";
-    //ignore the meego-keyboard
-    blackList << "libmeego-keyboard.so";
-    blackListConf.set(blackList);
+    MImSettings blackListConf(MImPluginDisabled);
+    blackListConf.set(DefaultBlackList);
 
     MImSettings enabledPluginsSettings(EnabledPluginsKey);
     enabledPluginsSettings.set(DefaultEnabledPlugins);
 
     MImSettings activePluginSettings(ActivePluginKey);
-    QStringList activePlugin;
-    activePlugin << pluginId + ":" + "dummyimsv1";
-    activePluginSettings.set(activePlugin);
+    activePluginSettings.set(DefaultActivePlugin);
 
     shared_ptr<MInputContextTestConnection> icConnection(new MInputContextTestConnection);
     manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
