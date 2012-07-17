@@ -71,6 +71,7 @@ int main(int argc, char **argv)
     shared_ptr<MInputContextConnection> icConnection(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
 
     // The actual server
+    MImServer::configureSettings(MImServer::PersistentSettings);
     MImServer imServer(serverLogic, icConnection);
     Q_UNUSED(imServer);
 

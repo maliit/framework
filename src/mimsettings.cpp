@@ -26,13 +26,13 @@
 #include <QDebug>
 
 #if defined(MALIIT_DISABLE_GCONF)
-typedef MImSettingsQSettingsBackendFactory MImSettingsDefaultBackendFactory;
+typedef MImSettingsQSettingsBackendFactory MImSettingsDefaultPersistentBackendFactory;
 #else
-typedef MImSettingsGConfBackendFactory MImSettingsDefaultBackendFactory;
+typedef MImSettingsGConfBackendFactory MImSettingsDefaultPersistentBackendFactory;
 #endif
 
 QScopedPointer<MImSettingsBackendFactory> MImSettings::factory;
-
+MImSettings::SettingsType MImSettings::preferredSettingsType = MImSettings::InvalidSettings;
 
 MImSettingsBackend::MImSettingsBackend(QObject *parent) :
     QObject(parent)
@@ -86,8 +86,31 @@ QList<QString> MImSettings::listEntries() const
 MImSettings::MImSettings(const QString &key, QObject *parent)
     : QObject(parent)
 {
-    if (!factory)
-        factory.reset(new MImSettingsDefaultBackendFactory);
+    if (!factory) {
+        MImSettingsBackendFactory *newFactory = 0;
+        switch (preferredSettingsType) {
+
+        case TemporarySettings:
+            // Cannot be done with gconf, but it does not matter as the
+            // settings will be temporary and not visible to others anyway
+            newFactory = new MImSettingsQSettingsTemporaryBackendFactory;
+            break;
+
+        case PersistentSettings:
+            newFactory = new MImSettingsDefaultPersistentBackendFactory;
+            break;
+
+        case InvalidSettings:
+            qFatal("No settings type specified. "
+                   "Call MImSettings::setPreferredSettingsType() before making use of MImSettings.");
+            break;
+
+        default:
+            qCritical() << __PRETTY_FUNCTION__ <<
+                           "Invalid value for preferredSettingType." << preferredSettingsType;
+        }
+        MImSettings::setImplementationFactory(newFactory);
+    }
 
     backend.reset(factory->create(key, this));
 
@@ -96,6 +119,12 @@ MImSettings::MImSettings(const QString &key, QObject *parent)
 
 MImSettings::~MImSettings()
 {
+}
+
+void MImSettings::setPreferredSettingsType(SettingsType setting)
+{
+    preferredSettingsType = setting;
+    factory.reset();
 }
 
 void MImSettings::setImplementationFactory(MImSettingsBackendFactory *newFactory)

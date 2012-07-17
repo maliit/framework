@@ -16,6 +16,7 @@
 
 #include "mimpluginmanager.h"
 #include "mimabstractserverlogic.h"
+#include "mimsettings.h"
 
 using namespace std::tr1;
 
@@ -61,6 +62,24 @@ MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
 MImServer::~MImServer()
 {
     // FIXME: MIMPluginManager is never deleted
+}
+
+void MImServer::configureSettings(MImServer::SettingsType settingsType)
+{
+    switch (settingsType) {
+
+    case TemporarySettings:
+        MImSettings::setPreferredSettingsType(MImSettings::TemporarySettings);
+        break;
+
+    case PersistentSettings:
+        MImSettings::setPreferredSettingsType(MImSettings::PersistentSettings);
+        break;
+
+    default:
+        qCritical() << __PRETTY_FUNCTION__ <<
+                       "Invalid value for preferredSettingType." << settingsType;
+    }
 }
 
 void MImServer::connectComponents()

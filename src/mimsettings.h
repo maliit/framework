@@ -141,9 +141,7 @@ public:
   The value of the key is returned to you as a QVariant, and you
   pass in a QVariant when setting the value.
 
-  MImSettings defaults to using GConf as a storage mechanism; if GConf
-  support has been disabled at compile time, the values are stored using
-  QSettings.
+  Before making use of MImSettings, you must call MImSettings::setPreferredSettingsType().
 
   \warning MImSettings is not reentrant.
 */
@@ -151,6 +149,13 @@ public:
 class MImSettings : public QObject
 {
     Q_OBJECT
+
+public:
+    enum SettingsType {
+        InvalidSettings,
+        TemporarySettings,
+        PersistentSettings
+    };
 
 public:
     /*! Initializes a MImSettings to access the configuratin key denoted by
@@ -221,9 +226,16 @@ public:
     /*! Set the factory used to create backend implementations.
 
         Should be called at most once at startup, and is meant to be used
-        only for tests.
+        only for tests. Takes ownership of the passed instance.
     */
     static void setImplementationFactory(MImSettingsBackendFactory *factory);
+
+    /*! Set the preferred settings type for backend implementations
+     *
+     * Should be called at most once at startup, before creating MImSetting instances.
+     * This is not honored if using setImplementationFactory() manually.
+     */
+    static void setPreferredSettingsType(SettingsType setting);
 
     /*! Return the default values used for some keys (duplicates some
         of the information contained in the GConf schema)
@@ -238,6 +250,7 @@ Q_SIGNALS:
 private:
     QScopedPointer<MImSettingsBackend> backend;
     static QScopedPointer<MImSettingsBackendFactory> factory;
+    static SettingsType preferredSettingsType;
 };
 
 //! \internal_end

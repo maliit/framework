@@ -57,7 +57,7 @@ namespace
 
 void Ft_MIMPluginManager::initTestCase()
 {
-    MImSettings::setImplementationFactory(new MImSettingsQSettingsTemporaryBackendFactory);
+    MImSettings::setPreferredSettingsType(MImSettings::TemporarySettings);
 }
 
 void Ft_MIMPluginManager::cleanupTestCase()

@@ -141,6 +141,7 @@ int main(int argc, char **argv)
     }
 
     // The actual server
+    MImServer::configureSettings(MImServer::PersistentSettings);
     MImServer imServer(serverLogic, icConnection);
     Q_UNUSED(imServer);
 
