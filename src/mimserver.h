@@ -38,10 +38,18 @@ class MImServer : public QObject
     Q_OBJECT
 
 public:
+    enum SettingsType {
+        TemporarySettings,
+        PersistentSettings
+    };
+
+public:
     explicit MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
                        const std::tr1::shared_ptr<MInputContextConnection> &icConnection,
                        QObject *parent = 0);
     ~MImServer();
+
+    static void configureSettings(MImServer::SettingsType settingsType);
 
 private:
     void connectComponents();

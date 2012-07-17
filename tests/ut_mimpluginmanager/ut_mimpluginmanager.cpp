@@ -105,12 +105,12 @@ void Ut_MIMPluginManager::initTestCase()
 {
     proxyWidget = new QWidget;
 
-    MImSettings::setImplementationFactory(new MImSettingsQSettingsTemporaryBackendFactory);
-
     Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
     Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
     QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
+
+    MImSettings::setPreferredSettingsType(MImSettings::TemporarySettings);
 }
 
 void Ut_MIMPluginManager::cleanupTestCase()

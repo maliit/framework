@@ -30,6 +30,7 @@ namespace {
 
 void Ut_MInputContextPlugin::initTestCase()
 {
+    MImSettings::setPreferredSettingsType(MImSettings::TemporarySettings);
 }
 
 void Ut_MInputContextPlugin::cleanupTestCase()

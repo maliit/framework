@@ -58,6 +58,7 @@ QInputContext *MDirectInputContextPlugin::create(const QString &key)
 
         shared_ptr<MInputContextConnection> icConn(icConnection);
         QSharedPointer<MImAppHostedServerLogic> serverLogic(new MImAppHostedServerLogic);
+        MImServer::configureSettings(MImServer::TemporarySettings);
         MImServer *imServer = new MImServer(serverLogic, icConn);
 
         Maliit::InputMethod::instance()->setWidget(serverLogic->pluginsProxyWidget());
