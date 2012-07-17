@@ -20,6 +20,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <dbus/dbus-glib.h>
+
 #include "maliitattributeextensionregistry.h"
 #include "maliitmarshallers.h"
 #include "meego-im-connector.h"
