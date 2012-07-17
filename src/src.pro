@@ -113,7 +113,7 @@ SETTINGS_SOURCES += \
         mimsettings.cpp \
         mimsettingsqsettings.cpp \
 
-!disable-gconf {
+enable-gconf {
     SETTINGS_HEADERS_PRIVATE += \
         mimsettingsgconf.h \
 
@@ -121,7 +121,7 @@ SETTINGS_SOURCES += \
         mimsettingsgconf.cpp \
 }
 
-disable-gconf {
+!enable-gconf {
     DEFINES += MALIIT_DISABLE_GCONF
 }
 
@@ -160,7 +160,7 @@ x11 {
 CONFIG += link_pkgconfig
 QT = core $$QT_WIDGETS xml
 
-!disable-gconf {
+enable-gconf {
     PKGCONFIG += gconf-2.0
 }
 
@@ -231,12 +231,12 @@ INSTALLS += \
     install_prf \
     install_pkgconfig \
 
-!disable-gconf {
+enable-gconf {
     INSTALLS += install_schemas
 }
 
 # Registering the GConf schemas in the gconf database
-!disable-gconf {
+enable-gconf {
     gconftool = gconftool-2
     gconf_config_source = $$system(echo $GCONF_CONFIG_SOURCE)
     isEmpty(gconf_config_source) {

@@ -13,7 +13,7 @@ include(./config.pri)
         \\nRecognised CONFIG flags: \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t enable-dbus-activation : Enable dbus activation support for maliit-server \
-        \\n\\t disable-gconf : Disable GConf settings backend (falls back to QSettings) \
+        \\n\\t enable-gconf : Enable GConf settings backend (instead of using default QSettings) \
         \\n\\t disable-dbus : Disable dbus communication backend \
         \\n\\t enable-qdbus : Enable QtDBus implementation for the DBus communication backend \
         \\n\\t notests : Do not build tests \
@@ -87,7 +87,7 @@ SUBDIRS += examples
     !system(pkg-config --exists dbus-glib-1 dbus-1):error("Could not find dbus-glib-1 dbus-1")
 }
 
-!disable-gconf {
+enable-gconf {
     !system(pkg-config --exists gconf-2.0):error("Could not find gconf-2.0")
 }
 
