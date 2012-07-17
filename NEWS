@@ -1,3 +1,12 @@
+0.92.3
+========
+
+CHANGES SINCE 0.92.2.1
+* GConf settings backend deprecated. The default backend is now QSettings.
+  GConf backend can be enabled using CONFIG+=enable-gconf, but will be removed in 0.92.4
+* Add maliit-exampleapp-settings-python3, a Python + maliit-glib based command-line
+  application for settings. Is also useful while developing to configure settings.
+
 0.92.2.1
 ========
 
