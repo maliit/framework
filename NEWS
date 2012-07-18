@@ -1,5 +1,5 @@
 0.92.3
-========
+======
 
 CHANGES SINCE 0.92.2.1
 * GConf settings backend deprecated. The default backend is now QSettings.
