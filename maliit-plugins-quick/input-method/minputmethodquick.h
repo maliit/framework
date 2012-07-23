@@ -81,6 +81,7 @@ public:
 
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
     virtual void handleFocusChange(bool focusIn);
+    QList<MAbstractInputMethod::MInputMethodSubView> subViews(Maliit::HandlerState state) const;
     //! \reimp_end
 
     //! Propagates screen size to QML components.

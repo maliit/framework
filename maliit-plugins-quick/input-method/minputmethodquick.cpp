@@ -427,6 +427,17 @@ void MInputMethodQuick::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyO
     d->updateActionKey(MKeyOverride::All);
 }
 
+QList<MAbstractInputMethod::MInputMethodSubView> MInputMethodQuick::subViews(Maliit::HandlerState state) const
+{
+    Q_UNUSED(state);
+    MAbstractInputMethod::MInputMethodSubView sub_view;
+    sub_view.subViewId = "";
+    sub_view.subViewTitle = "";
+    QList<MAbstractInputMethod::MInputMethodSubView> sub_views;
+    sub_views << sub_view;
+    return sub_views;
+}
+
 void MInputMethodQuick::onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes changedAttributes)
 {
     Q_D(MInputMethodQuick);
