@@ -188,6 +188,8 @@ public:
         , sentActionKeyOverride()
     {
         updateActionKey(MKeyOverride::All);
+        // Set surface size to fullscreen
+        surface->setSize(QApplication::desktop()->screenGeometry().size());
     }
 
     ~MInputMethodQuickPrivate()
