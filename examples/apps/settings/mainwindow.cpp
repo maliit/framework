@@ -22,14 +22,7 @@
  */
 
 #include "mainwindow.h"
-
 #include "pluginsettings.h"
-
-#include <QStringList>
-#include <QComboBox>
-#include <QLabel>
-#include <QGridLayout>
-#include <QtDebug>
 #include "stringentryedit.h"
 #include "selectentrycombobox.h"
 #include "boolentrycheckbox.h"
@@ -53,16 +46,41 @@ MainWindow::MainWindow() :
     enabled_entry(),
     language_selector(0),
     enable_all(0),
+    im_testing_entry(new QTextEdit),
     tabs()
 {
-    QGridLayout *l = new QGridLayout(this);
+    QVBoxLayout *l = new QVBoxLayout(this);
+    l->addWidget(new QLabel("Text entry for testing"));
 
-    l->addWidget(&tabs, 0, 0);
+    im_testing_entry->setFocusPolicy(Qt::StrongFocus);
+    im_testing_entry->installEventFilter(this);
+    l->addWidget(im_testing_entry);
+
+    // Steals focus from im_testing_entry and therefore dismisses input
+    // method. Other widgets should set im_testing_entry as focus proxy.
+    QPushButton *dismiss_im = new QPushButton("Dismiss input method");
+    l->addWidget(dismiss_im);
+    l->addWidget(&tabs);
 
     connect(maliit_settings, SIGNAL(pluginSettingsReceived(QList<QSharedPointer<Maliit::PluginSettings> >)),
             this, SLOT(pluginSettingsReceived(QList<QSharedPointer<Maliit::PluginSettings> >)));
     connect(maliit_settings, SIGNAL(connected()),
             this, SLOT(connected()));
+}
+
+bool MainWindow::eventFilter(QObject *watched,
+                             QEvent *event)
+{
+    // Let the input method show up on focus-in, not on second click:
+    if (watched == im_testing_entry
+        && event->type() == QFocusEvent::FocusIn) {
+        if (QInputContext *ic = qApp->inputContext()) {
+            QEvent im_request(QEvent::RequestSoftwareInputPanel);
+            ic->filterEvent(&im_request);
+        }
+    }
+
+    return false;
 }
 
 void MainWindow::connected()
@@ -95,9 +113,14 @@ void MainWindow::pluginSettingsReceived(const QList<QSharedPointer<Maliit::Plugi
         QWidget *page(new QWidget);
         QGridLayout *layout(new QGridLayout(page));
 
+        int row = 0;
+
         if (plugin_name == "server") {
             language_selector = new QComboBox;
+            language_selector->setFocusProxy(im_testing_entry);
+
             enable_all = new QPushButton("Enable all keyboard layouts");
+            enable_all->setFocusProxy(im_testing_entry);
 
             Q_FOREACH (const QSharedPointer<Maliit::SettingsEntry> &entry, setting->configurationEntries()) {
                 if (not entry) {
@@ -127,9 +150,11 @@ void MainWindow::pluginSettingsReceived(const QList<QSharedPointer<Maliit::Plugi
                     this, SLOT(enableAllLayouts()));
 
             layout->setColumnStretch(1, 1);
-            layout->addWidget(new QLabel("Layout"), 0, 0);
-            layout->addWidget(language_selector, 0, 1);
-            layout->addWidget(enable_all, 1, 1);
+            layout->addWidget(new QLabel("Layout"), row, 0);
+            layout->addWidget(language_selector, row, 1);
+            ++row;
+            layout->addWidget(enable_all, row, 1);
+            ++row;
 
             language_selector->setCurrentIndex(language_selector->findData(language_entry->value()));
             tabs.insertTab(0, page, plugin_name);
@@ -184,8 +209,8 @@ void MainWindow::pluginSettingsReceived(const QList<QSharedPointer<Maliit::Plugi
                 }
 
                 wlist.append(WPair(new QLabel("Value:"), second_widget));
+                second_widget->setFocusProxy(im_testing_entry);
 
-                int row(0);
                 Q_FOREACH(const WPair& pair, wlist) {
                     layout->addWidget(pair.first, row, 0);
                     layout->addWidget(pair.second, row, 1);
@@ -194,6 +219,8 @@ void MainWindow::pluginSettingsReceived(const QList<QSharedPointer<Maliit::Plugi
             }
             tabs.addTab(page, plugin_name);
         }
+
+        layout->setRowStretch(row, 10);
     }
 
     const int tabs_count(tabs.count());

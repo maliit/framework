@@ -27,10 +27,7 @@
 #include "settingsmanager.h"
 #include "settingsentry.h"
 
-#include <QWidget>
-#include <QComboBox>
-#include <QPushButton>
-#include <QLabel>
+#include <QtGui>
 
 class MainWindow : public QWidget
 {
@@ -38,6 +35,10 @@ class MainWindow : public QWidget
 
 public:
     MainWindow();
+
+protected:
+    bool eventFilter(QObject *watched,
+                     QEvent *event);
 
 private Q_SLOTS:
     void pluginSettingsReceived(const QList<QSharedPointer<Maliit::PluginSettings> > &settings);
@@ -52,6 +53,7 @@ private:
     QSharedPointer<Maliit::SettingsEntry> language_entry, enabled_entry;
     QComboBox* language_selector;
     QPushButton* enable_all;
+    QTextEdit *im_testing_entry;
     QTabWidget tabs;
 };
 
