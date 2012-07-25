@@ -19,6 +19,7 @@
 #include "dbuscustomarguments.h"
 
 #include <QDBusConnection>
+#include <QDBusMessage>
 #include <QDBusServer>
 
 #include <QKeyEvent>
@@ -26,6 +27,7 @@
 namespace
 {
     const char * const DBusPath = "/com/meego/inputmethod/uiserver1";
+    const char * const DBusInterface = "com.meego.inputmethod.uiserver1";
 
     const char * const DBusClientPath = "/com/meego/inputmethod/inputcontext";
     const char * const DBusClientInterface = "com.meego.inputmethod.inputcontext1";
@@ -66,6 +68,7 @@ DBusInputContextConnection::newConnection(const QDBusConnection &connection)
 
     mConnectionNumbers.insert(connection.name(), connectionNumber);
     mProxys.insert(connectionNumber, proxy);
+    mConnections.insert(connectionNumber, connection.name());
 
     QDBusConnection c(connection);
 
@@ -84,6 +87,7 @@ DBusInputContextConnection::onDisconnection()
     const QString &name = connection().name();
     unsigned int connectionNumber = mConnectionNumbers.take(name);
     ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.take(connectionNumber);
+    mConnections.remove(connectionNumber);
     delete proxy;
 }
 
@@ -187,20 +191,15 @@ DBusInputContextConnection::setDetectableAutoRepeat(bool enabled)
 }
 
 void
-DBusInputContextConnection::copy()
+DBusInputContextConnection::invokeAction(const QString &action,
+                                         const QKeySequence &sequence)
 {
-    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(activeConnection);
-    if (proxy) {
-        proxy->copy();
-    }
-}
-
-void
-DBusInputContextConnection::paste()
-{
-    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(activeConnection);
-    if (proxy) {
-        proxy->paste();
+    if (activeConnection) {
+        QDBusMessage message = QDBusMessage::createSignal(DBusPath, DBusInterface, "invokeAction");
+        QList<QVariant> arguments;
+        arguments << action << sequence.toString();
+        message.setArguments(arguments);
+        QDBusConnection(mConnections.value(activeConnection)).send(message);
     }
 }
 

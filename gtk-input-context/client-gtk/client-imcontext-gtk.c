@@ -60,6 +60,7 @@ static void meego_imcontext_key_event(MeegoIMContextDbusObj *obj, int type, int 
                                       gboolean auto_repeat, int count, gpointer user_data);
 static void meego_imcontext_copy(MeegoIMContextDbusObj *obj, gpointer user_data);
 static void meego_imcontext_paste(MeegoIMContextDbusObj *obj, gpointer user_data);
+static void meego_imcontext_invoke_action(MeegoIMContextDbusObj *obj, const char *action, const char* sequence, gpointer user_data);
 static void meego_imcontext_set_redirect_keys(MeegoIMContextDbusObj *obj, gboolean enabled, gpointer user_data);
 static void meego_imcontext_notify_extended_attribute_changed (MeegoIMContextDbusObj *obj, gint id, const gchar *target, const gchar *target_item, const gchar *attribute, GVariant *variant_value, gpointer user_data);
 static void meego_imcontext_update_input_method_area (MeegoIMContextDbusObj *obj, int x, int y, int width, int height, gpointer user_data);
@@ -272,6 +273,8 @@ meego_imcontext_init(MeegoIMContext *self)
                      G_CALLBACK(meego_imcontext_notify_extended_attribute_changed), self);
     g_signal_connect(dbusobj, "update-input-method-area",
                      G_CALLBACK(meego_imcontext_update_input_method_area), self);
+    g_signal_connect(self->proxy, "invoke-action",
+                     G_CALLBACK(meego_imcontext_invoke_action), self);
 }
 
 
@@ -765,6 +768,54 @@ meego_imcontext_copy(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
         event->state |= IM_FORWARD_MASK;
         gdk_event_put((GdkEvent *)event);
         gdk_event_free((GdkEvent *)event);
+    }
+}
+
+static unsigned int
+find_signal(const char *action, const char *alternative, GtkWidget *widget)
+{
+    unsigned int signal = g_signal_lookup(action, G_OBJECT_TYPE(widget));
+
+    if (signal || alternative == NULL) {
+        return signal;
+    }
+
+    return g_signal_lookup(alternative, G_OBJECT_TYPE(widget));
+}
+
+void
+meego_imcontext_invoke_action(MeegoIMContextDbusObj *obj G_GNUC_UNUSED,
+                              const char *action,
+                              const char *sequence G_GNUC_UNUSED,
+                              gpointer user_data)
+{
+    GtkWidget* widget = NULL;
+    MeegoIMContext *imcontext = MEEGO_IMCONTEXT(user_data);
+
+    if (imcontext != focused_imcontext)
+        return;
+
+    gdk_window_get_user_data (imcontext->client_window, &user_data);
+    widget = GTK_WIDGET (user_data);
+
+    if (widget) {
+        char *alternative = NULL;
+        unsigned int signal;
+
+        if (g_strcmp0(action, "copy") == 0 ||
+            g_strcmp0(action, "cut") == 0 ||
+            g_strcmp0(action, "paste") == 0)
+        {
+            alternative = g_strdup_printf("%s-clipboard", action);
+        }
+
+        signal = find_signal(action, alternative, widget);
+        g_free(alternative);
+
+        if (signal) {
+            g_signal_emit(widget, signal, 0);
+            return;
+        }
     }
 }
 

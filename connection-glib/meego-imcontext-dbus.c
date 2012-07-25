@@ -336,33 +336,6 @@ meego_imcontext_dbus_set_global_correction_enabled(MeegoIMContextDbusObj *obj, g
     return TRUE;
 }
 
-
-gboolean
-meego_imcontext_dbus_copy(MeegoIMContextDbusObj *obj, GError **error)
-{
-    UNUSED(error);
-
-    STEP();
-
-    g_signal_emit(obj, imcontext_signals[COPY], 0);
-
-    return TRUE;
-}
-
-
-gboolean
-meego_imcontext_dbus_paste(MeegoIMContextDbusObj *obj, GError **error)
-{
-    UNUSED(error);
-
-    STEP();
-
-    g_signal_emit(obj, imcontext_signals[PASTE], 0);
-
-    return TRUE;
-}
-
-
 gboolean
 meego_imcontext_dbus_set_redirect_keys(MeegoIMContextDbusObj *obj, gboolean enabled, GError **error)
 {

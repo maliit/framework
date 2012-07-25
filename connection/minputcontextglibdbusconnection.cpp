@@ -16,6 +16,7 @@
 
 #include "minputcontextglibdbusconnection.h"
 #include "serverdbusaddress.h"
+#include "maliitmarshalers.h"
 #include <variantmarshalling.h>
 #include <maliit/settingdata.h>
 
@@ -414,6 +415,15 @@ m_dbus_glib_ic_connection_class_init(MDBusGlibICConnectionClass *klass)
     gobject_class->dispose = m_dbus_glib_ic_connection_dispose;
     gobject_class->finalize = m_dbus_glib_ic_connection_finalize;
 
+    g_signal_new("invoke-action",
+                 G_TYPE_FROM_CLASS(klass),
+                 G_SIGNAL_RUN_FIRST,
+                 0,
+                 NULL, NULL,
+                 _maliit_marshal_VOID__STRING_STRING,
+                 G_TYPE_NONE, 2,
+                 G_TYPE_STRING, G_TYPE_STRING);
+
     dbus_g_object_type_install_info(M_TYPE_DBUS_GLIB_IC_CONNECTION,
                                     &dbus_glib_m_dbus_glib_ic_connection_object_info);
 }
@@ -720,24 +730,26 @@ void MInputContextGlibDBusConnection::setDetectableAutoRepeat(bool enabled)
     }
 }
 
-
-void MInputContextGlibDBusConnection::copy()
+void MInputContextGlibDBusConnection::invokeAction(const QString &action, const QKeySequence &sequence)
 {
     if (activeContext()) {
-        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "copy",
-                                   G_TYPE_INVALID);
+        DBusMessage *message = dbus_message_new_signal(DBusPath,
+                                                       "com.meego.inputmethod.uiserver1",
+                                                       "invokeAction");
+        char *action_string = strdup(action.toUtf8().constData());
+        char *sequence_string = strdup(sequence.toString(QKeySequence::PortableText).toUtf8().constData());
+        dbus_message_append_args(message,
+                                 DBUS_TYPE_STRING, &action_string,
+                                 DBUS_TYPE_STRING, &sequence_string,
+                                 DBUS_TYPE_INVALID);
+        free(action_string);
+        free(sequence_string);
+        dbus_connection_send(dbus_g_connection_get_connection(activeContext()->dbusConnection),
+                             message,
+                             NULL);
+        dbus_message_unref(message);
     }
 }
-
-
-void MInputContextGlibDBusConnection::paste()
-{
-    if (activeContext()) {
-        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "paste",
-                                   G_TYPE_INVALID);
-    }
-}
-
 
 void MInputContextGlibDBusConnection::setSelection(int start, int length)
 {

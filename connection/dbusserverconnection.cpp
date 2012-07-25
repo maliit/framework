@@ -90,6 +90,8 @@ void DBusServerConnection::openDBusConnection(const QString &addressString)
 
     connection.registerObject(QString::fromLatin1(InputContextAdaptorPath), this);
 
+    connect(mProxy, SIGNAL(invokeAction(QString,QKeySequence)), this, SIGNAL(invokeAction(QString,QKeySequence)));
+
     Q_EMIT connected();
 }
 

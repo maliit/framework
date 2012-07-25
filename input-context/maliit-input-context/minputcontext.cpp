@@ -207,9 +207,7 @@ void MInputContext::connectInputMethodServer()
             SIGNAL(getPreeditRectangle(QRect&,bool&)),
             this, SLOT(getPreeditRectangle(QRect&,bool&)));
 
-    connect(imServer.data(), SIGNAL(copy()), this, SLOT(copy()));
-
-    connect(imServer.data(), SIGNAL(paste()), this, SLOT(paste()));
+    connect(imServer.data(), SIGNAL(invokeAction(QString,QKeySequence)), this, SLOT(onInvokeAction(QString,QKeySequence)));
 
     connect(imServer.data(), SIGNAL(setRedirectKeys(bool)), this, SLOT(setRedirectKeys(bool)));
 
@@ -840,42 +838,31 @@ void MInputContext::handleClipboardDataChange()
     }
 }
 
-
-void MInputContext::copy()
+void MInputContext::onInvokeAction(const QString &action, const QKeySequence &sequence)
 {
-    bool ok = false;
+    static const Qt::KeyboardModifiers AllModifiers = Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier | Qt::MetaModifier | Qt::KeypadModifier;
+
+    bool method_invoked = false;
 
     if (connectedObject) {
-        ok = QMetaObject::invokeMethod(connectedObject, "copy", Qt::DirectConnection);
+        method_invoked = QMetaObject::invokeMethod(connectedObject, action.toUtf8().constData(), Qt::DirectConnection);
     }
 
-    if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__ << "result=" << ok;
+    if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__ << "action" << action << "invoked:" << method_invoked;
 
-    if (!ok) {
-        // send Ctrl-Ckey event because suitable slot was not found
-        keyEvent(QEvent::KeyPress, Qt::Key_C, Qt::ControlModifier, "", false, 1);
-        keyEvent(QEvent::KeyRelease, Qt::Key_C, Qt::ControlModifier, "", false, 1);
-    }
-}
-
-
-void MInputContext::paste()
-{
-    bool ok = false;
-
-    if (connectedObject) {
-        ok = QMetaObject::invokeMethod(connectedObject, "paste", Qt::DirectConnection);
-    }
-
-    if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__ << "result=" << ok;
-
-    if (!ok) {
-        // send Ctrl-V key event because suitable slot was not found
-        keyEvent(QEvent::KeyPress, Qt::Key_V, Qt::ControlModifier, "", false, 1);
-        keyEvent(QEvent::KeyRelease, Qt::Key_V, Qt::ControlModifier, "", false, 1);
+    if (not method_invoked) {
+        for (unsigned int i = 0; i < sequence.count(); i++) {
+            const int key = sequence[i] & ~AllModifiers;
+            const int modifiers = sequence[i] & AllModifiers;
+            QString text("");
+            if (modifiers == Qt::NoModifier || modifiers == Qt::ShiftModifier) {
+                text = QString(key);
+            }
+            keyEvent(QEvent::KeyPress, key, modifiers, text, false, 1);
+            keyEvent(QEvent::KeyRelease, key, modifiers, text, false, 1);
+        }
     }
 }
-
 
 void MInputContext::onDBusDisconnection()
 {

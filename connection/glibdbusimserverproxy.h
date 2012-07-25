@@ -85,6 +85,8 @@ public:
     virtual void loadPluginSettings(const QString &descriptionLanguage);
     //! reimpl end
 
+    void onInvokeAction(const QString &action, const QString &sequence);
+
 private Q_SLOTS:
     void connectToDBus();
     void openDBusConnection(const QString &addressString);
@@ -93,6 +95,7 @@ private Q_SLOTS:
 private:
     void onDisconnection();
     static void onDisconnectionTrampoline(void *proxy, void* userData);
+    static void onInvokeActionTrampoline(void *proxy, const char *action, const char *sequence, void* userData);
 
     const QScopedPointer<GlibDBusIMServerProxyPrivate> d_ptr;
     Q_DECLARE_PRIVATE(GlibDBusIMServerProxy)

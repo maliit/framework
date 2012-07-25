@@ -48,8 +48,8 @@ public:
     virtual QRect preeditRectangle(bool &valid);
     virtual void setRedirectKeys(bool enabled);
     virtual void setDetectableAutoRepeat(bool enabled);
-    virtual void copy();
-    virtual void paste();
+    virtual void invokeAction(const QString &action,
+                            const QKeySequence &sequence);
     virtual void setSelection(int start, int length);
     virtual QString selection(bool &valid);
     virtual void setLanguage(const QString &language);
@@ -96,6 +96,7 @@ private:
     QScopedPointer<QDBusServer> mServer;
     QHash<QString, unsigned int> mConnectionNumbers;
     QHash<unsigned int, ComMeegoInputmethodInputcontext1Interface *> mProxys;
+    QHash<unsigned int, QString> mConnections;
 
     QString lastLanguage;
 };

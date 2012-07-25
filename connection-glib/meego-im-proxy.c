@@ -23,6 +23,7 @@
 
 #include "meego-im-proxy.h"
 #include "meego-im-proxy-glue.h"
+#include "maliitmarshalers.h"
 #include "debug.h"
 
 #include <dbus/dbus-glib.h>
@@ -38,6 +39,7 @@ static void meego_im_proxy_init(MeegoIMProxy *meego_im_proxy);
 enum {
     SIGNAL_CONNECTION_DROPPED = 0,
     SIGNAL_CONNECTION_ESTABLISHED,
+    SIGNAL_INVOKE_ACTION,
     N_SIGNALS
 };
 
@@ -56,6 +58,12 @@ handle_disconnect(gpointer instance, MeegoIMProxy *im_proxy)
     im_proxy->priv->dbusproxy = NULL;
     g_signal_emit(im_proxy, meego_im_proxy_signals[SIGNAL_CONNECTION_DROPPED], 0, NULL);
 
+}
+
+static void
+handle_invoke_action(gpointer instance, const char *action, const char *sequence, MeegoIMProxy *im_proxy)
+{
+    g_signal_emit(im_proxy, meego_im_proxy_signals[SIGNAL_INVOKE_ACTION], 0, action, sequence);
 }
 
 MeegoIMProxy *
@@ -86,6 +94,10 @@ meego_im_proxy_class_init(MeegoIMProxyClass *klass)
     meego_im_proxy_signals[SIGNAL_CONNECTION_ESTABLISHED] =
         g_signal_new("connection-established", G_TYPE_FROM_CLASS(klass),
                      0, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+
+    meego_im_proxy_signals[SIGNAL_INVOKE_ACTION] =
+        g_signal_new("invoke-action", G_TYPE_FROM_CLASS(klass),
+                     0, 0, NULL, NULL, _maliit_marshal_VOID__STRING_STRING, G_TYPE_NONE, 2, G_TYPE_STRING, G_TYPE_STRING);
 
     g_type_class_add_private(klass, sizeof(MeegoImProxyPrivate));
 }
@@ -121,6 +133,10 @@ meego_im_proxy_connect(MeegoIMProxy *proxy, gpointer connection)
     }
 
     g_signal_connect(G_OBJECT(dbusproxy), "destroy", G_CALLBACK(handle_disconnect), proxy);
+
+    dbus_g_object_register_marshaller(_maliit_marshal_VOID__STRING_STRING, G_TYPE_NONE, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+    dbus_g_proxy_add_signal(dbusproxy, "invokeAction", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+    dbus_g_proxy_connect_signal(dbusproxy, "invokeAction", G_CALLBACK(handle_invoke_action), proxy, 0);
 
     proxy->priv->dbusproxy = dbusproxy;
 

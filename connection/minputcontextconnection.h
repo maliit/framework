@@ -159,14 +159,13 @@ public:
     virtual void notifyImInitiatedHiding();
 
     /*!
-    * \brief copy selected text
-    */
-    virtual void copy();
-
-    /*!
-    * \brief paste plain text from clipboard
-    */
-    virtual void paste();
+     * \brief calls actions like "copy" or "paste" on the focused text entry.
+     *
+     * \param action The action to call
+     * \param sequence The fall-back key sequence when action is not available
+     */
+    virtual void invokeAction(const QString &action,
+                              const QKeySequence &sequence);
 
     /*!
      * \brief Set if the input method wants to process all raw key events

@@ -44,8 +44,7 @@ public:
                               Maliit::EventRequestType requestType
                               = Maliit::EventRequestBoth);
     virtual void notifyImInitiatedHiding();
-    virtual void copy();
-    virtual void paste();
+    virtual void invokeAction(const QString &action, const QKeySequence &sequence);
     virtual void setRedirectKeys(bool enabled);
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void setGlobalCorrectionEnabled(bool enabled);

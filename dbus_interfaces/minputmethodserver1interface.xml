@@ -65,5 +65,9 @@
     <method name="loadPluginSettings">
       <arg type="s" name="descriptionLanguage"/>
     </method>
+    <signal name="invokeAction">
+      <arg type="s" name="action"/>
+      <arg type="s" name="sequence"/>
+    </signal>
   </interface>
 </node>

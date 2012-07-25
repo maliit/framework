@@ -81,14 +81,9 @@ void MImInputContextDirectConnection::notifyImInitiatedHiding()
     Q_EMIT mServerConnection->imInitiatedHide();
 }
 
-void MImInputContextDirectConnection::copy()
+void MImInputContextDirectConnection::invokeAction(const QString &action, const QKeySequence &sequence)
 {
-    Q_EMIT mServerConnection->copy();
-}
-
-void MImInputContextDirectConnection::paste()
-{
-    Q_EMIT mServerConnection->paste();
+    Q_EMIT mServerConnection->invokeAction(action, sequence);
 }
 
 void MImInputContextDirectConnection::setRedirectKeys(bool enabled)

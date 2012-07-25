@@ -152,17 +152,11 @@ void MInputMethodHost::notifyImInitiatedHiding()
     }
 }
 
-void MInputMethodHost::copy()
+void MInputMethodHost::invokeAction(const QString &action,
+                                  const QKeySequence &sequence)
 {
     if (enabled) {
-        connection->copy();
-    }
-}
-
-void MInputMethodHost::paste()
-{
-    if (enabled) {
-        connection->paste();
+        connection->invokeAction(action, sequence);
     }
 }
 

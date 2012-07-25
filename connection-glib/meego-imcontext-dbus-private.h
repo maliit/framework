@@ -32,8 +32,6 @@ gboolean meego_imcontext_dbus_key_event(MeegoIMContextDbusObj *obj, int type, in
                                         gboolean auto_repeat, int count, GError **error);
 gboolean meego_imcontext_dbus_update_input_method_area(MeegoIMContextDbusObj *obj, int x, int y, int width, int height, GError **error);
 gboolean meego_imcontext_dbus_set_global_correction_enabled(MeegoIMContextDbusObj *obj, gboolean correction, GError **error);
-gboolean meego_imcontext_dbus_copy(MeegoIMContextDbusObj *obj, GError **error);
-gboolean meego_imcontext_dbus_paste(MeegoIMContextDbusObj *obj, GError **error);
 gboolean meego_imcontext_dbus_set_redirect_keys(MeegoIMContextDbusObj *obj, gboolean enabled, GError **error);
 gboolean meego_imcontext_dbus_preedit_rectangle(MeegoIMContextDbusObj *obj, GValueArray **rect, gboolean *valid, GError **error);
 gboolean meego_imcontext_dbus_set_language (MeegoIMContextDbusObj *obj,

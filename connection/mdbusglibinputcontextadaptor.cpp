@@ -121,20 +121,6 @@ static gboolean m_dbus_glib_input_context_adaptor_preedit_rectangle(
     return TRUE;
 }
 
-static gboolean m_dbus_glib_input_context_adaptor_copy(
-    MDBusGlibInputContextAdaptor *obj, GError **/*error*/)
-{
-    Q_EMIT obj->imServerConnection->copy();
-    return TRUE;
-}
-
-static gboolean m_dbus_glib_input_context_adaptor_paste(
-    MDBusGlibInputContextAdaptor *obj, GError **/*error*/)
-{
-    Q_EMIT obj->imServerConnection->paste();
-    return TRUE;
-}
-
 static gboolean m_dbus_glib_input_context_adaptor_set_redirect_keys(
     MDBusGlibInputContextAdaptor *obj, gboolean enabled, GError **/*error*/)
 {

@@ -499,11 +499,11 @@ void MInputContextConnection::notifyImInitiatedHiding()
 {}
 
 
-void MInputContextConnection::copy()
-{}
-
-void MInputContextConnection::paste()
-{}
+void MInputContextConnection::invokeAction(const QString &action, const QKeySequence &sequence)
+{
+    Q_UNUSED(action);
+    Q_UNUSED(sequence);
+}
 
 
 QString MInputContextConnection::selection(bool &valid)
