@@ -14,37 +14,7 @@
 
 namespace {
     const char * const TextPrompt = "Double-click this text area to invoke virtual keyboard ...";
-    const char * const ImModuleEnv = "QT_IM_MODULE";
-    const char * const ExpectedImModule = "MInputContext";
     const QString serverName("maliit-server"); //TODO: when maliit and example application is split out, look up in .pc file
-
-    QString checkForErrors()
-    {
-        const char * const imModule = std::getenv(ImModuleEnv);
-        QString errorMsg;
-
-        if (not imModule
-            || (0 != strcmp(getenv(ImModuleEnv), ExpectedImModule))) {
-            errorMsg.append(QString("You will not be able to use the virtual keyboard. The " \
-                                    "environment variable %1 must be set to %2.")
-                            .arg(ImModuleEnv)
-                            .arg(ExpectedImModule));
-        }
-
-#if defined(Q_WS_X11)
-        if (not QX11Info::isCompositingManagerRunning()) {
-            if (not errorMsg.isEmpty()) {
-                errorMsg.append("\n");
-            }
-
-            errorMsg.append(QString("No compositing window manager found. You might be able to run the " \
-                            "Maliit server in self-compositing mode:\n" \
-                            "$ %1 -use-self-composition -manual-redirection").arg(serverName));
-        }
-#endif
-
-        return errorMsg;
-    }
 
     bool enableFullScreenMode()
     {
