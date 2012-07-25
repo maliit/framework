@@ -125,34 +125,20 @@ Bbt_Connection::icConnection()
     return mIcConnections.value(connectionType);
 }
 
-/* Test that copy() on server side reaches input context side */
-void Bbt_Connection::testCopy_data()
+/* Test that invokeAction() on server side reaches input context side */
+void Bbt_Connection::testInvokeAction_data()
 {
     setupConnectionsDataVoid();
 }
-void Bbt_Connection::testCopy()
+void Bbt_Connection::testInvokeAction()
 {
-    QSignalSpy signalSpy(serverConnection(), SIGNAL(copy()));
-    icConnection()->copy();
+    QSignalSpy signalSpy(serverConnection(), SIGNAL(invokeAction(QString,QKeySequence)));
+    icConnection()->invokeAction("copy", QKeySequence(QKeySequence::Copy));
+    icConnection()->invokeAction("paste", QKeySequence(QKeySequence::Paste));
 
     MaliitTestUtils::waitAndProcessEvents(10);
 
-    QCOMPARE(signalSpy.count(), 1);
-}
-
-/* Test that paste() on server side reaches input context side */
-void Bbt_Connection::testPaste_data()
-{
-    setupConnectionsDataVoid();
-}
-void Bbt_Connection::testPaste()
-{
-    QSignalSpy signalSpy(serverConnection(), SIGNAL(paste()));
-    icConnection()->paste();
-
-    MaliitTestUtils::waitAndProcessEvents(10);
-
-    QCOMPARE(signalSpy.count(), 1);
+    QCOMPARE(signalSpy.count(), 2);
 }
 
 /* Test that notififyImInitiatedHiding() on server side reaches input context side */

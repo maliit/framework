@@ -19,6 +19,7 @@
 #include <QObject>
 #include <QPixmap>
 #include <QVariant>
+#include <QKeySequence>
 
 #include <maliit/namespace.h>
 
@@ -181,14 +182,13 @@ public Q_SLOTS:
     virtual void notifyImInitiatedHiding() = 0;
 
     /*!
-    * \brief copy selected text
-    */
-    virtual void copy() = 0;
-
-    /*!
-    * \brief paste plain text from clipboard
-    */
-    virtual void paste() = 0;
+     * \brief calls actions like "copy" or "paste" on the focused text entry.
+     *
+     * \param action The action to call
+     * \param sequence The fall-back key sequence when action is not available
+     */
+    virtual void invokeAction(const QString &action,
+                              const QKeySequence &sequence) = 0;
 
     /*!
      * \brief Set if the input method wants to process all raw key events

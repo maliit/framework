@@ -40,11 +40,8 @@ private Q_SLOTS:
     void init();
     void cleanup();
 
-    void testCopy_data();
-    void testCopy();
-
-    void testPaste_data();
-    void testPaste();
+    void testInvokeAction_data();
+    void testInvokeAction();
 
     void testImInitiatedHide_data();
     void testImInitiatedHide();

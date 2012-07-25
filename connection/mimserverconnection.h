@@ -139,18 +139,12 @@ public:
     Q_SIGNAL void getPreeditRectangle(QRect &rectangle, bool &valid) const;
 
     /*!
-     * \brief Sends copy command to text editor.
-     * This method tries to call "copy" slot in the focused widget
-     * and sends QKeyEvent corresponding to Ctrl-C if slot can not be called.
+     * \brief Sends command action to text editor.
+     * This method tries to call action slot in the focused widget
+     * and sends QKeyEvent corresponding to sequence if slot can not be called.
      */
-    Q_SIGNAL void copy();
-
-    /*!
-     * \brief Sends paste command to text editor.
-     * This method tries to call "paste" slot in the focused widget
-     * and sends QKeyEvent corresponding to Ctrl-V if slot can not be called.
-     */
-    Q_SIGNAL void paste();
+    Q_SIGNAL void invokeAction(const QString &action,
+                             const QKeySequence &sequence);
 
     /*!
      * \brief Set if the input method wants to process all raw key events

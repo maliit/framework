@@ -15,6 +15,7 @@
 #include "glibdbusimserverproxy.h"
 #include "mdbusglibinputcontextadaptor.h"
 #include "inputcontextdbusaddress.h"
+#include "maliitmarshalers.h"
 #include <variantmarshalling.h>
 
 #include "glibdbusimserverproxy_p.h"
@@ -27,6 +28,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QDebug>
+#include <QKeySequence>
 
 #include <unistd.h>
 #include <sys/types.h>
@@ -100,6 +102,13 @@ void GlibDBusIMServerProxy::onDisconnectionTrampoline(void */*proxy*/, void *use
     static_cast<GlibDBusIMServerProxy *>(userData)->onDisconnection();
 }
 
+void GlibDBusIMServerProxy::onInvokeActionTrampoline(void *proxy, const char *action, const char *sequence, void *userData)
+{
+    Q_UNUSED(proxy);
+    if (debugEnabled()) qDebug() << "MInputContext" << __PRETTY_FUNCTION__;
+    static_cast<GlibDBusIMServerProxy *>(userData)->onInvokeAction(QString::fromUtf8(action),
+                                                                   QString::fromUtf8(sequence));
+}
 
 GlibDBusIMServerProxy::GlibDBusIMServerProxy(const QSharedPointer<Maliit::InputContext::DBus::Address> &address, QObject *parent)
     : MImServerConnection(parent),
@@ -184,6 +193,9 @@ void GlibDBusIMServerProxy::openDBusConnection(const QString &addressString)
     }
     g_signal_connect(G_OBJECT(d->glibObjectProxy), "destroy", G_CALLBACK(onDisconnectionTrampoline),
                      this);
+    dbus_g_object_register_marshaller(_maliit_marshal_VOID__STRING_STRING, G_TYPE_NONE, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+    dbus_g_proxy_add_signal(d->glibObjectProxy, "invokeAction", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
+    dbus_g_proxy_connect_signal(d->glibObjectProxy, "invokeAction", G_CALLBACK(onInvokeActionTrampoline), this, 0);
 
     dbus_g_connection_register_g_object(d->connection.get(), icAdaptorPath.toAscii().data(), d->inputContextAdaptor);
 
@@ -210,6 +222,12 @@ void GlibDBusIMServerProxy::onDisconnection()
     if (d->active) {
         QTimer::singleShot(ConnectionRetryInterval, this, SLOT(connectToDBus()));
     }
+}
+
+void GlibDBusIMServerProxy::onInvokeAction(const QString &action,
+                                           const QString &sequence)
+{
+    Q_EMIT invokeAction(action, QKeySequence::fromString(sequence));
 }
 
 // Remote methods............................................................

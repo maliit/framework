@@ -45,10 +45,6 @@
       <arg type="i" direction="out"/>
       <arg type="i" direction="out"/>
     </method>
-    <method name="copy">
-    </method>
-    <method name="paste">
-    </method>
     <method name="setRedirectKeys">
       <arg type="b"/>
     </method>

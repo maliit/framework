@@ -88,8 +88,7 @@ public Q_SLOTS:
 
     void getPreeditRectangle(QRect &rectangle, bool &valid) const;
 
-    void copy();
-    void paste();
+    Q_SLOT void onInvokeAction(const QString &action, const QKeySequence &sequence);
 
     void setRedirectKeys(bool enabled);
 
