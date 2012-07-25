@@ -13,25 +13,27 @@
 #include <cstdlib>
 
 namespace {
-    const char * const TextPrompt = "Double-click this text area to invoke virtual keyboard ...";
-    const QString serverName("maliit-server"); //TODO: when maliit and example application is split out, look up in .pc file
 
-    bool enableFullScreenMode()
-    {
-        return (qApp->arguments().contains("-fullscreen"));
-    }
+const char * const TextPrompt = "Double-click this text area to invoke virtual keyboard ...";
+const QString serverName("maliit-server"); //TODO: when maliit and example application is split out, look up in .pc file
+
+bool enableFullScreenMode()
+{
+    return (qApp->arguments().contains("-fullscreen"));
 }
+
+} // namespace
 
 class MyTextEdit
     : public QTextEdit
 {
 private:
-    bool wasFocused;
+    bool was_focused;
 
 public:
     MyTextEdit()
         : QTextEdit(TextPrompt)
-        , wasFocused(false)
+        , was_focused(false)
     {}
 
 protected:
@@ -39,8 +41,8 @@ protected:
     {
         toPlainText();
         // On first text edit, clear pre-set TextPrompt:
-        if (not wasFocused && toPlainText() == QString(TextPrompt)) {
-            wasFocused = true;
+        if (not was_focused && toPlainText() == QString(TextPrompt)) {
+            was_focused = true;
             setText("");
         }
 
@@ -50,21 +52,22 @@ protected:
 
 MainWindow::MainWindow()
     : QMainWindow()
-    , serverProcess(new QProcess(this))
-    , orientationIndex(0)
-    , startServerButton(new QPushButton)
-    , rotateKeyboardButton(new QPushButton)
-    , textEdit(new QTextEdit)
+    , m_server_process(new QProcess(this))
+    , m_orientation_index(0)
+    , m_start_server(new QPushButton)
+    , m_rotate_keyboard(new QPushButton("Rotate input method"))
+    , m_entry(new QTextEdit)
 {
-    serverProcess->setProcessChannelMode(QProcess::ForwardedChannels);
-    connect(serverProcess, SIGNAL(error(QProcess::ProcessError)),
+    m_server_process->setProcessChannelMode(QProcess::ForwardedChannels);
+
+    connect(m_server_process, SIGNAL(error(QProcess::ProcessError)),
             this, SLOT(onServerError()));
-    connect(serverProcess, SIGNAL(stateChanged(QProcess::ProcessState)),
+    connect(m_server_process, SIGNAL(stateChanged(QProcess::ProcessState)),
             this, SLOT(onServerStateChanged()));
 
-    connect(startServerButton, SIGNAL(clicked()),
+    connect(m_start_server, SIGNAL(clicked()),
             this, SLOT(onStartServerClicked()));
-    connect(rotateKeyboardButton, SIGNAL(clicked()),
+    connect(m_rotate_keyboard, SIGNAL(clicked()),
             this, SLOT(onRotateKeyboardClicked()));
 
     initUI();
@@ -75,29 +78,35 @@ void MainWindow::initUI()
 {
     setWindowTitle("Maliit test application");
 
-    QVBoxLayout *vbox = new QVBoxLayout();
+    QGridLayout *grid = new QGridLayout;
+    int row = 0;
 
-    rotateKeyboardButton->setText("Rotate keyboard");
-    vbox->addWidget(startServerButton);
-    vbox->addWidget(rotateKeyboardButton);
-
+    QHBoxLayout *buttons = new QHBoxLayout;
+    buttons->addWidget(m_start_server);
+    buttons->addWidget(m_rotate_keyboard);
     // Clicking the button will steal focus from the text edit, thus hiding
     // the virtual keyboard:
-    QPushButton *hideVkb = new QPushButton("Hide virtual keyboard");
-    vbox->addWidget(hideVkb);
-    vbox->addWidget(textEdit);
+    buttons->addWidget(new QPushButton("Dismiss input method"));
 
-    // But don't want other buttons to steal focus:
-    startServerButton->setFocusProxy(textEdit);
-    rotateKeyboardButton->setFocusProxy(textEdit);
+    grid->addLayout(buttons, row, 1);
+    ++row;
 
-    QPushButton *closeApp = new QPushButton("Close application");
-    vbox->addWidget(closeApp);
-    connect(closeApp, SIGNAL(clicked()),
+    grid->addWidget(m_entry, row, 1);
+    ++row;
+
+    // Don't want other buttons to steal focus:
+    m_start_server->setFocusProxy(m_entry);
+    m_rotate_keyboard->setFocusProxy(m_entry);
+
+    QPushButton *close_app = new QPushButton("Close application");
+    grid->addWidget(close_app, row, 1);
+    ++row;
+
+    connect(close_app, SIGNAL(clicked()),
             this,     SLOT(close()));
 
     setCentralWidget(new QWidget);
-    centralWidget()->setLayout(vbox);
+    centralWidget()->setLayout(grid);
 
     if (enableFullScreenMode()) {
         showFullScreen();
@@ -108,7 +117,7 @@ void MainWindow::initUI()
 
 MainWindow::~MainWindow()
 {
-    serverProcess->terminate();
+    m_server_process->terminate();
 }
 
 void MainWindow::onStartServerClicked()
@@ -122,29 +131,33 @@ void MainWindow::onStartServerClicked()
         arguments << "-use-self-composition";
     }
 
-    if (serverProcess->state() != QProcess::NotRunning) {
-        serverProcess->terminate();
+    if (m_server_process->state() != QProcess::NotRunning) {
+        m_server_process->terminate();
     } else {
-        serverProcess->start(serverName, arguments);
+        m_server_process->start(serverName, arguments);
     }
 }
 
 void MainWindow::onServerError()
 {
-    textEdit->setText(serverProcess->errorString());
+    m_entry->setText(m_server_process->errorString());
 }
 
 void MainWindow::onServerStateChanged()
 {
-    switch (serverProcess->state()) {
+    switch (m_server_process->state()) {
     case QProcess::Running:
-        startServerButton->setText("(running) Stop input method server");
+        m_start_server->setText("(running) Stop input method server");
         break;
+
     case QProcess::Starting:
-        startServerButton->setText("(starting) Stop input method server");
+        m_start_server->setText("(starting) Stop input method server");
         break;
+
     case QProcess::NotRunning:
-        startServerButton->setText("(stopped) Start input method server");
+        m_start_server->setText("(stopped) Start input method server");
+        break;
+
     default:
         break;
     }
@@ -156,13 +169,10 @@ void MainWindow::onRotateKeyboardClicked()
                                                      Maliit::Angle90,
                                                      Maliit::Angle180,
                                                      Maliit::Angle270};
-    orientationIndex++;
-    if (orientationIndex >= 4) {
-        orientationIndex = 0;
+    m_orientation_index++;
+    if (m_orientation_index >= 4) {
+        m_orientation_index = 0;
     }
-    const Maliit::OrientationAngle angle = orientations[orientationIndex];
-
-    //! [Get singleton InputMethod instance]
+    const Maliit::OrientationAngle angle = orientations[m_orientation_index];
     Maliit::InputMethod::instance()->setOrientationAngle(angle);
-    //! [Get singleton InputMethod instance]
 }
