@@ -54,14 +54,13 @@ MainWindow::MainWindow()
     : QMainWindow()
     , m_server_process(new QProcess(this))
     , m_orientation_index(0)
+    , m_grid_row(0)
+    , m_grid(new QGridLayout)
     , m_start_server(new QPushButton)
     , m_rotate_keyboard(new QPushButton("Rotate input method"))
-    , m_entry(new QTextEdit)
 {
     m_server_process->setProcessChannelMode(QProcess::ForwardedChannels);
 
-    connect(m_server_process, SIGNAL(error(QProcess::ProcessError)),
-            this, SLOT(onServerError()));
     connect(m_server_process, SIGNAL(stateChanged(QProcess::ProcessState)),
             this, SLOT(onServerStateChanged()));
 
@@ -77,9 +76,7 @@ MainWindow::MainWindow()
 void MainWindow::initUI()
 {
     setWindowTitle("Maliit test application");
-
-    QGridLayout *grid = new QGridLayout;
-    int row = 0;
+    m_grid_row = 0;
 
     QHBoxLayout *buttons = new QHBoxLayout;
     buttons->addWidget(m_start_server);
@@ -88,25 +85,50 @@ void MainWindow::initUI()
     // the virtual keyboard:
     buttons->addWidget(new QPushButton("Dismiss input method"));
 
-    grid->addLayout(buttons, row, 1);
-    ++row;
+    m_grid->addLayout(buttons, m_grid_row, 1);
+    ++m_grid_row;
 
-    grid->addWidget(m_entry, row, 1);
-    ++row;
+    // multi line:
+    QLabel *label = 0;
+    QTextEdit *entry = 0;
+
+    m_grid->addWidget(label = new QLabel("multi line"), m_grid_row, 0);
+    m_grid->addWidget(entry = new QTextEdit, m_grid_row, 1);
+    ++m_grid_row;
+
+    label->setToolTip("Qt::ImhNone");
+    entry->setInputMethodHints(Qt::ImhNone);
+    entry->installEventFilter(this);
+
+    // single line, emulating content types via Qt::InputMethodHints:
+    insertIntoGrid("single line", Qt::ImhNone,
+                   "Qt::ImhNone");
+    insertIntoGrid("password", Qt::ImhHiddenText|Qt::ImhNoPredictiveText,
+                   "Qt::ImhHiddenText|Qt::ImhNoPredictiveText");
+    insertIntoGrid("numbers only", Qt::ImhFormattedNumbersOnly,
+                   "Qt::ImhFormattedNumbersOnly");
+    insertIntoGrid("dialer input", Qt::ImhDialableCharactersOnly,
+                   "Qt::ImhDialableCharactersOnly");
+    insertIntoGrid("symbol view", Qt::ImhPreferNumbers,
+                   "Qt::ImhPreferNumbers");
+    insertIntoGrid("e-mail", Qt::ImhEmailCharactersOnly,
+                   "Qt::ImhEmailCharactersOnly");
+    insertIntoGrid("website", Qt::ImhUrlCharactersOnly,
+                   "Qt::ImhUrlCharactersOnly");
 
     // Don't want other buttons to steal focus:
-    m_start_server->setFocusProxy(m_entry);
-    m_rotate_keyboard->setFocusProxy(m_entry);
+    m_start_server->setFocusPolicy(Qt::NoFocus);
+    m_rotate_keyboard->setFocusPolicy(Qt::NoFocus);
 
     QPushButton *close_app = new QPushButton("Close application");
-    grid->addWidget(close_app, row, 1);
-    ++row;
+    m_grid->addWidget(close_app, m_grid_row, 1);
+    ++m_grid_row;
 
     connect(close_app, SIGNAL(clicked()),
             this,     SLOT(close()));
 
     setCentralWidget(new QWidget);
-    centralWidget()->setLayout(grid);
+    centralWidget()->setLayout(m_grid);
 
     if (enableFullScreenMode()) {
         showFullScreen();
@@ -115,9 +137,41 @@ void MainWindow::initUI()
     }
 }
 
+void MainWindow::insertIntoGrid(const QString &description,
+                                const Qt::InputMethodHints &hints,
+                                const QString &tooltip)
+{
+    QLabel *label = 0;
+    QLineEdit *entry = 0;
+
+    m_grid->addWidget(label = new QLabel(description), m_grid_row, 0);
+    m_grid->addWidget(entry = new QLineEdit, m_grid_row, 1);
+    ++m_grid_row;
+
+    label->setToolTip(tooltip);
+    entry->setInputMethodHints(hints);
+    entry->installEventFilter(this);
+}
+
 MainWindow::~MainWindow()
 {
     m_server_process->terminate();
+}
+
+bool MainWindow::eventFilter(QObject *watched,
+                             QEvent *event)
+{
+    Q_UNUSED(watched)
+
+    // Let the input method show up on focus-in, not on second click:
+    if (event->type() == QFocusEvent::FocusIn) {
+        if (QInputContext *ic = qApp->inputContext()) {
+            QEvent im_request(QEvent::RequestSoftwareInputPanel);
+            ic->filterEvent(&im_request);
+        }
+    }
+
+    return false;
 }
 
 void MainWindow::onStartServerClicked()
@@ -136,11 +190,6 @@ void MainWindow::onStartServerClicked()
     } else {
         m_server_process->start(serverName, arguments);
     }
-}
-
-void MainWindow::onServerError()
-{
-    m_entry->setText(m_server_process->errorString());
 }
 
 void MainWindow::onServerStateChanged()
