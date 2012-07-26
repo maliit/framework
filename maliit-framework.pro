@@ -5,7 +5,7 @@ include(./config.pri)
     help_string = \
         Important build options: \
         \\n\\t PREFIX : Install prefix (default: /usr) \
-        \\n\\t {BIN,LIB,INCLUDE,SCHEMA,DOC}DIR : Install prefix for specific types of files \
+        \\n\\t {BIN,LIB,INCLUDE,DOC}DIR : Install prefix for specific types of files \
         \\n\\t MALIIT_DEFAULT_PLUGIN : Default onscreen (virtual) keyboard plugin \
         \\n\\t MALIIT_DEFAULT_HW_PLUGIN : Default hardware keyboard plugin \
         \\n\\t MALIIT_DEFAULT_SUBVIEW : Default onscreen (software) subview name \
@@ -13,7 +13,6 @@ include(./config.pri)
         \\nRecognised CONFIG flags: \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t enable-dbus-activation : Enable dbus activation support for maliit-server \
-        \\n\\t enable-gconf : Enable GConf settings backend (instead of using default QSettings) \
         \\n\\t disable-dbus : Disable dbus communication backend \
         \\n\\t enable-qdbus : Enable QtDBus implementation for the DBus communication backend \
         \\n\\t notests : Do not build tests \
@@ -23,8 +22,6 @@ include(./config.pri)
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
         \\n\\t local-install : Install everything underneath PREFIX, nothing to system directories reported by GTK+, Qt, DBus etc. \
         \\nInfluential environment variables: \
-        \\n\\t GCONF_CONFIG_SOURCE : Specify custom gconf source2 \
-        \\n\\t GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL : Do not register gconf schemas (used for packaging) \
         \\n\\t PKG_CONFIG_PATH : Override standard directories to look for pkg-config information \
         \\nExamples: \
         \\n\\t qmake \
@@ -85,10 +82,6 @@ SUBDIRS += examples
 
 !disable-dbus {
     !system(pkg-config --exists dbus-glib-1 dbus-1):error("Could not find dbus-glib-1 dbus-1")
-}
-
-enable-gconf {
-    !system(pkg-config --exists gconf-2.0):error("Could not find gconf-2.0")
 }
 
 QMAKE_EXTRA_TARGETS += check-xml

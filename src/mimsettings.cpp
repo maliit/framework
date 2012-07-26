@@ -13,9 +13,6 @@
  */
 
 #include "mimsettings.h"
-#if !defined(MALIIT_DISABLE_GCONF)
-#include "mimsettingsgconf.h"
-#endif
 #include "mimsettingsqsettings.h"
 #include "config.h"
 
@@ -25,11 +22,7 @@
 #include <QVariant>
 #include <QDebug>
 
-#if defined(MALIIT_DISABLE_GCONF)
 typedef MImSettingsQSettingsBackendFactory MImSettingsDefaultPersistentBackendFactory;
-#else
-typedef MImSettingsGConfBackendFactory MImSettingsDefaultPersistentBackendFactory;
-#endif
 
 QScopedPointer<MImSettingsBackendFactory> MImSettings::factory;
 MImSettings::SettingsType MImSettings::preferredSettingsType = MImSettings::InvalidSettings;
