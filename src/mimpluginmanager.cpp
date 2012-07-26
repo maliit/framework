@@ -646,11 +646,11 @@ void MIMPluginManagerPrivate::changeHandlerMap(Maliit::Plugins::InputMethodPlugi
         HandlerMap::iterator iterator = handlerToPlugin.find(state);
         if (iterator != handlerToPlugin.end() && *iterator == origin) {
             *iterator = replacement; //for unit tests
-            // Update gconfitem to record new plugin for handler map.
+            // Update settings entry to record new plugin for handler map.
             // This should be done after real changing the handler map,
             // to prevent _q_syncHandlerMap also being called to change handler map.
-            MImSettings gconf(PluginRoot + "/" + inputSourceName(state));
-            gconf.set(plugins.value(replacement).pluginId);
+            MImSettings setting(PluginRoot + "/" + inputSourceName(state));
+            setting.set(plugins.value(replacement).pluginId);
         }
     }
 }
@@ -867,7 +867,7 @@ void MIMPluginManagerPrivate::loadHandlerMap()
     Q_Q(MIMPluginManager);
     QSignalMapper *signalMapper = new QSignalMapper(q);
 
-    // Queries all children under PluginRoot, each is a gconf entry that maps an
+    // Queries all children under PluginRoot, each is a setting entry that maps an
     // input source to a plugin that handles it
     const QStringList &handler(MImSettings(PluginRoot).listEntries());
 
@@ -894,8 +894,8 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
     const Maliit::HandlerState source = static_cast<Maliit::HandlerState>(state);
 
     Maliit::Plugins::InputMethodPlugin *currentPlugin = activePlugin(source);
-    MImSettings gconf(PluginRoot + "/" + inputSourceName(source));
-    const QString pluginId = gconf.value().toString();
+    MImSettings setting(PluginRoot + "/" + inputSourceName(source));
+    const QString pluginId = setting.value().toString();
 
     // already synchronized.
     if (currentPlugin && pluginId == plugins.value(currentPlugin).pluginId) {
@@ -910,7 +910,7 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
         }
     }
     if (replacement) {
-        // switch plugin if handler gconf is changed.
+        // switch plugin if handler is changed.
         MAbstractInputMethod *inputMethod = plugins.value(currentPlugin).inputMethod;
         addHandlerMap(static_cast<Maliit::HandlerState>(state), pluginId);
         if (!switchPlugin(pluginId, inputMethod)) {
@@ -941,7 +941,7 @@ void MIMPluginManagerPrivate::_q_onScreenSubViewChanged()
     }
 
     if (replacement) {
-        // switch plugin if handler gconf is changed.
+        // switch plugin if handler is changed.
         MAbstractInputMethod *inputMethod = 0;
         if (activePlugins.contains(currentPlugin))
             inputMethod = plugins.value(currentPlugin).inputMethod;
@@ -1145,7 +1145,7 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
             if (plugins.value(plugin).pluginId == pluginId) {
                 currentPluginConf.set(pluginId);
                 // Force call _q_syncHandlerMap() even though we already connect
-                // _q_syncHandlerMap() with gconf valueChanged(). Because if the
+                // _q_syncHandlerMap() with MImSettings valueChanged(). Because if the
                 // request comes from different threads, the _q_syncHandlerMap()
                 // won't be called at once. This means the synchronization of
                 // handler map could be delayed if we don't force call it.

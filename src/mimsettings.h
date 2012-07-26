@@ -237,8 +237,7 @@ public:
      */
     static void setPreferredSettingsType(SettingsType setting);
 
-    /*! Return the default values used for some keys (duplicates some
-        of the information contained in the GConf schema)
+    /*! Return the default values used for some keys
     */
     static QHash<QString, QVariant> defaults();
 

@@ -84,8 +84,9 @@ MImSettings::MImSettings(const QString &key, QObject *parent)
         switch (preferredSettingsType) {
 
         case TemporarySettings:
-            // Cannot be done with gconf, but it does not matter as the
-            // settings will be temporary and not visible to others anyway
+            // Might be possible with other backends as well,
+            // but it does not matter as the settings will be temporary
+            // and not visible to others anyway
             newFactory = new MImSettingsQSettingsTemporaryBackendFactory;
             break;
 

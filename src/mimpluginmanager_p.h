@@ -150,7 +150,7 @@ public:
     void ensureActivePluginsVisible(ShowInputMethodRequest request);
 
     /*!
-     * This method is called when one of the gconf about handler map is changed
+     * This method is called when one of the handler map settings have changed
      * to synchronize the handlerToPluginConfs.
      * \param state (can be cast to Maliit::HandlerState) indicates which state of the
      * handler map is changed.

@@ -510,8 +510,8 @@ void Ut_MIMPluginManager::checkHandlerMap(int handler, const QString &name)
         const QString key
             = QString(PluginRoot
                       + subject->inputSourceName(static_cast<Maliit::HandlerState>(handler)));
-        MImSettings gconf(key);
-        QCOMPARE(gconf.value().toString(), name);
+        MImSettings setting(key);
+        QCOMPARE(setting.value().toString(), name);
     }
 }
 
@@ -524,7 +524,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
     MAbstractInputMethod *abstractInputMethod = 0;
     QPointer<DummyInputMethod > inputMethod  = 0;
     QPointer<DummyInputMethod3> inputMethod3 = 0;
-    MImSettings lastActiveSubviewGconf(ActivePluginKey);
+    MImSettings lastActiveSubviewSetting(ActivePluginKey);
 
     subject->addHandlerMap(Maliit::OnScreen, pluginId);
     subject->addHandlerMap(Maliit::Hardware, pluginId);
@@ -551,7 +551,7 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
 
     // nothing should be changed
     subject->switchPlugin(pluginId, inputMethod);
-    QCOMPARE(QString("dummyimsv1"), lastActiveSubviewGconf.value().toString().section(':', 1));
+    QCOMPARE(QString("dummyimsv1"), lastActiveSubviewSetting.value().toString().section(':', 1));
     QVERIFY(inputMethod != 0);
     QCOMPARE(inputMethod->switchContextCallCount, 0);
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, Maliit::SwitchUndefined);
@@ -561,10 +561,10 @@ void Ut_MIMPluginManager::testSwitchToSpecifiedPlugin()
         QVERIFY(handler == plugin);
     }
 
-    QCOMPARE(lastActiveSubviewGconf.value().toString().section(':', 1), QString("dummyimsv1"));
+    QCOMPARE(lastActiveSubviewSetting.value().toString().section(':', 1), QString("dummyimsv1"));
     // switch to another plugin
     subject->switchPlugin(pluginId3, inputMethod);
-    QCOMPARE(lastActiveSubviewGconf.value().toString().section(':', 1), QString("dummyim3sv1"));
+    QCOMPARE(lastActiveSubviewSetting.value().toString().section(':', 1), QString("dummyim3sv1"));
     QCOMPARE(subject->plugins[plugin].lastSwitchDirection, Maliit::SwitchUndefined);
     QVERIFY(inputMethod != 0);
 
@@ -651,7 +651,7 @@ void Ut_MIMPluginManager::testSetActivePlugin()
 
     subject->setActivePlugin(pluginId3, Maliit::OnScreen);
 
-    // check gconf item
+    // check settings entry
     MImSettings handlerItem(ActivePluginKey);
     QCOMPARE(handlerItem.value().toString().section(':', 0, 0), pluginId3);
 
