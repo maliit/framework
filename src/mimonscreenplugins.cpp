@@ -150,7 +150,7 @@ void MImOnScreenPlugins::updateEnabledSubviews()
     }
 
     // Changed subviews cause emission of enabledPluginsChanged() signal
-    // because some subview from GConf might not really exists and therefore
+    // because some subview from the setting might not really exists and therefore
     // changed subview might have implications to enabled plugins.
     if (mEnabledSubViews != oldEnabledSubviews) {
         Q_EMIT enabledPluginsChanged();
