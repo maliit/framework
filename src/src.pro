@@ -113,18 +113,6 @@ SETTINGS_SOURCES += \
         mimsettings.cpp \
         mimsettingsqsettings.cpp \
 
-enable-gconf {
-    SETTINGS_HEADERS_PRIVATE += \
-        mimsettingsgconf.h \
-
-    SETTINGS_SOURCES += \
-        mimsettingsgconf.cpp \
-}
-
-!enable-gconf {
-    DEFINES += MALIIT_DISABLE_GCONF
-}
-
 HEADERS += \
         $$PLUGIN_HEADERS_PUBLIC \
         $$PLUGIN_HEADERS_PRIVATE \
@@ -160,10 +148,6 @@ x11 {
 CONFIG += link_pkgconfig
 QT = core $$QT_WIDGETS xml
 
-enable-gconf {
-    PKGCONFIG += gconf-2.0
-}
-
 !disable-dbus {
     CONFIG += qdbus
 }
@@ -194,7 +178,7 @@ plugins_headers.files += $$PLUGIN_HEADERS_PUBLIC
 server_headers.path += $$INCLUDEDIR/$$MALIIT_SERVER_HEADER
 server_headers.files += $$SERVER_HEADERS_PUBLIC
 
-outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc, maliit-framework.schemas)
+outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc)
 
 
 OTHER_FILES += \
@@ -221,33 +205,12 @@ install_pkgconfig.files = \
 install_prf.path = $$MALIIT_INSTALL_PRF
 install_prf.files = $$OUT_PWD/maliit-plugins.prf $$OUT_PWD/maliit-defines.prf
 
-install_schemas.files = $$OUT_PWD/maliit-framework.schemas
-install_schemas.path = $$SCHEMADIR
-
 INSTALLS += \
     target \
     plugins_headers \
     server_headers \
     install_prf \
     install_pkgconfig \
-
-enable-gconf {
-    INSTALLS += install_schemas
-}
-
-# Registering the GConf schemas in the gconf database
-enable-gconf {
-    gconftool = gconftool-2
-    gconf_config_source = $$system(echo $GCONF_CONFIG_SOURCE)
-    isEmpty(gconf_config_source) {
-        gconf_config_source = $$system(gconftool-2 --get-default-source)
-    }
-}
-
-QMAKE_EXTRA_TARGETS += register_schemas
-register_schemas.target = register_schemas
-register_schemas.commands += GCONF_CONFIG_SOURCE=$$gconf_config_source $$gconftool --makefile-install-rule $$install_schemas.files
-install_schemas.depends += register_schemas
 
 x11:LIBS += -lXcomposite -lXdamage -lXfixes
 

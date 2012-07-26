@@ -45,9 +45,6 @@ isEmpty(INCLUDEDIR) {
     INCLUDEDIR = $$PREFIX/include
 }
 DATADIR = $$PREFIX/share
-isEmpty(SCHEMADIR) {
-    SCHEMADIR = $$DATADIR/gconf/schemas
-}
 
 isEmpty(DOCDIR) {
     DOCDIR = $$DATADIR/doc
