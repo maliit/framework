@@ -13,6 +13,7 @@
  */
 
 #include "meego-im-connector.h"
+#include "debug.h"
 
 #include <glib.h>
 #include <gio/gio.h>
@@ -121,7 +122,7 @@ get_dbus_address()
     DBusGConnection *connection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
 
     if (!connection) {
-        g_warning("%s: %s", __PRETTY_FUNCTION__, error->message);
+        DBG("%s: %s", __PRETTY_FUNCTION__, error->message);
         g_error_free(error);
         return NULL;
     }
@@ -139,7 +140,7 @@ get_dbus_address()
                            G_TYPE_INVALID,
                            G_TYPE_VALUE, &value, G_TYPE_INVALID)) {
 
-        g_warning("%s: %s", __PRETTY_FUNCTION__, error->message);
+        DBG("%s: %s", __PRETTY_FUNCTION__, error->message);
         g_error_free(error);
         return NULL;
     }
@@ -226,7 +227,7 @@ meego_im_connector_run(MeegoImConnector *self)
 
     address = get_dbus_address();
     if (!address) {
-        g_warning("Couldn't connect to Maliit server. Retrying...");
+        DBG("Couldn't connect to Maliit server. Retrying...");
 
         g_timeout_add_seconds(2, (GSourceFunc)try_reconnect, self);
         return;
@@ -241,7 +242,7 @@ meego_im_connector_run(MeegoImConnector *self)
     g_free(address);
 
     if (!dbus_connection) {
-        g_warning("Couldn't connect to Maliit server: %s. Retrying...", error.message);
+        DBG("Couldn't connect to Maliit server: %s. Retrying...", error.message);
 
         dbus_error_free(&error);
 
