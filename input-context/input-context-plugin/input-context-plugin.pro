@@ -1,10 +1,11 @@
 TOP_DIR = ../..
 
-include(../input-context.pri)
+include($$TOP_DIR/config.pri)
 
 TARGET = $$TOP_DIR/lib/plugins/$$MALIIT_INPUTCONTEXTPLUGIN_TARGETNAME
 
 include($$TOP_DIR/input-context/libmaliit-inputcontext-qt4.pri)
+include(../input-context.pri)
 
 # Input
 HEADERS += minputcontextplugin.h \
