@@ -1,3 +1,11 @@
+0.92.4
+======
+
+CHANGES SINCE 0.92.3
+* GConf settings backend removed. This backend was deprecated in previous release, 0.92.3.
+  Settings applications and other wishing to manipulate Maliit setting entries should
+  use the libmaliit (Qt) or maliit-glib APIs.
+
 0.92.3
 ======
 
