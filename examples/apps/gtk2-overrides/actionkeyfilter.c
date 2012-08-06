@@ -32,11 +32,8 @@ struct _ActionKeyFilter
     gboolean enter_login_accepts;
     gboolean enter_password_accepts;
 
-    guint login_realize_signal_id;
-    guint login_key_release_event_signal_id;
-
-    guint password_realize_signal_id;
-    guint password_key_release_event_signal_id;
+    guint login_activated_signal_id;
+    guint password_activated_signal_id;
 };
 
 static GtkWindow *
@@ -51,34 +48,27 @@ get_parent_gtk_window (GtkWidget *widget)
     }
 }
 
-static gboolean
-key_release_event (ActionKeyFilter *filter,
-                   GdkEvent *event,
-                   GtkWidget *widget)
+static void
+on_entry_activated (ActionKeyFilter *filter,
+                    GtkEntry *entry)
 {
-    GtkEntry *entry;
+    GtkWidget* widget;
 
-    if (filter == NULL || event == NULL || !GTK_IS_ENTRY (widget)) {
-        return FALSE;
+    if (filter == NULL || !GTK_IS_ENTRY (entry)) {
+        return;
     }
 
-    if (event->type != GDK_KEY_RELEASE) {
-        return FALSE;
-    }
-
-    entry = GTK_ENTRY (widget);
+    widget = GTK_WIDGET (entry);
 
     if (entry != filter->login && entry != filter->password) {
-        return FALSE;
-    }
-
-    if (event->key.keyval != GDK_KEY_Return) {
-        return FALSE;
+        return;
     }
 
     if (entry == filter->login && action_key_filter_get_enter_login_accepts (filter)) {
-        gtk_widget_grab_focus (GTK_WIDGET (filter->password));
-        return TRUE;
+        GtkWidget* target_widget = GTK_WIDGET (filter->password);
+
+        gtk_widget_grab_focus (target_widget);
+        return;
     } else if (entry == filter->password && action_key_filter_get_enter_password_accepts (filter)) {
         const gchar *login_text = gtk_entry_get_text (filter->login);
         const gchar *password_text = gtk_entry_get_text (filter->password);
@@ -103,60 +93,18 @@ key_release_event (ActionKeyFilter *filter,
                                          message);
         gtk_dialog_run (GTK_DIALOG (dialog));
         gtk_widget_destroy (dialog);
-        return TRUE;
+        return;
     }
-    return FALSE;
-}
-
-static void
-connect_filter_signals (ActionKeyFilter *filter,
-                        GtkWidget *widget)
-{
-    GdkWindow *window;
-    GdkEventMask mask;
-    guint* signal_id;
-    GtkEntry *entry;
-
-    g_return_if_fail (filter != NULL);
-    g_return_if_fail (GTK_IS_WIDGET (widget));
-    g_return_if_fail (GTK_IS_ENTRY (widget));
-
-    entry = GTK_ENTRY (widget);
-
-    g_return_if_fail (entry == filter->login || entry == filter->password);
-
-    window = gtk_widget_get_window (widget);
-
-    g_return_if_fail (GDK_IS_WINDOW (window));
-
-    mask = gdk_window_get_events (window);
-    mask |= GDK_KEY_RELEASE_MASK;
-    gdk_window_set_events (window, mask);
-
-    if (entry == filter->login) {
-        signal_id = &filter->login_key_release_event_signal_id;
-    } else {
-        signal_id = &filter->password_key_release_event_signal_id;
-    }
-
-    *signal_id = g_signal_connect_swapped (widget,
-                                           "key-release-event",
-                                           G_CALLBACK (key_release_event),
-                                           filter);
+    return;
 }
 
 ActionKeyFilter *
 action_key_filter_new (GtkEntry *login, GtkEntry *password)
 {
     ActionKeyFilter *filter;
-    GtkWidget *login_widget;
-    GtkWidget *password_widget;
 
     g_return_val_if_fail (GTK_IS_ENTRY (login), NULL);
     g_return_val_if_fail (GTK_IS_ENTRY (password), NULL);
-
-    login_widget = GTK_WIDGET (login);
-    password_widget = GTK_WIDGET (password);
 
     filter = g_slice_new0 (ActionKeyFilter);
     filter->enter_login_accepts = TRUE;
@@ -164,23 +112,15 @@ action_key_filter_new (GtkEntry *login, GtkEntry *password)
     filter->login = login;
     filter->password = password;
 
-    if (gtk_widget_get_realized (login_widget)) {
-        connect_filter_signals (filter, login_widget);
-    } else {
-        filter->login_realize_signal_id = g_signal_connect_swapped (login_widget,
-                                                                    "realize",
-                                                                    G_CALLBACK (connect_filter_signals),
-                                                                    filter);
-    }
+    filter->login_activated_signal_id = g_signal_connect_swapped (filter->login,
+                                                                  "activate",
+                                                                  G_CALLBACK (on_entry_activated),
+                                                                  filter);
 
-    if (gtk_widget_get_realized (password_widget)) {
-        connect_filter_signals (filter, password_widget);
-    } else {
-        filter->password_realize_signal_id = g_signal_connect_swapped (password_widget,
-                                                                       "realize",
-                                                                       G_CALLBACK (connect_filter_signals),
-                                                                       filter);
-    }
+    filter->password_activated_signal_id = g_signal_connect_swapped (filter->password,
+                                                                     "activate",
+                                                                     G_CALLBACK (on_entry_activated),
+                                                                     filter);
 
     g_object_add_weak_pointer (G_OBJECT (login), (gpointer *)&filter->login);
     g_object_add_weak_pointer (G_OBJECT (password), (gpointer *)&filter->password);
@@ -196,26 +136,18 @@ action_key_filter_free (ActionKeyFilter *filter)
     }
 
     if (filter->login) {
-        if (filter->login_realize_signal_id) {
-            g_signal_handler_disconnect (filter->login, filter->login_realize_signal_id);
-            filter->login_realize_signal_id = 0;
-        }
-        if (filter->login_key_release_event_signal_id) {
-            g_signal_handler_disconnect (filter->login, filter->login_key_release_event_signal_id);
-            filter->login_key_release_event_signal_id = 0;
+        if (filter->login_activated_signal_id) {
+            g_signal_handler_disconnect (filter->login, filter->login_activated_signal_id);
+            filter->login_activated_signal_id = 0;
         }
         g_object_remove_weak_pointer (G_OBJECT (filter->login), (gpointer *)&filter->login);
         filter->login = NULL;
     }
 
     if (filter->password) {
-        if (filter->password_realize_signal_id) {
-            g_signal_handler_disconnect (filter->password, filter->password_realize_signal_id);
-            filter->password_realize_signal_id = 0;
-        }
-        if (filter->password_key_release_event_signal_id) {
-            g_signal_handler_disconnect (filter->password, filter->password_key_release_event_signal_id);
-            filter->password_key_release_event_signal_id = 0;
+        if (filter->password_activated_signal_id) {
+            g_signal_handler_disconnect (filter->password, filter->password_activated_signal_id);
+            filter->password_activated_signal_id = 0;
         }
         g_object_remove_weak_pointer (G_OBJECT (filter->password), (gpointer *)&filter->password);
         filter->password = NULL;
