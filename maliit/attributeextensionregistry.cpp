@@ -196,7 +196,7 @@ void AttributeExtensionRegistry::registerExistingAttributeExtensions()
             for (AttributeExtension::ExtendedAttributeMap::const_iterator iter(attributes.begin()), attributes_end(attributes.end());
                  iter != attributes_end;
                  ++iter) {
-                extensionChanged(extension->id(), iter.key(), iter.value());
+                extensionChanged(extension, iter.key(), iter.value());
             }
         }
     }
