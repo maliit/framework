@@ -10,6 +10,10 @@ CHANGES SINCE 0.92.3
   com.meego.inputmethod.uiserver1 interface. The copy and paste methods were removed from
   the com.meego.inputmethod.inputcontext1 interface.
 
+BUG FIXES
+* Fixes: Extensions overrides are not registered for the first time.
+* Fixes: Input context plugin does not load.
+
 0.92.3
 ======
 
