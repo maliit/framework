@@ -25,10 +25,17 @@ class QWidget;
 namespace Maliit {
 namespace Plugins {
 
+class AbstractWidgetSurface;
+class AbstractGraphicsViewSurface;
+
+typedef QSharedPointer<AbstractWidgetSurface> SharedWidgetSurface;
+typedef QSharedPointer<AbstractGraphicsViewSurface> SharedGraphicsViewSurface;
+
 /*!
  * \brief The AbstractWidgetSurface class provides an AbstractSurface backed by a QWidget
  */
-class AbstractWidgetSurface : public virtual AbstractSurface
+class AbstractWidgetSurface
+    : public virtual AbstractSurface
 {
 public:
     virtual ~AbstractWidgetSurface();
@@ -43,7 +50,8 @@ public:
 /*!
  * \brief The AbstractGraphicsViewSurface class provides an AbstractSurface backed by a QGraphicsView
  */
-class AbstractGraphicsViewSurface : public virtual AbstractSurface
+class AbstractGraphicsViewSurface
+    : public virtual AbstractSurface
 {
 public:
     virtual ~AbstractGraphicsViewSurface();
@@ -72,7 +80,6 @@ public:
     virtual void clear() = 0;
 };
 
-} // namespace Plugins
-} // namespace Maliit
+}} // namespace Plugins, Maliit
 
 #endif // MALIIT_PLUGINS_ABSTRACTWIDGETSSURFACE_H

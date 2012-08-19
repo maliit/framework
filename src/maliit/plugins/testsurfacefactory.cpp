@@ -26,10 +26,10 @@ namespace Plugins {
 //! \param options the options the surface should have
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractSurface
-SharedSurface createTestSurface(AbstractSurface::Options options, const SharedSurface &parent)
+SharedSurface createTestSurface(AbstractSurface::Options options,
+                                const SharedSurface &parent)
 {
     static Maliit::Server::WindowedSurfaceFactory factory;
-
     return factory.create(options, parent);
 }
 
@@ -41,17 +41,14 @@ SharedSurface createTestSurface(AbstractSurface::Options options, const SharedSu
 //!
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractGraphicsViewSurface
-QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const SharedSurface &parent)
+SharedGraphicsViewSurface createTestGraphicsViewSurface(const SharedSurface &parent)
 {
-    SharedSurface surface;
+    const AbstractSurface::Options options =
+        parent
+        ? (AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView)
+        : (AbstractSurface::PositionCenterBottom | AbstractSurface::TypeGraphicsView);
 
-    if (parent) {
-        surface = createTestSurface(AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView, parent);
-    } else {
-        surface = createTestSurface(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeGraphicsView, parent);
-    }
-
-    return qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(surface);
+    return qSharedPointerDynamicCast<AbstractGraphicsViewSurface>(createTestSurface(options, parent));
 }
 
 //! \ingroup pluginapi
@@ -62,18 +59,14 @@ QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const 
 //!
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractWidgetSurface
-QSharedPointer<AbstractWidgetSurface> createTestWidgetSurface(const SharedSurface &parent)
+SharedWidgetSurface createTestWidgetSurface(const SharedSurface &parent)
 {
-    SharedSurface surface;
+    const AbstractSurface::Options options =
+        parent
+        ? (AbstractSurface::PositionOverlay | AbstractSurface::TypeWidget)
+        : (AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget);
 
-    if (parent) {
-        surface = createTestSurface(AbstractSurface::PositionOverlay | AbstractSurface::TypeWidget, parent);
-    } else {
-        surface = createTestSurface(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget, parent);
-    }
-
-    return qSharedPointerDynamicCast<AbstractWidgetSurface>(surface);
+    return qSharedPointerDynamicCast<AbstractWidgetSurface>(createTestSurface(options, parent));
 }
 
-} // namespace Plugins
-} // namespace Maliit
+}} // namespace Plugins, Maliit

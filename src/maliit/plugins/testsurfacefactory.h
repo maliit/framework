@@ -16,17 +16,15 @@
 
 #include <maliit/plugins/abstractsurface.h>
 #include <maliit/plugins/abstractwidgetssurface.h>
-#include <QSharedPointer>
 
 namespace Maliit {
 namespace Plugins {
 
-SharedSurface createTestSurface(AbstractSurface::Options options, const SharedSurface &parent = SharedSurface());
+SharedSurface createTestSurface(AbstractSurface::Options options,
+                                const SharedSurface &parent = SharedSurface());
+SharedGraphicsViewSurface createTestGraphicsViewSurface(const SharedSurface &parent = SharedSurface());
+SharedWidgetSurface createTestWidgetSurface(const SharedSurface &parent = SharedSurface());
 
-QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const SharedSurface &parent = SharedSurface());
-QSharedPointer<AbstractWidgetSurface> createTestWidgetSurface(const SharedSurface &parent = SharedSurface());
-
-} // namespace Plugins
-} // namespace Maliit
+}} // namespace Plugins, Maliit
 
 #endif // MALIIT_PLUGINS_TESTSURFACEFACTORY_H
