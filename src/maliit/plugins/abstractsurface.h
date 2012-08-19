@@ -26,16 +26,10 @@ namespace Plugins {
 class AbstractSurface;
 typedef QSharedPointer<AbstractSurface> SharedSurface;
 
-/*! \ingroup pluginapi
- * \brief The AbstractSurface class provides a window abstraction for rendering the plugin.
- *
- */
 class AbstractSurface
 {
 public:
-    /*!
-     * \brief The Option enum describes the postioning and type of a surface
-     */
+    //! Used to describe the positioning and type of a surface
     enum Option {
         None = 0x0,
 
@@ -52,63 +46,21 @@ public:
     };
     Q_DECLARE_FLAGS(Options, Option)
 
-    /*!
-     * \brief ~AbstractSurface
-     */
     virtual ~AbstractSurface();
-
-    /*!
-     * \brief shows the surface.
-     */
     virtual void show() = 0;
-    /*!
-     * \brief hides the surface and its children.
-     */
     virtual void hide() = 0;
-
-    /*!
-     * \brief returns the real size of the surface
-     * \return the surface's real size
-     */
     virtual QSize size() const = 0;
-    /*!
-     * \brief sets the size of the surface
-     * \param size the requested surface size
-     */
     virtual void setSize(const QSize &size) = 0;
-
-    /*!
-     * \brief returns the position of the surface relative to its parent
-     * \return the surface's position relative to its parent
-     */
     virtual QPoint relativePosition() const = 0;
-
-    /*!
-     * \brief sets the surface's position relative to its parent (for a PositionOverlay surface)
-     * \param position the requested relative position
-     */
     virtual void setRelativePosition(const QPoint &position) = 0;
-
-    /*!
-     * \brief returns the parent of a surface
-     * \return the surface's parent
-     */
     virtual SharedSurface parent() const = 0;
-
-    /*!
-     * \brief translates the coordinates of an event into the surfaces coordinate system
-     * \param eventPosition the coordinates of the event
-     * \param eventSurface the surface where the event occured (by default this)
-     * \return the event coordinates translated to the surface coordinate system
-     */
     virtual QPoint translateEventPosition(const QPoint &event_position,
                                           const SharedSurface &event_surface = SharedSurface()) const = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractSurface::Options)
 
-} // namespace Plugins
-} // namespace Maliit
+}} // namespace Plugins, Maliit
 
 #endif // MALIIT_PLUGINS_ABSTRACTSURFACE_H
 

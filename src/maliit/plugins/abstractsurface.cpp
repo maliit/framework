@@ -17,9 +17,44 @@
 namespace Maliit {
 namespace Plugins {
 
-AbstractSurface::~AbstractSurface()
-{
-}
+//! \ingroup pluginapi
+//! \class AbstractSurface
+//! This class provides a window abstraction for rendering the plugin's
+//! content into a surface. It's a pure interface; derived classes have to
+//! provide the implementation.
 
-} // namespace Plugins
-} // namespace Maliit
+//! \fn AbstractSurface::show
+//! Shows the surface on the display.
+
+//! \fn AbstractSurface::hide
+//! Hides the surface from the display.
+
+//! \fn AbstractSurface::size
+//! \returns The real size of the surface.
+
+//! \fn AbstractSurface::setSize
+//! Sets the size of the surface.
+//! \param size The new surface size.
+
+//! \fn AbstractSurface::relativePosition
+//! \returns The position of the surface relative to its parent.
+
+//! \fn AbstractSurface::setRelativePosition
+//! Sets the surface's position relative to its parent. Only works on
+//! PositionOverlay surfaces.
+//! \param position The new relative position.
+
+//! \fn parent
+//! \returns The parent of a surface.
+
+//! \fn translateEventPosition
+//! Translates the position of a mouse or touch event from the event
+//! coordinate system into the local coordinate system of the surface.
+//! \param event_position The position coordinates of the event.
+//!                       Usually given in display coordinates.
+//! \param event_surface The surface where the event occured (by default this).
+
+AbstractSurface::~AbstractSurface()
+{}
+
+}} // namespace Plugins, Maliit
