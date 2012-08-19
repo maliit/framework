@@ -98,7 +98,8 @@ public:
      * \param eventSurface the surface where the event occured (by default this)
      * \return the event coordinates translated to the surface coordinate system
      */
-    virtual QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const = 0;
+    virtual QPoint translateEventPosition(const QPoint &event_position,
+                                          const QSharedPointer<AbstractSurface> &event_surface = QSharedPointer<AbstractSurface>()) const = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractSurface::Options)
