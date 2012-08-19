@@ -72,10 +72,10 @@ void Ft_ExamplePlugin::testFunction()
     MaliitTestUtils::TestInputMethodHost host(fakeService, pluginId, plugin->name());
     plugin->createInputMethod(&host);
 
-    QCOMPARE(host.lastCommit, QString("Maliit"));
-    QCOMPARE(host.sendCommitCount, 1);
-    QCOMPARE(host.lastPreedit, QString("Mali"));
-    QCOMPARE(host.sendPreeditCount, 1);
+    QCOMPARE(host.last_commit, QString("Maliit"));
+    QCOMPARE(host.send_commit_count, 1);
+    QCOMPARE(host.last_preedit, QString("Mali"));
+    QCOMPARE(host.send_preedit_count, 1);
 }
 
 QTEST_MAIN(Ft_ExamplePlugin)

@@ -37,183 +37,198 @@
 
 namespace MaliitTestUtils {
 
-    class RemoteWindow : public QWidget
-    {
-    public:
-        explicit RemoteWindow(QWidget *p = 0, Qt::WindowFlags f = 0);
+class RemoteWindow
+    : public QWidget
+{
+public:
+    explicit RemoteWindow(QWidget *parent = 0,
+                          Qt::WindowFlags flags = 0);
 
-        void paintEvent(QPaintEvent *);
-    };
+    void paintEvent(QPaintEvent *ev);
+};
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    template <typename T>
-    class EventSpyInputContext : public QInputContext, public std::vector<T>
-    {
-    public:
-        typedef std::tr1::function<T (const QEvent *event)> TransformFunction;
+template <typename T>
+class EventSpyInputContext
+    : public QInputContext, public std::vector<T>
+{
+public:
+    typedef std::tr1::function<T (const QEvent *event)> TransformFunction;
 
-        EventSpyInputContext(TransformFunction newTransform) : transform(newTransform) {}
+    EventSpyInputContext(TransformFunction newTransform)
+        : transform(newTransform) {}
 
-        virtual QString identifierName() { return QString::fromLatin1("EventSpyInputContext"); }
-        virtual bool isComposing() const { return false; }
-        virtual QString language() { return QString::fromLatin1("EN"); }
-        virtual void reset() {}
+    virtual QString identifierName() { return QString::fromLatin1("EventSpyInputContext"); }
+    virtual bool isComposing() const { return false; }
+    virtual QString language() { return QString::fromLatin1("EN"); }
+    virtual void reset() {}
 
-    protected:
-        virtual bool filterEvent(const QEvent *event) {
-            this->push_back(transform(event));
-            return true;
-        }
+protected:
+    virtual bool filterEvent(const QEvent *event) {
+        this->push_back(transform(event));
+        return true;
+    }
 
-    private:
-        const TransformFunction transform;
-    };
+private:
+    const TransformFunction transform;
+};
 #endif
 
-    using Maliit::Plugins::AbstractSurface;
-    using Maliit::Plugins::AbstractWidgetSurface;
-    using Maliit::Plugins::AbstractGraphicsViewSurface;
+using Maliit::Plugins::AbstractSurface;
+using Maliit::Plugins::SharedSurface;
+using Maliit::Plugins::AbstractWidgetSurface;
+using Maliit::Plugins::AbstractGraphicsViewSurface;
 
-    class TestWidgetSurface : public AbstractWidgetSurface
+class TestWidgetSurface
+    : public AbstractWidgetSurface
+{
+public:
+    TestWidgetSurface() {}
+
+    void show() {}
+    void hide() {}
+
+    QSize size() const { return QSize(); }
+    void setSize(const QSize&) {}
+
+    QPoint relativePosition() const { return QPoint(); }
+    void setRelativePosition(const QPoint &) {}
+
+    SharedSurface parent() const { return SharedSurface(); }
+
+    QPoint translateEventPosition(const QPoint &event_position,
+                                  const SharedSurface & = SharedSurface()) const { return event_position; }
+
+    QWidget *widget() const { return 0; }
+};
+
+class TestGraphicsViewSurface : public AbstractGraphicsViewSurface
+{
+public:
+    TestGraphicsViewSurface()
+        : m_graphics_view(new QGraphicsView(new QGraphicsScene))
+        , m_root_item(new QGraphicsRectItem)
     {
-    public:
-        TestWidgetSurface() {}
+        m_graphics_view->scene()->addItem(m_root_item.data());
+    }
 
-        void show() {}
-        void hide() {}
+    void show() {}
+    void hide() {}
 
-        QSize size() const { return QSize(); }
-        void setSize(const QSize&) {}
+    QSize size() const { return QSize(); }
+    void setSize(const QSize&) {}
 
-        QPoint relativePosition() const { return QPoint(); }
-        void setRelativePosition(const QPoint &) {}
+    QPoint relativePosition() const { return QPoint(); }
+    void setRelativePosition(const QPoint &) {}
 
-        Maliit::Plugins::SharedSurface parent() const { return Maliit::Plugins::SharedSurface(); }
+    SharedSurface parent() const { return SharedSurface(); }
 
-        QPoint translateEventPosition(const QPoint &event_position,
-                                      const Maliit::Plugins::SharedSurface & = Maliit::Plugins::SharedSurface()) const { return event_position; }
+    QPoint translateEventPosition(const QPoint &event_position,
+                                  const SharedSurface & = SharedSurface()) const { return event_position; }
 
-        QWidget *widget() const { return 0; }
-    };
+    QGraphicsScene *scene() const { return m_graphics_view->scene(); }
+    QGraphicsView *view() const { return m_graphics_view.data(); }
 
-    class TestGraphicsViewSurface : public AbstractGraphicsViewSurface
+    QGraphicsItem *root() const { return m_root_item.data(); }
+    void clear() {}
+private:
+    QScopedPointer<QGraphicsView> m_graphics_view;
+    QScopedPointer<QGraphicsItem> m_root_item;
+};
+
+class TestSurfaceFactory
+    : public Maliit::Plugins::AbstractSurfaceFactory
+{
+public:
+    TestSurfaceFactory() {}
+
+    QSize screenSize() const { return QSize(); }
+
+    bool supported(AbstractSurface::Options options) const { return options & (AbstractSurface::TypeGraphicsView | AbstractSurface::TypeWidget); }
+
+    SharedSurface create(AbstractSurface::Options options,
+                         const SharedSurface &) {
+        if (options & AbstractSurface::TypeGraphicsView)
+            return SharedSurface(new TestGraphicsViewSurface);
+        else if (options & AbstractSurface::TypeWidget)
+            return SharedSurface(new TestWidgetSurface);
+        else
+            return SharedSurface();
+    }
+};
+
+class TestPluginSetting
+    : public Maliit::Plugins::AbstractPluginSetting
+{
+public:
+    TestPluginSetting(const QString &key)
+        : m_setting_key(key) {}
+
+    QString key() const { return m_setting_key; }
+
+    QVariant value() const { return QVariant(); }
+    QVariant value(const QVariant &def) const { return def; }
+
+    void set(const QVariant &val) { Q_UNUSED(val); }
+    void unset() {}
+
+private:
+    QString m_setting_key;
+};
+
+class TestInputMethodHost
+    : public MInputMethodHost
+{
+public:
+    QString last_commit;
+    int send_commit_count;
+
+    QString last_preedit;
+    int send_preedit_count;
+
+    TestInputMethodHost(MIndicatorServiceClient &client,
+                        const QString &plugin,
+                        const QString &description)
+        : MInputMethodHost(std::tr1::shared_ptr<MInputContextConnection>(new MInputContextConnection), 0, client, new TestSurfaceFactory, plugin, description)
+        , send_commit_count(0)
+        , send_preedit_count(0)
+    {}
+
+    void sendCommitString(const QString &string,
+                          int start,
+                          int length,
+                          int cursorPos)
     {
-    public:
-        TestGraphicsViewSurface()
-            : mGraphicsView(new QGraphicsView(new QGraphicsScene))
-            , mRootItem(new QGraphicsRectItem)
-        {
-            mGraphicsView->scene()->addItem(mRootItem.data());
-        }
+        last_commit = string;
+        ++send_commit_count;
+        MInputMethodHost::sendCommitString(string, start, length, cursorPos);
+    }
 
-        void show() {}
-        void hide() {}
-
-        QSize size() const { return QSize(); }
-        void setSize(const QSize&) {}
-
-        QPoint relativePosition() const { return QPoint(); }
-        void setRelativePosition(const QPoint &) {}
-
-        SharedSurface parent() const { return SharedSurface(); }
-
-        QPoint translateEventPosition(const QPoint &event_position,
-                                      const SharedSurface & = SharedSurface()) const { return event_position; }
-
-        QGraphicsScene *scene() const { return mGraphicsView->scene(); }
-        QGraphicsView *view() const { return mGraphicsView.data(); }
-
-        QGraphicsItem *root() const { return mRootItem.data(); }
-        void clear() {}
-    private:
-        QScopedPointer<QGraphicsView> mGraphicsView;
-        QScopedPointer<QGraphicsItem> mRootItem;
-    };
-
-    class TestSurfaceFactory : public Maliit::Plugins::AbstractSurfaceFactory
+    void sendPreeditString(const QString &string,
+                           const QList<Maliit::PreeditTextFormat> &preeditFormats,
+                           int start,
+                           int length,
+                           int cursorPos)
     {
-    public:
-        TestSurfaceFactory() {}
+        last_preedit = string;
+        ++send_preedit_count;
+        MInputMethodHost::sendPreeditString(string, preeditFormats, start, length, cursorPos);
+    }
 
-        QSize screenSize() const { return QSize(); }
-
-        bool supported(AbstractSurface::Options options) const { return options & (AbstractSurface::TypeGraphicsView | AbstractSurface::TypeWidget); }
-
-        SharedSurface create(AbstractSurface::Options options,
-                                              const SharedSurface &) {
-            if (options & AbstractSurface::TypeGraphicsView)
-                return SharedSurface(new TestGraphicsViewSurface);
-            else if (options & AbstractSurface::TypeWidget)
-                return SharedSurface(new TestWidgetSurface);
-            else
-                return SharedSurface();
-        }
-    };
-
-    class TestPluginSetting : public Maliit::Plugins::AbstractPluginSetting
+    AbstractPluginSetting *registerPluginSetting(const QString &key,
+                                                 const QString &description,
+                                                 Maliit::SettingEntryType type,
+                                                 const QVariantMap &attributes)
     {
-    public:
-        TestPluginSetting(const QString &key) : settingKey(key) {}
+        Q_UNUSED(description);
+        Q_UNUSED(type);
+        Q_UNUSED(attributes);
 
-        QString key() const { return settingKey; }
+        return new TestPluginSetting(key);
+    }
+};
 
-        QVariant value() const { return QVariant(); }
-        QVariant value(const QVariant &def) const { return def; }
-
-        void set(const QVariant &val) { Q_UNUSED(val); }
-        void unset() {}
-
-    private:
-        QString settingKey;
-    };
-
-    class TestInputMethodHost
-        : public MInputMethodHost
-    {
-    public:
-        QString lastCommit;
-        int sendCommitCount;
-
-        QString lastPreedit;
-        int sendPreeditCount;
-
-        TestInputMethodHost(MIndicatorServiceClient &client, const QString &plugin, const QString &description)
-            : MInputMethodHost(std::tr1::shared_ptr<MInputContextConnection>(new MInputContextConnection), 0, client, new TestSurfaceFactory, plugin, description)
-            , sendCommitCount(0)
-            , sendPreeditCount(0)
-        {}
-
-        void sendCommitString(const QString &string,
-                              int start, int length, int cursorPos)
-        {
-            lastCommit = string;
-            ++sendCommitCount;
-            MInputMethodHost::sendCommitString(string, start, length, cursorPos);
-        }
-
-        void sendPreeditString(const QString &string,
-                               const QList<Maliit::PreeditTextFormat> &preeditFormats,
-                               int start, int length, int cursorPos)
-        {
-            lastPreedit = string;
-            ++sendPreeditCount;
-            MInputMethodHost::sendPreeditString(string, preeditFormats, start, length, cursorPos);
-        }
-
-        AbstractPluginSetting *registerPluginSetting(const QString &key,
-                                                     const QString &description,
-                                                     Maliit::SettingEntryType type,
-                                                     const QVariantMap &attributes)
-        {
-            Q_UNUSED(description);
-            Q_UNUSED(type);
-            Q_UNUSED(attributes);
-
-            return new TestPluginSetting(key);
-        }
-    };
-
-}
+} // namespace MaliitTestUtils
 
 // For cases where we need to run code _before_ QApplication is created
 #define MALIIT_TESTUTILS_GUI_MAIN_WITH_SETUP(TestObject, setupFunc) \

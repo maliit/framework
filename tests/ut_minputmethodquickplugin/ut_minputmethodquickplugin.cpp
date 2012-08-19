@@ -89,10 +89,10 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     QCOMPARE(testee->inputMethodArea(), QRect(0, testee->screenHeight() * 0.5,
                                               testee->screenWidth(), testee->screenHeight() * 0.5));
 
-    QCOMPARE(host.lastCommit, QString("Maliit"));
-    QCOMPARE(host.sendCommitCount, 1);
-    QCOMPARE(host.lastPreedit, QString("Maliit"));
-    QCOMPARE(host.sendPreeditCount, 1);
+    QCOMPARE(host.last_commit, QString("Maliit"));
+    QCOMPARE(host.send_commit_count, 1);
+    QCOMPARE(host.last_preedit, QString("Maliit"));
+    QCOMPARE(host.send_preedit_count, 1);
 }
 
 QTEST_MAIN(Ut_MInputMethodQuickPlugin)
