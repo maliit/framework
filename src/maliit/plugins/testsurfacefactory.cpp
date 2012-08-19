@@ -26,7 +26,7 @@ namespace Plugins {
 //! \param options the options the surface should have
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractSurface
-QSharedPointer<AbstractSurface> createTestSurface(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent)
+SharedSurface createTestSurface(AbstractSurface::Options options, const SharedSurface &parent)
 {
     static Maliit::Server::WindowedSurfaceFactory factory;
 
@@ -41,9 +41,9 @@ QSharedPointer<AbstractSurface> createTestSurface(AbstractSurface::Options optio
 //!
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractGraphicsViewSurface
-QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const QSharedPointer<AbstractSurface> &parent)
+QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const SharedSurface &parent)
 {
-    QSharedPointer<AbstractSurface> surface;
+    SharedSurface surface;
 
     if (parent) {
         surface = createTestSurface(AbstractSurface::PositionOverlay | AbstractSurface::TypeGraphicsView, parent);
@@ -62,9 +62,9 @@ QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const 
 //!
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractWidgetSurface
-QSharedPointer<AbstractWidgetSurface> createTestWidgetSurface(const QSharedPointer<AbstractSurface> &parent)
+QSharedPointer<AbstractWidgetSurface> createTestWidgetSurface(const SharedSurface &parent)
 {
-    QSharedPointer<AbstractSurface> surface;
+    SharedSurface surface;
 
     if (parent) {
         surface = createTestSurface(AbstractSurface::PositionOverlay | AbstractSurface::TypeWidget, parent);

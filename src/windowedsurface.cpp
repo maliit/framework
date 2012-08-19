@@ -138,21 +138,22 @@ public:
     }
 
 
-    QSharedPointer<AbstractSurface> parent() const
+    Maliit::Plugins::SharedSurface parent() const
     {
         return mParent;
     }
 
-    QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const
+    QPoint translateEventPosition(const QPoint &event_position,
+                                  const Maliit::Plugins::SharedSurface &event_surface = Maliit::Plugins::SharedSurface()) const
     {
-        if (!eventSurface)
-            return eventPosition;
+        if (!event_surface)
+            return event_position;
 
-        QSharedPointer<WindowedSurface> windowedSurface = qSharedPointerDynamicCast<WindowedSurface>(eventSurface);
+        QSharedPointer<WindowedSurface> windowedSurface = qSharedPointerDynamicCast<WindowedSurface>(event_surface);
         if (!windowedSurface)
             return QPoint();
 
-        return -mToplevel->pos() + eventPosition + windowedSurface->mToplevel->pos();
+        return -mToplevel->pos() + event_position + windowedSurface->mToplevel->pos();
     }
 
     void setActive(bool active)
@@ -374,7 +375,8 @@ bool WindowedSurfaceFactory::supported(Maliit::Plugins::AbstractSurface::Options
     return options & AbstractSurface::TypeGraphicsView;
 }
 
-QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent)
+Maliit::Plugins::SharedSurface WindowedSurfaceFactory::create(AbstractSurface::Options options,
+                                                              const Maliit::Plugins::SharedSurface &parent)
 {
     QSharedPointer<WindowedSurface> defaultSurfaceParent(qSharedPointerDynamicCast<WindowedSurface>(parent));
     if (options & Maliit::Plugins::AbstractSurface::TypeGraphicsView) {
@@ -388,7 +390,8 @@ QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::
         Q_EMIT surfaceWidgetCreated(newSurface->widget(), options);
         return newSurface;
     }
-    return QSharedPointer<AbstractSurface>();
+
+    return Maliit::Plugins::SharedSurface();
 }
 
 void WindowedSurfaceFactory::activate()

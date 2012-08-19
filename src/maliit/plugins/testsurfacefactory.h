@@ -21,10 +21,10 @@
 namespace Maliit {
 namespace Plugins {
 
-QSharedPointer<AbstractSurface> createTestSurface(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>());
+SharedSurface createTestSurface(AbstractSurface::Options options, const SharedSurface &parent = SharedSurface());
 
-QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>());
-QSharedPointer<AbstractWidgetSurface> createTestWidgetSurface(const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>());
+QSharedPointer<AbstractGraphicsViewSurface> createTestGraphicsViewSurface(const SharedSurface &parent = SharedSurface());
+QSharedPointer<AbstractWidgetSurface> createTestWidgetSurface(const SharedSurface &parent = SharedSurface());
 
 } // namespace Plugins
 } // namespace Maliit

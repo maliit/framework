@@ -54,7 +54,7 @@ public:
      * \param parent the parent of the new surface
      * \return a new AbstarctSurface
      */
-    virtual QSharedPointer<AbstractSurface> create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>()) = 0;
+    virtual SharedSurface create(AbstractSurface::Options options, const SharedSurface &parent = SharedSurface()) = 0;
 
 Q_SIGNALS:
     /*!

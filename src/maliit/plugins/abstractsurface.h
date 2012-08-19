@@ -23,6 +23,9 @@ class QSize;
 namespace Maliit {
 namespace Plugins {
 
+class AbstractSurface;
+typedef QSharedPointer<AbstractSurface> SharedSurface;
+
 /*! \ingroup pluginapi
  * \brief The AbstractSurface class provides a window abstraction for rendering the plugin.
  *
@@ -90,7 +93,7 @@ public:
      * \brief returns the parent of a surface
      * \return the surface's parent
      */
-    virtual QSharedPointer<AbstractSurface> parent() const = 0;
+    virtual SharedSurface parent() const = 0;
 
     /*!
      * \brief translates the coordinates of an event into the surfaces coordinate system
@@ -99,7 +102,7 @@ public:
      * \return the event coordinates translated to the surface coordinate system
      */
     virtual QPoint translateEventPosition(const QPoint &event_position,
-                                          const QSharedPointer<AbstractSurface> &event_surface = QSharedPointer<AbstractSurface>()) const = 0;
+                                          const SharedSurface &event_surface = SharedSurface()) const = 0;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractSurface::Options)

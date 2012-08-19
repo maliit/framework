@@ -88,9 +88,10 @@ namespace MaliitTestUtils {
         QPoint relativePosition() const { return QPoint(); }
         void setRelativePosition(const QPoint &) {}
 
-        QSharedPointer<AbstractSurface> parent() const { return QSharedPointer<AbstractSurface>(); }
+        Maliit::Plugins::SharedSurface parent() const { return Maliit::Plugins::SharedSurface(); }
 
-        QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> & = QSharedPointer<AbstractSurface>()) const { return eventPosition; }
+        QPoint translateEventPosition(const QPoint &event_position,
+                                      const Maliit::Plugins::SharedSurface & = Maliit::Plugins::SharedSurface()) const { return event_position; }
 
         QWidget *widget() const { return 0; }
     };
@@ -114,9 +115,10 @@ namespace MaliitTestUtils {
         QPoint relativePosition() const { return QPoint(); }
         void setRelativePosition(const QPoint &) {}
 
-        QSharedPointer<AbstractSurface> parent() const { return QSharedPointer<AbstractSurface>(); }
+        SharedSurface parent() const { return SharedSurface(); }
 
-        QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> & = QSharedPointer<AbstractSurface>()) const { return eventPosition; }
+        QPoint translateEventPosition(const QPoint &event_position,
+                                      const SharedSurface & = SharedSurface()) const { return event_position; }
 
         QGraphicsScene *scene() const { return mGraphicsView->scene(); }
         QGraphicsView *view() const { return mGraphicsView.data(); }
@@ -137,13 +139,14 @@ namespace MaliitTestUtils {
 
         bool supported(AbstractSurface::Options options) const { return options & (AbstractSurface::TypeGraphicsView | AbstractSurface::TypeWidget); }
 
-        QSharedPointer<AbstractSurface> create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &) {
+        SharedSurface create(AbstractSurface::Options options,
+                                              const SharedSurface &) {
             if (options & AbstractSurface::TypeGraphicsView)
-                return QSharedPointer<AbstractSurface>(new TestGraphicsViewSurface);
+                return SharedSurface(new TestGraphicsViewSurface);
             else if (options & AbstractSurface::TypeWidget)
-                return QSharedPointer<AbstractSurface>(new TestWidgetSurface);
+                return SharedSurface(new TestWidgetSurface);
             else
-                return QSharedPointer<AbstractSurface>();
+                return SharedSurface();
         }
     };
 
