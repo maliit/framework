@@ -1,3 +1,13 @@
+0.92.5
+======
+
+CHANGES SINCE 0.92.4
+* New "disable-background-translucency" option to workaround VKB's garbled visuals
+  on non-compositing WMs. Use CONFIG+=disable-background-translucency.
+
+BUG FIXES
+* Fixes: MALIIT#183 - Can not rotate the keyboard
+
 0.92.4
 ======
 
