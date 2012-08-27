@@ -215,7 +215,12 @@ public:
         setBackgroundRole(QPalette::NoRole);
         setBackgroundBrush(Qt::transparent);
 
+        // This is a workaround for non-compositing window managers. Apparently
+        // setting this attribute while using such WMs may cause garbled
+        // painting of VKB.
+#ifndef DISABLE_TRANSLUCENT_BACKGROUND_HINT
         setAttribute(Qt::WA_TranslucentBackground);
+#endif
         viewport()->setAutoFillBackground(false);
     }
 };
