@@ -16,6 +16,7 @@
 #define MINPUTCONTEXT_H
 
 #include <maliit/namespace.h>
+#include <maliit/preeditinjectionevent.h>
 
 #include <QObject>
 #include <QInputContext>
@@ -181,8 +182,7 @@ private:
 
     bool isVisible(const QRect &rect, const QGraphicsView *view, const QGraphicsItem *item) const;
 
-    template<typename PreeditInjectionEvent>
-    bool handlePreeditInjectionEvent(const PreeditInjectionEvent *event);
+    bool handlePreeditInjectionEvent(const Maliit::PreeditInjectionEvent *event);
 
     //! Gets cursor start position, relative to widget surrounding text.
     //! Parameter valid set to false on failure.

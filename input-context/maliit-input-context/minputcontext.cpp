@@ -35,7 +35,6 @@
 #include <maliit/inputmethod.h>
 #include <maliit/attributeextension.h>
 #include <maliit/attributeextensionregistry.h>
-#include <maliit/preeditinjectionevent.h>
 #include <maliit/namespace.h>
 
 #ifdef Q_WS_X11
@@ -250,8 +249,7 @@ bool MInputContext::event(QEvent *event)
     return QInputContext::event(event);
 }
 
-template<typename PreeditInjectionEvent>
-bool MInputContext::handlePreeditInjectionEvent(const PreeditInjectionEvent *event)
+bool MInputContext::handlePreeditInjectionEvent(const Maliit::PreeditInjectionEvent *event)
 {
     if (correctionEnabled) {
         if (debug) {
