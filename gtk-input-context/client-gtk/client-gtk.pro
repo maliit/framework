@@ -38,6 +38,11 @@ target.path += $$GTK2_IM_MODULEDIR
 INSTALLS += target
 
 !disable-gtk-cache-update {
+    # need to make sure dynamic linker can find maliit libraries when running gtk-query-module
+    ldconfig.extra = ldconfig
+    ldconfig.path = . # dummy path
+    INSTALLS += ldconfig
+
     DISTRO = $$system(lsb_release -s -i)
     DISTRO_VERSION = $$system(lsb_release -s -r)
 
