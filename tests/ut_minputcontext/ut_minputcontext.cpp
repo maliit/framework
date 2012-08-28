@@ -550,7 +550,7 @@ void Ut_MInputContext::testAppOrientationChanged()
 
     waitAndProcessEvents(300);
 
-    // TODO: can not recieve signal, should check it
+    // TODO: can not receive signal, should check it
     QCOMPARE(m_connection->orientationChangedCount(), 1);
 }
 

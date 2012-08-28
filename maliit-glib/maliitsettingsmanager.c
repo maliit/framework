@@ -334,7 +334,7 @@ maliit_settings_manager_new (void)
  * @manager: (transfer none): The #MaliitSettingsManager.
  *
  * Request the list of settings from maliit-server.
- * The settings will be returned async via the MaliitServerManager::plugin-settings-recieved signal
+ * The settings will be returned async via the MaliitServerManager::plugin-settings-received signal
  */
 void
 maliit_settings_manager_load_plugin_settings (MaliitSettingsManager *manager)

@@ -324,7 +324,7 @@ void MInputContextConnection::processKeyEvent(
     if (activeConnection != connectionId)
         return;
 
-    Q_EMIT recievedKeyEvent(keyType, keyCode,
+    Q_EMIT receivedKeyEvent(keyType, keyCode,
                             modifiers, text, autoRepeat, count,
                             nativeScanCode, nativeModifiers, time);
 }

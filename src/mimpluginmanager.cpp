@@ -1195,7 +1195,7 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     connect(d->mICConnection.get(), SIGNAL(mouseClickedOnPreedit(QPoint,QRect)),
             this, SLOT(handleMouseClickOnPreedit(QPoint,QRect)));
 
-    connect(d->mICConnection.get(), SIGNAL(recievedKeyEvent(QEvent::Type,Qt::Key,Qt::KeyboardModifiers,QString,bool,int,quint32,quint32,ulong)),
+    connect(d->mICConnection.get(), SIGNAL(receivedKeyEvent(QEvent::Type,Qt::Key,Qt::KeyboardModifiers,QString,bool,int,quint32,quint32,ulong)),
             this, SLOT(processKeyEvent(QEvent::Type,Qt::Key,Qt::KeyboardModifiers,QString,bool,int,quint32,quint32,ulong)));
 
     connect(d->mICConnection.get(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),

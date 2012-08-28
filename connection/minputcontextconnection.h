@@ -360,7 +360,7 @@ Q_SIGNALS:
     void preeditChanged(const QString &text, int cursorPos);
     void mouseClickedOnPreedit(const QPoint &pos, const QRect &preeditRect);
 
-    void recievedKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
+    void receivedKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
