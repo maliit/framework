@@ -77,7 +77,7 @@ QString MDirectInputContextPlugin::description(const QString &s)
 {
     Q_UNUSED(s);
 
-    return "Maliit input context plugin";
+    return "Maliit input context plugin (direct)";
 }
 
 
@@ -86,7 +86,7 @@ QString MDirectInputContextPlugin::displayName(const QString &s)
     Q_UNUSED(s);
 
     // TODO: want this translated?
-    return "Input context for Maliit input methods";
+    return "Input context for Maliit input methods (direct)";
 }
 
 
