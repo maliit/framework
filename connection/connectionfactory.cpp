@@ -82,6 +82,12 @@ QSharedPointer<MImServerConnection> createServerConnection(const QString &connec
 
     if (ConnectionPtr connection = cached_connection.toStrongRef())
         return connection;
+    if (connectionType.isEmpty()) {
+        qCritical() << "Empty connection type name. Refusing to connect to Maliit server."
+                    << "\nHave you checked the environment variables for loading input method"
+                    << "modules ([QT|GTK]_IM_MODULE)?";
+        return ConnectionPtr();
+    }
 
     if (connectionType == MALIIT_INPUTCONTEXT_NAME) {
 #ifndef MALIIT_DISABLE_DBUS
