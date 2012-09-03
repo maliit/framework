@@ -80,8 +80,10 @@ QSharedPointer<MImServerConnection> createServerConnection(const QString &connec
     typedef QSharedPointer<MImServerConnection> ConnectionPtr;
     static QWeakPointer<MImServerConnection> cached_connection;
 
-    if (ConnectionPtr connection = cached_connection.toStrongRef())
+    if (ConnectionPtr connection = cached_connection.toStrongRef()) {
         return connection;
+    }
+
     if (connectionType.isEmpty()) {
         qCritical() << "Empty connection type name. Refusing to connect to Maliit server."
                     << "\nHave you checked the environment variables for loading input method"
@@ -92,13 +94,10 @@ QSharedPointer<MImServerConnection> createServerConnection(const QString &connec
     if (connectionType == MALIIT_INPUTCONTEXT_NAME) {
 #ifndef MALIIT_DISABLE_DBUS
         const QByteArray overriddenAddress = qgetenv("MALIIT_SERVER_ADDRESS");
-        ConnectionPtr connection;
-
-        if (overriddenAddress.isEmpty()) {
-            cached_connection = connection = ConnectionPtr(Maliit::DBus::createServerConnectionWithDynamicAddress());
-        } else {
-            cached_connection = connection = ConnectionPtr(Maliit::DBus::createServerConnectionWithFixedAddress(overriddenAddress));
-        }
+        ConnectionPtr connection = ConnectionPtr(overriddenAddress.isEmpty()
+                                                 ? Maliit::DBus::createServerConnectionWithDynamicAddress()
+                                                 : Maliit::DBus::createServerConnectionWithFixedAddress(overriddenAddress));
+        cached_connection = connection;
 
         return connection;
 #else
@@ -111,8 +110,9 @@ QSharedPointer<MImServerConnection> createServerConnection(const QString &connec
 
         return connection;
     } else {
-        qCritical() << __PRETTY_FUNCTION__ << "Invalid connection type (" + connectionType + "), unable to create connection to Maliit server";
-
+        qCritical() << __PRETTY_FUNCTION__
+                    << "Invalid connection type (" + connectionType + "),"
+                    << "unable to create connection to Maliit server";
         return ConnectionPtr();
     }
 }
