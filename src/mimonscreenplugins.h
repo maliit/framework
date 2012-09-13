@@ -76,6 +76,8 @@ private Q_SLOTS:
     void updateActiveSubview();
 
 private:
+    SubView guessActiveSubview();
+
     QList<SubView> mAvailableSubViews;
     QList<SubView> mEnabledSubViews;
     QList<SubView> mLastEnabledSubViews;
