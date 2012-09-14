@@ -12,6 +12,10 @@ class DummyImPlugin3: public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(Maliit::Plugins::InputMethodPlugin)
+#if QT_VERSION >= 0x050000
+    Q_PLUGIN_METADATA(IID  "org.maliit.tests.dummyimplugin3"
+                      FILE "dummyimplugin3.json")
+#endif
 
 public:
     DummyImPlugin3();

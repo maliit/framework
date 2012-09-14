@@ -28,6 +28,10 @@ class HelloWorldPlugin: public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(Maliit::Plugins::InputMethodPlugin)
+#if QT_VERSION >= 0x050000
+    Q_PLUGIN_METADATA(IID  "org.maliit.examples.cxx.helloworldplugin"
+                      FILE "helloworldplugin.json")
+#endif
 
 public:
     HelloWorldPlugin();

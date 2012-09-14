@@ -22,4 +22,6 @@ QSet<Maliit::HandlerState> DummyImPlugin2::supportedStates() const
     return result;
 }
 
+#if QT_VERSION < 0x050000
 Q_EXPORT_PLUGIN2(dummyimplugin2, DummyImPlugin2)
+#endif

@@ -20,6 +20,9 @@ SOURCES += \
     overrideplugin.cpp \
     overrideinputmethod.cpp \
 
+OTHER_FILES += \
+    override.json \
+
 BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {

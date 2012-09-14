@@ -20,6 +20,9 @@ SOURCES += \
     helloworldplugin.cpp \
     helloworldinputmethod.cpp \
 
+OTHER_FILES += \
+    helloworldplugin.json \
+
 BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {

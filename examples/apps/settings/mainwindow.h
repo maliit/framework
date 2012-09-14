@@ -27,6 +27,13 @@
 #include "settingsmanager.h"
 #include "settingsentry.h"
 
+#if QT_VERSION >= 0x050000
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QTextEdit>
+#endif
+
 #include <QtGui>
 
 class MainWindow : public QWidget

@@ -91,7 +91,7 @@ namespace {
         }
     }
 }
-
+#define Q_WS_QWS
 int main(int argc, char **argv)
 {
     qInstallMsgHandler(outputMessagesToStdErr);

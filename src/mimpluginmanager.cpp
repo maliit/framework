@@ -1073,9 +1073,9 @@ MIMPluginManagerPrivate::availableSubViews(const QString &plugin,
                                            Maliit::HandlerState state) const
 {
     QMap<QString, QString> subViews;
-    Plugins::iterator iterator(plugins.begin());
+    Plugins::const_iterator iterator(plugins.constBegin());
 
-    for (; iterator != plugins.end(); ++iterator) {
+    for (; iterator != plugins.constEnd(); ++iterator) {
         if (plugins.value(iterator.key()).pluginId == plugin) {
             if (iterator->inputMethod) {
                 Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &subView,

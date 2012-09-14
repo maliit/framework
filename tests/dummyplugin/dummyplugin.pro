@@ -15,6 +15,7 @@ QT += $$QT_WIDGETS
 
 HEADERS += dummyplugin.h
 SOURCES += dummyplugin.cpp
+OTHER_FILES += dummyplugin.json
 
 target.path += $$MALIIT_TEST_LIBDIR/plugins
 

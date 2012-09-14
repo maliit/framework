@@ -201,7 +201,7 @@ void OverrideInputMethod::setKeyOverrides(const QMap<QString, QSharedPointer<MKe
         activeActionKeyOverride.clear();
     }
 
-    QMap<QString, QSharedPointer<MKeyOverride> >::iterator actionKeyOverrideIter(overrides.find(actionKeyName));
+    QMap<QString, QSharedPointer<MKeyOverride> >::const_iterator actionKeyOverrideIter(overrides.find(actionKeyName));
 
     if (actionKeyOverrideIter != overrides.end()) {
         QSharedPointer<MKeyOverride> overrideShared = *actionKeyOverrideIter;

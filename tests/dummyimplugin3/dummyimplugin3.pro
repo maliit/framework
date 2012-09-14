@@ -21,6 +21,9 @@ SOURCES += \
     dummyimplugin3.cpp \
     dummyinputmethod3.cpp \
 
+OTHER_FILES += \
+    dummyimplugin3.json \
+
 target.path += $$MALIIT_TEST_LIBDIR/plugins
 
 INSTALLS += target

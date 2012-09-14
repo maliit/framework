@@ -19,7 +19,7 @@
 
 #if QT_VERSION >= 0x050000
 #include <QGuiApplication>
-#include <QInputPanel>
+#include <QInputMethod>
 #else
 #include <QApplication>
 #include <QInputContext>
@@ -146,7 +146,7 @@ const QString &InputMethod::language() const
 void requestInputMethodPanel()
 {
 #if QT_VERSION >= 0x050000
-    qApp->inputPanel()->show();
+    qApp->inputMethod()->show();
 #else
     QInputContext *inputContext = qApp->inputContext();
 
@@ -162,7 +162,7 @@ void requestInputMethodPanel()
 void closeInputMethodPanel()
 {
 #if QT_VERSION >= 0x050000
-    qApp->inputPanel()->hide();
+    qApp->inputMethod()->hide();
 #else
     QInputContext *inputContext = qApp->inputContext();
 

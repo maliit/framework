@@ -1,7 +1,20 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <Qt/qglobal.h>
+#if QT_VERSION >= 0x050000
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QTextEdit>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtGui/QFocusEvent>
+#include <QtGui/QInputMethod>
+#include <QtCore/QProcess>
+#else
 #include <QtGui>
+#endif
 
 class MainWindow
     : public QMainWindow

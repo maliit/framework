@@ -34,7 +34,7 @@
 
 #if QT_VERSION >= 0x050000
 #include <QGuiApplication>
-#include <QPlatformNativeInterface>
+#include <QtGui/5.0.0/QtGui/qpa/qplatformnativeinterface.h>
 #include <QVariant>
 #include <QWindow>
 #endif

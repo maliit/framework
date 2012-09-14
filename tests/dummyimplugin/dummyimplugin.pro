@@ -21,6 +21,9 @@ SOURCES += \
     dummyimplugin.cpp \
     dummyinputmethod.cpp \
 
+OTHER_FILES += \
+    dummyimplugin.json \
+
 target.path += $$MALIIT_TEST_LIBDIR/plugins
 
 INVALIDPLUGINS = ../plugins/libinvalidplugin.so

@@ -19,6 +19,10 @@ class DummyPlugin: public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(DummyPluginInterface)
+#if QT_VERSION >= 0x050000
+    Q_PLUGIN_METADATA(IID  "org.maliit.tests.dummyplugin"
+                      FILE "dummyplugin.json")
+#endif
 
 public:
     virtual QString name();
