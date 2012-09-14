@@ -12,6 +12,7 @@
 
 #include "ut_mimonscreenplugins.h"
 
+#include "config.h"
 #include "mimonscreenplugins.h"
 #include "mimsettings.h"
 #include "mimsettingsqsettings.h"
@@ -20,24 +21,31 @@
 
 namespace
 {
-    const QString ORGANIZATION = "maliit.org";
-    const QString APPLICATION = "server-tests";
+
+const QString Organization = "maliit.org";
+const QString Application = "server-tests";
+const QString DefaultPlugin = MALIIT_DEFAULT_PLUGIN;
+const QString DefaultSubview = MALIIT_DEFAULT_SUBVIEW;
+
 }
 
 void Ut_MImOnScreenPlugins::initTestCase()
 {
-    MImSettings::setImplementationFactory(new MImSettingsQSettingsBackendFactory(ORGANIZATION, APPLICATION));
+    MImSettings::setImplementationFactory(new MImSettingsQSettingsBackendFactory(Organization, Application));
 }
 
 void Ut_MImOnScreenPlugins::cleanupTestCase()
 {}
 
 void Ut_MImOnScreenPlugins::init()
-{}
+{
+    qCritical() << DefaultPlugin;
+    qCritical() << DefaultSubview;
+}
 
 void Ut_MImOnScreenPlugins::cleanup()
 {
-    QSettings settings(ORGANIZATION, APPLICATION);
+    QSettings settings(Organization, Application);
     settings.clear();
 }
 
@@ -56,30 +64,30 @@ void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews_data()
         << "maliit/onscreen/active" << "maliit/onscreen/enabled"
         << QString()
         << QStringList()
-        << "libmaliit-keyboard-plugin.so" << "en_gb"
+        << DefaultPlugin << DefaultSubview
         << 1 << 0;
 
     QTest::newRow("no active subview")
         << "maliit/onscreen/active" << "maliit/onscreen/enabled"
         << QString()
-        << (QStringList() << "libmaliit-keyboard-plugin.so:cs"
-                          <<  "libmaliit-keyboard-plugin.so:fr_ca")
-        << "libmaliit-keyboard-plugin.so" << "en_gb"
+        << (QStringList() << QString(DefaultPlugin + ":cs")
+                          << QString(DefaultPlugin + ":fr_ca"))
+        << DefaultPlugin << DefaultSubview
         << 3 << 0;
 
     QTest::newRow("non-default active subview")
         << "maliit/onscreen/active" << "maliit/onscreen/enabled"
         << QString("libmaliit-keyboard-plugin.so:fr_ca")
-        << (QStringList() << "libmaliit-keyboard-plugin.so:cs"
-                          <<  "libmaliit-keyboard-plugin.so:fr_ca")
-        << "libmaliit-keyboard-plugin.so" << "fr_ca"
+        << (QStringList() << QString(DefaultPlugin + ":cs")
+                          << QString(DefaultPlugin + ":fr_ca"))
+        << DefaultPlugin << "fr_ca"
         << 2 << 1;
 
     QTest::newRow("active but no enabled subview (enabled default subview, too)")
         << "maliit/onscreen/active" << "maliit/onscreen/enabled"
-        << QString("libmaliit-keyboard-plugin.so:fr_ca")
+        << QString(DefaultPlugin + ":fr_ca")
         << QStringList()
-        << "libmaliit-keyboard-plugin.so" << "fr_ca"
+        << DefaultPlugin << "fr_ca"
         << 2 << 0;
 }
 
@@ -94,7 +102,7 @@ void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews()
     QFETCH(int, expected_enabled_count);
     QFETCH(int, expected_active_index);
 
-    QSettings settings(ORGANIZATION, APPLICATION);
+    QSettings settings(Organization, Application);
 
     if (not initially_active.isEmpty()) {
         settings.setValue(active_key, initially_active);

@@ -19,8 +19,8 @@
 
 namespace
 {
-    const QString ORGANIZATION = "maliit.org";
-    const QString APPLICATION = "server";
+    const QString Organization = "maliit.org";
+    const QString Application = "server";
 }
 
 
@@ -39,7 +39,7 @@ void Ut_MImSettings::init()
 {
     cleanup();
 
-    QSettings settings(ORGANIZATION, APPLICATION);
+    QSettings settings(Organization, Application);
     settings.beginGroup("ut_mimsettings");
 
     settings.beginGroup("group");
@@ -55,7 +55,7 @@ void Ut_MImSettings::init()
 
 void Ut_MImSettings::cleanup()
 {
-    QSettings settings(ORGANIZATION, APPLICATION);
+    QSettings settings(Organization, Application);
     settings.beginGroup("ut_mimsettings");
 
     Q_FOREACH (QString key, settings.childKeys()) {
