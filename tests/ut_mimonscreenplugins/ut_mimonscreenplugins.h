@@ -30,7 +30,8 @@ private Q_SLOTS:
     void init();
     void cleanup();
 
-    void testEmptyConfig();
+    void testActiveAndEnabledSubviews_data();
+    void testActiveAndEnabledSubviews();
 };
 
 #endif
