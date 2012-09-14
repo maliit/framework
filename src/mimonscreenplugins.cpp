@@ -75,6 +75,23 @@ namespace
     }
 }
 
+MImOnScreenPlugins::SubView::SubView()
+    : plugin()
+    , id()
+{}
+
+MImOnScreenPlugins::SubView::SubView(const QString &new_plugin,
+                                     const QString &new_id)
+    : plugin(new_plugin)
+    , id(new_id)
+{}
+
+bool MImOnScreenPlugins::SubView::operator==(const MImOnScreenPlugins::SubView &other) const
+{
+    return (plugin == other.plugin
+            && id == other.id);
+}
+
 MImOnScreenPlugins::MImOnScreenPlugins():
     QObject(),
     mAvailableSubViews(),
