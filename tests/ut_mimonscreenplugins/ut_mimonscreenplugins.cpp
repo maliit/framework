@@ -28,19 +28,31 @@ namespace
 
 void Ut_MImOnScreenPlugins::initTestCase()
 {
-    MImSettings::setImplementationFactory(new MImSettingsQSettingsBackendFactory);
+    MImSettings::setImplementationFactory(new MImSettingsQSettingsBackendFactory(ORGANIZATION, APPLICATION));
 }
 
 void Ut_MImOnScreenPlugins::cleanupTestCase()
 {}
 
 void Ut_MImOnScreenPlugins::init()
+{}
+
+void Ut_MImOnScreenPlugins::cleanup()
 {
     QSettings settings(ORGANIZATION, APPLICATION);
     settings.clear();
 }
 
-void Ut_MImOnScreenPlugins::cleanup()
-{}
+void Ut_MImOnScreenPlugins::testEmptyConfig()
+{
+    MImOnScreenPlugins plugins;
+    MImOnScreenPlugins::SubView active = plugins.activeSubView();
+    QCOMPARE(active.plugin, QString("libmaliit-keyboard-plugin.so"));
+    QCOMPARE(active.id, QString("en_gb"));
+
+    QList<MImOnScreenPlugins::SubView> enabled = plugins.enabledSubViews(active.plugin);
+    QCOMPARE(enabled.size(), 1);
+    QCOMPARE(enabled.first(), active);
+}
 
 QTEST_MAIN(Ut_MImOnScreenPlugins)

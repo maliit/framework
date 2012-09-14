@@ -29,6 +29,8 @@ private Q_SLOTS:
 
     void init();
     void cleanup();
+
+    void testEmptyConfig();
 };
 
 #endif

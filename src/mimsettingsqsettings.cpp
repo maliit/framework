@@ -162,8 +162,12 @@ MImSettingsQSettingsBackend::~MImSettingsQSettingsBackend()
 /* QSettings backend backed by the native settings store for the Maliit Server org. and app. */
 MImSettingsQSettingsBackendFactory::MImSettingsQSettingsBackendFactory()
     : mSettings(ORGANIZATION, APPLICATION)
-{
-}
+{}
+
+MImSettingsQSettingsBackendFactory::MImSettingsQSettingsBackendFactory(const QString &organization,
+                                                                       const QString &application)
+    : mSettings(organization, application)
+{}
 
 MImSettingsQSettingsBackendFactory::~MImSettingsQSettingsBackendFactory()
 {
