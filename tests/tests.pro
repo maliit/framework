@@ -20,6 +20,7 @@ SUBDIRS += \
           ut_mimsettings \
           bbt_connection \
           ut_maliit_glib_settings \
+          ut_mimonscreenplugins \
 
 contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += \
