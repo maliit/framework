@@ -23,8 +23,8 @@ typedef QHash<QString, Items> ItemMap;
 
 namespace
 {
-    const QString ORGANIZATION = "maliit.org";
-    const QString APPLICATION = "server";
+    const QString Organization = "maliit.org";
+    const QString Application = "server";
 
     QList<QString> makeAbsolute(const QString &prefix, const QList<QString> &entries)
     {
@@ -161,9 +161,13 @@ MImSettingsQSettingsBackend::~MImSettingsQSettingsBackend()
 
 /* QSettings backend backed by the native settings store for the Maliit Server org. and app. */
 MImSettingsQSettingsBackendFactory::MImSettingsQSettingsBackendFactory()
-    : mSettings(ORGANIZATION, APPLICATION)
-{
-}
+    : mSettings(Organization, Application)
+{}
+
+MImSettingsQSettingsBackendFactory::MImSettingsQSettingsBackendFactory(const QString &organization,
+                                                                       const QString &application)
+    : mSettings(organization, application)
+{}
 
 MImSettingsQSettingsBackendFactory::~MImSettingsQSettingsBackendFactory()
 {

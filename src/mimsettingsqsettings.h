@@ -54,6 +54,8 @@ class MImSettingsQSettingsBackendFactory : public MImSettingsBackendFactory
 {
 public:
     explicit MImSettingsQSettingsBackendFactory();
+    explicit MImSettingsQSettingsBackendFactory(const QString &organization,
+                                                const QString &application);
     virtual ~MImSettingsQSettingsBackendFactory();
     virtual MImSettingsBackend *create(const QString &key, QObject *parent);
 
