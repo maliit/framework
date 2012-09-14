@@ -56,9 +56,33 @@ void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews_data()
 
     QTest::newRow("empty user configuration")
         << "maliit/onscreen/active" << "maliit/onscreen/enabled"
-        << QString() << QStringList()
+        << QString()
+        << QStringList()
         << "libmaliit-keyboard-plugin.so" << "en_gb"
         << 1 << 0;
+
+    QTest::newRow("no active subview")
+        << "maliit/onscreen/active" << "maliit/onscreen/enabled"
+        << QString()
+        << (QStringList() << "libmaliit-keyboard-plugin.so:cs"
+                          <<  "libmaliit-keyboard-plugin.so:fr_ca")
+        << "libmaliit-keyboard-plugin.so" << "en_gb"
+        << 3 << 0;
+
+    QTest::newRow("non-default active subview")
+        << "maliit/onscreen/active" << "maliit/onscreen/enabled"
+        << QString("libmaliit-keyboard-plugin.so:fr_ca")
+        << (QStringList() << "libmaliit-keyboard-plugin.so:cs"
+                          <<  "libmaliit-keyboard-plugin.so:fr_ca")
+        << "libmaliit-keyboard-plugin.so" << "fr_ca"
+        << 2 << 1;
+
+    QTest::newRow("active but no enabled subview (enabled default subview, too)")
+        << "maliit/onscreen/active" << "maliit/onscreen/enabled"
+        << QString("libmaliit-keyboard-plugin.so:fr_ca")
+        << QStringList()
+        << "libmaliit-keyboard-plugin.so" << "fr_ca"
+        << 2 << 0;
 }
 
 void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews()
