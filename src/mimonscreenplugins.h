@@ -31,25 +31,19 @@ class MImOnScreenPlugins: public QObject
     Q_OBJECT
 
 public:
-    MImOnScreenPlugins();
-
     class SubView {
     public:
-        SubView() : plugin(), id()
-        {}
-        SubView(const QString &newPlugin, const QString &newId) :
-            plugin(newPlugin),
-            id(newId)
-        {}
-
         QString plugin;
         QString id;
 
-        bool operator==(const SubView &other) const
-        {
-            return plugin == other.plugin && id == other.id;
-        }
+        explicit SubView();
+        explicit SubView(const QString &new_plugin,
+                         const QString &new_id);
+
+        bool operator==(const SubView &other) const;
     };
+
+    explicit MImOnScreenPlugins();
 
     bool isEnabled(const QString &plugin) const;
     QList<SubView> enabledSubViews(const QString &plugin) const;
