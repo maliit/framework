@@ -1,8 +1,6 @@
 /* * This file is part of Maliit framework *
  *
- * Copyright (C) 2012 Nokia Corporation and/or its subsidiary(-ies).
- * All rights reserved.
- *
+ * Copyright (C) 2012 Openismus GmbH
  * Contact: maliit-discuss@lists.maliit.org
  *
  * This library is free software; you can redistribute it and/or
