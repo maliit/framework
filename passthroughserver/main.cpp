@@ -71,7 +71,7 @@ namespace {
         return debugEnabled == 1;
     }
 
-    void ouputMessagesToStdErr(QtMsgType type, const char *msg)
+    void outputMessagesToStdErr(QtMsgType type, const char *msg)
     {
         switch (type) {
         case QtDebugMsg:
@@ -94,7 +94,7 @@ namespace {
 
 int main(int argc, char **argv)
 {
-    qInstallMsgHandler(ouputMessagesToStdErr);
+    qInstallMsgHandler(outputMessagesToStdErr);
 
     // QT_IM_MODULE, MApplication and QtMaemo5Style all try to load
     // MInputContext, which is fine for the application. For the passthrough

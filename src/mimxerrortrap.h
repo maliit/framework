@@ -37,7 +37,7 @@ public:
     explicit MImXErrorTrap(const MImXExtension &extension, int minorCode);
     ~MImXErrorTrap();
 
-    //! Flushes the X ouput buffer when \a sync. Stops trapping for the X error.
+    //! Flushes the X output buffer when \a sync. Stops trapping for the X error.
     //! Returns the error code for an error which occured or Success.
     int untrap(bool sync = true);
 
