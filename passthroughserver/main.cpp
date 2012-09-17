@@ -61,7 +61,7 @@ namespace {
 
         if (debugEnabled == -1) {
             QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
-            if (debugEnvVar.toLower() == "enabled") {
+            if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
                 debugEnabled = 1;
             } else {
                 debugEnabled = 0;

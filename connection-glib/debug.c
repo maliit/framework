@@ -1,6 +1,6 @@
 #include "debug.h"
 
-#include <strings.h>
+#include <string.h>
 
 gboolean
 maliit_is_debug_enabled(void)
@@ -9,7 +9,8 @@ maliit_is_debug_enabled(void)
 
     if (debug_enabled == -1) {
         const char *enabled_debug_var = g_getenv("MALIIT_DEBUG");
-        if (enabled_debug_var && strcasecmp(enabled_debug_var, "enabled") == 0) {
+        if (enabled_debug_var && strlen(enabled_debug_var) > 0
+            && strcmp(enabled_debug_var, "0") != 0) {
             debug_enabled = 1;
         } else {
             debug_enabled = 0;

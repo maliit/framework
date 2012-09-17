@@ -125,7 +125,7 @@ MInputContext::MInputContext(QSharedPointer<MImServerConnection> newImServer, co
       m_name(name)
 {
     QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
-    if (debugEnvVar.toLower() == "enabled") {
+    if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
         debug = true;
     }
 
