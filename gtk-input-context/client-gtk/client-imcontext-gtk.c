@@ -207,6 +207,9 @@ meego_imcontext_finalize(GObject *object)
     if (imcontext->registry)
         g_object_unref(imcontext->registry);
 
+    g_signal_handlers_disconnect_by_data (imcontext->connector->dbusobj, object);
+    g_signal_handlers_disconnect_by_data (imcontext->proxy, object);
+
     G_OBJECT_CLASS(parent_class)->finalize(object);
 }
 
