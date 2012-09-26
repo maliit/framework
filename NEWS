@@ -2,6 +2,9 @@
 ======
 
 CHANGES SINCE 0.92.4
+* Allow to disable GTK+ support:
+  - Use qmake CONFIG+=nogtk to disable building the GTK+ input context module
+    and the glib-based application support libraries.
 * New "disable-background-translucency" option to workaround VKB's garbled visuals
   on non-compositing WMs. Use CONFIG+=disable-background-translucency.
 

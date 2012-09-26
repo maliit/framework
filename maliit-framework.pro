@@ -17,6 +17,7 @@ include(./config.pri)
         \\n\\t enable-qdbus : Enable QtDBus implementation for the DBus communication backend \
         \\n\\t notests : Do not build tests \
         \\n\\t noqml : Do not build Quick QML Plugins Interface\
+        \\n\\t nogtk : Do not build GTK+ input method module, nor the glib-based application support libraries\
         \\n\\t nosdk : Do not build Maliit SDK \
         \\n\\t nodoc : Do not build documentation (also disables SDK) \
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
@@ -53,6 +54,10 @@ SUBDIRS += connection src maliit maliit-settings
         SUBDIRS += maliit-glib/maliit-glib-docs.pro
     }
     SUBDIRS += gtk-input-context
+}
+
+nogtk {
+    SUBDIRS -= connection-glib maliit-glib gtk-input-context
 }
 
 !contains(QT_MAJOR_VERSION, 5) {

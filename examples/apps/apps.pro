@@ -14,9 +14,13 @@ SUBDIRS = embedded
 }
 
 system(pkg-config gtk+-2.0):!disable-dbus {
-    SUBDIRS += gtk2 gtk2-overrides
+    !nogtk {
+        SUBDIRS += gtk2 gtk2-overrides
+    }
 }
 
 system(pkg-config gtk+-3.0):!disable-dbus {
-    SUBDIRS += gtk3 gtk3-overrides gtk3-python
+    !nogtk {
+        SUBDIRS += gtk3 gtk3-overrides gtk3-python
+    }
 }
