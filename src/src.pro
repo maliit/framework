@@ -149,7 +149,7 @@ CONFIG += link_pkgconfig
 QT = core $$QT_WIDGETS xml
 
 !disable-dbus {
-    CONFIG += qdbus
+    QT += dbus
 }
 
 enable-contextkit {

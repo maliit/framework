@@ -20,14 +20,26 @@
 #include <QList>
 #include <QObject>
 #include <QScopedPointer>
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include <QWeakPointer>
+#else
+#include <QPointer>
+#endif
+
 #include "attributeextension.h"
 
 namespace Maliit {
 
 class AttributeExtensionRegistryPrivate;
 
-typedef QList<QWeakPointer<AttributeExtension> > ExtensionList;
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    typedef QList<QWeakPointer<AttributeExtension> > ExtensionList;
+    typedef QWeakPointer<AttributeExtension> Extension;
+#else
+    typedef QList<QPointer<AttributeExtension> > ExtensionList;
+    typedef QPointer<AttributeExtension> Extension;
+#endif
 
 //! \ingroup libmaliit
 //! \internal
@@ -38,6 +50,8 @@ class AttributeExtensionRegistry : public QObject
     Q_DECLARE_PRIVATE(AttributeExtensionRegistry)
 
 public:
+    ~AttributeExtensionRegistry();
+
     //! \brief Get singleton instance
     //! \return singleton instance
     static AttributeExtensionRegistry *instance();
@@ -73,7 +87,6 @@ public Q_SLOTS:
 
 private:
     AttributeExtensionRegistry();
-    ~AttributeExtensionRegistry();
 
     const QScopedPointer<AttributeExtensionRegistryPrivate> d_ptr;
 

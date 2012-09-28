@@ -7,7 +7,9 @@ HEADERS += \
 SOURCES += \
     ut_mattributeextensionmanager.cpp \
 
-CONFIG += plugin qdbus
+CONFIG += plugin
+
+QT += dbus
 
 include($$TOP_DIR/src/libmaliit-plugins.pri)
 include($$TOP_DIR/connection/libmaliit-connection.pri)

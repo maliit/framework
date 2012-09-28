@@ -15,7 +15,7 @@ namespace {
         return SharedAttributeExtension(new Maliit::AttributeExtension(QString()));
     }
 
-    int id(const QWeakPointer<AttributeExtension> &ptr)
+    int id(const Maliit::Extension &ptr)
     {
         AttributeExtension *extension = ptr.data();
         if (extension)

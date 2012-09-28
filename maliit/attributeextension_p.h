@@ -39,8 +39,13 @@ public:
     //! values
     AttributeExtension::ExtendedAttributeMap values;
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     //! weak reference to registry
     QWeakPointer<AttributeExtensionRegistry> registry;
+#else
+    //! weak reference to registry
+    QPointer<AttributeExtensionRegistry> registry;
+#endif
 };
 
 }

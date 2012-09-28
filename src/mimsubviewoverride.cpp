@@ -18,7 +18,7 @@
 MImSubViewOverride::MImSubViewOverride(MImOnScreenPlugins *plugins,
                                        QObject *parent)
     : QObject(parent)
-    , mPlugins(plugins)
+    , mPlugins(QSharedPointer<MImOnScreenPlugins>(plugins))
 {}
 
 MImSubViewOverride::~MImSubViewOverride()

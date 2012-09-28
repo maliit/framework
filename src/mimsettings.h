@@ -125,6 +125,8 @@ public:
     /*! Creates a backend instance for the specified key.
     */
     virtual MImSettingsBackend *create(const QString &key, QObject *parent) = 0;
+
+    virtual ~MImSettingsBackendFactory() {}
 };
 
 

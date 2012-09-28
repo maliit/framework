@@ -31,7 +31,7 @@ struct IdPredicate
     {
     }
 
-    bool operator()(const QWeakPointer<AttributeExtension> &extension)
+    bool operator()(const Extension &extension)
     {
         AttributeExtension * ptr = extension.data();
         return (ptr ? id == ptr->id() : false);
@@ -102,7 +102,12 @@ void AttributeExtensionRegistry::addExtension(AttributeExtension *extension)
     const int id(extension->id());
     const QString filename(extension->fileName());
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     d->extensions.push_back(QWeakPointer<AttributeExtension>(extension));
+#else
+    d->extensions.push_back(extension);
+#endif
+
     if (d->connection) {
         d->connection->registerAttributeExtension(id, filename);
     }
@@ -115,7 +120,12 @@ void AttributeExtensionRegistry::addExtension(const QSharedPointer<AttributeExte
     const int id(extension->id());
     const QString filename(extension->fileName());
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     d->extensions.push_back(QWeakPointer<AttributeExtension>(extension));
+#else
+    d->extensions.push_back(extension.data());
+#endif
+
     if (d->connection) {
         d->connection->registerAttributeExtension(id, filename);
     }
@@ -127,7 +137,12 @@ void AttributeExtensionRegistry::removeExtension(AttributeExtension *extension)
     Q_D(AttributeExtensionRegistry);
     const int id(extension->id());
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     d->extensions.removeAll(QWeakPointer<AttributeExtension>(extension));
+#else
+    d->extensions.removeAll(extension);
+#endif
+
     if (d->connection) {
         d->connection->unregisterAttributeExtension(id);
     }
@@ -184,7 +199,7 @@ void AttributeExtensionRegistry::registerExistingAttributeExtensions()
     Q_D(AttributeExtensionRegistry);
 
     if (d->connection) {
-        Q_FOREACH (const QWeakPointer<AttributeExtension> &extension_ref, d->extensions) {
+        Q_FOREACH (const Extension &extension_ref, d->extensions) {
             AttributeExtension *extension = extension_ref.data();
             if (!extension)
                 continue;
