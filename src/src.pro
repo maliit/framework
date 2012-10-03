@@ -155,6 +155,9 @@ QT = core $$QT_WIDGETS xml
 enable-contextkit {
     PKGCONFIG += contextsubscriber-1.0
     DEFINES += HAVE_CONTEXTSUBSCRIBER
+} else {
+    # libudev needed by non-contextkit MImHwKeyboardTracker
+    PKGCONFIG += libudev
 }
 
 disable-background-translucency {
