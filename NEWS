@@ -1,6 +1,14 @@
 {NEXT}
 ======
 
+CHANGES SINCE 0.92.5
+* Fix the build when disabling GTK+ support
+* Monitor SW_TABLET_MODE to determine hardware keyboard presence
+  -  A new, default implementation for MImHwKeyboardTracker: we look for a
+     readable evdev device which has a SW_TABLET_MODE switch. If found, we use
+     that device for determining the presence/availability of the hardware
+     keyboard.
+
 0.92.5
 ======
 
