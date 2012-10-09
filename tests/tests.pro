@@ -53,6 +53,12 @@ x11 {
           ft_mimpluginmanager \
 }
 
+nogtk {
+    SUBDIRS -= \
+          ut_maliit_glib_settings \
+
+}
+
 QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.CONFIG = recursive
