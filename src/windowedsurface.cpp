@@ -49,6 +49,15 @@ using Maliit::Plugins::AbstractSurface;
 namespace Maliit {
 namespace Server {
 
+namespace {
+    const Qt::WindowFlags g_window_flags =
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    Qt::WindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint | Qt::WindowDoesNotAcceptFocus);
+#else 
+    Qt::WindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+#endif
+}
+
 class WindowedSurface : public virtual Maliit::Plugins::AbstractSurface
 {
 public:
@@ -66,8 +75,11 @@ public:
         if (parent) {
             parentWidget = parent->mToplevel.data();
         }
-        mToplevel->setParent(parentWidget, static_cast<Qt::WindowFlags>(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
+        mToplevel->setParent(parentWidget, g_window_flags);
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         mToplevel->setAttribute(Qt::WA_X11DoNotAcceptFocus);
+#endif
         mToplevel->setAutoFillBackground(false);
         mToplevel->setBackgroundRole(QPalette::NoRole);
 
@@ -209,8 +221,10 @@ public:
     GraphicsView()
         : QGraphicsView()
     {
-        setWindowFlags(static_cast<Qt::WindowFlags>(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint));
+        setWindowFlags(g_window_flags);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         setAttribute(Qt::WA_X11DoNotAcceptFocus);
+#endif
         setAutoFillBackground(false);
         setBackgroundRole(QPalette::NoRole);
         setBackgroundBrush(Qt::transparent);
