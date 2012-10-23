@@ -407,7 +407,7 @@ void MInputMethodQuick::userHide()
 void MInputMethodQuick::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides)
 {
     Q_D(MInputMethodQuick);
-    QMap<QString, QSharedPointer<MKeyOverride> >::iterator iter(overrides.find(actionKeyName));
+    const QMap<QString, QSharedPointer<MKeyOverride> >::const_iterator iter(overrides.find(actionKeyName));
 
     if (d->sentActionKeyOverride) {
         disconnect(d->sentActionKeyOverride.data(), SIGNAL(keyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes)),

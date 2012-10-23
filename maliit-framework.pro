@@ -64,12 +64,12 @@ nogtk {
     # Qt 5 has a new platform input plugin system which already contains
     # support for Maliit.
     SUBDIRS += input-context
+}
 
-    # Requires QtQuick1 add-on, which might not be present
-    # and we should use QML 2 on Qt 5 anyways
-    !noqml {
-        SUBDIRS += maliit-plugins-quick
-    }
+# Requires QtQuick1 add-on, which might not be present
+# and we should use QML 2 on Qt 5 anyways
+!noqml {
+    SUBDIRS += maliit-plugins-quick
 }
 
 SUBDIRS += examples

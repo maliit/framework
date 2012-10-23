@@ -18,7 +18,16 @@ HEADERS += \
 SOURCES += \
         maliitquickpluginfactory.cpp \
 
-QT = core $$QT_WIDGETS declarative
+OTHER_FILES += \
+        plugin-factory.json \
+
+
+QT = core $$QT_WIDGETS
+contains(QT_MAJOR_VERSION, 5) {
+    QT += quick1
+} else {
+    QT += declarative
+}
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
