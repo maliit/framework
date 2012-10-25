@@ -46,6 +46,20 @@
 #include <QDir>
 #include <memory>
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#if defined(Q_WS_X11)
+#include <QX11Info>
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/Xfixes.h>
+#include <X11/extensions/shape.h>
+#endif
+#endif
+
+//this hack is needed because KeyPress definded by xlib conflicts with QEvent::KeyPress, breaking build
+#undef KeyPress
+
 namespace
 {
     const char * const actionKeyName = "actionKey";
@@ -146,6 +160,11 @@ public:
 
         m_scene->addItem(m_content);
     }
+
+    QGraphicsObject *content() const
+    {
+        return m_content;
+    }
 };
 
 class MInputMethodQuickPrivate
@@ -211,6 +230,44 @@ public:
     {
         actionKeyOverride->applyOverride(sentActionKeyOverride, changedAttributes);
     }
+    
+    void syncInputMask ()
+    {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#if defined(Q_WS_X11)
+        if (!view->effectiveWinId())
+            return;
+
+        const int size = 1;
+
+        XRectangle * const rects = new XRectangle[size];
+
+        quint32 customRegion[size * 4]; // custom region is pack of x, y, w, h
+        rects[0].x = inputMethodArea.x();
+        rects[0].y = inputMethodArea.y();
+        rects[0].width = inputMethodArea.width();
+        rects[0].height = inputMethodArea.height();
+        customRegion[0] = inputMethodArea.x();
+        customRegion[1] = inputMethodArea.y();
+        customRegion[2] = inputMethodArea.width();
+        customRegion[3] = inputMethodArea.height();
+
+
+        const XserverRegion shapeRegion = XFixesCreateRegion(QX11Info::display(), rects, size);
+        XFixesSetWindowShapeRegion(QX11Info::display(), view->effectiveWinId(), ShapeBounding, 0, 0, 0);
+        XFixesSetWindowShapeRegion(QX11Info::display(), view->effectiveWinId(), ShapeInput, 0, 0, shapeRegion);
+
+        XFixesDestroyRegion(QX11Info::display(), shapeRegion);
+
+        XChangeProperty(QX11Info::display(), view->effectiveWinId(),
+                        XInternAtom(QX11Info::display(), "_MEEGOTOUCH_CUSTOM_REGION", False),
+                        XA_CARDINAL, 32, PropModeReplace,
+                        (unsigned char *) customRegion, size * 4);
+
+        delete[] rects;
+#endif
+#endif
+    }
 };
 
 MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
@@ -221,6 +278,7 @@ MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
     Q_D(MInputMethodQuick);
 
     d->loader->loadQmlFile(qmlFileName);
+    
     propagateScreenSize();
 }
 
@@ -246,8 +304,9 @@ void MInputMethodQuick::show()
     if (d->activeState == Maliit::OnScreen) {
       d->surface->show();
       d->loader->showUI();
-      const QRegion r(inputMethodArea());
+      const QRegion r(inputMethodArea().toRect());
       d->handleInputMethodAreaUpdate(inputMethodHost(), r);
+      d->syncInputMask();
     }
 }
 
@@ -278,7 +337,7 @@ void MInputMethodQuick::handleAppOrientationChanged(int angle)
         // VkB is currently showed
         Q_EMIT appOrientationChanged(d->appOrientation);
         if (d->sipRequested && !d->sipIsInhibited) {
-            d->handleInputMethodAreaUpdate(inputMethodHost(), inputMethodArea());
+            d->handleInputMethodAreaUpdate(inputMethodHost(), inputMethodArea().toRect());
         }
     }
 }
@@ -355,20 +414,23 @@ int MInputMethodQuick::appOrientation() const
     return d->appOrientation;
 }
 
-QRect MInputMethodQuick::inputMethodArea() const
+QRectF MInputMethodQuick::inputMethodArea() const
 {
     Q_D(const MInputMethodQuick);
     return d->inputMethodArea;
 }
 
-void MInputMethodQuick::setInputMethodArea(const QRect &area)
+void MInputMethodQuick::setInputMethodArea(const QRectF &area)
 {
     Q_D(MInputMethodQuick);
 
-    if (d->inputMethodArea != area) {
-        d->inputMethodArea = area;
+    if (d->inputMethodArea != area.toRect()) {
+        d->inputMethodArea = area.toRect();
+
+        qDebug() << __PRETTY_FUNCTION__ << "QWidget::effectiveWinId(): " << d_ptr->view->effectiveWinId();
 
         Q_EMIT inputMethodAreaChanged(d->inputMethodArea);
+        d->syncInputMask();
     }
 }
 

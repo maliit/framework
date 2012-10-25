@@ -86,8 +86,8 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
         plugin->createInputMethod(&host));
 
     QVERIFY(not testee->inputMethodArea().isEmpty());
-    QCOMPARE(testee->inputMethodArea(), QRect(0, testee->screenHeight() * 0.5,
-                                              testee->screenWidth(), testee->screenHeight() * 0.5));
+    QCOMPARE(testee->inputMethodArea(), QRectF(0, testee->screenHeight() * 0.5,
+                                               testee->screenWidth(), testee->screenHeight() * 0.5));
 
     QCOMPARE(host.lastCommit, QString("Maliit"));
     QCOMPARE(host.sendCommitCount, 1);

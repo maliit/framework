@@ -97,11 +97,11 @@ public:
     int appOrientation() const;
 
     //! Returns input method area.
-    QRect inputMethodArea() const;
+    QRectF inputMethodArea() const;
 
     //! Sets input method area. Called by QML components.
     //! area the area consumed by the QML input method.
-    Q_INVOKABLE void setInputMethodArea(const QRect &area);
+    Q_INVOKABLE void setInputMethodArea(const QRectF &area);
 
     //! Returns action key override.
     MKeyOverrideQuick *actionKeyOverride() const;
