@@ -46,11 +46,11 @@ public:
     QScopedPointer<ContextProperty> keyboardOpenProperty;
 #elif defined(Q_WS_MAEMO_5)
     MImSettings keyboardOpenConf;
-#else
+#endif
+
     QFile *evdevFile;
     int evdevTabletModePending;
     bool evdevTabletMode;
-#endif
 
     bool present;
 
