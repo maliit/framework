@@ -440,6 +440,12 @@ void MInputMethodQuick::sendPreedit(const QString &text)
     inputMethodHost()->sendPreeditString(text, lst, text.length());
 }
 
+void MInputMethodQuick::sendKey(int key, int modifiers)
+{
+    QKeyEvent event(QEvent::KeyPress, key, (~(Qt::KeyboardModifiers(Qt::NoModifier))) & modifiers);
+    inputMethodHost()->sendKeyEvent(event);
+}
+
 void MInputMethodQuick::sendCommit(const QString &text)
 {
     if (text == "\b") {
