@@ -440,9 +440,9 @@ void MInputMethodQuick::sendPreedit(const QString &text)
     inputMethodHost()->sendPreeditString(text, lst, text.length());
 }
 
-void MInputMethodQuick::sendKey(int key, int modifiers)
+void MInputMethodQuick::sendKey(int key, int modifiers, const QString &text)
 {
-    QKeyEvent event(QEvent::KeyPress, key, (~(Qt::KeyboardModifiers(Qt::NoModifier))) & modifiers);
+    QKeyEvent event(QEvent::KeyPress, key, (~(Qt::KeyboardModifiers(Qt::NoModifier))) & modifiers, text);
     inputMethodHost()->sendKeyEvent(event);
 }
 

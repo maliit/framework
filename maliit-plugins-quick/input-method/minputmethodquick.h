@@ -132,8 +132,9 @@ public Q_SLOTS:
 
     //! Sends an arbitrary key, optionally with modifiers.
     //! \param key the Qt keycode to be sent, e.g., Qt.Key_Up.
-    //! \param modifiers optional modifiers to send along, like Qt.ControlModifier
-    void sendKey(int key, int modifiers = 0);
+    //! \param modifiers optional modifiers to send along, like Qt.ControlModifier.
+    //! \param text an optional text to send along with the QKeyEvent.
+    void sendKey(int key, int modifiers = 0, const QString &text = QString());
 
     //! Sends commit string. Called by QML components.
     //! \param text the commit string.
