@@ -1,13 +1,27 @@
 {NEXT}
 ======
 
+CHANGES SINCE 0.93.0
+
+0.93.0
+======
+
 CHANGES SINCE 0.92.5
-* Fix the build when disabling GTK+ support
 * Monitor SW_TABLET_MODE to determine hardware keyboard presence
   -  A new, default implementation for MImHwKeyboardTracker: we look for a
      readable evdev device which has a SW_TABLET_MODE switch. If found, we use
      that device for determining the presence/availability of the hardware
      keyboard.
+* Allow QML plugins to send key events:
+  - Use MInputMethodQuick.sendKey()
+
+BUG FIXES
+* Fix focus handling for Qt5
+* Fix the build when disabling GTK+ support
+* Fix QML plugin loading for Qt5
+* Fix "fullscreen" surfaces (required by QtQuick still):
+  - Events can be passed through to application again even if input method with
+    a semi-translucent "fullscreen" surface is shown.
 
 0.92.5
 ======
