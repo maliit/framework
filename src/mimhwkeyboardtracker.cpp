@@ -40,6 +40,7 @@ MImHwKeyboardTrackerPrivate::MImHwKeyboardTrackerPrivate(MImHwKeyboardTracker *q
     keyboardOpenConf("/system/osso/af/slide-open"),
 #else
     evdevTabletModePending(-1),
+    evdevTabletMode(0),
 #endif
     present(false)
 {
@@ -182,7 +183,7 @@ void MImHwKeyboardTrackerPrivate::tryEvdevDevice(const char *device)
 
     // Initialise initial tablet mode state
     unsigned long state[BITS2BYTES(SW_MAX)];
-    if (ioctl(fd, EV_SW, state) < 0)
+    if (ioctl(fd, EVIOCGSW(SW_MAX), state) < 0)
         return;
 
     evdevTabletMode = TEST_BIT(SW_TABLET_MODE, state);
