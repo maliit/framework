@@ -225,6 +225,10 @@ public:
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         setAttribute(Qt::WA_X11DoNotAcceptFocus);
 #endif
+        // Fixes: MALIIT#194 - Maliit can not input when QML viewer is set to
+        // full screen on QWS without x11
+        setAttribute(Qt::WA_ShowWithoutActivating);
+
         setAutoFillBackground(false);
         setBackgroundRole(QPalette::NoRole);
         setBackgroundBrush(Qt::transparent);
