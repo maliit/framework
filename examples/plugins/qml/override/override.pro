@@ -15,7 +15,7 @@ contains(QT_MAJOR_VERSION, 4) {
 SOURCES += overrideplugin.cpp
 HEADERS += overrideplugin.h
 RESOURCES = override.qrc
-target.depends = $$IN_PWD/override.qml
+target.depends = $$PWD/override.qml
 
 OTHER_FILES += \
     override.qml \

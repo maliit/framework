@@ -26,7 +26,7 @@ PKG_CONFIG_PATH = $$OUT_PWD/../maliit/:$$OUT_PWD/../maliit-settings/:$$OUT_PWD/.
 
 sdk.name = create_sdk
 sdk.CONFIG += target_predeps no_link
-sdk.commands += PKG_CONFIG_PATH=$$PKG_CONFIG_PATH $$IN_PWD/maliit-sdk-create.sh $$IN_PWD/.. $$OUT_PWD/build $$MALIIT_VERSION $$MODE
+sdk.commands += PKG_CONFIG_PATH=$$PKG_CONFIG_PATH $$PWD/maliit-sdk-create.sh $$PWD/.. $$OUT_PWD/build $$MALIIT_VERSION $$MODE
 sdk.output = $$SDK_BUILD_DIR/examples
 sdk.clean_commands = rm -rf $$SDK_BUILD_DIR/examples
 sdk.input = DUMMY

@@ -11,7 +11,7 @@ check.target = check
 check.commands = \
     TESTING_IN_SANDBOX=1 \
     TESTPLUGIN_PATH=../plugins \
-    TESTDATA_PATH=$$IN_PWD \
+    TESTDATA_PATH=$$PWD \
     LD_LIBRARY_PATH=../../lib:../../lib/plugins:../plugins:$(LD_LIBRARY_PATH) \
     ./$$TARGET $$unittest_arguments
 

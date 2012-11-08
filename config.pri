@@ -1,4 +1,4 @@
-MALIIT_VERSION = $$system(cat $$IN_PWD/VERSION)
+MALIIT_VERSION = $$system(cat $$PWD/VERSION)
 
 MALIIT_INTERFACE_VERSION = 1.0
 MALIIT_PLUGINS_INTERFACE_VERSION = 1.0
@@ -172,7 +172,7 @@ defineTest(outputFile) {
         return(false)
     }
 
-    MALIIT_IN_DIR = $$IN_PWD
+    MALIIT_IN_DIR = $$PWD
     MALIIT_OUT_DIR = $$OUT_PWD
 
     variables = MALIIT_FRAMEWORK_FEATURE \

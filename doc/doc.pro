@@ -27,9 +27,9 @@ isEmpty(DOXYGEN_BIN) {
 } else {
     # Build docs
     doc.commands += $${DOXYGEN_BIN} $${OUT_PWD}/mdoxy.cfg;
-    doc.commands += cp $${IN_PWD}/src/images/* $$HTML_BUILD_DIR ;
-    doc.commands += cp $${IN_PWD}/src/*.html $$HTML_BUILD_DIR ;
-    doc.commands += $${IN_PWD}/xmlize.pl;
+    doc.commands += cp $${PWD}/src/images/* $$HTML_BUILD_DIR ;
+    doc.commands += cp $${PWD}/src/*.html $$HTML_BUILD_DIR ;
+    doc.commands += $${PWD}/xmlize.pl;
 
     # Install rules
     htmldocs.files = $$HTML_BUILD_DIR

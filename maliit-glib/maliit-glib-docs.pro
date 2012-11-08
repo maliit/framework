@@ -29,12 +29,12 @@ gtk_doc.output = $${OUT_PWD}/maliit/index.html
 gtk_doc.clean_commands = rm -rf $${OUT_PWD}/maliit $${OUT_PWD}/reference
 gtk_doc.input = GOBJECTFILES
 gtk_doc.commands += mkdir -p reference &&
-gtk_doc.commands += cp $$IN_PWD/maliit-sections.txt $$IN_PWD/maliit-docs.xml $$OUT_PWD/reference &&
+gtk_doc.commands += cp $$PWD/maliit-sections.txt $$PWD/maliit-docs.xml $$OUT_PWD/reference &&
 gtk_doc.commands += cd reference &&
-gtk_doc.commands += gtkdoc-scan --module=maliit --source-dir=$${IN_PWD} --rebuild-types  &&
+gtk_doc.commands += gtkdoc-scan --module=maliit --source-dir=$${PWD} --rebuild-types  &&
 gtk_doc.commands += LD_LIBRARY_PATH=\"$${LIB_DIR}\" CFLAGS=\"$$system(pkg-config --cflags gio-2.0)\" LDFLAGS=\"-L$${LIB_DIR} -l$${MALIIT_GLIB_LIB} $$system(pkg-config --libs gio-2.0)\"
 gtk_doc.commands += gtkdoc-scangobj --module=maliit &&
-gtk_doc.commands += gtkdoc-mkdb --module=maliit --source-dir=$${IN_PWD} --output-format=xml && cd .. &&
+gtk_doc.commands += gtkdoc-mkdb --module=maliit --source-dir=$${PWD} --output-format=xml && cd .. &&
 gtk_doc.commands += mkdir -p maliit && cd maliit && gtkdoc-mkhtml maliit ../reference/maliit-docs.xml && cd .. &&
 gtk_doc.commands += cd reference && gtkdoc-fixxref --module=maliit --module-dir=../maliit && cd ..
 
