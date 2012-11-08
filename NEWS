@@ -3,6 +3,20 @@
 
 CHANGES SINCE 0.93.0
 
+0.93.1
+======
+
+CHANGES SINCE 0.93.0
+* Use QtQtuick2 when compiling against Qt5
+  - Only affects QML plugins such as Nemo Keyboard.
+
+BUG FIXES
+* Fixes: MALIIT#194 - Maliit can not input when QML viewer is set to full
+  screen on QWS without x11
+* Fixes: MALIIT#197 - Read initial SW_TABLET_MODE state correctly
+* Fix qmake warnings about using CONFIG+=qdbus
+* Fix qmake warnings about using deprecated IN_PWD variables
+
 0.93.0
 ======
 
