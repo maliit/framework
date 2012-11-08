@@ -3,7 +3,7 @@ include(../common_top.pri)
 QT += $$QT_WIDGETS
 
 contains(QT_MAJOR_VERSION, 5) {
-    QT += quick1
+    QT += quick
 } else {
     QT += declarative
 }

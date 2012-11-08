@@ -24,7 +24,7 @@ OTHER_FILES += \
 
 QT = core $$QT_WIDGETS
 contains(QT_MAJOR_VERSION, 5) {
-    QT += quick1
+    QT += quick
 } else {
     QT += declarative
 }

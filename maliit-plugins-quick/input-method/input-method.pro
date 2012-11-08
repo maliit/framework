@@ -26,7 +26,7 @@ SOURCES += \
 
 QT = core $$QT_WIDGETS xml
 contains(QT_MAJOR_VERSION, 5) {
-    QT += quick1
+    QT += quick qml
 } else {
     QT += declarative
 }

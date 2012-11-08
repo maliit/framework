@@ -32,9 +32,9 @@
 #include <QPen>
 #include <QBrush>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#include <QtQuick1/QDeclarativeComponent>
-#include <QtQuick1/QDeclarativeContext>
-#include <QtQuick1/QDeclarativeEngine>
+#include <QQmlComponent>
+#include <QQmlContext>
+#include <QQmlEngine>
 #else
 #include <QDeclarativeComponent>
 #include <QDeclarativeContext>
@@ -73,13 +73,23 @@ namespace
     }
 }
 
+// TODO: Remove typedefs for Maliit 1.0 and only use the Qt5 types instead.
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+typedef QQmlEngine MaliitQmlEngine;
+typedef QQmlComponent MaliitQmlComponent;
+#else
+typedef QDeclarativeEngine MaliitQmlEngine;
+typedef QDeclarativeComponent MaliitQmlComponent;
+#endif
+
 //! Helper class to load QML files and set up the declarative view accordingly.
 class MInputMethodQuickLoader
 {
 private:
     QGraphicsScene *const m_scene;
-    QDeclarativeEngine *const m_engine; //!< managed by controller
-    std::auto_ptr<QDeclarativeComponent> m_component;
+    MaliitQmlEngine *const m_engine; //!< managed by controller
+    std::auto_ptr<MaliitQmlComponent> m_component;
+
     QGraphicsObject *m_content; //!< managed by scene
     MInputMethodQuick *const m_controller;
 
@@ -87,7 +97,7 @@ public:
     MInputMethodQuickLoader(QGraphicsScene *newScene,
                             MInputMethodQuick *newController)
         : m_scene(newScene)
-        , m_engine(new QDeclarativeEngine(newController))
+        , m_engine(new MaliitQmlEngine(newController))
         , m_content(0)
         , m_controller(newController)
     {
@@ -138,7 +148,7 @@ public:
             m_controller->hide();
         }
 
-        m_component.reset(new QDeclarativeComponent(m_engine, QUrl(qmlFileName)));
+        m_component.reset(new MaliitQmlComponent(m_engine, QUrl(qmlFileName)));
 
         if (not m_component->errors().isEmpty()) {
             qWarning() << "QML errors while loading " << qmlFileName << "\n"
