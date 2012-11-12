@@ -69,6 +69,19 @@ SERVER_SOURCES += \
         mimdummyinputcontext.cpp \
 }
 
+contains(QT_MAJOR_VERSION, 5) {
+    PLUGIN_HEADERS_PUBLIC += maliit/plugins/quickviewsurface.h
+    PLUGIN_SOURCES += maliit/plugins/quickviewsurface.cpp
+
+    SERVER_HEADERS_PRIVATE += \
+        quickviewsurfacegroup.h \
+        quickviewsurfacefactory.h \
+
+    SERVER_SOURCES += \
+        quickviewsurfacegroup.cpp \
+        quickviewsurfacefactory.cpp \
+}
+
 SERVER_HEADERS_PRIVATE += \
         abstractsurfacegroup.h \
         abstractsurfacegroupfactory.h \
@@ -147,6 +160,10 @@ x11 {
 
 CONFIG += link_pkgconfig
 QT = core $$QT_WIDGETS xml
+
+contains(QT_MAJOR_VERSION, 5) {
+    QT += qml quick
+}
 
 !disable-dbus {
     QT += dbus

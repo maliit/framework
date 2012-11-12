@@ -19,7 +19,12 @@
 
 #include <maliit/plugins/abstractinputmethodhost.h>
 #include <maliit/plugins/abstractsurfacefactory.h>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#include <maliit/plugins/quickviewsurface.h>
+#include <Qt/QtQuick>
+#else
 #include <maliit/plugins/abstractwidgetssurface.h>
+#endif
 #include <maliit/plugins/keyoverride.h>
 
 #include <QKeyEvent>
@@ -181,10 +186,14 @@ class MInputMethodQuickPrivate
 {
 public:
     MInputMethodQuick *const q_ptr;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    QSharedPointer<Maliit::Plugins::QuickViewSurface> surface;
+#else
     QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface;
     QGraphicsScene *const scene;
     QGraphicsView *const view;
     MInputMethodQuickLoader *const loader;
+#endif
     QRect inputMethodArea;
     int appOrientation;
     bool haveFocus;
@@ -204,10 +213,14 @@ public:
     MInputMethodQuickPrivate(MAbstractInputMethodHost *host,
                              MInputMethodQuick *im)
         : q_ptr(im)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        , surface(qSharedPointerDynamicCast<Maliit::Plugins::QuickViewSurface>(host->surfaceFactory()->create(Maliit::Plugins::AbstractSurface::PositionCenterBottom | Maliit::Plugins::AbstractSurface::TypeQuick2)))
+#else
         , surface(qSharedPointerDynamicCast<Maliit::Plugins::AbstractGraphicsViewSurface>(host->surfaceFactory()->create(Maliit::Plugins::AbstractSurface::PositionCenterBottom | Maliit::Plugins::AbstractSurface::TypeGraphicsView)))
         , scene(surface->scene())
         , view(surface->view())
         , loader(new MInputMethodQuickLoader(scene, im))
+#endif
         , appOrientation(0)
         , haveFocus(false)
         , activeState(Maliit::OnScreen)
@@ -219,11 +232,17 @@ public:
         updateActionKey(MKeyOverride::All);
         // Set surface size to fullscreen
         surface->setSize(QApplication::desktop()->screenGeometry().size());
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        surface->view()->engine()->addImportPath(MALIIT_PLUGINS_DATA_DIR);
+        surface->view()->engine()->rootContext()->setContextProperty("MInputMethodQuick", im);
+#endif
     }
 
     ~MInputMethodQuickPrivate()
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         delete loader;
+#endif
     }
 
     void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
@@ -287,7 +306,11 @@ MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
 {
     Q_D(MInputMethodQuick);
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    d->surface->view()->setSource(QUrl::fromLocalFile(qmlFileName));
+#else
     d->loader->loadQmlFile(qmlFileName);
+#endif
     
     propagateScreenSize();
 }
@@ -313,7 +336,9 @@ void MInputMethodQuick::show()
     
     if (d->activeState == Maliit::OnScreen) {
       d->surface->show();
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
       d->loader->showUI();
+#endif
       const QRegion r(inputMethodArea().toRect());
       d->handleInputMethodAreaUpdate(inputMethodHost(), r);
       d->syncInputMask();
@@ -327,7 +352,9 @@ void MInputMethodQuick::hide()
         return;
     }
     d->sipRequested = false;
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     d->loader->hideUI();
+#endif
     d->surface->hide();
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
@@ -366,7 +393,9 @@ void MInputMethodQuick::setState(const QSet<Maliit::HandlerState> &state)
             show(); // Force reparent of client widgets.
         }
     } else {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         d->loader->hideUI();
+#endif
         // Allow client to make use of InputMethodArea
         const QRegion r;
         d->handleInputMethodAreaUpdate(inputMethodHost(), r);
@@ -379,7 +408,9 @@ void MInputMethodQuick::handleClientChange()
     Q_D(MInputMethodQuick);
 
     if (d->sipRequested) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         d->loader->hideUI();
+#endif
     }
 }
 
@@ -393,11 +424,13 @@ void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
     d->sipIsInhibited = inhibitShow;
 
     if (d->sipRequested) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         if (inhibitShow) {
             d->loader->hideUI();
         } else {
             d->loader->showUI();
         }
+#endif
     }
 }
 
@@ -437,7 +470,9 @@ void MInputMethodQuick::setInputMethodArea(const QRectF &area)
     if (d->inputMethodArea != area.toRect()) {
         d->inputMethodArea = area.toRect();
 
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug() << __PRETTY_FUNCTION__ << "QWidget::effectiveWinId(): " << d_ptr->view->effectiveWinId();
+#endif
 
         Q_EMIT inputMethodAreaChanged(d->inputMethodArea);
         d->syncInputMask();
