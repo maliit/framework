@@ -32,6 +32,11 @@ public:
 
         mWindow->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint | Qt::WindowDoesNotAcceptFocus);
 
+        QSurfaceFormat format;
+        format.setAlphaBufferSize(8);
+        mWindow->setFormat(format);
+        mWindow->setColor(QColor(Qt::transparent));
+
         updateVisibility();
     }
 
