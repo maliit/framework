@@ -26,10 +26,14 @@ SOURCES += \
 
 QT = core $$QT_WIDGETS xml
 contains(QT_MAJOR_VERSION, 5) {
-    QT += quick qml
+    QT += quick qml gui-private
 } else {
     QT += declarative
 }
+
+CONFIG += link_pkgconfig
+
+PKGCONFIG += xcb xcb-xfixes
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){

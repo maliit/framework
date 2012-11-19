@@ -22,6 +22,10 @@
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <maliit/plugins/quickviewsurface.h>
 #include <Qt/QtQuick>
+#include <Qt/QtGui>
+#include <qpa/qplatformnativeinterface.h>
+#include <xcb/xcb.h>
+#include <xcb/xfixes.h>
 #else
 #include <maliit/plugins/abstractwidgetssurface.h>
 #endif
@@ -295,6 +299,27 @@ public:
 
         delete[] rects;
 #endif
+#else
+        if (QGuiApplication::platformName() != "xcb")
+            return;
+
+        QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
+        xcb_connection_t *connection = static_cast<xcb_connection_t *>(nativeInterface->nativeResourceForWindow("connection", surface->view()));
+
+        xcb_rectangle_t rect;
+        rect.x = inputMethodArea.x();
+        rect.y = inputMethodArea.y();
+        rect.width = inputMethodArea.width();
+        rect.height = inputMethodArea.height();
+
+        xcb_xfixes_region_t region = xcb_generate_id(connection);
+        xcb_xfixes_create_region(connection, region, 1, &rect);
+
+        xcb_window_t window  = surface->view()->winId();
+        xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_BOUNDING, 0, 0, 0);
+        xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_INPUT, 0, 0, region);
+
+        xcb_xfixes_destroy_region(connection, region);
 #endif
     }
 };
