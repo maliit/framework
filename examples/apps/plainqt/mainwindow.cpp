@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QGuiApplication>
+#include <QScreen>
+#include <QWindow>
 #endif
 
 #include <QtCore>
@@ -75,6 +77,11 @@ MainWindow::MainWindow()
 
     initUI();
     onServerStateChanged();
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    // Work around a bug in maliit input method support where primary orientation is always portrait
+    windowHandle()->reportContentOrientationChange(windowHandle()->screen()->primaryOrientation());
+#endif
 }
 
 void MainWindow::initUI()
@@ -222,14 +229,25 @@ void MainWindow::onServerStateChanged()
 
 void MainWindow::onRotateKeyboardClicked()
 {
-    const Maliit::OrientationAngle orientations[] = {Maliit::Angle0,
-                                                     Maliit::Angle90,
-                                                     Maliit::Angle180,
-                                                     Maliit::Angle270};
-    m_orientation_index++;
-    if (m_orientation_index >= 4) {
-        m_orientation_index = 0;
-    }
-    const Maliit::OrientationAngle angle = orientations[m_orientation_index];
-    Maliit::InputMethod::instance()->setOrientationAngle(angle);
+    ++m_orientation_index;
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    static const Qt::ScreenOrientation orientations[] = {
+        Qt::LandscapeOrientation,
+        Qt::PortraitOrientation,
+        Qt::InvertedLandscapeOrientation,
+        Qt::InvertedPortraitOrientation
+    };
+
+    windowHandle()->reportContentOrientationChange(orientations[m_orientation_index % 4]);
+#else
+    static const const Maliit::OrientationAngle orientations[] = {
+        Maliit::Angle0,
+        Maliit::Angle90,
+        Maliit::Angle180,
+        Maliit::Angle270
+    };
+
+    Maliit::InputMethod::instance()->setOrientationAngle(orientations[m_orientation_index % 4]);
+#endif
 }
