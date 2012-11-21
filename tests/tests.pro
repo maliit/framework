@@ -50,6 +50,7 @@ x11 {
 !disable-dbus {
     SUBDIRS += \
           ut_mimpluginmanager \
+          ut_mimpluginmanager_config \
           ft_mimpluginmanager \
 }
 

@@ -134,10 +134,6 @@ QHash<QString, QVariant> MImSettings::defaults()
         MALIIT_DEFAULT_HW_PLUGIN;
     defaults[MALIIT_CONFIG_ROOT"accessoryenabled"] = false;
     defaults[MALIIT_CONFIG_ROOT"multitouch/enabled"] = MALIIT_ENABLE_MULTITOUCH;
-    defaults[MALIIT_CONFIG_ROOT"onscreen/enabled"] =
-        QStringList() << MALIIT_DEFAULT_PLUGIN ":" MALIIT_DEFAULT_SUBVIEW;
-    defaults[MALIIT_CONFIG_ROOT"onscreen/active"] =
-        MALIIT_DEFAULT_PLUGIN ":" MALIIT_DEFAULT_SUBVIEW;
 
     return defaults;
 }

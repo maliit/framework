@@ -13,6 +13,7 @@
  */
 
 #include "mimonscreenplugins.h"
+#include "config.h"
 
 #include <QString>
 #include <QSet>
@@ -127,6 +128,11 @@ bool MImOnScreenPlugins::isSubViewEnabled(const SubView &subView) const
     return mEnabledSubViews.contains(subView);
 }
 
+QList<MImOnScreenPlugins::SubView> MImOnScreenPlugins::enabledSubViews() const
+{
+    return mEnabledSubViews;
+}
+
 QList<MImOnScreenPlugins::SubView> MImOnScreenPlugins::enabledSubViews(const QString &plugin) const
 {
     QList<MImOnScreenPlugins::SubView> result;
@@ -138,6 +144,12 @@ QList<MImOnScreenPlugins::SubView> MImOnScreenPlugins::enabledSubViews(const QSt
 void MImOnScreenPlugins::setEnabledSubViews(const QList<MImOnScreenPlugins::SubView> &subViews)
 {
     mEnabledSubViewsSettings.set(QVariant(toSettings(subViews)));
+}
+
+void MImOnScreenPlugins::setAutoEnabledSubViews(const QList<MImOnScreenPlugins::SubView> &subViews)
+{
+    // Update the enabled subviews list without saving the configuration to disk
+    mEnabledSubViews = subViews;
 }
 
 void MImOnScreenPlugins::updateAvailableSubViews(const QList<SubView> &availableSubViews)
@@ -160,7 +172,6 @@ void MImOnScreenPlugins::updateEnabledSubviews()
     const QStringList &list = mEnabledSubViewsSettings.value().toStringList();
     const QList<SubView> oldEnabledSubviews = mEnabledSubViews;
     mEnabledSubViews = fromSettings(list);
-    enabledPlugins = findEnabledPlugins(mEnabledSubViews);
 
     // Changed subviews cause emission of enabledPluginsChanged() signal
     // because some subview from the setting might not really exists and therefore
@@ -173,10 +184,13 @@ void MImOnScreenPlugins::updateEnabledSubviews()
 void MImOnScreenPlugins::updateActiveSubview()
 {
     const QString &active = mActiveSubViewSettings.value().toString();
+    if (active.isEmpty()) {
+        mActiveSubView = MImOnScreenPlugins::SubView(MALIIT_DEFAULT_PLUGIN);
+        return;
+    }
+
     const QList<SubView> &activeList = fromSettings(QStringList() << active);
-    const MImOnScreenPlugins::SubView &subView = activeList.isEmpty()
-                                                 ? guessActiveSubview()
-                                                 : activeList.first();
+    const MImOnScreenPlugins::SubView &subView = activeList.first();
 
     if (mActiveSubView == subView) {
         return;
@@ -189,39 +203,18 @@ void MImOnScreenPlugins::updateActiveSubview()
         // Insert the activated subview into enabled subviews at current position
         const int activeSubviewIndex = mEnabledSubViews.indexOf(mActiveSubView);
         mEnabledSubViews.insert(activeSubviewIndex, subView);
-        setEnabledSubViews(mEnabledSubViews);
+        setAutoEnabledSubViews(mEnabledSubViews);
 
         // We rely on the subview to only be present once in enabled list
         if (mEnabledSubViews.indexOf(mActiveSubView, activeSubviewIndex) != -1) {
             qCritical() << __PRETTY_FUNCTION__ << "Duplicate entries of active subview in enabled subviews";
         }
     }
-
-    setActiveSubView(subView);
 }
 
 const MImOnScreenPlugins::SubView MImOnScreenPlugins::activeSubView()
 {
-    if (mActiveSubView.id.isEmpty()) {
-        // Subview id might be empty because we jumped to a new plugin,
-        // without calling MIMPluginManager::setActivePlugin. In this case, we
-        // try to guess the active subview from the first enabled subview of
-        // that plugin:
-        setActiveSubView(guessActiveSubview());
-    }
-
     return mActiveSubView;
-}
-
-MImOnScreenPlugins::SubView MImOnScreenPlugins::guessActiveSubview()
-{
-    Q_FOREACH (const SubView &sub, mEnabledSubViews) {
-        if (sub.plugin == mActiveSubView.plugin) {
-            return sub;
-        }
-    }
-
-    return SubView();
 }
 
 void MImOnScreenPlugins::setActiveSubView(const MImOnScreenPlugins::SubView &subView)
@@ -229,11 +222,24 @@ void MImOnScreenPlugins::setActiveSubView(const MImOnScreenPlugins::SubView &sub
     if (mActiveSubView == subView)
         return;
     mActiveSubView = subView;
+
     QList<MImOnScreenPlugins::SubView> subViews;
     subViews << subView;
     mActiveSubViewSettings.set(toSettings(subViews));
+
     Q_EMIT activeSubViewChanged();
 }
+
+void MImOnScreenPlugins::setAutoActiveSubView(const MImOnScreenPlugins::SubView &subView)
+{
+    // Update the active subview without writing the configuration to disk
+    if (mActiveSubView == subView)
+        return;
+
+    mActiveSubView = subView;
+    Q_EMIT activeSubViewChanged();
+}
+
 
 void MImOnScreenPlugins::setAllSubViewsEnabled(bool enable)
 {

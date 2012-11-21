@@ -25,7 +25,6 @@ namespace
 const QString Organization = "maliit.org";
 const QString Application = "server-tests";
 const QString DefaultPlugin = MALIIT_DEFAULT_PLUGIN;
-const QString DefaultSubview = MALIIT_DEFAULT_SUBVIEW;
 
 }
 
@@ -61,16 +60,16 @@ void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews_data()
         << "maliit/onscreen/active" << "maliit/onscreen/enabled"
         << QString()
         << QStringList()
-        << DefaultPlugin << DefaultSubview
-        << 1 << 0;
+        << DefaultPlugin << ""
+        << 0 << 0;
 
     QTest::newRow("no active subview")
         << "maliit/onscreen/active" << "maliit/onscreen/enabled"
         << QString()
         << (QStringList() << QString(DefaultPlugin + ":cs")
                           << QString(DefaultPlugin + ":fr_ca"))
-        << DefaultPlugin << DefaultSubview
-        << 3 << 0;
+        << DefaultPlugin << ""
+        << 2 << 0;
 
     QTest::newRow("non-default active subview")
         << "maliit/onscreen/active" << "maliit/onscreen/enabled"
@@ -85,7 +84,7 @@ void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews_data()
         << QString(DefaultPlugin + ":fr_ca")
         << QStringList()
         << DefaultPlugin << "fr_ca"
-        << 2 << 0;
+        << 1 << 0;
 }
 
 void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews()
@@ -116,7 +115,9 @@ void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews()
 
     QList<MImOnScreenPlugins::SubView> enabled = plugins.enabledSubViews(active.plugin);
     QCOMPARE(enabled.size(), expected_enabled_count);
-    QCOMPARE(enabled.at(expected_active_index), active);
+    if (expected_active_index > 0) {
+        QCOMPARE(enabled.at(expected_active_index), active);
+    }
 }
 
 QTEST_MAIN(Ut_MImOnScreenPlugins)
