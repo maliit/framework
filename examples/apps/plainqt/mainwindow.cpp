@@ -241,7 +241,7 @@ void MainWindow::onRotateKeyboardClicked()
 
     windowHandle()->reportContentOrientationChange(orientations[m_orientation_index % 4]);
 #else
-    static const const Maliit::OrientationAngle orientations[] = {
+    static const Maliit::OrientationAngle orientations[] = {
         Maliit::Angle0,
         Maliit::Angle90,
         Maliit::Angle180,
