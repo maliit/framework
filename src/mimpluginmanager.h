@@ -188,6 +188,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_onScreenSubViewChanged())
 
     friend class Ut_MIMPluginManager;
+    friend class Ut_MIMPluginManagerConfig;
     friend class Ft_MIMPluginManager;
     friend class Ut_MIMSettingsDialog;
 };

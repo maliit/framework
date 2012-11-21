@@ -112,6 +112,7 @@ void MIMPluginManagerPrivate::loadPlugins()
     Q_FOREACH (QString factoryName, dir.entryList(QDir::Files))
         loadFactoryPlugin(dir, factoryName);
 
+    // Load active plugin first
     Q_FOREACH (QString path, paths) {
         const QDir &dir(path);
 
@@ -119,6 +120,7 @@ void MIMPluginManagerPrivate::loadPlugins()
             break;
     }
 
+    // Load all other plugins
     Q_FOREACH (QString path, paths) {
         const QDir &dir(path);
 
@@ -135,7 +137,22 @@ void MIMPluginManagerPrivate::loadPlugins()
         qFatal("No plugins were found.");
     }
 
-    onScreenPlugins.updateAvailableSubViews(availablePluginsAndSubViews());
+    const QList<MImOnScreenPlugins::SubView> &availableSubViews = availablePluginsAndSubViews();
+    onScreenPlugins.updateAvailableSubViews(availableSubViews);
+
+    // If no subview was active, but we have some subviews already enabled,
+    // auto-activate the first one in the enabled list.
+    // Otherwise, auto-activate the first available subview.
+    if (activeSubView.id.isEmpty()) {
+        QList<MImOnScreenPlugins::SubView> enabledSubViews = onScreenPlugins.enabledSubViews();
+        if (!enabledSubViews.empty()) {
+            onScreenPlugins.setAutoActiveSubView(enabledSubViews.first());
+        } else {
+            MImOnScreenPlugins::SubView subView = availableSubViews.first();
+            onScreenPlugins.setAutoEnabledSubViews(QList<MImOnScreenPlugins::SubView>() << subView);
+            onScreenPlugins.setAutoActiveSubView(subView);
+        }
+    }
 
     Q_EMIT q->pluginsChanged();
 }

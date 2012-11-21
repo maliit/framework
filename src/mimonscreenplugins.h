@@ -38,7 +38,7 @@ public:
 
         explicit SubView();
         explicit SubView(const QString &new_plugin,
-                         const QString &new_id);
+                         const QString &new_id = NULL);
 
         bool operator==(const SubView &other) const;
     };
@@ -47,9 +47,11 @@ public:
 
     bool isEnabled(const QString &plugin) const;
     QList<SubView> enabledSubViews(const QString &plugin) const;
+    QList<SubView> enabledSubViews() const;
 
     bool isSubViewEnabled(const SubView &subview) const;
     void setEnabledSubViews(const QList<SubView> &subViews);
+    void setAutoEnabledSubViews(const QList<SubView> &subViews);
 
     void updateAvailableSubViews(const QList<SubView> &availableSubViews);
     bool isSubViewAvailable(const SubView &subview) const;
@@ -57,6 +59,7 @@ public:
 
     const SubView activeSubView();
     void setActiveSubView(const SubView &subView);
+    void setAutoActiveSubView(const SubView &subView);
 
     void setAllSubViewsEnabled(bool enable);
 
@@ -70,8 +73,6 @@ private Q_SLOTS:
     void updateActiveSubview();
 
 private:
-    SubView guessActiveSubview();
-
     QList<SubView> mAvailableSubViews;
     QList<SubView> mEnabledSubViews;
     QList<SubView> mLastEnabledSubViews;

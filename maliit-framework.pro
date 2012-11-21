@@ -8,7 +8,6 @@ include(./config.pri)
         \\n\\t {BIN,LIB,INCLUDE,DOC}DIR : Install prefix for specific types of files \
         \\n\\t MALIIT_DEFAULT_PLUGIN : Default onscreen (virtual) keyboard plugin \
         \\n\\t MALIIT_DEFAULT_HW_PLUGIN : Default hardware keyboard plugin \
-        \\n\\t MALIIT_DEFAULT_SUBVIEW : Default onscreen (software) subview name \
         \\n\\t MALIIT_SERVER_ARGUMENTS : Arguments to use for starting maliit-server by D-Bus activation \
         \\nRecognised CONFIG flags: \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
@@ -29,7 +28,7 @@ include(./config.pri)
         \\nExamples: \
         \\n\\t qmake \
         \\n\\t qmake PREFIX=/usr LIBDIR=/usr/lib64 CONFIG+=notests \
-        \\n\\t qmake PREFIX=/usr MALIIT_DEFAULT_PLUGIN=libmykeyboard.so MALIIT_DEFAULT_SUBVIEW=en.xml
+        \\n\\t qmake PREFIX=/usr MALIIT_DEFAULT_PLUGIN=libmykeyboard.so
 
     !build_pass:system(echo -e \"$$help_string\")
 } else {
