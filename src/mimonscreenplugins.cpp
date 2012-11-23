@@ -196,20 +196,7 @@ void MImOnScreenPlugins::updateActiveSubview()
         return;
     }
 
-    if (!isSubViewEnabled(subView)) {
-        qDebug() << __PRETTY_FUNCTION__
-                 << "Enabling activated subview" << subView.plugin + ":" + subView.id << "automatically";
-
-        // Insert the activated subview into enabled subviews at current position
-        const int activeSubviewIndex = mEnabledSubViews.indexOf(mActiveSubView);
-        mEnabledSubViews.insert(activeSubviewIndex, subView);
-        setAutoEnabledSubViews(mEnabledSubViews);
-
-        // We rely on the subview to only be present once in enabled list
-        if (mEnabledSubViews.indexOf(mActiveSubView, activeSubviewIndex) != -1) {
-            qCritical() << __PRETTY_FUNCTION__ << "Duplicate entries of active subview in enabled subviews";
-        }
-    }
+    setAutoActiveSubView(subView);
 }
 
 const MImOnScreenPlugins::SubView MImOnScreenPlugins::activeSubView()

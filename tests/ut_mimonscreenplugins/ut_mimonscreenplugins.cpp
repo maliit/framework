@@ -78,13 +78,6 @@ void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews_data()
                           << QString(DefaultPlugin + ":fr_ca"))
         << DefaultPlugin << "fr_ca"
         << 2 << 1;
-
-    QTest::newRow("active but no enabled subview (enabled default subview, too)")
-        << "maliit/onscreen/active" << "maliit/onscreen/enabled"
-        << QString(DefaultPlugin + ":fr_ca")
-        << QStringList()
-        << DefaultPlugin << "fr_ca"
-        << 1 << 0;
 }
 
 void Ut_MImOnScreenPlugins::testActiveAndEnabledSubviews()

@@ -23,6 +23,7 @@
 
 #include "core-utils.h"
 
+#include <QTest>
 #include <QProcess>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -136,22 +137,39 @@ void Ut_MIMPluginManagerConfig::testEmptyConfig()
     QCOMPARE(enabled.first(), active);
 }
 
-void Ut_MIMPluginManagerConfig::activeButNoEnabledSubview()
+void Ut_MIMPluginManagerConfig::autoLanguageSubView()
 {
+    // Force autodetection of enabled plugins in DummyPlugin3
     enabledPluginSettings->unset();
-    activePluginSettings->set(QStringList() << pluginId + ":" + "dummyimsv2");
+    activePluginSettings->set(QStringList() << pluginId3 + ":");
 
     QSharedPointer<MInputContextConnection> icConnection(connection);
     manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
     subject = manager->d_ptr;
 
-    // The active subview should have been auto-enabled.
     MImOnScreenPlugins& plugins = subject->onScreenPlugins;
-    MImOnScreenPlugins::SubView active = plugins.activeSubView();
-    QList<MImOnScreenPlugins::SubView> enabled = plugins.enabledSubViews(active.plugin);
+    QList<MImOnScreenPlugins::SubView> enabled = plugins.enabledSubViews(pluginId3);
 
-    QCOMPARE(enabled.size(), 1);
-    QCOMPARE(enabled.first(), active);
+    // Expect 3 results; ur_PK should have been skipped (no match)
+    QCOMPARE(enabled.size(), 3);
+
+    // First one should be en_gb - simple match
+    QCOMPARE(enabled[0].id, QString("en_gb"));
+
+    // Check that we matched after stripping the country code
+    QCOMPARE(enabled[1].id, QString("es"));
+
+    // Check that we matched after auto-adding the country code
+    QCOMPARE(enabled[2].id, QString("fr_fr"));
 }
 
-QTEST_MAIN(Ut_MIMPluginManagerConfig)
+int main()
+{
+    // Provide our own main function so that we can override LANGUAGE
+    // before Qt gets loaded.
+    setenv("LANGUAGE", "en_GB.utf8:ur_PK.utf8:es_NI.utf8:fr", 1);
+
+    Ut_MIMPluginManagerConfig test;
+    QTest::qExec(&test);
+    return 0;
+}

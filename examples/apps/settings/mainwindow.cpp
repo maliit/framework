@@ -252,8 +252,19 @@ void MainWindow::setLanguage(int index)
 
     qDebug() << "Setting layout" << language_selector->itemData(index);
 
-    if (language_entry) {
-        language_entry->set(language_selector->itemData(index));
+    if (language_entry && enabled_entry) {
+        const QString layout = language_selector->itemData(index).toString();
+
+        // Make sure the new layout is enabled
+        QStringList list = enabled_entry->value().toStringList();
+        if (!list.contains(layout)) {
+            qDebug() << "Enabling layout first";
+            list.append(layout);
+            enabled_entry->set(list);
+        }
+
+        // Now activate the new layout
+        language_entry->set(layout);
     } else {
         qCritical() << "Language entry is NULL";
     }
