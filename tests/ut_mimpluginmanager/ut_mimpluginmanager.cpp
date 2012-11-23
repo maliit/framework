@@ -668,7 +668,7 @@ void Ut_MIMPluginManager::testSubViews()
         subViews += subject->plugins[plugin].inputMethod->subViews(Maliit::OnScreen);
     }
     // only has subviews for Maliit::OnScreen
-    QCOMPARE(subViews.count(), 5);
+    QCOMPARE(subViews.count(), 8);
 
     subViews.clear();
     Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, subject->plugins.keys()) {

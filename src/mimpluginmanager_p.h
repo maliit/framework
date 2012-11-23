@@ -102,6 +102,8 @@ public:
     MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, QSharedPointer<AbstractSurfaceGroupFactory> surfaceGroupFactory, MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
+    void autoDetectEnabledSubViews(const QString &plugin);
+
     void activatePlugin(Maliit::Plugins::InputMethodPlugin *plugin);
     void loadPlugins();
     bool loadPlugin(const QDir &dir, const QString &fileName);

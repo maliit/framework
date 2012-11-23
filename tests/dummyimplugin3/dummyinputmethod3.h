@@ -42,6 +42,8 @@ Q_SIGNALS:
 private:
     Q_SLOT void handleSettingChanged();
 
+    void addSubView(const QString &id, const QString &title);
+
     QList<MAbstractInputMethod::MInputMethodSubView> sViews;
     QString activeSView;
 };

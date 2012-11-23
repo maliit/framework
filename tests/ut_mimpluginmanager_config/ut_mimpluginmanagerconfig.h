@@ -39,7 +39,7 @@ private Q_SLOTS:
 
     void testNoActiveSubView();
     void testEmptyConfig();
-    void activeButNoEnabledSubview();
+    void autoLanguageSubView();
 
 private:
     QString pluginPath;

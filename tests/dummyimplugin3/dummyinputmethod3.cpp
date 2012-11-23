@@ -4,6 +4,14 @@
 #include <QDebug>
 #include <QRegion>
 
+void DummyInputMethod3::addSubView(const QString &id, const QString &title)
+{
+    MAbstractInputMethod::MInputMethodSubView sv;
+    sv.subViewId = id;
+    sv.subViewTitle = title;
+    sViews.append(sv);
+}
+
 DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *host)
     : MAbstractInputMethod(host),
       setStateCount(0),
@@ -11,15 +19,11 @@ DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *host)
       directionParam(Maliit::SwitchUndefined),
       enableAnimationParam(false)
 {
-    MAbstractInputMethod::MInputMethodSubView sv1;
-    sv1.subViewId = "dummyim3sv1";
-    sv1.subViewTitle = "dummyim3sv1";
-    sViews.append(sv1);
-
-    MAbstractInputMethod::MInputMethodSubView sv2;
-    sv2.subViewId = "dummyim3sv2";
-    sv2.subViewTitle = "dummyim3sv2";
-    sViews.append(sv2);
+    addSubView("dummyim3sv1", "dummyim3sv1");
+    addSubView("dummyim3sv2", "dummyim3sv2");
+    addSubView("en_gb", "en_gb");
+    addSubView("es", "es");
+    addSubView("fr_fr", "fr_fr");
 
     activeSView = "dummyim3sv1";
 
