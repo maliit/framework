@@ -163,13 +163,18 @@ void Ut_MIMPluginManagerConfig::autoLanguageSubView()
     QCOMPARE(enabled[2].id, QString("fr_fr"));
 }
 
-int main()
+int main(int argc, char **argv)
 {
     // Provide our own main function so that we can override LANGUAGE
     // before Qt gets loaded.
+    // FIXME: Find a cleaner way to set LANGUAGE env that allows us to use
+    // QTEST_MAIN macro again.
     setenv("LANGUAGE", "en_GB.utf8:ur_PK.utf8:es_NI.utf8:fr", 1);
 
     Ut_MIMPluginManagerConfig test;
-    QTest::qExec(&test);
+
+    // Qt5 crashes when not supplying argc & argv.
+    // TODO: File bug report.
+    QTest::qExec(&test, argc, argv);
     return 0;
 }
