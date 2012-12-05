@@ -21,8 +21,8 @@
 #include <maliit/plugins/abstractsurfacefactory.h>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <maliit/plugins/quickviewsurface.h>
-#include <Qt/QtQuick>
-#include <Qt/QtGui>
+#include <QtQuick>
+#include <QtGui>
 #include <qpa/qplatformnativeinterface.h>
 #include <xcb/xcb.h>
 #include <xcb/xfixes.h>
