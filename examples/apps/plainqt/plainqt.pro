@@ -8,10 +8,12 @@ DEPENDPATH += .
 
 BUILD_TYPE = unittest
 
-contains(BUILD_TYPE, skeleton) {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += maliit-1.0
-    INCLUDEPATH += $$system(pkg-config --cflags maliit-1.0 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
+!contains(QT_MAJOR_VERSION, 5) {
+    contains(BUILD_TYPE, skeleton) {
+        CONFIG += link_pkgconfig
+        PKGCONFIG += maliit-1.0
+        INCLUDEPATH += $$system(pkg-config --cflags maliit-1.0 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
+    }
 }
 
 contains(BUILD_TYPE, unittest) {
@@ -19,11 +21,13 @@ contains(BUILD_TYPE, unittest) {
     target.path = $$BINDIR
     INSTALLS += target
 
-    # Used for testing purposes, can be deleted when used as a project skeleton
-    # Build against in-tree libs
-    TOP_DIR = ../../..
-    include($$TOP_DIR/common/libmaliit-common.pri)
-    include($$TOP_DIR/maliit/libmaliit.pri)
+    !contains(QT_MAJOR_VERSION, 5) {
+        # Used for testing purposes, can be deleted when used as a project skeleton
+        # Build against in-tree libs
+        TOP_DIR = ../../..
+        include($$TOP_DIR/common/libmaliit-common.pri)
+        include($$TOP_DIR/maliit/libmaliit.pri)
+    }
 }
 
 SOURCES += \

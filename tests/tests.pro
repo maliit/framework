@@ -12,11 +12,15 @@ SUBDIRS += \
           sanitychecks \
           ut_mattributeextensionmanager \
           ut_mkeyoverride \
-          ft_exampleplugin \
+          ft_exampleplugin
+!contains(QT_MAJOR_VERSION, 5) {
+    SUBDIRS += \
           ut_maliit_attributeextension \
           ut_maliit_attributeextensionregistry \
           ut_maliit_inputmethod \
-          ut_maliit_settings \
+          ut_maliit_settings
+}
+SUBDIRS += \
           ut_mimsettings \
           bbt_connection \
           ut_maliit_glib_settings \
