@@ -46,7 +46,12 @@ SUBDIRS = common
     SUBDIRS += dbus_interfaces
 }
 
-SUBDIRS += connection src maliit maliit-settings
+SUBDIRS += connection src
+
+!contains(QT_MAJOR_VERSION, 5) {
+    # https://bugs.maliit.org/show_bug.cgi?id=47#c4
+    SUBDIRS += maliit maliit-settings
+}
 
 !disable-dbus {
     SUBDIRS += passthroughserver connection-glib maliit-glib
