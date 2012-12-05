@@ -36,6 +36,9 @@ MImSettingsBackend::~MImSettingsBackend()
 {
 }
 
+MImSettingsBackendFactory::~MImSettingsBackendFactory()
+{
+}
 
 QString MImSettings::key() const
 {

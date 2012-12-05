@@ -45,7 +45,7 @@ bool MImUpdateEventPrivate::isFlagSet(Qt::InputMethodHint hint,
     }
 
     if (changed) {
-        *changed = (result != (lastHints & hint));
+        *changed = (result != ((lastHints & hint) != 0));
     }
 
     return result;
