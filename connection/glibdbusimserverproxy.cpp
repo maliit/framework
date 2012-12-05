@@ -197,7 +197,7 @@ void GlibDBusIMServerProxy::openDBusConnection(const QString &addressString)
     dbus_g_proxy_add_signal(d->glibObjectProxy, "invokeAction", G_TYPE_STRING, G_TYPE_STRING, G_TYPE_INVALID);
     dbus_g_proxy_connect_signal(d->glibObjectProxy, "invokeAction", G_CALLBACK(onInvokeActionTrampoline), this, 0);
 
-    dbus_g_connection_register_g_object(d->connection.get(), icAdaptorPath.toAscii().data(), d->inputContextAdaptor);
+    dbus_g_connection_register_g_object(d->connection.get(), icAdaptorPath.toLatin1().data(), d->inputContextAdaptor);
 
     Q_EMIT connected();
 }
