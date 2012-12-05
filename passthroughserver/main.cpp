@@ -71,7 +71,8 @@ namespace {
         return debugEnabled == 1;
     }
 
-    void outputMessagesToStdErr(QtMsgType type, const char *msg)
+    void outputMessageToStdErr(QtMsgType type,
+                               const char *msg)
     {
         switch (type) {
         case QtDebugMsg:
@@ -90,11 +91,33 @@ namespace {
             abort();
         }
     }
+
+
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    void outputMessagesToStdErr(QtMsgType type,
+                                const char *msg)
+    {
+        outputMessageToStdErr(type, msg);
+    }
+#else
+    void outputMessagesToStdErr(QtMsgType type,
+                                const QMessageLogContext &context,
+                                const QString &msg)
+    {
+        Q_UNUSED(context);
+
+        outputMessageToStdErr(type, msg.toLatin1().data());
+    }
+#endif
 }
 #define Q_WS_QWS
 int main(int argc, char **argv)
 {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     qInstallMsgHandler(outputMessagesToStdErr);
+#else
+    qInstallMessageHandler(outputMessagesToStdErr);
+#endif
 
     // QT_IM_MODULE, MApplication and QtMaemo5Style all try to load
     // MInputContext, which is fine for the application. For the passthrough

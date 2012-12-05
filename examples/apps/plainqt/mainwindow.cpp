@@ -4,17 +4,13 @@
 #include <QGuiApplication>
 #include <QScreen>
 #include <QWindow>
+#else
+#include <maliit/namespace.h>
+#include <maliit/inputmethod.h>
 #endif
 
 #include <QtCore>
 #include <QVBoxLayout>
-
-#if defined(Q_WS_X11)
-#include <QX11Info>
-#endif
-
-#include <maliit/namespace.h>
-#include <maliit/inputmethod.h>
 
 #include <cstdlib>
 

@@ -5,7 +5,7 @@
 #include <maliit/plugins/quickviewsurface.h>
 
 #include <QtGui>
-#include <Qt/QtQuick>
+#include <QtQuick>
 
 using Maliit::Plugins::AbstractSurface;
 
@@ -83,7 +83,7 @@ public:
         mRelativePosition = position;
         QPoint parentPosition(0, 0);
         if (mParent) {
-            parentPosition = mParent->mWindow->pos();
+            parentPosition = mParent->mWindow->position();
         }
         mWindow->setPos(parentPosition + mRelativePosition);
     }
@@ -103,7 +103,7 @@ public:
         if (!windowedSurface)
             return QPoint();
 
-        return -mWindow->pos() + eventPosition + windowedSurface->mWindow->pos();
+        return -mWindow->position() + eventPosition + windowedSurface->mWindow->position();
     }
 
     void setActive(bool active)
