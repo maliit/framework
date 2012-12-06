@@ -27,7 +27,7 @@
 #include "selectentrycombobox.h"
 #include "boolentrycheckbox.h"
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtGui/QInputMethod>
@@ -80,7 +80,7 @@ bool MainWindow::eventFilter(QObject *watched,
     // Let the input method show up on focus-in, not on second click:
     if (watched == im_testing_entry
         && event->type() == QFocusEvent::FocusIn) {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         qApp->inputMethod()->show();
 #else
         if (QInputContext *ic = qApp->inputContext()) {

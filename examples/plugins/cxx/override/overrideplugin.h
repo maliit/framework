@@ -28,7 +28,7 @@ class OverridePlugin: public QObject,
 {
     Q_OBJECT
     Q_INTERFACES(Maliit::Plugins::InputMethodPlugin)
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     Q_PLUGIN_METADATA(IID  "org.maliit.examples.cxx.overrideplugin"
                       FILE "overrideplugin.json")
 #endif

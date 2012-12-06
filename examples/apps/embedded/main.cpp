@@ -15,7 +15,7 @@
 #include "embedded.h"
 
 #include <QApplication>
-#if (QT_VERSION < 0x050000)
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
 #include <QInputContextFactory>
 #endif
 
@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 {
     QApplication kit(argc, argv);
 
-#if (QT_VERSION < 0x050000)
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     kit.setInputContext(QInputContextFactory::create("MaliitDirect", &kit));
 #endif
 

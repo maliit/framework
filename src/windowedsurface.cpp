@@ -32,7 +32,7 @@
 #include <QGraphicsItem>
 #include <QWidget>
 
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QGuiApplication>
 #include <QtGui/5.0.0/QtGui/qpa/qplatformnativeinterface.h>
 #include <QVariant>
