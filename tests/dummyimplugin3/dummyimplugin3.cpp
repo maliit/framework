@@ -26,6 +26,6 @@ QSet<Maliit::HandlerState> DummyImPlugin3::supportedStates() const
     return allowedStates;
 }
 
-#if QT_VERSION < 0x050000
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 Q_EXPORT_PLUGIN2(dummyimplugin3, DummyImPlugin3)
 #endif

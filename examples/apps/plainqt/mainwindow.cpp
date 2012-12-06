@@ -172,7 +172,7 @@ bool MainWindow::eventFilter(QObject *watched,
 
     // Let the input method show up on focus-in, not on second click:
     if (event->type() == QFocusEvent::FocusIn) {
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         qApp->inputMethod()->show();
 #else
         if (QInputContext *ic = qApp->inputContext()) {
