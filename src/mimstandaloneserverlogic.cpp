@@ -16,7 +16,7 @@
 
 #include "mimpluginsproxywidget.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) && 0
 #include "quickviewsurfacegroup.h"
 #else
 #include "windowedsurfacegroup.h"
@@ -28,7 +28,7 @@
 MImStandaloneServerLogic::MImStandaloneServerLogic() :
     MImAbstractServerLogic(0),
     mProxyWidget(new MImPluginsProxyWidget()),
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0) && 0
     mSurfaceGroupFactory(new Maliit::Server::QuickViewSurfaceGroupFactory)
 #else
     mSurfaceGroupFactory(new Maliit::Server::WindowedSurfaceGroupFactory)
