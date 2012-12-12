@@ -147,8 +147,9 @@ public Q_SLOTS:
     void userHide();
 
 private:
-    Q_DISABLE_COPY(MInputMethodQuick);
-    Q_DECLARE_PRIVATE(MInputMethodQuick);
+    Q_DISABLE_COPY(MInputMethodQuick)
+    Q_DECLARE_PRIVATE(MInputMethodQuick)
+
     MInputMethodQuickPrivate *const d_ptr;
 
 private Q_SLOTS:
