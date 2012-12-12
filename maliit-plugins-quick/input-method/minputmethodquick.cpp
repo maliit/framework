@@ -151,10 +151,9 @@ public:
 
     void loadQmlFile(const QString &qmlFileName)
     {
-        const bool wasContentVisible(m_content ? m_content->isVisible() : false);
-
-        if (wasContentVisible) {
-            m_controller->hide();
+        if (m_content) {
+            qWarning() << "Qml file already loaded";
+            return;
         }
 
         m_component.reset(new MaliitQmlComponent(m_engine, QUrl(qmlFileName)));
@@ -170,13 +169,7 @@ public:
             m_content = new QGraphicsTextItem("Error loading QML");
         }
 
-        if (wasContentVisible) {
-            m_controller->show();
-            m_content->show();
-        } else {
-            m_content->hide();
-        }
-
+        m_content->hide();
         m_scene->addItem(m_content);
     }
 
@@ -212,7 +205,7 @@ public:
     QSharedPointer<MKeyOverrideQuick> actionKeyOverride;
     QSharedPointer<MKeyOverride> sentActionKeyOverride;
 
-    Q_DECLARE_PUBLIC(MInputMethodQuick);
+    Q_DECLARE_PUBLIC(MInputMethodQuick)
 
     MInputMethodQuickPrivate(MAbstractInputMethodHost *host,
                              MInputMethodQuick *im)
@@ -355,8 +348,8 @@ void MInputMethodQuick::show()
 {
     Q_D(MInputMethodQuick);
     d->sipRequested = true;
-    if(d->sipIsInhibited) {
-      return;
+    if (d->sipIsInhibited) {
+        return;
     }
 
     handleAppOrientationChanged(d->appOrientation);
