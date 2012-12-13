@@ -62,6 +62,15 @@ class MInputMethodQuick
     Q_PROPERTY(MKeyOverrideQuick *actionKeyOverride READ actionKeyOverride
                                                     NOTIFY actionKeyOverrideChanged)
 
+    //! Property for whether input method is active
+    Q_PROPERTY(bool active READ isActive NOTIFY activeChanged)
+
+    // TODO: make this default behavior without ability to change
+    //! Until 0.81.3 MInputMethodQuick handled showing and hiding input methods. This did not support
+    //! implementing transitions. Settings this true makes the QML side in control how and when items
+    //! are shown.
+    Q_PROPERTY(bool pluginHandlesTransitions READ pluginHandlesTransitions WRITE setPluginHandlesTransitions NOTIFY pluginHandlesTransitionsChanged)
+
 public:
     enum KeyEvent { KeyPress = QEvent::KeyPress,
                     KeyRelease = QEvent::KeyRelease };
@@ -104,14 +113,27 @@ public:
     QRect inputMethodArea() const;
 
     //! Sets input method area. Called by QML components.
-    //! area the area consumed by the QML input method.
+    //! area the area reserved for QML input method. On transitions can reserve target area at start.
     Q_INVOKABLE void setInputMethodArea(const QRect &area);
+
+    //! Sets area input method is actually using from the screen.
+    Q_INVOKABLE void setScreenRegion(const QRect &region);
 
     //! Returns action key override.
     MKeyOverrideQuick *actionKeyOverride() const;
 
     //! Activates action key, that is - sends enter keypress.
     Q_INVOKABLE void activateActionKey();
+
+    //! Return true on input method expected to be shown
+    bool isActive() const;
+    //! Sets input method expected to be shown/hidden
+    void setActive(bool enable);
+
+    //! Return true when plugin handles showing and hiding its root item
+    bool pluginHandlesTransitions() const;
+    //! Sets plugin in charge of viewing its own items
+    void setPluginHandlesTransitions(bool enable);
 
 Q_SIGNALS:
     //! Emitted when screen height changes.
@@ -128,6 +150,10 @@ Q_SIGNALS:
 
     //! Emitted when key action override changes.
     void actionKeyOverrideChanged(MKeyOverride *override);
+
+    void activeChanged();
+
+    void pluginHandlesTransitionsChanged();
 
 public Q_SLOTS:
     //! Sends preedit string. Called by QML components.
