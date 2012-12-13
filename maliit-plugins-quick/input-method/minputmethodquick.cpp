@@ -102,7 +102,10 @@ public:
             return;
         }
 
-        m_content->show();
+        if (not m_controller->pluginHandlesTransitions())
+            m_content->show();
+
+        m_controller->setActive(true);
     }
 
     void hideUI()
@@ -111,7 +114,10 @@ public:
             return;
         }
 
-        m_content->hide();
+        if (not m_controller->pluginHandlesTransitions())
+            m_content->hide();
+
+        m_controller->setActive(false);
     }
 
     void setToolbar(const QSharedPointer<const MToolbarData>&)
@@ -164,6 +170,8 @@ public:
     bool sipIsInhibited;
     QSharedPointer<MKeyOverrideQuick> actionKeyOverride;
     QSharedPointer<MKeyOverride> sentActionKeyOverride;
+    bool active;
+    bool pluginHandlesTransitions;
 
     Q_DECLARE_PUBLIC(MInputMethodQuick)
 
@@ -180,6 +188,8 @@ public:
         , sipIsInhibited(false)
         , actionKeyOverride(new MKeyOverrideQuick())
         , sentActionKeyOverride()
+        , active(false)
+        , pluginHandlesTransitions(false)
     {
         updateActionKey(MKeyOverride::All);
     }
@@ -197,7 +207,10 @@ public:
         if (not host) {
             return;
         }
-        host->setScreenRegion(region);
+
+        if (not pluginHandlesTransitions) {
+            host->setScreenRegion(region);
+        }
         host->setInputMethodArea(region);
     }
 
@@ -256,9 +269,12 @@ void MInputMethodQuick::show()
     handleAppOrientationChanged(d->appOrientation);
     
     if (d->activeState == MInputMethod::OnScreen) {
-      d->loader->showUI();
-      const QRegion r(inputMethodArea());
-      d->handleInputMethodAreaUpdate(inputMethodHost(), r);
+        d->loader->showUI();
+
+        if (not d->pluginHandlesTransitions) {
+            const QRegion r(inputMethodArea());
+            d->handleInputMethodAreaUpdate(inputMethodHost(), r);
+        }
     }
 }
 
@@ -384,9 +400,14 @@ void MInputMethodQuick::setInputMethodArea(const QRect &area)
 
     if (d->inputMethodArea != area) {
         d->inputMethodArea = area;
-
+        d->handleInputMethodAreaUpdate(inputMethodHost(), d->inputMethodArea);
         Q_EMIT inputMethodAreaChanged(d->inputMethodArea);
     }
+}
+
+void MInputMethodQuick::setScreenRegion(const QRect &region)
+{
+    inputMethodHost()->setScreenRegion(region);
 }
 
 void MInputMethodQuick::sendPreedit(const QString &text)
@@ -461,4 +482,34 @@ MKeyOverrideQuick* MInputMethodQuick::actionKeyOverride() const
 void MInputMethodQuick::activateActionKey()
 {
     sendCommit("\n");
+}
+
+bool MInputMethodQuick::isActive() const
+{
+    Q_D(const MInputMethodQuick);
+    return d->active;
+}
+
+void MInputMethodQuick::setActive(bool enable)
+{
+    Q_D(MInputMethodQuick);
+    if (d->active != enable) {
+        d->active = enable;
+        Q_EMIT activeChanged();
+    }
+}
+
+bool MInputMethodQuick::pluginHandlesTransitions() const
+{
+    Q_D(const MInputMethodQuick);
+    return d->pluginHandlesTransitions;
+}
+
+void MInputMethodQuick::setPluginHandlesTransitions(bool enable)
+{
+    Q_D(MInputMethodQuick);
+    if (d->pluginHandlesTransitions != enable) {
+        d->pluginHandlesTransitions = enable;
+        Q_EMIT pluginHandlesTransitionsChanged();
+    }
 }
