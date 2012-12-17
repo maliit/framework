@@ -15,6 +15,7 @@
  */
 
 #include "windowedsurface.h"
+#include "windowedsurface_p.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include "mimdummyinputcontext.h"
@@ -53,167 +54,163 @@ namespace {
     const Qt::WindowFlags g_window_flags =
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     Qt::WindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint | Qt::WindowDoesNotAcceptFocus);
-#else 
+#else
     Qt::WindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 #endif
 }
 
-class WindowedSurface : public virtual Maliit::Plugins::AbstractSurface
+WindowedSurface::WindowedSurface(WindowedSurfaceFactory *factory,
+                                 AbstractSurface::Options options,
+                                 const QSharedPointer<WindowedSurface> &parent,
+                                 QWidget *toplevel)
+    : AbstractSurface(),
+      mFactory(factory),
+      mOptions(options),
+      mParent(parent),
+      mToplevel(toplevel),
+      mActive(false),
+      mVisible(false),
+      mRelativePosition()
 {
-public:
-    WindowedSurface(WindowedSurfaceFactory *factory, AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent, QWidget *toplevel)
-        : AbstractSurface(),
-          mFactory(factory),
-          mOptions(options),
-          mParent(parent),
-          mToplevel(toplevel),
-          mActive(false),
-          mVisible(false),
-          mRelativePosition()
-    {
-        QWidget *parentWidget = 0;
-        if (parent) {
-            parentWidget = parent->mToplevel.data();
-        }
-        mToplevel->setParent(parentWidget, g_window_flags);
+    QWidget *parentWidget = 0;
+    if (parent) {
+        parentWidget = parent->mToplevel.data();
+    }
+    mToplevel->setParent(parentWidget, g_window_flags);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        mToplevel->setAttribute(Qt::WA_X11DoNotAcceptFocus);
+    mToplevel->setAttribute(Qt::WA_X11DoNotAcceptFocus);
 #endif
-        mToplevel->setAutoFillBackground(false);
-        mToplevel->setBackgroundRole(QPalette::NoRole);
+    mToplevel->setAutoFillBackground(false);
+    mToplevel->setBackgroundRole(QPalette::NoRole);
 
-        mToplevel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    mToplevel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-        updateVisibility();
-    }
+    updateVisibility();
+}
 
-    ~WindowedSurface()
-    {
-    }
+WindowedSurface::~WindowedSurface()
+{
+}
 
-    void show()
-    {
-        mVisible = true;
-        updateVisibility();
-    }
+void WindowedSurface::show()
+{
+    mVisible = true;
+    updateVisibility();
+}
 
-    void hide()
-    {
-        mVisible = false;
-        updateVisibility();
-    }
+void WindowedSurface::hide()
+{
+    mVisible = false;
+    updateVisibility();
+}
 
-    QSize size() const
-    {
-        return mToplevel->size();
-    }
+QSize WindowedSurface::size() const
+{
+    return mToplevel->size();
+}
 
-    void setSize(const QSize &size)
-    {
-        const QSize& desktopSize = QApplication::desktop()->screenGeometry().size();
+void WindowedSurface::setSize(const QSize &size)
+{
+    const QSize& desktopSize = QApplication::desktop()->screenGeometry().size();
 
-        if (isWindow()) {
-            // stand-alone Maliit server
-            if (mOptions & PositionCenterBottom) {
-                mToplevel->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2, desktopSize.height() - size.height()), size));
-            } else {
-                mToplevel->resize(size);
-            }
+    if (isWindow()) {
+        // stand-alone Maliit server
+        if (mOptions & PositionCenterBottom) {
+            mToplevel->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2,
+                                                desktopSize.height() - size.height()), size));
         } else {
-            // application-hosted Maliit server
             mToplevel->resize(size);
         }
-        mFactory->updateInputMethodArea();
+    } else {
+        // application-hosted Maliit server
+        mToplevel->resize(size);
     }
+    mFactory->updateInputMethodArea();
+}
 
-    QPoint relativePosition() const
-    {
-        return mRelativePosition;
-    }
+QPoint WindowedSurface::relativePosition() const
+{
+    return mRelativePosition;
+}
 
-    void setRelativePosition(const QPoint &position)
-    {
-        mRelativePosition = position;
-        QPoint parentPosition(0, 0);
-        if (mParent) {
-            if (isWindow() && !mParent->isWindow()) {
-                parentPosition = mParent->mapToGlobal(QPoint(0, 0));
-            } else if (!isWindow() && mParent->isWindow()) {
-                // do nothing
-            } else {
-                parentPosition = mParent->mToplevel->pos();
-            }
+void WindowedSurface::setRelativePosition(const QPoint &position)
+{
+    mRelativePosition = position;
+    QPoint parentPosition(0, 0);
+    if (mParent) {
+        if (isWindow() && !mParent->isWindow()) {
+            parentPosition = mParent->mapToGlobal(QPoint(0, 0));
+        } else if (!isWindow() && mParent->isWindow()) {
+            // do nothing
+        } else {
+            parentPosition = mParent->mToplevel->pos();
         }
-        mToplevel->move(parentPosition + mRelativePosition);
+    }
+    mToplevel->move(parentPosition + mRelativePosition);
         mFactory->updateInputMethodArea();
-    }
+}
 
+QSharedPointer<AbstractSurface> WindowedSurface::parent() const
+{
+    return mParent;
+}
 
-    QSharedPointer<AbstractSurface> parent() const
-    {
-        return mParent;
-    }
+QPoint WindowedSurface::translateEventPosition(const QPoint &eventPosition,
+                                               const QSharedPointer<AbstractSurface> &eventSurface) const
+{
+    if (!eventSurface)
+        return eventPosition;
 
-    QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const
-    {
-        if (!eventSurface)
-            return eventPosition;
+    QSharedPointer<WindowedSurface> windowedSurface = qSharedPointerDynamicCast<WindowedSurface>(eventSurface);
+    if (!windowedSurface)
+        return QPoint();
 
-        QSharedPointer<WindowedSurface> windowedSurface = qSharedPointerDynamicCast<WindowedSurface>(eventSurface);
-        if (!windowedSurface)
-            return QPoint();
+    return -mToplevel->pos() + eventPosition + windowedSurface->mToplevel->pos();
+}
 
-        return -mToplevel->pos() + eventPosition + windowedSurface->mToplevel->pos();
-    }
+void WindowedSurface::setActive(bool active)
+{
+    mActive = active;
+    updateVisibility();
+}
 
-    void setActive(bool active)
-    {
-        mActive = active;
-        updateVisibility();
-    }
-
-
-    void applicationFocusChanged(WId winId)
-    {
-        if (mParent)
-            return;
+void WindowedSurface::applicationFocusChanged(WId winId)
+{
+    if (mParent)
+        return;
 #ifdef Q_WS_X11
-        XSetTransientForHint(QX11Info::display(),
-                             mToplevel->window()->effectiveWinId(),
-                             winId);
+    XSetTransientForHint(QX11Info::display(),
+                         mToplevel->window()->effectiveWinId(),
+                         winId);
 #else
-        Q_UNUSED(winId);
+    Q_UNUSED(winId);
 #endif
-    }
+}
 
-    QRegion inputMethodArea()
-    {
-        if (!mToplevel->isVisible())
-            return QRegion();
+QRegion WindowedSurface::inputMethodArea()
+{
+    if (!mToplevel->isVisible())
+        return QRegion();
 
-        return QRegion(mToplevel->geometry());
-    }
+    return QRegion(mToplevel->geometry());
+}
 
-private:
-    void updateVisibility()
-    {
-        mToplevel->setVisible(mActive && mVisible);
-        mFactory->updateInputMethodArea();
-    }
+void WindowedSurface::updateVisibility()
+{
+    mToplevel->setVisible(mActive && mVisible);
+    mFactory->updateInputMethodArea();
+}
 
-protected:
-    bool isWindow() const { return mToplevel->isWindow(); }
-    QPoint mapToGlobal(const QPoint &pos) const { return mToplevel->mapToGlobal(pos); }
+bool WindowedSurface::isWindow() const
+{
+    return mToplevel->isWindow();
+}
 
-    WindowedSurfaceFactory *mFactory;
-    Options mOptions;
-    QSharedPointer<WindowedSurface> mParent;
-    QScopedPointer<QWidget> mToplevel;
-    bool mActive;
-    bool mVisible;
-    QPoint mRelativePosition;
-};
+QPoint WindowedSurface::mapToGlobal(const QPoint &pos) const
+{
+    return mToplevel->mapToGlobal(pos);
+}
 
 class GraphicsView : public QGraphicsView
 {

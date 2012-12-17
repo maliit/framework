@@ -86,6 +86,7 @@ SERVER_HEADERS_PRIVATE += \
         abstractsurfacegroup.h \
         abstractsurfacegroupfactory.h \
         windowedsurface.h \
+        windowedsurface_p.h \
         windowedsurfacegroup.h \
         mimpluginsproxywidget.h \
         mimpluginmanager.h \
