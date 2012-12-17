@@ -415,21 +415,40 @@ bool WindowedSurfaceFactory::supported(Maliit::Plugins::AbstractSurface::Options
     return options & AbstractSurface::TypeGraphicsView;
 }
 
+namespace {
+
+QSharedPointer<WindowedSurface> createSurface(WindowedSurfaceFactory *factory,
+                                              AbstractSurface::Options options,
+                                              const QSharedPointer<WindowedSurface> &parent)
+{
+    if (options & Maliit::Plugins::AbstractSurface::TypeGraphicsView) {
+        return QSharedPointer<WindowedSurface>(new WindowedGraphicsViewSurface(factory,
+                                                                               options,
+                                                                               parent));
+    }
+    if (options & Maliit::Plugins::AbstractSurface::TypeWidget) {
+        return QSharedPointer<WindowedSurface>(new WindowedWidgetSurface(factory,
+                                                                         options,
+                                                                         parent));
+    }
+    return QSharedPointer<WindowedSurface>();
+}
+
+} // unnamed namespace
+
 QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent)
 {
-    QSharedPointer<WindowedSurface> defaultSurfaceParent(qSharedPointerDynamicCast<WindowedSurface>(parent));
-    if (options & Maliit::Plugins::AbstractSurface::TypeGraphicsView) {
-        QSharedPointer<WindowedGraphicsViewSurface> newSurface(new WindowedGraphicsViewSurface(this, options, defaultSurfaceParent));
-        surfaces.push_back(newSurface);
-        Q_EMIT surfaceWidgetCreated(newSurface->view(), options);
-        return newSurface;
-    } else if (options & Maliit::Plugins::AbstractSurface::TypeWidget) {
-        QSharedPointer<WindowedWidgetSurface> newSurface(new WindowedWidgetSurface(this, options, defaultSurfaceParent));
-        surfaces.push_back(newSurface);
-        Q_EMIT surfaceWidgetCreated(newSurface->widget(), options);
-        return newSurface;
+    Q_D(WindowedSurfaceFactory);
+
+    QSharedPointer<WindowedSurface> default_surface_parent(qSharedPointerDynamicCast<WindowedSurface>(parent));
+    QSharedPointer<WindowedSurface> new_surface(createSurface(this, options,
+                                                              default_surface_parent));
+
+    if (new_surface) {
+        d->surfaces.push_back(new_surface);
+        Q_EMIT surfaceWidgetCreated(new_surface->widget(), options);
     }
-    return QSharedPointer<AbstractSurface>();
+    return new_surface;
 }
 
 void WindowedSurfaceFactory::activate()
