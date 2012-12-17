@@ -110,6 +110,11 @@ namespace {
 
 QSharedPointer<MInputContextConnection> createConnection(const MImServerConnectionOptions &options)
 {
+#ifdef HAVE_WAYLAND
+    if (QGuiApplication::platformName() == "wayland") {
+        return QSharedPointer<MInputContextConnection>(Maliit::createWestonIMProtocolConnection());
+    } else
+#endif
     if (options.overriddenAddress.isEmpty()) {
         return QSharedPointer<MInputContextConnection>(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
     } else {
