@@ -1,0 +1,8 @@
+Things not yet implemented in Weston, but used by Maliit Keyboard:
+1. IM initiated hiding notifications.
+2. Action invoking. By action we mean "copy", "paste" and such. For
+   completness we could also pass a key sequences like Ctrl+c for
+   copying or Ctrl+v for pasting.
+3. Make putting a cursor before commited text possible. For now Weston
+   takes an unsigned int which is relative to the beginning of
+   commited text.

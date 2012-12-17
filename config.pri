@@ -156,6 +156,10 @@ contains(QT_MAJOR_VERSION, 4) {
     QT_WIDGETS = gui
 } else {
     QT_WIDGETS = gui widgets
+
+    wayland {
+        DEFINES += HAVE_WAYLAND
+    }
 }
 
 MALIIT_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features

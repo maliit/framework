@@ -46,6 +46,20 @@ disable-dbus {
     }
 }
 
+contains(QT_MAJOR_VERSION, 5) {
+    wayland {
+        load(wayland-scanner)
+        PUBLIC_SOURCES += \
+            minputcontextwestonimprotocolconnection.cpp
+        PUBLIC_HEADERS += \
+            minputcontextwestonimprotocolconnection.h
+        WAYLANDSOURCES += \
+            $$IN_PWD/input-method.xml \
+            $$IN_PWD/text.xml
+        PKGCONFIG += wayland-client
+    }
+}
+
 include($$TOP_DIR/dbus_interfaces/dbus_interfaces.pri)
 
 qdbus-dbus-connection {
@@ -264,4 +278,3 @@ INSTALLS += target \
     install_pkgconfig \
 
 OTHER_FILES += libmaliit-connection.pri
-

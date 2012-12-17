@@ -23,6 +23,7 @@ include(./config.pri)
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
         \\n\\t local-install : Install everything underneath PREFIX, nothing to system directories reported by GTK+, Qt, DBus etc. \
         \\n\\t disable-background-translucency : Do not set translucent background hint on surfaces (workaround for non-compositing WMs) \
+        \\n\\t wayland : Compile with support for wayland \
         \\nInfluential environment variables: \
         \\n\\t PKG_CONFIG_PATH : Override standard directories to look for pkg-config information \
         \\nExamples: \
