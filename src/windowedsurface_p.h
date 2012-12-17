@@ -26,6 +26,11 @@
 
 #include <vector>
 
+#ifdef HAVE_WAYLAND
+#include <wayland-client.h>
+#include "wayland-desktop-shell-client-protocol.h"
+#endif
+
 #include "maliit/plugins/abstractsurface.h"
 
 namespace Maliit {
@@ -67,6 +72,8 @@ protected:
     bool isWindow() const;
     QPoint mapToGlobal(const QPoint &pos) const;
 
+    bool eventFilter(QObject *object, QEvent *event);
+
     WindowedSurfaceFactory *mFactory;
     Options mOptions;
     QSharedPointer<WindowedSurface> mParent;
@@ -74,6 +81,10 @@ protected:
     bool mActive;
     bool mVisible;
     QPoint mRelativePosition;
+
+#ifdef HAVE_WAYLAND
+    struct input_panel_surface *mSurface;
+#endif
 };
 
 } // namespace Server

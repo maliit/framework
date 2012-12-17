@@ -82,6 +82,15 @@ contains(QT_MAJOR_VERSION, 5) {
         quickviewsurfacefactory.cpp \
 }
 
+wayland {
+    contains(QT_MAJOR_VERSION, 5) {
+        load(wayland-scanner)
+        WAYLANDSOURCES += \
+            $$IN_PWD/desktop-shell.xml
+        PKGCONFIG += wayland-client
+    }
+}
+
 SERVER_HEADERS_PRIVATE += \
         abstractsurfacegroup.h \
         abstractsurfacegroupfactory.h \
@@ -161,7 +170,7 @@ x11 {
 }
 
 CONFIG += link_pkgconfig
-QT = core $$QT_WIDGETS xml
+QT = core $$QT_WIDGETS gui-private xml
 
 contains(QT_MAJOR_VERSION, 5) {
     QT += qml quick

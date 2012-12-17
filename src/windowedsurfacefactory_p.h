@@ -21,6 +21,11 @@
 
 #include <vector>
 
+#ifdef HAVE_WAYLAND
+#include <wayland-client.h>
+#include "wayland-desktop-shell-client-protocol.h"
+#endif
+
 namespace Maliit {
 namespace Server {
 
@@ -35,11 +40,36 @@ class WindowedSurfaceFactoryPrivate : public QObject
 public:
     WindowedSurfaceFactoryPrivate(WindowedSurfaceFactory *factory);
 
+#ifdef HAVE_WAYLAND
+    void handleRegistryGlobal(uint32_t name,
+                              const char *interface,
+                              uint32_t version);
+    void handleRegistryGlobalRemove(uint32_t name);
+    void handleOutputGeometry(int32_t x,
+                              int32_t y,
+                              int32_t physical_width,
+                              int32_t physical_height,
+                              int32_t subpixel,
+                              const char *make,
+                              const char *model,
+                              int32_t transform);
+    void handleOutputMode(uint32_t flags,
+                          int32_t width,
+                          int32_t height,
+                          int32_t refresh);
+#endif
+
     Q_SLOT void screenResized(int screen);
 
     WindowedSurfaceFactory *q_ptr;
     std::vector<QWeakPointer<WindowedSurface> > surfaces;
     bool active;
+#ifdef HAVE_WAYLAND
+    struct wl_registry *registry;
+    struct wl_output *output;
+    struct input_panel *panel;
+    bool output_configured;
+#endif
 };
 
 } // namespace Server

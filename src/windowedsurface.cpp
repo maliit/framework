@@ -38,6 +38,7 @@
 #include <QGuiApplication>
 #include <QVariant>
 #include <QWindow>
+#include <qpa/qplatformnativeinterface.h>
 #endif
 
 #ifdef Q_WS_X11
@@ -88,6 +89,8 @@ WindowedSurface::WindowedSurface(WindowedSurfaceFactory *factory,
     mToplevel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     updateVisibility();
+
+    mToplevel->installEventFilter(this);
 }
 
 WindowedSurface::~WindowedSurface()
@@ -211,6 +214,20 @@ bool WindowedSurface::isWindow() const
 QPoint WindowedSurface::mapToGlobal(const QPoint &pos) const
 {
     return mToplevel->mapToGlobal(pos);
+}
+
+bool WindowedSurface::eventFilter(QObject *, QEvent *event)
+{
+#ifdef HAVE_WAYLAND
+    if (event->type() == QEvent::WinIdChange) {
+        mSurface = static_cast<struct input_panel_surface *>(mFactory->getInputPanelSurface(mToplevel->windowHandle()));
+        input_panel_surface_set_toplevel(mSurface);
+    }
+#else
+    Q_UNUSED(event);
+#endif
+
+    return false;
 }
 
 class GraphicsView : public QGraphicsView
@@ -374,15 +391,161 @@ public:
     }
 };
 
+#ifdef HAVE_WAYLAND
+namespace {
+
+void registryGlobal(void *data,
+                    wl_registry *registry,
+                    uint32_t name,
+                    const char *interface,
+                    uint32_t version)
+{
+    WindowedSurfaceFactoryPrivate *d = static_cast<WindowedSurfaceFactoryPrivate *>(data);
+
+    Q_UNUSED(registry);
+    d->handleRegistryGlobal(name, interface, version);
+}
+
+void registryGlobalRemove(void *data,
+                          wl_registry *registry,
+                          uint32_t name)
+{
+    WindowedSurfaceFactoryPrivate *d = static_cast<WindowedSurfaceFactoryPrivate *>(data);
+
+    Q_UNUSED(registry);
+    d->handleRegistryGlobalRemove(name);
+}
+
+const wl_registry_listener maliit_registry_listener = {
+    registryGlobal,
+    registryGlobalRemove
+};
+
+void outputGeometry(void *data,
+                    struct wl_output *output,
+                    int32_t x,
+                    int32_t y,
+                    int32_t physical_width,
+                    int32_t physical_height,
+                    int32_t subpixel,
+                    const char *make,
+                    const char *model,
+                    int32_t transform) {
+    WindowedSurfaceFactoryPrivate *d = static_cast<WindowedSurfaceFactoryPrivate *>(data);
+
+    Q_UNUSED(output);
+    d->handleOutputGeometry(x, y, physical_width, physical_height, subpixel, make,
+                            model, transform);
+}
+
+void outputMode(void *data,
+                struct wl_output *output,
+                uint32_t flags,
+                int32_t width,
+                int32_t height,
+                int32_t refresh) {
+    WindowedSurfaceFactoryPrivate *d = static_cast<WindowedSurfaceFactoryPrivate *>(data);
+
+    Q_UNUSED(output);
+    d->handleOutputMode(flags, width, height, refresh);
+}
+
+const wl_output_listener maliit_output_listener = {
+    outputGeometry,
+    outputMode
+};
+
+} // unnamed namespace
+#endif
+
 WindowedSurfaceFactoryPrivate::WindowedSurfaceFactoryPrivate(WindowedSurfaceFactory *factory)
     : QObject()
     , q_ptr(factory)
     , surfaces()
     , active(false)
+#ifdef HAVE_WAYLAND
+    , registry(0)
+    , output(0)
+    , panel(0)
+    , output_configured(false)
+#endif
 {
     connect(QApplication::desktop(), SIGNAL(resized(int)),
             this, SLOT(screenResized(int)));
+
+#ifdef HAVE_WAYLAND
+    wl_display *display = static_cast<wl_display *>(QGuiApplication::platformNativeInterface()->nativeResourceForIntegration("display"));
+    if (!display) {
+        qCritical() << __PRETTY_FUNCTION__ << "Failed to get a display.";
+        return;
+    }
+    registry = wl_display_get_registry(display);
+    wl_registry_add_listener(registry, &maliit_registry_listener, this);
+    // QtWayland will do dispatching for us.
+#endif
 }
+
+#ifdef HAVE_WAYLAND
+void WindowedSurfaceFactoryPrivate::handleRegistryGlobal(uint32_t name,
+                                                         const char *interface,
+                                                         uint32_t version)
+{
+    Q_UNUSED(version);
+
+    if (!strcmp(interface, "input_panel")) {
+        panel = static_cast<input_panel *>(wl_registry_bind(registry, name, &input_panel_interface, 1));
+    } else if (!strcmp(interface, "wl_output")) {
+        if (output) {
+            // Ignoring the event - we already have an output.
+            // TODO: Later we will want to store those outputs as well
+            // to be able to choose where the input method plugin is
+            // shown.
+            return;
+        }
+
+        output = static_cast<wl_output *>(wl_registry_bind(registry, name, &wl_output_interface, 1));
+        wl_output_add_listener (output, &maliit_output_listener, this);
+    }
+}
+
+void WindowedSurfaceFactoryPrivate::handleRegistryGlobalRemove(uint32_t name)
+{
+    Q_UNUSED(name);
+}
+
+void WindowedSurfaceFactoryPrivate::handleOutputGeometry(int32_t x,
+                                                         int32_t y,
+                                                         int32_t physical_width,
+                                                         int32_t physical_height,
+                                                         int32_t subpixel,
+                                                         const char *make,
+                                                         const char *model,
+                                                         int32_t transform)
+{
+    Q_UNUSED(x);
+    Q_UNUSED(y);
+    Q_UNUSED(physical_width);
+    Q_UNUSED(physical_height);
+    Q_UNUSED(subpixel);
+    Q_UNUSED(make);
+    Q_UNUSED(model);
+    Q_UNUSED(transform);
+}
+
+void WindowedSurfaceFactoryPrivate::handleOutputMode(uint32_t flags,
+                                                     int32_t width,
+                                                     int32_t height,
+                                                     int32_t refresh)
+{
+    Q_UNUSED(width);
+    Q_UNUSED(height);
+    Q_UNUSED(refresh);
+    qDebug() << __PRETTY_FUNCTION__;
+    if ((flags & WL_OUTPUT_MODE_CURRENT) == WL_OUTPUT_MODE_CURRENT) {
+        output_configured = true;
+    }
+}
+#endif
 
 void WindowedSurfaceFactoryPrivate::screenResized(int)
 {
@@ -399,6 +562,17 @@ void WindowedSurfaceFactoryPrivate::screenResized(int)
     }
     Q_EMIT q->screenSizeChanged(q->screenSize());
 }
+
+#ifdef HAVE_WAYLAND
+void *WindowedSurfaceFactory::getInputPanelSurface(QWindow *window)
+{
+    Q_D(WindowedSurfaceFactory);
+
+    struct wl_surface *surface = static_cast<struct wl_surface *>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("surface", window));
+
+    return input_panel_get_input_panel_surface(d->panel, surface);
+}
+#endif
 
 // Windowed Surface Factory
 

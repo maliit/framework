@@ -57,6 +57,10 @@ public:
 
     void updateInputMethodArea();
 
+#ifdef HAVE_WAYLAND
+    void *getInputPanelSurface(QWindow *window);
+#endif
+
 Q_SIGNALS:
     void inputMethodAreaChanged(const QRegion &region);
     void surfaceWidgetCreated(QWidget *widget, int options);
