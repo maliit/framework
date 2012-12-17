@@ -32,11 +32,13 @@
 namespace Maliit {
 namespace Server {
 
+class WindowedSurfaceFactoryPrivate;
 class WindowedSurface;
 
 class WindowedSurfaceFactory : public Maliit::Plugins::AbstractSurfaceFactory
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(WindowedSurfaceFactory)
 
 public:
     WindowedSurfaceFactory();
@@ -59,10 +61,7 @@ Q_SIGNALS:
     void surfaceWidgetCreated(QWidget *widget, int options);
 
 private:
-    Q_SLOT void screenResized(int screen);
-
-    std::vector<QWeakPointer<WindowedSurface> > surfaces;
-    bool mActive;
+    QScopedPointer<WindowedSurfaceFactoryPrivate> d_ptr;
 };
 
 } // namespace Server

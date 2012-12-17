@@ -16,6 +16,7 @@
 
 #include "windowedsurface.h"
 #include "windowedsurface_p.h"
+#include "windowedsurfacefactory_p.h"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
 #include "mimdummyinputcontext.h"
@@ -366,13 +367,38 @@ public:
     }
 };
 
-WindowedSurfaceFactory::WindowedSurfaceFactory()
-    : AbstractSurfaceFactory()
+WindowedSurfaceFactoryPrivate::WindowedSurfaceFactoryPrivate(WindowedSurfaceFactory *factory)
+    : QObject()
+    , q_ptr(factory)
     , surfaces()
-    , mActive(false)
+    , active(false)
 {
     connect(QApplication::desktop(), SIGNAL(resized(int)),
             this, SLOT(screenResized(int)));
+}
+
+void WindowedSurfaceFactoryPrivate::screenResized(int)
+{
+    Q_Q(WindowedSurfaceFactory);
+
+    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
+        QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
+        if (surface) {
+            surface->setSize(surface->size());
+            if (surface->parent()) {
+                surface->setRelativePosition(surface->relativePosition());
+            }
+        }
+    }
+    Q_EMIT q->screenSizeChanged(q->screenSize());
+}
+
+// Windowed Surface Factory
+
+WindowedSurfaceFactory::WindowedSurfaceFactory()
+    : AbstractSurfaceFactory()
+    , d_ptr(new WindowedSurfaceFactoryPrivate(this))
+{
 }
 
 WindowedSurfaceFactory::~WindowedSurfaceFactory()
@@ -408,9 +434,11 @@ QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::
 
 void WindowedSurfaceFactory::activate()
 {
-    mActive = true;
+    Q_D(WindowedSurfaceFactory);
 
-    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
+    d->active = true;
+
+    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, d->surfaces) {
         QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
         if (surface)
             surface->setActive(true);
@@ -419,9 +447,11 @@ void WindowedSurfaceFactory::activate()
 
 void WindowedSurfaceFactory::deactivate()
 {
-    mActive = false;
+    Q_D(WindowedSurfaceFactory);
 
-    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
+    d->active = false;
+
+    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, d->surfaces) {
         QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
         if (surface)
             surface->setActive(false);
@@ -430,7 +460,9 @@ void WindowedSurfaceFactory::deactivate()
 
 void WindowedSurfaceFactory::applicationFocusChanged(WId winId)
 {
-    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
+    Q_D(WindowedSurfaceFactory);
+
+    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, d->surfaces) {
         QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
         if (surface) {
             surface->applicationFocusChanged(winId);
@@ -438,28 +470,16 @@ void WindowedSurfaceFactory::applicationFocusChanged(WId winId)
     }
 }
 
-void WindowedSurfaceFactory::screenResized(int)
-{
-    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
-        QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
-        if (surface) {
-            surface->setSize(surface->size());
-            if (surface->parent()) {
-                surface->setRelativePosition(surface->relativePosition());
-            }
-        }
-    }
-    Q_EMIT screenSizeChanged(screenSize());
-}
-
 void WindowedSurfaceFactory::updateInputMethodArea()
 {
-    if (!mActive)
+    Q_D(WindowedSurfaceFactory);
+
+    if (!d->active)
         return;
 
     QRegion inputMethodArea;
 
-    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, surfaces) {
+    Q_FOREACH(QWeakPointer<WindowedSurface> weakSurface, d->surfaces) {
         QSharedPointer<WindowedSurface> surface = weakSurface.toStrongRef();
         if (surface && !surface->parent()) {
             inputMethodArea |= surface->inputMethodArea();
