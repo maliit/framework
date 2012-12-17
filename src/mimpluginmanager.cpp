@@ -39,8 +39,6 @@
 #include <QDebug>
 #include <deque>
 
-using namespace std::tr1;
-
 namespace
 {
     const QString DefaultPluginLocation(MALIIT_PLUGINS_DIR);
@@ -71,8 +69,8 @@ namespace
     }
 }
 
-MIMPluginManagerPrivate::MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection,
-                                                 QSharedPointer<AbstractSurfaceGroupFactory> surfaceGroupFactory,
+MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputContextConnection> &connection,
+                                                 const QSharedPointer<AbstractSurfaceGroupFactory> &surfaceGroupFactory,
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
@@ -236,7 +234,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     // Connect surface group signals
     QObject::connect(surfaceGroup.data(), SIGNAL(inputMethodAreaChanged(QRegion)),
-                     mICConnection.get(), SLOT(updateInputMethodArea(QRegion)));
+                     mICConnection.data(), SLOT(updateInputMethodArea(QRegion)));
 
     plugins.insert(plugin, desc);
     host->setInputMethod(im);
@@ -1159,8 +1157,8 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 ///////////////
 // actual class
 
-MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnection,
-                                   QSharedPointer<AbstractSurfaceGroupFactory> surfacesFactory)
+MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection,
+                                   const QSharedPointer<AbstractSurfaceGroupFactory>& surfacesFactory)
     : QObject(),
       d_ptr(new MIMPluginManagerPrivate(icConnection, surfacesFactory, this))
 {
@@ -1168,77 +1166,77 @@ MIMPluginManager::MIMPluginManager(shared_ptr<MInputContextConnection> icConnect
     d->q_ptr = this;
 
     // Connect connection to our handlers
-    connect(d->mICConnection.get(), SIGNAL(showInputMethodRequest()),
+    connect(d->mICConnection.data(), SIGNAL(showInputMethodRequest()),
             this, SLOT(showActivePlugins()));
 
-    connect(d->mICConnection.get(), SIGNAL(hideInputMethodRequest()),
+    connect(d->mICConnection.data(), SIGNAL(hideInputMethodRequest()),
             this, SLOT(hideActivePlugins()));
 
-    connect(d->mICConnection.get(), SIGNAL(resetInputMethodRequest()),
+    connect(d->mICConnection.data(), SIGNAL(resetInputMethodRequest()),
             this, SLOT(resetInputMethods()));
 
-    connect(d->mICConnection.get(), SIGNAL(activeClientDisconnected()),
+    connect(d->mICConnection.data(), SIGNAL(activeClientDisconnected()),
             this, SLOT(handleClientChange()));
 
-    connect(d->mICConnection.get(), SIGNAL(clientActivated(uint)),
+    connect(d->mICConnection.data(), SIGNAL(clientActivated(uint)),
             this, SLOT(handleClientChange()));
 
-    connect(d->mICConnection.get(), SIGNAL(contentOrientationAboutToChangeCompleted(int)),
+    connect(d->mICConnection.data(), SIGNAL(contentOrientationAboutToChangeCompleted(int)),
             this, SLOT(handleAppOrientationAboutToChange(int)));
 
-    connect(d->mICConnection.get(), SIGNAL(contentOrientationChangeCompleted(int)),
+    connect(d->mICConnection.data(), SIGNAL(contentOrientationChangeCompleted(int)),
             this, SLOT(handleAppOrientationChanged(int)));
 
-    connect(d->mICConnection.get(), SIGNAL(preeditChanged(QString,int)),
+    connect(d->mICConnection.data(), SIGNAL(preeditChanged(QString,int)),
             this, SLOT(handlePreeditChanged(QString,int)));
 
-    connect(d->mICConnection.get(), SIGNAL(mouseClickedOnPreedit(QPoint,QRect)),
+    connect(d->mICConnection.data(), SIGNAL(mouseClickedOnPreedit(QPoint,QRect)),
             this, SLOT(handleMouseClickOnPreedit(QPoint,QRect)));
 
-    connect(d->mICConnection.get(), SIGNAL(receivedKeyEvent(QEvent::Type,Qt::Key,Qt::KeyboardModifiers,QString,bool,int,quint32,quint32,ulong)),
+    connect(d->mICConnection.data(), SIGNAL(receivedKeyEvent(QEvent::Type,Qt::Key,Qt::KeyboardModifiers,QString,bool,int,quint32,quint32,ulong)),
             this, SLOT(processKeyEvent(QEvent::Type,Qt::Key,Qt::KeyboardModifiers,QString,bool,int,quint32,quint32,ulong)));
 
-    connect(d->mICConnection.get(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
+    connect(d->mICConnection.data(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
             this, SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
 
     // Connect connection and MAttributeExtensionManager
-    connect(d->mICConnection.get(), SIGNAL(copyPasteStateChanged(bool,bool)),
+    connect(d->mICConnection.data(), SIGNAL(copyPasteStateChanged(bool,bool)),
             d->attributeExtensionManager.data(), SLOT(setCopyPasteState(bool, bool)));
 
-    connect(d->mICConnection.get(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
+    connect(d->mICConnection.data(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
             d->attributeExtensionManager.data(), SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
 
-    connect(d->mICConnection.get(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
+    connect(d->mICConnection.data(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
             d->attributeExtensionManager.data(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
 
-    connect(d->mICConnection.get(), SIGNAL(attributeExtensionUnregistered(uint, int)),
+    connect(d->mICConnection.data(), SIGNAL(attributeExtensionUnregistered(uint, int)),
             d->attributeExtensionManager.data(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
 
-    connect(d->mICConnection.get(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
+    connect(d->mICConnection.data(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
             d->attributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
 
     connect(d->attributeExtensionManager.data(), SIGNAL(notifyExtensionAttributeChanged(int, QString, QString, QString, QVariant)),
-            d->mICConnection.get(), SLOT(notifyExtendedAttributeChanged(int, QString, QString, QString, QVariant)));
+            d->mICConnection.data(), SLOT(notifyExtendedAttributeChanged(int, QString, QString, QString, QVariant)));
 
-    connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
+    connect(d->mICConnection.data(), SIGNAL(clientDisconnected(uint)),
             d->attributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
 
-    connect(d->mICConnection.get(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
+    connect(d->mICConnection.data(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
             d->sharedAttributeExtensionManager.data(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
 
-    connect(d->mICConnection.get(), SIGNAL(attributeExtensionUnregistered(uint, int)),
+    connect(d->mICConnection.data(), SIGNAL(attributeExtensionUnregistered(uint, int)),
             d->sharedAttributeExtensionManager.data(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
 
-    connect(d->mICConnection.get(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
+    connect(d->mICConnection.data(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
             d->sharedAttributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
 
     connect(d->sharedAttributeExtensionManager.data(), SIGNAL(notifyExtensionAttributeChanged(QList<int>, int, QString, QString, QString, QVariant)),
-            d->mICConnection.get(), SLOT(notifyExtendedAttributeChanged(QList<int>, int, QString, QString, QString, QVariant)));
+            d->mICConnection.data(), SLOT(notifyExtendedAttributeChanged(QList<int>, int, QString, QString, QString, QVariant)));
 
-    connect(d->mICConnection.get(), SIGNAL(clientDisconnected(uint)),
+    connect(d->mICConnection.data(), SIGNAL(clientDisconnected(uint)),
             d->sharedAttributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
 
-    connect(d->mICConnection.get(), SIGNAL(pluginSettingsRequested(int,QString)),
+    connect(d->mICConnection.data(), SIGNAL(pluginSettingsRequested(int,QString)),
             this, SLOT(pluginSettingsRequested(int,QString)));
 
     // Connect from MAttributeExtensionManager to our handlers

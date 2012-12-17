@@ -18,8 +18,6 @@
 #include "mimabstractserverlogic.h"
 #include "mimsettings.h"
 
-using namespace std::tr1;
-
 class MImServerPrivate
 {
 public:
@@ -29,7 +27,7 @@ public:
     MIMPluginManager *pluginManager;
 
     // Connection to application side (input-context)
-    shared_ptr<MInputContextConnection> icConnection;
+    QSharedPointer<MInputContextConnection> icConnection;
 
     // Platform/deployment specific server logic
     QSharedPointer<MImAbstractServerLogic> serverLogic;
@@ -42,7 +40,7 @@ MImServerPrivate::MImServerPrivate()
 {}
 
 MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
-                     const shared_ptr<MInputContextConnection> &icConnection,
+                     const QSharedPointer<MInputContextConnection> &icConnection,
                      QObject *parent)
   : QObject(parent)
   , d_ptr(new MImServerPrivate)
@@ -91,13 +89,13 @@ void MImServer::connectComponents()
                      d->serverLogic.data(), SLOT(pluginLoaded()));
 
     // Tracking of application window
-    QObject::connect(d->icConnection.get(), SIGNAL(focusChanged(WId)),
+    QObject::connect(d->icConnection.data(), SIGNAL(focusChanged(WId)),
                      d->serverLogic.data(), SLOT(applicationFocusChanged(WId)));
 
     // Rotation handling
-    QObject::connect(d->icConnection.get(), SIGNAL(contentOrientationAboutToChange(int)),
+    QObject::connect(d->icConnection.data(), SIGNAL(contentOrientationAboutToChange(int)),
                      d->serverLogic.data(), SLOT(appOrientationAboutToChange(int)));
-    QObject::connect(d->icConnection.get(), SIGNAL(contentOrientationChanged(int)),
+    QObject::connect(d->icConnection.data(), SIGNAL(contentOrientationChanged(int)),
                      d->serverLogic.data(), SLOT(appOrientationChangeFinished(int)));
 
     // Hide active plugins when the application window is gone or iconified.

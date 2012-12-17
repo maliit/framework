@@ -23,7 +23,7 @@
 
 #include <maliit/namespace.h>
 
-MInputMethodHost::MInputMethodHost(shared_ptr<MInputContextConnection> inputContextConnection,
+MInputMethodHost::MInputMethodHost(const QSharedPointer<MInputContextConnection> &inputContextConnection,
                                    MIMPluginManager *pluginManager,
                                    MIndicatorServiceClient &indicatorService,
                                    AbstractSurfaceFactory *surfaceFactory,

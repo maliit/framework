@@ -33,8 +33,6 @@
 #include <QCommonStyle>
 #include <stdlib.h>
 
-using namespace std::tr1;
-
 namespace {
     void disableMInputContextPlugin()
     {
@@ -109,8 +107,21 @@ namespace {
         outputMessageToStdErr(type, msg.toLatin1().data());
     }
 #endif
+
+QSharedPointer<MInputContextConnection> createConnection(const MImServerConnectionOptions &options)
+{
+    if (options.overriddenAddress.isEmpty()) {
+        return QSharedPointer<MInputContextConnection>(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
+    } else {
+        return QSharedPointer<MInputContextConnection>(Maliit::DBus::createInputContextConnectionWithFixedAddress(options.overriddenAddress,
+                                                                                                                  options.allowAnonymous));
+    }
 }
+
+}
+
 #define Q_WS_QWS
+
 int main(int argc, char **argv)
 {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
@@ -131,12 +142,10 @@ int main(int argc, char **argv)
     MImServerConnectionOptions connectionOptions;
 
     const bool allRecognized = parseCommandLine(argc, argv);
-    if (serverCommonOptions.showHelp)
-    {
+    if (serverCommonOptions.showHelp) {
         printHelpMessage();
         return 1;
-    } else if (not allRecognized)
-    {
+    } else if (not allRecognized) {
         printHelpMessage();
     }
 
@@ -155,13 +164,8 @@ int main(int argc, char **argv)
     app.setInputContext(new MIMDummyInputContext);
 #endif
 
-    // DBus Input Context Connection
-    shared_ptr<MInputContextConnection> icConnection;
-    if (connectionOptions.overriddenAddress.isEmpty()) {
-        icConnection.reset(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
-    } else {
-        icConnection.reset(Maliit::DBus::createInputContextConnectionWithFixedAddress(connectionOptions.overriddenAddress, connectionOptions.allowAnonymous));
-    }
+    // Input Context Connection
+    QSharedPointer<MInputContextConnection> icConnection(createConnection(connectionOptions));
 
     // The actual server
     MImServer::configureSettings(MImServer::PersistentSettings);
@@ -170,4 +174,3 @@ int main(int argc, char **argv)
 
     return app.exec();
 }
-

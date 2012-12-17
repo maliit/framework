@@ -29,7 +29,6 @@
 #include "abstractsurfacegroup.h"
 
 #include <QtCore>
-#include <tr1/memory>
 
 namespace Maliit {
 namespace Plugins {
@@ -48,7 +47,6 @@ class MImSettings;
 class MAbstractInputMethod;
 class MIMPluginManagerAdaptor;
 
-using namespace std::tr1;
 using Maliit::Server::AbstractSurfaceGroup;
 using Maliit::Server::AbstractSurfaceGroupFactory;
 
@@ -99,7 +97,9 @@ public:
     typedef QMap<Maliit::HandlerState, Maliit::Plugins::InputMethodPlugin *> HandlerMap;
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
-    MIMPluginManagerPrivate(shared_ptr<MInputContextConnection> connection, QSharedPointer<AbstractSurfaceGroupFactory> surfaceGroupFactory, MIMPluginManager *p);
+    MIMPluginManagerPrivate(const QSharedPointer<MInputContextConnection>& connection,
+                            const QSharedPointer<AbstractSurfaceGroupFactory>& surfaceGroupFactory,
+                            MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
     void activatePlugin(Maliit::Plugins::InputMethodPlugin *plugin);
@@ -182,7 +182,7 @@ public:
     QString inputSourceName(Maliit::HandlerState source) const;
 
     MIMPluginManager *parent;
-    shared_ptr<MInputContextConnection> mICConnection;
+    QSharedPointer<MInputContextConnection> mICConnection;
 
     Plugins plugins;
     ActivePlugins activePlugins;

@@ -17,8 +17,6 @@
 
 #include <maliit/plugins/abstractinputmethodhost.h>
 
-#include <tr1/memory>
-
 class MInputContextConnection;
 class MIMPluginManager;
 class MIndicatorServiceClient;
@@ -26,7 +24,6 @@ class MAbstractInputMethod;
 
 class QRegion;
 
-using std::tr1::shared_ptr;
 using Maliit::Plugins::AbstractSurfaceFactory;
 using Maliit::Plugins::AbstractPluginSetting;
 
@@ -39,7 +36,7 @@ class MInputMethodHost: public MAbstractInputMethodHost
     Q_OBJECT
 
 public:
-    MInputMethodHost(shared_ptr<MInputContextConnection> inputContextConnection,
+    MInputMethodHost(const QSharedPointer<MInputContextConnection>& inputContextConnection,
                      MIMPluginManager *pluginManager, MIndicatorServiceClient &indicatorService,
                      AbstractSurfaceFactory *surfaceFactory, const QString &plugin, const QString &description);
     virtual ~MInputMethodHost();
@@ -104,7 +101,7 @@ public:
 private:
     Q_DISABLE_COPY(MInputMethodHost)
 
-    shared_ptr<MInputContextConnection> connection;
+    QSharedPointer<MInputContextConnection> connection;
     MIMPluginManager *pluginManager;
     MAbstractInputMethod *inputMethod;
     bool enabled;

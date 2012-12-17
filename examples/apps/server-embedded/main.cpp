@@ -31,8 +31,6 @@
 #include <stdlib.h>
 #endif
 
-using namespace std::tr1;
-
 namespace {
     void disableMInputContextPlugin()
     {
@@ -68,7 +66,7 @@ int main(int argc, char **argv)
     app.setInputContext(new MIMDummyInputContext);
 #endif
 
-    shared_ptr<MInputContextConnection> icConnection(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
+    QSharedPointer<MInputContextConnection> icConnection(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
 
     // The actual server
     MImServer::configureSettings(MImServer::PersistentSettings);

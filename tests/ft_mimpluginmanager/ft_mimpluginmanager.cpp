@@ -19,8 +19,6 @@
 #include <QApplication>
 #include <QPointer>
 
-using namespace std::tr1;
-
 namespace
 {
     const QString pluginName  = "DummyImPlugin";
@@ -89,7 +87,7 @@ void Ft_MIMPluginManager::init()
     gMKeyboardStateTrackerStub->setOpenState(false);
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
-    shared_ptr<MInputContextConnection> icConnection(new MInputContextConnection);
+    QSharedPointer<MInputContextConnection> icConnection(new MInputContextConnection);
     subject = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
 }
 

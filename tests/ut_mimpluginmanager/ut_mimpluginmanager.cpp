@@ -27,8 +27,6 @@
 #include "mattributeextensionmanager.h"
 #include "msharedattributeextensionmanager.h"
 
-using namespace std::tr1;
-
 typedef QSet<Maliit::HandlerState> HandlerStates;
 Q_DECLARE_METATYPE(HandlerStates);
 Q_DECLARE_METATYPE(Maliit::HandlerState);
@@ -131,10 +129,10 @@ void Ut_MIMPluginManager::init()
     MImSettings activePluginSettings(ActivePluginKey);
     activePluginSettings.set(DefaultActivePlugin);
 
-    shared_ptr<MInputContextTestConnection> icConnection(new MInputContextTestConnection);
+    QSharedPointer<MInputContextTestConnection> icConnection(new MInputContextTestConnection);
     manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
 
-    connection = icConnection.get();
+    connection = icConnection.data();
     subject = manager->d_ptr;
 
     QVERIFY(subject->activePlugins.size() == 1);

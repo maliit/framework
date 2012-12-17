@@ -18,7 +18,6 @@
 #include <QObject>
 #include <QMap>
 #include <QList>
-#include <tr1/memory>
 
 #include <maliit/namespace.h>
 
@@ -56,7 +55,7 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    MIMPluginManager(std::tr1::shared_ptr<MInputContextConnection> icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>);
+    MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection, const QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>& factory);
 
     virtual ~MIMPluginManager();
 

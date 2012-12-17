@@ -175,7 +175,7 @@ namespace MaliitTestUtils {
         int sendPreeditCount;
 
         TestInputMethodHost(MIndicatorServiceClient &client, const QString &plugin, const QString &description)
-            : MInputMethodHost(std::tr1::shared_ptr<MInputContextConnection>(new MInputContextConnection), 0, client, new TestSurfaceFactory, plugin, description)
+            : MInputMethodHost(QSharedPointer<MInputContextConnection>(new MInputContextConnection), 0, client, new TestSurfaceFactory, plugin, description)
             , sendCommitCount(0)
             , sendPreeditCount(0)
         {}

@@ -16,7 +16,6 @@
 #define MIMSERVER_H
 
 #include <QObject>
-#include <tr1/memory>
 #include <QSharedPointer>
 
 class MInputContextConnection;
@@ -45,7 +44,7 @@ public:
 
 public:
     explicit MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
-                       const std::tr1::shared_ptr<MInputContextConnection> &icConnection,
+                       const QSharedPointer<MInputContextConnection> &icConnection,
                        QObject *parent = 0);
     ~MImServer();
 

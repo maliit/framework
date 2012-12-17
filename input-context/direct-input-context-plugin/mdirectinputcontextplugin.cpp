@@ -23,8 +23,6 @@
 
 #include <maliit/inputmethod.h>
 
-using namespace std::tr1;
-
 #include <minputcontext.h>
 #include <QString>
 #include <QStringList>
@@ -56,7 +54,7 @@ QInputContext *MDirectInputContextPlugin::create(const QString &key)
         MImInputContextDirectConnection *icConnection = new MImInputContextDirectConnection;
         serverConnection->connectTo(icConnection);
 
-        shared_ptr<MInputContextConnection> icConn(icConnection);
+        QSharedPointer<MInputContextConnection> icConn(icConnection);
         QSharedPointer<MImAppHostedServerLogic> serverLogic(new MImAppHostedServerLogic);
         MImServer::configureSettings(MImServer::TemporarySettings);
         MImServer *imServer = new MImServer(serverLogic, icConn);
