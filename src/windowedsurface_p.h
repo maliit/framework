@@ -54,6 +54,7 @@ public:
     void setActive(bool active);
     void applicationFocusChanged(WId winId);
     QRegion inputMethodArea();
+    virtual QWidget *widget() const = 0;
 
 private:
     void updateVisibility();

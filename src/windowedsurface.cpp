@@ -350,6 +350,11 @@ public:
         return mRoot;
     }
 
+    QWidget *widget() const
+    {
+        return view();
+    }
+
 private:
     RootItem *mRoot;
 };
