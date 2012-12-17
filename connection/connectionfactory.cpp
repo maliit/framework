@@ -25,6 +25,10 @@
 #endif
 #include "mimdirectserverconnection.h"
 
+#ifdef HAVE_WAYLAND
+#include "minputcontextwestonimprotocolconnection.h"
+#endif
+
 namespace Maliit {
 #ifndef MALIIT_DISABLE_DBUS
 namespace DBus {
@@ -74,6 +78,13 @@ MInputContextConnection *createInputContextConnectionWithFixedAddress(const QStr
 
 } // namespace DBus
 #endif // MALIIT_DISABLE_DBUS
+
+#ifdef HAVE_WAYLAND
+MInputContextConnection *createWestonIMProtocolConnection()
+{
+    return new MInputContextWestonIMProtocolConnection;
+}
+#endif
 
 QSharedPointer<MImServerConnection> createServerConnection(const QString &connectionType)
 {

@@ -31,6 +31,10 @@ MInputContextConnection *createInputContextConnectionWithFixedAddress(const QStr
 } // namespace DBus
 #endif
 
+#ifdef HAVE_WAYLAND
+MInputContextConnection *createWestonIMProtocolConnection();
+#endif
+
 /*!
     \brief Create a connection to Maliit server
     \param connectionType input context name (same as in QT_IM_MODULE environment variable)
