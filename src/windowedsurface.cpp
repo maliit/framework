@@ -36,7 +36,6 @@
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QGuiApplication>
-#include <QtGui/5.0.0/QtGui/qpa/qplatformnativeinterface.h>
 #include <QVariant>
 #include <QWindow>
 #endif
