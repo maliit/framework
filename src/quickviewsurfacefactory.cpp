@@ -30,7 +30,8 @@ public:
         }
         mWindow.reset(new QQuickView(parentWindow));
 
-        mWindow->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint | Qt::WindowDoesNotAcceptFocus);
+        mWindow->setFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
+                          | Qt::X11BypassWindowManagerHint | Qt::WindowDoesNotAcceptFocus);
 
         QSurfaceFormat format;
         format.setAlphaBufferSize(8);
@@ -85,7 +86,7 @@ public:
         if (mParent) {
             parentPosition = mParent->mWindow->position();
         }
-        mWindow->setPos(parentPosition + mRelativePosition);
+        mWindow->setPosition(parentPosition + mRelativePosition);
     }
 
 
