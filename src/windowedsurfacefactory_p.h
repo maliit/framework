@@ -30,7 +30,7 @@ class WindowedSurfaceFactory;
 class WindowedSurfaceFactoryPrivate : public QObject
 {
     Q_OBJECT
-    Q_DECLARE_PUBLIC(WindowedSurfaceFactory);
+    Q_DECLARE_PUBLIC(WindowedSurfaceFactory)
 
 public:
     WindowedSurfaceFactoryPrivate(WindowedSurfaceFactory *factory);

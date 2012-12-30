@@ -55,7 +55,8 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection, const QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>& factory);
+    MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection,
+                     const QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>& factory);
 
     virtual ~MIMPluginManager();
 
@@ -180,10 +181,11 @@ protected:
 private:
     Q_DISABLE_COPY(MIMPluginManager)
     Q_DECLARE_PRIVATE(MIMPluginManager)
-    Q_PRIVATE_SLOT(d_func(), void _q_syncHandlerMap(int));
-    Q_PRIVATE_SLOT(d_func(), void _q_setActiveSubView(const QString &, Maliit::HandlerState));
-    Q_PRIVATE_SLOT(d_func(), void _q_ensureEmptyRegionWhenHidden());
-    Q_PRIVATE_SLOT(d_func(), void _q_onScreenSubViewChanged());
+
+    Q_PRIVATE_SLOT(d_func(), void _q_syncHandlerMap(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_setActiveSubView(const QString &, Maliit::HandlerState))
+    Q_PRIVATE_SLOT(d_func(), void _q_ensureEmptyRegionWhenHidden())
+    Q_PRIVATE_SLOT(d_func(), void _q_onScreenSubViewChanged())
 
     friend class Ut_MIMPluginManager;
     friend class Ft_MIMPluginManager;

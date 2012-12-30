@@ -53,7 +53,8 @@ namespace Server {
 namespace {
     const Qt::WindowFlags g_window_flags =
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    Qt::WindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint | Qt::WindowDoesNotAcceptFocus);
+    Qt::WindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint
+                    | Qt::WindowDoesNotAcceptFocus);
 #else
     Qt::WindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 #endif
@@ -112,11 +113,11 @@ QSize WindowedSurface::size() const
 
 void WindowedSurface::setSize(const QSize &size)
 {
-    const QSize& desktopSize = QApplication::desktop()->screenGeometry().size();
-
     if (isWindow()) {
         // stand-alone Maliit server
         if (mOptions & PositionCenterBottom) {
+            const QSize desktopSize = QApplication::desktop()->screenGeometry().size();
+
             mToplevel->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2,
                                                 desktopSize.height() - size.height()), size));
         } else {
@@ -273,7 +274,8 @@ public:
 class WindowedGraphicsViewSurface : public WindowedSurface, public Maliit::Plugins::AbstractGraphicsViewSurface
 {
 public:
-    WindowedGraphicsViewSurface(WindowedSurfaceFactory *factory, AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent)
+    WindowedGraphicsViewSurface(WindowedSurfaceFactory *factory, AbstractSurface::Options options,
+                                const QSharedPointer<WindowedSurface> &parent)
         : WindowedSurface(factory, options, parent, new GraphicsView),
           AbstractGraphicsViewSurface(),
           mRoot(0)
@@ -361,7 +363,8 @@ private:
 class WindowedWidgetSurface : public WindowedSurface, public Maliit::Plugins::AbstractWidgetSurface
 {
 public:
-    WindowedWidgetSurface(WindowedSurfaceFactory *factory, AbstractSurface::Options options, const QSharedPointer<WindowedSurface> &parent)
+    WindowedWidgetSurface(WindowedSurfaceFactory *factory, AbstractSurface::Options options,
+                          const QSharedPointer<WindowedSurface> &parent)
         : WindowedSurface(factory, options, parent, new QWidget),
           AbstractWidgetSurface()
     {}
@@ -440,7 +443,8 @@ QSharedPointer<WindowedSurface> createSurface(WindowedSurfaceFactory *factory,
 
 } // unnamed namespace
 
-QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent)
+QSharedPointer<AbstractSurface> WindowedSurfaceFactory::create(AbstractSurface::Options options,
+                                                               const QSharedPointer<AbstractSurface> &parent)
 {
     Q_D(WindowedSurfaceFactory);
 

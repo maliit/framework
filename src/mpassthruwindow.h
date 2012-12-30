@@ -58,7 +58,7 @@ public Q_SLOTS:
     void updateFromRemoteWindow(const QRegion &region);
 
 private:
-    Q_DISABLE_COPY(MPassThruWindow);
+    Q_DISABLE_COPY(MPassThruWindow)
 
     void updateInputRegion();
     void updateWindowType();

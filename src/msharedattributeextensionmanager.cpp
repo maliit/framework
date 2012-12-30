@@ -36,7 +36,8 @@ MSharedAttributeExtensionManager::~MSharedAttributeExtensionManager()
 {
 }
 
-void MSharedAttributeExtensionManager::registerPluginSetting(const QString &fullName, Maliit::SettingEntryType type, QVariantMap attributes)
+void MSharedAttributeExtensionManager::registerPluginSetting(const QString &fullName, Maliit::SettingEntryType type,
+                                                             QVariantMap attributes)
 {
     QString key = fullName.section(1, -1);
     QSharedPointer<MSharedAttributeExtensionManagerPluginSetting> value(new MSharedAttributeExtensionManagerPluginSetting(key, type, attributes));
@@ -51,7 +52,8 @@ void MSharedAttributeExtensionManager::handleClientDisconnect(unsigned int clien
     clientIds.removeOne(clientId);
 }
 
-void MSharedAttributeExtensionManager::handleAttributeExtensionRegistered(unsigned int clientId, int id, const QString &attributeExtension)
+void MSharedAttributeExtensionManager::handleAttributeExtensionRegistered(unsigned int clientId, int id,
+                                                                          const QString &attributeExtension)
 {
     Q_UNUSED(attributeExtension);
 

@@ -34,7 +34,8 @@ class MImXServerLogic;
  *
  * Inherits from QObject so that it can have animatable properties.
  */
-class SnapshotPixmapItem : public QObject, public QGraphicsPixmapItem {
+class SnapshotPixmapItem : public QObject, public QGraphicsPixmapItem
+{
     Q_OBJECT
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
     Q_PROPERTY(double opacity READ opacity WRITE setOpacity)
@@ -53,7 +54,8 @@ private:
 
 class MImRemoteWindow;
 
-class MImDamageMonitor : public QObject {
+class MImDamageMonitor : public QObject
+{
     Q_OBJECT
 
 public:
@@ -71,7 +73,7 @@ private Q_SLOTS:
     void timeoutExpired();
 
 private:
-    Q_DISABLE_COPY(MImDamageMonitor);
+    Q_DISABLE_COPY(MImDamageMonitor)
 
     MImRemoteWindow* remoteWindow;
     QTimer timeoutTimer;
@@ -98,7 +100,8 @@ private:
  * in the final orientation overlaid on top.
  *
  */
-class MImRotationAnimation : public QGraphicsView {
+class MImRotationAnimation : public QGraphicsView
+{
     Q_OBJECT
 
 public:

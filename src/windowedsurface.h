@@ -47,7 +47,8 @@ public:
     QSize screenSize() const;
 
     bool supported(Maliit::Plugins::AbstractSurface::Options options) const;
-    QSharedPointer<Maliit::Plugins::AbstractSurface> create(Maliit::Plugins::AbstractSurface::Options options, const QSharedPointer<Maliit::Plugins::AbstractSurface> &parent);
+    QSharedPointer<Maliit::Plugins::AbstractSurface> create(Maliit::Plugins::AbstractSurface::Options options,
+                                                            const QSharedPointer<Maliit::Plugins::AbstractSurface> &parent);
 
     void activate();
     void deactivate();
