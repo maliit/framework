@@ -233,6 +233,8 @@ public:
         , actionKeyOverride(new MKeyOverrideQuick())
         , sentActionKeyOverride()
     {
+        Q_ASSERT(surface);
+
         updateActionKey(MKeyOverride::All);
         // Set surface size to fullscreen
         surface->setSize(QApplication::desktop()->screenGeometry().size());
