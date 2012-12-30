@@ -108,7 +108,8 @@ public Q_SLOTS:
     void handleExtendedAttributeUpdate(unsigned int clientId, int id,
                                        const QString &target, const QString &targetName,
                                        const QString &attribute, const QVariant &value);
-    void handleWidgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState, const QMap<QString, QVariant> &oldState, bool focusChanged);
+    void handleWidgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState,
+                                  const QMap<QString, QVariant> &oldState, bool focusChanged);
 
 Q_SIGNALS:
     //! This signal is emited when a new key override is created.

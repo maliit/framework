@@ -12,9 +12,11 @@ using Maliit::Plugins::AbstractSurface;
 namespace Maliit {
 namespace Server {
 
-class QuickViewSurfaceImpl : public Maliit::Plugins::QuickViewSurface {
+class QuickViewSurfaceImpl : public Maliit::Plugins::QuickViewSurface
+{
 public:
-    QuickViewSurfaceImpl(QuickViewSurfaceFactory *factory, AbstractSurface::Options options, const QSharedPointer<QuickViewSurfaceImpl> &parent)
+    QuickViewSurfaceImpl(QuickViewSurfaceFactory *factory, AbstractSurface::Options options,
+                         const QSharedPointer<QuickViewSurfaceImpl> &parent)
         : QuickViewSurface(),
           mFactory(factory),
           mOptions(options),
@@ -68,7 +70,8 @@ public:
 
         // stand-alone Maliit server
          if (mOptions & PositionCenterBottom) {
-             mWindow->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2, desktopSize.height() - size.height()), size));
+             mWindow->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2,
+                                               desktopSize.height() - size.height()), size));
          } else {
              mWindow->resize(size);
          }
@@ -95,7 +98,8 @@ public:
         return mParent;
     }
 
-    QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const
+    QPoint translateEventPosition(const QPoint &eventPosition,
+                                  const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const
     {
         if (!eventSurface)
             return eventPosition;
@@ -159,7 +163,8 @@ bool QuickViewSurfaceFactory::supported(Maliit::Plugins::AbstractSurface::Option
     return options & Maliit::Plugins::AbstractSurface::TypeQuick2;
 }
 
-QSharedPointer<Maliit::Plugins::AbstractSurface> QuickViewSurfaceFactory::create(Maliit::Plugins::AbstractSurface::Options options, const QSharedPointer<Maliit::Plugins::AbstractSurface> &parent)
+QSharedPointer<Maliit::Plugins::AbstractSurface> QuickViewSurfaceFactory::create(Maliit::Plugins::AbstractSurface::Options options,
+                                                                                 const QSharedPointer<Maliit::Plugins::AbstractSurface> &parent)
 {
     QSharedPointer<QuickViewSurfaceImpl> defaultSurfaceParent(qSharedPointerDynamicCast<QuickViewSurfaceImpl>(parent));
     if (options & Maliit::Plugins::AbstractSurface::TypeQuick2) {

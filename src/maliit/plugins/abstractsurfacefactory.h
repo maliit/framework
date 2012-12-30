@@ -52,9 +52,10 @@ public:
      * \brief creates a new AbstractSurface instance with options and parent
      * \param options the options the surface should have
      * \param parent the parent of the new surface
-     * \return a new AbstarctSurface
+     * \return a new AbstractSurface
      */
-    virtual QSharedPointer<AbstractSurface> create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>()) = 0;
+    virtual QSharedPointer<AbstractSurface> create(AbstractSurface::Options options,
+                                                   const QSharedPointer<AbstractSurface> &parent = QSharedPointer<AbstractSurface>()) = 0;
 
 Q_SIGNALS:
     /*!

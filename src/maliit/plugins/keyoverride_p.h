@@ -16,12 +16,15 @@
 #ifndef MKEYOVERRIDE_P_H
 #define MKEYOVERRIDE_P_H
 
+#include <QObject>
+
 class MWidgetData;
 
-class MKeyOverridePrivate {
-public:
+class MKeyOverridePrivate
+{
     Q_DISABLE_COPY(MKeyOverridePrivate)
 
+public:
     MKeyOverridePrivate();
 
     void assign(const MKeyOverridePrivate &other);

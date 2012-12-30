@@ -171,7 +171,8 @@ void MImXServerLogic::applicationFocusChanged(WId newRemoteWinId)
 
     mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this, xOptions));
 
-    QSharedPointer<Maliit::Server::WindowedSurfaceGroupFactory> windowedSurfaceGroupFactory = qSharedPointerDynamicCast<Maliit::Server::WindowedSurfaceGroupFactory>(mSurfaceGroupFactory);
+    QSharedPointer<Maliit::Server::WindowedSurfaceGroupFactory> windowedSurfaceGroupFactory
+            = qSharedPointerDynamicCast<Maliit::Server::WindowedSurfaceGroupFactory>(mSurfaceGroupFactory);
     if (windowedSurfaceGroupFactory)
         windowedSurfaceGroupFactory->applicationFocusChanged(newRemoteWinId);
 

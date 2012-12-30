@@ -26,7 +26,8 @@ namespace Plugins {
 //! \param options the options the surface should have
 //! \param parent the parent of the new surface
 //! \returns a new shared Maliit::Plugins::AbstractSurface
-QSharedPointer<AbstractSurface> createTestSurface(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &parent)
+QSharedPointer<AbstractSurface> createTestSurface(AbstractSurface::Options options,
+                                                  const QSharedPointer<AbstractSurface> &parent)
 {
     static Maliit::Server::WindowedSurfaceFactory factory;
 

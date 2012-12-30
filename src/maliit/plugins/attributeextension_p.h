@@ -20,7 +20,8 @@
 #include "mattributeextensionid.h"
 class MKeyOverrideData;
 
-class MAttributeExtensionPrivate {
+class MAttributeExtensionPrivate
+{
 public:
     Q_DECLARE_PUBLIC(MAttributeExtension)
     MAttributeExtensionPrivate();

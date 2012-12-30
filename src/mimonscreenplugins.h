@@ -85,5 +85,5 @@ private:
 
 };
 
-Q_DECLARE_METATYPE(MImOnScreenPlugins::SubView);
+Q_DECLARE_METATYPE(MImOnScreenPlugins::SubView)
 #endif // MIMENABLEDPLUGINS_H
