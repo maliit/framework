@@ -204,29 +204,23 @@ plugins_headers.files += $$PLUGIN_HEADERS_PUBLIC
 server_headers.path += $$INCLUDEDIR/$$MALIIT_SERVER_HEADER
 server_headers.files += $$SERVER_HEADERS_PUBLIC
 
-outputFiles(maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc)
-
-
 OTHER_FILES += \
-    maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc.in \
-    maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc.in \
+    maliit-server.pc.in \
+    maliit-plugins.pc.in \
     libmaliit-plugins.pri
-
-outputFiles(maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc)
-
-outputFiles(config.h)
-outputFiles(maliit-plugins.prf maliit-defines.prf)
 
 OTHER_FILES += \
     config.h.in \
     maliit-plugins.prf.in \
     maliit-defines.prf.in \
 
+outputFiles(config.h  maliit-defines.prf maliit-plugins.prf maliit-plugins.pc maliit-server.pc)
+
 install_pkgconfig.path = $${LIBDIR}/pkgconfig
 install_pkgconfig.files = \
     $$OUT_PWD/MeegoImFramework.pc \
-    $$OUT_PWD/maliit-plugins-$${MALIIT_PLUGINS_INTERFACE_VERSION}.pc \
-    $$OUT_PWD/maliit-server-$${MALIIT_SERVER_INTERFACE_VERSION}.pc \
+    $$OUT_PWD/maliit-plugins.pc \
+    $$OUT_PWD/maliit-server.pc \
 
 install_prf.path = $$MALIIT_INSTALL_PRF
 install_prf.files = $$OUT_PWD/maliit-plugins.prf $$OUT_PWD/maliit-defines.prf

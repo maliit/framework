@@ -9,7 +9,7 @@ factorypluginsdir=@MALIIT_FACTORY_PLUGINS_DIR@
 Name: Maliit Server
 Description: Library for embedding the Maliit IM Server
 Version: @MALIIT_VERSION@
-Requires: maliit-framework-0.80 maliit-plugins-1.0 maliit-connection-0.80
+Requires: maliit-framework maliit-plugins maliit-connection
 Cflags: -I${includedir}/@MALIIT_SERVER_HEADER@
 Libs: -L${libdir}
 
