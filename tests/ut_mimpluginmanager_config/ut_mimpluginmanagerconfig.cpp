@@ -76,10 +76,19 @@ void Ut_MIMPluginManagerConfig::initTestCase()
 {
     MImSettings::setPreferredSettingsType(MImSettings::TemporarySettings);
     MImSettings::setImplementationFactory(new MImSettingsQSettingsBackendFactory(Organization, Application));
-}
 
+    // Make sure we start with empty/non-existing config file:
+    QSettings settings(Organization, Application);
+    QFile file(settings.fileName());
+    file.remove();
+}
+ 
 void Ut_MIMPluginManagerConfig::cleanupTestCase()
 {
+    // Make sure we remove the config file at the end, too:
+    QSettings settings(Organization, Application);
+    QFile file(settings.fileName());
+    file.remove();
 }
 
 void Ut_MIMPluginManagerConfig::init()
