@@ -137,7 +137,7 @@ public:
             return;
         }
 
-        m_content->show();
+        m_controller->setActive(true);
     }
 
     void hideUI()
@@ -146,7 +146,7 @@ public:
             return;
         }
 
-        m_content->hide();
+        m_controller->setActive(false);
     }
 
     void loadQmlFile(const QString &qmlFileName)
@@ -204,6 +204,7 @@ public:
     bool sipIsInhibited;
     QSharedPointer<MKeyOverrideQuick> actionKeyOverride;
     QSharedPointer<MKeyOverride> sentActionKeyOverride;
+    bool active;
 
     Q_DECLARE_PUBLIC(MInputMethodQuick)
 
@@ -225,6 +226,7 @@ public:
         , sipIsInhibited(false)
         , actionKeyOverride(new MKeyOverrideQuick())
         , sentActionKeyOverride()
+        , active(false)
     {
         Q_ASSERT(surface);
 
@@ -250,7 +252,7 @@ public:
         if (not host) {
             return;
         }
-        host->setScreenRegion(region);
+
         host->setInputMethodArea(region);
     }
 
@@ -358,9 +360,9 @@ void MInputMethodQuick::show()
       d->surface->show();
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
       d->loader->showUI();
+#else
+      setActive(true);
 #endif
-      const QRegion r(inputMethodArea().toRect());
-      d->handleInputMethodAreaUpdate(inputMethodHost(), r);
       d->syncInputMask();
     }
 }
@@ -374,6 +376,8 @@ void MInputMethodQuick::hide()
     d->sipRequested = false;
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     d->loader->hideUI();
+#else
+    setActive(false);
 #endif
     d->surface->hide();
     const QRegion r;
@@ -415,6 +419,8 @@ void MInputMethodQuick::setState(const QSet<Maliit::HandlerState> &state)
     } else {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         d->loader->hideUI();
+#else
+        setActive(false);
 #endif
         // Allow client to make use of InputMethodArea
         const QRegion r;
@@ -430,6 +436,8 @@ void MInputMethodQuick::handleClientChange()
     if (d->sipRequested) {
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         d->loader->hideUI();
+#else
+        setActive(false);
 #endif
     }
 }
@@ -444,13 +452,19 @@ void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
     d->sipIsInhibited = inhibitShow;
 
     if (d->sipRequested) {
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         if (inhibitShow) {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
             d->loader->hideUI();
-        } else {
-            d->loader->showUI();
-        }
+#else
+            setActive(false);
 #endif
+        } else {
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+            d->loader->showUI();
+#else
+            setActive(true);
+#endif
+        }
     }
 }
 
@@ -489,6 +503,7 @@ void MInputMethodQuick::setInputMethodArea(const QRectF &area)
 
     if (d->inputMethodArea != area.toRect()) {
         d->inputMethodArea = area.toRect();
+        d->handleInputMethodAreaUpdate(inputMethodHost(), d->inputMethodArea);
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         qDebug() << __PRETTY_FUNCTION__ << "QWidget::effectiveWinId(): " << d_ptr->view->effectiveWinId();
@@ -497,6 +512,11 @@ void MInputMethodQuick::setInputMethodArea(const QRectF &area)
         Q_EMIT inputMethodAreaChanged(d->inputMethodArea);
         d->syncInputMask();
     }
+}
+
+void MInputMethodQuick::setScreenRegion(const QRect &region)
+{
+    inputMethodHost()->setScreenRegion(region);
 }
 
 void MInputMethodQuick::sendPreedit(const QString &text)
@@ -588,4 +608,19 @@ MKeyOverrideQuick* MInputMethodQuick::actionKeyOverride() const
 void MInputMethodQuick::activateActionKey()
 {
     sendCommit("\n");
+}
+
+bool MInputMethodQuick::isActive() const
+{
+    Q_D(const MInputMethodQuick);
+    return d->active;
+}
+
+void MInputMethodQuick::setActive(bool enable)
+{
+    Q_D(MInputMethodQuick);
+    if (d->active != enable) {
+        d->active = enable;
+        Q_EMIT activeChanged();
+    }
 }
