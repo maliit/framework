@@ -16,6 +16,7 @@
 #ifndef MALIIT_SERVER_WINDOWED_SURFACE_P_H
 #define MALIIT_SERVER_WINDOWED_SURFACE_P_H
 
+#include <QObject>
 #include <QPoint>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QWindow>
@@ -32,8 +33,11 @@ namespace Server {
 
 class WindowedSurfaceFactory;
 
-class WindowedSurface : public virtual Maliit::Plugins::AbstractSurface
+class WindowedSurface : public QObject,
+                        public virtual Maliit::Plugins::AbstractSurface
 {
+    Q_OBJECT
+
 public:
     WindowedSurface(WindowedSurfaceFactory *factory,
                     AbstractSurface::Options options,
