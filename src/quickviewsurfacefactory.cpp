@@ -1,5 +1,6 @@
 
 #include "quickviewsurfacefactory.h"
+#include "quickviewsurfacefactory_p.h"
 
 #include <maliit/plugins/abstractsurface.h>
 #include <maliit/plugins/quickviewsurface.h>
@@ -12,138 +13,145 @@ using Maliit::Plugins::AbstractSurface;
 namespace Maliit {
 namespace Server {
 
-class QuickViewSurfaceImpl : public Maliit::Plugins::QuickViewSurface
+QuickViewSurfaceImpl::QuickViewSurfaceImpl(QuickViewSurfaceFactory *factory, AbstractSurface::Options options,
+                                           const QSharedPointer<QuickViewSurfaceImpl> &parent)
+    : QuickViewSurface(),
+      mFactory(factory),
+      mOptions(options),
+      mParent(parent),
+      mActive(false),
+      mVisible(false),
+      mRelativePosition(),
+      mWindow()
 {
-public:
-    QuickViewSurfaceImpl(QuickViewSurfaceFactory *factory, AbstractSurface::Options options,
-                         const QSharedPointer<QuickViewSurfaceImpl> &parent)
-        : QuickViewSurface(),
-          mFactory(factory),
-          mOptions(options),
-          mParent(parent),
-          mActive(false),
-          mVisible(false),
-          mRelativePosition(),
-          mWindow()
-    {
-        QWindow *parentWindow = 0;
-        if (parent) {
-            parentWindow = parent->mWindow.data();
-        }
-        mWindow.reset(new QQuickView(parentWindow));
-
-        mWindow->setFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
-                          | Qt::X11BypassWindowManagerHint | Qt::WindowDoesNotAcceptFocus);
-
-        QSurfaceFormat format;
-        format.setAlphaBufferSize(8);
-        mWindow->setFormat(format);
-        mWindow->setColor(QColor(Qt::transparent));
-
-        updateVisibility();
+    mWindow.reset(new QQuickView(0));
+    if (parent) {
+        QWindow *parentWindow = parent->mWindow.data();
+        mWindow->setTransientParent(parentWindow);
+        parentWindow->installEventFilter(this);
+        connect(parentWindow, SIGNAL(xChanged(int)), this, SLOT(updatePosition()));
+        connect(parentWindow, SIGNAL(yChanged(int)), this, SLOT(updatePosition()));
     }
 
-    ~QuickViewSurfaceImpl()
-    {
+    mWindow->setFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint
+                      | Qt::X11BypassWindowManagerHint | Qt::WindowDoesNotAcceptFocus);
+
+    QSurfaceFormat format;
+    format.setAlphaBufferSize(8);
+    mWindow->setFormat(format);
+    mWindow->setColor(QColor(Qt::transparent));
+
+    updateVisibility();
+}
+
+QuickViewSurfaceImpl::~QuickViewSurfaceImpl()
+{
+}
+
+void QuickViewSurfaceImpl::show()
+{
+    mVisible = true;
+    updateVisibility();
+}
+
+void QuickViewSurfaceImpl::hide()
+{
+    mVisible = false;
+    updateVisibility();
+}
+
+QSize QuickViewSurfaceImpl::size() const
+{
+    return mWindow->size();
+}
+
+void QuickViewSurfaceImpl::setSize(const QSize &size)
+{
+    const QSize& desktopSize = QGuiApplication::screens().first()->size();
+
+    // stand-alone Maliit server
+    if (mOptions & PositionCenterBottom) {
+        mWindow->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2,
+                                          desktopSize.height() - size.height()), size));
+    } else {
+        mWindow->resize(size);
     }
 
-    void show()
-    {
-        mVisible = true;
-        updateVisibility();
+    qDebug() << __PRETTY_FUNCTION__ << size;
+}
+
+QPoint QuickViewSurfaceImpl::relativePosition() const
+{
+    return mRelativePosition;
+}
+
+void QuickViewSurfaceImpl::setRelativePosition(const QPoint &position)
+{
+    mRelativePosition = position;
+    QPoint parentPosition(0, 0);
+    if (mParent) {
+        parentPosition = mParent->mWindow->position();
+    }
+    mWindow->setPosition(parentPosition + mRelativePosition);
+
+    qDebug() << __PRETTY_FUNCTION__ << parentPosition << mRelativePosition;
+}
+
+QSharedPointer<AbstractSurface> QuickViewSurfaceImpl::parent() const
+{
+    return mParent;
+}
+
+QPoint QuickViewSurfaceImpl::translateEventPosition(const QPoint &eventPosition,
+                                                    const QSharedPointer<AbstractSurface> &eventSurface) const
+{
+    if (!eventSurface)
+        return eventPosition;
+
+    QSharedPointer<QuickViewSurfaceImpl> windowedSurface = qSharedPointerDynamicCast<QuickViewSurfaceImpl>(eventSurface);
+    if (!windowedSurface)
+        return QPoint();
+
+    return -mWindow->position() + eventPosition + windowedSurface->mWindow->position();
+}
+
+void QuickViewSurfaceImpl::setActive(bool active)
+{
+    mActive = active;
+    updateVisibility();
+}
+
+QRegion QuickViewSurfaceImpl::inputMethodArea()
+{
+    if (!mWindow->isVisible())
+        return QRegion();
+
+    return QRegion(mWindow->geometry());
+}
+
+QQuickView *QuickViewSurfaceImpl::view() const
+{
+    return mWindow.data();
+}
+
+bool QuickViewSurfaceImpl::eventFilter(QObject *, QEvent *event)
+{
+    if (event->type() == QEvent::Move) {
+        updatePosition();
     }
 
-    void hide()
-    {
-        mVisible = false;
-        updateVisibility();
-    }
+    return false;
+}
 
-    QSize size() const
-    {
-        return mWindow->size();
-    }
+void QuickViewSurfaceImpl::updateVisibility()
+{
+    mWindow->setVisible(mActive && mVisible);
+}
 
-    void setSize(const QSize &size)
-    {
-        const QSize& desktopSize = QGuiApplication::screens().first()->size();
-
-        // stand-alone Maliit server
-         if (mOptions & PositionCenterBottom) {
-             mWindow->setGeometry(QRect(QPoint((desktopSize.width() - size.width()) / 2,
-                                               desktopSize.height() - size.height()), size));
-         } else {
-             mWindow->resize(size);
-         }
-    }
-
-    QPoint relativePosition() const
-    {
-        return mRelativePosition;
-    }
-
-    void setRelativePosition(const QPoint &position)
-    {
-        mRelativePosition = position;
-        QPoint parentPosition(0, 0);
-        if (mParent) {
-            parentPosition = mParent->mWindow->position();
-        }
-        mWindow->setPosition(parentPosition + mRelativePosition);
-    }
-
-
-    QSharedPointer<AbstractSurface> parent() const
-    {
-        return mParent;
-    }
-
-    QPoint translateEventPosition(const QPoint &eventPosition,
-                                  const QSharedPointer<AbstractSurface> &eventSurface = QSharedPointer<AbstractSurface>()) const
-    {
-        if (!eventSurface)
-            return eventPosition;
-
-        QSharedPointer<QuickViewSurfaceImpl> windowedSurface = qSharedPointerDynamicCast<QuickViewSurfaceImpl>(eventSurface);
-        if (!windowedSurface)
-            return QPoint();
-
-        return -mWindow->position() + eventPosition + windowedSurface->mWindow->position();
-    }
-
-    void setActive(bool active)
-    {
-        mActive = active;
-        updateVisibility();
-    }
-
-    QRegion inputMethodArea()
-    {
-        if (!mWindow->isVisible())
-            return QRegion();
-
-        return QRegion(mWindow->geometry());
-    }
-
-    QQuickView *view() const
-    {
-        return mWindow.data();
-    }
-
-private:
-    void updateVisibility()
-    {
-        mWindow->setVisible(mActive && mVisible);
-    }
-
-    QuickViewSurfaceFactory *mFactory;
-    AbstractSurface::Options mOptions;
-    QSharedPointer<QuickViewSurfaceImpl> mParent;
-    bool mActive;
-    bool mVisible;
-    QPoint mRelativePosition;
-    QScopedPointer<QQuickView> mWindow;
-};
+void QuickViewSurfaceImpl::updatePosition()
+{
+    setRelativePosition(mRelativePosition);
+}
 
 QuickViewSurfaceFactory::QuickViewSurfaceFactory()
 {

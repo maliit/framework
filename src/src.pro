@@ -76,6 +76,7 @@ contains(QT_MAJOR_VERSION, 5) {
     SERVER_HEADERS_PRIVATE += \
         quickviewsurfacegroup.h \
         quickviewsurfacefactory.h \
+        quickviewsurfacefactory_p.h \
 
     SERVER_SOURCES += \
         quickviewsurfacegroup.cpp \
