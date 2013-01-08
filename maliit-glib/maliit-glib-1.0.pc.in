@@ -6,6 +6,6 @@ includedir=@INCLUDEDIR@
 Name: Maliit-GLib
 Description: Maliit provides a flexible and cross platform input method framework. It is usable on all MeeGo user experiences, and in other GNU/Linux distributions as well.
 Version: @MALIIT_VERSION@
-Requires: maliit-framework-0.80 gobject-2.0 gio-2.0
+Requires: maliit-framework gobject-2.0 gio-2.0
 Cflags: -I${includedir}/@MALIIT_HEADER@
-Libs: -L${libdir} -l@MALIIT_GLIB_LIB@@MALIIT_ABI_VERSION_MAJOR@
+Libs: -L${libdir} -l@MALIIT_GLIB_LIB@
