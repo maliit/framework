@@ -76,8 +76,6 @@ void QuickViewSurfaceImpl::setSize(const QSize &size)
     } else {
         mWindow->resize(size);
     }
-
-    qDebug() << __PRETTY_FUNCTION__ << size;
 }
 
 QPoint QuickViewSurfaceImpl::relativePosition() const
@@ -93,8 +91,6 @@ void QuickViewSurfaceImpl::setRelativePosition(const QPoint &position)
         parentPosition = mParent->mWindow->position();
     }
     mWindow->setPosition(parentPosition + mRelativePosition);
-
-    qDebug() << __PRETTY_FUNCTION__ << parentPosition << mRelativePosition;
 }
 
 QSharedPointer<AbstractSurface> QuickViewSurfaceImpl::parent() const
