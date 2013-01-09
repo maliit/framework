@@ -45,13 +45,13 @@ target.path += $$LIBDIR
 headers.path += $$INCLUDEDIR/$$MALIIT_HEADER/maliit-glib
 headers.files += $$HEADERSINSTALL
 
-outputFiles(maliit-glib-$${MALIIT_INTERFACE_VERSION}.pc)
+outputFiles(maliit-glib.pc)
 
 OTHER_FILES += \
-    maliit-glib-$${MALIIT_INTERFACE_VERSION}.pc.in
+    maliit-glib.pc.in
 
 install_pkgconfig.path = $${LIBDIR}/pkgconfig
-install_pkgconfig.files = $$OUT_PWD/maliit-glib-$${MALIIT_INTERFACE_VERSION}.pc
+install_pkgconfig.files = $$OUT_PWD/maliit-glib.pc
 
 INSTALLS += \
     target \
