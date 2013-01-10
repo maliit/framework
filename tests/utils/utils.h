@@ -58,7 +58,7 @@ namespace MaliitTestUtils {
 
     protected:
         virtual bool filterEvent(const QEvent *event) {
-            push_back(transform(event));
+            this->push_back(transform(event));
             return true;
         }
 
