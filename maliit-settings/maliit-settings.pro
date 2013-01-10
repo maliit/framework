@@ -34,13 +34,13 @@ target.path += $$LIBDIR
 headers.path += $$INCLUDEDIR/$$MALIIT_HEADER/maliit
 headers.files += $$HEADERSINSTALL
 
-outputFiles(maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc)
+outputFiles(maliit-settings.pc)
 
 OTHER_FILES += \
-    maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc.in
+    maliit-settings.pc.in
 
 install_pkgconfig.path = $${LIBDIR}/pkgconfig
-install_pkgconfig.files = $$OUT_PWD/maliit-settings-$${MALIIT_INTERFACE_VERSION}.pc
+install_pkgconfig.files = $$OUT_PWD/maliit-settings.pc
 
 INSTALLS += \
     target \

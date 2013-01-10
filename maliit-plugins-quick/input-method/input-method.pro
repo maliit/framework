@@ -50,7 +50,7 @@ QMAKE_CLEAN += $$OBJECTS_DIR/*.gcno $$OBJECTS_DIR/*.gcda
 headers.path += $$INCLUDEDIR/$$MALIIT_PLUGINS_QUICK_HEADER
 headers.files += $$HEADERSINSTALL
 
-outputFiles(maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc)
+outputFiles(maliit-plugins-quick.pc)
 
 QT_PRF_DIR = $$[QT_INSTALL_DATA]/mkspecs/features
 QT_PREFIX = $$[QT_INSTALL_PREFIX]
@@ -59,7 +59,7 @@ local-install {
 }
 
 install_pkgconfig.path = $${LIBDIR}/pkgconfig
-install_pkgconfig.files = $$OUT_PWD/maliit-plugins-quick-$${MALIIT_PLUGINS_QUICK_INTERFACE_VERSION}.pc
+install_pkgconfig.files = $$OUT_PWD/maliit-plugins-quick.pc
 
 INSTALLS += target \
     headers \

@@ -7,8 +7,8 @@ BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {
     CONFIG += link_pkgconfig
-    PKGCONFIG += maliit-glib-1.0
-    INCLUDEPATH += $$system(pkg-config --cflags maliit-glib-1.0 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
+    PKGCONFIG += maliit-glib
+    INCLUDEPATH += $$system(pkg-config --cflags maliit-glib | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
 }
 
 contains(BUILD_TYPE, unittest) {

@@ -25,8 +25,8 @@ BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {
     CONFIG += link_pkgconfig
-    PKGCONFIG += maliit-plugins-quick-0.80
-    plugin.path += $$system(pkg-config --variable pluginsdir maliit-plugins-1.0)
+    PKGCONFIG += maliit-plugins-quick
+    plugin.path += $$system(pkg-config --variable pluginsdir maliit-plugins)
     INSTALLS += plugin
 }
 

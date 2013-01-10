@@ -10,8 +10,8 @@ BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton) {
     CONFIG += link_pkgconfig
-    PKGCONFIG += maliit-1.0
-    INCLUDEPATH += $$system(pkg-config --cflags maliit-1.0 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
+    PKGCONFIG += maliit
+    INCLUDEPATH += $$system(pkg-config --cflags maliit | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
 
     # FIXME: install MImServer header, and provide a dedicated library and .pc for it
     QMAKE_LIBDIR_QT -= /usr/lib64

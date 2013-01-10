@@ -16,7 +16,7 @@ to use @ref Maliit::InputMethod "InputMethod":
 Add the libmaliit pkg-config checks to your project's qmake .pro %file:
 @code
 CONFIG += link_pkgconfig
-PKGCONFIG += maliit-1.0
+PKGCONFIG += maliit
 @endcode
 
 Finally, run qmake and build your application in the usual way:

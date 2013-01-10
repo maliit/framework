@@ -267,11 +267,11 @@ target.path += $$LIBDIR
 public_headers.path += $$INCLUDEDIR/$$MALIIT_CONNECTION_HEADER
 public_headers.files += $$PUBLIC_HEADERS
 
-OTHER_FILES += maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc.in
-outputFiles(maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc)
+OTHER_FILES += maliit-connection.pc.in
+outputFiles(maliit-connection.pc)
 
 install_pkgconfig.path = $${LIBDIR}/pkgconfig
-install_pkgconfig.files = maliit-connection-$${MALIIT_CONNECTION_INTERFACE_VERSION}.pc
+install_pkgconfig.files = maliit-connection.pc
 
 INSTALLS += target \
     public_headers \

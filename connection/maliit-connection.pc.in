@@ -9,7 +9,7 @@ factorypluginsdir=@MALIIT_FACTORY_PLUGINS_DIR@
 Name: Maliit Connection
 Description: Shared library for connection between Maliit IC and Maliit Server
 Version: @MALIIT_VERSION@
-Requires: maliit-framework-0.80
+Requires: maliit-framework
 Cflags: -I${includedir}/@MALIIT_CONNECTION_HEADER@
-Libs: -L${libdir} -l@MALIIT_CONNECTION_LIB@@MALIIT_ABI_VERSION_MAJOR@
+Libs: -L${libdir} -l@MALIIT_CONNECTION_LIB@
 

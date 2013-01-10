@@ -16,8 +16,8 @@ contains(QT_MAJOR_VERSION, 4) {
 
 contains(BUILD_TYPE, skeleton) {
     CONFIG += link_pkgconfig
-    PKGCONFIG += maliit-settings-1.0
-    INCLUDEPATH += $$system(pkg-config --cflags maliit-1.0 | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
+    PKGCONFIG += maliit-settings
+    INCLUDEPATH += $$system(pkg-config --cflags maliit-settings | tr \' \' \'\\n\' | grep ^-I | cut -d I -f 2-)
 }
 
 contains(BUILD_TYPE, unittest) {

@@ -10,7 +10,7 @@ BUILD_TYPE = unittest
 
 contains(BUILD_TYPE, skeleton)|contains(BUILD_TYPE, skeleton-legacy) {
     CONFIG += link_pkgconfig
-    PKGCONFIG += maliit-server-0.80
+    PKGCONFIG += maliit-server
 }
 
 contains(BUILD_TYPE, unittest) {
