@@ -17,8 +17,7 @@ include(./config.pri)
         \\n\\t notests : Do not build tests \
         \\n\\t noqml : Do not build Quick QML Plugins Interface\
         \\n\\t nogtk : Do not build GTK+ input method module, nor the glib-based application support libraries\
-        \\n\\t nosdk : Do not build Maliit SDK \
-        \\n\\t nodoc : Do not build documentation (also disables SDK) \
+        \\n\\t nodoc : Do not build documentation\
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
         \\n\\t local-install : Install everything underneath PREFIX, nothing to system directories reported by GTK+, Qt, DBus etc. \
         \\n\\t disable-background-translucency : Do not set translucent background hint on surfaces (workaround for non-compositing WMs) \
@@ -81,10 +80,6 @@ SUBDIRS += examples
 
 !nodoc {
     SUBDIRS += doc
-}
-
-!nosdk:!nodoc {
-    SUBDIRS += sdk
 }
 
 !notests {
