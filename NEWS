@@ -1,7 +1,25 @@
 {NEXT}
 ======
 
-CHANGES SINCE 0.93.0
+CHANGES SINCE 0.94.0
+
+0.94.0
+======
+
+CHANGES SINCE 0.93.1
+* Add Wayland input method support
+* Auto-detect subviews based on system locale
+  - If no configuration exists, Maliit uses LANGUAGE to guess plugin's
+    subview(s).
+* Don't write user configuration to disk for default values
+  - Only write *actual* user configuration that's different from factory
+    defaults.
+* Remove version suffix from libraries and install directories
+  - Affects packaging & {header, .pc , .prf} install directories
+* Adjust to Qt 5.0.0 API changes
+* Add surface support for QtQuick2
+* Remove SDK
+  - It was pretty much unmaintained.
 
 0.93.1
 ======
