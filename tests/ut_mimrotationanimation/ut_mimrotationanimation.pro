@@ -15,4 +15,6 @@ SOURCES += \
     ut_mimrotationanimation.cpp \
     ../utils/gui-utils.cpp \
 
+needs_x = yes
+
 include(../common_check.pri)

@@ -13,4 +13,6 @@ HEADERS += \
 SOURCES += \
     ut_passthroughserver.cpp \
 
+needs_x = yes
+
 include(../common_check.pri)

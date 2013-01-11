@@ -4,16 +4,31 @@ contains(QT_MAJOR_VERSION, 4) {
 
 qws {
     unittest_arguments += -qws
+    needs_x =
 }
 
 QMAKE_EXTRA_TARGETS += check
 check.target = check
 check.commands = \
-    TESTING_IN_SANDBOX=1 \
-    TESTPLUGIN_PATH=../plugins \
-    TESTDATA_PATH=$$PWD \
-    LD_LIBRARY_PATH=../../lib:../../lib/plugins:../plugins:$(LD_LIBRARY_PATH) \
-    ./$$TARGET $$unittest_arguments
+    if test \'x$$needs_x\' = \'xyes\' && test \"x\$\$DISPLAY\" = 'x'; \
+    then \
+        echo; \
+        echo; \
+        echo \'**************************************************\'; \
+        echo \'**************************************************\'; \
+        echo \'No \$\$DISPLAY envvar set, omitting test $$TARGET \'; \
+        echo \'**************************************************\'; \
+        echo \'**************************************************\'; \
+        echo; \
+        echo; \
+        sleep 2; \
+    else \
+        TESTING_IN_SANDBOX=1 \
+        TESTPLUGIN_PATH=../plugins \
+        TESTDATA_PATH=$$PWD \
+        LD_LIBRARY_PATH=../../lib:../../lib/plugins:../plugins:$(LD_LIBRARY_PATH) \
+        ./$$TARGET $$unittest_arguments; \
+    fi;
 
 check.depends += $$TARGET
 

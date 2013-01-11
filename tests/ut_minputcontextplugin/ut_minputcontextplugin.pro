@@ -21,4 +21,6 @@ SOURCES += \
 
 CONFIG += link_pkgconfig
 
+needs_x = yes
+
 include(../common_check.pri)

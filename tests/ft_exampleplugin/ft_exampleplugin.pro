@@ -17,4 +17,6 @@ HEADERS += \
 SOURCES += \
     ft_exampleplugin.cpp \
 
+needs_x = yes
+
 include(../common_check.pri)

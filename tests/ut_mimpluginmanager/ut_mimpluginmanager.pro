@@ -22,4 +22,6 @@ target.files += \
     toolbar1.xml \
     toolbar2.xml \
 
+needs_x = yes
+
 include(../common_check.pri)

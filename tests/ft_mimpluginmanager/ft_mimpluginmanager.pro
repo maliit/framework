@@ -22,4 +22,6 @@ include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 include(../dummyimplugins.pri)
 
+needs_x = yes
+
 include(../common_check.pri)

@@ -16,4 +16,6 @@ CONFIG += plugin qdbus
 LIBS += \
         -lXfixes
 
+needs_x = yes
+
 include(../common_check.pri)

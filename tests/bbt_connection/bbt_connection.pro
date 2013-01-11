@@ -13,4 +13,6 @@ SOURCES += \
 
 include(../../connection/libmaliit-connection.pri)
 
+needs_x = yes
+
 include(../common_check.pri)
