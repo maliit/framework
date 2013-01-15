@@ -84,6 +84,7 @@ protected:
 
 #ifdef HAVE_WAYLAND
     struct input_panel_surface *mSurface;
+    struct wl_subsurface *mSubsurface;
 #endif
 };
 

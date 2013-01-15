@@ -68,6 +68,7 @@ public:
     struct wl_registry *registry;
     struct wl_output *output;
     struct input_panel *panel;
+    struct wl_subcompositor *subcompositor;
     bool output_configured;
 #endif
 };

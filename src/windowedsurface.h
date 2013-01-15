@@ -25,6 +25,10 @@
 #include <QWidget> // For WId
 #endif
 
+#ifdef HAVE_WAYLAND
+#include <wayland-client.h>
+#endif
+
 #include <vector>
 
 #include <maliit/plugins/abstractsurfacefactory.h>
@@ -59,6 +63,8 @@ public:
 
 #ifdef HAVE_WAYLAND
     void *getInputPanelSurface(QWindow *window);
+
+    struct wl_subcompositor *getSubcompositor();
 #endif
 
 Q_SIGNALS:

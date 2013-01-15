@@ -73,6 +73,10 @@ WindowedSurface::WindowedSurface(WindowedSurfaceFactory *factory,
       mActive(false),
       mVisible(false),
       mRelativePosition()
+#ifdef HAVE_WAYLAND
+    , mSurface()
+    , mSubsurface()
+#endif
 {
     QWidget *parentWidget = 0;
     if (parent) {
@@ -140,6 +144,13 @@ QPoint WindowedSurface::relativePosition() const
 
 void WindowedSurface::setRelativePosition(const QPoint &position)
 {
+#ifdef HAVE_WAYLAND
+    if (mSubsurface) {
+        wl_subsurface_set_position(mSubsurface, position.x(), position.y());
+        return;
+    }
+#endif
+
     mRelativePosition = position;
     QPoint parentPosition(0, 0);
     if (mParent) {
@@ -153,6 +164,7 @@ void WindowedSurface::setRelativePosition(const QPoint &position)
     }
     mToplevel->move(parentPosition + mRelativePosition);
         mFactory->updateInputMethodArea();
+
 }
 
 QSharedPointer<AbstractSurface> WindowedSurface::parent() const
@@ -216,18 +228,32 @@ QPoint WindowedSurface::mapToGlobal(const QPoint &pos) const
     return mToplevel->mapToGlobal(pos);
 }
 
-bool WindowedSurface::eventFilter(QObject *, QEvent *event)
+bool WindowedSurface::eventFilter(QObject *obj, QEvent *event)
 {
 #ifdef HAVE_WAYLAND
     if (event->type() == QEvent::WinIdChange) {
-        mSurface = static_cast<struct input_panel_surface *>(mFactory->getInputPanelSurface(mToplevel->windowHandle()));
-        input_panel_surface_set_toplevel(mSurface);
+        if (mParent) {
+            struct wl_surface *surface = static_cast<struct wl_surface *>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("surface", mToplevel->windowHandle()));
+            struct wl_surface *parent = static_cast<struct wl_surface *>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("surface", mParent->mToplevel->windowHandle()));
+
+            mSubsurface = wl_subcompositor_get_subsurface(mFactory->getSubcompositor(), surface, parent);
+        } else {
+            mSurface = static_cast<struct input_panel_surface *>(mFactory->getInputPanelSurface(mToplevel->windowHandle()));
+            input_panel_surface_set_toplevel(mSurface);
+        }
     }
 #else
     Q_UNUSED(event);
 #endif
 
-    return false;
+    if (event->type() == QEvent::MouseButtonPress)
+        qDebug() << __PRETTY_FUNCTION__ << obj << "QEvent::MouseButtonPress";
+    if (event->type() == QEvent::MouseButtonRelease)
+        qDebug() << __PRETTY_FUNCTION__ << obj << "QEvent::MouseButtonRelease";
+    if (event->type() == QEvent::MouseMove)
+        qDebug() << __PRETTY_FUNCTION__ << obj << "QEvent::MouseMove";
+
+    return QObject::eventFilter(obj, event);
 }
 
 class GraphicsView : public QGraphicsView
@@ -320,6 +346,8 @@ public:
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         view->setInputContext(0);
 #endif
+
+        view->viewport()->installEventFilter(this);
     }
 
     ~WindowedGraphicsViewSurface() {}
@@ -505,6 +533,8 @@ void WindowedSurfaceFactoryPrivate::handleRegistryGlobal(uint32_t name,
 
         output = static_cast<wl_output *>(wl_registry_bind(registry, name, &wl_output_interface, 1));
         wl_output_add_listener (output, &maliit_output_listener, this);
+    } else if (!strcmp(interface, "wl_subcompositor")) {
+        subcompositor = static_cast<struct wl_subcompositor *>(wl_registry_bind(registry, name, &wl_subcompositor_interface, 1));
     }
 }
 
@@ -572,6 +602,14 @@ void *WindowedSurfaceFactory::getInputPanelSurface(QWindow *window)
 
     return input_panel_get_input_panel_surface(d->panel, surface);
 }
+
+struct wl_subcompositor *WindowedSurfaceFactory::getSubcompositor()
+{
+    Q_D(WindowedSurfaceFactory);
+
+    return d->subcompositor;
+}
+
 #endif
 
 // Windowed Surface Factory
