@@ -170,7 +170,6 @@ void MImXApplication::setTransientHint(WId newRemoteWinId)
     const bool wasRedirected(mRemoteWindow.data() && mRemoteWindow->isRedirected());
 
     mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this));
-    mRemoteWindow->setIMWidget(mPassThruWindow->window());
 
     connect(mRemoteWindow.data(), SIGNAL(contentUpdated(QRegion)),
             this,                SLOT(updatePassThruWindow(QRegion)));
