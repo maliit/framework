@@ -12,9 +12,6 @@ class Ut_MIMApplication : public QObject
     Q_OBJECT
 
 private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
-
     void init();
     void cleanup();
 
@@ -22,6 +19,8 @@ private Q_SLOTS:
 
     void testConfigureWidgetsForCompositing_data();
     void testConfigureWidgetsForCompositing();
+
+    void testHandleTransient();
 
 private:
     void handleMessages();

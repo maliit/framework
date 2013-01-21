@@ -6,6 +6,7 @@
 #include <QSignalSpy>
 #include <QGraphicsView>
 #include <QDebug>
+#include <QX11Info>
 
 #include <X11/X.h>
 #include <X11/Xlib.h>
@@ -15,7 +16,8 @@ namespace {
     const WId FakeRemoteWId = 1; // must be non-zero to be considered "valid"
 }
 
-void Ut_MIMApplication::initTestCase()
+
+void Ut_MIMApplication::init()
 {
     static char *argv[1] = { (char *) "ut_mimapplication" };
     static int argc = 1;
@@ -24,22 +26,16 @@ void Ut_MIMApplication::initTestCase()
     subject = static_cast<MPassThruWindow *>(app->passThruWindow());
 }
 
-void Ut_MIMApplication::cleanupTestCase()
-{
-    delete app;
-}
-
-void Ut_MIMApplication::init()
-{
-    app->setTransientHint(FakeRemoteWId);
-}
-
 void Ut_MIMApplication::cleanup()
 {
+    delete app;
+    app = 0;
 }
 
 void Ut_MIMApplication::testHandleTransientEvents()
 {
+    app->setTransientHint(FakeRemoteWId);
+
     XEvent xevent;
     xevent.type = UnmapNotify;
     xevent.xunmap.event = FakeRemoteWId;
@@ -59,6 +55,8 @@ void Ut_MIMApplication::testConfigureWidgetsForCompositing_data()
 
 void Ut_MIMApplication::testConfigureWidgetsForCompositing()
 {
+    app->setTransientHint(FakeRemoteWId);
+
     QFETCH(bool, selfCompositing);
 
     QWidget mainWindow(app->passThruWindow());
@@ -80,6 +78,22 @@ void Ut_MIMApplication::testConfigureWidgetsForCompositing()
                 || selfCompositing);
         QVERIFY(not w->autoFillBackground());
     }
+}
+
+void Ut_MIMApplication::testHandleTransient()
+{
+    // simulate first focus when passthru gets shown only after app has signaled on new focus target
+    QWidget dummyWindow;
+    dummyWindow.show();
+    app->setTransientHint(dummyWindow.effectiveWinId());
+
+    QWidget *passthru = app->passThruWindow();
+    passthru->show();
+    int passthruWinId = passthru->effectiveWinId();
+
+    WId transientTarget;
+    XGetTransientForHint(QX11Info::display(), passthruWinId, &transientTarget);
+    QCOMPARE(transientTarget, dummyWindow.effectiveWinId());
 }
 
 QTEST_APPLESS_MAIN(Ut_MIMApplication)

@@ -70,9 +70,14 @@ MImRemoteWindow::~MImRemoteWindow()
 
 void MImRemoteWindow::setIMWidget(const QWidget *widget)
 {
-    XSetTransientForHint(QX11Info::display(),
-                         widget->effectiveWinId(),
-                         wid);
+    WId imId = widget->effectiveWinId();
+    if (imId != 0) {
+        XSetTransientForHint(QX11Info::display(), imId, wid);
+    } else {
+        qCritical() << __PRETTY_FUNCTION__
+                    << "Input method may not become visible:"
+                    << "Could not set transient hint because input method widget has no window id.";
+    }
 
     // Using PropertyChangeMask is a work-around for NB#172722 (a WONTFIX):
     XSelectInput(QX11Info::display(),

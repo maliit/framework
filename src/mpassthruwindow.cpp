@@ -116,6 +116,9 @@ bool MPassThruWindow::event(QEvent *e)
     if (e->type() == QEvent::WinIdChange) {
         updateWindowType();
         updateInputRegion();
+        if (remoteWindow) {
+            remoteWindow->setIMWidget(window());
+        }
     } else if (e->type() == QEvent::Show) {
         // Qt resets the window type after we get the WinIdChange event.
         // We need to set it again before the window is mapped.
@@ -224,8 +227,11 @@ void MPassThruWindow::setRemoteWindow(MImRemoteWindow *newWindow)
 {
     remoteWindow = newWindow;
 
-    if (!newWindow)
+    if (!newWindow) {
         inputPassthrough();
+    } else if (window()->effectiveWinId() != 0) {
+        newWindow->setIMWidget(window());
+    }
 }
 
 void MPassThruWindow::updateFromRemoteWindow(const QRegion &region)
