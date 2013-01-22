@@ -4,7 +4,6 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 UTILS_DIR = ../utils
 
-CONFIG += debug
 QT = core testlib
 
 QMAKE_CLEAN += *.log *~
