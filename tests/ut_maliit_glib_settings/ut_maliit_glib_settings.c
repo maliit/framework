@@ -188,7 +188,9 @@ test_settings_manager_emits_disconnected(void)
 int
 main (int argc, char **argv) {
     g_test_init(&argc, &argv, NULL);
+#if !(GLIB_CHECK_VERSION(2, 35, 0))
     g_type_init();
+#endif
 
     g_test_add_func("/ut_maliit_glib_settings/MaliitSettingsManager/preferred_description_locale/default",
                     test_preferred_description_locale_default);

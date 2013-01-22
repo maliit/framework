@@ -513,7 +513,9 @@ MInputContextGlibDBusConnection::MInputContextGlibDBusConnection(std::tr1::share
   , server(0)
 {
     dbus_g_thread_init();
+#if !(GLIB_CHECK_VERSION(2, 35, 0))
     g_type_init();
+#endif
 
     server = mAddress->connect();
 
