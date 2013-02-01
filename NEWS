@@ -1,3 +1,29 @@
+0.81.4
+======
+
+CHANGES SINCE 0.81.3
+* QML support cleanup
+* Implement show/hide transition support for QML plugins
+* MImXApplication: use QScopedPointer for data instead of auto_ptr
+* Ut_MIMPluginManager::testSwitchShow test added
+* Move all connection code to connection/ directory
+* Move duplicated code into common library
+* Update cached value of extended attribute on application side
+* Implemented method to deliver extended attributes from framework to application
+* Extensions manager sends notification when toolbar attribute is changed
+
+BUG FIXES
+* Fix transient hint for first focused application
+* Fix test compilation
+* Fixes: NB#281340 - Often VKB rotation is not in sync.
+* Fixes: NB#298276 - Observed im-ui-server crashes on CITA
+* Fixes: NB#298678 - (Regression): Alphabetical VKB shown automatically in "Change security code"-view
+* Fixes: NB#296576 Vkb is not shown in text field, when swype keyboard is enabled & disabled in a scenario
+* Fixes: NB#298229 - PIN query appears black for several seconds during startup
+* Fix lost update problem in MImOnScreen::setAllSubViewsEnabled
+* Fixes: NB#295883 - All input methods are still installed after tapping the emergency keyboard button in the device lock screen and typing the lock
+* Fixed: NB#295179 - Create a method to load all input plugins for security lock ui purpose
+
 0.81.3
 ======
 
