@@ -178,7 +178,8 @@ void MIMPluginManagerPrivate::loadPlugins()
     } // end Q_FOREACH path in paths
 
     if (plugins.empty()) {
-        qFatal("No plugins were found.");
+        qWarning("No plugins were found. Stopping.");
+        std::exit(0);
     }
 
     const QList<MImOnScreenPlugins::SubView> &availableSubViews = availablePluginsAndSubViews();
