@@ -256,6 +256,7 @@ void MInputMethodQuick::handleFocusChange(bool focusIn)
 {
     Q_D(MInputMethodQuick);
     d->haveFocus = focusIn;
+    Q_EMIT focusTargetChanged(focusIn);
 }
 
 void MInputMethodQuick::show()

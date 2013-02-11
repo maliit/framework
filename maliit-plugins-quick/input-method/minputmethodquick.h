@@ -155,6 +155,9 @@ Q_SIGNALS:
 
     void pluginHandlesTransitionsChanged();
 
+    //! Emitted when focus target changes. activeEditor is true if there's an active editor afterwards.
+    void focusTargetChanged(bool activeEditor);
+
 public Q_SLOTS:
     //! Sends preedit string. Called by QML components.
     //! \param text the preedit string.
