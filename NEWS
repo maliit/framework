@@ -1,7 +1,10 @@
-{NEXT}
+0.94.2
 ======
 
 CHANGES SINCE 0.94.0
+* Do not abort if there are no plugins
+* Do not call g_type_init for glib > 2.34
+* Do not use debug config for unit tests
 
 0.94.0
 ======
