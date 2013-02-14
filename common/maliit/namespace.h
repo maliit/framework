@@ -23,7 +23,7 @@
 //! \ingroup common
 namespace Maliit {
     /*!
-     * \brief Orientation angle of windows in the application.
+     * \brief Orientation angle of windows in the application. Relative to natural drawing direction.
      *
      * \sa Orientation
      */
@@ -37,6 +37,7 @@ namespace Maliit {
     /*!
      * \brief Possible orientations of windows in the application.
      *
+     * \deprecated
      * \sa OrientationAngle
      */
     enum Orientation {
