@@ -21,6 +21,25 @@
 #include "abstractsurfacegroup.h"
 #include "abstractsurfacegroupfactory.h"
 
+/* In Qt5, QSKIP takes one parameter; a description of the test being skipped.
+ * In Qt4, QSKIP takes two; a description and a mode indicating whether to skip
+ * just this one test or all of them.
+ *
+ * This is obviously an API incompatibility. To enable maliit to build with
+ * both Qt4 and Qt5, we define a compatibility macro that calls QSKIP with the
+ * appropriate parameters. This approaach was taken by KDE in kdelibs (see
+ * commit 59c089ab7bb187b841b386da2153a2c1699d57c4)
+ */
+
+#pragma message("Port to Qt5 version of QSKIP_PORTING")
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+#define SkipSingle 0
+#define SkipAll 0
+#define QSKIP_PORTING(message, argument) QSKIP(message)
+#else
+#define QSKIP_PORTING(message, argument) QSKIP(message, argument)
+#endif
+
 namespace MaliitTestUtils {
 
     bool isTestingInSandbox();

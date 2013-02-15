@@ -129,7 +129,7 @@ void Ft_MIMPluginManager::testSwitchPluginState()
 
 void Ft_MIMPluginManager::testMultiplePlugins()
 {
-    //QSKIP("This test fails to activate > 1 plugins, for unknown reasons.", SkipAll);
+    //QSKIP_PORTING("This test fails to activate > 1 plugins, for unknown reasons.", SkipAll);
 
     gMKeyboardStateTrackerStub->setOpenState(true);
     MImSettings(MImAccesoryEnabled).set(QVariant(true));

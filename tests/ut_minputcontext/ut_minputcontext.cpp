@@ -754,7 +754,7 @@ void Ut_MInputContext::testImInitiatedHideUnfocusesWidget()
      * Could be made reliable by running the tests in a nested X server, or by having
      * a dummy windowing backend for Qt or otherwise mocking the Qt behavior.
      */
-    QSKIP("Unreliable due to influence from windowing system", SkipSingle);
+    QSKIP_PORTING("Unreliable due to influence from windowing system", SkipSingle);
 
     WidgetStub widget(0);
     // If there is no toplevel window mapped, Qt will not actually focus the widget.
