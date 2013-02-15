@@ -18,12 +18,12 @@
 #include <QObject>
 #include <maliit/namespace.h>
 
-//! \brief MaliittQuick exposes Maliit enums to QML-based input methods
-class MaliitQuick
-    : public QObject
+//! \brief MaliitQuick exposes Maliit enums to QML-based input methods
+class MaliitQuick: public QObject
 {
     Q_OBJECT
     Q_ENUMS(SwitchDirection)
+    Q_ENUMS(ContentType)
 
 public:
     //! This enum defines direction of plugin switching
@@ -31,6 +31,15 @@ public:
         SwitchUndefined = Maliit::SwitchUndefined, //!< Special value for uninitialized variables
         SwitchForward = Maliit::SwitchForward, //!< Activate next plugin
         SwitchBackward = Maliit::SwitchBackward //!< Activate previous plugin
+    };
+
+    enum ContentType {
+        FreeTextContentType = Maliit::FreeTextContentType,
+        NumberContentType = Maliit::NumberContentType,
+        PhoneNumberContentType = Maliit::PhoneNumberContentType,
+        EmailContentType = Maliit::EmailContentType,
+        UrlContentType = Maliit::UrlContentType,
+        CustomContentType = Maliit::CustomContentType
     };
 };
 

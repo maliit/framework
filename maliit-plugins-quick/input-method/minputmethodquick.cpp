@@ -16,6 +16,7 @@
 
 #include "mkeyoverridequick.h"
 #include "minputmethodquickplugin.h"
+#include "maliitquick.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
 #include <maliit/plugins/abstractsurfacefactory.h>
@@ -181,6 +182,8 @@ public:
 
 class MInputMethodQuickPrivate
 {
+    Q_DECLARE_PUBLIC(MInputMethodQuick)
+
 public:
     MInputMethodQuick *const q_ptr;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -206,7 +209,15 @@ public:
     QSharedPointer<MKeyOverride> sentActionKeyOverride;
     bool active;
 
-    Q_DECLARE_PUBLIC(MInputMethodQuick)
+    bool m_surroundingTextValid;
+    QString m_surroundingText;
+    int m_cursorPosition;
+    int m_anchorPosition;
+    bool m_hasSelection;
+    int m_contentType;
+    bool m_correctionEnabled;
+    bool m_autoCapitalizationEnabled;
+    bool m_hiddenText;
 
     MInputMethodQuickPrivate(MAbstractInputMethodHost *host,
                              MInputMethodQuick *im)
@@ -227,6 +238,14 @@ public:
         , actionKeyOverride(new MKeyOverrideQuick())
         , sentActionKeyOverride()
         , active(false)
+        , m_surroundingTextValid(false)
+        , m_cursorPosition(-1)
+        , m_anchorPosition(-1)
+        , m_hasSelection(false)
+        , m_contentType(MaliitQuick::FreeTextContentType)
+        , m_correctionEnabled(true)
+        , m_autoCapitalizationEnabled(true)
+        , m_hiddenText(false)
     {
         Q_ASSERT(surface);
 
@@ -383,6 +402,132 @@ void MInputMethodQuick::hide()
     d->surface->hide();
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
+}
+
+void MInputMethodQuick::update()
+{
+    Q_D(MInputMethodQuick);
+
+    bool emitSurroundingText = false;
+    bool emitSurroundingTextValid = false;
+    bool emitCursorPosition = false;
+    bool emitAnchorPosition = false;
+    bool emitSelection = false;
+    bool emitContentType = false;
+    bool emitAutoCapitalization = false;
+    bool emitCorrectionEnabled = false;
+    bool emitHiddenText = false;
+
+    QString newSurroundingText;
+    int newCursorPosition;
+    inputMethodHost()->surroundingText(newSurroundingText, newCursorPosition);
+
+    if (newSurroundingText != d->m_surroundingText) {
+        d->m_surroundingText = newSurroundingText;
+        emitSurroundingText = true;
+    }
+
+    bool newSurroundingTextValid = !newSurroundingText.isNull();
+    if (newSurroundingTextValid != d->m_surroundingTextValid) {
+        d->m_surroundingTextValid = newSurroundingTextValid;
+        emitSurroundingTextValid = true;
+    }
+
+    if (newCursorPosition != d->m_cursorPosition) {
+        d->m_cursorPosition = newCursorPosition;
+        emitCursorPosition = true;
+    }
+
+    bool valid;
+    int newAnchorPosition = inputMethodHost()->anchorPosition(valid);
+    if (!valid) {
+        newAnchorPosition = -1;
+    }
+    if (newAnchorPosition != d->m_anchorPosition) {
+        d->m_anchorPosition = newAnchorPosition;
+        emitAnchorPosition = true;
+    }
+
+    bool newHasSelection = inputMethodHost()->hasSelection(valid);
+    if (!valid) {
+        newHasSelection = false;
+    }
+    if (newHasSelection != d->m_hasSelection) {
+        d->m_hasSelection = newHasSelection;
+        emitSelection = true;
+    }
+
+    int newContentType = inputMethodHost()->contentType(valid);
+    if (!valid) {
+        newContentType = MaliitQuick::FreeTextContentType;
+    }
+
+    if (newContentType != d->m_contentType) {
+        d->m_contentType = newContentType;
+        emitContentType = true;
+    }
+
+    bool newAutoCapitalizationEnabled = inputMethodHost()->autoCapitalizationEnabled(valid);
+    if (!valid) {
+        newAutoCapitalizationEnabled = true;
+    }
+    if (newAutoCapitalizationEnabled != d->m_autoCapitalizationEnabled) {
+        d->m_autoCapitalizationEnabled = newAutoCapitalizationEnabled;
+        emitAutoCapitalization = true;
+    }
+
+    bool newCorrectionEnabled = inputMethodHost()->correctionEnabled(valid);
+    if (!valid) {
+        newCorrectionEnabled = true;
+    }
+    if (newCorrectionEnabled != d->m_correctionEnabled) {
+        d->m_correctionEnabled = newCorrectionEnabled;
+        emitCorrectionEnabled = true;
+    }
+
+    bool newHiddenText = inputMethodHost()->hiddenText(valid);
+    if (!valid) {
+        newHiddenText = false;
+    }
+    if (newHiddenText != d->m_hiddenText) {
+        d->m_hiddenText = newHiddenText;
+        emitHiddenText = true;
+    }
+
+    if (emitSurroundingText) {
+        Q_EMIT surroundingTextChanged();
+    }
+    if (emitSurroundingTextValid) {
+        Q_EMIT surroundingTextValidChanged();
+    }
+    if (emitCursorPosition) {
+        Q_EMIT cursorPositionChanged();
+    }
+    if (emitAnchorPosition) {
+        Q_EMIT anchorPositionChanged();
+    }
+    if (emitSelection) {
+        Q_EMIT hasSelectionChanged();
+    }
+    if (emitContentType) {
+        Q_EMIT contentTypeChanged();
+    }
+    if (emitAutoCapitalization) {
+        Q_EMIT autoCapitalizationChanged();
+    }
+    if (emitCorrectionEnabled) {
+        Q_EMIT correctionEnabledChanged();
+    }
+    if (emitHiddenText) {
+        Q_EMIT hiddenTextChanged();
+    }
+
+    Q_EMIT editorStateUpdate();
+}
+
+void MInputMethodQuick::reset()
+{
+    Q_EMIT inputMethodReset();
 }
 
 void MInputMethodQuick::handleAppOrientationChanged(int angle)
@@ -624,4 +769,65 @@ void MInputMethodQuick::setActive(bool enable)
         d->active = enable;
         Q_EMIT activeChanged();
     }
+}
+
+bool MInputMethodQuick::surroundingTextValid()
+{
+    Q_D(MInputMethodQuick);
+    return d->m_surroundingTextValid;
+}
+
+QString MInputMethodQuick::surroundingText()
+{
+    // Note: fetching value instead of using member variable for allowing connection side to
+    // modify text when sending commit.
+    QString text;
+    int position;
+    inputMethodHost()->surroundingText(text, position);
+    return text;
+}
+
+int MInputMethodQuick::cursorPosition()
+{
+    // see ::surroundingText()
+    QString text;
+    int position;
+    inputMethodHost()->surroundingText(text, position);
+    return position;
+}
+
+int MInputMethodQuick::anchorPosition()
+{
+    Q_D(MInputMethodQuick);
+    return d->m_anchorPosition;
+}
+
+bool MInputMethodQuick::hasSelection()
+{
+    Q_D(MInputMethodQuick);
+    return d->m_hasSelection;
+}
+
+int MInputMethodQuick::contentType()
+{
+    Q_D(MInputMethodQuick);
+    return d->m_contentType;
+}
+
+bool MInputMethodQuick::correctionEnabled()
+{
+    Q_D(MInputMethodQuick);
+    return d->m_correctionEnabled;
+}
+
+bool MInputMethodQuick::autoCapitalizationEnabled()
+{
+    Q_D(MInputMethodQuick);
+    return d->m_autoCapitalizationEnabled;
+}
+
+bool MInputMethodQuick::hiddenText()
+{
+    Q_D(MInputMethodQuick);
+    return d->m_hiddenText;
 }
