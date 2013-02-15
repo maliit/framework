@@ -48,7 +48,7 @@ void Ut_MImRotationAnimation::cleanupTestCase()
 
 void Ut_MImRotationAnimation::testPassthruHiddenDuringRotation()
 {
-    QSKIP("Unreliable on Device", SkipAll);
+    QSKIP_PORTING("Unreliable on Device", SkipAll);
 
     MImXServerLogic *serverLogic = app->serverLogic();
 
