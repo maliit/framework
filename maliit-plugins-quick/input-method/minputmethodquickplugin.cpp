@@ -42,12 +42,9 @@ public:
 MInputMethodQuickPlugin::MInputMethodQuickPlugin()
     : d_ptr(new MInputMethodQuickPluginPrivate)
 {
-    qmlRegisterUncreatableType<MInputMethodQuick>
-        ( "com.meego.keyboard-quick", 1, 0, "MInputMethodQuick",
-          "There's only one controller and it is in the C++ side" );
-    qmlRegisterUncreatableType<MaliitQuick>
-        ( "com.meego.maliitquick", 1, 0, "Maliit",
-          "This is the class used to export Maliit Enums" );
+    qmlRegisterUncreatableType<MaliitQuick>("com.meego.maliitquick", 1, 0, "Maliit",
+                                            "This is the class used to export Maliit Enums");
+
     // this do not have to be included to use it, but it have to be
     // registered.
     qmlRegisterUncreatableType<MKeyOverrideQuick>
