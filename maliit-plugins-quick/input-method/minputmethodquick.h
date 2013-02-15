@@ -71,6 +71,16 @@ class MInputMethodQuick
     //! are shown.
     Q_PROPERTY(bool pluginHandlesTransitions READ pluginHandlesTransitions WRITE setPluginHandlesTransitions NOTIFY pluginHandlesTransitionsChanged)
 
+    Q_PROPERTY(bool surroundingTextValid READ surroundingTextValid NOTIFY surroundingTextValidChanged)
+    Q_PROPERTY(QString surroundingText READ surroundingText NOTIFY surroundingTextChanged)
+    Q_PROPERTY(int cursorPosition READ cursorPosition NOTIFY cursorPositionChanged)
+    Q_PROPERTY(int anchorPosition READ anchorPosition NOTIFY anchorPositionChanged)
+    Q_PROPERTY(bool hasSelection READ hasSelection NOTIFY hasSelectionChanged)
+    Q_PROPERTY(int contentType READ contentType NOTIFY contentTypeChanged)
+    Q_PROPERTY(bool correctionEnabled READ correctionEnabled NOTIFY correctionEnabledChanged)
+    Q_PROPERTY(bool autoCapitalizationEnabled READ autoCapitalizationEnabled NOTIFY autoCapitalizationChanged)
+    Q_PROPERTY(bool hiddenText READ hiddenText NOTIFY hiddenTextChanged)
+
 public:
     enum KeyEvent { KeyPress = QEvent::KeyPress,
                     KeyRelease = QEvent::KeyRelease };
@@ -87,6 +97,8 @@ public:
     //! \reimp
     virtual void show();
     virtual void hide();
+    virtual void update();
+    virtual void reset();
     virtual void handleVisualizationPriorityChange(bool priority);
     virtual void handleClientChange();
     virtual void handleAppOrientationChanged(int angle);
@@ -135,6 +147,16 @@ public:
     //! Sets plugin in charge of viewing its own items
     void setPluginHandlesTransitions(bool enable);
 
+    bool surroundingTextValid();
+    QString surroundingText();
+    int cursorPosition();
+    int anchorPosition();
+    bool hasSelection();
+    int contentType();
+    bool correctionEnabled();
+    bool autoCapitalizationEnabled();
+    bool hiddenText();
+
 Q_SIGNALS:
     //! Emitted when screen height changes.
     void screenHeightChanged(int height);
@@ -157,6 +179,23 @@ Q_SIGNALS:
 
     //! Emitted when focus target changes. activeEditor is true if there's an active editor afterwards.
     void focusTargetChanged(bool activeEditor);
+
+    //! Emitted when input method state was reset from application side.
+    void inputMethodReset();
+
+    //! Emitted last when editor state has updated. In addition change signals are emitted for distinct property changes.
+    void editorStateUpdate();
+
+    void surroundingTextValidChanged();
+    void surroundingTextChanged();
+    void cursorPositionChanged();
+    void anchorPositionChanged();
+    void hasSelectionChanged();
+    void contentTypeChanged();
+    void correctionEnabledChanged();
+    void autoCapitalizationChanged();
+    void hiddenTextChanged();
+
 
 public Q_SLOTS:
     //! Sends preedit string. Called by QML components.
