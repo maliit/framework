@@ -219,6 +219,9 @@ private:
 
     QString m_language;
     QString m_name;
+
+    // QGraphicsView doesn't notify automatically on changed QGraphicsItem focus, so tracking last seen a bit
+    QGraphicsItem *focusItem;
 };
 
 #endif

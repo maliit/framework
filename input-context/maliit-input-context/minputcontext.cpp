@@ -122,7 +122,8 @@ MInputContext::MInputContext(QSharedPointer<MImServerConnection> newImServer, co
       copyAllowed(true),
       redirectKeys(false),
       currentKeyEventTime(0),
-      m_name(name)
+      m_name(name),
+      focusItem(0)
 {
     QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
     if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
@@ -425,7 +426,6 @@ void MInputContext::setFocusWidget(QWidget *focused)
     if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__ << focused;
 
     QObject *focusedObject = focused;
-    QGraphicsItem *focusItem = 0;
     QInputContext::setFocusWidget(focused);
 
     // get detailed focus information from inside qgraphicsview
@@ -437,6 +437,8 @@ void MInputContext::setFocusWidget(QWidget *focused)
         if (focusItem) {
             focusedObject = dynamic_cast<QObject *>(focusItem);
         }
+    } else {
+        focusItem = 0;
     }
 
     const QMap<QString, QVariant> stateInformation = getStateInformation();
@@ -539,6 +541,19 @@ bool MInputContext::filterEvent(const QEvent *event)
 
         } else {
             // note: could do this also if panel was hidden
+
+            // Check if QGraphicsView has internally changed focused item since ::setFocusWidget()
+            QGraphicsView *graphicsView = qobject_cast<QGraphicsView *>(focusWidget());
+            QGraphicsItem *currentFocusItem = 0;
+            if (graphicsView && graphicsView->scene()) {
+                currentFocusItem = graphicsView->scene()->focusItem();
+            }
+            if (currentFocusItem != focusItem) {
+                focusItem = currentFocusItem;
+                QMap<QString, QVariant> stateInformation = getStateInformation();
+                imServer->updateWidgetInformation(stateInformation, true);
+            }
+
             imServer->showInputMethod();
             inputPanelState = InputPanelShown;
         }
