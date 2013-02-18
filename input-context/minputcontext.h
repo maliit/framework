@@ -243,6 +243,9 @@ private:
     QString m_language;
 
     bool serverConnected;
+
+    // QGraphicsView doesn't notify automatically on changed QGraphicsItem focus, so tracking last seen a bit
+    QGraphicsItem *focusItem;
 };
 
 #endif
