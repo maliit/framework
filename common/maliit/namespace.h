@@ -22,25 +22,12 @@
 namespace Maliit {
     /*!
      * \brief Orientation angle of windows in the application. Relative to natural drawing direction.
-     *
-     * \sa Orientation
      */
     enum OrientationAngle {
         Angle0   =   0,
         Angle90  =  90,
         Angle180 = 180,
         Angle270 = 270
-    };
-
-    /*!
-     * \brief Possible orientations of windows in the application.
-     *
-     * \deprecated
-     * \sa OrientationAngle
-     */
-    enum Orientation {
-        Portrait, //!< equal to either Maliit::Angle90 or Maliit::Angle270 orientation angles
-        Landscape //!< equal to either Maliit::Angle0 or Maliit::Angle180 orientation angles
     };
 
     /*!
@@ -295,7 +282,6 @@ namespace Maliit {
 }
 
 Q_DECLARE_METATYPE(Maliit::TextContentType)
-Q_DECLARE_METATYPE(Maliit::Orientation)
 Q_DECLARE_METATYPE(Maliit::OrientationAngle)
 Q_DECLARE_METATYPE(Maliit::InputMethodMode)
 Q_DECLARE_METATYPE(Maliit::InputMethodQueryExtensions)
