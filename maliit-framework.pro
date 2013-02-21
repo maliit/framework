@@ -45,45 +45,42 @@ SUBDIRS = common
     SUBDIRS += dbus_interfaces
 }
 
-SUBDIRS += connection src
+contains(QT_MAJOR_VERSION, 4) {
+    message("Qt 4 is just supported to compile the Qt 4 input context. \
+             For a Qt 4 Maliit please use the 0.81 or 0.94-qt4 branches/release series instead")
 
-!contains(QT_MAJOR_VERSION, 5) {
     # https://bugs.maliit.org/show_bug.cgi?id=47#c4
-    SUBDIRS += maliit maliit-settings
-}
+    SUBDIRS += connection maliit maliit-settings input-context
+} else {
+    SUBDIRS += connection src
 
-!disable-dbus {
-    SUBDIRS += passthroughserver connection-glib maliit-glib
-    !nodoc {
-        SUBDIRS += maliit-glib/maliit-glib-docs.pro
+    !disable-dbus {
+        SUBDIRS += passthroughserver connection-glib maliit-glib
+        !nodoc {
+            SUBDIRS += maliit-glib/maliit-glib-docs.pro
+        }
+        SUBDIRS += gtk-input-context
     }
-    SUBDIRS += gtk-input-context
-}
 
-nogtk {
-    SUBDIRS -= connection-glib maliit-glib gtk-input-context
-}
+    nogtk {
+        SUBDIRS -= connection-glib maliit-glib gtk-input-context
+    }
 
-!contains(QT_MAJOR_VERSION, 5) {
-    # Qt 5 has a new platform input plugin system which already contains
-    # support for Maliit.
-    SUBDIRS += input-context
-}
+    # Requires QtQuick1 add-on, which might not be present
+    # and we should use QML 2 on Qt 5 anyways
+    !noqml {
+        SUBDIRS += maliit-plugins-quick
+    }
 
-# Requires QtQuick1 add-on, which might not be present
-# and we should use QML 2 on Qt 5 anyways
-!noqml {
-    SUBDIRS += maliit-plugins-quick
-}
+    SUBDIRS += examples
 
-SUBDIRS += examples
+    !nodoc {
+        SUBDIRS += doc
+    }
 
-!nodoc {
-    SUBDIRS += doc
-}
-
-!notests {
-    SUBDIRS += tests
+    !notests {
+        SUBDIRS += tests
+    }
 }
 
 !disable-dbus {
