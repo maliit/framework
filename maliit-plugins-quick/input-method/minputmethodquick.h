@@ -22,8 +22,6 @@
 #include <QPointer>
 #include <QString>
 #include <QEvent>
-#include <QGraphicsView>
-#include <QGraphicsScene>
 
 class MInputMethodQuickPrivate;
 class MInputMethodQuickLoader;

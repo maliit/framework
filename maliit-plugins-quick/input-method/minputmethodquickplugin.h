@@ -17,7 +17,6 @@
 
 #include <maliit/plugins/inputmethodplugin.h>
 
-#include <QWidget>
 #include <QString>
 #include <QStringList>
 #include <QSet>

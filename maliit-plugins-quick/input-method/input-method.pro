@@ -24,12 +24,7 @@ SOURCES += \
         minputmethodquick.cpp \
         mkeyoverridequick.cpp
 
-QT = core $$QT_WIDGETS xml
-contains(QT_MAJOR_VERSION, 5) {
-    QT += quick qml gui-private
-} else {
-    QT += declarative
-}
+QT = core gui gui-private qml quick
 
 CONFIG += link_pkgconfig
 

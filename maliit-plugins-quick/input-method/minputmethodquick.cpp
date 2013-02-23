@@ -20,158 +20,24 @@
 
 #include <maliit/plugins/abstractinputmethodhost.h>
 #include <maliit/plugins/abstractsurfacefactory.h>
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <maliit/plugins/quickviewsurface.h>
-#include <QtQuick>
+#include <maliit/plugins/keyoverride.h>
+
+#include <QtCore>
 #include <QtGui>
+
+#include <QQmlContext>
+#include <QQmlEngine>
+#include <QQuickView>
+
 #include <qpa/qplatformnativeinterface.h>
 #include <xcb/xcb.h>
 #include <xcb/xfixes.h>
-#else
-#include <maliit/plugins/abstractwidgetssurface.h>
-#endif
-#include <maliit/plugins/keyoverride.h>
-
-#include <QKeyEvent>
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QDebug>
-#include <QRectF>
-#include <QRect>
-#include <QPainter>
-#include <QPen>
-#include <QBrush>
-#include <QScreen>
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#include <QQmlComponent>
-#include <QQmlContext>
-#include <QQmlEngine>
-#else
-#include <QDeclarativeComponent>
-#include <QDeclarativeContext>
-#include <QDeclarativeEngine>
-#endif
-#include <QGraphicsTextItem>
-#include <QGraphicsScene>
-#include <QGraphicsObject>
-#include <QDir>
-#include <memory>
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#if defined(Q_WS_X11)
-#include <QX11Info>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <X11/Xutil.h>
-#include <X11/extensions/Xfixes.h>
-#include <X11/extensions/shape.h>
-#endif
-#endif
-
-//this hack is needed because KeyPress definded by xlib conflicts with QEvent::KeyPress, breaking build
-#undef KeyPress
 
 namespace
 {
     const char * const actionKeyName = "actionKey";
 }
-
-// TODO: Remove typedefs for Maliit 1.0 and only use the Qt5 types instead.
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-typedef QQmlEngine MaliitQmlEngine;
-typedef QQmlComponent MaliitQmlComponent;
-#else
-typedef QDeclarativeEngine MaliitQmlEngine;
-typedef QDeclarativeComponent MaliitQmlComponent;
-#endif
-
-//! Helper class to load QML files and set up the declarative view accordingly.
-class MInputMethodQuickLoader
-{
-private:
-    QGraphicsScene *const m_scene;
-    MaliitQmlEngine *const m_engine; //!< managed by controller
-    std::auto_ptr<MaliitQmlComponent> m_component;
-
-    QGraphicsObject *m_content; //!< managed by scene
-    MInputMethodQuick *const m_controller;
-
-public:
-    MInputMethodQuickLoader(QGraphicsScene *newScene,
-                            MInputMethodQuick *newController)
-        : m_scene(newScene)
-        , m_engine(new MaliitQmlEngine(newController))
-        , m_content(0)
-        , m_controller(newController)
-    {
-        Q_ASSERT(m_scene);
-        Q_ASSERT(m_controller);
-
-        m_engine->rootContext()->setContextProperty("MInputMethodQuick", m_controller);
-        m_engine->addImportPath(MALIIT_PLUGINS_DATA_DIR);
-
-        Q_FOREACH (const QString &path, MInputMethodQuickPlugin::qmlImportPaths()) {
-            m_engine->addImportPath(path);
-        }
-
-        // Assuming that plugin B loads after plugin A, we need to make sure
-        // that plugin B does not use the customized import paths of plugin A:
-        MInputMethodQuickPlugin::setQmlImportPaths(QStringList());
-    }
-
-    virtual ~MInputMethodQuickLoader()
-    {}
-
-    // TODO: rename to showContent?
-    void showUI()
-    {
-        if(not m_content) {
-            qWarning() << __PRETTY_FUNCTION__
-                       << "Content or controller missing: Cannot show UI.";
-            return;
-        }
-
-        m_controller->setActive(true);
-    }
-
-    void hideUI()
-    {
-        if(not m_content) {
-            return;
-        }
-
-        m_controller->setActive(false);
-    }
-
-    void loadQmlFile(const QString &qmlFileName)
-    {
-        if (m_content) {
-            qWarning() << "Qml file already loaded";
-            return;
-        }
-
-        m_component.reset(new MaliitQmlComponent(m_engine, QUrl(qmlFileName)));
-
-        if (not m_component->errors().isEmpty()) {
-            qWarning() << "QML errors while loading " << qmlFileName << "\n"
-                       << m_component->errors();
-        }
-
-        m_content = qobject_cast<QGraphicsObject *>(m_component->create());
-
-        if (not m_content) {
-            m_content = new QGraphicsTextItem("Error loading QML");
-        }
-
-        m_content->hide();
-        m_scene->addItem(m_content);
-    }
-
-    QGraphicsObject *content() const
-    {
-        return m_content;
-    }
-};
 
 class MInputMethodQuickPrivate
 {
@@ -179,14 +45,7 @@ class MInputMethodQuickPrivate
 
 public:
     MInputMethodQuick *const q_ptr;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     QSharedPointer<Maliit::Plugins::QuickViewSurface> surface;
-#else
-    QSharedPointer<Maliit::Plugins::AbstractGraphicsViewSurface> surface;
-    QGraphicsScene *const scene;
-    QGraphicsView *const view;
-    MInputMethodQuickLoader *const loader;
-#endif
     QRect inputMethodArea;
     int appOrientation;
     bool haveFocus;
@@ -215,14 +74,7 @@ public:
     MInputMethodQuickPrivate(MAbstractInputMethodHost *host,
                              MInputMethodQuick *im)
         : q_ptr(im)
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         , surface(qSharedPointerDynamicCast<Maliit::Plugins::QuickViewSurface>(host->surfaceFactory()->create(Maliit::Plugins::AbstractSurface::PositionCenterBottom | Maliit::Plugins::AbstractSurface::TypeQuick2)))
-#else
-        , surface(qSharedPointerDynamicCast<Maliit::Plugins::AbstractGraphicsViewSurface>(host->surfaceFactory()->create(Maliit::Plugins::AbstractSurface::PositionCenterBottom | Maliit::Plugins::AbstractSurface::TypeGraphicsView)))
-        , scene(surface->scene())
-        , view(surface->view())
-        , loader(new MInputMethodQuickLoader(scene, im))
-#endif
         , appOrientation(0)
         , haveFocus(false)
         , activeState(Maliit::OnScreen)
@@ -244,18 +96,13 @@ public:
 
         updateActionKey(MKeyOverride::All);
         // Set surface size to fullscreen
-        surface->setSize(QApplication::desktop()->screenGeometry().size());
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+        surface->setSize(QGuiApplication::primaryScreen()->availableSize());
         surface->view()->engine()->addImportPath(MALIIT_PLUGINS_DATA_DIR);
         surface->view()->engine()->rootContext()->setContextProperty("MInputMethodQuick", im);
-#endif
     }
 
     ~MInputMethodQuickPrivate()
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        delete loader;
-#endif
     }
 
     void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
@@ -275,40 +122,6 @@ public:
     
     void syncInputMask ()
     {
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-#if defined(Q_WS_X11)
-        if (!view->effectiveWinId())
-            return;
-
-        const int size = 1;
-
-        XRectangle * const rects = new XRectangle[size];
-
-        quint32 customRegion[size * 4]; // custom region is pack of x, y, w, h
-        rects[0].x = inputMethodArea.x();
-        rects[0].y = inputMethodArea.y();
-        rects[0].width = inputMethodArea.width();
-        rects[0].height = inputMethodArea.height();
-        customRegion[0] = inputMethodArea.x();
-        customRegion[1] = inputMethodArea.y();
-        customRegion[2] = inputMethodArea.width();
-        customRegion[3] = inputMethodArea.height();
-
-
-        const XserverRegion shapeRegion = XFixesCreateRegion(QX11Info::display(), rects, size);
-        XFixesSetWindowShapeRegion(QX11Info::display(), view->effectiveWinId(), ShapeBounding, 0, 0, 0);
-        XFixesSetWindowShapeRegion(QX11Info::display(), view->effectiveWinId(), ShapeInput, 0, 0, shapeRegion);
-
-        XFixesDestroyRegion(QX11Info::display(), shapeRegion);
-
-        XChangeProperty(QX11Info::display(), view->effectiveWinId(),
-                        XInternAtom(QX11Info::display(), "_MEEGOTOUCH_CUSTOM_REGION", False),
-                        XA_CARDINAL, 32, PropModeReplace,
-                        (unsigned char *) customRegion, size * 4);
-
-        delete[] rects;
-#endif
-#else
         if (QGuiApplication::platformName() != "xcb")
             return;
 
@@ -329,7 +142,6 @@ public:
         xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_INPUT, 0, 0, region);
 
         xcb_xfixes_destroy_region(connection, region);
-#endif
     }
 };
 
@@ -340,11 +152,7 @@ MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
 {
     Q_D(MInputMethodQuick);
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     d->surface->view()->setSource(QUrl::fromLocalFile(qmlFileName));
-#else
-    d->loader->loadQmlFile(qmlFileName);
-#endif
     
     propagateScreenSize();
 }
@@ -371,11 +179,7 @@ void MInputMethodQuick::show()
     
     if (d->activeState == Maliit::OnScreen) {
       d->surface->show();
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-      d->loader->showUI();
-#else
       setActive(true);
-#endif
       d->syncInputMask();
     }
 }
@@ -387,11 +191,7 @@ void MInputMethodQuick::hide()
         return;
     }
     d->sipRequested = false;
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    d->loader->hideUI();
-#else
     setActive(false);
-#endif
     d->surface->hide();
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
@@ -556,11 +356,7 @@ void MInputMethodQuick::setState(const QSet<Maliit::HandlerState> &state)
             show(); // Force reparent of client widgets.
         }
     } else {
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        d->loader->hideUI();
-#else
         setActive(false);
-#endif
         // Allow client to make use of InputMethodArea
         const QRegion r;
         d->handleInputMethodAreaUpdate(inputMethodHost(), r);
@@ -573,11 +369,7 @@ void MInputMethodQuick::handleClientChange()
     Q_D(MInputMethodQuick);
 
     if (d->sipRequested) {
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        d->loader->hideUI();
-#else
         setActive(false);
-#endif
     }
 }
 
@@ -592,17 +384,9 @@ void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
 
     if (d->sipRequested) {
         if (inhibitShow) {
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            d->loader->hideUI();
-#else
             setActive(false);
-#endif
         } else {
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-            d->loader->showUI();
-#else
             setActive(true);
-#endif
         }
     }
 }
@@ -645,10 +429,6 @@ void MInputMethodQuick::setInputMethodArea(const QRectF &area)
     if (d->inputMethodArea != area.toRect()) {
         d->inputMethodArea = area.toRect();
         d->handleInputMethodAreaUpdate(inputMethodHost(), d->inputMethodArea);
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-        qDebug() << __PRETTY_FUNCTION__ << "QWidget::effectiveWinId(): " << d_ptr->view->effectiveWinId();
-#endif
 
         Q_EMIT inputMethodAreaChanged(d->inputMethodArea);
         d->syncInputMask();
