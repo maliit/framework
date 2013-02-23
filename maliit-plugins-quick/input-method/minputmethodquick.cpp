@@ -41,6 +41,7 @@
 #include <QPainter>
 #include <QPen>
 #include <QBrush>
+#include <QScreen>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QQmlComponent>
 #include <QQmlContext>
@@ -73,14 +74,6 @@
 namespace
 {
     const char * const actionKeyName = "actionKey";
-
-    const QRect &computeDisplayRect(QWidget *w = 0)
-    {
-        static const QRect displayRect(w ? qApp->desktop()->screenGeometry(w)
-                                         : qApp->desktop()->screenGeometry());
-
-        return displayRect;
-    }
 }
 
 // TODO: Remove typedefs for Maliit 1.0 and only use the Qt5 types instead.
@@ -617,18 +610,20 @@ void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
 
 void MInputMethodQuick::propagateScreenSize()
 {
-    Q_EMIT screenWidthChanged(computeDisplayRect().width());
-    Q_EMIT screenHeightChanged(computeDisplayRect().height());
+    const QSize screenSize(QGuiApplication::primaryScreen()->availableSize());
+
+    Q_EMIT screenWidthChanged(screenSize.width());
+    Q_EMIT screenHeightChanged(screenSize.height());
 }
 
 int MInputMethodQuick::screenHeight() const
 {
-    return computeDisplayRect().height();
+    return QGuiApplication::primaryScreen()->availableSize().height();
 }
 
 int MInputMethodQuick::screenWidth() const
 {
-    return computeDisplayRect().width();
+    return QGuiApplication::primaryScreen()->availableSize().width();
 }
 
 int MInputMethodQuick::appOrientation() const
