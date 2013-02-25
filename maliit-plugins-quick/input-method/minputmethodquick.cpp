@@ -453,19 +453,62 @@ void MInputMethodQuick::setScreenRegion(const QRect &region)
     inputMethodHost()->setScreenRegion(region);
 }
 
-void MInputMethodQuick::sendPreedit(const QString &text)
+void MInputMethodQuick::sendPreedit(const QString &text,
+                                    const QVariant &preeditFormats,
+                                    int replacementStart, int replacementLength, int cursorPos)
 {
-    QList<Maliit::PreeditTextFormat> lst;
-    inputMethodHost()->sendPreeditString(text, lst, text.length());
+    QList<Maliit::PreeditTextFormat> formatList;
+
+    if (!preeditFormats.isValid()) {
+        // Fallback
+        formatList.append(Maliit::PreeditTextFormat(0, text.length(), Maliit::PreeditDefault));
+
+    } else if (preeditFormats.type() == QVariant::Int) {
+        // format with one type
+        Maliit::PreeditTextFormat format(0, text.length(),
+                                         static_cast<Maliit::PreeditFace>(preeditFormats.toInt()));
+        formatList.append(format);
+
+    } else if (preeditFormats.type() == QVariant::List) {
+        // formatting as list of three ints: type, start, length
+        QVariantList list = preeditFormats.toList();
+
+        for (int i = 0; i < list.size(); ++i) {
+            QVariantList formatTuple = list.at(i).toList();
+            Maliit::PreeditFace face = Maliit::PreeditDefault;
+            int start = 0;
+            int length = 0;
+
+            if (formatTuple.length() < 3) {
+                qWarning() << "MInputMethodQuick.sendPreedit() got formatting tuple with less than three parameters";
+                continue;
+            }
+
+            face = static_cast<Maliit::PreeditFace>(formatTuple.at(0).toInt());
+            start = qBound(0, formatTuple.at(1).toInt(), text.length());
+            length = qBound(0, formatTuple.at(2).toInt(), text.length() - start);
+
+            formatList.append(Maliit::PreeditTextFormat(start, length, face));
+        }
+    }
+
+    inputMethodHost()->sendPreeditString(text, formatList, replacementStart, replacementLength, cursorPos);
 }
 
-void MInputMethodQuick::sendKey(int key, int modifiers, const QString &text)
+void MInputMethodQuick::sendKey(int key, int modifiers, const QString &text, int type)
 {
-    QKeyEvent event(QEvent::KeyPress, key, (~(Qt::KeyboardModifiers(Qt::NoModifier))) & modifiers, text);
-    inputMethodHost()->sendKeyEvent(event);
+    if (type == MaliitQuick::KeyPress || type == MaliitQuick::KeyClick) {
+        QKeyEvent event(QEvent::KeyPress, key, (~(Qt::KeyboardModifiers(Qt::NoModifier))) & modifiers, text);
+        inputMethodHost()->sendKeyEvent(event);
+    }
+
+    if (type == MaliitQuick::KeyRelease || type == MaliitQuick::KeyClick) {
+        QKeyEvent event(QEvent::KeyRelease, key, (~(Qt::KeyboardModifiers(Qt::NoModifier))) & modifiers, text);
+        inputMethodHost()->sendKeyEvent(event);
+    }
 }
 
-void MInputMethodQuick::sendCommit(const QString &text)
+void MInputMethodQuick::sendCommit(const QString &text, int replaceStart, int replaceLength, int cursorPos)
 {
     if (text == "\b") {
         QKeyEvent event(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
@@ -475,7 +518,7 @@ void MInputMethodQuick::sendCommit(const QString &text)
         QKeyEvent event(QEvent::KeyPress, Qt::Key_Return, Qt::NoModifier);
         inputMethodHost()->sendKeyEvent(event);
     } else {
-        inputMethodHost()->sendCommitString(text);
+        inputMethodHost()->sendCommitString(text, replaceStart, replaceLength, cursorPos);
     }
 }
 
@@ -541,7 +584,7 @@ MKeyOverrideQuick* MInputMethodQuick::actionKeyOverride() const
 
 void MInputMethodQuick::activateActionKey()
 {
-    sendCommit("\n");
+    sendKey(Qt::Key_Return, 0, "\r", MaliitQuick::KeyClick);
 }
 
 bool MInputMethodQuick::isActive() const

@@ -24,6 +24,8 @@ class MaliitQuick: public QObject
     Q_OBJECT
     Q_ENUMS(SwitchDirection)
     Q_ENUMS(ContentType)
+    Q_ENUMS(KeyEvent)
+    Q_ENUMS(PreeditFace)
 
 public:
     //! This enum defines direction of plugin switching
@@ -40,6 +42,18 @@ public:
         EmailContentType = Maliit::EmailContentType,
         UrlContentType = Maliit::UrlContentType,
         CustomContentType = Maliit::CustomContentType
+    };
+
+    enum KeyEvent {
+        KeyPress,
+        KeyRelease,
+        KeyClick
+    };
+
+    enum PreeditFace {
+        PreeditDefault = Maliit::PreeditDefault,
+        PreeditNoCandidates = Maliit::PreeditNoCandidates,
+        PreeditKeyPress = Maliit::PreeditKeyPress
     };
 };
 
