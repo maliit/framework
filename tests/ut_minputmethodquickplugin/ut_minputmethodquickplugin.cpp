@@ -57,7 +57,6 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
  * things tested in separate tests. */
 void Ut_MInputMethodQuickPlugin::testQmlSetup()
 {
-    MIndicatorServiceClient fakeService;
     QFETCH(QString, testPluginPath);
 
     const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ?
@@ -81,7 +80,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
 
     QVERIFY(plugin != 0);
 
-    MaliitTestUtils::TestInputMethodHost host(fakeService, pluginId, plugin->name());
+    MaliitTestUtils::TestInputMethodHost host(pluginId, plugin->name());
     MInputMethodQuick *testee = static_cast<MInputMethodQuick *>(
         plugin->createInputMethod(&host));
 

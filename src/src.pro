@@ -81,7 +81,6 @@ SERVER_HEADERS_PRIVATE += \
         mimhwkeyboardtracker.h \
         mimonscreenplugins.h \
         mimhwkeyboardtracker_p.h \
-        mindicatorserviceclient.h \
         mimsubviewoverride.h \
         mimserveroptions.h \
         windowgroup.h \
@@ -95,7 +94,6 @@ SERVER_SOURCES += \
         mimhwkeyboardtracker.cpp \
         mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
-        mindicatorserviceclient.cpp \
         mimsubviewoverride.cpp \
         mimserveroptions.cpp \
         windowgroup.cpp \

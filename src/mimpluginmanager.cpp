@@ -78,7 +78,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputCont
       q_ptr(0),
       acceptRegionUpdates(false),
       visible(false),
-      indicatorService(),
       onScreenPlugins(),
       lastOrientation(0),
       attributeExtensionManager(new MAttributeExtensionManager),
@@ -287,7 +286,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, windowGroup,
+    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, windowGroup,
                                                   fileName, plugin->name());
 
     MAbstractInputMethod *im = plugin->createInputMethod(host);

@@ -19,7 +19,6 @@
 
 class MInputContextConnection;
 class MIMPluginManager;
-class MIndicatorServiceClient;
 class MAbstractInputMethod;
 
 namespace Maliit
@@ -43,7 +42,7 @@ class MInputMethodHost: public MAbstractInputMethodHost
 
 public:
     MInputMethodHost(const QSharedPointer<MInputContextConnection>& inputContextConnection,
-                     MIMPluginManager *pluginManager, MIndicatorServiceClient &indicatorService,
+                     MIMPluginManager *pluginManager,
                      const QSharedPointer<Maliit::WindowGroup> &window_group, const QString &plugin,
                      const QString &description);
     virtual ~MInputMethodHost();
@@ -86,8 +85,6 @@ public:
     virtual void setDetectableAutoRepeat(bool enabled);
     virtual void setGlobalCorrectionEnabled(bool enabled);
 
-    virtual void setInputModeIndicator(Maliit::InputModeIndicator mode);
-
     virtual void switchPlugin(Maliit::SwitchDirection direction);
     virtual void switchPlugin(const QString &pluginName);
     virtual void setScreenRegion(const QRegion &region);
@@ -113,7 +110,6 @@ private:
     MIMPluginManager *pluginManager;
     MAbstractInputMethod *inputMethod;
     bool enabled;
-    MIndicatorServiceClient &indicatorService;
     QString pluginId;
     QString pluginDescription;
     QSharedPointer<Maliit::WindowGroup> mWindowGroup;

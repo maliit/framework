@@ -15,7 +15,6 @@
 #include "minputmethodhost.h"
 #include "minputcontextconnection.h"
 #include "mimpluginmanager.h"
-#include "mindicatorserviceclient.h"
 #include <maliit/plugins/abstractinputmethod.h>
 #include "windowgroup.h"
 
@@ -26,7 +25,6 @@
 
 MInputMethodHost::MInputMethodHost(const QSharedPointer<MInputContextConnection> &inputContextConnection,
                                    MIMPluginManager *pluginManager,
-                                   MIndicatorServiceClient &indicatorService,
                                    const QSharedPointer<Maliit::WindowGroup> &windowGroup,
                                    const QString &plugin,
                                    const QString &description)
@@ -35,7 +33,6 @@ MInputMethodHost::MInputMethodHost(const QSharedPointer<MInputContextConnection>
       pluginManager(pluginManager),
       inputMethod(0),
       enabled(false),
-      indicatorService(indicatorService),
       pluginId(plugin),
       pluginDescription(description),
       mWindowGroup(windowGroup)
@@ -185,13 +182,6 @@ void MInputMethodHost::setGlobalCorrectionEnabled(bool correctionEnabled)
 {
     if (enabled) {
         connection->setGlobalCorrectionEnabled(correctionEnabled);
-    }
-}
-
-void MInputMethodHost::setInputModeIndicator(Maliit::InputModeIndicator mode)
-{
-    if (enabled) {
-        indicatorService.setInputModeIndicator(static_cast<Maliit::InputModeIndicator>(mode));
     }
 }
 

@@ -111,8 +111,8 @@ namespace MaliitTestUtils {
         QString lastPreedit;
         int sendPreeditCount;
 
-        TestInputMethodHost(MIndicatorServiceClient &client, const QString &plugin, const QString &description)
-            : MInputMethodHost(QSharedPointer<MInputContextConnection>(new MInputContextConnection), 0, client, QSharedPointer<Maliit::WindowGroup>(new Maliit::WindowGroup), plugin, description)
+        TestInputMethodHost(const QString &plugin, const QString &description)
+            : MInputMethodHost(QSharedPointer<MInputContextConnection>(new MInputContextConnection), 0, QSharedPointer<Maliit::WindowGroup>(new Maliit::WindowGroup), plugin, description)
             , sendCommitCount(0)
             , sendPreeditCount(0)
         {}

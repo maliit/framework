@@ -22,7 +22,6 @@
 #include "mimonscreenplugins.h"
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
-#include "mindicatorserviceclient.h"
 #include <maliit/settingdata.h>
 #include <maliit/plugins/abstractpluginsetting.h>
 #include "windowgroup.h"
@@ -205,8 +204,6 @@ public:
     InputSourceToNameMap inputSourceToNameMap;
 
     MAttributeExtensionId toolbarId;
-
-    MIndicatorServiceClient indicatorService;
 
     QTimer ensureEmptyRegionWhenHiddenTimer;
 
