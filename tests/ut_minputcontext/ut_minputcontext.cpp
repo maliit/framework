@@ -1,4 +1,5 @@
 #include "ut_minputcontext.h"
+#include "core-utils.h"
 
 #include <QStringList>
 #include <QDebug>

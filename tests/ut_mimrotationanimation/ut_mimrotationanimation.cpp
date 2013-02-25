@@ -17,6 +17,7 @@
 #include "mimxapplication.h"
 #include "mimrotationanimation.h"
 
+#include "core-utils.h"
 #include "gui-utils.h"
 
 namespace {
