@@ -20,6 +20,7 @@
 
 #include <mabstractinputmethod.h>
 #include <mkeyoverride.h>
+#include "maliitquick.h"
 
 #include <QRect>
 #include <QPointer>
@@ -44,7 +45,6 @@ class MInputMethodQuick
     : public MAbstractInputMethod
 {
     Q_OBJECT
-    Q_ENUMS(KeyEvent)
 
     //! Propagates screen width to QML components.
     Q_PROPERTY(int screenWidth READ screenWidth
@@ -82,9 +82,6 @@ class MInputMethodQuick
     Q_PROPERTY(bool hiddenText READ hiddenText NOTIFY hiddenTextChanged)
 
 public:
-    enum KeyEvent { KeyPress = QEvent::KeyPress,
-                    KeyRelease = QEvent::KeyRelease };
-
     //! Constructor
     //! \param host serves as communication link to framework and application. Managed by framework.
     //! \param mainWindow should be used to install plugin's UI into it. Managed by framework.
@@ -198,19 +195,32 @@ Q_SIGNALS:
 
 
 public Q_SLOTS:
-    //! Sends preedit string. Called by QML components.
+    //! Sends preedit string. Called by QML components. See also MAbstractInputMethodHost::sendPreeditString()
     //! \param text the preedit string.
-    void sendPreedit(const QString &text);
+    //! \param preeditFormats Selects visual stylings for each part of preedit. The value can be either:
+    //! Maliit.PreeditFace for applying one style for whole string or list of lists containing [PreeditFace, start, length]
+    //! \param replacementStart The position at which characters are to be replaced relative
+    //! from the start of the preedit string.
+    //! \param replacementLength The number of characters to be replaced in the preedit string.
+    //! \param cursorPos The cursur position inside preedit
+    void sendPreedit(const QString &text, const QVariant &preeditFormats = QVariant(),
+                     int replacementStart = 0, int replacementLength = 0, int cursorPos = -1);
 
     //! Sends an arbitrary key, optionally with modifiers.
     //! \param key the Qt keycode to be sent, e.g., Qt.Key_Up.
     //! \param modifiers optional modifiers to send along, like Qt.ControlModifier.
     //! \param text an optional text to send along with the QKeyEvent.
-    void sendKey(int key, int modifiers = 0, const QString &text = QString());
+    //! \param type MaliitQuick.KeyPress, KeyRelease or KeyClick for both
+    void sendKey(int key, int modifiers = 0, const QString &text = QString(), int type = MaliitQuick::KeyClick);
 
-    //! Sends commit string. Called by QML components.
+    //! Sends commit string. Called by QML components. For params, see also MAbstractInputMethodHost::sendCommitString()
     //! \param text the commit string.
-    void sendCommit(const QString &text);
+    //! \param replaceStart The position at which characters are to be replaced relative to the start of the
+    //! preedit string.
+    //! \param replaceLength The number of characters to be replaced in the preedit string.
+    //! \param cursorPos The cursor position to be set, relative to commit string start.
+    //!  Negative values are used as commit string end position.
+    void sendCommit(const QString &text, int replaceStart = 0, int replaceLength = 0, int cursorPos = -1);
 
     //! Tells the framework to switch plugins. Called by QML components.
     void pluginSwitchRequired(int switchDirection);
