@@ -81,7 +81,7 @@ public:
     int m_anchorPosition;
     bool m_hasSelection;
     int m_contentType;
-    bool m_correctionEnabled;
+    bool m_predictionEnabled;
     bool m_autoCapitalizationEnabled;
     bool m_hiddenText;
 
@@ -102,7 +102,7 @@ public:
         , m_anchorPosition(-1)
         , m_hasSelection(false)
         , m_contentType(MaliitQuick::FreeTextContentType)
-        , m_correctionEnabled(true)
+        , m_predictionEnabled(true)
         , m_autoCapitalizationEnabled(true)
         , m_hiddenText(false)
     {
@@ -221,7 +221,7 @@ void MInputMethodQuick::update()
     bool emitSelection = false;
     bool emitContentType = false;
     bool emitAutoCapitalization = false;
-    bool emitCorrectionEnabled = false;
+    bool emitPredictionEnabled = false;
     bool emitHiddenText = false;
 
     QString newSurroundingText;
@@ -282,13 +282,13 @@ void MInputMethodQuick::update()
         emitAutoCapitalization = true;
     }
 
-    bool newCorrectionEnabled = inputMethodHost()->correctionEnabled(valid);
+    bool newPredictionEnabled = inputMethodHost()->predictionEnabled(valid);
     if (!valid) {
-        newCorrectionEnabled = true;
+        newPredictionEnabled = true;
     }
-    if (newCorrectionEnabled != d->m_correctionEnabled) {
-        d->m_correctionEnabled = newCorrectionEnabled;
-        emitCorrectionEnabled = true;
+    if (newPredictionEnabled != d->m_predictionEnabled) {
+        d->m_predictionEnabled = newPredictionEnabled;
+        emitPredictionEnabled = true;
     }
 
     bool newHiddenText = inputMethodHost()->hiddenText(valid);
@@ -321,8 +321,8 @@ void MInputMethodQuick::update()
     if (emitAutoCapitalization) {
         Q_EMIT autoCapitalizationChanged();
     }
-    if (emitCorrectionEnabled) {
-        Q_EMIT correctionEnabledChanged();
+    if (emitPredictionEnabled) {
+        Q_EMIT predictionEnabledChanged();
     }
     if (emitHiddenText) {
         Q_EMIT hiddenTextChanged();
@@ -602,10 +602,10 @@ int MInputMethodQuick::contentType()
     return d->m_contentType;
 }
 
-bool MInputMethodQuick::correctionEnabled()
+bool MInputMethodQuick::predictionEnabled()
 {
     Q_D(MInputMethodQuick);
-    return d->m_correctionEnabled;
+    return d->m_predictionEnabled;
 }
 
 bool MInputMethodQuick::autoCapitalizationEnabled()
