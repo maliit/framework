@@ -77,7 +77,7 @@ class MInputMethodQuick
     Q_PROPERTY(int anchorPosition READ anchorPosition NOTIFY anchorPositionChanged)
     Q_PROPERTY(bool hasSelection READ hasSelection NOTIFY hasSelectionChanged)
     Q_PROPERTY(int contentType READ contentType NOTIFY contentTypeChanged)
-    Q_PROPERTY(bool correctionEnabled READ correctionEnabled NOTIFY correctionEnabledChanged)
+    Q_PROPERTY(bool predictionEnabled READ predictionEnabled NOTIFY predictionEnabledChanged)
     Q_PROPERTY(bool autoCapitalizationEnabled READ autoCapitalizationEnabled NOTIFY autoCapitalizationChanged)
     Q_PROPERTY(bool hiddenText READ hiddenText NOTIFY hiddenTextChanged)
 
@@ -153,7 +153,7 @@ public:
     int anchorPosition();
     bool hasSelection();
     int contentType();
-    bool correctionEnabled();
+    bool predictionEnabled();
     bool autoCapitalizationEnabled();
     bool hiddenText();
 
@@ -192,7 +192,7 @@ Q_SIGNALS:
     void anchorPositionChanged();
     void hasSelectionChanged();
     void contentTypeChanged();
-    void correctionEnabledChanged();
+    void predictionEnabledChanged();
     void autoCapitalizationChanged();
     void hiddenTextChanged();
 
