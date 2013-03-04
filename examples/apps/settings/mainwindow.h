@@ -1,7 +1,7 @@
 /* This file is part of Maliit framework
  *
  * Copyright (C) 2012 Mattia Barbon <mattia@develer.com>
- * Copyright (C) 2012 Openismus GmbH
+ * Copyright (C) 2012 Canonical Ltd
  *
  * Contact: maliit-discuss@lists.maliit.org
  *

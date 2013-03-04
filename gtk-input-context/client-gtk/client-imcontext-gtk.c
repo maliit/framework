@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2010, Intel Corporation.
  * Copyright (C) 2012 One Laptop per Child Association
+ * Copyright (C) 2012 Canonical Ltd
  *
  * Author: Raymond Liu <raymond.liu@intel.com>
  *
