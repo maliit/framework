@@ -22,19 +22,32 @@
 #include <QKeyEvent>
 
 namespace {
-    const char * const overrideSubViewId("OverridePluginSubview1");
-    const char * const actionKeyName = "actionKey";
-    const char * const actionKeyLabel = "Enter";
+
+const char * const overrideSubViewId("OverridePluginSubview1");
+const char * const actionKeyName = "actionKey";
+const char * const actionKeyLabel = "Enter";
+
+class Surface : public QWidget
+{
+public:
+    Surface(MAbstractInputMethodHost *host);
+};
+
+Surface::Surface (MAbstractInputMethodHost *host)
+    : QWidget()
+{
+    host->registerWindow(windowHandle(), Maliit::PositionCenterBottom);
+    setAutoFillBackground(false);
+    setBackgroundRole(QPalette::NoRole);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-using Maliit::Plugins::AbstractSurface;
-using Maliit::Plugins::AbstractWidgetSurface;
+}
 
 OverrideInputMethod::OverrideInputMethod(MAbstractInputMethodHost *host)
     : MAbstractInputMethod(host)
-    , surfaceFactory(host->surfaceFactory())
-    , surface(qSharedPointerDynamicCast<AbstractWidgetSurface>(surfaceFactory->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget)))
-    , mainWidget(new QPushButton(surface->widget()))
+    , surface(new Surface(host))
+    , mainWidget(new QPushButton(surface.data()))
     , showIsInhibited(false)
     , showRequested(false)
     , activeActionKeyOverride()
@@ -69,8 +82,11 @@ void OverrideInputMethod::show()
     }
 
     // Set size of the input method
-    const QSize &screenSize = surfaceFactory->screenSize();
-    surface->setSize(QSize(screenSize.width() - 200, 200));
+    const QSize &screenSize = QApplication::desktop()->screenGeometry().size();
+    const QSize size(screenSize.width() - 200, 200);
+
+    surface->setGeometry(QRect(QPoint((screenSize.width() - size.width()) / 2,
+                                      screenSize.height() - size.height()), size));
     mainWidget->resize(mainWidget->parentWidget()->size());
 
     surface->show();

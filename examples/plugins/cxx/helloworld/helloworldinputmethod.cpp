@@ -15,23 +15,36 @@
 #include "helloworldinputmethod.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
-#include <maliit/plugins/abstractsurfacefactory.h>
 
 #include <QDebug>
 #include <QApplication>
 #include <QDesktopWidget>
 
 namespace {
-    const char * const exampleSubViewId("HelloWorldPluginSubview1");
+
+const char * const exampleSubViewId("HelloWorldPluginSubview1");
+
+class Surface : public QWidget
+{
+public:
+    Surface(MAbstractInputMethodHost *host);
+};
+
+Surface::Surface (MAbstractInputMethodHost *host)
+    : QWidget()
+{
+    host->registerWindow(windowHandle(), Maliit::PositionCenterBottom);
+    setAutoFillBackground(false);
+    setBackgroundRole(QPalette::NoRole);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 }
 
-using Maliit::Plugins::AbstractSurface;
-using Maliit::Plugins::AbstractWidgetSurface;
+}
 
 HelloWorldInputMethod::HelloWorldInputMethod(MAbstractInputMethodHost *host)
     : MAbstractInputMethod(host)
-    , surface(qSharedPointerDynamicCast<AbstractWidgetSurface>(host->surfaceFactory()->create(AbstractSurface::PositionCenterBottom | AbstractSurface::TypeWidget)))
-    , mainWidget(new QPushButton(surface->widget()))
+    , surface(new Surface(host))
+    , mainWidget(new QPushButton(surface.data()))
     , showIsInhibited(false)
     , showRequested(false)
 {
