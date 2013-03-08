@@ -119,7 +119,7 @@ void Ut_MIMPluginManagerConfig::testNoActiveSubView()
     activePluginSettings->unset();
 
     QSharedPointer<MInputContextConnection> icConnection(connection);
-    manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
+    manager = new MIMPluginManager(icConnection);
     subject = manager->d_ptr;
 
     // The first enabled subview should have been auto-selected as the
@@ -134,7 +134,7 @@ void Ut_MIMPluginManagerConfig::testEmptyConfig()
     activePluginSettings->unset();
 
     QSharedPointer<MInputContextConnection> icConnection(connection);
-    manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
+    manager = new MIMPluginManager(icConnection);
     subject = manager->d_ptr;
 
     // One subview should have been auto-activated and enabled.
@@ -153,7 +153,7 @@ void Ut_MIMPluginManagerConfig::autoLanguageSubView()
     activePluginSettings->set(QStringList() << pluginId3 + ":");
 
     QSharedPointer<MInputContextConnection> icConnection(connection);
-    manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
+    manager = new MIMPluginManager(icConnection);
     subject = manager->d_ptr;
 
     MImOnScreenPlugins& plugins = subject->onScreenPlugins;

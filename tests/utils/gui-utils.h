@@ -28,11 +28,9 @@
 #include <vector>
 
 #include <minputmethodhost.h>
+#include <windowgroup.h>
 #include <minputcontextconnection.h>
 
-#include <maliit/plugins/abstractsurface.h>
-#include <maliit/plugins/abstractsurfacefactory.h>
-#include <maliit/plugins/abstractwidgetssurface.h>
 #include <maliit/plugins/abstractpluginsetting.h>
 
 namespace MaliitTestUtils {
@@ -70,81 +68,20 @@ namespace MaliitTestUtils {
     };
 #endif
 
-    using Maliit::Plugins::AbstractSurface;
-    using Maliit::Plugins::AbstractWidgetSurface;
-    using Maliit::Plugins::AbstractGraphicsViewSurface;
-
-    class TestWidgetSurface : public AbstractWidgetSurface
-    {
-    public:
-        TestWidgetSurface() {}
-
-        void show() {}
-        void hide() {}
-
-        QSize size() const { return QSize(); }
-        void setSize(const QSize&) {}
-
-        QPoint relativePosition() const { return QPoint(); }
-        void setRelativePosition(const QPoint &) {}
-
-        QSharedPointer<AbstractSurface> parent() const { return QSharedPointer<AbstractSurface>(); }
-
-        QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> & = QSharedPointer<AbstractSurface>()) const { return eventPosition; }
-
-        QWidget *widget() const { return 0; }
-    };
-
-    class TestGraphicsViewSurface : public AbstractGraphicsViewSurface
+    class TestGraphicsViewSurface : public QGraphicsView
     {
     public:
         TestGraphicsViewSurface()
-            : mGraphicsView(new QGraphicsView(new QGraphicsScene))
+            : QGraphicsView(new QGraphicsScene)
             , mRootItem(new QGraphicsRectItem)
         {
-            mGraphicsView->scene()->addItem(mRootItem.data());
+            scene()->addItem(mRootItem.data());
         }
-
-        void show() {}
-        void hide() {}
-
-        QSize size() const { return QSize(); }
-        void setSize(const QSize&) {}
-
-        QPoint relativePosition() const { return QPoint(); }
-        void setRelativePosition(const QPoint &) {}
-
-        QSharedPointer<AbstractSurface> parent() const { return QSharedPointer<AbstractSurface>(); }
-
-        QPoint translateEventPosition(const QPoint &eventPosition, const QSharedPointer<AbstractSurface> & = QSharedPointer<AbstractSurface>()) const { return eventPosition; }
-
-        QGraphicsScene *scene() const { return mGraphicsView->scene(); }
-        QGraphicsView *view() const { return mGraphicsView.data(); }
 
         QGraphicsItem *root() const { return mRootItem.data(); }
-        void clear() {}
+
     private:
-        QScopedPointer<QGraphicsView> mGraphicsView;
         QScopedPointer<QGraphicsItem> mRootItem;
-    };
-
-    class TestSurfaceFactory : public Maliit::Plugins::AbstractSurfaceFactory
-    {
-    public:
-        TestSurfaceFactory() {}
-
-        QSize screenSize() const { return QSize(); }
-
-        bool supported(AbstractSurface::Options options) const { return options & (AbstractSurface::TypeGraphicsView | AbstractSurface::TypeWidget); }
-
-        QSharedPointer<AbstractSurface> create(AbstractSurface::Options options, const QSharedPointer<AbstractSurface> &) {
-            if (options & AbstractSurface::TypeGraphicsView)
-                return QSharedPointer<AbstractSurface>(new TestGraphicsViewSurface);
-            else if (options & AbstractSurface::TypeWidget)
-                return QSharedPointer<AbstractSurface>(new TestWidgetSurface);
-            else
-                return QSharedPointer<AbstractSurface>();
-        }
     };
 
     class TestPluginSetting : public Maliit::Plugins::AbstractPluginSetting
@@ -175,7 +112,7 @@ namespace MaliitTestUtils {
         int sendPreeditCount;
 
         TestInputMethodHost(MIndicatorServiceClient &client, const QString &plugin, const QString &description)
-            : MInputMethodHost(QSharedPointer<MInputContextConnection>(new MInputContextConnection), 0, client, new TestSurfaceFactory, plugin, description)
+            : MInputMethodHost(QSharedPointer<MInputContextConnection>(new MInputContextConnection), 0, client, QSharedPointer<Maliit::WindowGroup>(new Maliit::WindowGroup), plugin, description)
             , sendCommitCount(0)
             , sendPreeditCount(0)
         {}

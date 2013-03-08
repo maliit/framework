@@ -88,7 +88,7 @@ void Ft_MIMPluginManager::init()
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
     QSharedPointer<MInputContextConnection> icConnection(new MInputContextConnection);
-    subject = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
+    subject = new MIMPluginManager(icConnection);
 }
 
 void Ft_MIMPluginManager::cleanup()

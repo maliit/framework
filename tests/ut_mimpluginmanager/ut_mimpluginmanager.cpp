@@ -130,7 +130,7 @@ void Ut_MIMPluginManager::init()
     activePluginSettings.set(DefaultActivePlugin);
 
     QSharedPointer<MInputContextTestConnection> icConnection(new MInputContextTestConnection);
-    manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>(new MaliitTestUtils::TestSurfaceGroupFactory));
+    manager = new MIMPluginManager(icConnection);
 
     connection = icConnection.data();
     subject = manager->d_ptr;
