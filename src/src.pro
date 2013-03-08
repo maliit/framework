@@ -159,10 +159,6 @@ enable-contextkit {
     PKGCONFIG += libudev
 }
 
-disable-background-translucency {
-    DEFINES += DISABLE_TRANSLUCENT_BACKGROUND_HINT
-}
-
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
     isEqual(OPTION, on){
