@@ -52,9 +52,6 @@ public:
 
     QWidget *passThruWindow() const;
 
-    //! reimpl
-    virtual QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const;
-
     const QPixmap &remoteWindowPixmap();
 
     //! For unittesting purposes
@@ -94,8 +91,6 @@ private:
     QScopedPointer<QWidget> mPluginsProxyWidget;
     QScopedPointer<MImRemoteWindow> mRemoteWindow;
     MImRotationAnimation *mRotationAnimation;
-
-    QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> mSurfaceGroupFactory;
 
     friend class Ut_PassthroughServer;
 };

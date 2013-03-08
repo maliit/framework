@@ -17,24 +17,15 @@
 #include "mimpluginsproxywidget.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-#include "quickviewsurfacegroup.h"
 #include <QGuiApplication>
 #endif
-#include "windowedsurfacegroup.h"
 
 #include <QDebug>
 #include <QWidget>
 
 MImStandaloneServerLogic::MImStandaloneServerLogic() :
     MImAbstractServerLogic(0),
-    mProxyWidget(new MImPluginsProxyWidget()),
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    mSurfaceGroupFactory(QGuiApplication::platformName() == "wayland"
-                         ? static_cast<Maliit::Server::AbstractSurfaceGroupFactory *>(new Maliit::Server::WindowedSurfaceGroupFactory)
-                         : static_cast<Maliit::Server::AbstractSurfaceGroupFactory *>(new Maliit::Server::QuickViewSurfaceGroupFactory))
-#else
-    mSurfaceGroupFactory(new Maliit::Server::WindowedSurfaceGroupFactory)
-#endif
+    mProxyWidget(new MImPluginsProxyWidget())
 {
 }
 
@@ -49,11 +40,6 @@ void MImStandaloneServerLogic::inputPassthrough(const QRegion &region)
         mProxyWidget->hide();
     else
         mProxyWidget->show();
-}
-
-QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> MImStandaloneServerLogic::surfaceGroupFactory() const
-{
-    return mSurfaceGroupFactory;
 }
 
 void MImStandaloneServerLogic::pluginLoaded()

@@ -49,7 +49,7 @@ MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
 
     d->icConnection = icConnection;
     d->serverLogic = serverLogic;
-    d->pluginManager = new MIMPluginManager(d->icConnection, serverLogic->surfaceGroupFactory());
+    d->pluginManager = new MIMPluginManager(d->icConnection);
 
     connectComponents();
 

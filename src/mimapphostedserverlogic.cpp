@@ -1,8 +1,5 @@
 #include "mimapphostedserverlogic.h"
 
-#include "windowedsurfacegroup.h"
-#include "maliit/plugins/abstractsurface.h" // for AbstractSurface::Option
-
 #include <QtDebug>
 #include <QGridLayout>
 
@@ -24,7 +21,6 @@ namespace
 MImAppHostedServerLogic::MImAppHostedServerLogic(QObject *parent)
     : MImAbstractServerLogic(parent)
     , mPluginsWidget(new QWidget(&mDefaultParent))
-    , mSurfaceGroupFactory(new Maliit::Server::WindowedSurfaceGroupFactory)
 {
     QGridLayout *layout = new QGridLayout(mPluginsWidget);
 
@@ -36,9 +32,6 @@ MImAppHostedServerLogic::MImAppHostedServerLogic(QObject *parent)
     mPluginsWidget->setBackgroundRole(QPalette::NoRole);
     mPluginsWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     mPluginsWidget->setFocusPolicy(Qt::NoFocus);
-
-    connect(mSurfaceGroupFactory.data(), SIGNAL(surfaceWidgetCreated(QWidget*,int)),
-            this, SLOT(newSurfaceWidget(QWidget*,int)));
 }
 
 MImAppHostedServerLogic::~MImAppHostedServerLogic()
@@ -57,25 +50,6 @@ void MImAppHostedServerLogic::inputPassthrough(const QRegion &region)
 QWidget *MImAppHostedServerLogic::pluginsProxyWidget() const
 {
     return mPluginsWidget;
-}
-
-void MImAppHostedServerLogic::newSurfaceWidget(QWidget *widget, int surfaceOptions)
-{
-    visitWidgetHierarchy(configureForAppHosting, widget);
-
-    QGridLayout *layout = qobject_cast<QGridLayout*>(mPluginsWidget->layout());
-
-    if (surfaceOptions & Maliit::Plugins::AbstractSurface::PositionLeftBottom)
-        layout->addWidget(widget, 0, 0, Qt::AlignLeft);
-    else if (surfaceOptions & Maliit::Plugins::AbstractSurface::PositionCenterBottom)
-        layout->addWidget(widget, 0, 1, Qt::AlignCenter);
-    else if (surfaceOptions & Maliit::Plugins::AbstractSurface::PositionRightBottom)
-        layout->addWidget(widget, 0, 2, Qt::AlignRight);
-}
-
-QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> MImAppHostedServerLogic::surfaceGroupFactory() const
-{
-    return mSurfaceGroupFactory;
 }
 
 void MImAppHostedServerLogic::pluginLoaded()

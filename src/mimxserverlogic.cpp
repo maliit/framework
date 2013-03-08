@@ -79,8 +79,7 @@ MImXServerLogic::MImXServerLogic(const MImServerXOptions &options, QObject *pare
     mCompositeExtension(),
     mDamageExtension(),
     mPassThruWindow(),
-    mRemoteWindow(),
-    mSurfaceGroupFactory(new Maliit::Server::WindowedSurfaceGroupFactory)
+    mRemoteWindow()
 {
     mPassThruWindow.reset(new MPassThruWindow(this, xOptions));
     mPluginsProxyWidget.reset(new MImPluginsProxyWidget(mPassThruWindow.data()));
@@ -171,11 +170,6 @@ void MImXServerLogic::applicationFocusChanged(WId newRemoteWinId)
 
     mRemoteWindow.reset(new MImRemoteWindow(newRemoteWinId, this, xOptions));
 
-    QSharedPointer<Maliit::Server::WindowedSurfaceGroupFactory> windowedSurfaceGroupFactory
-            = qSharedPointerDynamicCast<Maliit::Server::WindowedSurfaceGroupFactory>(mSurfaceGroupFactory);
-    if (windowedSurfaceGroupFactory)
-        windowedSurfaceGroupFactory->applicationFocusChanged(newRemoteWinId);
-
     connect(mRemoteWindow.data(), SIGNAL(contentUpdated(QRegion)),
             this,                SLOT(updatePassThruWindow(QRegion)));
 
@@ -194,11 +188,6 @@ void MImXServerLogic::setSuppressBackground(bool suppress)
 QWidget *MImXServerLogic::passThruWindow() const
 {
     return mPassThruWindow.data();
-}
-
-QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> MImXServerLogic::surfaceGroupFactory() const
-{
-    return mSurfaceGroupFactory;
 }
 
 const QPixmap &MImXServerLogic::remoteWindowPixmap()

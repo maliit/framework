@@ -28,12 +28,6 @@ typedef std::tr1::function<bool (QWidget *)> WidgetVisitor;
 
 void visitWidgetHierarchy(WidgetVisitor visitor, QWidget *widget);
 
-namespace Maliit {
-namespace Server {
-    class AbstractSurfaceGroupFactory;
-}
-}
-
 class MImAbstractServerLogic : public QObject
 {
     Q_OBJECT
@@ -41,9 +35,6 @@ class MImAbstractServerLogic : public QObject
 public:
     explicit MImAbstractServerLogic(QObject *parent = 0);
     virtual ~MImAbstractServerLogic() = 0;
-
-    //! Return factory for creating surface groups
-    virtual QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory> surfaceGroupFactory() const = 0;
 
 public Q_SLOTS:
     virtual void inputPassthrough(const QRegion &region) = 0;
