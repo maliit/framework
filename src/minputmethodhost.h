@@ -22,9 +22,15 @@ class MIMPluginManager;
 class MIndicatorServiceClient;
 class MAbstractInputMethod;
 
+namespace Maliit
+{
+
+class WindowGroup;
+
+} // namespace Maliit
+
 class QRegion;
 
-using Maliit::Plugins::AbstractSurfaceFactory;
 using Maliit::Plugins::AbstractPluginSetting;
 
 /*! \internal
@@ -38,7 +44,8 @@ class MInputMethodHost: public MAbstractInputMethodHost
 public:
     MInputMethodHost(const QSharedPointer<MInputContextConnection>& inputContextConnection,
                      MIMPluginManager *pluginManager, MIndicatorServiceClient &indicatorService,
-                     AbstractSurfaceFactory *surfaceFactory, const QString &plugin, const QString &description);
+                     const QSharedPointer<Maliit::WindowGroup> &window_group, const QString &plugin,
+                     const QString &description);
     virtual ~MInputMethodHost();
 
     //! if enabled, the plugin associated with this host are allowed to communicate
@@ -61,6 +68,8 @@ public:
     virtual int anchorPosition(bool &valid);
     virtual bool hiddenText(bool &valid);
     virtual QString selection(bool &valid);
+    virtual void registerWindow (QWindow *window,
+                                 Maliit::Position position);
     virtual void sendPreeditString(const QString &string,
                                    const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                    int replacementStart = 0, int replacementLength = 0,
@@ -91,7 +100,6 @@ public:
 
     //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);
-    virtual AbstractSurfaceFactory *surfaceFactory();
     virtual AbstractPluginSetting *registerPluginSetting(const QString &key,
                                                          const QString &description,
                                                          Maliit::SettingEntryType type,
@@ -106,9 +114,9 @@ private:
     MAbstractInputMethod *inputMethod;
     bool enabled;
     MIndicatorServiceClient &indicatorService;
-    AbstractSurfaceFactory *mSurfaceFactory;
     QString pluginId;
     QString pluginDescription;
+    QSharedPointer<Maliit::WindowGroup> mWindowGroup;
 };
 
 //! \internal_end

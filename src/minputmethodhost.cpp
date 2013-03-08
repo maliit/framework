@@ -17,6 +17,7 @@
 #include "mimpluginmanager.h"
 #include "mindicatorserviceclient.h"
 #include <maliit/plugins/abstractinputmethod.h>
+#include "windowgroup.h"
 
 #include <QWidget>
 #include <QGraphicsView>
@@ -26,7 +27,7 @@
 MInputMethodHost::MInputMethodHost(const QSharedPointer<MInputContextConnection> &inputContextConnection,
                                    MIMPluginManager *pluginManager,
                                    MIndicatorServiceClient &indicatorService,
-                                   AbstractSurfaceFactory *surfaceFactory,
+                                   const QSharedPointer<Maliit::WindowGroup> &windowGroup,
                                    const QString &plugin,
                                    const QString &description)
     : MAbstractInputMethodHost(),
@@ -35,9 +36,9 @@ MInputMethodHost::MInputMethodHost(const QSharedPointer<MInputContextConnection>
       inputMethod(0),
       enabled(false),
       indicatorService(indicatorService),
-      mSurfaceFactory(surfaceFactory),
       pluginId(plugin),
-      pluginDescription(description)
+      pluginDescription(description),
+      mWindowGroup(windowGroup)
 {
     // nothing
 }
@@ -92,6 +93,12 @@ bool MInputMethodHost::hasSelection(bool &valid)
 QString MInputMethodHost::selection(bool &valid)
 {
     return connection->selection(valid);
+}
+
+void MInputMethodHost::registerWindow (QWindow *window,
+                                       Maliit::Position position)
+{
+    mWindowGroup->setupWindow(window, position);
 }
 
 int MInputMethodHost::preeditClickPos(bool &valid) const
@@ -247,11 +254,6 @@ void MInputMethodHost::setOrientationAngleLocked(bool)
 int MInputMethodHost::anchorPosition(bool &valid)
 {
     return connection->anchorPosition(valid);
-}
-
-AbstractSurfaceFactory *MInputMethodHost::surfaceFactory()
-{
-    return mSurfaceFactory;
 }
 
 AbstractPluginSetting *MInputMethodHost::registerPluginSetting(const QString &key,

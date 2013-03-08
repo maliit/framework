@@ -33,7 +33,6 @@ class MAbstractInputMethodHostPrivate;
 
 namespace Maliit {
 namespace Plugins {
-    class AbstractSurfaceFactory;
     class AbstractPluginSetting;
 }
 }
@@ -119,6 +118,16 @@ public:
      * \brief returns the selecting text
      */
     virtual QString selection(bool &valid) = 0;
+
+    /*!
+     * \brief Registers a window in server.
+     *
+     * Should be called for every QWindow created by plugin before calling
+     * create on it. Note that this function set some flags on the window, so be
+     * careful to not reset them by accident.
+     */
+    virtual void registerWindow (QWindow *window,
+                                 Maliit::Position position) = 0;
 
     /*!
      * \brief returns a pixmap that needs to be drawn as the background of the
@@ -293,10 +302,6 @@ public:
      * This can be used as a hint to determine text direction in input fields, for example.
      */
     virtual void setLanguage(const QString &language);
-
-    /*!
-      */
-    virtual Maliit::Plugins::AbstractSurfaceFactory* surfaceFactory() = 0;
 
     /*!
      * \brief Register a new plugin setting
