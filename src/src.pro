@@ -8,9 +8,6 @@ TARGET = $$TOP_DIR/lib/$$MALIIT_PLUGINS_LIB
 
 # Input
 PLUGIN_HEADERS_PUBLIC = \
-        maliit/plugins/abstractsurface.h \
-        maliit/plugins/abstractwidgetssurface.h \
-        maliit/plugins/abstractsurfacefactory.h \
         maliit/plugins/inputmethodplugin.h \
         maliit/plugins/abstractpluginfactory.h \
         maliit/plugins/abstractinputmethod.h \
@@ -24,12 +21,8 @@ PLUGIN_HEADERS_PUBLIC = \
         maliit/plugins/plugindescription.h \
         maliit/plugins/subviewdescription.h \
         maliit/plugins/abstractpluginsetting.h \
-        maliit/plugins/testsurfacefactory.h \
 
 PLUGIN_SOURCES += \
-        maliit/plugins/abstractsurface.cpp \
-        maliit/plugins/abstractwidgetssurface.cpp \
-        maliit/plugins/abstractsurfacefactory.cpp \
         maliit/plugins/abstractpluginfactory.cpp \
         maliit/plugins/abstractinputmethod.cpp \
         maliit/plugins/abstractinputmethodhost.cpp \
@@ -41,7 +34,6 @@ PLUGIN_SOURCES += \
         maliit/plugins/updatereceiver.cpp \
         maliit/plugins/plugindescription.cpp \
         maliit/plugins/subviewdescription.cpp \
-        maliit/plugins/testsurfacefactory.cpp \
 
 PLUGIN_HEADERS_PRIVATE += \
         maliit/plugins/keyoverride_p.h \
@@ -69,20 +61,6 @@ SERVER_SOURCES += \
         mimdummyinputcontext.cpp \
 }
 
-contains(QT_MAJOR_VERSION, 5) {
-    PLUGIN_HEADERS_PUBLIC += maliit/plugins/quickviewsurface.h
-    PLUGIN_SOURCES += maliit/plugins/quickviewsurface.cpp
-
-    SERVER_HEADERS_PRIVATE += \
-        quickviewsurfacegroup.h \
-        quickviewsurfacefactory.h \
-        quickviewsurfacefactory_p.h \
-
-    SERVER_SOURCES += \
-        quickviewsurfacegroup.cpp \
-        quickviewsurfacefactory.cpp \
-}
-
 wayland {
     contains(QT_MAJOR_VERSION, 5) {
         load(wayland-scanner)
@@ -93,12 +71,6 @@ wayland {
 }
 
 SERVER_HEADERS_PRIVATE += \
-        abstractsurfacegroup.h \
-        abstractsurfacegroupfactory.h \
-        windowedsurface.h \
-        windowedsurface_p.h \
-        windowedsurfacefactory_p.h \
-        windowedsurfacegroup.h \
         mimpluginsproxywidget.h \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
@@ -115,10 +87,6 @@ SERVER_HEADERS_PRIVATE += \
         windowgroup.h \
 
 SERVER_SOURCES += \
-        abstractsurfacegroup.cpp \
-        abstractsurfacegroupfactory.cpp \
-        windowedsurface.cpp \
-        windowedsurfacegroup.cpp \
         mimpluginmanager.cpp \
         minputmethodhost.cpp \
         mattributeextensionid.cpp \
