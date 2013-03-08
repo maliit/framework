@@ -27,6 +27,7 @@
 #include "mimsubviewoverride.h"
 #include "maliit/namespaceinternal.h"
 #include <maliit/settingdata.h>
+#include "windowgroup.h"
 
 #include <QDir>
 #include <QPluginLoader>
@@ -70,7 +71,6 @@ namespace
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputContextConnection> &connection,
-                                                 const QSharedPointer<AbstractSurfaceGroupFactory> &surfaceGroupFactory,
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
@@ -80,7 +80,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputCont
       visible(false),
       indicatorService(),
       onScreenPlugins(),
-      mSurfaceGroupFactory(surfaceGroupFactory),
       lastOrientation(0),
       attributeExtensionManager(new MAttributeExtensionManager),
       sharedAttributeExtensionManager(new MSharedAttributeExtensionManager)
@@ -253,7 +252,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
-    QSharedPointer<AbstractSurfaceGroup> surfaceGroup(mSurfaceGroupFactory->createSurfaceGroup());
+    QSharedPointer<Maliit::WindowGroup> windowGroup(new Maliit::WindowGroup);
 
     // Check if we have a specific factory for this plugin
     QString mimeType = getFileMimeType(fileName);
@@ -288,7 +287,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, surfaceGroup->factory(),
+    MInputMethodHost *host = new MInputMethodHost(mICConnection, q, indicatorService, windowGroup,
                                                   fileName, plugin->name());
 
     MAbstractInputMethod *im = plugin->createInputMethod(host);
@@ -304,10 +303,10 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
     }
 
     PluginDescription desc = { im, host, PluginState(),
-                               Maliit::SwitchUndefined, fileName, surfaceGroup };
+                               Maliit::SwitchUndefined, fileName, windowGroup };
 
     // Connect surface group signals
-    QObject::connect(surfaceGroup.data(), SIGNAL(inputMethodAreaChanged(QRegion)),
+    QObject::connect(windowGroup.data(), SIGNAL(inputMethodAreaChanged(QRegion)),
                      mICConnection.data(), SLOT(updateInputMethodArea(QRegion)));
 
     plugins.insert(plugin, desc);
@@ -1118,7 +1117,7 @@ void MIMPluginManagerPrivate::hideActivePlugins()
     visible = false;
     Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activePlugins) {
         plugins.value(plugin).inputMethod->hide();
-        plugins.value(plugin).surfaceGroup->deactivate();
+        plugins.value(plugin).windowGroup->deactivate();
     }
 
     ensureEmptyRegionWhenHiddenTimer.start();
@@ -1130,12 +1129,12 @@ void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest 
 
     for (; iterator != plugins.end(); ++iterator) {
         if (activePlugins.contains(iterator.key())) {
-            iterator.value().surfaceGroup->activate();
+            iterator.value().windowGroup->activate();
             if (request == ShowInputMethod) {
                 iterator.value().inputMethod->show();
             }
         } else {
-            iterator.value().surfaceGroup->deactivate();
+            iterator.value().windowGroup->deactivate();
         }
     }
 }
@@ -1231,10 +1230,9 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 ///////////////
 // actual class
 
-MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection,
-                                   const QSharedPointer<AbstractSurfaceGroupFactory>& surfacesFactory)
+MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection)
     : QObject(),
-      d_ptr(new MIMPluginManagerPrivate(icConnection, surfacesFactory, this))
+      d_ptr(new MIMPluginManagerPrivate(icConnection, this))
 {
     Q_D(MIMPluginManager);
     d->q_ptr = this;

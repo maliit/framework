@@ -25,17 +25,13 @@
 #include "mindicatorserviceclient.h"
 #include <maliit/settingdata.h>
 #include <maliit/plugins/abstractpluginsetting.h>
-
-#include "abstractsurfacegroup.h"
+#include "windowgroup.h"
 
 #include <QtCore>
 
 namespace Maliit {
 namespace Plugins {
     class InputMethodPlugin;
-}
-namespace Server {
-    class AbstractSurfaceGroupFactory;
 }
 }
 class MImAbstractPluginFactory;
@@ -46,9 +42,6 @@ class MSharedAttributeExtensionManager;
 class MImSettings;
 class MAbstractInputMethod;
 class MIMPluginManagerAdaptor;
-
-using Maliit::Server::AbstractSurfaceGroup;
-using Maliit::Server::AbstractSurfaceGroupFactory;
 
 /* Internal class only! Interfaces here change, internal developers only*/
 class PluginSetting : public Maliit::Plugins::AbstractPluginSetting
@@ -89,7 +82,7 @@ public:
         PluginState state;
         Maliit::SwitchDirection lastSwitchDirection;
         QString pluginId; // the library filename is used as ID
-        QSharedPointer<AbstractSurfaceGroup> surfaceGroup;
+        QSharedPointer<Maliit::WindowGroup> windowGroup;
     };
 
     typedef QMap<Maliit::Plugins::InputMethodPlugin *, PluginDescription> Plugins;
@@ -98,7 +91,6 @@ public:
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
     MIMPluginManagerPrivate(const QSharedPointer<MInputContextConnection>& connection,
-                            const QSharedPointer<AbstractSurfaceGroupFactory>& surfaceGroupFactory,
                             MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
@@ -221,7 +213,6 @@ public:
     MImOnScreenPlugins onScreenPlugins;
     MImHwKeyboardTracker hwkbTracker;
 
-    QSharedPointer<AbstractSurfaceGroupFactory> mSurfaceGroupFactory;
     int lastOrientation;
 
     QScopedPointer<MAttributeExtensionManager> attributeExtensionManager;

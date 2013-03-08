@@ -26,7 +26,6 @@
 
 #include "mattributeextensionid.h"
 #include "minputcontextconnection.h"
-#include "abstractsurfacegroupfactory.h"
 
 class QRegion;
 class MIMPluginManagerPrivate;
@@ -55,8 +54,7 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection,
-                     const QSharedPointer<Maliit::Server::AbstractSurfaceGroupFactory>& factory);
+    MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection);
 
     virtual ~MIMPluginManager();
 
