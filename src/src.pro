@@ -112,6 +112,7 @@ SERVER_HEADERS_PRIVATE += \
         mindicatorserviceclient.h \
         mimsubviewoverride.h \
         mimserveroptions.h \
+        windowgroup.h \
 
 SERVER_SOURCES += \
         abstractsurfacegroup.cpp \
@@ -129,6 +130,7 @@ SERVER_SOURCES += \
         mindicatorserviceclient.cpp \
         mimsubviewoverride.cpp \
         mimserveroptions.cpp \
+        windowgroup.cpp \
 
 SETTINGS_HEADERS_PRIVATE += \
         mimsettingsqsettings.h \

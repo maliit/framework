@@ -21,6 +21,16 @@
 //! \ingroup common
 namespace Maliit {
     /*!
+     * \brief Position of the window on the screen.
+     */
+    enum Position {
+        PositionOverlay,
+        PositionCenterBottom,
+        PositionLeftBottom,
+        PositionRightBottom,
+    };
+
+    /*!
      * \brief Orientation angle of windows in the application. Relative to natural drawing direction.
      */
     enum OrientationAngle {
