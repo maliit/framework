@@ -19,8 +19,6 @@
 #include "maliitquick.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
-#include <maliit/plugins/abstractsurfacefactory.h>
-#include <maliit/plugins/quickviewsurface.h>
 #include <maliit/plugins/keyoverride.h>
 
 #include <QtCore>
@@ -36,7 +34,23 @@
 
 namespace
 {
-    const char * const actionKeyName = "actionKey";
+
+const char * const actionKeyName = "actionKey";
+
+QQuickView *getSurface (MAbstractInputMethodHost *host)
+{
+    QScopedPointer<QQuickView> view(new QQuickView (0));
+
+    host->registerWindow (view.data(), Maliit::PositionCenterBottom);
+
+    QSurfaceFormat format;
+    format.setAlphaBufferSize(8);
+    view->setFormat(format);
+    view->setColor(QColor(Qt::transparent));
+
+    return view.take ();
+}
+
 }
 
 class MInputMethodQuickPrivate
@@ -45,7 +59,7 @@ class MInputMethodQuickPrivate
 
 public:
     MInputMethodQuick *const q_ptr;
-    QSharedPointer<Maliit::Plugins::QuickViewSurface> surface;
+    QScopedPointer<QQuickView> surface;
     QRect inputMethodArea;
     int appOrientation;
     bool haveFocus;
@@ -74,7 +88,7 @@ public:
     MInputMethodQuickPrivate(MAbstractInputMethodHost *host,
                              MInputMethodQuick *im)
         : q_ptr(im)
-        , surface(qSharedPointerDynamicCast<Maliit::Plugins::QuickViewSurface>(host->surfaceFactory()->create(Maliit::Plugins::AbstractSurface::PositionCenterBottom | Maliit::Plugins::AbstractSurface::TypeQuick2)))
+        , surface(getSurface(host))
         , appOrientation(0)
         , haveFocus(false)
         , activeState(Maliit::OnScreen)
@@ -95,10 +109,8 @@ public:
         Q_ASSERT(surface);
 
         updateActionKey(MKeyOverride::All);
-        // Set surface size to fullscreen
-        surface->setSize(QGuiApplication::primaryScreen()->availableSize());
-        surface->view()->engine()->addImportPath(MALIIT_PLUGINS_DATA_DIR);
-        surface->view()->engine()->rootContext()->setContextProperty("MInputMethodQuick", im);
+        surface->engine()->addImportPath(MALIIT_PLUGINS_DATA_DIR);
+        surface->engine()->rootContext()->setContextProperty("MInputMethodQuick", im);
     }
 
     ~MInputMethodQuickPrivate()
@@ -126,7 +138,7 @@ public:
             return;
 
         QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
-        xcb_connection_t *connection = static_cast<xcb_connection_t *>(nativeInterface->nativeResourceForWindow("connection", surface->view()));
+        xcb_connection_t *connection = static_cast<xcb_connection_t *>(nativeInterface->nativeResourceForWindow("connection", surface.data()));
 
         xcb_rectangle_t rect;
         rect.x = inputMethodArea.x();
@@ -137,7 +149,7 @@ public:
         xcb_xfixes_region_t region = xcb_generate_id(connection);
         xcb_xfixes_create_region(connection, region, 1, &rect);
 
-        xcb_window_t window  = surface->view()->winId();
+        xcb_window_t window  = surface->winId();
         xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_BOUNDING, 0, 0, 0);
         xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_INPUT, 0, 0, region);
 
@@ -152,7 +164,7 @@ MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
 {
     Q_D(MInputMethodQuick);
 
-    d->surface->view()->setSource(QUrl::fromLocalFile(qmlFileName));
+    d->surface->setSource(QUrl::fromLocalFile(qmlFileName));
     
     propagateScreenSize();
 }
@@ -178,7 +190,7 @@ void MInputMethodQuick::show()
     handleAppOrientationChanged(d->appOrientation);
     
     if (d->activeState == Maliit::OnScreen) {
-      d->surface->show();
+      d->surface->showFullScreen();
       setActive(true);
       d->syncInputMask();
     }
