@@ -190,7 +190,8 @@ void MInputMethodQuick::show()
     handleAppOrientationChanged(d->appOrientation);
     
     if (d->activeState == Maliit::OnScreen) {
-      d->surface->showFullScreen();
+      d->surface->setGeometry(QRect(QPoint(), QGuiApplication::primaryScreen()->availableSize()));
+      d->surface->show();
       setActive(true);
       d->syncInputMask();
     }
