@@ -75,7 +75,7 @@ void WindowGroup::setupWindow(QWindow *window, Maliit::Position position)
     Q_UNUSED (position);
 
     if (window) {
-        if (d->m_window_list.indexOf (window) != -1) {
+        if (d->m_window_list.indexOf (window) == -1) {
             d->m_window_list.append (window);
 
             window->setFlags (Qt::Dialog |
