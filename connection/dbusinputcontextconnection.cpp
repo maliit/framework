@@ -89,6 +89,7 @@ DBusInputContextConnection::onDisconnection()
     ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.take(connectionNumber);
     mConnections.remove(connectionNumber);
     delete proxy;
+    handleDisconnection(connectionNumber);
 }
 
 void
