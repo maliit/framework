@@ -13,7 +13,6 @@ include(./config.pri)
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t enable-dbus-activation : Enable dbus activation support for maliit-server \
         \\n\\t disable-dbus : Disable dbus communication backend \
-        \\n\\t enable-qdbus : Enable QtDBus implementation for the DBus communication backend \
         \\n\\t notests : Do not build tests \
         \\n\\t nogtk : Do not build GTK+ input method module, nor the glib-based application support libraries\
         \\n\\t nodoc : Do not build documentation\
@@ -69,10 +68,6 @@ contains(QT_MAJOR_VERSION, 4) {
     !notests {
         SUBDIRS += tests
     }
-}
-
-!disable-dbus {
-    !system(pkg-config --exists dbus-glib-1 dbus-1):error("Could not find dbus-glib-1 dbus-1")
 }
 
 QMAKE_EXTRA_TARGETS += check-xml

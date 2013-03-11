@@ -18,11 +18,7 @@
 #include <QObject>
 #include <QString>
 
-#ifdef HAVE_GLIB_DBUS
-struct DBusServer;
-#else
 class QDBusServer;
-#endif
 
 namespace Maliit {
 namespace Server {
@@ -50,11 +46,7 @@ public:
     explicit Address();
     virtual ~Address();
 
-#ifdef HAVE_GLIB_DBUS
-    virtual DBusServer* connect() = 0;
-#else
     virtual QDBusServer* connect() = 0;
-#endif
 };
 
 class DynamicAddress : public Address
@@ -64,11 +56,7 @@ public:
     explicit DynamicAddress();
 
     //! reimpl
-#ifdef HAVE_GLIB_DBUS
-    virtual DBusServer* connect();
-#else
     virtual QDBusServer* connect();
-#endif
 
 private:
     QScopedPointer<AddressPublisher> publisher;
@@ -81,11 +69,7 @@ public:
     explicit FixedAddress(const QString &address);
 
     //! reimpl
-#ifdef HAVE_GLIB_DBUS
-    virtual DBusServer* connect();
-#else
     virtual QDBusServer* connect();
-#endif
 
 private:
     QString mAddress;

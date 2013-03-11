@@ -17,11 +17,7 @@
 #include <QDebug>
 #include <QDBusConnection>
 
-#ifdef HAVE_GLIB_DBUS
-#include <dbus/dbus.h>
-#else
 #include <QDBusServer>
-#endif
 
 #include <cstdlib>
 
@@ -64,26 +60,6 @@ Address::~Address()
 DynamicAddress::DynamicAddress()
 {}
 
-#ifdef HAVE_GLIB_DBUS
-DBusServer* DynamicAddress::connect()
-{
-    std::string dbusAddress("unix:tmpdir=/tmp/maliit-server");
-
-    DBusError error;
-    dbus_error_init(&error);
-
-    DBusServer *server = dbus_server_listen(dbusAddress.c_str(), &error);
-    if (!server) {
-        qFatal("Couldn't create D-Bus server: %s", error.message);
-    }
-
-    char *address = dbus_server_get_address(server);
-    publisher.reset(new AddressPublisher(QString::fromLatin1(address)));
-    dbus_free(address);
-
-    return server;
-}
-#else
 QDBusServer* DynamicAddress::connect()
 {
     QLatin1String dbusAddress("unix:tmpdir=/tmp/maliit-server");
@@ -94,29 +70,13 @@ QDBusServer* DynamicAddress::connect()
 
     return server;
 }
-#endif
 
-#ifdef HAVE_GLIB_DBUS
-DBusServer* FixedAddress::connect()
-{
-    DBusError error;
-    dbus_error_init(&error);
-
-    DBusServer *server = dbus_server_listen(mAddress.toUtf8().constData(), &error);
-    if (!server) {
-        qFatal("Couldn't create D-Bus server: %s", error.message);
-    }
-
-    return server;
-}
-#else
 QDBusServer* FixedAddress::connect()
 {
     QDBusServer *server = new QDBusServer(mAddress);
 
     return server;
 }
-#endif
 
 FixedAddress::FixedAddress(const QString &address)
     : mAddress(address)

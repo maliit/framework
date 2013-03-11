@@ -15,13 +15,8 @@
 #include "connectionfactory.h"
 
 #ifndef MALIIT_DISABLE_DBUS
-#ifdef HAVE_GLIB_DBUS
-#include "glibdbusimserverproxy.h"
-#include "minputcontextglibdbusconnection.h"
-#else
 #include "dbusserverconnection.h"
 #include "dbusinputcontextconnection.h"
-#endif
 #endif
 #include "mimdirectserverconnection.h"
 
@@ -36,44 +31,26 @@ namespace DBus {
 MImServerConnection *createServerConnectionWithDynamicAddress()
 {
     const QSharedPointer<Maliit::InputContext::DBus::Address> address(new Maliit::InputContext::DBus::DynamicAddress);
-#ifdef HAVE_GLIB_DBUS
-    return new GlibDBusIMServerProxy(address);
-#else
     return new DBusServerConnection(address);
-#endif
 }
 
 MImServerConnection *createServerConnectionWithFixedAddress(const QString &fixedAddress)
 {
     const QSharedPointer<Maliit::InputContext::DBus::Address> address(new Maliit::InputContext::DBus::FixedAddress(fixedAddress));
-#ifdef HAVE_GLIB_DBUS
-    return new GlibDBusIMServerProxy(address);
-#else
     return new DBusServerConnection(address);
-#endif
 }
 
 MInputContextConnection *createInputContextConnectionWithDynamicAddress()
 {
-#ifdef HAVE_GLIB_DBUS
-    std::tr1::shared_ptr<Maliit::Server::DBus::Address> address(new Maliit::Server::DBus::DynamicAddress);
-    return new MInputContextGlibDBusConnection(address, false);
-#else
     QSharedPointer<Maliit::Server::DBus::Address> address(new Maliit::Server::DBus::DynamicAddress);
     return new DBusInputContextConnection(address);
-#endif
 }
 
 MInputContextConnection *createInputContextConnectionWithFixedAddress(const QString &fixedAddress, bool allowAnonymous)
 {
-#ifdef HAVE_GLIB_DBUS
-    std::tr1::shared_ptr<Maliit::Server::DBus::Address> address(new Maliit::Server::DBus::FixedAddress(fixedAddress));
-    return new MInputContextGlibDBusConnection(address, allowAnonymous);
-#else
     Q_UNUSED(allowAnonymous);
     QSharedPointer<Maliit::Server::DBus::Address> address(new Maliit::Server::DBus::FixedAddress(fixedAddress));
     return new DBusInputContextConnection(address);
-#endif
 }
 
 } // namespace DBus
