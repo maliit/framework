@@ -63,9 +63,11 @@ contains(QT_MAJOR_VERSION, 5) {
 include($$TOP_DIR/dbus_interfaces/dbus_interfaces.pri)
 
 qdbus-dbus-connection {
-    INTERFACE_LIST += $$DBUS_SERVER_XML $$DBUS_CONTEXT_XML
-    SERVER_ADAPTOR_LIST += $$DBUS_SERVER_XML
-    IC_ADAPTOR_LIST += $$DBUS_CONTEXT_XML
+    DBUS_ADAPTORS = $$DBUS_SERVER_XML $$DBUS_CONTEXT_XML
+    QDBUSXML2CPP_ADAPTOR_HEADER_FLAGS = -i dbusinputcontextconnection.h -i dbusserverconnection.h
+
+    DBUS_INTERFACES = $$DBUS_SERVER_XML $$DBUS_CONTEXT_XML
+    QDBUSXML2CPP_INTERFACE_HEADER_FLAGS = -i maliit/namespace.h -i maliit/settingdata.h
 
     PRIVATE_HEADERS += \
         dbuscustomarguments.h \
@@ -81,75 +83,7 @@ qdbus-dbus-connection {
         \ # server
         dbusinputcontextconnection.cpp \
 
-    qtPrepareTool(QMAKE_QDBUSXML2CPP, qdbusxml2cpp)
-
-    server_adaptor_header.commands = $$QMAKE_QDBUSXML2CPP -i dbusinputcontextconnection.h -l DBusInputContextConnection -a ${QMAKE_FILE_OUT}: ${QMAKE_FILE_IN}
-    server_adaptor_header.output_function = dbus_adaptor_header_output
-    server_adaptor_header.name = DBUSXML2CPP ADAPTOR HEADER ${QMAKE_FILE_IN}
-    server_adaptor_header.variable_out = DBUS_ADAPTOR_HEADERS
-    server_adaptor_header.input = SERVER_ADAPTOR_LIST
-
-    ic_adaptor_header.commands = $$QMAKE_QDBUSXML2CPP -i dbusserverconnection.h -l DBusServerConnection -a ${QMAKE_FILE_OUT}: ${QMAKE_FILE_IN}
-    ic_adaptor_header.output_function = dbus_adaptor_header_output
-    ic_adaptor_header.name = DBUSXML2CPP ADAPTOR HEADER ${QMAKE_FILE_IN}
-    ic_adaptor_header.variable_out = DBUS_ADAPTOR_HEADERS
-    ic_adaptor_header.input = IC_ADAPTOR_LIST
-
-    defineReplace(dbus_adaptor_header_output) {
-        return("$$lower($$section($$list($$basename(1)),.,-2,-2))_adaptor.h")
-    }
-
-    server_adaptor_source.commands = $$QMAKE_QDBUSXML2CPP -i ${QMAKE_FILE_OUT_BASE}.h -l DBusInputContextConnection -a :${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
-    server_adaptor_source.output_function = dbus_adaptor_source_output
-    server_adaptor_source.name = DBUSXML2CPP ADAPTOR SOURCE ${QMAKE_FILE_IN}
-    server_adaptor_source.variable_out = SOURCES
-    server_adaptor_source.input = SERVER_ADAPTOR_LIST
-
-    ic_adaptor_source.commands = $$QMAKE_QDBUSXML2CPP -i ${QMAKE_FILE_OUT_BASE}.h -l DBusServerConnection -a :${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
-    ic_adaptor_source.output_function = dbus_adaptor_source_output
-    ic_adaptor_source.name = DBUSXML2CPP ADAPTOR SOURCE ${QMAKE_FILE_IN}
-    ic_adaptor_source.variable_out = SOURCES
-    ic_adaptor_source.input = IC_ADAPTOR_LIST
-
-    adaptor_moc.commands = $$moc_header.commands
-    adaptor_moc.output = $$moc_header.output
-    adaptor_moc.depends = $$dbus_adaptor_header.output
-    adaptor_moc.input = DBUS_ADAPTOR_HEADERS
-    adaptor_moc.variable_out = GENERATED_SOURCES
-    adaptor_moc.name = $$moc_header.name
-
-    defineReplace(dbus_adaptor_source_output) {
-        return("$$lower($$section($$list($$basename(1)),.,-2,-2))_adaptor.cpp")
-    }
-
-    interface_header.commands = $$QMAKE_QDBUSXML2CPP -i maliit/namespace.h -i maliit/settingdata.h -p ${QMAKE_FILE_OUT}: ${QMAKE_FILE_IN}
-    interface_header.output_function = dbus_interface_header_output
-    interface_header.name = DBUSXML2CPP INTERFACE HEADER ${QMAKE_FILE_IN}
-    interface_header.variable_out = DBUS_INTERFACE_HEADERS
-    interface_header.input = INTERFACE_LIST
-
-    defineReplace(dbus_interface_header_output) {
-        return("$$lower($$section($$list($$basename(1)),.,-2,-2))_interface.h")
-    }
-
-    interface_source.commands = $$QMAKE_QDBUSXML2CPP -i ${QMAKE_FILE_OUT_BASE}.h -p :${QMAKE_FILE_OUT} ${QMAKE_FILE_IN}
-    interface_source.output_function = dbus_interface_source_output
-    interface_source.name = DBUSXML2CPP INTERFACE SOURCE ${QMAKE_FILE_IN}
-    interface_source.variable_out = SOURCES
-    interface_source.input = INTERFACE_LIST
-
-    interface_moc.commands = $$moc_header.commands
-    interface_moc.output = $$moc_header.output
-    interface_moc.depends = $$dbus_interface_header.output
-    interface_moc.input = DBUS_INTERFACE_HEADERS
-    interface_moc.variable_out = GENERATED_SOURCES
-    interface_moc.name = $$moc_header.name
-
-    defineReplace(dbus_interface_source_output) {
-        return("$$lower($$section($$list($$basename(1)),.,-2,-2))_interface.cpp")
-    }
-
-    QMAKE_EXTRA_COMPILERS += server_adaptor_header ic_adaptor_header server_adaptor_source ic_adaptor_source adaptor_moc interface_header interface_source interface_moc
+    CONFIG += dbus
 }
 
 glib-dbus-connection {
