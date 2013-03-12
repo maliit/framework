@@ -48,7 +48,7 @@ class Address
 {
 public:
     explicit Address();
-    ~Address();
+    virtual ~Address();
 
 #ifdef HAVE_GLIB_DBUS
     virtual DBusServer* connect() = 0;
