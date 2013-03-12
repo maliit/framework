@@ -165,7 +165,7 @@ MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
     Q_D(MInputMethodQuick);
 
     d->surface->setSource(QUrl::fromLocalFile(qmlFileName));
-    
+
     propagateScreenSize();
 }
 

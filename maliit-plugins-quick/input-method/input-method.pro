@@ -17,14 +17,18 @@ HEADERSINSTALL = \
         mkeyoverridequick.h
 
 HEADERS += $$HEADERSINSTALL \
-        mkeyoverridequick_p.h
+        mkeyoverridequick_p.h \
+        tooltip_p.h
 
 SOURCES += \
         minputmethodquickplugin.cpp \
         minputmethodquick.cpp \
-        mkeyoverridequick.cpp
+        mkeyoverridequick.cpp \
+        tooltip.cpp
 
 QT = core gui gui-private qml quick
+
+MOC_DIR = .moc
 
 CONFIG += link_pkgconfig
 

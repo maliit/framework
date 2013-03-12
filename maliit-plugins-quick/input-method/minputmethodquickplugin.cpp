@@ -16,6 +16,7 @@
 #include "minputmethodquick.h"
 #include "maliitquick.h"
 #include "mkeyoverridequick.h"
+#include "tooltip_p.h"
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QQmlComponent>
@@ -43,6 +44,8 @@ MInputMethodQuickPlugin::MInputMethodQuickPlugin()
 {
     qmlRegisterUncreatableType<MaliitQuick>("com.meego.maliitquick", 1, 0, "Maliit",
                                             "This is the class used to export Maliit Enums");
+
+    qmlRegisterType<Tooltip>("com.meego.maliitquick", 1, 0, "Tooltip");
 
     // this do not have to be included to use it, but it have to be
     // registered.
