@@ -12,7 +12,7 @@
       <arg type="i"/>
     </method>
     <method name="updatePreedit">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In1" value="QList&lt;Maliit::PreeditTextFormat&gt;"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="QList&lt;Maliit::PreeditTextFormat&gt;"/>
       <arg type="s"/>
       <arg type="a(iii)"/>
       <arg type="i"/>
@@ -20,7 +20,7 @@
       <arg type="i"/>
     </method>
     <method name="keyEvent">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In6" value="Maliit::EventRequestType"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In6" value="Maliit::EventRequestType"/>
       <arg type="i"/>
       <arg type="i"/>
       <arg type="i"/>
@@ -70,7 +70,7 @@
       <arg type="v"/>
     </method>
     <method name="pluginSettingsLoaded">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QList&lt;MImPluginSettingsInfo&gt;"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QList&lt;MImPluginSettingsInfo&gt;"/>
       <arg type="a(sssia(ssibva{sv}))"/>
     </method>
   </interface>

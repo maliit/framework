@@ -21,7 +21,7 @@
       <arg type="i" name="cursorPos"/>
     </method>
     <method name="updateWidgetInformation">
-      <annotation name="com.trolltech.QtDBus.QtTypeName.In0" value="QVariantMap"/>
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QVariantMap"/>
       <arg type="a{sv}" name="stateInformation"/>
       <arg type="b" name="focusChanged"/>
     </method>

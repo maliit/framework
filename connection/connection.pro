@@ -63,8 +63,15 @@ contains(QT_MAJOR_VERSION, 5) {
 include($$TOP_DIR/dbus_interfaces/dbus_interfaces.pri)
 
 qdbus-dbus-connection {
-    DBUS_ADAPTORS = $$DBUS_SERVER_XML $$DBUS_CONTEXT_XML
-    QDBUSXML2CPP_ADAPTOR_HEADER_FLAGS = -i dbusinputcontextconnection.h -i dbusserverconnection.h
+    server_adaptor.files = $$DBUS_SERVER_XML
+    server_adaptor.header_flags = -i dbusinputcontextconnection.h -l DBusInputContextConnection
+    server_adaptor.source_flags = -l DBusInputContextConnection
+
+    context_adaptor.files = $$DBUS_CONTEXT_XML
+    context_adaptor.header_flags = -i dbusserverconnection.h -l DBusServerConnection
+    context_adaptor.source_flags = -l DBusServerConnection
+
+    DBUS_ADAPTORS = server_adaptor context_adaptor
 
     DBUS_INTERFACES = $$DBUS_SERVER_XML $$DBUS_CONTEXT_XML
     QDBUSXML2CPP_INTERFACE_HEADER_FLAGS = -i maliit/namespace.h -i maliit/settingdata.h
