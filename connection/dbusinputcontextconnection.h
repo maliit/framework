@@ -69,7 +69,6 @@ public:
     virtual void pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info);
     //! \reimp_end
 
-private Q_SLOTS:
     void activateContext();
     void showInputMethod();
     void hideInputMethod();
@@ -86,6 +85,7 @@ private Q_SLOTS:
     void setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value);
     void loadPluginSettings(const QString &descriptionLanguage);
 
+private Q_SLOTS:
     void newConnection(const QDBusConnection &connection);
     void onDisconnection();
 
