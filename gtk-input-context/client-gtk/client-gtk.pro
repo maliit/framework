@@ -12,6 +12,9 @@ PKGCONFIG += gtk+-2.0
 include($$TOP_DIR/maliit-glib/libmaliit-glib.pri)
 include($$TOP_DIR/connection-glib/libmaliit-connection-glib.pri)
 
+QMAKE_CXXFLAGS_DEBUG+=-Wno-error=deprecated-declarations
+QMAKE_CFLAGS_DEBUG+=-Wno-error=deprecated-declarations
+
 DEFINES += G_LOG_DOMAIN=\\\"Maliit\\\"
 
 HEADERS += \
