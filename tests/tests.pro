@@ -23,7 +23,6 @@ SUBDIRS += \
 SUBDIRS += \
           ut_mimsettings \
           bbt_connection \
-          ut_maliit_glib_settings \
           ut_mimonscreenplugins \
 
 contains(QT_MAJOR_VERSION, 4) {
@@ -51,12 +50,6 @@ x11 {
           ut_mimpluginmanager \
           ut_mimpluginmanagerconfig \
           ft_mimpluginmanager \
-}
-
-nogtk {
-    SUBDIRS -= \
-          ut_maliit_glib_settings \
-
 }
 
 QMAKE_EXTRA_TARGETS += check

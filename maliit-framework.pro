@@ -14,7 +14,6 @@ include(./config.pri)
         \\n\\t enable-dbus-activation : Enable dbus activation support for maliit-server \
         \\n\\t disable-dbus : Disable dbus communication backend \
         \\n\\t notests : Do not build tests \
-        \\n\\t nogtk : Do not build GTK+ input method module, nor the glib-based application support libraries\
         \\n\\t nodoc : Do not build documentation\
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
         \\n\\t local-install : Install everything underneath PREFIX, nothing to system directories reported by GTK+, Qt, DBus etc. \
@@ -48,15 +47,7 @@ contains(QT_MAJOR_VERSION, 4) {
     SUBDIRS += connection src
 
     !disable-dbus {
-        SUBDIRS += passthroughserver connection-glib maliit-glib
-        !nodoc {
-            SUBDIRS += maliit-glib/maliit-glib-docs.pro
-        }
-        SUBDIRS += gtk-input-context
-    }
-
-    nogtk {
-        SUBDIRS -= connection-glib maliit-glib gtk-input-context
+        SUBDIRS += passthroughserver
     }
 
     SUBDIRS += maliit-plugins-quick examples
