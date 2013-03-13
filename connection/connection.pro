@@ -9,31 +9,16 @@ TARGET = $$TOP_DIR/lib/$$MALIIT_CONNECTION_LIB
 include($$TOP_DIR/common/libmaliit-common.pri)
 
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
-CONFIG += link_pkgconfig
+CONFIG += staticlib
 
 # Interface classes
 PUBLIC_HEADERS += \
     connectionfactory.h \
-    mimserverconnection.h \
     minputcontextconnection.h \
 
 PUBLIC_SOURCES += \
     connectionfactory.cpp \
-    mimserverconnection.cpp \
     minputcontextconnection.cpp \
-
-# Default to building direct connection
-CONFIG += direct-connection
-
-direct-connection {
-    PUBLIC_SOURCES += \
-        miminputcontextdirectconnection.cpp \
-        mimdirectserverconnection.cpp \
-
-    PUBLIC_HEADERS += \
-        miminputcontextdirectconnection.h \
-        mimdirectserverconnection.h \
-}
 
 # Default to building qdbus based connection
 CONFIG += qdbus-dbus-connection
@@ -48,6 +33,7 @@ wayland {
     WAYLANDSOURCES += \
         $$IN_PWD/input-method.xml \
         $$IN_PWD/text.xml
+    CONFIG += link_pkgconfig
     PKGCONFIG += wayland-client
 }
 
@@ -58,26 +44,18 @@ qdbus-dbus-connection {
     server_adaptor.header_flags = -i dbusinputcontextconnection.h -l DBusInputContextConnection
     server_adaptor.source_flags = -l DBusInputContextConnection
 
-    context_adaptor.files = $$DBUS_CONTEXT_XML
-    context_adaptor.header_flags = -i dbusserverconnection.h -l DBusServerConnection
-    context_adaptor.source_flags = -l DBusServerConnection
+    DBUS_ADAPTORS = server_adaptor
 
-    DBUS_ADAPTORS = server_adaptor context_adaptor
-
-    DBUS_INTERFACES = $$DBUS_SERVER_XML $$DBUS_CONTEXT_XML
+    DBUS_INTERFACES = $$DBUS_CONTEXT_XML
     QDBUSXML2CPP_INTERFACE_HEADER_FLAGS = -i maliit/namespace.h -i maliit/settingdata.h
 
     PRIVATE_HEADERS += \
         dbuscustomarguments.h \
-        \ # input-context
-        dbusserverconnection.h \
         \ # server
         dbusinputcontextconnection.h \
 
     PRIVATE_SOURCES += \
         dbuscustomarguments.cpp \
-        \ # input-context
-        dbusserverconnection.cpp \
         \ # server
         dbusinputcontextconnection.cpp \
 
@@ -92,11 +70,9 @@ qdbus-dbus-connection {
     }
 
     PRIVATE_HEADERS += \
-        inputcontextdbusaddress.h \
         serverdbusaddress.h \
 
     PRIVATE_SOURCES += \
-        inputcontextdbusaddress.cpp \
         serverdbusaddress.cpp \
 
     # DBus activation
@@ -125,17 +101,6 @@ SOURCES += \
 
 target.path += $$LIBDIR
 
-public_headers.path += $$INCLUDEDIR/$$MALIIT_CONNECTION_HEADER
-public_headers.files += $$PUBLIC_HEADERS
-
-OTHER_FILES += maliit-connection.pc.in
-outputFiles(maliit-connection.pc)
-
-install_pkgconfig.path = $${LIBDIR}/pkgconfig
-install_pkgconfig.files = maliit-connection.pc
-
 INSTALLS += target \
-    public_headers \
-    install_pkgconfig \
 
 OTHER_FILES += libmaliit-connection.pri

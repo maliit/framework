@@ -4,6 +4,8 @@
 
 include($$PWD/../common/libmaliit-common.pri)
 
-LIBS += $$TOP_DIR/lib/$$maliitDynamicLib($${MALIIT_CONNECTION_LIB})
-POST_TARGETDEPS += $$TOP_DIR/lib/$$maliitDynamicLib($${MALIIT_CONNECTION_LIB})
+LIBS += $$TOP_DIR/lib/$$maliitStaticLib($${MALIIT_CONNECTION_LIB})
+POST_TARGETDEPS += $$TOP_DIR/lib/$$maliitStaticLib($${MALIIT_CONNECTION_LIB})
 INCLUDEPATH += $$TOP_DIR/connection $$OUT_PWD/$$TOP_DIR/connection
+
+QT += dbus

@@ -14,9 +14,7 @@
 
 #include "connectionfactory.h"
 
-#include "dbusserverconnection.h"
 #include "dbusinputcontextconnection.h"
-#include "mimdirectserverconnection.h"
 
 #ifdef HAVE_WAYLAND
 #include "minputcontextwestonimprotocolconnection.h"
@@ -24,18 +22,6 @@
 
 namespace Maliit {
 namespace DBus {
-
-MImServerConnection *createServerConnectionWithDynamicAddress()
-{
-    const QSharedPointer<Maliit::InputContext::DBus::Address> address(new Maliit::InputContext::DBus::DynamicAddress);
-    return new DBusServerConnection(address);
-}
-
-MImServerConnection *createServerConnectionWithFixedAddress(const QString &fixedAddress)
-{
-    const QSharedPointer<Maliit::InputContext::DBus::Address> address(new Maliit::InputContext::DBus::FixedAddress(fixedAddress));
-    return new DBusServerConnection(address);
-}
 
 MInputContextConnection *createInputContextConnectionWithDynamicAddress()
 {
@@ -58,43 +44,5 @@ MInputContextConnection *createWestonIMProtocolConnection()
     return new MInputContextWestonIMProtocolConnection;
 }
 #endif
-
-QSharedPointer<MImServerConnection> createServerConnection(const QString &connectionType)
-{
-    typedef QSharedPointer<MImServerConnection> ConnectionPtr;
-    static QWeakPointer<MImServerConnection> cached_connection;
-
-    if (ConnectionPtr connection = cached_connection.toStrongRef()) {
-        return connection;
-    }
-
-    if (connectionType.isEmpty()) {
-        qCritical() << "Empty connection type name. Refusing to connect to Maliit server."
-                    << "\nHave you checked the environment variables for loading input method"
-                    << "modules ([QT|GTK]_IM_MODULE)?";
-        return ConnectionPtr();
-    }
-
-    if (connectionType == MALIIT_INPUTCONTEXT_NAME) {
-        const QByteArray overriddenAddress = qgetenv("MALIIT_SERVER_ADDRESS");
-        ConnectionPtr connection = ConnectionPtr(overriddenAddress.isEmpty()
-                                                 ? Maliit::DBus::createServerConnectionWithDynamicAddress()
-                                                 : Maliit::DBus::createServerConnectionWithFixedAddress(overriddenAddress));
-        cached_connection = connection;
-
-        return connection;
-    } else if (connectionType == MALIIT_INPUTCONTEXT_NAME"Direct") {
-        ConnectionPtr connection(new MImDirectServerConnection);
-
-        cached_connection = connection;
-
-        return connection;
-    } else {
-        qCritical() << __PRETTY_FUNCTION__
-                    << "Invalid connection type (" + connectionType + "),"
-                    << "unable to create connection to Maliit server";
-        return ConnectionPtr();
-    }
-}
 
 } // namespace Maliit

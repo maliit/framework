@@ -14,7 +14,6 @@ SUBDIRS += \
           ut_mkeyoverride \
           ft_exampleplugin \
           ut_mimsettings \
-          bbt_connection \
           ut_mimonscreenplugins \
           ut_minputmethodquickplugin \
 
