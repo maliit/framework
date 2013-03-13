@@ -51,14 +51,6 @@ SERVER_SOURCES += \
         mimabstractserverlogic.cpp \
         mimstandaloneserverlogic.cpp \
 
-!contains(QT_MAJOR_VERSION, 5) {
-    SERVER_HEADERS_PUBLIC += \
-        mimdummyinputcontext.h \
-
-    SERVER_SOURCES += \
-        mimdummyinputcontext.cpp \
-}
-
 wayland {
     contains(QT_MAJOR_VERSION, 5) {
         load(wayland-scanner)
