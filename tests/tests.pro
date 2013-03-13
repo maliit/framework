@@ -12,29 +12,11 @@ SUBDIRS += \
           sanitychecks \
           ut_mattributeextensionmanager \
           ut_mkeyoverride \
-          ft_exampleplugin
-!contains(QT_MAJOR_VERSION, 5) {
-    SUBDIRS += \
-          ut_maliit_attributeextension \
-          ut_maliit_attributeextensionregistry \
-          ut_maliit_inputmethod \
-          ut_maliit_settings
-}
-SUBDIRS += \
+          ft_exampleplugin \
           ut_mimsettings \
           bbt_connection \
           ut_mimonscreenplugins \
-
-contains(QT_MAJOR_VERSION, 4) {
-    SUBDIRS += \
-          ut_minputcontext \
           ut_minputmethodquickplugin \
-
-    !disable-dbus {
-        SUBDIRS += \
-              ut_minputcontextplugin \
-    }
-}
 
 x11 {
     SUBDIRS += \
@@ -45,12 +27,10 @@ x11 {
           ut_mimserveroptions \ #FIXME: split out the common tests (non X11 dependent), so that they are always tested
 }
 
-!disable-dbus {
-    SUBDIRS += \
+SUBDIRS += \
           ut_mimpluginmanager \
           ut_mimpluginmanagerconfig \
           ft_mimpluginmanager \
-}
 
 QMAKE_EXTRA_TARGETS += check
 check.target = check
