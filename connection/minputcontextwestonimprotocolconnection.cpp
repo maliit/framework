@@ -15,7 +15,7 @@
 #include <cstring> // for strerror
 #include <QGuiApplication>
 #include <QKeyEvent>
-#include <QtGui/5.0.0/QtGui/qpa/qplatformnativeinterface.h>
+#include <qpa/qplatformnativeinterface.h>
 
 #include "wayland-client.h"
 #include "wayland-input-method-client-protocol.h"
