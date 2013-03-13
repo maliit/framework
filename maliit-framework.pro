@@ -44,11 +44,7 @@ SUBDIRS = common
 }
 
 contains(QT_MAJOR_VERSION, 4) {
-    message("Qt 4 is just supported to compile the Qt 4 input context. \
-             For a Qt 4 Maliit please use the 0.81 or 0.94-qt4 branches/release series instead")
-
-    # https://bugs.maliit.org/show_bug.cgi?id=47#c4
-    SUBDIRS += connection maliit maliit-settings input-context
+    error("Qt 5 is required. For the Qt 4 input context see maliit-inputcontext-qt4. For a Qt 4 Maliit please use the 0.81 or 0.94-qt4 branches/release series instead")
 } else {
     SUBDIRS += connection src
 
