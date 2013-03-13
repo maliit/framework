@@ -36,11 +36,7 @@ direct-connection {
 }
 
 # Default to building qdbus based connection
-disable-dbus {
-    DEFINES += MALIIT_DISABLE_DBUS
-} else {
-    CONFIG += qdbus-dbus-connection
-}
+CONFIG += qdbus-dbus-connection
 
 wayland {
     QT += gui-private

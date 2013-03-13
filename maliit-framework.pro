@@ -12,7 +12,6 @@ include(./config.pri)
         \\nRecognised CONFIG flags: \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t enable-dbus-activation : Enable dbus activation support for maliit-server \
-        \\n\\t disable-dbus : Disable dbus communication backend \
         \\n\\t notests : Do not build tests \
         \\n\\t nodoc : Do not build documentation\
         \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
@@ -35,21 +34,12 @@ include(./config.pri)
 CONFIG += ordered
 TEMPLATE = subdirs
 
-SUBDIRS = common
-
-!disable-dbus {
-    SUBDIRS += dbus_interfaces
-}
+SUBDIRS = common dbus_interfaces
 
 contains(QT_MAJOR_VERSION, 4) {
     error("Qt 5 is required. For the Qt 4 input context see maliit-inputcontext-qt4. For a Qt 4 Maliit please use the 0.81 or 0.94-qt4 branches/release series instead")
 } else {
-    SUBDIRS += connection src
-
-    !disable-dbus {
-        SUBDIRS += passthroughserver
-    }
-
+    SUBDIRS += connection src passthroughserver
     SUBDIRS += maliit-plugins-quick examples
 
     !nodoc {

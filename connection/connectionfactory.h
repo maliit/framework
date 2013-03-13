@@ -19,7 +19,6 @@
 #include "minputcontextconnection.h"
 
 namespace Maliit {
-#ifndef MALIIT_DISABLE_DBUS
 namespace DBus {
 
 MImServerConnection *createServerConnectionWithDynamicAddress();
@@ -29,7 +28,6 @@ MInputContextConnection *createInputContextConnectionWithDynamicAddress();
 MInputContextConnection *createInputContextConnectionWithFixedAddress(const QString &fixedAddress, bool allowAnonymous);
 
 } // namespace DBus
-#endif
 
 #ifdef HAVE_WAYLAND
 MInputContextConnection *createWestonIMProtocolConnection();

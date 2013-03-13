@@ -14,10 +14,8 @@
 
 #include "connectionfactory.h"
 
-#ifndef MALIIT_DISABLE_DBUS
 #include "dbusserverconnection.h"
 #include "dbusinputcontextconnection.h"
-#endif
 #include "mimdirectserverconnection.h"
 
 #ifdef HAVE_WAYLAND
@@ -25,7 +23,6 @@
 #endif
 
 namespace Maliit {
-#ifndef MALIIT_DISABLE_DBUS
 namespace DBus {
 
 MImServerConnection *createServerConnectionWithDynamicAddress()
@@ -54,7 +51,6 @@ MInputContextConnection *createInputContextConnectionWithFixedAddress(const QStr
 }
 
 } // namespace DBus
-#endif // MALIIT_DISABLE_DBUS
 
 #ifdef HAVE_WAYLAND
 MInputContextConnection *createWestonIMProtocolConnection()
@@ -80,7 +76,6 @@ QSharedPointer<MImServerConnection> createServerConnection(const QString &connec
     }
 
     if (connectionType == MALIIT_INPUTCONTEXT_NAME) {
-#ifndef MALIIT_DISABLE_DBUS
         const QByteArray overriddenAddress = qgetenv("MALIIT_SERVER_ADDRESS");
         ConnectionPtr connection = ConnectionPtr(overriddenAddress.isEmpty()
                                                  ? Maliit::DBus::createServerConnectionWithDynamicAddress()
@@ -88,9 +83,6 @@ QSharedPointer<MImServerConnection> createServerConnection(const QString &connec
         cached_connection = connection;
 
         return connection;
-#else
-        qCritical("This connection type to Maliit server is not available since DBus support is disabled");
-#endif
     } else if (connectionType == MALIIT_INPUTCONTEXT_NAME"Direct") {
         ConnectionPtr connection(new MImDirectServerConnection);
 

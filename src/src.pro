@@ -139,14 +139,10 @@ x11 {
 }
 
 CONFIG += link_pkgconfig
-QT = core $$QT_WIDGETS gui-private xml
+QT = core $$QT_WIDGETS gui-private xml dbus
 
 contains(QT_MAJOR_VERSION, 5) {
     QT += qml quick
-}
-
-!disable-dbus {
-    QT += dbus
 }
 
 enable-contextkit {
