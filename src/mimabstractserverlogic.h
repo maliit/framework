@@ -21,13 +21,6 @@
 
 #include <tr1/functional>
 
-//! Walks over widget hierarchy, if used with
-//! visitWidgetHierarchy. Return true if children of
-//! current widget shall be visited, too.
-typedef std::tr1::function<bool (QWidget *)> WidgetVisitor;
-
-void visitWidgetHierarchy(WidgetVisitor visitor, QWidget *widget);
-
 class MImAbstractServerLogic : public QObject
 {
     Q_OBJECT
