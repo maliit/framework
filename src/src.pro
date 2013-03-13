@@ -44,13 +44,11 @@ PLUGIN_HEADERS_PRIVATE += \
 SERVER_HEADERS_PUBLIC += \
         mimserver.h \
         mimabstractserverlogic.h \
-        mimapphostedserverlogic.h \
         mimstandaloneserverlogic.h \
 
 SERVER_SOURCES += \
         mimserver.cpp \
         mimabstractserverlogic.cpp \
-        mimapphostedserverlogic.cpp \
         mimstandaloneserverlogic.cpp \
 
 !contains(QT_MAJOR_VERSION, 5) {
