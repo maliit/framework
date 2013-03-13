@@ -23,8 +23,6 @@
 
 #include "mimabstractserverlogic.h"
 
-class QWidget;
-
 // Non-X11 specific standalone server
 //
 // For QPA the toplevel window is a MImPluginsProxyWidget containing all plugin
@@ -45,9 +43,6 @@ public Q_SLOTS:
     virtual void applicationFocusChanged(WId remoteWinId);
     virtual void pluginLoaded();
     //! reimpl_end
-
-private:
-    std::auto_ptr<QWidget> mProxyWidget;
 };
 
 #endif // MIMQPAPLATFORM_H

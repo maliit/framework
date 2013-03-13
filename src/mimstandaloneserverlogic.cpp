@@ -14,8 +14,6 @@
 
 #include "mimstandaloneserverlogic.h"
 
-#include "mimpluginsproxywidget.h"
-
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QGuiApplication>
 #endif
@@ -24,8 +22,7 @@
 #include <QWidget>
 
 MImStandaloneServerLogic::MImStandaloneServerLogic() :
-    MImAbstractServerLogic(0),
-    mProxyWidget(new MImPluginsProxyWidget())
+    MImAbstractServerLogic(0)
 {
 }
 
@@ -36,10 +33,6 @@ MImStandaloneServerLogic::~MImStandaloneServerLogic()
 
 void MImStandaloneServerLogic::inputPassthrough(const QRegion &region)
 {
-    if (region.isEmpty())
-        mProxyWidget->hide();
-    else
-        mProxyWidget->show();
 }
 
 void MImStandaloneServerLogic::pluginLoaded()

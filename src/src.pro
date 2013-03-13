@@ -61,7 +61,6 @@ wayland {
 }
 
 SERVER_HEADERS_PRIVATE += \
-        mimpluginsproxywidget.h \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
         minputmethodhost.h \
@@ -82,7 +81,6 @@ SERVER_SOURCES += \
         mattributeextensionmanager.cpp \
         msharedattributeextensionmanager.cpp \
         mimhwkeyboardtracker.cpp \
-        mimpluginsproxywidget.cpp \
         mimonscreenplugins.cpp \
         mimsubviewoverride.cpp \
         mimserveroptions.cpp \
