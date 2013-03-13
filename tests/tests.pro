@@ -16,15 +16,7 @@ SUBDIRS += \
           ut_mimsettings \
           ut_mimonscreenplugins \
           ut_minputmethodquickplugin \
-
-x11 {
-    SUBDIRS += \
-          ut_mimapplication \
-          ut_passthroughserver \
-          ut_selfcompositing \
-          ut_mimrotationanimation \
-          ut_mimserveroptions \ #FIXME: split out the common tests (non X11 dependent), so that they are always tested
-}
+          ut_mimserveroptions \
 
 SUBDIRS += \
           ut_mimpluginmanager \

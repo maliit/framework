@@ -36,7 +36,6 @@ private Q_SLOTS:
 
 private:
     MImServerCommonOptions commonOptions;
-    MImServerXOptions xOptions;
 };
 
 #endif

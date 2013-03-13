@@ -54,38 +54,6 @@ public:
     bool showHelp;
 };
 
-#if defined(Q_WS_X11)
-/*! \ingroup maliitserver
- * \brief Container for command line parameters which are applicable if
- * input method server works with X11.
- */
-struct MImServerXOptions
-{
-public:
-    /*! \brief Construct new instance.
-     * Object should be created when application starts and should stay alive until moment
-     * when application will exit, so it is recommnded to create it in main().
-     * \note It does not makes sense tp create more than one object of this class.
-     */
-    MImServerXOptions();
-
-    ~MImServerXOptions();
-
-    //! Contains true if self composition is enabled
-    bool selfComposited;
-
-    //! Contains true if manual redirection is enabled
-    bool manualRedirection;
-
-    //! Contains true if window manages is bypassed
-    bool bypassWMHint;
-
-    //! Contains true if show() should be always called for server window
-    //! regardless of current state of server and remote windows
-    bool unconditionalShow;
-};
-#endif
-
 //! \internal_end
 
 #endif

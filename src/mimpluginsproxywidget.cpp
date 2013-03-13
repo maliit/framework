@@ -15,10 +15,6 @@
 #include "mimpluginsproxywidget.h"
 #include "mimserveroptions.h"
 
-#if defined(Q_WS_X11)
-#include "mimxapplication.h"
-#endif
-
 #include <QApplication>
 #include <QDesktopWidget>
 
@@ -31,9 +27,7 @@ MImPluginsProxyWidget::MImPluginsProxyWidget(QWidget *parent) :
     setBackgroundRole(QPalette::NoRole);
 
     // X11-specific initialization is performed in MImXApplication()
-#if !defined(Q_WS_X11)
     setAttribute(Qt::WA_TranslucentBackground);
-#endif
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     QDesktopWidget* desktop = QApplication::desktop();
     setMinimumSize(desktop->screenGeometry().size());

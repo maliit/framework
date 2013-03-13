@@ -23,15 +23,8 @@
 #include "mimserveroptions.h"
 #include "mimstandaloneserverlogic.h"
 
-#if defined(Q_WS_X11)
-#include "mimxapplication.h"
-#endif
-
-#include <QApplication>
+#include <QGuiApplication>
 #include <QtDebug>
-#include <QPalette>
-#include <QCommonStyle>
-#include <stdlib.h>
 
 namespace {
     void disableMInputContextPlugin()
@@ -48,9 +41,6 @@ namespace {
             qWarning("meego-im-uiserver: unable to unset QT_IM_MODULE.");
         }
 #endif
-
-        // TODO: Check if hardwiring the QStyle can be removed at a later stage.
-        QApplication::setStyle(new QCommonStyle);
     }
 
     bool isDebugEnabled()
@@ -140,9 +130,6 @@ int main(int argc, char **argv)
     // server itself, we absolutely need to prevent that.
     disableMInputContextPlugin();
 
-#if defined(Q_WS_X11)
-    MImServerXOptions serverXOptions;
-#endif
     MImServerCommonOptions serverCommonOptions;
     MImServerConnectionOptions connectionOptions;
 
@@ -154,13 +141,8 @@ int main(int argc, char **argv)
         printHelpMessage();
     }
 
-#if defined(Q_WS_X11)
-    MImXApplication app(argc, argv, serverXOptions);
-    QSharedPointer<MImAbstractServerLogic> serverLogic(app.serverLogic());
-#elif defined(Q_WS_QPA) || defined(Q_WS_QWS)
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     QSharedPointer<MImAbstractServerLogic> serverLogic(new MImStandaloneServerLogic);
-#endif
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     // Set a dummy input context so that Qt does not create a default input

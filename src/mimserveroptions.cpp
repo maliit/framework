@@ -24,24 +24,6 @@
 
 namespace {
 
-#if defined(Q_WS_X11)
-    struct CommandLineXParameter
-    {
-        const char * name;
-        const char * description;
-        bool MImServerXOptions::*value;
-    };
-
-    CommandLineXParameter AvailableParameters[] = {
-        { "-manual-redirection",   "Enable manual redirection", &MImServerXOptions::manualRedirection },
-        { "-bypass-wm-hint",       "Bypass window manager",     &MImServerXOptions::bypassWMHint },
-        { "-use-self-composition", "Enable self composition",   &MImServerXOptions::selfComposited },
-        { "-unconditional-show",   "Always use show() for server window regardless "
-                                   "of current state of server and remote windows",
-                                   &MImServerXOptions::unconditionalShow }
-    };
-#endif
-
     struct CommandLineParameter {
         const char * name;
         const char * description;
@@ -147,32 +129,6 @@ namespace {
     private:
         MImServerCommonOptions *storage;
     };
-
-#if defined(Q_WS_X11)
-    /*!
-     * \brief Parser of command line parameters which are applicable if
-     * input method server works with X11.
-     */
-    struct MImServerXOptionsParser : public MImServerOptionsParserBase
-    {
-        /*! \brief Construct new instance.
-         * Object should be created when application starts and should stay alive until moment
-         * when application will exit, so it is recommnded to create it in main().
-         * \note It does not makes sense tp create more than one object of this class.
-         */
-        MImServerXOptionsParser(MImServerXOptions *options);
-
-        //! \reimp
-        virtual ParsingResult parseParameter(const char * parameter,
-                                             const char * next,
-                                             int *argumentCount);
-        virtual void printAvailableOptions(const char *format);
-        //! \reimp_end
-
-    private:
-        MImServerXOptions *storage;
-    };
-#endif
 
     /*!
      * \brief Parser of command line parameters for the server<->input context connection
@@ -433,63 +389,3 @@ MImServerConnectionOptions::~MImServerConnectionOptions()
 {
     unregisterParser(this);
 }
-
-#if defined(Q_WS_X11)
-///////////////
-// parser for options related to X windows system
-MImServerXOptionsParser::MImServerXOptionsParser(MImServerXOptions *options)
-    : MImServerOptionsParserBase(options),
-    storage(options)
-{
-}
-
-MImServerOptionsParserBase::ParsingResult
-MImServerXOptionsParser::parseParameter(const char *parameter,
-                                        const char *,
-                                        int *argumentCount)
-{
-    const int count = sizeof(AvailableParameters) / sizeof(AvailableParameters[0]);
-    ParsingResult result = Invalid;
-
-    *argumentCount = 0;
-
-    for (int i = 0; i < count; ++i) {
-        if (!strcmp(parameter, AvailableParameters[i].name)) {
-            if (AvailableParameters[i].value) {
-                storage->*AvailableParameters[i].value = true;
-            }
-            result = Ok;
-            break;
-        }
-    }
-
-    return result;
-}
-
-void MImServerXOptionsParser::printAvailableOptions(const char *format)
-{
-    const int count = sizeof(AvailableParameters) / sizeof(AvailableParameters[0]);
-
-    for (int i = 0; i < count; ++i) {
-        if (AvailableParameters[i].description) {
-            fprintf(stderr, format, AvailableParameters[i].name,
-                    AvailableParameters[i].description);
-        }
-    }
-}
-
-MImServerXOptions::MImServerXOptions()
-    : selfComposited(false),
-    manualRedirection(false),
-    bypassWMHint(false),
-    unconditionalShow(false)
-{
-    const ParserBasePtr p(new MImServerXOptionsParser(this));
-    parsers.append(p);
-}
-
-MImServerXOptions::~MImServerXOptions()
-{
-    unregisterParser(this);
-}
-#endif

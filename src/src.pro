@@ -118,32 +118,8 @@ SOURCES += \
         $$SERVER_SOURCES \
         $$SETTINGS_SOURCES \
 
-x11 {
-    HEADERS += \
-        mpassthruwindow.h \
-        mimremotewindow.h \
-        mimxerrortrap.h \
-        mimxextension.h \
-        mimrotationanimation.h \
-        mimxapplication.h \
-        mimxserverlogic.h \
-
-    SOURCES += \
-        mimremotewindow.cpp \
-        mimxerrortrap.cpp \
-        mimxextension.cpp \
-        mpassthruwindow.cpp \
-        mimrotationanimation.cpp \
-        mimxapplication.cpp \
-        mimxserverlogic.cpp \
-}
-
 CONFIG += link_pkgconfig
-QT = core $$QT_WIDGETS gui-private xml dbus
-
-contains(QT_MAJOR_VERSION, 5) {
-    QT += qml quick
-}
+QT = core $$QT_WIDGETS gui-private xml dbus qml quick
 
 enable-contextkit {
     PKGCONFIG += contextsubscriber-1.0
@@ -201,8 +177,6 @@ INSTALLS += \
     server_headers \
     install_prf \
     install_pkgconfig \
-
-x11:LIBS += -lXcomposite -lXdamage -lXfixes
 
 include($$TOP_DIR/connection/libmaliit-connection.pri)
 include($$TOP_DIR/common/libmaliit-common.pri)

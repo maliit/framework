@@ -17,8 +17,6 @@
 
 #include <QWidget>
 
-struct MImServerXOptions;
-
 /*! \ingroup maliitserver
  * \brief Proxy QWidget for input method plugins.
  *

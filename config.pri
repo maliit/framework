@@ -143,19 +143,10 @@ contains(QT_CONFIG,embedded) {
     CONFIG += qws
 }
 
-# Use x11 on unix systems without lighthouse (qpa) or QWS (qws)
-unix:!qpa:!qws {
-    CONFIG += x11
-}
+QT_WIDGETS = gui widgets
 
-contains(QT_MAJOR_VERSION, 4) {
-    QT_WIDGETS = gui
-} else {
-    QT_WIDGETS = gui widgets
-
-    wayland {
-        DEFINES += HAVE_WAYLAND
-    }
+wayland {
+    DEFINES += HAVE_WAYLAND
 }
 
 MALIIT_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
