@@ -57,7 +57,6 @@ private Q_SLOTS:
 private:
     void handleMessages();
 
-    QWidget *proxyWidget;
     QString pluginPath;
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;

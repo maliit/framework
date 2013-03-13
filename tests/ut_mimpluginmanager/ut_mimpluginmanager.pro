@@ -1,6 +1,6 @@
 include(../common_top.pri)
 
-QT += $$QT_WIDGETS
+QT += gui
 
 INCLUDEPATH += ../stubs \
 

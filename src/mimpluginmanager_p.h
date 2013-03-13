@@ -68,7 +68,6 @@ class MIMPluginManagerPrivate
     Q_DECLARE_PUBLIC(MIMPluginManager)
 public:
     typedef QSet<Maliit::HandlerState> PluginState;
-    typedef QWeakPointer<QWidget> WeakWidget;
 
     enum ShowInputMethodRequest {
         DontShowInputMethod,

@@ -17,9 +17,6 @@
 
 #include <QObject>
 #include <QRegion>
-#include <QSharedPointer>
-
-#include <tr1/functional>
 
 class MImAbstractServerLogic : public QObject
 {

@@ -16,7 +16,6 @@
 #include <maliit/plugins/abstractinputmethodhost.h>
 
 #include <QKeyEvent>
-#include <QWidget>
 
 class MAbstractInputMethodPrivate
 {

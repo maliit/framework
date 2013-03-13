@@ -18,9 +18,6 @@
 #include <maliit/plugins/abstractinputmethod.h>
 #include "windowgroup.h"
 
-#include <QWidget>
-#include <QGraphicsView>
-
 #include <maliit/namespace.h>
 
 MInputMethodHost::MInputMethodHost(const QSharedPointer<MInputContextConnection> &inputContextConnection,

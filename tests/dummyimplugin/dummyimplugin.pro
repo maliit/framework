@@ -11,8 +11,6 @@ include($$TOP_DIR/src/libmaliit-plugins.pri)
 
 CONFIG += plugin
 
-QT += $$QT_WIDGETS
-
 HEADERS += \
     dummyimplugin.h \
     dummyinputmethod.h \

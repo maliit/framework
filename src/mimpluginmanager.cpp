@@ -32,10 +32,7 @@
 #include <QDir>
 #include <QPluginLoader>
 #include <QSignalMapper>
-#include <QGraphicsLinearLayout>
-#include <QStandardItemModel>
 #include <QWeakPointer>
-#include <QWidget>
 
 #include <QDebug>
 #include <deque>

@@ -3,7 +3,7 @@ include(../common_top.pri)
 IN_TREE_TEST_PLUGIN_DIR = $$OUT_PWD/../../examples/plugins
 DEFINES += IN_TREE_TEST_PLUGIN_DIR=\\\"$${IN_TREE_TEST_PLUGIN_DIR}\\\"
 
-QT += $$QT_WIDGETS
+QT += gui widgets
 
 include(../../src/libmaliit-plugins.pri)
 

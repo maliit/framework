@@ -143,8 +143,6 @@ contains(QT_CONFIG,embedded) {
     CONFIG += qws
 }
 
-QT_WIDGETS = gui widgets
-
 wayland {
     DEFINES += HAVE_WAYLAND
 }

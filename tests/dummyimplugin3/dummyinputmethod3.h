@@ -4,7 +4,6 @@
 #include <maliit/plugins/abstractinputmethod.h>
 #include <maliit/plugins/abstractpluginsetting.h>
 #include <QSet>
-#include <QWidget>
 
 class DummyInputMethod3 : public MAbstractInputMethod
 {

@@ -19,7 +19,7 @@
 #include "mimserveroptions.h"
 #include "mimstandaloneserverlogic.h"
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QtDebug>
 
 namespace {
@@ -128,7 +128,7 @@ int main(int argc, char **argv)
         printHelpMessage();
     }
 
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     QSharedPointer<MImAbstractServerLogic> serverLogic(new MImStandaloneServerLogic);
 
     // Input Context Connection

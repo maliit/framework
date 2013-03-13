@@ -13,7 +13,7 @@ include($$TOP_DIR/connection/libmaliit-connection.pri)
 
 SOURCES += main.cpp
 
-QT += core $$QT_WIDGETS
+QT += core gui widgets
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){

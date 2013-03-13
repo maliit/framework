@@ -2,7 +2,6 @@
 #define DUMMYIMPLUGIN_H
 
 #include <QObject>
-#include <QWidget>
 
 #include <maliit/plugins/inputmethodplugin.h>
 

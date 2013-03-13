@@ -25,9 +25,6 @@
 
 #include <QTest>
 #include <QProcess>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QWidget>
 #include <QRegExp>
 #include <QCoreApplication>
 #include <QPointer>

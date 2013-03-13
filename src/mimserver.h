@@ -20,7 +20,6 @@
 
 class MInputContextConnection;
 class MImServerPrivate;
-class QWidget;
 
 class MImAbstractServerLogic;
 

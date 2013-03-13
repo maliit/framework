@@ -15,12 +15,6 @@
 #ifndef MIMQPAPLATFORM_H
 #define MIMQPAPLATFORM_H
 
-#include <QObject>
-#include <QRegion>
-#include <QWeakPointer>
-
-#include <memory>
-
 #include "mimabstractserverlogic.h"
 
 // Non-X11 specific standalone server

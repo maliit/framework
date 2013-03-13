@@ -1,12 +1,6 @@
 include(../common_top.pri)
 
-QT += $$QT_WIDGETS
-
-contains(QT_MAJOR_VERSION, 5) {
-    QT += quick
-} else {
-    QT += declarative
-}
+QT += quick
 
 # For MImInputContextConnection pulled in by TestInputMethodHost
 include($$TOP_DIR/connection/libmaliit-connection.pri)

@@ -21,23 +21,6 @@
 
 namespace MaliitTestUtils {
 
-RemoteWindow::RemoteWindow(QWidget *p, Qt::WindowFlags f)
-    : QWidget(p, f)
-{
-    setWindowFlags(Qt::FramelessWindowHint | Qt::X11BypassWindowManagerHint);
-}
-
-void RemoteWindow::paintEvent(QPaintEvent *)
-{
-    QPainter p(this);
-    p.setBrush(QBrush(QColor(Qt::green)));
-    p.drawRect(QRect(QPoint(), size()));
-    QFont f;
-    f.setPointSize(32);
-    p.setFont(f);
-    p.drawText(QRect(QPoint(), size()).adjusted(16, 16, -16, -16),
-               QString("Maliit"));
-}
 
 }
 

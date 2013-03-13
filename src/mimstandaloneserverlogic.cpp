@@ -14,12 +14,8 @@
 
 #include "mimstandaloneserverlogic.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QGuiApplication>
-#endif
-
 #include <QDebug>
-#include <QWidget>
 
 MImStandaloneServerLogic::MImStandaloneServerLogic() :
     MImAbstractServerLogic(0)

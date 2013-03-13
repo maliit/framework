@@ -14,9 +14,8 @@
 #include <msharedattributeextensionmanager.h>
 
 #include <QProcess>
-#include <QGraphicsScene>
 #include <QRegExp>
-#include <QApplication>
+#include <QGuiApplication>
 #include <QPointer>
 
 namespace

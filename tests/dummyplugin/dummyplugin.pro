@@ -11,8 +11,6 @@ include($$TOP_DIR/src/libmaliit-plugins.pri)
 
 CONFIG += plugin
 
-QT += $$QT_WIDGETS
-
 HEADERS += dummyplugin.h
 SOURCES += dummyplugin.cpp
 OTHER_FILES += dummyplugin.json

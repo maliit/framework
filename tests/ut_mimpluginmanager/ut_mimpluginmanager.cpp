@@ -11,9 +11,6 @@
 #include "core-utils.h"
 
 #include <QProcess>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QWidget>
 #include <QRegExp>
 #include <QCoreApplication>
 #include <QPointer>
@@ -101,8 +98,6 @@ public:
 
 void Ut_MIMPluginManager::initTestCase()
 {
-    proxyWidget = new QWidget;
-
     Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
     QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
     Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
