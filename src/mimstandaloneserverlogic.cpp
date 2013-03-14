@@ -29,6 +29,7 @@ MImStandaloneServerLogic::~MImStandaloneServerLogic()
 
 void MImStandaloneServerLogic::inputPassthrough(const QRegion &region)
 {
+    Q_UNUSED(region);
 }
 
 void MImStandaloneServerLogic::pluginLoaded()
