@@ -604,14 +604,15 @@ void MInputContextWestonIMProtocolConnection::sendCommitString(const QString &st
             cursor_pos = string.size();
         }
         input_method_context_preedit_string(d->im_context, d->im_serial, "", "");
-        input_method_context_delete_surrounding_text(d->im_context, d->im_serial,
-                                                     replace_start, replace_length);
-        input_method_context_commit_string(d->im_context, d->im_serial, raw.data());
-                                           //string.left(cursor_pos).toUtf8().size());
-
-        const int pos(string.left(cursor_pos).toUtf8().size());
+        if (replace_length > 0) {
+            input_method_context_delete_surrounding_text(d->im_context, d->im_serial,
+                                                         replace_start, replace_length);
+        }
+        const int pos = 0; // TODO (string.left(cursor_pos).toUtf8().size());
 
         input_method_context_cursor_position (d->im_context, d->im_serial, pos, pos);
+        input_method_context_commit_string(d->im_context, d->im_serial, raw.data());
+                                           //string.left(cursor_pos).toUtf8().size());
     }
 }
 
