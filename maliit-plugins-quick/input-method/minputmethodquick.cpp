@@ -32,6 +32,10 @@
 #include <xcb/xcb.h>
 #include <xcb/xfixes.h>
 
+#ifdef HAVE_WAYLAND
+#include <wayland-client.h>
+#endif
+
 namespace
 {
 
@@ -134,26 +138,39 @@ public:
     
     void syncInputMask ()
     {
-        if (QGuiApplication::platformName() != "xcb")
-            return;
+        if (QGuiApplication::platformName() == "xcb") {
+            QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
+            xcb_connection_t *connection = static_cast<xcb_connection_t *>(nativeInterface->nativeResourceForWindow("connection", surface.data()));
 
-        QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
-        xcb_connection_t *connection = static_cast<xcb_connection_t *>(nativeInterface->nativeResourceForWindow("connection", surface.data()));
+            xcb_rectangle_t rect;
+            rect.x = inputMethodArea.x();
+            rect.y = inputMethodArea.y();
+            rect.width = inputMethodArea.width();
+            rect.height = inputMethodArea.height();
 
-        xcb_rectangle_t rect;
-        rect.x = inputMethodArea.x();
-        rect.y = inputMethodArea.y();
-        rect.width = inputMethodArea.width();
-        rect.height = inputMethodArea.height();
+            xcb_xfixes_region_t region = xcb_generate_id(connection);
+            xcb_xfixes_create_region(connection, region, 1, &rect);
 
-        xcb_xfixes_region_t region = xcb_generate_id(connection);
-        xcb_xfixes_create_region(connection, region, 1, &rect);
+            xcb_window_t window  = surface->winId();
+            xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_BOUNDING, 0, 0, 0);
+            xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_INPUT, 0, 0, region);
 
-        xcb_window_t window  = surface->winId();
-        xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_BOUNDING, 0, 0, 0);
-        xcb_xfixes_set_window_shape_region(connection, window, XCB_SHAPE_SK_INPUT, 0, 0, region);
+            xcb_xfixes_destroy_region(connection, region);
+#ifdef HAVE_WAYLAND
+        } else if (QGuiApplication::platformName() == "wayland"){
+            QPlatformNativeInterface *nativeInterface = QGuiApplication::platformNativeInterface();
 
-        xcb_xfixes_destroy_region(connection, region);
+            wl_compositor *compositor = static_cast<wl_compositor *>(nativeInterface->nativeResourceForIntegration("compositor"));
+
+            wl_region *region = wl_compositor_create_region(compositor);
+            wl_region_add(region, inputMethodArea.x(), inputMethodArea.y(),
+                          inputMethodArea.width(), inputMethodArea.height());
+
+            wl_surface *wlsurface = static_cast<wl_surface *>(nativeInterface->nativeResourceForWindow("surface", surface.data()));
+            wl_surface_set_input_region(wlsurface, region);
+            wl_region_destroy(region);
+#endif
+        }
     }
 };
 
