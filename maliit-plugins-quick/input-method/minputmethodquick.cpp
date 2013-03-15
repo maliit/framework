@@ -225,7 +225,7 @@ void MInputMethodQuick::update()
     bool emitHiddenText = false;
 
     QString newSurroundingText;
-    int newCursorPosition;
+    int newCursorPosition = -1;
     inputMethodHost()->surroundingText(newSurroundingText, newCursorPosition);
 
     if (newSurroundingText != d->m_surroundingText) {
