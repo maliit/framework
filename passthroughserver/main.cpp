@@ -23,67 +23,55 @@
 #include <QtDebug>
 
 namespace {
-    void disableMInputContextPlugin()
-    {
-        // none is a special value for QT_IM_MODULE, which disables loading of any
-        // input method module in Qt 5.
-        setenv("QT_IM_MODULE", "none", true);
-    }
 
-    bool isDebugEnabled()
-    {
-        static int debugEnabled = -1;
+void disableMInputContextPlugin()
+{
+    // none is a special value for QT_IM_MODULE, which disables loading of any
+    // input method module in Qt 5.
+    setenv("QT_IM_MODULE", "none", true);
+}
 
-        if (debugEnabled == -1) {
-            QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
-            if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
-                debugEnabled = 1;
-            } else {
-                debugEnabled = 0;
-            }
-        }
+bool isDebugEnabled()
+{
+    static int debugEnabled = -1;
 
-        return debugEnabled == 1;
-    }
-
-    void outputMessageToStdErr(QtMsgType type,
-                               const char *msg)
-    {
-        switch (type) {
-        case QtDebugMsg:
-            if (isDebugEnabled()) {
-                fprintf(stderr, "DEBUG: %s\n", msg);
-            }
-            break;
-        case QtWarningMsg:
-            fprintf(stderr, "WARNING: %s\n", msg);
-            break;
-        case QtCriticalMsg:
-            fprintf(stderr, "CRITICAL: %s\n", msg);
-            break;
-        case QtFatalMsg:
-            fprintf(stderr, "FATAL: %s\n", msg);
-            abort();
+    if (debugEnabled == -1) {
+        QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
+        if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
+            debugEnabled = 1;
+        } else {
+            debugEnabled = 0;
         }
     }
 
+    return debugEnabled == 1;
+}
 
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    void outputMessagesToStdErr(QtMsgType type,
-                                const char *msg)
-    {
-        outputMessageToStdErr(type, msg);
-    }
-#else
-    void outputMessagesToStdErr(QtMsgType type,
-                                const QMessageLogContext &context,
-                                const QString &msg)
-    {
-        Q_UNUSED(context);
+void outputMessagesToStdErr(QtMsgType type,
+                            const QMessageLogContext &context,
+                            const QString &msg)
+{
+    Q_UNUSED(context);
+    QByteArray utf_text(msg.toUtf8());
+    const char *raw(utf_text.constData());
 
-        outputMessageToStdErr(type, msg.toLatin1().data());
+    switch (type) {
+    case QtDebugMsg:
+        if (isDebugEnabled()) {
+            fprintf(stderr, "DEBUG: %s\n", raw);
+        }
+        break;
+    case QtWarningMsg:
+        fprintf(stderr, "WARNING: %s\n", raw);
+        break;
+    case QtCriticalMsg:
+        fprintf(stderr, "CRITICAL: %s\n", raw);
+        break;
+    case QtFatalMsg:
+        fprintf(stderr, "FATAL: %s\n", raw);
+        abort();
     }
-#endif
+}
 
 QSharedPointer<MInputContextConnection> createConnection(const MImServerConnectionOptions &options)
 {
@@ -100,17 +88,11 @@ QSharedPointer<MInputContextConnection> createConnection(const MImServerConnecti
     }
 }
 
-}
-
-#define Q_WS_QWS
+} // unnamed namespace
 
 int main(int argc, char **argv)
 {
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-    qInstallMsgHandler(outputMessagesToStdErr);
-#else
     qInstallMessageHandler(outputMessagesToStdErr);
-#endif
 
     // QT_IM_MODULE, MApplication and QtMaemo5Style all try to load
     // MInputContext, which is fine for the application. For the passthrough
