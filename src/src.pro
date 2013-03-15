@@ -51,15 +51,6 @@ SERVER_SOURCES += \
         mimabstractserverlogic.cpp \
         mimstandaloneserverlogic.cpp \
 
-wayland {
-    contains(QT_MAJOR_VERSION, 5) {
-        load(wayland-scanner)
-        WAYLANDSOURCES += \
-            $$IN_PWD/desktop-shell.xml
-        PKGCONFIG += wayland-client
-    }
-}
-
 SERVER_HEADERS_PRIVATE += \
         mimpluginmanager.h \
         mimpluginmanager_p.h \
@@ -166,5 +157,6 @@ INSTALLS += \
     install_prf \
     install_pkgconfig \
 
+include($$TOP_DIR/weston-protocols/libmaliit-weston-protocols.pri)
 include($$TOP_DIR/connection/libmaliit-connection.pri)
 include($$TOP_DIR/common/libmaliit-common.pri)
