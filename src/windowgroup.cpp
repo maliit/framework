@@ -22,12 +22,39 @@
 namespace Maliit
 {
 
+namespace
+{
+
+struct WindowData
+{
+    // apparently QVector<WindowData>::append() needs it...
+    WindowData();
+    WindowData(QWindow *window, Maliit::Position position);
+
+    QPointer<QWindow> m_window;
+    Maliit::Position m_position;
+};
+
+WindowData::WindowData()
+    : m_window(),
+      m_position(Maliit::PositionCenterBottom)
+{}
+
+WindowData::WindowData(QWindow *window, Maliit::Position position)
+    : m_window(window),
+      m_position(position)
+{}
+
+} // anonymous namespace
+
 class WindowGroupPrivate
 {
 public:
     WindowGroupPrivate();
 
-    QVector<QPointer<QWindow> > m_window_list;
+    bool containsWindow(QWindow *window);
+
+    QVector<WindowData> m_window_list;
     QRegion m_last_im_area;
     bool m_active;
 };
@@ -37,6 +64,17 @@ WindowGroupPrivate::WindowGroupPrivate()
       m_last_im_area(),
       m_active(false)
 {}
+
+bool WindowGroupPrivate::containsWindow(QWindow *window)
+{
+    Q_FOREACH (const WindowData &data, m_window_list) {
+        if (data.m_window == window) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 WindowGroup::WindowGroup()
     : d_ptr(new WindowGroupPrivate)
@@ -59,9 +97,9 @@ void WindowGroup::deactivate()
     if (d->m_active) {
         d->m_active = false;
 
-        Q_FOREACH (const QPointer<QWindow> &window, d->m_window_list) {
-            if (window) {
-                window->setVisible (false);
+        Q_FOREACH (const WindowData &data, d->m_window_list) {
+            if (data.m_window) {
+                data.m_window->setVisible (false);
             }
         }
         updateInputMethodArea();
@@ -75,8 +113,8 @@ void WindowGroup::setupWindow(QWindow *window, Maliit::Position position)
     Q_UNUSED (position);
 
     if (window) {
-        if (d->m_window_list.indexOf (window) == -1) {
-            d->m_window_list.append (window);
+        if (not d->containsWindow(window)) {
+            d->m_window_list.append (WindowData(window, position));
 
             window->setFlags (Qt::Dialog |
                               Qt::FramelessWindowHint |
@@ -120,9 +158,10 @@ void WindowGroup::updateInputMethodArea()
     Q_D(WindowGroup);
     QRegion new_area;
 
-    Q_FOREACH (const QPointer<QWindow> &window, d->m_window_list) {
-        if (window and window->parent() and window->isVisible()) {
-            new_area |= window->geometry();
+    Q_FOREACH (const WindowData &data, d->m_window_list) {
+        if (data.m_window and not data.m_window->parent() and
+            data.m_window->isVisible()) {
+            new_area |= data.m_window->geometry();
         }
     }
 
