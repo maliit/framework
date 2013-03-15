@@ -134,6 +134,8 @@ struct MInputContextWestonIMProtocolConnectionPrivate
                                              uint32_t purpose);
     void handleInputMethodContextInvokeAction(uint32_t button,
                                               uint32_t index);
+    void handleInputMethodContextCommit();
+    void handleInputMethodContextPreferredLanguage(const char *language);
 
     MInputContextWestonIMProtocolConnection *q_ptr;
     wl_display *display;
@@ -263,34 +265,58 @@ void inputMethodContextInvokeAction(void *data,
     d->handleInputMethodContextInvokeAction(button, index);
 }
 
+void inputMethodContextCommit(void *data,
+                              input_method_context *context)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    MInputContextWestonIMProtocolConnectionPrivate *d =
+        static_cast<MInputContextWestonIMProtocolConnectionPrivate *>(data);
+
+    Q_UNUSED(context);
+    d->handleInputMethodContextCommit();
+}
+
+void inputMethodContextPreferredLanguage(void *data,
+                                         input_method_context *context,
+                                         const char *language)
+{
+    qDebug() << __PRETTY_FUNCTION__;
+    MInputContextWestonIMProtocolConnectionPrivate *d =
+        static_cast<MInputContextWestonIMProtocolConnectionPrivate *>(data);
+
+    Q_UNUSED(context);
+    d->handleInputMethodContextPreferredLanguage(language);
+}
+
 const input_method_context_listener maliit_input_method_context_listener = {
     inputMethodContextSurroundingText,
     inputMethodContextReset,
     inputMethodContextContentType,
-    inputMethodContextInvokeAction
+    inputMethodContextInvokeAction,
+    inputMethodContextCommit,
+    inputMethodContextPreferredLanguage
 };
 
-text_model_preedit_style
-face_to_uint (Maliit::PreeditFace face)
+text_input_preedit_style face_to_uint (Maliit::PreeditFace face)
 {
     switch (face) {
     case Maliit::PreeditDefault:
-        return TEXT_MODEL_PREEDIT_STYLE_DEFAULT;
+        return TEXT_INPUT_PREEDIT_STYLE_DEFAULT;
 
     case Maliit::PreeditNoCandidates:
-        return TEXT_MODEL_PREEDIT_STYLE_INCORRECT;
+        return TEXT_INPUT_PREEDIT_STYLE_INCORRECT;
 
     case Maliit::PreeditKeyPress:
-        return TEXT_MODEL_PREEDIT_STYLE_HIGHLIGHT;
+        return TEXT_INPUT_PREEDIT_STYLE_HIGHLIGHT;
 
     case Maliit::PreeditUnconvertible:
-        return TEXT_MODEL_PREEDIT_STYLE_INACTIVE;
+        return TEXT_INPUT_PREEDIT_STYLE_INACTIVE;
 
     case Maliit::PreeditActive:
-        return TEXT_MODEL_PREEDIT_STYLE_ACTIVE;
+        return TEXT_INPUT_PREEDIT_STYLE_ACTIVE;
 
     default:
-        return static_cast<text_model_preedit_style>(0); // none
+        return TEXT_INPUT_PREEDIT_STYLE_NONE;
     }
 }
 
@@ -320,24 +346,23 @@ xkb_keysym_t qtKeyToXKBKey (int qt_key)
     }
 }
 
-Maliit::TextContentType
-westonPurposeToMaliit(text_model_content_purpose purpose)
+Maliit::TextContentType westonPurposeToMaliit(text_input_content_purpose purpose)
 {
     switch (purpose) {
-    case TEXT_MODEL_CONTENT_PURPOSE_NORMAL:
+    case TEXT_INPUT_CONTENT_PURPOSE_NORMAL:
         return Maliit::FreeTextContentType;
 
-    //case TEXT_MODEL_CONTENT_PURPOSE_DIGITS:
-    case TEXT_MODEL_CONTENT_PURPOSE_NUMBER:
+    //case TEXT_INPUT_CONTENT_PURPOSE_DIGITS:
+    case TEXT_INPUT_CONTENT_PURPOSE_NUMBER:
         return Maliit::NumberContentType;
 
-    case TEXT_MODEL_CONTENT_PURPOSE_PHONE:
+    case TEXT_INPUT_CONTENT_PURPOSE_PHONE:
         return Maliit::PhoneNumberContentType;
 
-    case TEXT_MODEL_CONTENT_PURPOSE_URL:
+    case TEXT_INPUT_CONTENT_PURPOSE_URL:
         return Maliit::UrlContentType;
 
-    case TEXT_MODEL_CONTENT_PURPOSE_EMAIL:
+    case TEXT_INPUT_CONTENT_PURPOSE_EMAIL:
         return Maliit::EmailContentType;
 
     default:
@@ -345,9 +370,8 @@ westonPurposeToMaliit(text_model_content_purpose purpose)
     }
 }
 
-bool
-matchesFlag(int value,
-            int flag)
+bool matchesFlag(int value,
+                 int flag)
 {
     return ((value & flag) == flag);
 }
@@ -382,8 +406,11 @@ MInputContextWestonIMProtocolConnectionPrivate::~MInputContextWestonIMProtocolCo
     if (im_context) {
         input_method_context_destroy(im_context);
     }
-    if (display) {
-        wl_display_disconnect(display);
+    if (im) {
+        input_method_destroy(im);
+    }
+    if (registry) {
+        wl_registry_destroy(registry);
     }
 }
 
@@ -480,11 +507,11 @@ void MInputContextWestonIMProtocolConnectionPrivate::handleInputMethodContextCon
 {
     Q_Q(MInputContextWestonIMProtocolConnection);
 
-    state_info[ContentTypeAttribute] = westonPurposeToMaliit(static_cast<text_model_content_purpose>(purpose));
-    state_info[AutoCapitalizationAttribute] = matchesFlag(hint, TEXT_MODEL_CONTENT_HINT_AUTO_CAPITALIZATION);
-    state_info[CorrectionAttribute] = matchesFlag(hint, TEXT_MODEL_CONTENT_HINT_AUTO_CORRECTION);
-    state_info[PredictionAttribute] = matchesFlag(hint, TEXT_MODEL_CONTENT_HINT_AUTO_COMPLETION);
-    state_info[HiddenTextAttribute] = matchesFlag(hint, TEXT_MODEL_CONTENT_HINT_HIDDEN_TEXT);
+    state_info[ContentTypeAttribute] = westonPurposeToMaliit(static_cast<text_input_content_purpose>(purpose));
+    state_info[AutoCapitalizationAttribute] = matchesFlag(hint, TEXT_INPUT_CONTENT_HINT_AUTO_CAPITALIZATION);
+    state_info[CorrectionAttribute] = matchesFlag(hint, TEXT_INPUT_CONTENT_HINT_AUTO_CORRECTION);
+    state_info[PredictionAttribute] = matchesFlag(hint, TEXT_INPUT_CONTENT_HINT_AUTO_COMPLETION);
+    state_info[HiddenTextAttribute] = matchesFlag(hint, TEXT_INPUT_CONTENT_HINT_HIDDEN_TEXT);
     q->updateWidgetInformation(connection_id, state_info, false);
 }
 
@@ -492,6 +519,16 @@ void MInputContextWestonIMProtocolConnectionPrivate::handleInputMethodContextInv
                                                                                           uint32_t index)
 {
     qDebug() << __PRETTY_FUNCTION__ << "Button:" << button << "Index:" << index;
+}
+
+void MInputContextWestonIMProtocolConnectionPrivate::handleInputMethodContextCommit()
+{
+    qDebug() << __PRETTY_FUNCTION__;
+}
+
+void MInputContextWestonIMProtocolConnectionPrivate::handleInputMethodContextPreferredLanguage(const char *language)
+{
+    qDebug() << __PRETTY_FUNCTION__ << "Language: " << language;
 }
 
 // MInputContextWestonIMProtocolConnection
@@ -569,8 +606,12 @@ void MInputContextWestonIMProtocolConnection::sendCommitString(const QString &st
         input_method_context_preedit_string(d->im_context, d->im_serial, "", "");
         input_method_context_delete_surrounding_text(d->im_context, d->im_serial,
                                                      replace_start, replace_length);
-        input_method_context_commit_string(d->im_context, d->im_serial, raw.data(),
-                                           string.left(cursor_pos).toUtf8().size());
+        input_method_context_commit_string(d->im_context, d->im_serial, raw.data());
+                                           //string.left(cursor_pos).toUtf8().size());
+
+        const int pos(string.left(cursor_pos).toUtf8().size());
+
+        input_method_context_cursor_position (d->im_context, d->im_serial, pos, pos);
     }
 }
 
@@ -646,23 +687,17 @@ QString MInputContextWestonIMProtocolConnection::selection(bool &valid)
     return d->selection;
 }
 
-/* Not implemented in Weston
 void MInputContextWestonIMProtocolConnection::setLanguage(const QString &language)
 {
-    lastLanguage = language;
-    setLanguage(activeContext(), language);
-}
+    Q_D(MInputContextWestonIMProtocolConnection);
 
-void MInputContextWestonIMProtocolConnection::setLanguage(MDBusGlibICConnection *targetIcConnection,
-                                                  const QString &language)
-{
-    if (targetIcConnection) {
-        dbus_g_proxy_call_no_reply(targetIcConnection->inputContextProxy, "setLanguage",
-                                   G_TYPE_STRING, language.toUtf8().data(),
-                                   G_TYPE_INVALID);
+    if (d->im_context) {
+        input_method_context_language(d->im_context, d->im_serial,
+                                      language.toUtf8().data());
     }
 }
 
+/* Not implemented in Weston
 QRect MInputContextWestonIMProtocolConnection::preeditRectangle(bool &valid)
 {
     GError *error = NULL;
@@ -728,17 +763,23 @@ void MInputContextWestonIMProtocolConnection::invokeAction(const QString &action
         dbus_message_unref(message);
     }
 }
+*/
 
 void MInputContextWestonIMProtocolConnection::setSelection(int start, int length)
 {
-    if (activeContext()) {
-        dbus_g_proxy_call_no_reply(activeContext()->inputContextProxy, "setSelection",
-                                   G_TYPE_INT, start,
-                                   G_TYPE_INT, length,
-                                   G_TYPE_INVALID);
+    Q_D (MInputContextWestonIMProtocolConnection);
+
+    if (d->im_context) {
+        QString text(d->state_info[SurroundingTextAttribute].toString());
+        int byte_index(text.left(start).toUtf8().size());
+        int byte_length(text.mid(start, length).toUtf8().size());
+
+        input_method_context_cursor_position (d->im_context, d->im_serial,
+                                              byte_index, byte_length);
     }
 }
 
+/* Not implemented in Weston
 void MInputContextWestonIMProtocolConnection::updateInputMethodArea(const QRegion &region)
 {
     if (activeContext()) {

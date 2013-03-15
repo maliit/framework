@@ -65,12 +65,12 @@ public:
 //    virtual void setRedirectKeys(bool enabled);
 //    virtual void setDetectableAutoRepeat(bool enabled);
 //    virtual void setGlobalCorrectionEnabled(bool enabled);
-//    virtual void setSelection(int start,
-//                              int length);
+    virtual void setSelection(int start,
+                              int length);
 //    virtual int anchorPosition(bool &valid);
 //    virtual int preeditClickPos(bool &valid) const;
     virtual QString selection(bool &valid);
-//    virtual void setLanguage(const QString &language);
+    virtual void setLanguage(const QString &language);
 //    virtual void sendActivationLostEvent();
 //
 //public Q_SLOTS:
