@@ -33,8 +33,6 @@ wayland {
     WAYLANDSOURCES += \
         $$IN_PWD/input-method.xml \
         $$IN_PWD/text.xml
-    CONFIG += link_pkgconfig
-    PKGCONFIG += wayland-client
 }
 
 include($$TOP_DIR/dbus_interfaces/dbus_interfaces.pri)
