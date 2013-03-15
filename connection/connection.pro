@@ -7,6 +7,7 @@ TEMPLATE = lib
 TARGET = $$TOP_DIR/lib/$$MALIIT_CONNECTION_LIB
 
 include($$TOP_DIR/common/libmaliit-common.pri)
+include($$TOP_DIR/weston-protocols/libmaliit-weston-protocols.pri)
 
 DEFINES += MALIIT_INPUTCONTEXT_NAME=\\\"$${MALIIT_INPUTCONTEXT_NAME}\\\"
 CONFIG += staticlib
@@ -25,14 +26,10 @@ CONFIG += qdbus-dbus-connection
 
 wayland {
     QT += gui-private
-    load(wayland-scanner)
     PUBLIC_SOURCES += \
         minputcontextwestonimprotocolconnection.cpp
     PUBLIC_HEADERS += \
         minputcontextwestonimprotocolconnection.h
-    WAYLANDSOURCES += \
-        $$IN_PWD/input-method.xml \
-        $$IN_PWD/text.xml
 }
 
 include($$TOP_DIR/dbus_interfaces/dbus_interfaces.pri)

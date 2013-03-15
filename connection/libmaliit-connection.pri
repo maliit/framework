@@ -3,6 +3,7 @@
 # to the top-level source/build directory, and include config.pri
 
 include($$PWD/../common/libmaliit-common.pri)
+include($$PWD/../weston-protocols/libmaliit-weston-protocols.pri)
 
 LIBS += $$TOP_DIR/lib/$$maliitStaticLib($${MALIIT_CONNECTION_LIB})
 POST_TARGETDEPS += $$TOP_DIR/lib/$$maliitStaticLib($${MALIIT_CONNECTION_LIB})
