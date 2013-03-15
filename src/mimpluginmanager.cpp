@@ -248,8 +248,6 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
-    QSharedPointer<Maliit::WindowGroup> windowGroup(new Maliit::WindowGroup);
-
     // Check if we have a specific factory for this plugin
     QString mimeType = getFileMimeType(fileName);
     if (factories.contains(mimeType)) {
@@ -283,6 +281,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
+    QSharedPointer<Maliit::WindowGroup> windowGroup(new Maliit::WindowGroup);
     MInputMethodHost *host = new MInputMethodHost(mICConnection, q, windowGroup,
                                                   fileName, plugin->name());
 
