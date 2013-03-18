@@ -21,6 +21,13 @@
 #include <QStringList>
 #include <QSet>
 
+namespace Maliit
+{
+
+class AbstractPlatform;
+
+} // namespace Maliit
+
 class MInputMethodQuickPluginPrivate;
 
 //! \brief Creates an input method plugin that allows to use QML.
@@ -37,7 +44,7 @@ class MInputMethodQuickPlugin
     : public Maliit::Plugins::InputMethodPlugin
 {
 public:
-    MInputMethodQuickPlugin();
+    MInputMethodQuickPlugin(const QSharedPointer<Maliit::AbstractPlatform> &platform);
     virtual ~MInputMethodQuickPlugin();
 
     // FIXME: Add getter as vfunc with next API break and remove both static functions.

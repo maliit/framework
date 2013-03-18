@@ -14,6 +14,7 @@
 
 #include "maliitquickpluginfactory.h"
 #include "minputmethodquickplugin.h"
+#include "abstractplatform.h"
 
 class MyPlugin
     : public MInputMethodQuickPlugin
@@ -24,8 +25,9 @@ private:
     const QString m_filename;
 
 public:
-    explicit MyPlugin(const QString &filename)
-        : MInputMethodQuickPlugin()
+    explicit MyPlugin(const QString &filename,
+                      const QSharedPointer<Maliit::AbstractPlatform> &platform)
+        : MInputMethodQuickPlugin(platform)
         , m_filename(filename)
     {}
 
@@ -56,5 +58,5 @@ QString MaliitQuickPluginFactory::fileExtension() const
 
 Maliit::Plugins::InputMethodPlugin * MaliitQuickPluginFactory::create(const QString &file) const
 {
-    return new MyPlugin(file);
+    return new MyPlugin(file, getPlatform());
 }

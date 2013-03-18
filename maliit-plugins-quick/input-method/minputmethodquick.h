@@ -24,6 +24,13 @@
 #include <QString>
 #include <QEvent>
 
+namespace Maliit
+{
+
+class AbstractPlatform;
+
+} // namespace Maliit
+
 class MInputMethodQuickPrivate;
 class MInputMethodQuickLoader;
 class MKeyOverrideQuick;
@@ -76,7 +83,8 @@ public:
     //! \param mainWindow should be used to install plugin's UI into it. Managed by framework.
     //! \param qmlFileName the QML file that will be loaded.
     explicit MInputMethodQuick(MAbstractInputMethodHost *host,
-                               const QString &qmlFileName);
+                               const QString &qmlFileName,
+                               const QSharedPointer<Maliit::AbstractPlatform> &platform);
     virtual ~MInputMethodQuick();
 
     //! \reimp

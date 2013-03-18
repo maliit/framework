@@ -16,6 +16,7 @@
 #include "minputmethodquick.h"
 #include "maliitquick.h"
 #include "mkeyoverridequick.h"
+#include "abstractplatform.h"
 
 #include <QQmlComponent>
 
@@ -27,15 +28,17 @@ class MInputMethodQuickPluginPrivate
 {
 public:
     QSet<Maliit::HandlerState> supportedStates;
+    QSharedPointer<Maliit::AbstractPlatform> m_platform;
 
-    MInputMethodQuickPluginPrivate()
+    MInputMethodQuickPluginPrivate(const QSharedPointer<Maliit::AbstractPlatform> &platform)
+        : m_platform (platform)
     {
         supportedStates << Maliit::OnScreen << Maliit::Hardware;
     }
 };
 
-MInputMethodQuickPlugin::MInputMethodQuickPlugin()
-    : d_ptr(new MInputMethodQuickPluginPrivate)
+MInputMethodQuickPlugin::MInputMethodQuickPlugin(const QSharedPointer<Maliit::AbstractPlatform> &platform)
+    : d_ptr(new MInputMethodQuickPluginPrivate(platform))
 {
     qmlRegisterUncreatableType<MaliitQuick>("com.meego.maliitquick", 1, 0, "Maliit",
                                             "This is the class used to export Maliit Enums");
@@ -64,7 +67,9 @@ QStringList MInputMethodQuickPlugin::qmlImportPaths()
 
 MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
-    return new MInputMethodQuick(host, qmlFileName());
+    Q_D(MInputMethodQuickPlugin);
+
+    return new MInputMethodQuick(host, qmlFileName(), d->m_platform);
 }
 
 QSet<Maliit::HandlerState> MInputMethodQuickPlugin::supportedStates() const
