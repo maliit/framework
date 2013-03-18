@@ -73,6 +73,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
 
     if (pluginPath.endsWith(".qml")) {
         MaliitQuickPluginFactory factory;
+        factory.setPlatform(QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
         plugin = factory.create(pluginPath);
     } else {
         QPluginLoader loader(pluginPath);

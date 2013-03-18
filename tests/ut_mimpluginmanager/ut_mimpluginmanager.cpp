@@ -20,6 +20,7 @@
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
 #include <maliit/plugins/inputmethodplugin.h>
+#include <unknownplatform.h>
 
 #include "mattributeextensionmanager.h"
 #include "msharedattributeextensionmanager.h"
@@ -125,7 +126,7 @@ void Ut_MIMPluginManager::init()
     activePluginSettings.set(DefaultActivePlugin);
 
     QSharedPointer<MInputContextTestConnection> icConnection(new MInputContextTestConnection);
-    manager = new MIMPluginManager(icConnection);
+    manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
 
     connection = icConnection.data();
     subject = manager->d_ptr;
