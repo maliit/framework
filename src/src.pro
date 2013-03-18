@@ -65,6 +65,9 @@ SERVER_HEADERS_PRIVATE += \
         mimserveroptions.h \
         windowgroup.h \
         windowdata.h \
+        abstractplatform.h \
+        xcbplatform.h \
+        unknownplatform.h \
 
 SERVER_SOURCES += \
         mimpluginmanager.cpp \
@@ -78,6 +81,14 @@ SERVER_SOURCES += \
         mimserveroptions.cpp \
         windowgroup.cpp \
         windowdata.cpp \
+        abstractplatform.cpp \
+        xcbplatform.cpp \
+        unknownplatform.cpp \
+
+wayland {
+    SERVER_HEADERS_PRIVATE += waylandplatform.h
+    SERVER_SOURCES += waylandplatform.cpp
+}
 
 SETTINGS_HEADERS_PRIVATE += \
         mimsettingsqsettings.h \
