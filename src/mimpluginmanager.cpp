@@ -68,6 +68,7 @@ namespace
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputContextConnection> &connection,
+                                                 const QSharedPointer<Maliit::AbstractPlatform> &platform,
                                                  MIMPluginManager *p)
     : parent(p),
       mICConnection(connection),
@@ -78,7 +79,8 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputCont
       onScreenPlugins(),
       lastOrientation(0),
       attributeExtensionManager(new MAttributeExtensionManager),
-      sharedAttributeExtensionManager(new MSharedAttributeExtensionManager)
+      sharedAttributeExtensionManager(new MSharedAttributeExtensionManager),
+      m_platform(platform)
 {
     inputSourceToNameMap[Maliit::Hardware] = "hardware";
     inputSourceToNameMap[Maliit::Accessory] = "accessory";
@@ -1225,9 +1227,10 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
 ///////////////
 // actual class
 
-MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection)
+MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection,
+                                   const QSharedPointer<Maliit::AbstractPlatform> &platform)
     : QObject(),
-      d_ptr(new MIMPluginManagerPrivate(icConnection, this))
+      d_ptr(new MIMPluginManagerPrivate(icConnection, platform, this))
 {
     Q_D(MIMPluginManager);
     d->q_ptr = this;

@@ -34,6 +34,9 @@ class MAbstractInputMethod;
 class MAttributeExtensionManager;
 
 namespace Maliit {
+
+class AbstractPlatform;
+
 namespace Plugins {
     class AbstractPluginSetting;
 }
@@ -54,7 +57,8 @@ public:
     /*!
      * \Brief Constructs object MIMPluginManager
      */
-    MIMPluginManager(const QSharedPointer<MInputContextConnection>& icConnection);
+    MIMPluginManager(const QSharedPointer<MInputContextConnection> &icConnection,
+                     const QSharedPointer<Maliit::AbstractPlatform> &platform);
 
     virtual ~MIMPluginManager();
 

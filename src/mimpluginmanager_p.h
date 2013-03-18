@@ -25,6 +25,7 @@
 #include <maliit/settingdata.h>
 #include <maliit/plugins/abstractpluginsetting.h>
 #include "windowgroup.h"
+#include "abstractplatform.h"
 
 #include <QtCore>
 
@@ -89,6 +90,7 @@ public:
     typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
     MIMPluginManagerPrivate(const QSharedPointer<MInputContextConnection>& connection,
+                            const QSharedPointer<Maliit::AbstractPlatform> &platform,
                             MIMPluginManager *p);
     virtual ~MIMPluginManagerPrivate();
 
@@ -213,6 +215,8 @@ public:
 
     QScopedPointer<MAttributeExtensionManager> attributeExtensionManager;
     QScopedPointer<MSharedAttributeExtensionManager> sharedAttributeExtensionManager;
+
+    QSharedPointer<Maliit::AbstractPlatform> m_platform;
 };
 
 #endif
