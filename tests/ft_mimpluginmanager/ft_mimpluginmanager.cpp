@@ -12,6 +12,7 @@
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
 #include <msharedattributeextensionmanager.h>
+#include <unknownplatform.h>
 
 #include <QProcess>
 #include <QRegExp>
@@ -87,7 +88,7 @@ void Ft_MIMPluginManager::init()
     MImSettings(MImAccesoryEnabled).set(QVariant(false));
 
     QSharedPointer<MInputContextConnection> icConnection(new MInputContextConnection);
-    subject = new MIMPluginManager(icConnection);
+    subject = new MIMPluginManager(icConnection, QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
 }
 
 void Ft_MIMPluginManager::cleanup()

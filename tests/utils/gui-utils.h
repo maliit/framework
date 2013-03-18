@@ -20,6 +20,7 @@
 #include <minputmethodhost.h>
 #include <windowgroup.h>
 #include <minputcontextconnection.h>
+#include <unknownplatform.h>
 
 #include <maliit/plugins/abstractpluginsetting.h>
 
@@ -53,7 +54,11 @@ namespace MaliitTestUtils {
         int sendPreeditCount;
 
         TestInputMethodHost(const QString &plugin, const QString &description)
-            : MInputMethodHost(QSharedPointer<MInputContextConnection>(new MInputContextConnection), 0, QSharedPointer<Maliit::WindowGroup>(new Maliit::WindowGroup), plugin, description)
+            : MInputMethodHost(QSharedPointer<MInputContextConnection>(new MInputContextConnection),
+                               0,
+                               QSharedPointer<Maliit::WindowGroup>(new Maliit::WindowGroup(QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform))),
+                               plugin,
+                               description)
             , sendCommitCount(0)
             , sendPreeditCount(0)
         {}
