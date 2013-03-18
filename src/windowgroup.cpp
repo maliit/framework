@@ -12,7 +12,6 @@
  */
 
 #include <QDebug>
-#include <QPointer>
 #include <QRegion>
 #include <QVector>
 #include <QWindow>
@@ -26,32 +25,13 @@
 #endif // HAVE_WAYLAND
 
 #include "windowgroup.h"
+#include "windowdata.h"
 
 namespace Maliit
 {
 
 namespace
 {
-
-struct WindowData
-{
-    // apparently QVector<WindowData>::append() needs it...
-    WindowData();
-    WindowData(QWindow *window, Maliit::Position position);
-
-    QPointer<QWindow> m_window;
-    Maliit::Position m_position;
-};
-
-WindowData::WindowData()
-    : m_window(),
-      m_position(Maliit::PositionCenterBottom)
-{}
-
-WindowData::WindowData(QWindow *window, Maliit::Position position)
-    : m_window(window),
-      m_position(position)
-{}
 
 #ifdef HAVE_WAYLAND
 input_panel_surface_position maliitToWestonPosition (Maliit::Position position)
