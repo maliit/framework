@@ -64,6 +64,7 @@ SERVER_HEADERS_PRIVATE += \
         mimsubviewoverride.h \
         mimserveroptions.h \
         windowgroup.h \
+        windowdata.h \
 
 SERVER_SOURCES += \
         mimpluginmanager.cpp \
@@ -76,6 +77,7 @@ SERVER_SOURCES += \
         mimsubviewoverride.cpp \
         mimserveroptions.cpp \
         windowgroup.cpp \
+        windowdata.cpp \
 
 SETTINGS_HEADERS_PRIVATE += \
         mimsettingsqsettings.h \
