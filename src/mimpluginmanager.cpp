@@ -283,7 +283,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         return false;
     }
 
-    QSharedPointer<Maliit::WindowGroup> windowGroup(new Maliit::WindowGroup);
+    QSharedPointer<Maliit::WindowGroup> windowGroup(new Maliit::WindowGroup(m_platform));
     MInputMethodHost *host = new MInputMethodHost(mICConnection, q, windowGroup,
                                                   fileName, plugin->name());
 

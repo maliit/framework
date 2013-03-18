@@ -15,6 +15,7 @@
 #define MALIIT_SERVER_WINDOW_GROUP_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 #include <maliit/namespace.h>
 
@@ -23,6 +24,7 @@ class QWindow;
 namespace Maliit
 {
 
+class AbstractPlatform;
 class WindowGroupPrivate;
 
 class WindowGroup : public QObject
@@ -31,7 +33,7 @@ class WindowGroup : public QObject
     Q_DECLARE_PRIVATE(WindowGroup)
 
 public:
-    WindowGroup();
+    WindowGroup(const QSharedPointer<AbstractPlatform> &platform);
     ~WindowGroup();
 
     void activate();
@@ -46,8 +48,8 @@ private:
     QScopedPointer<WindowGroupPrivate> d_ptr;
 
 private Q_SLOTS:
-  void onVisibleChanged(bool visible);
-  void updateInputMethodArea();
+    void onVisibleChanged(bool visible);
+    void updateInputMethodArea();
 };
 
 } // namespace Maliit
