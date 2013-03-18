@@ -41,6 +41,7 @@ MImServerPrivate::MImServerPrivate()
 
 MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
                      const QSharedPointer<MInputContextConnection> &icConnection,
+                     const QSharedPointer<Maliit::AbstractPlatform> &platform,
                      QObject *parent)
   : QObject(parent)
   , d_ptr(new MImServerPrivate)
@@ -49,7 +50,7 @@ MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
 
     d->icConnection = icConnection;
     d->serverLogic = serverLogic;
-    d->pluginManager = new MIMPluginManager(d->icConnection);
+    d->pluginManager = new MIMPluginManager(d->icConnection, platform);
 
     connectComponents();
 

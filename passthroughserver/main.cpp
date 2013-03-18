@@ -18,6 +18,11 @@
 #include "mimserver.h"
 #include "mimserveroptions.h"
 #include "mimstandaloneserverlogic.h"
+#include "xcbplatform.h"
+#ifdef HAVE_WAYLAND
+#include "waylandplatform.h"
+#endif // HAVE_WAYLAND
+#include "unknownplatform.h"
 
 #include <QApplication>
 #include <QtDebug>
@@ -88,6 +93,20 @@ QSharedPointer<MInputContextConnection> createConnection(const MImServerConnecti
     }
 }
 
+QSharedPointer<Maliit::AbstractPlatform> createPlatform()
+{
+#ifdef HAVE_WAYLAND
+    if (QGuiApplication::platformName() == "wayland") {
+        return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::WaylandPlatform);
+    } else
+#endif
+    if (QGuiApplication::platformName() == "xcb") {
+        return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::XCBPlatform);
+    } else {
+        return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform);
+    }
+}
+
 } // unnamed namespace
 
 int main(int argc, char **argv)
@@ -116,9 +135,11 @@ int main(int argc, char **argv)
     // Input Context Connection
     QSharedPointer<MInputContextConnection> icConnection(createConnection(connectionOptions));
 
+    QSharedPointer<Maliit::AbstractPlatform> platform(createPlatform());
+
     // The actual server
     MImServer::configureSettings(MImServer::PersistentSettings);
-    MImServer imServer(serverLogic, icConnection);
+    MImServer imServer(serverLogic, icConnection, platform);
     Q_UNUSED(imServer);
 
     return app.exec();

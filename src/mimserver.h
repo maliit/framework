@@ -23,6 +23,13 @@ class MImServerPrivate;
 
 class MImAbstractServerLogic;
 
+namespace Maliit
+{
+
+class AbstractPlatform;
+
+} // namespace Maliit
+
 /* MImServer: The Maliit Input Method Server
  *
  * Consumers of MImServer are responsible for creating a QApplication (for the mainloop),
@@ -44,6 +51,7 @@ public:
 public:
     explicit MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
                        const QSharedPointer<MInputContextConnection> &icConnection,
+                       const QSharedPointer<Maliit::AbstractPlatform> &platform,
                        QObject *parent = 0);
     ~MImServer();
 
