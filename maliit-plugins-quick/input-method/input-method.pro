@@ -24,7 +24,7 @@ SOURCES += \
         minputmethodquick.cpp \
         mkeyoverridequick.cpp
 
-QT = core gui gui-private qml quick
+QT = core gui qml quick
 
 CONFIG += link_pkgconfig
 
