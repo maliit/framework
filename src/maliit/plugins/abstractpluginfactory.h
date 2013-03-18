@@ -19,6 +19,9 @@
 #include <QtPlugin>
 
 namespace Maliit {
+
+class AbstractPlatform;
+
 namespace Plugins {
     class InputMethodPlugin;
 }
@@ -49,6 +52,9 @@ public:
 
     //! \brief Implement this function to create a new MInputMethodPlugin base on a file
     virtual Maliit::Plugins::InputMethodPlugin* create(const QString &file) const = 0;
+
+    void setPlatform(const QSharedPointer<Maliit::AbstractPlatform> &platform);
+    QSharedPointer<Maliit::AbstractPlatform> getPlatform() const;
 };
 
 
