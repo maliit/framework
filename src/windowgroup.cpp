@@ -157,12 +157,14 @@ WindowGroupPrivate::WindowGroupPrivate()
 
 WindowGroupPrivate::~WindowGroupPrivate()
 {
+#ifdef HAVE_WAYLAND
     if (m_panel) {
         input_panel_destroy (m_panel);
     }
     if (m_registry) {
         wl_registry_destroy (m_registry);
     }
+#endif // HAVE_WAYLAND
 }
 
 bool WindowGroupPrivate::containsWindow(QWindow *window)
