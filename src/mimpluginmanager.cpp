@@ -235,7 +235,9 @@ bool MIMPluginManagerPrivate::loadFactoryPlugin(const QDir &dir, const QString &
                    << "Could not cast" << pluginInstance->metaObject()->className() << "into MImAbstractPluginFactory.";
         return false;
     }
+    factory->setPlatform(m_platform);
     factories.insert(factory->fileExtension(), factory);
+
     return true;
 }
 

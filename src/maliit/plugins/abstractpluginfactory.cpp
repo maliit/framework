@@ -13,13 +13,31 @@
  */
 
 #include <maliit/plugins/abstractpluginfactory.h>
+#include "abstractplatform.h"
 
 class MImAbstractPluginFactoryPrivate
-{};
+{
+public:
+    QSharedPointer<Maliit::AbstractPlatform> m_platform;
+};
 
 MImAbstractPluginFactory::MImAbstractPluginFactory()
-    : d_ptr() // Create PIMPL instance here, if needed.
+    : d_ptr(new MImAbstractPluginFactoryPrivate)
 {}
 
 MImAbstractPluginFactory::~MImAbstractPluginFactory()
 {}
+
+void MImAbstractPluginFactory::setPlatform(const QSharedPointer<Maliit::AbstractPlatform> &platform)
+{
+    Q_D(MImAbstractPluginFactory);
+
+    d->m_platform = platform;
+}
+
+QSharedPointer<Maliit::AbstractPlatform> MImAbstractPluginFactory::getPlatform() const
+{
+    Q_D(const MImAbstractPluginFactory);
+
+    return d->m_platform;
+}
