@@ -196,7 +196,6 @@ defineTest(outputFile) {
                 MALIIT_PACKAGE_BRIEF \
                 MALIIT_FRAMEWORK_HEADER \
                 MALIIT_SERVER_ARGUMENTS \
-                MALIIT_CONNECTION_HEADER \
                 MALIIT_CONNECTION_LIB \
                 MALIIT_SERVER_HEADER \
                 MALIIT_ABI_VERSION_MAJOR \
