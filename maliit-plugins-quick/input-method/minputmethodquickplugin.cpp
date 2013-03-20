@@ -18,6 +18,7 @@
 #include "mkeyoverridequick.h"
 #include "abstractplatform.h"
 
+#include <QFileInfo>
 #include <QQmlComponent>
 
 namespace {
@@ -27,18 +28,25 @@ QStringList gQmlImportPaths;
 class MInputMethodQuickPluginPrivate
 {
 public:
-    QSet<Maliit::HandlerState> supportedStates;
     QSharedPointer<Maliit::AbstractPlatform> m_platform;
+    const QString m_filename;
+    const QString m_basename;
+    QSet<Maliit::HandlerState> m_supported_states;
 
-    MInputMethodQuickPluginPrivate(const QSharedPointer<Maliit::AbstractPlatform> &platform)
-        : m_platform (platform)
+    MInputMethodQuickPluginPrivate(const QString &filename,
+                                   const QSharedPointer<Maliit::AbstractPlatform> &platform)
+        : m_platform (platform),
+          m_filename(filename),
+          m_basename(QFileInfo(filename).baseName()),
+          m_supported_states()
     {
-        supportedStates << Maliit::OnScreen << Maliit::Hardware;
+        m_supported_states << Maliit::OnScreen << Maliit::Hardware;
     }
 };
 
-MInputMethodQuickPlugin::MInputMethodQuickPlugin(const QSharedPointer<Maliit::AbstractPlatform> &platform)
-    : d_ptr(new MInputMethodQuickPluginPrivate(platform))
+MInputMethodQuickPlugin::MInputMethodQuickPlugin(const QString &filename,
+                                                 const QSharedPointer<Maliit::AbstractPlatform> &platform)
+    : d_ptr(new MInputMethodQuickPluginPrivate(filename, platform))
 {
     qmlRegisterUncreatableType<MaliitQuick>("com.meego.maliitquick", 1, 0, "Maliit",
                                             "This is the class used to export Maliit Enums");
@@ -69,12 +77,19 @@ MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputM
 {
     Q_D(MInputMethodQuickPlugin);
 
-    return new MInputMethodQuick(host, qmlFileName(), d->m_platform);
+    return new MInputMethodQuick(host, d->m_filename, d->m_platform);
 }
 
 QSet<Maliit::HandlerState> MInputMethodQuickPlugin::supportedStates() const
 {
     Q_D(const MInputMethodQuickPlugin);
 
-    return d->supportedStates;
+    return d->m_supported_states;
+}
+
+QString MInputMethodQuickPlugin::name() const
+{
+    Q_D(const MInputMethodQuickPlugin);
+
+    return d->m_basename;
 }

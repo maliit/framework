@@ -16,33 +16,6 @@
 #include "minputmethodquickplugin.h"
 #include "abstractplatform.h"
 
-class MyPlugin
-    : public MInputMethodQuickPlugin
-{
-    Q_DISABLE_COPY(MyPlugin)
-
-private:
-    const QString m_filename;
-
-public:
-    explicit MyPlugin(const QString &filename,
-                      const QSharedPointer<Maliit::AbstractPlatform> &platform)
-        : MInputMethodQuickPlugin(platform)
-        , m_filename(filename)
-    {}
-
-    virtual QString qmlFileName() const
-    {
-        return m_filename;
-    }
-
-    virtual QString name() const
-    {
-        static QFileInfo info(m_filename);
-        return info.baseName();
-    }
-};
-
 MaliitQuickPluginFactory::MaliitQuickPluginFactory(QObject *parent)
     : QObject(parent)
     , MImAbstractPluginFactory()
@@ -58,5 +31,5 @@ QString MaliitQuickPluginFactory::fileExtension() const
 
 Maliit::Plugins::InputMethodPlugin * MaliitQuickPluginFactory::create(const QString &file) const
 {
-    return new MyPlugin(file, getPlatform());
+    return new MInputMethodQuickPlugin(file, getPlatform());
 }
