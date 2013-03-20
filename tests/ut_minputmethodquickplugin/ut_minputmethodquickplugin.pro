@@ -19,6 +19,5 @@ SOURCES += \
 
 include($$TOP_DIR/src/libmaliit-plugins.pri)
 include($$TOP_DIR/maliit-plugins-quick/libmaliit-plugins-quick.pri)
-include($$TOP_DIR/maliit-plugins-quick/plugin-factory/libmaliit-plugins-quick-factory.pri)
 
 include(../common_check.pri)
