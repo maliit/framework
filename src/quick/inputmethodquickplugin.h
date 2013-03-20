@@ -30,14 +30,15 @@ class InputMethodQuickPluginPrivate;
 
 //! \brief Creates an input method plugin that allows to use QML.
 //!
-//! To create a QML-based virtual keyboard or input method plugin, derive from
-//! this class and reimplement MInputMethodPlugin::name() and
-//! MInputMethodQuickPlugin::qmlFileName().
+//! To create a QML-based virtual keyboard or input method plugin, just drop the
+//! QML file in plugin directory. If there are more QML files for the plugin
+//! then make sure to put them into some subdirectory or otherwise Maliit server
+//! will try to load them as well as separate plugins.
 //! The QML components can communicate with the framework through the
-//! MInputMethodQuick context.
-//! If the provided MInputMethodQuick class is not sufficient, then reimplement
-//! MInputMethodQuickPlugin::createInputMethodSettings as well and create a
-//! custom MAbstractInputMethod instance there.
+//! Maliit::InputMethodQuick context.
+//! If the provided Maliit::InputMethodQuick class is not sufficient, then
+//! reimplement Maliit::InputMethodQuickPlugin::createInputMethodSettings as
+//! well and create a custom MAbstractInputMethod instance there.
 class InputMethodQuickPlugin
     : public Maliit::Plugins::InputMethodPlugin
 {
@@ -47,9 +48,10 @@ public:
     virtual ~InputMethodQuickPlugin();
 
     // FIXME: Add getter as vfunc with next API break and remove both static functions.
-    //! Add list of import paths that will be used by the internal QML engine of this plugin.
-    //! For this function to take any effect, it needs to be called before the
-    //! reimplementation of createInputMethod calls MInputMethodQuickPlugin::createInputMethod.
+    //! Add list of import paths that will be used by the internal QML engine of
+    //! this plugin.  For this function to take any effect, it needs to be
+    //! called before the reimplementation of createInputMethod calls
+    //! Maliit::InputMethodQuickPlugin::createInputMethod.
     static void setQmlImportPaths(const QStringList &paths);
 
     //! \internal

@@ -32,10 +32,10 @@ class AbstractPlatform;
 class InputMethodQuickPrivate;
 class KeyOverrideQuick;
 
-//! \brief MInputMethodQuick is used for QML-based input method plugins.
+//! \brief Maliit::InputMethodQuick is used for QML-based input method plugins.
 //!
-//! It defines the interface between framework, applications and QML-based
-//! input methods. Instead of allowing QML-based input methods to use the
+//! It defines the interface between framework, applications and QML-based input
+//! methods. Instead of allowing QML-based input methods to use the
 //! MAbstractInputMethodHost interface directly, this class will forward the
 //! necessary requests.
 //! QML-based input methods on the other hand can use the properties of this
@@ -77,8 +77,8 @@ class InputMethodQuick
 public:
     //! Constructor
     //! \param host serves as communication link to framework and application. Managed by framework.
-    //! \param mainWindow should be used to install plugin's UI into it. Managed by framework.
     //! \param qmlFileName the QML file that will be loaded.
+    //! \param platform implementation used for e.g. setting input panel region.
     explicit InputMethodQuick(MAbstractInputMethodHost *host,
                               const QString &qmlFileName,
                               const QSharedPointer<Maliit::AbstractPlatform> &platform);
