@@ -71,8 +71,8 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
     if (pluginPath.endsWith(".qml")) {
-        plugin = new MInputMethodQuickPlugin(pluginPath,
-                                             QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
+        plugin = new Maliit::InputMethodQuickPlugin(pluginPath,
+                                                    QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
     } else {
         QPluginLoader loader(pluginPath);
         pluginInstance = loader.instance();
@@ -83,7 +83,7 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     QVERIFY(plugin != 0);
 
     MaliitTestUtils::TestInputMethodHost host(pluginId, plugin->name());
-    MInputMethodQuick *testee = static_cast<MInputMethodQuick *>(
+    Maliit::InputMethodQuick *testee = static_cast<Maliit::InputMethodQuick *>(
         plugin->createInputMethod(&host));
 
     QVERIFY(not testee->inputMethodArea().isEmpty());

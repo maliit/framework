@@ -21,11 +21,14 @@
 #include <QFileInfo>
 #include <QQmlComponent>
 
+namespace Maliit
+{
+
 namespace {
 QStringList gQmlImportPaths;
-}
+} // unnamed namespace
 
-class MInputMethodQuickPluginPrivate
+class InputMethodQuickPluginPrivate
 {
 public:
     QSharedPointer<Maliit::AbstractPlatform> m_platform;
@@ -33,8 +36,8 @@ public:
     const QString m_basename;
     QSet<Maliit::HandlerState> m_supported_states;
 
-    MInputMethodQuickPluginPrivate(const QString &filename,
-                                   const QSharedPointer<Maliit::AbstractPlatform> &platform)
+    InputMethodQuickPluginPrivate(const QString &filename,
+                                  const QSharedPointer<Maliit::AbstractPlatform> &platform)
         : m_platform (platform),
           m_filename(filename),
           m_basename(QFileInfo(filename).baseName()),
@@ -44,52 +47,54 @@ public:
     }
 };
 
-MInputMethodQuickPlugin::MInputMethodQuickPlugin(const QString &filename,
-                                                 const QSharedPointer<Maliit::AbstractPlatform> &platform)
-    : d_ptr(new MInputMethodQuickPluginPrivate(filename, platform))
+InputMethodQuickPlugin::InputMethodQuickPlugin(const QString &filename,
+                                               const QSharedPointer<Maliit::AbstractPlatform> &platform)
+    : d_ptr(new InputMethodQuickPluginPrivate(filename, platform))
 {
     qmlRegisterUncreatableType<MaliitQuick>("com.meego.maliitquick", 1, 0, "Maliit",
                                             "This is the class used to export Maliit Enums");
 
     // this do not have to be included to use it, but it have to be
     // registered.
-    qmlRegisterUncreatableType<MKeyOverrideQuick>
+    qmlRegisterUncreatableType<KeyOverrideQuick>
         ( "com.meego.maliitquick.keyoverridequick", 1, 0, "KeyOverrideQuick",
-          "This registers MKeyOverrideQuick" );
+          "This registers KeyOverrideQuick" );
 }
 
-MInputMethodQuickPlugin::~MInputMethodQuickPlugin()
+InputMethodQuickPlugin::~InputMethodQuickPlugin()
 {
     delete d_ptr;
 }
 
-void MInputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
+void InputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
 {
     gQmlImportPaths = paths;
 }
 
-QStringList MInputMethodQuickPlugin::qmlImportPaths()
+QStringList InputMethodQuickPlugin::qmlImportPaths()
 {
     return gQmlImportPaths;
 }
 
-MAbstractInputMethod *MInputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host)
+MAbstractInputMethod *InputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
-    Q_D(MInputMethodQuickPlugin);
+    Q_D(InputMethodQuickPlugin);
 
-    return new MInputMethodQuick(host, d->m_filename, d->m_platform);
+    return new InputMethodQuick(host, d->m_filename, d->m_platform);
 }
 
-QSet<Maliit::HandlerState> MInputMethodQuickPlugin::supportedStates() const
+QSet<Maliit::HandlerState> InputMethodQuickPlugin::supportedStates() const
 {
-    Q_D(const MInputMethodQuickPlugin);
+    Q_D(const InputMethodQuickPlugin);
 
     return d->m_supported_states;
 }
 
-QString MInputMethodQuickPlugin::name() const
+QString InputMethodQuickPlugin::name() const
 {
-    Q_D(const MInputMethodQuickPlugin);
+    Q_D(const InputMethodQuickPlugin);
 
     return d->m_basename;
 }
+
+} // namespace Maliit

@@ -18,10 +18,13 @@
 #include "mkeyoverridequick.h"
 #include "mkeyoverridequick_p.h"
 
-MKeyOverrideQuickPrivate::MKeyOverrideQuickPrivate(const QString &label,
-                                                   const QString &icon,
-                                                   bool highlighted,
-                                                   bool enabled)
+namespace Maliit
+{
+
+KeyOverrideQuickPrivate::KeyOverrideQuickPrivate(const QString &label,
+                                                 const QString &icon,
+                                                 bool highlighted,
+                                                 bool enabled)
     : actualLabel(),
       actualIcon(),
       actualHighlighted(false),
@@ -38,102 +41,102 @@ MKeyOverrideQuickPrivate::MKeyOverrideQuickPrivate(const QString &label,
     // EMPTY
 }
 
-MKeyOverrideQuick::MKeyOverrideQuick()
+KeyOverrideQuick::KeyOverrideQuick()
     : QObject(),
-      d_ptr(new MKeyOverrideQuickPrivate("",
-                                         "",
-                                         false,
-                                         true))
+      d_ptr(new KeyOverrideQuickPrivate("",
+                                        "",
+                                        false,
+                                        true))
 {
     // EMPTY
 }
 
-MKeyOverrideQuick::~MKeyOverrideQuick()
+KeyOverrideQuick::~KeyOverrideQuick()
 {
     delete d_ptr;
 }
 
-QString MKeyOverrideQuick::label() const
+QString KeyOverrideQuick::label() const
 {
-    Q_D(const MKeyOverrideQuick);
+    Q_D(const KeyOverrideQuick);
 
     return d->actualLabel;
 }
 
 
-QString MKeyOverrideQuick::icon() const
+QString KeyOverrideQuick::icon() const
 {
-    Q_D(const MKeyOverrideQuick);
+    Q_D(const KeyOverrideQuick);
 
     return d->actualIcon;
 }
 
-bool MKeyOverrideQuick::highlighted() const
+bool KeyOverrideQuick::highlighted() const
 {
-    Q_D(const MKeyOverrideQuick);
+    Q_D(const KeyOverrideQuick);
 
     return d->actualHighlighted;
 }
 
-bool MKeyOverrideQuick::enabled() const
+bool KeyOverrideQuick::enabled() const
 {
-    Q_D(const MKeyOverrideQuick);
+    Q_D(const KeyOverrideQuick);
 
     return d->actualEnabled;
 }
 
-QString MKeyOverrideQuick::defaultLabel() const
+QString KeyOverrideQuick::defaultLabel() const
 {
-    Q_D(const MKeyOverrideQuick);
+    Q_D(const KeyOverrideQuick);
 
     return d->defaultLabel;
 }
 
 
-QString MKeyOverrideQuick::defaultIcon() const
+QString KeyOverrideQuick::defaultIcon() const
 {
-    Q_D(const MKeyOverrideQuick);
+    Q_D(const KeyOverrideQuick);
 
     return d->defaultIcon;
 }
 
-bool MKeyOverrideQuick::defaultHighlighted() const
+bool KeyOverrideQuick::defaultHighlighted() const
 {
-    Q_D(const MKeyOverrideQuick);
+    Q_D(const KeyOverrideQuick);
 
     return d->defaultHighlighted;
 }
 
-bool MKeyOverrideQuick::defaultEnabled() const
+bool KeyOverrideQuick::defaultEnabled() const
 {
-    Q_D(const MKeyOverrideQuick);
+    Q_D(const KeyOverrideQuick);
 
     return d->defaultEnabled;
 }
 
-void MKeyOverrideQuick::overrideLabel(const QString &label)
+void KeyOverrideQuick::overrideLabel(const QString &label)
 {
     setLabel(label, true);
 }
 
-void MKeyOverrideQuick::overrideIcon(const QString &icon)
+void KeyOverrideQuick::overrideIcon(const QString &icon)
 {
     setIcon(icon, true);
 }
 
-void MKeyOverrideQuick::overrideHighlighted(bool highlighted)
+void KeyOverrideQuick::overrideHighlighted(bool highlighted)
 {
     setHighlighted(highlighted, true);
 }
 
-void MKeyOverrideQuick::overrideEnabled(bool enabled)
+void KeyOverrideQuick::overrideEnabled(bool enabled)
 {
     setEnabled(enabled, true);
 }
 
-void MKeyOverrideQuick::setDefaultLabel(const QString &label)
+void KeyOverrideQuick::setDefaultLabel(const QString &label)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     if (d->defaultLabel != label) {
         d->defaultLabel = label;
@@ -144,9 +147,9 @@ void MKeyOverrideQuick::setDefaultLabel(const QString &label)
     }
 }
 
-void MKeyOverrideQuick::setDefaultIcon(const QString &icon)
+void KeyOverrideQuick::setDefaultIcon(const QString &icon)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     if (d->defaultIcon != icon) {
         d->defaultIcon = icon;
@@ -157,9 +160,9 @@ void MKeyOverrideQuick::setDefaultIcon(const QString &icon)
     }
 }
 
-void MKeyOverrideQuick::setDefaultHighlighted(bool highlighted)
+void KeyOverrideQuick::setDefaultHighlighted(bool highlighted)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     if (d->defaultHighlighted != highlighted) {
         d->defaultHighlighted = highlighted;
@@ -170,9 +173,9 @@ void MKeyOverrideQuick::setDefaultHighlighted(bool highlighted)
     }
 }
 
-void MKeyOverrideQuick::setDefaultEnabled(bool enabled)
+void KeyOverrideQuick::setDefaultEnabled(bool enabled)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     if (d->defaultEnabled != enabled) {
         d->defaultEnabled = enabled;
@@ -183,9 +186,9 @@ void MKeyOverrideQuick::setDefaultEnabled(bool enabled)
     }
 }
 
-void MKeyOverrideQuick::setLabel(const QString &label, bool overriden)
+void KeyOverrideQuick::setLabel(const QString &label, bool overriden)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     d->labelIsOverriden = overriden;
     if (d->actualLabel != label) {
@@ -194,9 +197,9 @@ void MKeyOverrideQuick::setLabel(const QString &label, bool overriden)
     }
 }
 
-void MKeyOverrideQuick::setIcon(const QString &icon, bool overriden)
+void KeyOverrideQuick::setIcon(const QString &icon, bool overriden)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     d->iconIsOverriden = overriden;
     if (d->actualIcon != icon) {
@@ -205,9 +208,9 @@ void MKeyOverrideQuick::setIcon(const QString &icon, bool overriden)
     }
 }
 
-void MKeyOverrideQuick::setHighlighted(bool highlighted, bool overriden)
+void KeyOverrideQuick::setHighlighted(bool highlighted, bool overriden)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     d->highlightedIsOverriden = overriden;
     if (d->actualHighlighted != highlighted) {
@@ -216,9 +219,9 @@ void MKeyOverrideQuick::setHighlighted(bool highlighted, bool overriden)
     }
 }
 
-void MKeyOverrideQuick::setEnabled(bool enabled, bool overriden)
+void KeyOverrideQuick::setEnabled(bool enabled, bool overriden)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     d->enabledIsOverriden = overriden;
     if (d->actualEnabled != enabled) {
@@ -227,38 +230,38 @@ void MKeyOverrideQuick::setEnabled(bool enabled, bool overriden)
     }
 }
 
-void MKeyOverrideQuick::useDefaultLabel()
+void KeyOverrideQuick::useDefaultLabel()
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     setLabel(d->defaultLabel, false);
 }
 
-void MKeyOverrideQuick::useDefaultIcon()
+void KeyOverrideQuick::useDefaultIcon()
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     setIcon(d->defaultIcon, false);
 }
 
-void MKeyOverrideQuick::useDefaultHighlighted()
+void KeyOverrideQuick::useDefaultHighlighted()
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     setHighlighted(d->defaultHighlighted, false);
 }
 
-void MKeyOverrideQuick::useDefaultEnabled()
+void KeyOverrideQuick::useDefaultEnabled()
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     setEnabled(d->defaultEnabled, false);
 }
 
-void MKeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOverride,
-                                      const MKeyOverride::KeyOverrideAttributes changedAttributes)
+void KeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOverride,
+                                     const MKeyOverride::KeyOverrideAttributes changedAttributes)
 {
-    Q_D(MKeyOverrideQuick);
+    Q_D(KeyOverrideQuick);
 
     enum {
         UseOverride,
@@ -349,3 +352,5 @@ void MKeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOve
         qCritical() << __PRETTY_FUNCTION__ << "- unknown enum value for labelAction:" << static_cast<int> (labelAction);
     }
 }
+
+} // namespace Maliit

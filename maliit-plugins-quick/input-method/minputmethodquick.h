@@ -12,8 +12,8 @@
  * of this file.
  */
 
-#ifndef MEEGO_KEYBOARD_QUICK_H
-#define MEEGO_KEYBOARD_QUICK_H
+#ifndef MALIIT_INPUT_METHOD_QUICK_H
+#define MALIIT_INPUT_METHOD_QUICK_H
 
 #include <maliit/plugins/abstractinputmethod.h>
 #include <maliit/plugins/keyoverride.h>
@@ -28,12 +28,8 @@ namespace Maliit
 {
 
 class AbstractPlatform;
-
-} // namespace Maliit
-
-class MInputMethodQuickPrivate;
-class MInputMethodQuickLoader;
-class MKeyOverrideQuick;
+class InputMethodQuickPrivate;
+class KeyOverrideQuick;
 
 //! \brief MInputMethodQuick is used for QML-based input method plugins.
 //!
@@ -43,7 +39,7 @@ class MKeyOverrideQuick;
 //! necessary requests.
 //! QML-based input methods on the other hand can use the properties of this
 //! class to respond to requests from the framework.
-class MInputMethodQuick
+class InputMethodQuick
     : public MAbstractInputMethod
 {
     Q_OBJECT
@@ -61,8 +57,8 @@ class MInputMethodQuick
                                   NOTIFY appOrientationChanged)
 
     //! Propagates action key override to QML components.
-    Q_PROPERTY(MKeyOverrideQuick *actionKeyOverride READ actionKeyOverride
-                                                    NOTIFY actionKeyOverrideChanged)
+    Q_PROPERTY(Maliit::KeyOverrideQuick *actionKeyOverride READ actionKeyOverride
+                                                           NOTIFY actionKeyOverrideChanged)
 
     //! Property for whether input method is active
     Q_PROPERTY(bool active READ isActive NOTIFY activeChanged)
@@ -82,10 +78,10 @@ public:
     //! \param host serves as communication link to framework and application. Managed by framework.
     //! \param mainWindow should be used to install plugin's UI into it. Managed by framework.
     //! \param qmlFileName the QML file that will be loaded.
-    explicit MInputMethodQuick(MAbstractInputMethodHost *host,
-                               const QString &qmlFileName,
-                               const QSharedPointer<Maliit::AbstractPlatform> &platform);
-    virtual ~MInputMethodQuick();
+    explicit InputMethodQuick(MAbstractInputMethodHost *host,
+                              const QString &qmlFileName,
+                              const QSharedPointer<Maliit::AbstractPlatform> &platform);
+    virtual ~InputMethodQuick();
 
     //! \reimp
     virtual void show();
@@ -125,7 +121,7 @@ public:
     Q_INVOKABLE void setScreenRegion(const QRect &region);
 
     //! Returns action key override.
-    MKeyOverrideQuick *actionKeyOverride() const;
+    KeyOverrideQuick *actionKeyOverride() const;
 
     //! Activates action key, that is - sends enter keypress.
     Q_INVOKABLE void activateActionKey();
@@ -217,14 +213,16 @@ public Q_SLOTS:
     void userHide();
 
 private:
-    Q_DISABLE_COPY(MInputMethodQuick)
-    Q_DECLARE_PRIVATE(MInputMethodQuick)
+    Q_DISABLE_COPY(InputMethodQuick)
+    Q_DECLARE_PRIVATE(InputMethodQuick)
 
-    MInputMethodQuickPrivate *const d_ptr;
+    InputMethodQuickPrivate *const d_ptr;
 
 private Q_SLOTS:
     //! Propagates change to QML.
     void onSentActionKeyAttributesChanged(const QString &keyId, const MKeyOverride::KeyOverrideAttributes changedAttributes);
 };
 
-#endif // MEEGO_KEYBOARD_QUICK_H
+} // namespace Maliit
+
+#endif // MALIIT_INPUT_METHOD_QUICK_H

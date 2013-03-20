@@ -210,7 +210,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
     Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
     if (QFileInfo(fileName).suffix() == "qml") {
-        plugin = new MInputMethodQuickPlugin(dir.filePath(fileName), m_platform);
+        plugin = new Maliit::InputMethodQuickPlugin(dir.filePath(fileName), m_platform);
         if (!plugin) {
             qWarning() << __PRETTY_FUNCTION__
                        << "Could not create a plugin for: " << fileName;
