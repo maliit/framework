@@ -16,8 +16,8 @@
 #include "core-utils.h"
 #include "gui-utils.h"
 
-#include <minputmethodquickplugin.h>
-#include <minputmethodquick.h>
+#include <quick/inputmethodquickplugin.h>
+#include <quick/inputmethodquick.h>
 #include <minputmethodhost.h>
 #include <QtCore>
 #include <QtGui>

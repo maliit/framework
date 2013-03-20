@@ -28,7 +28,7 @@
 #include <maliit/settingdata.h>
 #include "windowgroup.h"
 
-#include <minputmethodquickplugin.h>
+#include <quick/inputmethodquickplugin.h>
 
 #include <QDir>
 #include <QPluginLoader>
