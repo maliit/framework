@@ -26,7 +26,7 @@ namespace Maliit
 
 class KeyOverrideQuickPrivate;
 
-//! MKeyOverrideQuick stores some attributes of a key for QtQuick virtual keyboard.
+//! KeyOverrideQuick stores some attributes of a key for QtQuick virtual keyboard.
 class KeyOverrideQuick : public QObject
 {
     Q_OBJECT
