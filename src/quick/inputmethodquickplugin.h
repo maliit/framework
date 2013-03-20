@@ -47,18 +47,6 @@ public:
                            const QSharedPointer<Maliit::AbstractPlatform> &platform);
     virtual ~InputMethodQuickPlugin();
 
-    // FIXME: Add getter as vfunc with next API break and remove both static functions.
-    //! Add list of import paths that will be used by the internal QML engine of
-    //! this plugin.  For this function to take any effect, it needs to be
-    //! called before the reimplementation of createInputMethod calls
-    //! Maliit::InputMethodQuickPlugin::createInputMethod.
-    static void setQmlImportPaths(const QStringList &paths);
-
-    //! \internal
-    //! Used to read the current list of import paths.
-    static QStringList qmlImportPaths();
-    //! \internal_end
-
     //! \reimp
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host);
     virtual QSet<Maliit::HandlerState> supportedStates() const;
