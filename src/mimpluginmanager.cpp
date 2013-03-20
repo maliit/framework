@@ -17,7 +17,6 @@
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
 #include <maliit/plugins/inputmethodplugin.h>
-#include <maliit/plugins/abstractpluginfactory.h>
 #include "mattributeextensionmanager.h"
 #include "msharedattributeextensionmanager.h"
 #include <maliit/plugins/abstractinputmethod.h>
@@ -28,6 +27,8 @@
 #include "maliit/namespaceinternal.h"
 #include <maliit/settingdata.h>
 #include "windowgroup.h"
+
+#include <minputmethodquickplugin.h>
 
 #include <QDir>
 #include <QPluginLoader>
@@ -40,7 +41,6 @@
 namespace
 {
     const QString DefaultPluginLocation(MALIIT_PLUGINS_DIR);
-    const QString DefaultFactoryPluginLocation(MALIIT_FACTORY_PLUGINS_DIR);
 
     const char * const VisualizationAttribute = "visualizationPriority";
     const char * const FocusStateAttribute = "focusState";
@@ -48,7 +48,6 @@ namespace
     const QString ConfigRoot           = MALIIT_CONFIG_ROOT;
     const QString MImPluginPaths       = ConfigRoot + "paths";
     const QString MImPluginDisabled    = ConfigRoot + "disabledpluginfiles";
-    const QString MImPluginFactories   = ConfigRoot + "factories";
 
     const QString PluginRoot           = MALIIT_CONFIG_ROOT"plugins";
     const QString PluginSettings       = MALIIT_CONFIG_ROOT"pluginsettings";
@@ -58,13 +57,6 @@ namespace
 
     const char * const InputMethodItem = "inputMethod";
     const char * const LoadAll = "loadAll";
-
-    // this function is used to detect the file suffix used to associate with specific factory
-    static QString getFileMimeType(const QString& fileName)
-    {
-        QFileInfo fi(fileName);
-        return fi.suffix();
-    }
 }
 
 MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputContextConnection> &connection,
@@ -148,11 +140,6 @@ void MIMPluginManagerPrivate::loadPlugins()
 
     MImOnScreenPlugins::SubView activeSubView = onScreenPlugins.activeSubView();
 
-    //load factories
-    const QDir &dir(DefaultFactoryPluginLocation);
-    Q_FOREACH (QString factoryName, dir.entryList(QDir::Files))
-        loadFactoryPlugin(dir, factoryName);
-
     // Load active plugin first
     Q_FOREACH (QString path, paths) {
         const QDir &dir(path);
@@ -211,36 +198,6 @@ void MIMPluginManagerPrivate::loadPlugins()
     Q_EMIT q->pluginsChanged();
 }
 
-bool MIMPluginManagerPrivate::loadFactoryPlugin(const QDir &dir, const QString &fileName)
-{
-    if (blacklist.contains(fileName)) {
-        qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
-        return false;
-    }
-
-    // TODO: skip already loaded plugin ids (fileName)
-    QPluginLoader load(dir.absoluteFilePath(fileName));
-
-    QObject *pluginInstance = load.instance();
-    if (!pluginInstance) {
-        qWarning() << __PRETTY_FUNCTION__
-                   << "Error loading factory plugin from" << dir.absoluteFilePath(fileName) << load.errorString();
-        return false;
-    }
-
-    // check if the plugin is a factory
-    MImAbstractPluginFactory *factory = qobject_cast<MImAbstractPluginFactory *>(pluginInstance);
-    if (!factory) {
-        qWarning() << __PRETTY_FUNCTION__
-                   << "Could not cast" << pluginInstance->metaObject()->className() << "into MImAbstractPluginFactory.";
-        return false;
-    }
-    factory->setPlatform(m_platform);
-    factories.insert(factory->fileExtension(), factory);
-
-    return true;
-}
-
 bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileName)
 {
     Q_Q(MIMPluginManager);
@@ -252,10 +209,8 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
-    // Check if we have a specific factory for this plugin
-    QString mimeType = getFileMimeType(fileName);
-    if (factories.contains(mimeType)) {
-        plugin = factories[mimeType]->create(dir.filePath(fileName));
+    if (QFileInfo(fileName).suffix() == "qml") {
+        plugin = new MInputMethodQuickPlugin(dir.filePath(fileName), m_platform);
         if (!plugin) {
             qWarning() << __PRETTY_FUNCTION__
                        << "Could not create a plugin for: " << fileName;

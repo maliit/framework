@@ -9,7 +9,6 @@ TARGET = $$TOP_DIR/lib/$$MALIIT_PLUGINS_LIB
 # Input
 PLUGIN_HEADERS_PUBLIC = \
         maliit/plugins/inputmethodplugin.h \
-        maliit/plugins/abstractpluginfactory.h \
         maliit/plugins/abstractinputmethod.h \
         maliit/plugins/abstractinputmethodhost.h \
         maliit/plugins/keyoverride.h \
@@ -23,7 +22,6 @@ PLUGIN_HEADERS_PUBLIC = \
         maliit/plugins/abstractpluginsetting.h \
 
 PLUGIN_SOURCES += \
-        maliit/plugins/abstractpluginfactory.cpp \
         maliit/plugins/abstractinputmethod.cpp \
         maliit/plugins/abstractinputmethodhost.cpp \
         maliit/plugins/keyoverride.cpp \
@@ -170,6 +168,7 @@ INSTALLS += \
     install_prf \
     install_pkgconfig \
 
+include($$TOP_DIR/maliit-plugins-quick/libmaliit-plugins-quick.pri)
 include($$TOP_DIR/weston-protocols/libmaliit-weston-protocols.pri)
 include($$TOP_DIR/connection/libmaliit-connection.pri)
 include($$TOP_DIR/common/libmaliit-common.pri)
