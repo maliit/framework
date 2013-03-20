@@ -20,13 +20,16 @@
 
 #include <maliit/plugins/keyoverride.h>
 
-class MKeyOverrideQuickPrivate;
+namespace Maliit
+{
+
+class KeyOverrideQuickPrivate;
 
 //! MKeyOverrideQuick stores some attributes of a key for QtQuick virtual keyboard.
-class MKeyOverrideQuick : public QObject
+class KeyOverrideQuick : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(MKeyOverrideQuick)
+    Q_DISABLE_COPY(KeyOverrideQuick)
 
     // actual properties
     Q_PROPERTY(QString label    READ label       WRITE overrideLabel       NOTIFY labelChanged)
@@ -42,10 +45,10 @@ class MKeyOverrideQuick : public QObject
 
 public:
     //! Constructor.
-    MKeyOverrideQuick();
+    KeyOverrideQuick();
 
     //! Destructor.
-    virtual ~MKeyOverrideQuick();
+    virtual ~KeyOverrideQuick();
 
     //! Returns text from the key
     QString label() const;
@@ -150,9 +153,11 @@ private:
     //! Sets actual enabled and marks it as either overriden or default.
     void setEnabled(bool enabled, bool overriden);
 
-    Q_DECLARE_PRIVATE(MKeyOverrideQuick)
+    Q_DECLARE_PRIVATE(KeyOverrideQuick)
 
-    MKeyOverrideQuickPrivate *d_ptr;
+    KeyOverrideQuickPrivate *d_ptr;
 };
+
+} // namespace Maliit
 
 #endif // MALIIT_QUICK_KEY_OVERRIDE_H

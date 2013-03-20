@@ -12,8 +12,8 @@
  * of this file.
  */
 
-#ifndef M_INPUT_METHOD_QUICK_PLUGIN
-#define M_INPUT_METHOD_QUICK_PLUGIN
+#ifndef MALIIT_INPUT_METHOD_QUICK_PLUGIN_H
+#define MALIIT_INPUT_METHOD_QUICK_PLUGIN_H
 
 #include <maliit/plugins/inputmethodplugin.h>
 
@@ -25,10 +25,7 @@ namespace Maliit
 {
 
 class AbstractPlatform;
-
-} // namespace Maliit
-
-class MInputMethodQuickPluginPrivate;
+class InputMethodQuickPluginPrivate;
 
 //! \brief Creates an input method plugin that allows to use QML.
 //!
@@ -40,13 +37,13 @@ class MInputMethodQuickPluginPrivate;
 //! If the provided MInputMethodQuick class is not sufficient, then reimplement
 //! MInputMethodQuickPlugin::createInputMethodSettings as well and create a
 //! custom MAbstractInputMethod instance there.
-class MInputMethodQuickPlugin
+class InputMethodQuickPlugin
     : public Maliit::Plugins::InputMethodPlugin
 {
 public:
-    MInputMethodQuickPlugin(const QString &filename,
-                            const QSharedPointer<Maliit::AbstractPlatform> &platform);
-    virtual ~MInputMethodQuickPlugin();
+    InputMethodQuickPlugin(const QString &filename,
+                           const QSharedPointer<Maliit::AbstractPlatform> &platform);
+    virtual ~InputMethodQuickPlugin();
 
     // FIXME: Add getter as vfunc with next API break and remove both static functions.
     //! Add list of import paths that will be used by the internal QML engine of this plugin.
@@ -66,12 +63,11 @@ public:
     //! \reimp_end
 
 private:
-    Q_DISABLE_COPY(MInputMethodQuickPlugin);
-    Q_DECLARE_PRIVATE(MInputMethodQuickPlugin);
-    MInputMethodQuickPluginPrivate *const d_ptr;
+    Q_DISABLE_COPY(InputMethodQuickPlugin);
+    Q_DECLARE_PRIVATE(InputMethodQuickPlugin);
+    InputMethodQuickPluginPrivate *const d_ptr;
 };
 
-Q_DECLARE_INTERFACE(MInputMethodQuickPlugin,
-                    "com.meego.meegoimframework.MInputMethodQuickPlugin/1.1")
+} // namespace Maliit
 
-#endif // M_INPUT_METHOD_QUICK_PLUGIN
+#endif // MALIIT_INPUT_METHOD_QUICK_PLUGIN_H

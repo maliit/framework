@@ -29,6 +29,9 @@
 #include <QQmlEngine>
 #include <QQuickView>
 
+namespace Maliit
+{
+
 namespace
 {
 
@@ -48,14 +51,14 @@ QQuickView *getSurface (MAbstractInputMethodHost *host)
     return view.take ();
 }
 
-}
+} // unnamed namespace
 
-class MInputMethodQuickPrivate
+class InputMethodQuickPrivate
 {
-    Q_DECLARE_PUBLIC(MInputMethodQuick)
+    Q_DECLARE_PUBLIC(InputMethodQuick)
 
 public:
-    MInputMethodQuick *const q_ptr;
+    InputMethodQuick *const q_ptr;
     QScopedPointer<QQuickView> surface;
     QRect inputMethodArea;
     int appOrientation;
@@ -68,7 +71,7 @@ public:
     //! requests.  We track the current shown/SIP requested state using these variables.
     bool sipRequested;
     bool sipIsInhibited;
-    QSharedPointer<MKeyOverrideQuick> actionKeyOverride;
+    QSharedPointer<KeyOverrideQuick> actionKeyOverride;
     QSharedPointer<MKeyOverride> sentActionKeyOverride;
     bool active;
 
@@ -83,9 +86,9 @@ public:
     bool m_hiddenText;
     QSharedPointer<Maliit::AbstractPlatform> m_platform;
 
-    MInputMethodQuickPrivate(MAbstractInputMethodHost *host,
-                             MInputMethodQuick *im,
-                             const QSharedPointer<Maliit::AbstractPlatform> &platform)
+    InputMethodQuickPrivate(MAbstractInputMethodHost *host,
+                            InputMethodQuick *im,
+                            const QSharedPointer<Maliit::AbstractPlatform> &platform)
         : q_ptr(im)
         , surface(getSurface(host))
         , appOrientation(0)
@@ -93,7 +96,7 @@ public:
         , activeState(Maliit::OnScreen)
         , sipRequested(false)
         , sipIsInhibited(false)
-        , actionKeyOverride(new MKeyOverrideQuick())
+        , actionKeyOverride(new KeyOverrideQuick())
         , sentActionKeyOverride()
         , active(false)
         , m_surroundingTextValid(false)
@@ -113,9 +116,8 @@ public:
         surface->engine()->rootContext()->setContextProperty("MInputMethodQuick", im);
     }
 
-    ~MInputMethodQuickPrivate()
-    {
-    }
+    ~InputMethodQuickPrivate()
+    {}
 
     void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
                                      const QRegion &region)
@@ -138,32 +140,32 @@ public:
     }
 };
 
-MInputMethodQuick::MInputMethodQuick(MAbstractInputMethodHost *host,
-                                     const QString &qmlFileName,
-                                     const QSharedPointer<Maliit::AbstractPlatform> &platform)
+InputMethodQuick::InputMethodQuick(MAbstractInputMethodHost *host,
+                                   const QString &qmlFileName,
+                                   const QSharedPointer<Maliit::AbstractPlatform> &platform)
     : MAbstractInputMethod(host)
-    , d_ptr(new MInputMethodQuickPrivate(host, this, platform))
+    , d_ptr(new InputMethodQuickPrivate(host, this, platform))
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
 
     d->surface->setSource(QUrl::fromLocalFile(qmlFileName));
     
     propagateScreenSize();
 }
 
-MInputMethodQuick::~MInputMethodQuick()
+InputMethodQuick::~InputMethodQuick()
 {}
 
-void MInputMethodQuick::handleFocusChange(bool focusIn)
+void InputMethodQuick::handleFocusChange(bool focusIn)
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     d->haveFocus = focusIn;
     Q_EMIT focusTargetChanged(focusIn);
 }
 
-void MInputMethodQuick::show()
+void InputMethodQuick::show()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     d->sipRequested = true;
     if (d->sipIsInhibited) {
         return;
@@ -179,9 +181,9 @@ void MInputMethodQuick::show()
     }
 }
 
-void MInputMethodQuick::hide()
+void InputMethodQuick::hide()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     if (!d->sipRequested) {
         return;
     }
@@ -192,9 +194,9 @@ void MInputMethodQuick::hide()
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }
 
-void MInputMethodQuick::update()
+void InputMethodQuick::update()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
 
     bool emitSurroundingText = false;
     bool emitSurroundingTextValid = false;
@@ -313,14 +315,14 @@ void MInputMethodQuick::update()
     Q_EMIT editorStateUpdate();
 }
 
-void MInputMethodQuick::reset()
+void InputMethodQuick::reset()
 {
     Q_EMIT inputMethodReset();
 }
 
-void MInputMethodQuick::handleAppOrientationChanged(int angle)
+void InputMethodQuick::handleAppOrientationChanged(int angle)
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
 
     MAbstractInputMethod::handleAppOrientationChanged(angle);
 
@@ -337,9 +339,9 @@ void MInputMethodQuick::handleAppOrientationChanged(int angle)
     }
 }
 
-void MInputMethodQuick::setState(const QSet<Maliit::HandlerState> &state)
+void InputMethodQuick::setState(const QSet<Maliit::HandlerState> &state)
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
 
     if (state.isEmpty()) {
         return;
@@ -359,18 +361,18 @@ void MInputMethodQuick::setState(const QSet<Maliit::HandlerState> &state)
     }
 }
 
-void MInputMethodQuick::handleClientChange()
+void InputMethodQuick::handleClientChange()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
 
     if (d->sipRequested) {
         setActive(false);
     }
 }
 
-void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
+void InputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
 
     if (d->sipIsInhibited == inhibitShow) {
         return;
@@ -387,7 +389,7 @@ void MInputMethodQuick::handleVisualizationPriorityChange(bool inhibitShow)
 }
 
 
-void MInputMethodQuick::propagateScreenSize()
+void InputMethodQuick::propagateScreenSize()
 {
     const QSize screenSize(QGuiApplication::primaryScreen()->availableSize());
 
@@ -395,31 +397,31 @@ void MInputMethodQuick::propagateScreenSize()
     Q_EMIT screenHeightChanged(screenSize.height());
 }
 
-int MInputMethodQuick::screenHeight() const
+int InputMethodQuick::screenHeight() const
 {
     return QGuiApplication::primaryScreen()->availableSize().height();
 }
 
-int MInputMethodQuick::screenWidth() const
+int InputMethodQuick::screenWidth() const
 {
     return QGuiApplication::primaryScreen()->availableSize().width();
 }
 
-int MInputMethodQuick::appOrientation() const
+int InputMethodQuick::appOrientation() const
 {
-    Q_D(const MInputMethodQuick);
+    Q_D(const InputMethodQuick);
     return d->appOrientation;
 }
 
-QRectF MInputMethodQuick::inputMethodArea() const
+QRectF InputMethodQuick::inputMethodArea() const
 {
-    Q_D(const MInputMethodQuick);
+    Q_D(const InputMethodQuick);
     return d->inputMethodArea;
 }
 
-void MInputMethodQuick::setInputMethodArea(const QRectF &area)
+void InputMethodQuick::setInputMethodArea(const QRectF &area)
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
 
     if (d->inputMethodArea != area.toRect()) {
         d->inputMethodArea = area.toRect();
@@ -430,14 +432,14 @@ void MInputMethodQuick::setInputMethodArea(const QRectF &area)
     }
 }
 
-void MInputMethodQuick::setScreenRegion(const QRect &region)
+void InputMethodQuick::setScreenRegion(const QRect &region)
 {
     inputMethodHost()->setScreenRegion(region);
 }
 
-void MInputMethodQuick::sendPreedit(const QString &text,
-                                    const QVariant &preeditFormats,
-                                    int replacementStart, int replacementLength, int cursorPos)
+void InputMethodQuick::sendPreedit(const QString &text,
+                                   const QVariant &preeditFormats,
+                                   int replacementStart, int replacementLength, int cursorPos)
 {
     QList<Maliit::PreeditTextFormat> formatList;
 
@@ -477,7 +479,7 @@ void MInputMethodQuick::sendPreedit(const QString &text,
     inputMethodHost()->sendPreeditString(text, formatList, replacementStart, replacementLength, cursorPos);
 }
 
-void MInputMethodQuick::sendKey(int key, int modifiers, const QString &text, int type)
+void InputMethodQuick::sendKey(int key, int modifiers, const QString &text, int type)
 {
     if (type == MaliitQuick::KeyPress || type == MaliitQuick::KeyClick) {
         QKeyEvent event(QEvent::KeyPress, key, (~(Qt::KeyboardModifiers(Qt::NoModifier))) & modifiers, text);
@@ -490,7 +492,7 @@ void MInputMethodQuick::sendKey(int key, int modifiers, const QString &text, int
     }
 }
 
-void MInputMethodQuick::sendCommit(const QString &text, int replaceStart, int replaceLength, int cursorPos)
+void InputMethodQuick::sendCommit(const QString &text, int replaceStart, int replaceLength, int cursorPos)
 {
     if (text == "\b") {
         QKeyEvent event(QEvent::KeyPress, Qt::Key_Backspace, Qt::NoModifier);
@@ -504,21 +506,21 @@ void MInputMethodQuick::sendCommit(const QString &text, int replaceStart, int re
     }
 }
 
-void MInputMethodQuick::pluginSwitchRequired(int switchDirection)
+void InputMethodQuick::pluginSwitchRequired(int switchDirection)
 {
     inputMethodHost()->switchPlugin(
         static_cast<Maliit::SwitchDirection>(switchDirection));
 }
 
-void MInputMethodQuick::userHide()
+void InputMethodQuick::userHide()
 {
     hide();
     inputMethodHost()->notifyImInitiatedHiding();
 }
 
-void MInputMethodQuick::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides)
+void InputMethodQuick::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides)
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     const QMap<QString, QSharedPointer<MKeyOverride> >::const_iterator iter(overrides.find(actionKeyName));
 
     if (d->sentActionKeyOverride) {
@@ -539,7 +541,7 @@ void MInputMethodQuick::setKeyOverrides(const QMap<QString, QSharedPointer<MKeyO
     d->updateActionKey(MKeyOverride::All);
 }
 
-QList<MAbstractInputMethod::MInputMethodSubView> MInputMethodQuick::subViews(Maliit::HandlerState state) const
+QList<MAbstractInputMethod::MInputMethodSubView> InputMethodQuick::subViews(Maliit::HandlerState state) const
 {
     Q_UNUSED(state);
     MAbstractInputMethod::MInputMethodSubView sub_view;
@@ -550,47 +552,47 @@ QList<MAbstractInputMethod::MInputMethodSubView> MInputMethodQuick::subViews(Mal
     return sub_views;
 }
 
-void MInputMethodQuick::onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes changedAttributes)
+void InputMethodQuick::onSentActionKeyAttributesChanged(const QString &, const MKeyOverride::KeyOverrideAttributes changedAttributes)
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
 
     d->updateActionKey(changedAttributes);
 }
 
-MKeyOverrideQuick* MInputMethodQuick::actionKeyOverride() const
+KeyOverrideQuick* InputMethodQuick::actionKeyOverride() const
 {
-    Q_D(const MInputMethodQuick);
+    Q_D(const InputMethodQuick);
 
     return d->actionKeyOverride.data();
 }
 
-void MInputMethodQuick::activateActionKey()
+void InputMethodQuick::activateActionKey()
 {
     sendKey(Qt::Key_Return, 0, "\r", MaliitQuick::KeyClick);
 }
 
-bool MInputMethodQuick::isActive() const
+bool InputMethodQuick::isActive() const
 {
-    Q_D(const MInputMethodQuick);
+    Q_D(const InputMethodQuick);
     return d->active;
 }
 
-void MInputMethodQuick::setActive(bool enable)
+void InputMethodQuick::setActive(bool enable)
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     if (d->active != enable) {
         d->active = enable;
         Q_EMIT activeChanged();
     }
 }
 
-bool MInputMethodQuick::surroundingTextValid()
+bool InputMethodQuick::surroundingTextValid()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     return d->m_surroundingTextValid;
 }
 
-QString MInputMethodQuick::surroundingText()
+QString InputMethodQuick::surroundingText()
 {
     // Note: fetching value instead of using member variable for allowing connection side to
     // modify text when sending commit.
@@ -600,7 +602,7 @@ QString MInputMethodQuick::surroundingText()
     return text;
 }
 
-int MInputMethodQuick::cursorPosition()
+int InputMethodQuick::cursorPosition()
 {
     // see ::surroundingText()
     QString text;
@@ -609,38 +611,40 @@ int MInputMethodQuick::cursorPosition()
     return position;
 }
 
-int MInputMethodQuick::anchorPosition()
+int InputMethodQuick::anchorPosition()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     return d->m_anchorPosition;
 }
 
-bool MInputMethodQuick::hasSelection()
+bool InputMethodQuick::hasSelection()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     return d->m_hasSelection;
 }
 
-int MInputMethodQuick::contentType()
+int InputMethodQuick::contentType()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     return d->m_contentType;
 }
 
-bool MInputMethodQuick::predictionEnabled()
+bool InputMethodQuick::predictionEnabled()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     return d->m_predictionEnabled;
 }
 
-bool MInputMethodQuick::autoCapitalizationEnabled()
+bool InputMethodQuick::autoCapitalizationEnabled()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     return d->m_autoCapitalizationEnabled;
 }
 
-bool MInputMethodQuick::hiddenText()
+bool InputMethodQuick::hiddenText()
 {
-    Q_D(MInputMethodQuick);
+    Q_D(InputMethodQuick);
     return d->m_hiddenText;
 }
+
+} // namespace Maliit

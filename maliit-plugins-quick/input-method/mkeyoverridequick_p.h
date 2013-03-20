@@ -15,15 +15,18 @@
 #ifndef MALIIT_QUICK_KEY_OVERRIDE_P_H
 #define MALIIT_QUICK_KEY_OVERRIDE_P_H
 
-class MKeyOverrideQuickPrivate
+namespace Maliit
 {
-    Q_DISABLE_COPY(MKeyOverrideQuickPrivate)
+
+class KeyOverrideQuickPrivate
+{
+    Q_DISABLE_COPY(KeyOverrideQuickPrivate)
 
 public:
-    MKeyOverrideQuickPrivate(const QString &label,
-                             const QString &icon,
-                             bool highlighted,
-                             bool enabled);
+    KeyOverrideQuickPrivate(const QString &label,
+                            const QString &icon,
+                            bool highlighted,
+                            bool enabled);
 
     QString actualLabel;
     QString actualIcon;
@@ -40,5 +43,7 @@ public:
     bool highlightedIsOverriden;
     bool enabledIsOverriden;
 };
+
+} // namespace Maliit
 
 #endif // MALIIT_QUICK_KEY_OVERRIDE_P_H
