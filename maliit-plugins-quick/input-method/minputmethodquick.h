@@ -19,10 +19,11 @@
 #include <maliit/plugins/keyoverride.h>
 #include "maliitquick.h"
 
-#include <QRect>
-#include <QPointer>
-#include <QString>
 #include <QEvent>
+#include <QPointer>
+#include <QRect>
+#include <QScopedPointer>
+#include <QString>
 
 namespace Maliit
 {
@@ -216,7 +217,7 @@ private:
     Q_DISABLE_COPY(InputMethodQuick)
     Q_DECLARE_PRIVATE(InputMethodQuick)
 
-    InputMethodQuickPrivate *const d_ptr;
+    const QScopedPointer<InputMethodQuickPrivate> d_ptr;
 
 private Q_SLOTS:
     //! Propagates change to QML.

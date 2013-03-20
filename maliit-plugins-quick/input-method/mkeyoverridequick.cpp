@@ -37,9 +37,7 @@ KeyOverrideQuickPrivate::KeyOverrideQuickPrivate(const QString &label,
       iconIsOverriden(false),
       highlightedIsOverriden(false),
       enabledIsOverriden(false)
-{
-    // EMPTY
-}
+{}
 
 KeyOverrideQuick::KeyOverrideQuick()
     : QObject(),
@@ -47,14 +45,10 @@ KeyOverrideQuick::KeyOverrideQuick()
                                         "",
                                         false,
                                         true))
-{
-    // EMPTY
-}
+{}
 
 KeyOverrideQuick::~KeyOverrideQuick()
-{
-    delete d_ptr;
-}
+{}
 
 QString KeyOverrideQuick::label() const
 {

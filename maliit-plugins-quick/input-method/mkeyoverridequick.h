@@ -16,6 +16,7 @@
 #define MALIIT_QUICK_KEY_OVERRIDE_H
 
 #include <QObject>
+#include <QScopedPointer>
 #include <QSharedPointer>
 
 #include <maliit/plugins/keyoverride.h>
@@ -155,7 +156,7 @@ private:
 
     Q_DECLARE_PRIVATE(KeyOverrideQuick)
 
-    KeyOverrideQuickPrivate *d_ptr;
+    const QScopedPointer<KeyOverrideQuickPrivate> d_ptr;
 };
 
 } // namespace Maliit
