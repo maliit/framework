@@ -15,7 +15,6 @@
 #include "minputmethodquick.h"
 
 #include "mkeyoverridequick.h"
-#include "minputmethodquickplugin.h"
 #include "maliitquick.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
