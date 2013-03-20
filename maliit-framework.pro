@@ -43,8 +43,7 @@ wayland {
 contains(QT_MAJOR_VERSION, 4) {
     error("Qt 5 is required. For the Qt 4 input context see maliit-inputcontext-qt4. For a Qt 4 Maliit please use the 0.81 or 0.94-qt4 branches/release series instead")
 } else {
-    SUBDIRS += connection src passthroughserver
-    SUBDIRS += maliit-plugins-quick examples
+    SUBDIRS += connection src passthroughserver examples
 
     !nodoc {
         SUBDIRS += doc

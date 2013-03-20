@@ -18,6 +18,5 @@ SOURCES += \
     ../utils/gui-utils.cpp \
 
 include($$TOP_DIR/src/libmaliit-plugins.pri)
-include($$TOP_DIR/maliit-plugins-quick/libmaliit-plugins-quick.pri)
 
 include(../common_check.pri)

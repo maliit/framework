@@ -15,8 +15,8 @@
 #include <QDebug>
 #include <QtAlgorithms>
 
-#include "mkeyoverridequick.h"
-#include "mkeyoverridequick_p.h"
+#include "keyoverridequick.h"
+#include "keyoverridequick_p.h"
 
 namespace Maliit
 {

@@ -12,10 +12,10 @@
  * of this file.
  */
 
-#include "minputmethodquickplugin.h"
-#include "minputmethodquick.h"
+#include "inputmethodquickplugin.h"
+#include "inputmethodquick.h"
 #include "maliitquick.h"
-#include "mkeyoverridequick.h"
+#include "keyoverridequick.h"
 #include "abstractplatform.h"
 
 #include <QFileInfo>

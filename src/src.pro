@@ -96,17 +96,31 @@ SETTINGS_SOURCES += \
         mimsettings.cpp \
         mimsettingsqsettings.cpp \
 
+QUICK_HEADERS_PRIVATE += \
+        quick/maliitquick.h \
+        quick/inputmethodquick.h \
+        quick/inputmethodquickplugin.h \
+        quick/keyoverridequick.h \
+        quick/keyoverridequick_p.h \
+
+QUICK_SOURCES += \
+        quick/inputmethodquick.cpp \
+        quick/inputmethodquickplugin.cpp \
+        quick/keyoverridequick.cpp \
+
 HEADERS += \
         $$PLUGIN_HEADERS_PUBLIC \
         $$PLUGIN_HEADERS_PRIVATE \
         $$SERVER_HEADERS_PUBLIC \
         $$SERVER_HEADERS_PRIVATE \
         $$SETTINGS_HEADERS_PRIVATE \
+        $$QUICK_HEADERS_PRIVATE
 
 SOURCES += \
         $$PLUGIN_SOURCES \
         $$SERVER_SOURCES \
         $$SETTINGS_SOURCES \
+        $$QUICK_SOURCES
 
 CONFIG += link_pkgconfig
 QT = core gui gui-private xml dbus qml quick

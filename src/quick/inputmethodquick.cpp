@@ -12,9 +12,9 @@
  * of this file.
  */
 
-#include "minputmethodquick.h"
+#include "inputmethodquick.h"
 
-#include "mkeyoverridequick.h"
+#include "keyoverridequick.h"
 #include "maliitquick.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
