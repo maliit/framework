@@ -24,10 +24,6 @@
 namespace Maliit
 {
 
-namespace {
-QStringList gQmlImportPaths;
-} // unnamed namespace
-
 class InputMethodQuickPluginPrivate
 {
 public:
@@ -63,16 +59,6 @@ InputMethodQuickPlugin::InputMethodQuickPlugin(const QString &filename,
 
 InputMethodQuickPlugin::~InputMethodQuickPlugin()
 {}
-
-void InputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
-{
-    gQmlImportPaths = paths;
-}
-
-QStringList InputMethodQuickPlugin::qmlImportPaths()
-{
-    return gQmlImportPaths;
-}
 
 MAbstractInputMethod *InputMethodQuickPlugin::createInputMethod(MAbstractInputMethodHost *host)
 {
