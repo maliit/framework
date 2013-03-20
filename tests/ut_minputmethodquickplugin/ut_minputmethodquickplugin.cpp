@@ -19,7 +19,6 @@
 #include <minputmethodquickplugin.h>
 #include <minputmethodquick.h>
 #include <minputmethodhost.h>
-#include <maliitquickpluginfactory.h>
 #include <QtCore>
 #include <QtGui>
 
@@ -72,14 +71,13 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup()
     Maliit::Plugins::InputMethodPlugin *plugin = 0;
 
     if (pluginPath.endsWith(".qml")) {
-        MaliitQuickPluginFactory factory;
-        factory.setPlatform(QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
-        plugin = factory.create(pluginPath);
+        plugin = new MInputMethodQuickPlugin(pluginPath,
+                                             QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
     } else {
         QPluginLoader loader(pluginPath);
         pluginInstance = loader.instance();
         QVERIFY(pluginInstance != 0);
-        plugin =  qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
+        plugin = qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
     }
 
     QVERIFY(plugin != 0);
