@@ -34,7 +34,7 @@ namespace Plugins {
     class InputMethodPlugin;
 }
 }
-class MImAbstractPluginFactory;
+
 class MInputContextConnection;
 class MIMPluginManager;
 class MAttributeExtensionManager;
@@ -87,7 +87,6 @@ public:
     typedef QMap<Maliit::Plugins::InputMethodPlugin *, PluginDescription> Plugins;
     typedef QSet<Maliit::Plugins::InputMethodPlugin *> ActivePlugins;
     typedef QMap<Maliit::HandlerState, Maliit::Plugins::InputMethodPlugin *> HandlerMap;
-    typedef QMap<QString, MImAbstractPluginFactory*> PluginsFactory;
 
     MIMPluginManagerPrivate(const QSharedPointer<MInputContextConnection>& connection,
                             const QSharedPointer<Maliit::AbstractPlatform> &platform,
@@ -99,7 +98,6 @@ public:
     void activatePlugin(Maliit::Plugins::InputMethodPlugin *plugin);
     void loadPlugins();
     bool loadPlugin(const QDir &dir, const QString &fileName);
-    bool loadFactoryPlugin(const QDir &dir, const QString &fileName);
     void addHandlerMap(Maliit::HandlerState state, const QString &pluginName);
     void registerSettings();
     void registerSettings(const MImPluginSettingsInfo &info);
@@ -181,7 +179,6 @@ public:
     Plugins plugins;
     ActivePlugins activePlugins;
     QSet<MAbstractInputMethod *> targets;
-    PluginsFactory factories;
     QList<MImPluginSettingsInfo> settings;
 
     QStringList paths;

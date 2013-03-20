@@ -1,8 +1,0 @@
-# Use when a .pro file requires libmaliit-plugins-quick-factory
-# The .pro file must define TOP_DIR to be a relative path
-# to the top-level source/build directory
-
-LIBS += -L$$TOP_DIR/lib/plugins \
-        -l$${MALIIT_PLUGINS_QUICK_FACTORY}
-POST_TARGETDEPS += $$TOP_DIR/lib/plugins/$$maliitDynamicLib($${MALIIT_PLUGINS_QUICK_FACTORY})
-INCLUDEPATH += $$TOP_DIR/maliit-plugins-quick/plugin-factory

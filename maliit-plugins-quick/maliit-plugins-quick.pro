@@ -2,4 +2,4 @@ include(../config.pri)
 
 CONFIG += ordered
 TEMPLATE = subdirs
-SUBDIRS = input-method plugin-factory
+SUBDIRS = input-method
