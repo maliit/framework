@@ -44,7 +44,8 @@ class MInputMethodQuickPlugin
     : public Maliit::Plugins::InputMethodPlugin
 {
 public:
-    MInputMethodQuickPlugin(const QSharedPointer<Maliit::AbstractPlatform> &platform);
+    MInputMethodQuickPlugin(const QString &filename,
+                            const QSharedPointer<Maliit::AbstractPlatform> &platform);
     virtual ~MInputMethodQuickPlugin();
 
     // FIXME: Add getter as vfunc with next API break and remove both static functions.
@@ -61,10 +62,8 @@ public:
     //! \reimp
     virtual MAbstractInputMethod *createInputMethod(MAbstractInputMethodHost *host);
     virtual QSet<Maliit::HandlerState> supportedStates() const;
+    virtual QString name() const;
     //! \reimp_end
-
-    //! Which QML file to load.
-    virtual QString qmlFileName() const = 0;
 
 private:
     Q_DISABLE_COPY(MInputMethodQuickPlugin);
