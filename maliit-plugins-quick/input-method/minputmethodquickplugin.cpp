@@ -62,9 +62,7 @@ InputMethodQuickPlugin::InputMethodQuickPlugin(const QString &filename,
 }
 
 InputMethodQuickPlugin::~InputMethodQuickPlugin()
-{
-    delete d_ptr;
-}
+{}
 
 void InputMethodQuickPlugin::setQmlImportPaths(const QStringList &paths)
 {

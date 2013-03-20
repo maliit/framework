@@ -17,9 +17,10 @@
 
 #include <maliit/plugins/inputmethodplugin.h>
 
+#include <QScopedPointer>
+#include <QSet>
 #include <QString>
 #include <QStringList>
-#include <QSet>
 
 namespace Maliit
 {
@@ -65,7 +66,7 @@ public:
 private:
     Q_DISABLE_COPY(InputMethodQuickPlugin);
     Q_DECLARE_PRIVATE(InputMethodQuickPlugin);
-    InputMethodQuickPluginPrivate *const d_ptr;
+    const QScopedPointer<InputMethodQuickPluginPrivate> d_ptr;
 };
 
 } // namespace Maliit
