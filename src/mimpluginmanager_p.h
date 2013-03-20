@@ -193,7 +193,6 @@ public:
     MIMPluginManagerAdaptor *adaptor;
 
     MIMPluginManager *q_ptr;
-    bool connectionValid;
 
     bool acceptRegionUpdates;
     bool visible;
