@@ -26,15 +26,43 @@
 
 namespace
 {
-    const char * const DBusPath = "/com/meego/inputmethod/uiserver1";
-    const char * const DBusInterface = "com.meego.inputmethod.uiserver1";
 
-    const char * const DBusClientPath = "/com/meego/inputmethod/inputcontext";
-    const char * const DBusClientInterface = "com.meego.inputmethod.inputcontext1";
+const char * const DBusPath = "/com/meego/inputmethod/uiserver1";
+const char * const DBusInterface = "com.meego.inputmethod.uiserver1";
 
-    const char * const DBusLocalPath("/org/freedesktop/DBus/Local");
-    const char * const DBusLocalInterface("org.freedesktop.DBus.Local");
-    const char * const DisconnectedSignal("Disconnected");
+const char * const DBusClientPath = "/com/meego/inputmethod/inputcontext";
+const char * const DBusClientInterface = "com.meego.inputmethod.inputcontext1";
+
+const char * const DBusLocalPath("/org/freedesktop/DBus/Local");
+const char * const DBusLocalInterface("org.freedesktop.DBus.Local");
+const char * const DisconnectedSignal("Disconnected");
+
+// For QtDBus marshaller.
+QDBusArgument &operator<<(QDBusArgument &arg, const Maliit::PreeditTextFormat &format)
+{
+    arg.beginStructure();
+    arg << format.start
+        << format.length
+        << static_cast<int>(format.preeditFace);
+    arg.endStructure();
+
+    return arg;
+}
+
+const QDBusArgument &operator>>(const QDBusArgument &arg, Maliit::PreeditTextFormat &format)
+{
+    int preedit_face(0);
+
+    arg.beginStructure();
+    arg >> format.start
+        >> format.length
+        >> preedit_face;
+    arg.endStructure();
+    format.preeditFace = static_cast<Maliit::PreeditFace> (preedit_face);
+
+    return arg;
+}
+
 }
 
 DBusInputContextConnection::DBusInputContextConnection(const QSharedPointer<Maliit::Server::DBus::Address> &address)
@@ -50,6 +78,8 @@ DBusInputContextConnection::DBusInputContextConnection(const QSharedPointer<Mali
     qDBusRegisterMetaType<MImPluginSettingsEntry>();
     qDBusRegisterMetaType<MImPluginSettingsInfo>();
     qDBusRegisterMetaType<QList<MImPluginSettingsInfo> >();
+    qDBusRegisterMetaType<Maliit::PreeditTextFormat>();
+    qDBusRegisterMetaType<QList<Maliit::PreeditTextFormat> >();
 
     new Uiserver1Adaptor(this);
 }

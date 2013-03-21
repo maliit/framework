@@ -295,6 +295,7 @@ Q_DECLARE_METATYPE(Maliit::TextContentType)
 Q_DECLARE_METATYPE(Maliit::OrientationAngle)
 Q_DECLARE_METATYPE(Maliit::InputMethodMode)
 Q_DECLARE_METATYPE(Maliit::InputMethodQueryExtensions)
+Q_DECLARE_METATYPE(Maliit::PreeditTextFormat)
 Q_DECLARE_METATYPE(QList<Maliit::PreeditTextFormat>)
 
 #endif
