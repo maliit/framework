@@ -15,6 +15,7 @@
 #include "mimonscreenplugins.h"
 #include "config.h"
 
+#include <QLocale>
 #include <QString>
 #include <QSet>
 #include <QDebug>
@@ -155,6 +156,8 @@ void MImOnScreenPlugins::setAutoEnabledSubViews(const QList<MImOnScreenPlugins::
 void MImOnScreenPlugins::updateAvailableSubViews(const QList<SubView> &availableSubViews)
 {
     mAvailableSubViews = availableSubViews;
+
+    autoDetectActiveSubView();
 }
 
 bool MImOnScreenPlugins::isSubViewAvailable(const SubView &subview) const
@@ -243,5 +246,77 @@ void MImOnScreenPlugins::setAllSubViewsEnabled(bool enable)
 
         setEnabledSubViews(mAllSubviewsEnabled ? mAvailableSubViews
                                                : mLastEnabledSubViews);
+    }
+}
+
+void MImOnScreenPlugins::autoDetectActiveSubView()
+{
+    // If no subviews are enabled by the configuration, try to auto-detect
+    // them.
+    if (enabledSubViews().empty()) {
+        autoDetectEnabledSubViews();
+    }
+
+    // If we still don't have an enabled subview, enable the first available
+    // one.
+    if (enabledSubViews().empty()) {
+        MImOnScreenPlugins::SubView subView = mAvailableSubViews.first();
+        setAutoEnabledSubViews(QList<MImOnScreenPlugins::SubView>() << subView);
+    }
+
+    // If we have an active subview in the configuration, check that it is
+    // enabled
+    // If we don't have an active subview, auto-activate the first enabled
+    // one.
+    if (mActiveSubView.id.isEmpty() || !isSubViewEnabled(mActiveSubView)) {
+        MImOnScreenPlugins::SubView subView = enabledSubViews().first();
+        setAutoActiveSubView(subView);
+    }
+
+}
+
+void MImOnScreenPlugins::autoDetectEnabledSubViews()
+{
+    const QString &plugin = mActiveSubView.plugin;
+    QList<MImOnScreenPlugins::SubView> to_enable;
+
+    // Try to auto-detect subviews for the selected plugin by looking for
+    // subviews that coincide with the languages selected for use on the
+    // system.
+    // FIXME: This works for the keyboard plugin, but won't work everywhere.
+    // The methodology for auto-configuring subviews should be somehow
+    // plugin-dictated.
+    QStringList langs = QLocale::system().uiLanguages();
+    Q_FOREACH (QString lang, langs) {
+        // Convert to lower case, remove any .utf8 suffix, and use _ as
+        // the separator between language and country.
+        lang = lang.split('.')[0].toLower().replace("-", "_");
+
+        MImOnScreenPlugins::SubView subView(plugin, lang);
+
+        // First try the language code as-is
+        if (isSubViewAvailable(subView) && !to_enable.contains(subView)) {
+            to_enable << subView;
+            continue;
+        }
+
+        // See if we get a match if we expand "de" to "de_de"
+        if (!lang.contains('_')) {
+            subView.id = lang + "_" + lang;
+            if (isSubViewAvailable(subView) && !to_enable.contains(subView)) {
+                to_enable << subView;
+            }
+            continue;
+        }
+
+        // See if we get a match if we trim "de_at" to "de"
+        subView.id = lang.split("_").first();
+        if (isSubViewAvailable(subView) && !to_enable.contains(subView)) {
+            to_enable << subView;
+        }
+    }
+
+    if (!to_enable.isEmpty()) {
+        setAutoEnabledSubViews(to_enable);
     }
 }
