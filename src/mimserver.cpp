@@ -90,8 +90,8 @@ void MImServer::connectComponents()
                      d->serverLogic.data(), SLOT(pluginLoaded()));
 
     // Tracking of application window
-    QObject::connect(d->icConnection.data(), SIGNAL(focusChanged(WId)),
-                     d->serverLogic.data(), SLOT(applicationFocusChanged(WId)));
+    QObject::connect(d->icConnection.data(), &MInputContextConnection::focusChanged,
+                     d->serverLogic.data(), &MImAbstractServerLogic::applicationFocusChanged);
 
     // Rotation handling
     QObject::connect(d->icConnection.data(), SIGNAL(contentOrientationAboutToChange(int)),
