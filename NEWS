@@ -1,7 +1,43 @@
-{NEXT}
+0.99.0
 ======
 
 CHANGES SINCE 0.94.0
+* Requires Qt 5
+* GTK+ and Qt 4 input context are moved into a separate rpository/package
+* Do not use debug config for unit tests
+* Do not abort if there are no plugins.
+* Improvements for QML plugins
+  - Notify qml keyboard when editor target focus changes
+  - Expose editor state better to QML input methods
+  - Replace correctionEnabled with predictionEnabled in qml interface
+  - Enhanced QML interface event sending
+* Use QScreen::availableSize to calculate screenSize
+* Add window group class managing plugins' QWindows
+  - Replaces surface abstraction
+* Remove CONFIG options
+  - disable-background-translucency
+  - disable-dbus
+  - enable-qdbus
+  - noqml
+* Remove MIndicatorServiceClient
+* Use QDBus instead of glib-dbus
+* Remove unused code
+* Update Wayland support to latest protocol changes
+* Add support for input region also on wayland
+* Add a proper Platform class
+* Remove unneeded plugin factories
+
+BUG FIXES
+* Fix some quick input method docs a bit.
+* Fix build when building without CONFIG+=wayland
+* Fix build with CONFIG+=wayland.
+* Fix unused parameter warning.
+* Fix minputmethodquickplugin test for Qt 5
+* Fix private include and use QT+=gui-private
+* Fix some QDBus issues.
+* Fix plugins windows are never added to WindowGroup
+* Fix showing of nemo-keyboard
+* Fix qdbus interface and adaptor generation
 
 0.94.0
 ======
