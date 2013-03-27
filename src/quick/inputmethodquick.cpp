@@ -174,7 +174,10 @@ void InputMethodQuick::show()
     handleAppOrientationChanged(d->appOrientation);
     
     if (d->activeState == Maliit::OnScreen) {
-      d->surface->setGeometry(QRect(QPoint(), QGuiApplication::primaryScreen()->availableSize()));
+     // d->surface->setGeometry(QRect(QPoint(), QGuiApplication::primaryScreen()->availableSize()));
+      const QRect screenRect = QGuiApplication::primaryScreen()->availableGeometry();
+      d->surface->setPosition(screenRect.width()/2 - d->surface->size().width()/2,
+                              screenRect.bottom() - d->surface->size().height());
       d->surface->show();
       setActive(true);
       d->syncInputMask();
