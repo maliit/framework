@@ -28,6 +28,7 @@
 #include <QQmlContext>
 #include <QQmlEngine>
 #include <QQuickView>
+#include <QQuickItem>
 
 namespace Maliit
 {
@@ -172,12 +173,37 @@ void InputMethodQuick::show()
     }
 
     handleAppOrientationChanged(d->appOrientation);
-    
+
     if (d->activeState == Maliit::OnScreen) {
-     // d->surface->setGeometry(QRect(QPoint(), QGuiApplication::primaryScreen()->availableSize()));
       const QRect screenRect = QGuiApplication::primaryScreen()->availableGeometry();
-      d->surface->setPosition(screenRect.width()/2 - d->surface->size().width()/2,
-                              screenRect.bottom() - d->surface->size().height());
+      const QSize rootItemSize(d->surface->rootObject()->width(), d->surface->rootObject()->height());
+      QRect keyboardRect;
+
+      switch (d->appOrientation) {
+      case 90:
+          keyboardRect = QRect(QPoint(screenRect.left(),
+                                      screenRect.top() + screenRect.height()/2 - rootItemSize.height()/2),
+                               rootItemSize);
+          break;
+      case 180:
+          keyboardRect = QRect(QPoint(screenRect.left() + screenRect.width()/2 - rootItemSize.width()/2,
+                                      screenRect.top()),
+                               rootItemSize);
+          break;
+      case 270:
+          keyboardRect = QRect(QPoint(screenRect.right() - rootItemSize.width(),
+                                      screenRect.top() + screenRect.height()/2 - rootItemSize.height()/2),
+                               rootItemSize);
+          break;
+      case 0:
+      case 360:
+      default:
+          keyboardRect = QRect(QPoint(screenRect.left() + screenRect.width()/2 - rootItemSize.width()/2,
+                                      screenRect.bottom() - rootItemSize.height()),
+                               rootItemSize);
+      }
+
+      d->surface->setGeometry(keyboardRect);
       d->surface->show();
       setActive(true);
       d->syncInputMask();
