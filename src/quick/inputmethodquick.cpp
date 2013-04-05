@@ -168,7 +168,8 @@ void InputMethodQuick::show()
 {
     Q_D(InputMethodQuick);
     d->sipRequested = true;
-    if (d->sipIsInhibited) {
+    //we can't do positioning if there isn't a qml main item (for instance a parse error occured)
+    if (d->sipIsInhibited || !d->surface->rootObject()) {
         return;
     }
 
