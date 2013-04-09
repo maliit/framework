@@ -184,7 +184,6 @@ INSTALLS += \
     install_prf \
     install_pkgconfig \
 
-include($$TOP_DIR/maliit-plugins-quick/libmaliit-plugins-quick.pri)
 include($$TOP_DIR/weston-protocols/libmaliit-weston-protocols.pri)
 include($$TOP_DIR/connection/libmaliit-connection.pri)
 include($$TOP_DIR/common/libmaliit-common.pri)
