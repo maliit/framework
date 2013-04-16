@@ -24,7 +24,7 @@
 #endif // HAVE_WAYLAND
 #include "unknownplatform.h"
 
-#include <QApplication>
+#include <QGuiApplication>
 #include <QtDebug>
 
 namespace {
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
         printHelpMessage();
     }
 
-    QApplication app(argc, argv);
+    QGuiApplication app(argc, argv);
     QSharedPointer<MImAbstractServerLogic> serverLogic(new MImStandaloneServerLogic);
 
     // Input Context Connection
