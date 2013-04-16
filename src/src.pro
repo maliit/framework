@@ -123,7 +123,7 @@ SOURCES += \
         $$QUICK_SOURCES
 
 CONFIG += link_pkgconfig
-QT = core gui gui-private xml dbus qml quick
+QT = core gui gui-private dbus qml quick
 
 enable-contextkit {
     PKGCONFIG += contextsubscriber-1.0
