@@ -133,11 +133,6 @@ public:
     {
         actionKeyOverride->applyOverride(sentActionKeyOverride, changedAttributes);
     }
-    
-    void syncInputMask()
-    {
-        m_platform->setInputRegion(surface.data(), QRegion(inputMethodArea));
-    }
 };
 
 InputMethodQuick::InputMethodQuick(MAbstractInputMethodHost *host,
@@ -177,7 +172,6 @@ void InputMethodQuick::show()
         d->surface->setGeometry(QRect(QPoint(), QGuiApplication::primaryScreen()->availableSize()));
         d->surface->show();
         setActive(true);
-        d->syncInputMask();
     }
 }
 
@@ -428,13 +422,13 @@ void InputMethodQuick::setInputMethodArea(const QRectF &area)
         d->handleInputMethodAreaUpdate(inputMethodHost(), d->inputMethodArea);
 
         Q_EMIT inputMethodAreaChanged(d->inputMethodArea);
-        d->syncInputMask();
     }
 }
 
 void InputMethodQuick::setScreenRegion(const QRect &region)
 {
-    inputMethodHost()->setScreenRegion(region);
+    Q_D(InputMethodQuick);
+    d->m_platform->setInputRegion(d->surface.data(), region);
 }
 
 void InputMethodQuick::sendPreedit(const QString &text,
