@@ -37,18 +37,18 @@ namespace
 
 const char * const actionKeyName = "actionKey";
 
-QQuickView *getSurface (MAbstractInputMethodHost *host)
+QQuickView *createWindow(MAbstractInputMethodHost *host)
 {
-    QScopedPointer<QQuickView> view(new QQuickView (0));
+    QScopedPointer<QQuickView> view(new QQuickView);
 
-    host->registerWindow (view.data(), Maliit::PositionCenterBottom);
+    host->registerWindow(view.data(), Maliit::PositionCenterBottom);
 
     QSurfaceFormat format;
     format.setAlphaBufferSize(8);
     view->setFormat(format);
     view->setColor(QColor(Qt::transparent));
 
-    return view.take ();
+    return view.take();
 }
 
 } // unnamed namespace
@@ -90,7 +90,7 @@ public:
                             InputMethodQuick *im,
                             const QSharedPointer<Maliit::AbstractPlatform> &platform)
         : q_ptr(im)
-        , surface(getSurface(host))
+        , surface(createWindow(host))
         , appOrientation(0)
         , haveFocus(false)
         , activeState(Maliit::OnScreen)
