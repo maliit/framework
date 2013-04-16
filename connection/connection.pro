@@ -94,8 +94,4 @@ SOURCES += \
     $$PUBLIC_SOURCES \
     $$PRIVATE_SOURCES \
 
-target.path += $$LIBDIR
-
-INSTALLS += target \
-
 OTHER_FILES += libmaliit-connection.pri
