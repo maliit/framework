@@ -198,6 +198,9 @@ void MInputMethodHost::switchPlugin(const QString &pluginName)
 
 void MInputMethodHost::setScreenRegion(const QRegion &region)
 {
+    // FIXME: not connected to platform integration for adjusting window properites.
+    // Window to set the region to is not even passed on parameters and plugin cannot
+    // itself access platform integration
     if (enabled) {
         pluginManager->updateRegion(region);
     }
