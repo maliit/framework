@@ -129,12 +129,12 @@ public:
         host->setInputMethodArea(region);
     }
 
-    void updateActionKey (const MKeyOverride::KeyOverrideAttributes changedAttributes)
+    void updateActionKey(const MKeyOverride::KeyOverrideAttributes changedAttributes)
     {
         actionKeyOverride->applyOverride(sentActionKeyOverride, changedAttributes);
     }
     
-    void syncInputMask ()
+    void syncInputMask()
     {
         m_platform->setInputRegion(surface.data(), QRegion(inputMethodArea));
     }
@@ -174,10 +174,10 @@ void InputMethodQuick::show()
     handleAppOrientationChanged(d->appOrientation);
     
     if (d->activeState == Maliit::OnScreen) {
-      d->surface->setGeometry(QRect(QPoint(), QGuiApplication::primaryScreen()->availableSize()));
-      d->surface->show();
-      setActive(true);
-      d->syncInputMask();
+        d->surface->setGeometry(QRect(QPoint(), QGuiApplication::primaryScreen()->availableSize()));
+        d->surface->show();
+        setActive(true);
+        d->syncInputMask();
     }
 }
 
