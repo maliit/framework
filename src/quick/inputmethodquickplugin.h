@@ -54,8 +54,9 @@ public:
     //! \reimp_end
 
 private:
-    Q_DISABLE_COPY(InputMethodQuickPlugin);
-    Q_DECLARE_PRIVATE(InputMethodQuickPlugin);
+    Q_DISABLE_COPY(InputMethodQuickPlugin)
+    Q_DECLARE_PRIVATE(InputMethodQuickPlugin)
+
     const QScopedPointer<InputMethodQuickPluginPrivate> d_ptr;
 };
 
