@@ -16,6 +16,12 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QTimer>
+#include <QRegion>
+#include <QVector>
+#include <QWindow>
+
+#include "windowdata.h"
 
 #include <maliit/namespace.h>
 
@@ -33,11 +39,16 @@ class WindowGroup : public QObject
     Q_DECLARE_PRIVATE(WindowGroup)
 
 public:
+    enum HideMode {
+        HideImmediate,
+        HideDelayed
+    };
+
     WindowGroup(const QSharedPointer<AbstractPlatform> &platform);
     ~WindowGroup();
 
     void activate();
-    void deactivate();
+    void deactivate(HideMode mode);
 
     void setupWindow(QWindow *window, Maliit::Position position);
     void setScreenRegion(const QRegion &region, QWindow *window);
@@ -46,12 +57,19 @@ public:
 Q_SIGNALS:
     void inputMethodAreaChanged(const QRegion &inputMethodArea);
 
-private:
-    QScopedPointer<WindowGroupPrivate> d_ptr;
-
 private Q_SLOTS:
+    void hideWindows();
     void onVisibleChanged(bool visible);
     void updateInputMethodArea();
+
+private:
+    bool containsWindow(QWindow *window);
+
+    QSharedPointer<AbstractPlatform> m_platform;
+    QVector<WindowData> m_window_list;
+    QRegion m_last_im_area;
+    bool m_active;
+    QTimer m_hideTimer;
 };
 
 } // namespace Maliit
