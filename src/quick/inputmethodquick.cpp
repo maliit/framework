@@ -126,7 +126,7 @@ public:
             return;
         }
 
-        host->setInputMethodArea(region);
+        host->setInputMethodArea(region, surface.data());
     }
 
     void updateActionKey(const MKeyOverride::KeyOverrideAttributes changedAttributes)
@@ -428,7 +428,7 @@ void InputMethodQuick::setInputMethodArea(const QRectF &area)
 void InputMethodQuick::setScreenRegion(const QRect &region)
 {
     Q_D(InputMethodQuick);
-    d->m_platform->setInputRegion(d->surface.data(), region);
+    inputMethodHost()->setScreenRegion(region, d->surface.data());
 }
 
 void InputMethodQuick::sendPreedit(const QString &text,

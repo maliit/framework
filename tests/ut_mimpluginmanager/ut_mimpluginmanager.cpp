@@ -695,42 +695,6 @@ void Ut_MIMPluginManager::testActiveSubView()
     QCOMPARE(subject->activeSubView(Maliit::OnScreen), QString("dummyim3sv2"));
 }
 
-void Ut_MIMPluginManager::testRegionUpdates()
-{
-    Maliit::Plugins::InputMethodPlugin *plugin3 = 0;
-    QSignalSpy regionUpdates(manager, SIGNAL(regionUpdated(QRegion)));
-    QList<QVariant> regionUpdatesSignal;
-    QVariant region;
-
-    Q_FOREACH(Maliit::Plugins::InputMethodPlugin * plugin, subject->plugins.keys()) {
-        if (plugin->name() == "DummyImPlugin3") {
-            plugin3 = plugin;
-        }
-    }
-
-    QVERIFY(plugin3);
-    QCOMPARE(regionUpdates.count(), 0);
-
-    // DummyImPlugin3 sends a non-empty region when calling show() on it:
-    subject->activatePlugin(plugin3);
-    manager->showActivePlugins();
-    QCOMPARE(regionUpdates.count(), 1);
-
-    region = regionUpdates.takeFirst().at(0);
-    QVERIFY(!region.value<QRegion>().isEmpty());
-
-    // DummyImPlugin3 is a badly behaving plugin that doesn't send an empty region
-    // when it's hidden...
-    manager->hideActivePlugins();
-    QCOMPARE(regionUpdates.count(), 0);
-    // ...so make sure the region is sent by the plugin manager after a timeout.
-    MaliitTestUtils::waitForSignal(manager, SIGNAL(regionUpdated(QRegion)), 3000);
-    QCOMPARE(regionUpdates.count(), 1);
-
-    region = regionUpdates.takeFirst().at(0);
-    QVERIFY(region.value<QRegion>().isEmpty());
-}
-
 void Ut_MIMPluginManager::testLoadedPluginsInfo_data()
 {
     QTest::addColumn<QStringList>("expectedPlugins");

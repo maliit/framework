@@ -87,8 +87,8 @@ public:
 
     virtual void switchPlugin(Maliit::SwitchDirection direction);
     virtual void switchPlugin(const QString &pluginName);
-    virtual void setScreenRegion(const QRegion &region);
-    virtual void setInputMethodArea(const QRegion &region);
+    virtual void setScreenRegion(const QRegion &region, QWindow *window = 0);
+    virtual void setInputMethodArea(const QRegion &region, QWindow *window = 0);
     virtual void setSelection(int start, int length);
     virtual QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState state) const;
     virtual int preeditClickPos(bool &valid) const;

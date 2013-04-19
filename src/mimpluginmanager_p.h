@@ -154,10 +154,6 @@ public:
      */
     void _q_setActiveSubView(const QString &, Maliit::HandlerState);
 
-    //! Called a moment after hideActivePlugins is called to disable region
-    //! updates and force an empty region in case of badly behaving plugins.
-    void _q_ensureEmptyRegionWhenHidden();
-
     /*!
      * \brief Called in response to changed active on screen subview key change
      */
@@ -188,21 +184,17 @@ public:
     QList<MImSettings *> handlerToPluginConfs;
     MImSettings *imAccessoryEnabledConf;
     QString activeSubViewIdOnScreen;
-    QRegion activeImRegion;
 
     MIMPluginManagerAdaptor *adaptor;
 
     MIMPluginManager *q_ptr;
 
-    bool acceptRegionUpdates;
     bool visible;
 
     typedef QMap<Maliit::HandlerState, QString> InputSourceToNameMap;
     InputSourceToNameMap inputSourceToNameMap;
 
     MAttributeExtensionId toolbarId;
-
-    QTimer ensureEmptyRegionWhenHiddenTimer;
 
     MImOnScreenPlugins onScreenPlugins;
     MImHwKeyboardTracker hwkbTracker;

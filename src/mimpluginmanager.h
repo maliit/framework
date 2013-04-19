@@ -114,11 +114,6 @@ public:
                                                  const QVariantMap &attributes);
 
 Q_SIGNALS:
-    //!
-    // This signal is emitted when the whole painting area of the
-    // widget is changed.
-    void regionUpdated(const QRegion &region);
-
     //! This signal is emitted when input method plugins are loaded, unloaded,
     //! enabled or disabled
     void pluginsChanged();
@@ -133,9 +128,6 @@ public Q_SLOTS:
     void hideActivePlugins();
 
     void resetInputMethods();
-
-    //! Updates the whole painting area for input method objects.
-    void updateRegion(const QRegion &region);
 
 private Q_SLOTS:
     //! Update and activate input source.
@@ -186,7 +178,6 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void _q_syncHandlerMap(int))
     Q_PRIVATE_SLOT(d_func(), void _q_setActiveSubView(const QString &, Maliit::HandlerState))
-    Q_PRIVATE_SLOT(d_func(), void _q_ensureEmptyRegionWhenHidden())
     Q_PRIVATE_SLOT(d_func(), void _q_onScreenSubViewChanged())
 
     friend class Ut_MIMPluginManager;

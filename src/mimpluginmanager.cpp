@@ -66,7 +66,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputCont
       mICConnection(connection),
       imAccessoryEnabledConf(0),
       q_ptr(0),
-      acceptRegionUpdates(false),
       visible(false),
       onScreenPlugins(),
       lastOrientation(0),
@@ -76,11 +75,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputCont
 {
     inputSourceToNameMap[Maliit::Hardware] = "hardware";
     inputSourceToNameMap[Maliit::Accessory] = "accessory";
-
-    ensureEmptyRegionWhenHiddenTimer.setSingleShot(true);
-    ensureEmptyRegionWhenHiddenTimer.setInterval(MaxPluginHideTransitionTime);
-    QObject::connect(&ensureEmptyRegionWhenHiddenTimer, SIGNAL(timeout()),
-                     parent, SLOT(_q_ensureEmptyRegionWhenHidden()));
 }
 
 
@@ -975,23 +969,9 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
     }
 }
 
-
-void MIMPluginManagerPrivate::_q_ensureEmptyRegionWhenHidden()
-{
-    Q_Q(MIMPluginManager);
-    // Do not accept region updates from hidden plugins. Emit an empty region
-    // update, because we cannot trust that a plugin sends a region update
-    // after it's hidden.
-    acceptRegionUpdates = false;
-    Q_EMIT q->regionUpdated(QRegion());
-}
-
 void MIMPluginManagerPrivate::showActivePlugins()
 {
-    ensureEmptyRegionWhenHiddenTimer.stop();
-    acceptRegionUpdates = true;
     visible = true;
-
     ensureActivePluginsVisible(ShowInputMethod);
 }
 
@@ -1002,8 +982,6 @@ void MIMPluginManagerPrivate::hideActivePlugins()
         plugins.value(plugin).inputMethod->hide();
         plugins.value(plugin).windowGroup->deactivate();
     }
-
-    ensureEmptyRegionWhenHiddenTimer.start();
 }
 
 void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest request)
@@ -1340,20 +1318,6 @@ void MIMPluginManager::setAllSubViewsEnabled(bool enable)
 {
     Q_D(MIMPluginManager);
     d->onScreenPlugins.setAllSubViewsEnabled(enable);
-}
-
-void MIMPluginManager::updateRegion(const QRegion &region)
-{
-    Q_D(MIMPluginManager);
-
-    // Record input method object's region.
-    d->activeImRegion = region;
-
-    // Don't update region when no region updates from the plugin side are
-    // expected.
-    if (d->acceptRegionUpdates) {
-        Q_EMIT regionUpdated(region);
-    }
 }
 
 void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
