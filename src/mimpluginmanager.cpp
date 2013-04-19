@@ -980,7 +980,7 @@ void MIMPluginManagerPrivate::hideActivePlugins()
     visible = false;
     Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activePlugins) {
         plugins.value(plugin).inputMethod->hide();
-        plugins.value(plugin).windowGroup->deactivate();
+        plugins.value(plugin).windowGroup->deactivate(Maliit::WindowGroup::HideDelayed);
     }
 }
 
@@ -995,7 +995,7 @@ void MIMPluginManagerPrivate::ensureActivePluginsVisible(ShowInputMethodRequest 
                 iterator.value().inputMethod->show();
             }
         } else {
-            iterator.value().windowGroup->deactivate();
+            iterator.value().windowGroup->deactivate(Maliit::WindowGroup::HideImmediate);
         }
     }
 }

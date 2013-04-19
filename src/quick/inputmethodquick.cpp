@@ -183,7 +183,7 @@ void InputMethodQuick::hide()
     }
     d->sipRequested = false;
     setActive(false);
-    d->surface->hide();
+
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }
