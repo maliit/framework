@@ -120,6 +120,36 @@ void WindowGroup::setupWindow(QWindow *window, Maliit::Position position)
     }
 }
 
+void WindowGroup::setScreenRegion(const QRegion &region, QWindow *window)
+{
+    Q_D(WindowGroup);
+    if (window == 0 && d->m_window_list.size() > 0) {
+        window = d->m_window_list.at(0).m_window.data();
+    }
+    d->m_platform->setInputRegion(window, region);
+}
+
+void WindowGroup::setInputMethodArea(const QRegion &region, QWindow *window)
+{
+    Q_D(WindowGroup);
+
+    if (window == 0 && d->m_window_list.size() > 0) {
+        window = d->m_window_list.at(0).m_window.data();
+    }
+
+    for (int i = 0; i < d->m_window_list.size(); ++i) {
+        WindowData &data = d->m_window_list[i];
+        if (data.m_window == window) {
+            data.m_inputMethodArea = region;
+            break;
+        }
+    }
+
+    if (d->m_active) {
+        updateInputMethodArea();
+    }
+}
+
 void WindowGroup::onVisibleChanged(bool visible)
 {
     Q_D(WindowGroup);
@@ -143,8 +173,9 @@ void WindowGroup::updateInputMethodArea()
 
     Q_FOREACH (const WindowData &data, d->m_window_list) {
         if (data.m_window and not data.m_window->parent() and
-            data.m_window->isVisible()) {
-            new_area |= data.m_window->geometry();
+            data.m_window->isVisible() and
+            not data.m_inputMethodArea.isEmpty()) {
+            new_area |= data.m_inputMethodArea.translated(data.m_window->position());
         }
     }
 

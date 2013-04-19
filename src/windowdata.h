@@ -16,6 +16,7 @@
 
 #include <QPointer>
 #include <QWindow>
+#include <QRegion>
 
 #include <maliit/namespace.h>
 
@@ -30,6 +31,7 @@ struct WindowData
 
     QPointer<QWindow> m_window;
     Maliit::Position m_position;
+    QRegion m_inputMethodArea;
 };
 
 } // namespace Maliit

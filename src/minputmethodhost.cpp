@@ -196,22 +196,14 @@ void MInputMethodHost::switchPlugin(const QString &pluginName)
     }
 }
 
-void MInputMethodHost::setScreenRegion(const QRegion &region)
+void MInputMethodHost::setScreenRegion(const QRegion &region, QWindow *window)
 {
-    // FIXME: not connected to platform integration for adjusting window properites.
-    // Window to set the region to is not even passed on parameters and plugin cannot
-    // itself access platform integration
-    if (enabled) {
-        pluginManager->updateRegion(region);
-    }
+    mWindowGroup->setScreenRegion(region, window);
 }
 
-void MInputMethodHost::setInputMethodArea(const QRegion &region)
+void MInputMethodHost::setInputMethodArea(const QRegion &region, QWindow *window)
 {
-    // FIXME: this currently fights with window group on who is allowed to set the area.
-    if (enabled) {
-        connection->updateInputMethodArea(region);
-    }
+    mWindowGroup->setInputMethodArea(region, window);
 }
 
 void MInputMethodHost::setSelection(int start, int length)

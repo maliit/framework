@@ -236,8 +236,9 @@ public Q_SLOTS:
      * area do not fall through to the application
      *
      * \param region the new region
+     * \param window window for which region applies. If zero, first registered window is used.
      */
-    virtual void setScreenRegion(const QRegion &region) = 0;
+    virtual void setScreenRegion(const QRegion &region, QWindow *window = 0) = 0;
 
     /*!
      * Sets part of the screen area covered by the input method that
@@ -248,8 +249,9 @@ public Q_SLOTS:
      * effectively used as the avoidance area.
      *
      * \param region the new region
+     * \param window window for which input method area applies. If zero, first registered window is used.
      */
-    virtual void setInputMethodArea(const QRegion &region) = 0;
+    virtual void setInputMethodArea(const QRegion &region, QWindow *window = 0) = 0;
 
     /*!
      *\brief Sets selection text from \a start with \a length in the application widget.
