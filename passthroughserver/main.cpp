@@ -17,7 +17,9 @@
 #include "connectionfactory.h"
 #include "mimserver.h"
 #include "mimserveroptions.h"
+#ifndef NOXCB
 #include "xcbplatform.h"
+#endif
 #ifdef HAVE_WAYLAND
 #include "waylandplatform.h"
 #endif // HAVE_WAYLAND
@@ -99,9 +101,13 @@ QSharedPointer<Maliit::AbstractPlatform> createPlatform()
         return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::WaylandPlatform);
     } else
 #endif
+#ifndef NOXCB
     if (QGuiApplication::platformName() == "xcb") {
         return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::XCBPlatform);
     } else {
+#else
+    {
+#endif
         return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform);
     }
 }

@@ -138,6 +138,10 @@ wayland {
     DEFINES += HAVE_WAYLAND
 }
 
+noxcb {
+    DEFINES += NOXCB
+}
+
 MALIIT_INSTALL_PRF = $$[QT_INSTALL_DATA]/mkspecs/features
 local-install {
     MALIIT_INSTALL_PRF = $$replace(MALIIT_INSTALL_PRF, $$[QT_INSTALL_PREFIX], $$PREFIX)

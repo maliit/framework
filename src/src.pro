@@ -60,7 +60,6 @@ SERVER_HEADERS_PRIVATE += \
         windowgroup.h \
         windowdata.h \
         abstractplatform.h \
-        xcbplatform.h \
         unknownplatform.h \
 
 SERVER_SOURCES += \
@@ -76,8 +75,13 @@ SERVER_SOURCES += \
         windowgroup.cpp \
         windowdata.cpp \
         abstractplatform.cpp \
-        xcbplatform.cpp \
         unknownplatform.cpp \
+
+!noxcb {
+    SERVER_HEADERS_PRIVATE += xcbplatform.h
+    SERVER_SOURCES += xcbplatform.cpp
+    PKGCONFIG += xcb xcb-xfixes
+}
 
 wayland {
     SERVER_HEADERS_PRIVATE += waylandplatform.h
@@ -129,7 +133,6 @@ enable-contextkit {
     PKGCONFIG += libudev
 }
 
-PKGCONFIG += xcb xcb-xfixes
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
 for(OPTION,$$list($$lower($$COV_OPTION))){
