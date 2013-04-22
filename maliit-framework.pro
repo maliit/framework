@@ -10,6 +10,7 @@ include(./config.pri)
         \\n\\t MALIIT_DEFAULT_HW_PLUGIN : Default hardware keyboard plugin \
         \\n\\t MALIIT_SERVER_ARGUMENTS : Arguments to use for starting maliit-server by D-Bus activation \
         \\nRecognised CONFIG flags: \
+        \\n\\t nohwkeyboard : Disable the support for the hardware keyboard \
         \\n\\t enable-contextkit : Build contextkit support (for monitoring hardware keyboard status) \
         \\n\\t enable-dbus-activation : Enable dbus activation support for maliit-server \
         \\n\\t notests : Do not build tests \
