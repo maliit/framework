@@ -37,6 +37,15 @@ namespace
 
 const char * const actionKeyName = "actionKey";
 
+#if EMBED_QML_KEYBOARD
+QQuickView *getSurface(MAbstractInputMethodHost *host)
+{
+    Q_UNUSED(host)
+    QScopedPointer<QQuickView> view(qobject_cast<QQuickView*>(QGuiApplication::topLevelWindows().at(0)));
+    return view.take();
+}
+
+#else
 QQuickView *createWindow(MAbstractInputMethodHost *host)
 {
     QScopedPointer<QQuickView> view(new QQuickView);
@@ -50,6 +59,8 @@ QQuickView *createWindow(MAbstractInputMethodHost *host)
 
     return view.take();
 }
+#endif
+
 
 } // unnamed namespace
 
@@ -60,6 +71,7 @@ class InputMethodQuickPrivate
 public:
     InputMethodQuick *const q_ptr;
     QScopedPointer<QQuickView> surface;
+
     QRect inputMethodArea;
     int appOrientation;
     bool haveFocus;
@@ -85,12 +97,20 @@ public:
     bool m_autoCapitalizationEnabled;
     bool m_hiddenText;
     QSharedPointer<Maliit::AbstractPlatform> m_platform;
+#if EMBED_QML_KEYBOARD
+    QUrl m_qmlFileName;
+#endif
 
     InputMethodQuickPrivate(MAbstractInputMethodHost *host,
                             InputMethodQuick *im,
                             const QSharedPointer<Maliit::AbstractPlatform> &platform)
         : q_ptr(im)
+#if EMBED_QML_KEYBOARD
+        , surface(getSurface(host))
+#else
         , surface(createWindow(host))
+
+#endif
         , appOrientation(0)
         , haveFocus(false)
         , activeState(Maliit::OnScreen)
@@ -143,7 +163,11 @@ InputMethodQuick::InputMethodQuick(MAbstractInputMethodHost *host,
 {
     Q_D(InputMethodQuick);
 
+#if EMBED_QML_KEYBOARD
+    d->m_qmlFileName = QUrl::fromLocalFile(qmlFileName);
+#else
     d->surface->setSource(QUrl::fromLocalFile(qmlFileName));
+#endif
     
     propagateScreenSize();
 }
@@ -169,8 +193,10 @@ void InputMethodQuick::show()
     handleAppOrientationChanged(d->appOrientation);
     
     if (d->activeState == Maliit::OnScreen) {
+#if !EMBED_QML_KEYBOARD
         d->surface->setGeometry(QRect(QPoint(), QGuiApplication::primaryScreen()->availableSize()));
         d->surface->show();
+#endif
         setActive(true);
     }
 }
@@ -183,7 +209,6 @@ void InputMethodQuick::hide()
     }
     d->sipRequested = false;
     setActive(false);
-
     const QRegion r;
     d->handleInputMethodAreaUpdate(inputMethodHost(), r);
 }
@@ -427,8 +452,12 @@ void InputMethodQuick::setInputMethodArea(const QRectF &area)
 
 void InputMethodQuick::setScreenRegion(const QRect &region)
 {
+#if !EMBED_QML_KEYBOARD
     Q_D(InputMethodQuick);
     inputMethodHost()->setScreenRegion(region, d->surface.data());
+#else
+    Q_UNUSED(region)
+#endif
 }
 
 void InputMethodQuick::sendPreedit(const QString &text,
@@ -640,5 +669,13 @@ bool InputMethodQuick::hiddenText()
     Q_D(InputMethodQuick);
     return d->m_hiddenText;
 }
+
+#if EMBED_QML_KEYBOARD
+QUrl InputMethodQuick::getQmlFileName()
+{
+    Q_D(InputMethodQuick);
+    return d->m_qmlFileName;
+}
+#endif
 
 } // namespace Maliit

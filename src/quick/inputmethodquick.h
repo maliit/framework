@@ -24,6 +24,14 @@
 #include <QRect>
 #include <QScopedPointer>
 #include <QString>
+#include <QUrl>
+
+// Set to 1 to allow the Maliit Qml Keyboard to be embedded in an already
+// existent QQuickView. Because we are supposed to be in an embedded environment,
+// we assume the QQuickView to be the first and unique QWindow.
+// The main keyboard file is exposed as property, in order to use it as a source
+// of a Loader element.
+#define EMBED_QML_KEYBOARD 0
 
 namespace Maliit
 {
@@ -73,6 +81,10 @@ class InputMethodQuick
     Q_PROPERTY(bool predictionEnabled READ predictionEnabled NOTIFY predictionEnabledChanged)
     Q_PROPERTY(bool autoCapitalizationEnabled READ autoCapitalizationEnabled NOTIFY autoCapitalizationChanged)
     Q_PROPERTY(bool hiddenText READ hiddenText NOTIFY hiddenTextChanged)
+
+#if EMBED_QML_KEYBOARD
+    Q_PROPERTY(QUrl qmlFileName READ getQmlFileName CONSTANT)
+#endif
 
 public:
     //! Constructor
@@ -141,6 +153,10 @@ public:
     bool predictionEnabled();
     bool autoCapitalizationEnabled();
     bool hiddenText();
+
+#if EMBED_QML_KEYBOARD
+    QUrl getQmlFileName();
+#endif
 
 Q_SIGNALS:
     //! Emitted when screen height changes.
