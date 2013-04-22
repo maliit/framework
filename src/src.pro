@@ -54,7 +54,6 @@ SERVER_HEADERS_PRIVATE += \
         msharedattributeextensionmanager.h \
         mimhwkeyboardtracker.h \
         mimonscreenplugins.h \
-        mimhwkeyboardtracker_p.h \
         mimsubviewoverride.h \
         mimserveroptions.h \
         windowgroup.h \
@@ -68,7 +67,6 @@ SERVER_SOURCES += \
         mattributeextensionid.cpp \
         mattributeextensionmanager.cpp \
         msharedattributeextensionmanager.cpp \
-        mimhwkeyboardtracker.cpp \
         mimonscreenplugins.cpp \
         mimsubviewoverride.cpp \
         mimserveroptions.cpp \
@@ -108,6 +106,21 @@ QUICK_SOURCES += \
         quick/inputmethodquickplugin.cpp \
         quick/keyoverridequick.cpp \
 
+!nohwkeyboard {
+    SERVER_HEADERS_PRIVATE += mimhwkeyboardtracker_p.h
+    SERVER_SOURCES += mimhwkeyboardtracker.cpp
+
+    enable-contextkit {
+        PKGCONFIG += contextsubscriber-1.0
+        DEFINES += HAVE_CONTEXTSUBSCRIBER
+    } else {
+        # libudev needed by non-contextkit MImHwKeyboardTracker
+        PKGCONFIG += libudev
+    }
+} else {
+    SERVER_SOURCES += mimhwkeyboardtracker_stub.cpp
+}
+
 HEADERS += \
         $$PLUGIN_HEADERS_PUBLIC \
         $$PLUGIN_HEADERS_PRIVATE \
@@ -124,14 +137,6 @@ SOURCES += \
 
 CONFIG += link_pkgconfig
 QT = core gui gui-private dbus qml quick
-
-enable-contextkit {
-    PKGCONFIG += contextsubscriber-1.0
-    DEFINES += HAVE_CONTEXTSUBSCRIBER
-} else {
-    # libudev needed by non-contextkit MImHwKeyboardTracker
-    PKGCONFIG += libudev
-}
 
 
 # coverage flags are off per default, but can be turned on via qmake COV_OPTION=on
