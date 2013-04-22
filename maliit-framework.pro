@@ -17,6 +17,7 @@ include(./config.pri)
         \\n\\t local-install : Install everything underneath PREFIX, nothing to system directories reported by GTK+, Qt, DBus etc. \
         \\n\\t wayland : Compile with support for wayland \
         \\n\\t qt5-inputcontext : Compile with Qt5 input context, replaces the one currently provided by Qt \
+        \\n\\t noxcb : Compile without xcb support \
         \\nInfluential environment variables: \
         \\n\\t PKG_CONFIG_PATH : Override standard directories to look for pkg-config information \
         \\nExamples: \
