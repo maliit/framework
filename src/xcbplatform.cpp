@@ -28,9 +28,52 @@ namespace Maliit
 void XCBPlatform::setupInputPanel(QWindow* window,
                                   Maliit::Position position)
 {
-    Q_UNUSED(window);
     Q_UNUSED(position);
-    // nothing to do.
+
+    if (not window) {
+        return;
+    }
+
+    // set window type as input, supported by at least mcompositor
+    QPlatformNativeInterface *xcbiface = QGuiApplication::platformNativeInterface();
+    xcb_connection_t *xcbConnection
+            = static_cast<xcb_connection_t *>(xcbiface->nativeResourceForWindow("connection", window));
+    if (!xcbConnection) {
+        qWarning("Unable to get Xcb connection");
+        return;
+    }
+
+    const char * windowType = "_NET_WM_WINDOW_TYPE";
+    const char * windowTypeInput = "_NET_WM_WINDOW_TYPE_INPUT";
+
+    xcb_intern_atom_cookie_t windowTypeCookie =
+            xcb_intern_atom(xcbConnection, false, strlen(windowType), windowType);
+    xcb_intern_atom_cookie_t typeInputCookie =
+            xcb_intern_atom(xcbConnection, false, strlen(windowTypeInput), windowTypeInput);
+
+    xcb_atom_t windowTypeAtom;
+    xcb_atom_t windowTypeInputAtom;
+
+    xcb_intern_atom_reply_t *reply = xcb_intern_atom_reply(xcbConnection, windowTypeCookie, 0);
+    if (reply) {
+        windowTypeAtom = reply->atom;
+        free(reply);
+    } else {
+        qWarning("Unable to fetch window type atom");
+        return;
+    }
+
+    reply = xcb_intern_atom_reply(xcbConnection, typeInputCookie, 0);
+    if (reply) {
+        windowTypeInputAtom = reply->atom;
+        free(reply);
+    } else {
+        qWarning("Unable to fetch window type input atom");
+        return;
+    }
+
+    xcb_change_property(xcbConnection, XCB_PROP_MODE_REPLACE, window->winId(), windowTypeAtom, XCB_ATOM_ATOM,
+                        32, 1, &windowTypeInputAtom);
 }
 
 void XCBPlatform::setInputRegion(QWindow* window,

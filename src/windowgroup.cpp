@@ -62,10 +62,8 @@ void WindowGroup::setupWindow(QWindow *window, Maliit::Position position)
             }
             m_window_list.append (WindowData(window, position));
 
-            window->setFlags (Qt::Dialog |
-                              Qt::FramelessWindowHint |
+            window->setFlags (Qt::FramelessWindowHint |
                               Qt::WindowStaysOnTopHint |
-                              Qt::X11BypassWindowManagerHint |
                               Qt::WindowDoesNotAcceptFocus);
 
             connect (window, SIGNAL (visibleChanged(bool)),

@@ -41,12 +41,12 @@ QQuickView *createWindow(MAbstractInputMethodHost *host)
 {
     QScopedPointer<QQuickView> view(new QQuickView);
 
-    host->registerWindow(view.data(), Maliit::PositionCenterBottom);
-
     QSurfaceFormat format;
     format.setAlphaBufferSize(8);
     view->setFormat(format);
     view->setColor(QColor(Qt::transparent));
+
+    host->registerWindow(view.data(), Maliit::PositionCenterBottom);
 
     return view.take();
 }
