@@ -17,7 +17,6 @@
 #include "connectionfactory.h"
 #include "mimserver.h"
 #include "mimserveroptions.h"
-#include "mimstandaloneserverlogic.h"
 #include "xcbplatform.h"
 #ifdef HAVE_WAYLAND
 #include "waylandplatform.h"
@@ -130,7 +129,6 @@ int main(int argc, char **argv)
     }
 
     QGuiApplication app(argc, argv);
-    QSharedPointer<MImAbstractServerLogic> serverLogic(new MImStandaloneServerLogic);
 
     // Input Context Connection
     QSharedPointer<MInputContextConnection> icConnection(createConnection(connectionOptions));
@@ -139,7 +137,7 @@ int main(int argc, char **argv)
 
     // The actual server
     MImServer::configureSettings(MImServer::PersistentSettings);
-    MImServer imServer(serverLogic, icConnection, platform);
+    MImServer imServer(icConnection, platform);
     Q_UNUSED(imServer);
 
     return app.exec();

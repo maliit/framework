@@ -15,7 +15,6 @@
 #include "mimserver.h"
 
 #include "mimpluginmanager.h"
-#include "mimabstractserverlogic.h"
 #include "mimsettings.h"
 
 class MImServerPrivate
@@ -29,9 +28,6 @@ public:
     // Connection to application side (input-context)
     QSharedPointer<MInputContextConnection> icConnection;
 
-    // Platform/deployment specific server logic
-    QSharedPointer<MImAbstractServerLogic> serverLogic;
-
 private:
     Q_DISABLE_COPY(MImServerPrivate)
 };
@@ -39,8 +35,7 @@ private:
 MImServerPrivate::MImServerPrivate()
 {}
 
-MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
-                     const QSharedPointer<MInputContextConnection> &icConnection,
+MImServer::MImServer(const QSharedPointer<MInputContextConnection> &icConnection,
                      const QSharedPointer<Maliit::AbstractPlatform> &platform,
                      QObject *parent)
   : QObject(parent)
@@ -49,18 +44,11 @@ MImServer::MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
     Q_D(MImServer);
 
     d->icConnection = icConnection;
-    d->serverLogic = serverLogic;
     d->pluginManager = new MIMPluginManager(d->icConnection, platform);
-
-    connectComponents();
-
-    // Notify server logic about plugins loaded during MIMPluginManager construction
-    d->serverLogic->pluginLoaded();
 }
 
 MImServer::~MImServer()
 {
-    // FIXME: MIMPluginManager is never deleted
 }
 
 void MImServer::configureSettings(MImServer::SettingsType settingsType)
@@ -79,27 +67,4 @@ void MImServer::configureSettings(MImServer::SettingsType settingsType)
         qCritical() << __PRETTY_FUNCTION__ <<
                        "Invalid value for preferredSettingType." << settingsType;
     }
-}
-
-void MImServer::connectComponents()
-{
-    Q_D(MImServer);
-
-    // Configure widgets trees of plugins after loading
-    QObject::connect(d->pluginManager, SIGNAL(pluginLoaded()),
-                     d->serverLogic.data(), SLOT(pluginLoaded()));
-
-    // Tracking of application window
-    QObject::connect(d->icConnection.data(), &MInputContextConnection::focusChanged,
-                     d->serverLogic.data(), &MImAbstractServerLogic::applicationFocusChanged);
-
-    // Rotation handling
-    QObject::connect(d->icConnection.data(), SIGNAL(contentOrientationAboutToChange(int)),
-                     d->serverLogic.data(), SLOT(appOrientationAboutToChange(int)));
-    QObject::connect(d->icConnection.data(), SIGNAL(contentOrientationChanged(int)),
-                     d->serverLogic.data(), SLOT(appOrientationChangeFinished(int)));
-
-    // Hide active plugins when the application window is gone or iconified.
-    QObject::connect(d->serverLogic.data(), SIGNAL(applicationWindowGone()),
-                     d->pluginManager, SLOT(hideActivePlugins()));
 }

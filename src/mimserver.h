@@ -21,7 +21,6 @@
 class MInputContextConnection;
 class MImServerPrivate;
 
-class MImAbstractServerLogic;
 
 namespace Maliit
 {
@@ -35,8 +34,6 @@ class AbstractPlatform;
  * Consumers of MImServer are responsible for creating a QApplication (for the mainloop),
  * and an MInputContextConnection for communication with clients, and for starting the mainloop.
  * Everything else is handled by the server.
- *
- * Note: For X11, MImServer MUST be used together with MImXApplication.
  */
 class MImServer : public QObject
 {
@@ -49,8 +46,7 @@ public:
     };
 
 public:
-    explicit MImServer(const QSharedPointer<MImAbstractServerLogic> &serverLogic,
-                       const QSharedPointer<MInputContextConnection> &icConnection,
+    explicit MImServer(const QSharedPointer<MInputContextConnection> &icConnection,
                        const QSharedPointer<Maliit::AbstractPlatform> &platform,
                        QObject *parent = 0);
     ~MImServer();
@@ -58,10 +54,9 @@ public:
     static void configureSettings(MImServer::SettingsType settingsType);
 
 private:
-    void connectComponents();
-
     Q_DISABLE_COPY(MImServer)
     Q_DECLARE_PRIVATE(MImServer)
+
     const QScopedPointer<MImServerPrivate> d_ptr;
 };
 
