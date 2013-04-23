@@ -1173,6 +1173,9 @@ MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>
     connect(d->mICConnection.data(), SIGNAL(pluginSettingsRequested(int,QString)),
             this, SLOT(pluginSettingsRequested(int,QString)));
 
+    connect(d->mICConnection.data(), SIGNAL(focusChanged(WId)),
+            this, SLOT(handleAppFocusChanged(WId)));
+
     // Connect from MAttributeExtensionManager to our handlers
     connect(d->attributeExtensionManager.data(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
             this, SLOT(setToolbar(const MAttributeExtensionId &)));
@@ -1420,6 +1423,17 @@ void MIMPluginManager::handleAppOrientationChanged(int angle)
 
     Q_FOREACH (MAbstractInputMethod *target, targets()) {
         target->handleAppOrientationChanged(angle);
+    }
+}
+
+void MIMPluginManager::handleAppFocusChanged(WId id)
+{
+    Q_D(MIMPluginManager);
+
+    MIMPluginManagerPrivate::Plugins::iterator i = d->plugins.begin();
+    while (i != d->plugins.end()) {
+        i.value().windowGroup.data()->setApplicationWindow(id);
+        ++i;
     }
 }
 

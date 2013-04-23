@@ -109,6 +109,15 @@ void WindowGroup::setInputMethodArea(const QRegion &region, QWindow *window)
     }
 }
 
+void WindowGroup::setApplicationWindow(WId id)
+{
+    Q_FOREACH (const WindowData &data, m_window_list) {
+        if (data.m_window and not data.m_window->parent()) {
+            m_platform->setApplicationWindow(data.m_window, id);
+        }
+    }
+}
+
 void WindowGroup::onVisibleChanged(bool visible)
 {
     if (m_active) {

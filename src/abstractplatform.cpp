@@ -19,4 +19,10 @@ namespace Maliit
 AbstractPlatform::~AbstractPlatform()
 {}
 
+void AbstractPlatform::setApplicationWindow(QWindow *window, WId appWindowId)
+{
+    Q_UNUSED(window)
+    Q_UNUSED(appWindowId)
+}
+
 } // namespace Maliit
