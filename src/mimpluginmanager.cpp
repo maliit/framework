@@ -1503,6 +1503,11 @@ void MIMPluginManager::handleWidgetStateChanged(unsigned int clientId,
         }
         target->update();
     }
+
+    // Make sure windows get hidden when no longer focus
+    if (not widgetFocusState) {
+        hideActivePlugins();
+    }
 }
 
 void MIMPluginManager::handleMouseClickOnPreedit(const QPoint &pos, const QRect &preeditRect)
