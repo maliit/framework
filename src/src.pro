@@ -41,13 +41,9 @@ PLUGIN_HEADERS_PRIVATE += \
 
 SERVER_HEADERS_PUBLIC += \
         mimserver.h \
-        mimabstractserverlogic.h \
-        mimstandaloneserverlogic.h \
 
 SERVER_SOURCES += \
         mimserver.cpp \
-        mimabstractserverlogic.cpp \
-        mimstandaloneserverlogic.cpp \
 
 SERVER_HEADERS_PRIVATE += \
         mimpluginmanager.h \
