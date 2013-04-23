@@ -141,6 +141,7 @@ private Q_SLOTS:
 
     void handleAppOrientationChanged(int angle);
     void handleAppOrientationAboutToChange(int angle);
+    void handleAppFocusChanged(WId id);
 
     void handleClientChange();
 

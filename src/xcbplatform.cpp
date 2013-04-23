@@ -14,6 +14,7 @@
 #include <xcb/xcb.h>
 #include <xcb/xfixes.h>
 
+#include <QDebug>
 #include <QGuiApplication>
 #include <QRegion>
 #include <QVector>
@@ -110,6 +111,19 @@ void XCBPlatform::setInputRegion(QWindow* window,
                                        XCB_SHAPE_SK_INPUT, 0, 0, xcbregion);
 
     xcb_xfixes_destroy_region(xcbconnection, xcbregion);
+}
+
+void XCBPlatform::setApplicationWindow(QWindow *window, WId appWindowId)
+{
+    qDebug() << "Xcb platform setting transient target" << QString("0x%1").arg(QString::number(appWindowId, 16))
+             << "for" << QString("0x%1").arg(QString::number(window->winId(), 16));
+
+    QPlatformNativeInterface *xcbiface = QGuiApplication::platformNativeInterface();
+    xcb_connection_t *xcbConnection
+            = static_cast<xcb_connection_t *>(xcbiface->nativeResourceForWindow("connection", window));
+
+    xcb_change_property(xcbConnection, XCB_PROP_MODE_REPLACE, window->winId(),
+                        XCB_ATOM_WM_TRANSIENT_FOR, XCB_ATOM_WINDOW, 32, 1, &appWindowId);
 }
 
 } // namespace Maliit

@@ -53,6 +53,7 @@ public:
     void setupWindow(QWindow *window, Maliit::Position position);
     void setScreenRegion(const QRegion &region, QWindow *window);
     void setInputMethodArea(const QRegion &region, QWindow *window);
+    void setApplicationWindow(WId id);
 
 Q_SIGNALS:
     void inputMethodAreaChanged(const QRegion &inputMethodArea);

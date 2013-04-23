@@ -26,6 +26,7 @@ public:
                                  Maliit::Position position);
     virtual void setInputRegion(QWindow* window,
                                 const QRegion& region);
+    virtual void setApplicationWindow(QWindow *window, WId appWindowId);
 };
 
 } // namespace Maliit

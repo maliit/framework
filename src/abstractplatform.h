@@ -16,8 +16,10 @@
 
 #include <maliit/namespace.h>
 
+#include <QWindow>
+
 class QRegion;
-class QWindow;
+
 
 namespace Maliit
 {
@@ -30,6 +32,7 @@ public:
                                  Maliit::Position position) = 0;
     virtual void setInputRegion(QWindow* window,
                                 const QRegion& region) = 0;
+    virtual void setApplicationWindow(QWindow *window, WId appWindowId);
 };
 
 } // namespace Maliit
