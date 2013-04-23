@@ -53,8 +53,6 @@ namespace
     const QString PluginSettings       = MALIIT_CONFIG_ROOT"pluginsettings";
     const QString MImAccesoryEnabled   = MALIIT_CONFIG_ROOT"accessoryenabled";
 
-    const int MaxPluginHideTransitionTime(2*1000);
-
     const char * const InputMethodItem = "inputMethod";
     const char * const LoadAll = "loadAll";
 }
