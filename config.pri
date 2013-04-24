@@ -1,11 +1,5 @@
 MALIIT_VERSION = $$system(cat $$PWD/VERSION)
 
-MALIIT_INTERFACE_VERSION = 1.0
-MALIIT_PLUGINS_INTERFACE_VERSION = 1.0
-MALIIT_PLUGINS_QUICK_INTERFACE_VERSION = 0.80
-MALIIT_FRAMEWORK_INTERFACE_VERSION = 0.80
-MALIIT_CONNECTION_INTERFACE_VERSION = 0.80
-MALIIT_SERVER_INTERFACE_VERSION = 0.80
 MALIIT_ABI_VERSION = $$MALIIT_VERSION
 
 # For libmaliit
@@ -13,9 +7,6 @@ MALIIT_LIB = maliit
 MALIIT_SETTINGS_LIB = maliit-settings
 MALIIT_HEADER = maliit
 MALIIT_FRAMEWORK_HEADER = maliit/framework
-# For libmaliit-glib
-MALIIT_CONNECTION_GLIB_LIB = maliit-connection-glib
-MALIIT_GLIB_LIB = maliit-glib
 
 include(defines.pri)
 
@@ -199,7 +190,6 @@ defineTest(outputFile) {
                 MALIIT_CONNECTION_LIB \
                 MALIIT_SERVER_HEADER \
                 MALIIT_ABI_VERSION_MAJOR \
-                MALIIT_GLIB_LIB \
 
     command = "sed"
     for(var, variables) {

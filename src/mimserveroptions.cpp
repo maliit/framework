@@ -50,9 +50,7 @@ namespace {
         { "-qdebug",         false },
         { "-software",       false },
         { "-qws",            false },
-        { "-sync",           false },
-        // Next parameter is used by Harmattan and we should silently ingore it
-        { "-remote-theme",   false }
+        { "-sync",           false }
     };
 
     const char * programName = "meego-im-uiserver";
