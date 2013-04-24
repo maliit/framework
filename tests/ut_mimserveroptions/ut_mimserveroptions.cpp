@@ -42,7 +42,7 @@ namespace {
                            "-graphicssystem", "GRAPHICSSYSTEM",
                           "-testability", "TESTABILITY", "-qdevel", "-reverse",
                           "-stylesheet", "-widgetcount", "-qdebug",
-                          "-software", "-remote-theme" } };
+                          "-software" } };
 
     bool operator==(const MImServerCommonOptions &x,
                     const MImServerCommonOptions &y)

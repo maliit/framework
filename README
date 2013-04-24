@@ -12,7 +12,7 @@ http://wiki.maliit.org/Plugins
 
 Installing
 
-Qt 4.7 must be installed to build the Maliit framework. At a terminal, run:
+Qt5 must be installed to build the Maliit framework. At a terminal, run:
 
 qmake
 make
@@ -30,7 +30,7 @@ export GTK_IM_MODULE=Maliit
 
 Start the server:
 
-maliit-server -software -bypass-wm-hint
+maliit-server
 
 Note that a compositing window manager and a D-Bus session bus are required to
 use Maliit.

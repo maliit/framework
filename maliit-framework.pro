@@ -14,7 +14,6 @@ include(./config.pri)
         \\n\\t enable-dbus-activation : Enable dbus activation support for maliit-server \
         \\n\\t notests : Do not build tests \
         \\n\\t nodoc : Do not build documentation\
-        \\n\\t disable-gtk-cache-update : Do not update GTK2/3 input method caches (used for packaging) \
         \\n\\t local-install : Install everything underneath PREFIX, nothing to system directories reported by GTK+, Qt, DBus etc. \
         \\n\\t wayland : Compile with support for wayland \
         \\nInfluential environment variables: \

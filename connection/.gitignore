@@ -1,8 +1,5 @@
 org.maliit.server.service
 minputmethodserver.service
-mdbusglibicconnectionserviceglue.h
-mdbusglibinputcontextadaptorglue.h
-maliit-connection.pc
 minputmethodcontext1interface_adaptor.cpp
 minputmethodcontext1interface_adaptor.h
 minputmethodcontext1interface_interface.cpp
