@@ -24,10 +24,6 @@
 #include <QDebug>
 #include <QDir>
 
-
-
-Q_DECLARE_METATYPE(Maliit::ActionType);
-
 namespace {
     const QString testDirectory = "/ut_mattributeextensionmanager";
     QString Toolbar1 = "/toolbar1.xml";
