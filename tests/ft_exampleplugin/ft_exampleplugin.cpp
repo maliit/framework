@@ -44,14 +44,15 @@ void Ft_ExamplePlugin::cleanup()
 void Ft_ExamplePlugin::testFunction_data()
 {
     QTest::addColumn<QString>("testPluginPath");
-    QTest::newRow("Hello world")
-        << "helloworld/libcxxhelloworldplugin.so";
-    QTest::newRow("Override")
-        << "override/libcxxoverrideplugin.so";
+//    QTest::newRow("Hello world")
+//        << "helloworld/libcxxhelloworldplugin.so";
+//    QTest::newRow("Override")
+//        << "override/libcxxoverrideplugin.so";
 }
 
 void Ft_ExamplePlugin::testFunction()
 {
+    QSKIP("Currently there are no example plugins to test");
     QFETCH(QString, testPluginPath);
 
     const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ?
