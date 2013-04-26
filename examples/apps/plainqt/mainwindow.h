@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QtGlobal>
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QGridLayout>
@@ -12,9 +11,6 @@
 #include <QtGui/QFocusEvent>
 #include <QtGui/QInputMethod>
 #include <QtCore/QProcess>
-#else
-#include <QtGui>
-#endif
 
 class MainWindow
     : public QMainWindow

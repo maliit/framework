@@ -1,13 +1,8 @@
 #include "mainwindow.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 #include <QGuiApplication>
 #include <QScreen>
 #include <QWindow>
-#else
-#include <maliit/namespace.h>
-#include <maliit/inputmethod.h>
-#endif
 
 #include <QtCore>
 #include <QVBoxLayout>
@@ -74,10 +69,8 @@ MainWindow::MainWindow()
     initUI();
     onServerStateChanged();
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     // Work around a bug in maliit input method support where primary orientation is always portrait
     windowHandle()->reportContentOrientationChange(windowHandle()->screen()->primaryOrientation());
-#endif
 }
 
 void MainWindow::initUI()
@@ -172,14 +165,7 @@ bool MainWindow::eventFilter(QObject *watched,
 
     // Let the input method show up on focus-in, not on second click:
     if (event->type() == QFocusEvent::FocusIn) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         qApp->inputMethod()->show();
-#else
-        if (QInputContext *ic = qApp->inputContext()) {
-            QEvent im_request(QEvent::RequestSoftwareInputPanel);
-            ic->filterEvent(&im_request);
-        }
-#endif
     }
 
     return false;
@@ -227,7 +213,6 @@ void MainWindow::onRotateKeyboardClicked()
 {
     ++m_orientation_index;
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     static const Qt::ScreenOrientation orientations[] = {
         Qt::LandscapeOrientation,
         Qt::PortraitOrientation,
@@ -236,14 +221,4 @@ void MainWindow::onRotateKeyboardClicked()
     };
 
     windowHandle()->reportContentOrientationChange(orientations[m_orientation_index % 4]);
-#else
-    static const Maliit::OrientationAngle orientations[] = {
-        Maliit::Angle0,
-        Maliit::Angle90,
-        Maliit::Angle180,
-        Maliit::Angle270
-    };
-
-    Maliit::InputMethod::instance()->setOrientationAngle(orientations[m_orientation_index % 4]);
-#endif
 }
