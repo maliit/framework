@@ -38,7 +38,7 @@ namespace {
     Args ProgramNameOnly   = { 1, { "name" } };
     Args BypassedParameter = { 1, { "name", "-help" } };
 
-    Args Ignored = { 16, { "", "-style", "STYLE", "-session", "SESSION",
+    Args Ignored = { 15, { "", "-style", "STYLE", "-session", "SESSION",
                            "-graphicssystem", "GRAPHICSSYSTEM",
                           "-testability", "TESTABILITY", "-qdevel", "-reverse",
                           "-stylesheet", "-widgetcount", "-qdebug",
