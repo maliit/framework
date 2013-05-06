@@ -39,25 +39,14 @@ qdbus-dbus-connection {
     server_adaptor.header_flags = -i dbusinputcontextconnection.h -l DBusInputContextConnection
     server_adaptor.source_flags = -l DBusInputContextConnection
 
-    DBUS_ADAPTORS = server_adaptor
+    context_adaptor.files = $$DBUS_CONTEXT_XML
+    context_adaptor.header_flags = -i dbusserverconnection.h -l DBusServerConnection
+    context_adaptor.source_flags = -l DBusServerConnection
 
-    DBUS_INTERFACES = $$DBUS_CONTEXT_XML
+    DBUS_ADAPTORS = server_adaptor context_adaptor
+    DBUS_INTERFACES = $$DBUS_SERVER_XML $$DBUS_CONTEXT_XML
     QDBUSXML2CPP_INTERFACE_HEADER_FLAGS = -i maliit/namespace.h -i maliit/settingdata.h
 
-    PRIVATE_HEADERS += \
-        dbuscustomarguments.h \
-        \ # server
-        dbusinputcontextconnection.h \
-
-    PRIVATE_SOURCES += \
-        dbuscustomarguments.cpp \
-        \ # server
-        dbusinputcontextconnection.cpp \
-
-    CONFIG += dbus
-}
-
-qdbus-dbus-connection {
     QT += dbus
 
     !enable-dbus-activation {
@@ -65,10 +54,20 @@ qdbus-dbus-connection {
     }
 
     PRIVATE_HEADERS += \
+        dbuscustomarguments.h \
+        dbusinputcontextconnection.h \
         serverdbusaddress.h \
+        mimserverconnection.h \
+        dbusserverconnection.h \
+        inputcontextdbusaddress.h \
 
     PRIVATE_SOURCES += \
+        dbuscustomarguments.cpp \
+        dbusinputcontextconnection.cpp \
         serverdbusaddress.cpp \
+        mimserverconnection.cpp \
+        dbusserverconnection.cpp \
+        inputcontextdbusaddress.cpp \
 
     # DBus activation
     enable-dbus-activation {
