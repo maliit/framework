@@ -1,3 +1,14 @@
+{NEXT]
+======
+
+CHANGES SINCE 0.99.0
+* Introduced Qt5 input context, replacing the one provided by Qt. Can
+  be enabled by CONFIG+=qt5-inputcontext
+* Allow plugin window reactive area and input method area reported to
+  application differ
+* Fix window state to have transient hint and window type as with
+  Maliit 0.8x
+
 0.99.0
 ======
 
