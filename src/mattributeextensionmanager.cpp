@@ -161,6 +161,7 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
     QSharedPointer<MAttributeExtension> extension = attributeExtension(id);
 
     if (!extension) {
+        qWarning() << "Extended attribute change with invalid id";
         return;
     }
 
