@@ -225,6 +225,10 @@ void MInputContext::update(Qt::InputMethodQueries queries)
 
     Q_UNUSED(queries) // fetching everything
 
+    if (queries & Qt::ImPlatformData) {
+        updateInputMethodExtensions();
+    }
+
     // get the state information of currently focused widget, and pass it to input method server
     QMap<QString, QVariant> stateInformation = getStateInformation();
     imServer->updateWidgetInformation(stateInformation, false);
@@ -242,6 +246,8 @@ void MInputContext::setFocusObject(QObject *focused)
 {
     if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__ << focused;
 
+    updateInputMethodExtensions();
+
     QWindow *newFocusWindow = qGuiApp->focusWindow();
     if (newFocusWindow != window.data()) {
        if (window) {
@@ -256,21 +262,14 @@ void MInputContext::setFocusObject(QObject *focused)
        }
     }
 
-    const QMap<QString, QVariant> stateInformation = getStateInformation();
-    if (focused) {
-        // for non-null focus widgets, we'll have this context activated
-        if (!active) {
-            imServer->activateContext();
-            active = true;
-
-            updateServerOrientation(newFocusWindow->contentOrientation());
-        }
-
-        imServer->updateWidgetInformation(stateInformation, true);
-
-    } else {
-        imServer->updateWidgetInformation(stateInformation, true);
+    if (focused && !active) {
+        imServer->activateContext();
+        active = true;
+        updateServerOrientation(newFocusWindow->contentOrientation());
     }
+
+    const QMap<QString, QVariant> stateInformation = getStateInformation();
+    imServer->updateWidgetInformation(stateInformation, true);
 
     if (inputPanelState == InputPanelShowPending && focused) {
         sipHideTimer.stop();
@@ -574,6 +573,9 @@ void MInputContext::onDBusConnection()
 {
     if (debug) qDebug() << __PRETTY_FUNCTION__;
 
+    // using one attribute extension for everything
+    imServer->registerAttributeExtension(0, QString());
+
     if (inputMethodAccepted()) {
         // Force activation, since setFocusWidget may have been called after
         // onDBusDisconnection set active to false.
@@ -694,6 +696,8 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         }
     }
 
+    stateInformation["toolbarId"] = 0; // Global extension id. And bad state parameter name for it.
+
     return stateInformation;
 }
 
@@ -761,3 +765,24 @@ int MInputContext::cursorStartPosition(bool *valid)
     return start;
 }
 
+void MInputContext::updateInputMethodExtensions()
+{
+    if (!inputMethodAccepted()) {
+        return;
+    }
+    if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__;
+
+    QVariantMap extensions = qGuiApp->focusObject()->property("__inputMethodExtensions").toMap();
+    QVariant value;
+    value = extensions.value("enterKeyIconSource");
+    imServer->setExtendedAttribute(0, "/keys", "actionKey", "icon", QVariant(value.toUrl().toString()));
+
+    value = extensions.value("enterKeyText");
+    imServer->setExtendedAttribute(0, "/keys", "actionKey", "label", QVariant(value.toString()));
+
+    value = extensions.value("enterKeyEnabled");
+    imServer->setExtendedAttribute(0, "/keys", "actionKey", "enabled", value.isValid() ? value.toBool() : true);
+
+    value = extensions.value("enterKeyHighlighted");
+    imServer->setExtendedAttribute(0, "/keys", "actionKey", "highlighted", value.isValid() ? value.toBool() : false);
+}
