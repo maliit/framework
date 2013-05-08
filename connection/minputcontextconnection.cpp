@@ -28,8 +28,6 @@ namespace {
     const char * const CursorPositionAttribute = "cursorPosition";
     const char * const HasSelectionAttribute = "hasSelection";
     const char * const InputMethodModeAttribute = "inputMethodMode";
-    const char * const ToolbarIdAttribute = "toolbarId";
-    const char * const ToolbarAttribute = "toolbar";
     const char * const WinId = "winId";
     const char * const CursorRectAttribute = "cursorRectangle";
     const char * const HiddenTextAttribute = "hiddenText";
