@@ -12,7 +12,7 @@
  */
 
 #include <wayland-client.h>
-#include "wayland-input-method-client-protocol.h"
+#include "qwayland-input-method.h"
 
 #include <QDebug>
 #include <QGuiApplication>
@@ -24,25 +24,23 @@
 #include "waylandplatform.h"
 #include "windowdata.h"
 
-namespace Maliit
-{
-
 namespace
 {
-
-input_panel_surface_position maliitToWestonPosition (Maliit::Position position)
+QtWayland::wl_input_panel_surface::position maliitToWestonPosition(Maliit::Position position)
 {
     switch (position) {
     case Maliit::PositionCenterBottom:
-        return INPUT_PANEL_SURFACE_POSITION_CENTER_BOTTOM;
+        return QtWayland::wl_input_panel_surface::position_center_bottom;
     default:
         qWarning() << "Weston only supports center bottom position for top-level surfaces.";
 
-        return INPUT_PANEL_SURFACE_POSITION_CENTER_BOTTOM;
+        return QtWayland::wl_input_panel_surface::position_center_bottom;
     }
 }
-
 } // unnamed namespace
+
+namespace Maliit
+{
 
 class WaylandPlatformPrivate
 {
@@ -59,7 +57,7 @@ public:
                            bool avoid_crash = false);
 
     struct wl_registry *m_registry;
-    struct input_panel *m_panel;
+    QScopedPointer<QtWayland::wl_input_panel> m_panel;
     uint32_t m_panel_name;
     QVector<WindowData> m_scheduled_windows;
 };
@@ -115,9 +113,6 @@ WaylandPlatformPrivate::WaylandPlatformPrivate()
 
 WaylandPlatformPrivate::~WaylandPlatformPrivate()
 {
-    if (m_panel) {
-        input_panel_destroy (m_panel);
-    }
     if (m_registry) {
         wl_registry_destroy (m_registry);
     }
@@ -130,8 +125,8 @@ void WaylandPlatformPrivate::handleRegistryGlobal(uint32_t name,
     Q_UNUSED(version);
 
     qDebug() << __PRETTY_FUNCTION__ << "Name:" << name << "Interface:" << interface;
-    if (!strcmp(interface, "input_panel")) {
-        m_panel = static_cast<input_panel *>(wl_registry_bind(m_registry, name, &input_panel_interface, 1));
+    if (!strcmp(interface, "wl_input_panel")) {
+        m_panel.reset(new QtWayland::wl_input_panel(m_registry, name));
         m_panel_name = name;
 
         Q_FOREACH (const WindowData& data, m_scheduled_windows) {
@@ -145,8 +140,7 @@ void WaylandPlatformPrivate::handleRegistryGlobalRemove(uint32_t name)
 {
     qDebug() << __PRETTY_FUNCTION__ << "Name:" << name;
     if (m_panel and m_panel_name == name) {
-        input_panel_destroy(m_panel);
-        m_panel = 0;
+        m_panel.reset();
     }
 }
 
@@ -156,7 +150,9 @@ void WaylandPlatformPrivate::setupInputSurface(QWindow *window,
 {
     struct wl_surface *surface = avoid_crash ? 0 : static_cast<struct wl_surface *>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("surface", window));
 
-    if (not surface) {
+    struct wl_output *output = static_cast<struct wl_output*>(QGuiApplication::platformNativeInterface()->nativeResourceForScreen("output", QGuiApplication::primaryScreen()));
+
+    if (!surface) {
         if (avoid_crash) {
             qDebug() << "Creating surface to avoid crash in QtWayland";
         } else {
@@ -168,14 +164,15 @@ void WaylandPlatformPrivate::setupInputSurface(QWindow *window,
 
     surface = static_cast<struct wl_surface *>(QGuiApplication::platformNativeInterface()->nativeResourceForWindow("surface", window));
     qDebug() << __PRETTY_FUNCTION__ << "WId:" << window->winId();
-    if (surface) {
-        input_panel_surface *ip_surface = input_panel_get_input_panel_surface(m_panel, surface);
-        input_panel_surface_position weston_position = maliitToWestonPosition (position);
-
-        input_panel_surface_set_toplevel(ip_surface, weston_position);
-    } else {
+    if (!surface) {
         qDebug() << __PRETTY_FUNCTION__ << "Still no surface, giving up.";
+        return;
     }
+
+    struct wl_input_panel_surface *ip_surface = m_panel->get_input_panel_surface(surface);
+    QtWayland::wl_input_panel_surface::position weston_position = maliitToWestonPosition(position);
+
+    wl_input_panel_surface_set_toplevel(ip_surface, output, weston_position);
 }
 
 WaylandPlatform::WaylandPlatform()

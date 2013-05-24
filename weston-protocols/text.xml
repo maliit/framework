@@ -2,7 +2,7 @@
 <protocol name="text">
 
   <copyright>
-    Copyright © 2012 Intel Corporation
+    Copyright © 2012, 2013 Intel Corporation
 
     Permission to use, copy, modify, distribute, and sell this
     software and its documentation for any purpose is hereby granted
@@ -26,11 +26,11 @@
     THIS SOFTWARE.
   </copyright>
 
-  <interface name="text_input" version="1">
+  <interface name="wl_text_input" version="1">
     <description summary="text input">
       An object used for text input. Adds support for text input and input 
       methods to applications. A text-input object is created from a
-      text_input_manager and corresponds typically to a text entry in an
+      wl_text_input_manager and corresponds typically to a text entry in an
       application.
       Requests are used to activate/deactivate the text-input object and set
       state information like surrounding and selected text or the content type.
@@ -38,6 +38,15 @@
       the pre-edit and commit events. Using this interface removes the need
       for applications to directly process hardware key events and compose text
       out of them.
+
+      Text is generally UTF-8 encoded, indices and lengths are in bytes.
+
+      Serials are used to synchronize the state between the text input and
+      an input method. New serials are sent by the text input in the
+      commit_state request and are used by the input method to indicate
+      the known text input state in events like preedit_string, commit_string,
+      and keysym. The text input can then ignore events from the input method
+      which are based on an outdated state (for example after a reset).
     </description>
     <request name="activate">
       <description summary="request activation">
@@ -48,7 +57,6 @@
         text-input object and tracked for focus lost. The enter event
         is emitted on successful activation.
       </description>
-      <arg name="serial" type="uint"/>
       <arg name="seat" type="object" interface="wl_seat"/>
       <arg name="surface" type="object" interface="wl_surface"/>
     </request>
@@ -76,14 +84,14 @@
         reset, for example after the text was changed outside of the normal
         input method flow.
       </description>
-      <arg name="serial" type="uint"/>
     </request>
     <request name="set_surrounding_text">
       <description summary="sets the surrounding text">
-        Sets the plain surrounding text around the input position. Cursor is the
-        byte index within the surrounding text. Anchor is the byte index of the
+        Sets the plain surrounding text around the input position. Text is
+        UTF-8 encoded. Cursor is the byte offset within the
+        surrounding text. Anchor is the byte offset of the
         selection anchor within the surrounding text. If there is no selected
-        text anchor then it is the same as cursor.
+        text anchor is the same as cursor.
       </description>
       <arg name="text" type="string"/>
       <arg name="cursor" type="uint"/>
@@ -162,6 +170,7 @@
       <arg name="language" type="string"/>
     </request>
     <request name="commit_state">
+      <arg name="serial" type="uint" summary="used to identify the known state"/>
     </request>
     <request name="invoke_action">
       <arg name="button" type="uint"/>
@@ -202,9 +211,12 @@
         be removed.
 
         The commit text can be used to replace the preedit text on reset
-        (for example on unfocus).
+	(for example on unfocus).
+
+	The text input should also handle all preedit_style and preedit_cursor
+	events occuring directly before preedit_string.
       </description>
-      <arg name="serial" type="uint"/>
+      <arg name="serial" type="uint" summary="serial of the latest known text input state"/>
       <arg name="text" type="string"/>
       <arg name="commit" type="string"/>
     </event>
@@ -221,57 +233,61 @@
     <event name="preedit_styling">
       <description summary="pre-edit styling">
         Sets styling information on composing text. The style is applied for
-        length (in bytes) characters from index relative to the beginning of
-        the composing text (as byte index). Multiple styles can be applied
-        to a composing text.
+	length bytes from index relative to the beginning of the composing 
+	text (as byte offset). Multiple styles can
+        be applied to a composing text by sending multiple preedit_styling
+        events.
 
-        This event should be handled as part of a following preedit_string
-        event.
+        This event is handled as part of a following preedit_string event.
       </description>
-      <arg name="serial" type="uint"/>
       <arg name="index" type="uint"/>
       <arg name="length" type="uint"/>
       <arg name="style" type="uint"/>
     </event>
     <event name="preedit_cursor">
       <description summary="pre-edit cursor">
-        Sets the cursor position inside the composing text (as byte index)
-        relative to the start of the composing text.
+        Sets the cursor position inside the composing text (as byte
+        offset) relative to the start of the composing text. When index is a
+        negative number no cursor is shown.
 
-        This event should be handled as part of a following preedit_string
-        event.
+        This event is handled as part of a following preedit_string event.
       </description>
-      <arg name="serial" type="uint"/>
       <arg name="index" type="int"/>
     </event>
     <event name="commit_string">
       <description summary="commit">
         Notify when text should be inserted into the editor widget. The text to
         commit could be either just a single character after a key press or the
-        result of some composing (pre-edit). It also sets the new cursor
-        position (as byte index) relative to the beginning of inserted text.
+        result of some composing (pre-edit). It could be also an empty text
+        when some text should be removed (see delete_surrounding_text) or when
+        the input cursor should be moved (see cursor_position).
 
         Any previously set composing text should be removed.
       </description>
-      <arg name="serial" type="uint"/>
+      <arg name="serial" type="uint" summary="serial of the latest known text input state"/>
       <arg name="text" type="string"/>
     </event>
     <event name="cursor_position">
       <description summary="set cursor to new position">
-        Notify when the cursor or anchor position should be modified. It
-        should take effect after the next commit_string event.
+        Notify when the cursor or anchor position should be modified.
+
+        This event should be handled as part of a following commit_string
+        event.
       </description>
-      <arg name="serial" type="uint"/>
       <arg name="index" type="int"/>
       <arg name="anchor" type="int"/>
     </event>
     <event name="delete_surrounding_text">
       <description summary="delete surrounding text">
         Notify when the text around the current cursor position should be
-        deleted. Index is relative to the current cursor (as byte index).
+        deleted.
+
+        Index is relative to the current cursor (in bytes).
         Length is the length of deleted text (in bytes).
+
+        This event should be handled as part of a following commit_string
+        event.
       </description>
-      <arg name="serial" type="uint"/>
       <arg name="index" type="int"/>
       <arg name="length" type="uint"/>
     </event>
@@ -279,12 +295,12 @@
       <description summary="keysym">
         Notify when a key event was sent. Key events should not be used
         for normal text input operations, which should be done with
-        commit_string, delete_surrounfing_text, etc. The key event follows
+        commit_string, delete_surrounding_text, etc. The key event follows
         the wl_keyboard key event convention. Sym is a XKB keysym, state a
         wl_keyboard key_state. Modifiers are a mask for effective modifiers
         (where the modifier indices are set by the modifiers_map event)
       </description>
-      <arg name="serial" type="uint"/>
+      <arg name="serial" type="uint" summary="serial of the latest known text input state"/>
       <arg name="time" type="uint"/>
       <arg name="sym" type="uint"/>
       <arg name="state" type="uint"/>
@@ -295,7 +311,7 @@
         Sets the language of the input text. The "language" argument is a RFC-3066 
         format language tag.
       </description>
-      <arg name="serial" type="uint"/>
+      <arg name="serial" type="uint" summary="serial of the latest known text input state"/>
       <arg name="language" type="string"/>
     </event>
     <enum name="text_direction">
@@ -311,12 +327,12 @@
         editor when there is no input yet done and making sure neutral
         direction text is laid out properly.
       </description>
-      <arg name="serial" type="uint"/>
+      <arg name="serial" type="uint" summary="serial of the latest known text input state"/>
       <arg name="direction" type="uint"/>
     </event>
   </interface>
 
-  <interface name="text_input_manager" version="1">
+  <interface name="wl_text_input_manager" version="1">
     <description summary="text input manager">
       A factory for text-input objects. This object is a global singleton.
     </description>
@@ -324,7 +340,7 @@
       <description summary="create text input">
         Creates a new text-input object.
       </description>
-      <arg name="id" type="new_id" interface="text_input"/>
+      <arg name="id" type="new_id" interface="wl_text_input"/>
     </request>
   </interface>
 </protocol>

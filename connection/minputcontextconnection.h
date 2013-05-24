@@ -367,8 +367,12 @@ protected:
     bool globalCorrectionEnabled();
     bool redirectKeysEnabled();
 
-    void handleDisconnection(unsigned int connectionId);
     void handleActivation(unsigned int connectionId);
+
+    QVariantMap widgetState() const;
+
+public:
+    void handleDisconnection(unsigned int connectionId);
 
 private:
     /*!
@@ -381,7 +385,7 @@ private:
     int lastOrientation;
 
     /* FIXME: rename with m prefix, and provide protected accessors for derived classes */
-    QMap<QString, QVariant> widgetState;
+    QMap<QString, QVariant> mWidgetState;
     bool mGlobalCorrectionEnabled;
     bool mRedirectionEnabled;
     bool mDetectableAutoRepeat;

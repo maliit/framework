@@ -27,9 +27,9 @@ CONFIG += qdbus-dbus-connection
 wayland {
     QT += gui-private
     PUBLIC_SOURCES += \
-        minputcontextwestonimprotocolconnection.cpp
+        waylandinputmethodconnection.cpp
     PUBLIC_HEADERS += \
-        minputcontextwestonimprotocolconnection.h
+        waylandinputmethodconnection.h
 }
 
 include($$TOP_DIR/dbus_interfaces/dbus_interfaces.pri)

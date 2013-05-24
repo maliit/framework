@@ -17,7 +17,7 @@
 #include "dbusinputcontextconnection.h"
 
 #ifdef HAVE_WAYLAND
-#include "minputcontextwestonimprotocolconnection.h"
+#include "waylandinputmethodconnection.h"
 #endif
 
 namespace Maliit {
@@ -41,7 +41,7 @@ MInputContextConnection *createInputContextConnectionWithFixedAddress(const QStr
 #ifdef HAVE_WAYLAND
 MInputContextConnection *createWestonIMProtocolConnection()
 {
-    return new MInputContextWestonIMProtocolConnection;
+    return new WaylandInputMethodConnection;
 }
 #endif
 
