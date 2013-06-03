@@ -576,10 +576,11 @@ void MInputContext::onDBusConnection()
     // using one attribute extension for everything
     imServer->registerAttributeExtension(0, QString());
 
+    // Force activation, since setFocusWidget may have been called after
+    // onDBusDisconnection set active to false or before the dbus connection.
+    active = false;
+
     if (inputMethodAccepted()) {
-        // Force activation, since setFocusWidget may have been called after
-        // onDBusDisconnection set active to false.
-        active = false;
         setFocusObject(QGuiApplication::focusObject());
         if (inputPanelState != InputPanelHidden) {
             imServer->showInputMethod();
