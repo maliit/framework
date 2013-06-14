@@ -82,7 +82,7 @@ void outputMessagesToStdErr(QtMsgType type,
 QSharedPointer<MInputContextConnection> createConnection(const MImServerConnectionOptions &options)
 {
 #ifdef HAVE_WAYLAND
-    if (QGuiApplication::platformName() == "wayland") {
+    if (QGuiApplication::platformName().startsWith("wayland")) {
         return QSharedPointer<MInputContextConnection>(Maliit::createWestonIMProtocolConnection());
     } else
 #endif
@@ -97,7 +97,7 @@ QSharedPointer<MInputContextConnection> createConnection(const MImServerConnecti
 QSharedPointer<Maliit::AbstractPlatform> createPlatform()
 {
 #ifdef HAVE_WAYLAND
-    if (QGuiApplication::platformName() == "wayland") {
+    if (QGuiApplication::platformName().startsWith("wayland")) {
         return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::WaylandPlatform);
     } else
 #endif
