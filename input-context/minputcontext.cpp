@@ -19,6 +19,7 @@
 #include "minputcontext.h"
 
 #include <QGuiApplication>
+#include <QScreen>
 #include <QKeyEvent>
 #include <QTextFormat>
 #include <QDebug>
@@ -36,16 +37,20 @@ namespace
 
     int orientationAngle(Qt::ScreenOrientation orientation)
     {
+        // Maliit uses orientations relative to screen, Qt relative to world
+        // Note: doesn't work with inverted portrait or landscape as native screen orientation.
+        static bool portraitRotated = qGuiApp->primaryScreen()->primaryOrientation() == Qt::PortraitOrientation;
+
         switch (orientation) {
         case Qt::PrimaryOrientation: // Urgh.
         case Qt::PortraitOrientation:
-            return MInputContext::Angle270;
+            return portraitRotated ? MInputContext::Angle0 : MInputContext::Angle270;
         case Qt::LandscapeOrientation:
-            return MInputContext::Angle0;
+            return portraitRotated ? MInputContext::Angle90 : MInputContext::Angle0;
         case Qt::InvertedPortraitOrientation:
-            return MInputContext::Angle90;
+            return portraitRotated ? MInputContext::Angle180 : MInputContext::Angle90;
         case Qt::InvertedLandscapeOrientation:
-            return MInputContext::Angle180;
+            return portraitRotated ? MInputContext::Angle270 : MInputContext::Angle180;
         }
         return MInputContext::Angle0;
     }
