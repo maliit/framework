@@ -679,6 +679,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
     stateInformation["autocapitalizationEnabled"] = !(hints & Qt::ImhNoAutoUppercase);
     stateInformation["hiddenText"] = static_cast<bool>(hints & Qt::ImhHiddenText);
+    stateInformation["predictionEnabled"] = !(hints & Qt::ImhNoPredictiveText);
 
     stateInformation["maliit-inputmethod-hints"] = QVariant(static_cast<qint64>(hints));
 
