@@ -437,11 +437,11 @@ void InputMethodQuick::sendPreedit(const QString &text,
 {
     QList<Maliit::PreeditTextFormat> formatList;
 
-    if (!preeditFormats.isValid()) {
+    if (text.length() > 0 && !preeditFormats.isValid()) {
         // Fallback
         formatList.append(Maliit::PreeditTextFormat(0, text.length(), Maliit::PreeditDefault));
 
-    } else if (preeditFormats.type() == QVariant::Int) {
+    } else if (text.length() > 0 && preeditFormats.type() == QVariant::Int) {
         // format with one type
         Maliit::PreeditTextFormat format(0, text.length(),
                                          static_cast<Maliit::PreeditFace>(preeditFormats.toInt()));
