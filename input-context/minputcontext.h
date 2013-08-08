@@ -30,6 +30,8 @@ class MImServerConnection;
 class MInputContext : public QPlatformInputContext
 {
     Q_OBJECT
+    // Exposing preedit state as an extension. Use only if you know what you're doing.
+    Q_PROPERTY(QString preedit READ preeditString NOTIFY preeditChanged)
 
 public:
     enum OrientationAngle {
@@ -57,6 +59,8 @@ public:
     virtual QLocale locale() const;
     virtual Qt::LayoutDirection inputDirection() const;
     virtual void setFocusObject(QObject *object);
+
+    QString preeditString();
 
 public Q_SLOTS:
     // Hooked up to the input method server
@@ -96,6 +100,9 @@ private Q_SLOTS:
     // Notify input method plugin about new \a orientation angle of application's active window.
     // note: this method is called when the orientation change is finished
     void notifyOrientationChanged(MInputContext::OrientationAngle orientation);
+
+Q_SIGNALS:
+    void preeditChanged();
 
 private:
     Q_DISABLE_COPY(MInputContext)

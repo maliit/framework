@@ -190,6 +190,7 @@ void MInputContext::commit()
 
         preedit.clear();
         preeditCursorPos = -1;
+        Q_EMIT preeditChanged();
     }
 
     imServer->reset(hadPreedit);
@@ -300,6 +301,11 @@ void MInputContext::setFocusObject(QObject *focused)
         imServer->showInputMethod();
         inputPanelState = InputPanelShown;
     }
+}
+
+QString MInputContext::preeditString()
+{
+    return preedit;
 }
 
 bool MInputContext::filterEvent(const QEvent *event)
@@ -423,6 +429,7 @@ void MInputContext::commitString(const QString &string, int replacementStart,
         return;
     }
 
+    bool hadPreedit = !preedit.isEmpty();
     preedit.clear();
     preeditCursorPos = -1;
 
@@ -446,6 +453,10 @@ void MInputContext::commitString(const QString &string, int replacementStart,
         QInputMethodEvent event;
         event.setCommitString(string, replacementStart, replacementLength);
         QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+    }
+
+    if (hadPreedit) {
+        Q_EMIT preeditChanged();
     }
 }
 
@@ -521,6 +532,8 @@ void MInputContext::updatePreeditInternally(const QString &string,
        qWarning() << "No focused object, cannot update preedit."
                   << "Wrong reset/preedit behaviour in active input method plugin?";
     }
+
+    Q_EMIT preeditChanged();
 }
 
 void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
