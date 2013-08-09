@@ -64,7 +64,8 @@ MInputContext::MInputContext()
       active(false),
       inputPanelState(InputPanelHidden),
       preeditCursorPos(-1),
-      redirectKeys(false)
+      redirectKeys(false),
+      currentFocusAcceptsInput(false)
 {
     QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
     if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
@@ -234,9 +235,17 @@ void MInputContext::update(Qt::InputMethodQueries queries)
         updateInputMethodExtensions();
     }
 
+    bool effectiveFocusChange = false;
+    if (queries & Qt::ImEnabled) {
+        bool newAcceptance = inputMethodAccepted();
+        if (newAcceptance != currentFocusAcceptsInput) {
+            currentFocusAcceptsInput = newAcceptance;
+            effectiveFocusChange = true;
+        }
+    }
     // get the state information of currently focused widget, and pass it to input method server
     QMap<QString, QVariant> stateInformation = getStateInformation();
-    imServer->updateWidgetInformation(stateInformation, false);
+    imServer->updateWidgetInformation(stateInformation, effectiveFocusChange);
 }
 
 void MInputContext::updateServerOrientation(Qt::ScreenOrientation orientation)
@@ -275,6 +284,7 @@ void MInputContext::setFocusObject(QObject *focused)
 
     const QMap<QString, QVariant> stateInformation = getStateInformation();
     imServer->updateWidgetInformation(stateInformation, true);
+    currentFocusAcceptsInput = inputMethodAccepted();
 
     if (inputPanelState == InputPanelShowPending && focused) {
         sipHideTimer.stop();
