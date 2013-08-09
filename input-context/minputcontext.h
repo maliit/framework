@@ -138,6 +138,7 @@ private:
     int preeditCursorPos;
     bool redirectKeys; // redirect all hw key events to the input method or not
     QLocale inputLocale;
+    bool currentFocusAcceptsInput;
 };
 
 #endif
