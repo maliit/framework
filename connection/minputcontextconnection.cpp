@@ -261,6 +261,9 @@ MInputContextConnection::updateWidgetInformation(
     unsigned int connectionId, const QMap<QString, QVariant> &stateInfo,
     bool handleFocusChange)
 {
+    if (activeConnection != connectionId)
+        return;
+
     QMap<QString, QVariant> oldState = mWidgetState;
 
     mWidgetState = stateInfo;
