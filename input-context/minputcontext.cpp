@@ -655,7 +655,7 @@ void MInputContext::setRedirectKeys(bool enabled)
 void MInputContext::setDetectableAutoRepeat(bool enabled)
 {
     Q_UNUSED(enabled);
-    qWarning() << "Detectable autorepeat not supported.";
+    if (debug) qWarning() << "Detectable autorepeat not supported.";
 }
 
 QMap<QString, QVariant> MInputContext::getStateInformation() const
