@@ -238,6 +238,11 @@ void MInputContext::update(Qt::InputMethodQueries queries)
     bool effectiveFocusChange = false;
     if (queries & Qt::ImEnabled) {
         bool newAcceptance = inputMethodAccepted();
+        if (newAcceptance && !active) {
+            setFocusObject(QGuiApplication::focusObject());
+            return;
+        }
+
         if (newAcceptance != currentFocusAcceptsInput) {
             currentFocusAcceptsInput = newAcceptance;
             effectiveFocusChange = true;
@@ -276,17 +281,21 @@ void MInputContext::setFocusObject(QObject *focused)
        }
     }
 
-    if (focused && !active) {
+    bool oldAcceptInput = currentFocusAcceptsInput;
+    currentFocusAcceptsInput = inputMethodAccepted();
+
+    if (!active && currentFocusAcceptsInput) {
         imServer->activateContext();
         active = true;
         updateServerOrientation(newFocusWindow->contentOrientation());
     }
 
-    const QMap<QString, QVariant> stateInformation = getStateInformation();
-    imServer->updateWidgetInformation(stateInformation, true);
-    currentFocusAcceptsInput = inputMethodAccepted();
+    if (active && (currentFocusAcceptsInput || oldAcceptInput)) {
+        const QMap<QString, QVariant> stateInformation = getStateInformation();
+        imServer->updateWidgetInformation(stateInformation, true);
+    }
 
-    if (inputPanelState == InputPanelShowPending && focused) {
+    if (inputPanelState == InputPanelShowPending && currentFocusAcceptsInput) {
         sipHideTimer.stop();
         imServer->showInputMethod();
         inputPanelState = InputPanelShown;
@@ -591,7 +600,7 @@ void MInputContext::onDBusConnection()
     // using one attribute extension for everything
     imServer->registerAttributeExtension(0, QString());
 
-    // Force activation, since setFocusWidget may have been called after
+    // Force activation, since setFocusObject may have been called after
     // onDBusDisconnection set active to false or before the dbus connection.
     active = false;
 
