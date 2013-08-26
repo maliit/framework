@@ -514,7 +514,13 @@ void MInputContext::updatePreeditInternally(const QString &string,
         event.setCommitString("", replacementStart, replacementLength);
     }
 
-    QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+    if (qGuiApp->focusObject()) {
+        QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+    } else {
+       if (debug) qDebug() << __PRETTY_FUNCTION__;
+       qWarning() << "No focused object, cannot update preedit."
+                  << "Wrong reset/preedit behaviour in active input method plugin?";
+    }
 }
 
 void MInputContext::keyEvent(int type, int key, int modifiers, const QString &text,
