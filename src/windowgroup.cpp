@@ -62,9 +62,10 @@ void WindowGroup::setupWindow(QWindow *window, Maliit::Position position)
             }
             m_window_list.append (WindowData(window, position));
 
-            window->setFlags (Qt::FramelessWindowHint |
-                              Qt::WindowStaysOnTopHint |
-                              Qt::WindowDoesNotAcceptFocus);
+            window->setFlags(Qt::Window
+                             | Qt::FramelessWindowHint
+                             | Qt::WindowStaysOnTopHint
+                             | Qt::WindowDoesNotAcceptFocus);
 
             connect (window, SIGNAL (visibleChanged(bool)),
                      this, SLOT (onVisibleChanged(bool)));
