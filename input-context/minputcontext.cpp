@@ -186,7 +186,9 @@ void MInputContext::commit()
 
         QInputMethodEvent event("", attributes);
         event.setCommitString(preedit);
-        QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+        if (qGuiApp->focusObject()) {
+            QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+        }
 
         preedit.clear();
         preeditCursorPos = -1;
@@ -447,12 +449,16 @@ void MInputContext::commitString(const QString &string, int replacementStart,
         attributes << QInputMethodEvent::Attribute(QInputMethodEvent::Selection, start, 0, QVariant());
         QInputMethodEvent event("", attributes);
         event.setCommitString(string, replacementStart, replacementLength);
-        QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+        if (qGuiApp->focusObject()) {
+            QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+        }
 
     } else {
         QInputMethodEvent event;
         event.setCommitString(string, replacementStart, replacementLength);
-        QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+        if (qGuiApp->focusObject()) {
+            QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
+        }
     }
 
     if (hadPreedit) {
@@ -683,7 +689,7 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
 
     stateInformation["focusState"] = inputMethodAccepted();
 
-    if (!inputMethodAccepted()) {
+    if (!inputMethodAccepted() || !qGuiApp->focusObject()) {
         return stateInformation;
     }
 
