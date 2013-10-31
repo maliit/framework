@@ -94,6 +94,7 @@ DBusInputContextConnection::onDisconnection()
     mConnections.remove(connectionNumber);
     delete proxy;
     handleDisconnection(connectionNumber);
+    QDBusConnection::disconnectFromPeer(name);
 }
 
 void
