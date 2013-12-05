@@ -281,6 +281,7 @@ void MInputContext::setFocusObject(QObject *focused)
        if (window) {
            connect(window.data(), SIGNAL(contentOrientationChanged(Qt::ScreenOrientation)),
                    this, SLOT(updateServerOrientation(Qt::ScreenOrientation)));
+           updateServerOrientation(window->contentOrientation());
        }
     }
 
