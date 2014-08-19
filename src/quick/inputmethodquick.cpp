@@ -41,7 +41,7 @@ QQuickView *createWindow(MAbstractInputMethodHost *host)
 {
     QScopedPointer<QQuickView> view(new QQuickView);
 
-    QSurfaceFormat format;
+    QSurfaceFormat format = view->requestedFormat();
     format.setAlphaBufferSize(8);
     view->setFormat(format);
     view->setColor(QColor(Qt::transparent));
