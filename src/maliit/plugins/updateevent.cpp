@@ -39,7 +39,7 @@ bool MImUpdateEventPrivate::isFlagSet(Qt::InputMethodHint hint,
 
     if (update.contains(Maliit::Internal::inputMethodHints)) {
         const Qt::InputMethodHints hints(static_cast<Qt::InputMethodHints>(
-                                             update.value(Maliit::Internal::inputMethodHints).toLongLong()));
+                                             update.value(Maliit::Internal::inputMethodHints).toInt()));
 
         result = (hints & hint);
     }
@@ -90,7 +90,7 @@ Qt::InputMethodHints MImUpdateEvent::hints(bool *changed) const
 {
     Q_D(const MImUpdateEvent);
     return static_cast<Qt::InputMethodHints>(
-        d->extractProperty(Maliit::Internal::inputMethodHints, changed).toLongLong());
+        d->extractProperty(Maliit::Internal::inputMethodHints, changed).toInt());
 }
 
 bool MImUpdateEvent::westernNumericInputEnforced(bool *changed) const

@@ -1493,7 +1493,7 @@ void MIMPluginManager::handleWidgetStateChanged(unsigned int clientId,
         }
     }
 
-    const Qt::InputMethodHints lastHints = static_cast<Qt::InputMethodHints>(newState.value(Maliit::Internal::inputMethodHints).toLongLong());
+    const Qt::InputMethodHints lastHints = static_cast<Qt::InputMethodHints>(newState.value(Maliit::Internal::inputMethodHints).toInt());
     MImUpdateEvent ev(newState, changedProperties, lastHints);
 
     // general notification last
