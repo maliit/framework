@@ -173,19 +173,10 @@ bool MainWindow::eventFilter(QObject *watched,
 
 void MainWindow::onStartServerClicked()
 {
-
-    QStringList arguments;
-    arguments << "-bypass-wm-hint";
-
-    // Self-compositing is currently only supported in fullscreen mode:
-    if (enableFullScreenMode()) {
-        arguments << "-use-self-composition";
-    }
-
     if (m_server_process->state() != QProcess::NotRunning) {
         m_server_process->terminate();
     } else {
-        m_server_process->start(serverName, arguments);
+        m_server_process->start(serverName, QStringList());
     }
 }
 
