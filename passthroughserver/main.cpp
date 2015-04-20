@@ -67,6 +67,11 @@ void outputMessagesToStdErr(QtMsgType type,
             fprintf(stderr, "DEBUG: %s\n", raw);
         }
         break;
+#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
+    case QtInfoMsg:
+        fprintf(stderr, "INFO: %s\n", raw);
+        break;
+#endif
     case QtWarningMsg:
         fprintf(stderr, "WARNING: %s\n", raw);
         break;
