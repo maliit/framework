@@ -465,7 +465,11 @@ namespace Maliit {
 namespace Wayland {
 
 InputMethod::InputMethod(MInputContextConnection *connection, struct wl_registry *registry, int id)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
+    : QtWayland::wl_input_method(registry, id, 1)
+#else
     : QtWayland::wl_input_method(registry, id)
+#endif
     , m_connection(connection)
     , m_context()
 {
