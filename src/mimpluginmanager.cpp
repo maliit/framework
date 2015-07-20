@@ -343,7 +343,12 @@ void MIMPluginManagerPrivate::setActiveHandlers(const QSet<Maliit::HandlerState>
 
     // notify plugins about new states
     Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, activatedPlugins) {
-        plugins.value(plugin).inputMethod->setState(plugins.value(plugin).state);
+        PluginDescription desc = plugins.value(plugin);
+        desc.inputMethod->setState(desc.state);
+        if (visible) {
+            desc.windowGroup->activate();
+            desc.inputMethod->show();
+        }
     }
 
     // deactivate unnecessary plugins
