@@ -160,6 +160,8 @@ void MInputContext::reset()
     if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
     const bool hadPreedit = !preedit.isEmpty();
+    preedit.clear();
+    preeditCursorPos = -1;
 
     // reset input method server, preedit requires synchronization.
     // rationale: input method might be autocommitting existing preedit without
