@@ -22,7 +22,7 @@
 class MaliitPlatformInputContextPlugin: public QPlatformInputContextPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QPlatformInputContextFactoryInterface" FILE "maliit.json")
+    Q_PLUGIN_METADATA(IID QPlatformInputContextFactoryInterface_iid FILE "maliit.json")
 
 public:
     QPlatformInputContext *create(const QString&, const QStringList&);
