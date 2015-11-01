@@ -160,6 +160,28 @@ plugins_headers.files += $$PLUGIN_HEADERS_PUBLIC
 server_headers.path += $$INCLUDEDIR/$$MALIIT_SERVER_HEADER
 server_headers.files += $$SERVER_HEADERS_PUBLIC
 
+glib {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0
+
+    GLIB_HEADERS += $$TOP_DIR/connection/maliitserver.h \
+                    $$TOP_DIR/connection/maliitcontext.h
+    GLIB_SOURCES += $$TOP_DIR/connection/maliitserver.c \
+                    $$TOP_DIR/connection/maliitcontext.c
+
+    glib_headers.path = $$INCLUDEDIR/$$MALIIT_GLIB_HEADER
+    glib_headers.files += $$GLIB_HEADERS
+
+    HEADERS += $$GLIB_HEADERS
+    SOURCES += $$GLIB_SOURCES
+    INSTALLS += glib_headers
+    OTHER_FILES += maliit-glib.pc.in
+
+    outputFiles(maliit-glib.pc)
+
+    install_pkgconfig.files += $$OUT_PWD/maliit-glib.pc
+}
+
 OTHER_FILES += \
     maliit-server.pc.in \
     maliit-plugins.pc.in \
@@ -170,10 +192,10 @@ OTHER_FILES += \
     maliit-plugins.prf.in \
     maliit-defines.prf.in \
 
-outputFiles(config.h  maliit-defines.prf maliit-plugins.prf maliit-plugins.pc maliit-server.pc)
+outputFiles(config.h maliit-defines.prf maliit-plugins.prf maliit-plugins.pc maliit-server.pc)
 
 install_pkgconfig.path = $${LIBDIR}/pkgconfig
-install_pkgconfig.files = \
+install_pkgconfig.files += \
     $$OUT_PWD/MeegoImFramework.pc \
     $$OUT_PWD/maliit-plugins.pc \
     $$OUT_PWD/maliit-server.pc \

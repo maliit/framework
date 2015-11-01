@@ -8,3 +8,7 @@ minputmethodserver1interface_adaptor.cpp
 minputmethodserver1interface_adaptor.h
 minputmethodserver1interface_interface.cpp
 minputmethodserver1interface_interface.h
+maliitserver.h
+maliitserver.c
+maliitcontext.h
+maliitcontext.c
