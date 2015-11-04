@@ -7,6 +7,9 @@ MALIIT_LIB = maliit
 MALIIT_SETTINGS_LIB = maliit-settings
 MALIIT_HEADER = maliit
 MALIIT_FRAMEWORK_HEADER = maliit/framework
+# For libmaliit-glib
+MALIIT_CONNECTION_GLIB_LIB = maliit-connection-glib
+MALIIT_GLIB_LIB = maliit-glib
 
 include(defines.pri)
 
@@ -195,6 +198,7 @@ defineTest(outputFile) {
                 MALIIT_SERVER_HEADER \
                 MALIIT_ABI_VERSION_MAJOR \
                 MALIIT_GLIB_HEADER \
+                MALIIT_GLIB_LIB \
 
     command = "sed"
     for(var, variables) {
