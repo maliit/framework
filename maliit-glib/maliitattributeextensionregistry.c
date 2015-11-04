@@ -20,11 +20,8 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#include <dbus/dbus-glib.h>
-
 #include "maliitattributeextensionregistry.h"
-#include "maliitmarshallers.h"
-#include "meego-im-connector.h"
+#include "maliitbus.h"
 
 struct _MaliitAttributeExtensionRegistryPrivate
 {
@@ -132,20 +129,21 @@ extension_weak_unref_global (gpointer data)
 }
 
 static void
-register_all_extensions (MeegoIMProxy *proxy, gpointer user_data)
+register_all_extensions (MaliitServer *server, gpointer user_data)
 {
     MaliitAttributeExtensionRegistry *registry = user_data;
     GList *extensions = maliit_attribute_extension_registry_get_extensions (registry);
     GList *iter;
+    GError *error = NULL;
 
     for (iter = extensions; iter; iter = iter->next) {
         MaliitAttributeExtension *extension = MALIIT_ATTRIBUTE_EXTENSION (iter->data);
 
-        if (!meego_im_proxy_register_extension (proxy,
-                                                maliit_attribute_extension_get_id (extension),
-                                                maliit_attribute_extension_get_filename (extension))) {
-            g_warning ("Could not register an extension in mass registerer - no proxy");
-        } else {
+        if (maliit_server_call_register_attribute_extension_sync (server,
+                                                                  maliit_attribute_extension_get_id (extension),
+                                                                  maliit_attribute_extension_get_filename (extension),
+                                                                  NULL,
+                                                                  &error)) {
             GHashTable *attributes = maliit_attribute_extension_get_attributes (extension);
             GHashTableIter attributes_iter;
             gpointer key;
@@ -156,6 +154,9 @@ register_all_extensions (MeegoIMProxy *proxy, gpointer user_data)
             while (g_hash_table_iter_next (&attributes_iter, &key, &value)) {
                 maliit_attribute_extension_registry_extension_changed(registry, extension, key, value);
             }
+        } else {
+            g_warning ("Could not register an extension in mass registerer: %s", error->message);
+            g_clear_error (&error);
         }
     }
 
@@ -163,10 +164,25 @@ register_all_extensions (MeegoIMProxy *proxy, gpointer user_data)
 }
 
 static void
+connection_established (GObject      *source_object G_GNUC_UNUSED,
+                        GAsyncResult *res,
+                        gpointer      user_data)
+{
+    GError *error = NULL;
+    MaliitServer *server = maliit_get_server_finish (res, &error);
+
+    if (server) {
+        register_all_extensions (server, user_data);
+        g_object_unref (server);
+    } else {
+        g_warning ("Unable to connect to server: %s", error->message);
+        g_clear_error (&error);
+    }
+}
+
+static void
 maliit_attribute_extension_registry_init (MaliitAttributeExtensionRegistry *registry)
 {
-    MeegoImConnector *connector = meego_im_connector_get_singleton();
-
     MaliitAttributeExtensionRegistryPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (registry,
                                                                                  MALIIT_TYPE_ATTRIBUTE_EXTENSION_REGISTRY,
                                                                                  MaliitAttributeExtensionRegistryPrivate);
@@ -175,10 +191,10 @@ maliit_attribute_extension_registry_init (MaliitAttributeExtensionRegistry *regi
                                               g_direct_equal,
                                               NULL,
                                               extension_weak_unref_global);
+
     registry->priv = priv;
 
-    g_signal_connect(connector->proxy, "connection-established",
-                     G_CALLBACK(register_all_extensions), registry);
+    maliit_get_server (NULL, connection_established, registry);
 }
 
 MaliitAttributeExtensionRegistry *
@@ -192,8 +208,10 @@ void
 maliit_attribute_extension_registry_add_extension (MaliitAttributeExtensionRegistry *registry,
                                                    MaliitAttributeExtension *extension)
 {
+    MaliitServer *server;
     GHashTable *extensions;
     gint id;
+    GError *error = NULL;
 
     g_return_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION_REGISTRY (registry));
     g_return_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION (extension));
@@ -202,8 +220,6 @@ maliit_attribute_extension_registry_add_extension (MaliitAttributeExtensionRegis
     id = maliit_attribute_extension_get_id (extension);
 
     if (!g_hash_table_lookup_extended (extensions, GINT_TO_POINTER (id), NULL, NULL)) {
-        MeegoImConnector *connector = meego_im_connector_get_singleton();
-
         g_object_weak_ref (G_OBJECT (extension),
                            extension_notify,
                            registry);
@@ -211,9 +227,24 @@ maliit_attribute_extension_registry_add_extension (MaliitAttributeExtensionRegis
         g_hash_table_insert (extensions,
                              GINT_TO_POINTER (id),
                              extension);
-        meego_im_proxy_register_extension(connector->proxy,
-                                          id,
-                                          maliit_attribute_extension_get_filename (extension));
+
+        server = maliit_get_server_sync (NULL, &error);
+
+        if (server) {
+            if (!maliit_server_call_register_attribute_extension_sync (server,
+                                                                       id,
+                                                                       maliit_attribute_extension_get_filename (extension),
+                                                                       NULL,
+                                                                       &error)) {
+                g_warning ("Unable to register extension: %s", error->message);
+                g_clear_error (&error);
+            }
+
+            g_object_unref (server);
+        } else {
+            g_warning ("Unable to connect to server: %s", error->message);
+            g_clear_error (&error);
+        }
     }
 }
 
@@ -221,8 +252,10 @@ void
 maliit_attribute_extension_registry_remove_extension (MaliitAttributeExtensionRegistry *registry,
                                                       MaliitAttributeExtension *extension)
 {
+    MaliitServer *server;
     GHashTable *extensions;
     gint id;
+    GError *error = NULL;
 
     g_return_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION_REGISTRY (registry));
     g_return_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION (extension));
@@ -231,12 +264,25 @@ maliit_attribute_extension_registry_remove_extension (MaliitAttributeExtensionRe
     id = maliit_attribute_extension_get_id (extension);
 
     if (g_hash_table_lookup_extended (extensions, GINT_TO_POINTER (id), NULL, NULL)) {
-        MeegoImConnector *connector = meego_im_connector_get_singleton();
-
         g_hash_table_remove (extensions,
                              GINT_TO_POINTER (id));
-        meego_im_proxy_unregister_extension(connector->proxy,
-                                            id);
+
+        server = maliit_get_server_sync (NULL, &error);
+
+        if (server) {
+            if (!maliit_server_call_unregister_attribute_extension_sync (server,
+                                                                         id,
+                                                                         NULL,
+                                                                         &error)) {
+                g_warning ("Unable to unregister extension: %s", error->message);
+                g_clear_error (&error);
+            }
+
+            g_object_unref (server);
+        } else {
+            g_warning ("Unable to connect to server: %s", error->message);
+            g_clear_error (&error);
+        }
     }
 }
 
@@ -251,7 +297,9 @@ maliit_attribute_extension_registry_extension_changed (MaliitAttributeExtensionR
                                                        const gchar *key,
                                                        GVariant *value)
 {
+    MaliitServer *server;
     gchar **parts;
+    GError *error = NULL;
 
     g_return_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION_REGISTRY (registry));
     g_return_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION (extension));
@@ -264,24 +312,30 @@ maliit_attribute_extension_registry_extension_changed (MaliitAttributeExtensionR
         return;
 
     if (g_strv_length (parts) == 3) {
-        GValue g_value = G_VALUE_INIT;
+        gchar *target = g_strdup_printf ("/%s", parts[0]);
 
-        dbus_g_value_parse_g_variant (value, &g_value);
-        if (G_VALUE_TYPE (&g_value) != G_TYPE_INVALID) {
-            MeegoImConnector *connector = meego_im_connector_get_singleton();
-            gchar *target = g_strdup_printf ("/%s", parts[0]);
+        server = maliit_get_server_sync (NULL, &error);
 
-            meego_im_proxy_set_extended_attribute (connector->proxy,
-                                                   maliit_attribute_extension_get_id(extension),
-                                                   target,
-                                                   parts[1],
-                                                   parts[2],
-                                                   &g_value);
-            g_free (target);
-            g_value_unset (&g_value);
+        if (server) {
+            if (!maliit_server_call_set_extended_attribute_sync (server,
+                                                                 maliit_attribute_extension_get_id (extension),
+                                                                 target,
+                                                                 parts[1],
+                                                                 parts[2],
+                                                                 value,
+                                                                 NULL,
+                                                                 &error)) {
+                g_warning ("Unable to set extended attribute: %s", error->message);
+                g_clear_error (&error);
+            }
+
+            g_object_unref (server);
         } else {
-            g_warning ("Could not convert variant into value");
+            g_warning ("Unable to connect to server: %s", error->message);
+            g_clear_error (&error);
         }
+
+        g_free (target);
     } else {
         g_warning("Key `%s' is not valid. It needs to be `/target/item/key'", key);
     }

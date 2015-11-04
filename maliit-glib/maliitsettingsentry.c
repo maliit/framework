@@ -23,8 +23,6 @@
 #include "maliitpluginsettingsprivate.h"
 #include "maliitsettingsentryprivate.h"
 
-#include <dbus/dbus-glib.h>
-
 /**
  * SECTION:maliitsettingsentry
  * @short_description: settings entry
@@ -397,86 +395,27 @@ maliit_settings_entry_init (MaliitSettingsEntry *entry)
 }
 
 static GHashTable *
-attributes_from_dbus_g_hash_table (GHashTable *dbus_attributes)
+attributes_from_dbus_g_variant (GVariant *dbus_attributes)
 {
     GHashTable *attributes = g_hash_table_new_full (g_str_hash,
                                                     g_str_equal,
                                                     g_free,
                                                     (GDestroyNotify)g_variant_unref);
-    GHashTableIter iter;
+    GVariantIter iter;
     gchar *key;
-    GValue *value;
+    GVariant *value;
 
-    g_hash_table_iter_init (&iter, dbus_attributes);
-    while (g_hash_table_iter_next (&iter, (gpointer *)&key, (gpointer *)&value)) {
-        gchar *new_key = g_strdup (key);
-        GVariant *new_variant = dbus_g_value_build_g_variant (value);
-
-        if (!new_variant) {
-            g_warning ("Failed to convert GValue (%s) to GVariant", G_VALUE_TYPE_NAME (value));
-        }
-        if (g_variant_is_floating (new_variant)) {
-            g_variant_ref_sink (new_variant);
-        }
-        g_hash_table_replace (attributes, new_key, new_variant);
+    g_variant_iter_init (&iter, dbus_attributes);
+    while (g_variant_iter_next (&iter, "{sv}", &key, &value)) {
+        g_hash_table_replace (attributes, key, value);
     }
 
     return attributes;
 }
 
-static gboolean
-dbus_info_is_valid (GValueArray *info)
-{
-    static GType expected_types[] = {
-        G_TYPE_STRING, /* description */
-        G_TYPE_STRING, /* extension key */
-        G_TYPE_INT, /* entry type */
-        G_TYPE_BOOLEAN, /* value validity */
-        G_TYPE_INVALID, /* current value, set in the first run */
-        G_TYPE_INVALID /* attributes, set in the first run */
-    };
-
-    guint iter;
-    gint enum_value;
-
-
-    if (expected_types[4] == G_TYPE_INVALID) {
-        expected_types[4] = G_TYPE_VALUE;
-    }
-    if (expected_types[5] == G_TYPE_INVALID) {
-        expected_types[5] = dbus_g_type_get_map("GHashTable", G_TYPE_STRING, G_TYPE_VALUE);
-    }
-
-    if (!info) {
-        return FALSE;
-    }
-    if (info->n_values != G_N_ELEMENTS(expected_types)) {
-        return FALSE;
-    }
-
-    for (iter = 0; iter < G_N_ELEMENTS(expected_types); ++iter) {
-        GValue *value = g_value_array_get_nth (info, iter);
-
-        if (!value) {
-            return FALSE;
-        }
-        if (!G_VALUE_HOLDS (value, expected_types[iter])) {
-            return FALSE;
-        }
-    }
-
-    enum_value = g_value_get_int (g_value_array_get_nth (info, 2));
-
-    if (enum_value < MALIIT_STRING_TYPE || enum_value > MALIIT_INT_LIST_TYPE) {
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
 /**
  * maliit_settings_entry_new_from_dbus_data: (skip)
- * @info: (transfer none): A #GValueArray of DBus provenance containing entry information.
+ * @info: (transfer none): A #GVariant of DBus provenance containing entry information.
  * @extension: (transfer none): A #MaliitAttributeExtensions for #MaliitAttributeSettingsEntry instance.
  *
  * Creates new settings entry. This is used internally only by
@@ -485,7 +424,7 @@ dbus_info_is_valid (GValueArray *info)
  * Returns: (transfer full): The newly created #MaliitSettingsEntry.
  */
 MaliitSettingsEntry *
-maliit_settings_entry_new_from_dbus_data (GValueArray *info,
+maliit_settings_entry_new_from_dbus_data (GVariant                 *info,
                                           MaliitAttributeExtension *extension)
 {
     const gchar *description;
@@ -493,23 +432,15 @@ maliit_settings_entry_new_from_dbus_data (GValueArray *info,
     MaliitSettingsEntryType type;
     gboolean valid;
     GVariant *value;
+    GVariant *attrs;
     GHashTable *attributes;
     MaliitSettingsEntry *entry;
 
     g_return_val_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION (extension), NULL);
-    g_return_val_if_fail (dbus_info_is_valid (info), NULL);
 
-    description = g_value_get_string (g_value_array_get_nth (info, 0));
-    extension_key = g_value_get_string (g_value_array_get_nth (info, 1));
-    type = (MaliitSettingsEntryType) g_value_get_int (g_value_array_get_nth (info, 2));
-    valid = g_value_get_boolean (g_value_array_get_nth (info, 3));
-    value = dbus_g_value_build_g_variant (g_value_get_boxed (g_value_array_get_nth (info, 4)));
+    g_variant_get (info, "(&s&sib@v@a{sv})", &description, &extension_key, &type, &valid, &value, &attrs);
 
-    if (g_variant_is_floating (value)) {
-        g_variant_ref_sink (value);
-    }
-
-    attributes = attributes_from_dbus_g_hash_table (g_value_get_boxed (g_value_array_get_nth (info, 5)));
+    attributes = attributes_from_dbus_g_variant (attrs);
     entry = MALIIT_SETTINGS_ENTRY (g_object_new (MALIIT_TYPE_SETTINGS_ENTRY,
                                                  "extension", extension,
                                                  "description", description,
@@ -521,6 +452,7 @@ maliit_settings_entry_new_from_dbus_data (GValueArray *info,
                                                  NULL));
 
     g_hash_table_unref (attributes);
+    g_variant_unref (attrs);
     g_variant_unref (value);
     return entry;
 }

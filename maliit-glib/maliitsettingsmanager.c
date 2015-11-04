@@ -23,9 +23,7 @@
 #include "maliitsettingsmanager.h"
 #include "maliitpluginsettingsprivate.h"
 #include "maliitattributeextensionprivate.h"
-#include "meego-im-connector.h"
-
-#include <dbus/dbus-glib.h>
+#include "maliitbus.h"
 
 /**
  * SECTION:maliitsettingsmanager
@@ -46,7 +44,6 @@ struct _MaliitSettingsManagerPrivate
 {
     MaliitAttributeExtension *settings_list_changed;
     guint attribute_changed_signal_id;
-    MeegoImConnector *connector;
 };
 
 G_DEFINE_TYPE (MaliitSettingsManager, maliit_settings_manager, G_TYPE_OBJECT)
@@ -129,6 +126,8 @@ maliit_settings_manager_class_init (MaliitSettingsManagerClass *manager_class)
      * @manager: The #MaliitSettingsManager emitting the signal.
      *
      * Emitted when connection to maliit-server is broken.
+     *
+     * Deprecated: 0.99.0: This signal will no longer be emitted.
      */
     signals[DISCONNECTED] =
         g_signal_new ("disconnected",
@@ -151,95 +150,30 @@ on_connection_established (MaliitSettingsManager *manager,
     g_signal_emit(manager, signals[CONNECTED], 0);
 }
 
-static void
-on_connection_dropped (MaliitSettingsManager *manager,
-                       gpointer user_data G_GNUC_UNUSED)
-{
-    g_signal_emit(manager, signals[DISCONNECTED], 0);
-}
-
 static gboolean
-dbus_plugin_info_is_valid (GValueArray *plugin_info)
-{
-    static GType expected_types[] = {
-        G_TYPE_STRING, /* description language */
-        G_TYPE_STRING, /* plugin name */
-        G_TYPE_STRING, /* plugin description */
-        G_TYPE_INT, /* extension id */
-        G_TYPE_INVALID /* settings entries, set in the first run */
-    };
-
-    guint iter;
-
-    if (expected_types[4] == G_TYPE_INVALID) {
-        GType attributes_gtype = dbus_g_type_get_map("GHashTable",
-                                                     G_TYPE_STRING,
-                                                     G_TYPE_VALUE);
-        GType entry_gtype = dbus_g_type_get_struct("GValueArray",
-                                                   G_TYPE_STRING,
-                                                   G_TYPE_STRING,
-                                                   G_TYPE_INT,
-                                                   G_TYPE_BOOLEAN,
-                                                   G_TYPE_VALUE,
-                                                   attributes_gtype,
-                                                   G_TYPE_INVALID);
-
-        expected_types[4] = dbus_g_type_get_collection("GPtrArray",
-                                                       entry_gtype);
-    }
-
-    if (!plugin_info) {
-        return FALSE;
-    }
-
-    if (plugin_info->n_values != G_N_ELEMENTS (expected_types)) {
-        return FALSE;
-    }
-
-    for (iter = 0; iter < G_N_ELEMENTS (expected_types); ++iter) {
-        GValue *value = g_value_array_get_nth (plugin_info, iter);
-
-        if (!value) {
-            return FALSE;
-        }
-        if (!G_VALUE_HOLDS (value, expected_types[iter])) {
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-}
-
-static void
 on_plugins_loaded (MaliitSettingsManager *manager,
-                   GPtrArray *plugin_settings,
+                   GDBusMethodInvocation *invocation G_GNUC_UNUSED,
+                   GVariant *plugin_settings,
                    gpointer user_data G_GNUC_UNUSED)
 {
     guint iter;
     GList *result;
     GHashTable *extensions;
+    GVariant *plugin_info;
 
     if (!plugin_settings) {
-        return;
+        return FALSE;
     }
 
     result = NULL;
     extensions = g_hash_table_new (g_direct_hash,
                                    g_direct_equal);
 
-    for (iter = 0; iter < plugin_settings->len; ++iter) {
-        GValueArray *plugin_info = g_ptr_array_index (plugin_settings, iter);
+    for (iter = 0; iter < g_variant_n_children (plugin_settings); ++iter) {
         const gchar *plugin_name;
         int extension_id;
 
-
-        if (!dbus_plugin_info_is_valid (plugin_info)) {
-            g_warning ("Received invalid plugin informations");
-            continue;
-        }
-
-        plugin_name = g_value_get_string (g_value_array_get_nth (plugin_info, 1));
-        extension_id = g_value_get_int(g_value_array_get_nth (plugin_info, 3));
+        g_variant_get_child (plugin_settings, iter, "(&s&s&si@a(ssibva{sv}))", NULL, &plugin_name, NULL, &extension_id, NULL);
 
         if (!g_strcmp0(plugin_name, "@settings")) {
             MaliitSettingsManagerPrivate *priv = manager->priv;
@@ -267,9 +201,13 @@ on_plugins_loaded (MaliitSettingsManager *manager,
                 g_hash_table_insert (extensions, GINT_TO_POINTER (extension_id), extension);
             }
 
+            plugin_info = g_variant_get_child_value (plugin_settings, iter);
+
             result = g_list_prepend (result,
                                      maliit_plugin_settings_new_from_dbus_data (plugin_info,
                                                                                 extension));
+
+            g_variant_unref (plugin_info);
         }
     }
 
@@ -281,37 +219,55 @@ on_plugins_loaded (MaliitSettingsManager *manager,
 
     g_list_free_full (result,
                       g_object_unref);
+
+    return FALSE;
+}
+
+static void
+connection_established (GObject      *source_object G_GNUC_UNUSED,
+                        GAsyncResult *res,
+                        gpointer      user_data)
+{
+    GError *error = NULL;
+    MaliitServer *server = maliit_get_server_finish (res, &error);
+
+    if (server) {
+        on_connection_established (user_data, server);
+        g_object_unref (server);
+    } else {
+        g_warning ("Unable to connect to server: %s", error->message);
+        g_clear_error (&error);
+    }
 }
 
 static void
 maliit_settings_manager_init (MaliitSettingsManager *manager)
 {
-    MeegoIMProxy *proxy;
-    MeegoIMContextDbusObj *context_dbus;
     MaliitSettingsManagerPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (manager,
                                                                       MALIIT_TYPE_SETTINGS_MANAGER,
                                                                       MaliitSettingsManagerPrivate);
+    MaliitContext *context;
+    GError *error = NULL;
 
     priv->settings_list_changed = NULL;
     priv->attribute_changed_signal_id = 0;
-    priv->connector = meego_im_connector_get_singleton ();
-    proxy = priv->connector->proxy;
-    context_dbus = priv->connector->dbusobj;
-
-    g_signal_connect_swapped (proxy,
-                              "connection-established",
-                              G_CALLBACK (on_connection_established),
-                              manager);
-    g_signal_connect_swapped (proxy,
-                              "connection-dropped",
-                              G_CALLBACK(on_connection_dropped),
-                              manager);
-    g_signal_connect_swapped (context_dbus,
-                              "plugin-settings-loaded",
-                              G_CALLBACK(on_plugins_loaded),
-                              manager);
-
     manager->priv = priv;
+
+    maliit_get_server (NULL, connection_established, manager);
+
+    context = maliit_get_context_sync (NULL, &error);
+
+    if (context) {
+        g_signal_connect_swapped (context,
+                                  "handle-plugin-settings-loaded",
+                                  G_CALLBACK (on_plugins_loaded),
+                                  manager);
+
+        g_object_unref (context);
+    } else {
+        g_warning ("Unable to connect to context: %s", error->message);
+        g_clear_error (&error);
+    }
 }
 
 /**
@@ -339,10 +295,27 @@ maliit_settings_manager_new (void)
 void
 maliit_settings_manager_load_plugin_settings (MaliitSettingsManager *manager)
 {
+    MaliitServer *server;
+    GError *error = NULL;
+
     g_return_if_fail (MALIIT_IS_SETTINGS_MANAGER (manager));
 
-    meego_im_proxy_load_plugin_settings (manager->priv->connector->proxy,
-                                         maliit_settings_manager_get_preferred_description_locale ());
+    server = maliit_get_server_sync (NULL, &error);
+
+    if (server) {
+        if (!maliit_server_call_load_plugin_settings_sync (server,
+                                                           maliit_settings_manager_get_preferred_description_locale (),
+                                                           NULL,
+                                                           &error)) {
+            g_warning ("Unable to load plugin settings: %s", error->message);
+            g_clear_error (&error);
+        }
+
+        g_object_unref (server);
+    } else {
+        g_warning ("Unable to connect to server: %s", error->message);
+        g_clear_error (&error);
+    }
 }
 
 /**

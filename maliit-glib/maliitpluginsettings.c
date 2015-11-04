@@ -250,26 +250,28 @@ maliit_plugin_settings_init (MaliitPluginSettings *settings)
 }
 
 static GPtrArray *
-configuration_entries_from_dbus_g_ptr_array (GPtrArray *dbus_entries,
-                                             MaliitAttributeExtension *extension)
+configuration_entries_from_dbus_g_variant (GVariant                 *dbus_entries,
+                                           MaliitAttributeExtension *extension)
 {
-    GPtrArray *configuration_entries = g_ptr_array_sized_new (dbus_entries->len);
+    GPtrArray *configuration_entries = g_ptr_array_sized_new (g_variant_n_children (dbus_entries));
     guint iter;
 
     g_ptr_array_set_free_func (configuration_entries, g_object_unref);
-    for (iter = 0; iter < dbus_entries->len; ++iter) {
-        GValueArray *info = g_ptr_array_index (dbus_entries, iter);
+    for (iter = 0; iter < g_variant_n_children (dbus_entries); ++iter) {
+        GVariant *info = g_variant_get_child_value (dbus_entries, iter);
 
         g_ptr_array_add (configuration_entries,
                          maliit_settings_entry_new_from_dbus_data (info,
                                                                    extension));
+
+        g_variant_unref (info);
     }
     return configuration_entries;
 }
 
 /**
  * maliit_plugin_settings_new_from_dbus_data: (skip)
- * @plugin_info: A #GValueArray of DBus provenance containing plugin information.
+ * @plugin_info: A #GVariant of DBus provenance containing plugin information.
  * @extension: A #MaliitAttributeExtensions for #MaliitAttributeSettingsEntry instances.
  *
  * Creates new settings settings. This is used internally only by
@@ -278,22 +280,27 @@ configuration_entries_from_dbus_g_ptr_array (GPtrArray *dbus_entries,
  * Returns: The newly created #MaliitPluginSettings.
  */
 MaliitPluginSettings *
-maliit_plugin_settings_new_from_dbus_data (GValueArray *plugin_info,
+maliit_plugin_settings_new_from_dbus_data (GVariant                 *plugin_info,
                                            MaliitAttributeExtension *extension)
 {
     const gchar *description_language;
     const gchar *plugin_name;
     const gchar *plugin_description;
+    GVariant *plugin_entries;
     GPtrArray *configuration_entries;
     MaliitPluginSettings *settings;
 
     g_return_val_if_fail (MALIIT_IS_ATTRIBUTE_EXTENSION (extension), NULL);
 
-    description_language = g_value_get_string (g_value_array_get_nth (plugin_info, 0));
-    plugin_name = g_value_get_string (g_value_array_get_nth (plugin_info, 1));
-    plugin_description = g_value_get_string (g_value_array_get_nth (plugin_info, 2));
-    configuration_entries = configuration_entries_from_dbus_g_ptr_array (g_value_get_boxed (g_value_array_get_nth (plugin_info, 4)),
-                                                                         extension);
+    g_variant_get (plugin_info,
+                   "(&s&s&si@a(ssibva{sv}))",
+                   &description_language,
+                   &plugin_name,
+                   &plugin_description,
+                   NULL,
+                   &plugin_entries);
+
+    configuration_entries = configuration_entries_from_dbus_g_variant (plugin_entries, extension);
     settings = MALIIT_PLUGIN_SETTINGS (g_object_new (MALIIT_TYPE_PLUGIN_SETTINGS,
                                                      "description-language", description_language,
                                                      "plugin-name", plugin_name,
@@ -302,6 +309,8 @@ maliit_plugin_settings_new_from_dbus_data (GValueArray *plugin_info,
                                                      NULL));
 
     g_ptr_array_unref (configuration_entries);
+    g_variant_unref (plugin_entries);
+
     return settings;
 }
 
