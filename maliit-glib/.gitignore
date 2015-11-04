@@ -1,4 +1,8 @@
 maliit-*.pc
+maliitserver.h
+maliitserver.c
+maliitcontext.h
+maliitcontext.c
 maliitmarshallers.h
 maliitmarshallers.c
 Makefile.*

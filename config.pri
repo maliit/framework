@@ -197,7 +197,6 @@ defineTest(outputFile) {
                 MALIIT_CONNECTION_LIB \
                 MALIIT_SERVER_HEADER \
                 MALIIT_ABI_VERSION_MAJOR \
-                MALIIT_GLIB_HEADER \
                 MALIIT_GLIB_LIB \
 
     command = "sed"

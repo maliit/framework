@@ -7,7 +7,7 @@ TEMPLATE = lib
 TARGET = $$TOP_DIR/lib/$${MALIIT_GLIB_LIB}
 
 CONFIG += link_pkgconfig
-PKGCONFIG += gobject-2.0
+PKGCONFIG += glib-2.0 gobject-2.0 gio-2.0 gio-unix-2.0
 
 PKGCONFIG += dbus-glib-1 # Used by MaliitSettingsManager / MaliitSettingsEntry
 
@@ -25,6 +25,8 @@ HEADERSINSTALL += \
     maliitsettingsentry.h \
     maliitpluginsettings.h \
     maliitsettingdata.h \
+    maliitserver.h \
+    maliitcontext.h \
 
 HEADERS += \
     $$HEADERSINSTALL \
@@ -42,6 +44,8 @@ SOURCES += \
     maliitsettingsentry.c \
     maliitpluginsettings.c \
     maliitsettingdata.c \
+    maliitserver.c \
+    maliitcontext.c \
 
 target.path += $$LIBDIR
 
