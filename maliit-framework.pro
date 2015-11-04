@@ -50,7 +50,7 @@ wayland {
 SUBDIRS += connection
 
 glib {
-    SUBDIRS += connection-glib maliit-glib
+    SUBDIRS += maliit-glib
 }
 
 SUBDIRS += src passthroughserver examples

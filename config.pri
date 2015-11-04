@@ -8,7 +8,6 @@ MALIIT_SETTINGS_LIB = maliit-settings
 MALIIT_HEADER = maliit
 MALIIT_FRAMEWORK_HEADER = maliit/framework
 # For libmaliit-glib
-MALIIT_CONNECTION_GLIB_LIB = maliit-connection-glib
 MALIIT_GLIB_LIB = maliit-glib
 
 include(defines.pri)
