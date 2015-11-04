@@ -25,6 +25,7 @@ HEADERSINSTALL += \
     maliitsettingsentry.h \
     maliitpluginsettings.h \
     maliitsettingdata.h \
+    maliitbus.h \
     maliitserver.h \
     maliitcontext.h \
 
@@ -44,6 +45,7 @@ SOURCES += \
     maliitsettingsentry.c \
     maliitpluginsettings.c \
     maliitsettingdata.c \
+    maliitbus.c \
     maliitserver.c \
     maliitcontext.c \
 

@@ -22,7 +22,6 @@
 
 #include "maliitinputmethod.h"
 #include "maliitmarshallers.h"
-
 #include "meego-im-connector.h"
 
 /**
