@@ -63,8 +63,18 @@ maliit_input_method_finalize (GObject *object)
 static void
 maliit_input_method_dispose (GObject *object)
 {
+    GError *error = NULL;
     MaliitInputMethod *input_method = MALIIT_INPUT_METHOD (object);
     MaliitInputMethodPrivate *priv = input_method->priv;
+    MaliitContext *context = maliit_get_context_sync (NULL, &error);
+
+    if (context) {
+        g_signal_handlers_disconnect_by_data (context, input_method);
+        g_object_unref (context);
+    } else {
+        g_warning ("Unable to connect to context: %s", error->message);
+        g_clear_error (&error);
+    }
 
     g_clear_object (&priv->maliit_proxy);
 

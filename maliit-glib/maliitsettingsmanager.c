@@ -68,7 +68,21 @@ maliit_settings_manager_finalize (GObject *object)
 static void
 maliit_settings_manager_dispose (GObject *object)
 {
+    GError *error = NULL;
     MaliitSettingsManager *manager = MALIIT_SETTINGS_MANAGER (object);
+    MaliitContext *context = maliit_get_context_sync (NULL, &error);
+
+    if (context) {
+        g_signal_handlers_disconnect_by_data (context, manager);
+        g_object_unref (context);
+    } else {
+        g_warning ("Unable to connect to context: %s", error->message);
+        g_clear_error (&error);
+    }
+
+    if (manager->priv->settings_list_changed) {
+        g_signal_handlers_disconnect_by_data (manager->priv->settings_list_changed, manager);
+    }
 
     g_clear_object (&manager->priv->settings_list_changed);
 
