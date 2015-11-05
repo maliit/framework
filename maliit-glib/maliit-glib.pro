@@ -18,6 +18,7 @@ QMAKE_CFLAGS_DEBUG+=-Wno-error=deprecated-declarations
 
 HEADERSINSTALL += \
     maliitattributeextension.h \
+    maliitattributeextensionregistry.h \
     maliitinputmethod.h \
     maliitsettingsmanager.h \
     maliitsettingsentry.h \
@@ -29,7 +30,6 @@ HEADERSINSTALL += \
 
 HEADERS += \
     $$HEADERSINSTALL \
-    maliitattributeextensionregistry.h \
     maliitattributeextensionprivate.h \
     maliitmarshallers.h \
     maliitpluginsettingsprivate.h \
