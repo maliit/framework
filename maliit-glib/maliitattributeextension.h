@@ -28,6 +28,10 @@
 
 G_BEGIN_DECLS
 
+#define MALIIT_ATTRIBUTE_EXTENSION_DATA "maliit-attribute-extension"
+
+#define MALIIT_ATTRIBUTE_EXTENSION_DATA_QUARK (g_quark_from_string (MALIIT_ATTRIBUTE_EXTENSION_DATA))
+
 #define MALIIT_TYPE_ATTRIBUTE_EXTENSION           (maliit_attribute_extension_get_type())
 #define MALIIT_ATTRIBUTE_EXTENSION(obj)           (G_TYPE_CHECK_INSTANCE_CAST(obj, MALIIT_TYPE_ATTRIBUTE_EXTENSION, MaliitAttributeExtension))
 #define MALIIT_ATTRIBUTE_EXTENSION_CLASS(cls)     (G_TYPE_CHECK_CLASS_CAST(cls, MALIIT_TYPE_ATTRIBUTE_EXTENSION, MaliitAttributeExtensionClass))

@@ -26,10 +26,6 @@
 #include <glib.h>
 #include "maliitattributeextension.h"
 
-#define MALIIT_ATTRIBUTE_EXTENSION_DATA "maliit-attribute-extension"
-
-#define MALIIT_ATTRIBUTE_EXTENSION_DATA_QUARK (g_quark_from_string (MALIIT_ATTRIBUTE_EXTENSION_DATA))
-
 MaliitAttributeExtension *
 maliit_attribute_extension_new_with_id (int id);
 
