@@ -74,17 +74,3 @@ mock_maliit_server_free(MockMaliitServer *self)
     g_assert(global_server_instance == self); // XXX: cannot use multiple instances at the same time
     global_server_instance = NULL;
 }
-
-/* Fake the MeegoIMProxy::connection-established signal that connecting to maliit-server will emit */
-void
-mock_maliit_server_emulate_connect(MockMaliitServer *self)
-{
-    g_signal_emit_by_name(self->priv->connector->proxy, "connection-established");
-}
-
-/* Fake the MeegoIMProxy::connection-dropped signal that disconnecting to maliit-server will emit */
-void
-mock_maliit_server_emulate_disconnect(MockMaliitServer *self)
-{
-    g_signal_emit_by_name(self->priv->connector->proxy, "connection-dropped");
-}

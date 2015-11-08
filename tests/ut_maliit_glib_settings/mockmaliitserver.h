@@ -36,7 +36,4 @@ typedef struct {
 MockMaliitServer *mock_maliit_server_new();
 void mock_maliit_server_free(MockMaliitServer *self);
 
-void mock_maliit_server_emulate_connect(MockMaliitServer *self);
-void mock_maliit_server_emulate_disconnect(MockMaliitServer *self);
-
 #endif // MOCKMALIITSERVER_H
