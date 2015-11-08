@@ -18,6 +18,10 @@ SUBDIRS += \
           ut_minputmethodquickplugin \
           ut_mimserveroptions \
 
+glib {
+          SUBDIRS += ut_maliit_glib_settings
+}
+
 SUBDIRS += \
           ut_mimpluginmanager \
           ut_mimpluginmanagerconfig \
