@@ -22,55 +22,160 @@
 
 #include "mockmaliitserver.h"
 
-#include <connection-glib/meego-im-connector.h>
-#include <connection-glib/meego-im-connector-private.h>
-#include <connection-glib/meego-imcontext-dbus-private.h>
+#include <unistd.h>
+#include <gio/gunixinputstream.h>
+#include <gio/gunixoutputstream.h>
+#include <maliit-glib/maliitserver.h>
+#include <maliit-glib/maliitcontext.h>
 
-static MockMaliitServer *global_server_instance = NULL;
+#define SERVER_OBJECT_PATH  "/com/meego/inputmethod/uiserver1"
+#define CONTEXT_OBJECT_PATH "/com/meego/inputmethod/inputcontext"
 
 struct _MockMaliitServerPriv {
-    MeegoImConnector *connector;
+    GDBusConnection *server_connection;
+    GDBusConnection *client_connection;
+
+    MaliitServer *server;
+    MaliitContext *context;
+
+    GThread *thread;
+    GMainContext *thread_context;
+    GMainLoop *thread_loop;
+    GCond thread_cond;
+    GMutex thread_mutex;
 };
 
 /* Record the call, and respond with a list of settings */
 gboolean
-load_plugin_settings (MeegoIMProxy *proxy G_GNUC_UNUSED,
-                      const gchar *locale_name G_GNUC_UNUSED)
+load_plugin_settings (MaliitServer *server,
+                      GDBusMethodInvocation *invocation,
+                      const gchar *locale_name G_GNUC_UNUSED,
+                      gpointer user_data)
 {
-    MockMaliitServer *self = global_server_instance;
+    MockMaliitServer *self = user_data;
 
     self->load_plugin_settings_called = TRUE;
-    meego_imcontext_dbus_plugin_settings_loaded(self->priv->connector->dbusobj, self->settings, NULL);
+
+    maliit_server_complete_load_plugin_settings(server, invocation);
     return TRUE;
+}
+
+static gboolean
+start_server(gpointer user_data)
+{
+    MockMaliitServer *self = user_data;
+
+    g_main_context_push_thread_default(self->priv->thread_context);
+
+    g_mutex_lock(&self->priv->thread_mutex);
+
+    self->priv->server = maliit_server_skeleton_new();
+    g_assert_true(g_dbus_interface_skeleton_export(G_DBUS_INTERFACE_SKELETON(self->priv->server),
+                                                   self->priv->server_connection,
+                                                   SERVER_OBJECT_PATH,
+                                                   NULL));
+    g_signal_connect(self->priv->server, "handle-load-plugin-settings", G_CALLBACK(load_plugin_settings), self);
+
+    g_cond_signal(&self->priv->thread_cond);
+    g_mutex_unlock(&self->priv->thread_mutex);
+
+    g_main_context_pop_thread_default(self->priv->thread_context);
+
+    return G_SOURCE_REMOVE;
+}
+
+static gpointer
+run_server_thread(gpointer data)
+{
+    MockMaliitServer *self = data;
+
+    g_main_context_push_thread_default(self->priv->thread_context);
+
+    g_main_context_invoke(self->priv->thread_context, start_server, self);
+
+    self->priv->thread_loop = g_main_loop_new(self->priv->thread_context, FALSE);
+    g_main_loop_run(self->priv->thread_loop);
+    g_main_loop_unref(self->priv->thread_loop);
+    self->priv->thread_loop = NULL;
+
+    g_main_context_pop_thread_default(self->priv->thread_context);
+
+    return NULL;
 }
 
 MockMaliitServer *
 mock_maliit_server_new()
 {
-    MockMaliitServer *self = g_new(MockMaliitServer, 1);
-    self->priv = g_new(MockMaliitServerPriv, 1);
+    MockMaliitServer *self = g_new0(MockMaliitServer, 1);
+    int server_to_client[2] = { 0 };
+    int client_to_server[2] = { 0 };
+    GInputStream *server_input_stream;
+    GOutputStream *server_output_stream;
+    GIOStream *server_stream;
+    GInputStream *client_input_stream;
+    GOutputStream *client_output_stream;
+    GIOStream *client_stream;
 
-    self->load_plugin_settings_called = FALSE;
-    self->priv->connector = meego_im_connector_new();
-    self->priv->connector->try_reconnect = FALSE;
-    meego_im_connector_set_singleton(self->priv->connector);
-    self->priv->connector->proxy->load_plugin_settings_observer = load_plugin_settings;
-    self->settings = NULL;
+    self->priv = g_new0(MockMaliitServerPriv, 1);
 
-    g_assert(!global_server_instance); // XXX: cannot use multiple instances at the same time
-    global_server_instance = self;
+    g_assert_true(pipe(server_to_client) == 0);
+    g_assert_true(pipe(client_to_server) == 0);
+
+    server_input_stream = g_unix_input_stream_new(client_to_server[0], TRUE);
+    server_output_stream = g_unix_output_stream_new(server_to_client[1], TRUE);
+    server_stream = g_simple_io_stream_new(server_input_stream, server_output_stream);
+    g_object_unref(server_output_stream);
+    g_object_unref(server_input_stream);
+    self->priv->server_connection = g_dbus_connection_new_sync(server_stream,
+                                                               NULL,
+                                                               G_DBUS_CONNECTION_FLAGS_NONE,
+                                                               NULL,
+                                                               NULL,
+                                                               NULL);
+    g_object_unref(server_stream);
+    g_assert_nonnull(self->priv->server_connection);
+
+    client_input_stream = g_unix_input_stream_new(server_to_client[0], TRUE);
+    client_output_stream = g_unix_output_stream_new(client_to_server[1], TRUE);
+    client_stream = g_simple_io_stream_new(client_input_stream, client_output_stream);
+    g_object_unref(client_output_stream);
+    g_object_unref(client_input_stream);
+    self->priv->client_connection = g_dbus_connection_new_sync(client_stream,
+                                                               NULL,
+                                                               G_DBUS_CONNECTION_FLAGS_NONE,
+                                                               NULL,
+                                                               NULL,
+                                                               NULL);
+    g_object_unref(client_stream);
+    g_assert_nonnull(self->priv->client_connection);
+
+    self->priv->thread_context = g_main_context_new();
+    self->priv->thread = g_thread_new(NULL, run_server_thread, self);
+
+    g_mutex_lock(&self->priv->thread_mutex);
+
+    while (!self->priv->server) {
+        g_cond_wait(&self->priv->thread_cond, &self->priv->thread_mutex);
+    }
+
+    g_mutex_unlock(&self->priv->thread_mutex);
+
     return self;
 }
 
 void
 mock_maliit_server_free(MockMaliitServer *self)
 {
-    meego_im_connector_free(self->priv->connector);
-    meego_im_connector_set_singleton(NULL);
-
+    g_clear_object(&self->priv->context);
+    g_clear_object(&self->priv->server);
+    g_clear_object(&self->priv->client_connection);
+    g_clear_object(&self->priv->server_connection);
     g_free(self->priv);
     g_free(self);
+}
 
-    g_assert(global_server_instance == self); // XXX: cannot use multiple instances at the same time
-    global_server_instance = NULL;
+GDBusConnection *
+mock_maliit_server_get_bus(MockMaliitServer *self)
+{
+    return self->priv->client_connection;
 }

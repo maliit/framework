@@ -24,16 +24,19 @@
 #define MOCKMALIITSERVER_H
 
 #include <glib.h>
+#include <gio/gio.h>
 
 typedef struct _MockMaliitServerPriv MockMaliitServerPriv;
 
 typedef struct {
     gboolean load_plugin_settings_called;
     MockMaliitServerPriv *priv;
-    GPtrArray *settings; /* To be set by tests */
+    GVariant *settings; /* To be set by tests */
 } MockMaliitServer;
 
 MockMaliitServer *mock_maliit_server_new();
 void mock_maliit_server_free(MockMaliitServer *self);
+
+GDBusConnection *mock_maliit_server_get_bus(MockMaliitServer *server);
 
 #endif // MOCKMALIITSERVER_H
