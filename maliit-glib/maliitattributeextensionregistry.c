@@ -173,7 +173,6 @@ connection_established (GObject      *source_object G_GNUC_UNUSED,
 
     if (server) {
         register_all_extensions (server, user_data);
-        g_object_unref (server);
     } else {
         g_warning ("Unable to connect to server: %s", error->message);
         g_clear_error (&error);
@@ -239,8 +238,6 @@ maliit_attribute_extension_registry_add_extension (MaliitAttributeExtensionRegis
                 g_warning ("Unable to register extension: %s", error->message);
                 g_clear_error (&error);
             }
-
-            g_object_unref (server);
         } else {
             g_warning ("Unable to connect to server: %s", error->message);
             g_clear_error (&error);
@@ -277,8 +274,6 @@ maliit_attribute_extension_registry_remove_extension (MaliitAttributeExtensionRe
                 g_warning ("Unable to unregister extension: %s", error->message);
                 g_clear_error (&error);
             }
-
-            g_object_unref (server);
         } else {
             g_warning ("Unable to connect to server: %s", error->message);
             g_clear_error (&error);
@@ -328,8 +323,6 @@ maliit_attribute_extension_registry_extension_changed (MaliitAttributeExtensionR
                 g_warning ("Unable to set extended attribute: %s", error->message);
                 g_clear_error (&error);
             }
-
-            g_object_unref (server);
         } else {
             g_warning ("Unable to connect to server: %s", error->message);
             g_clear_error (&error);

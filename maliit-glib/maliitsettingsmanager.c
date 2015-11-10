@@ -74,7 +74,6 @@ maliit_settings_manager_dispose (GObject *object)
 
     if (context) {
         g_signal_handlers_disconnect_by_data (context, manager);
-        g_object_unref (context);
     } else {
         g_warning ("Unable to connect to context: %s", error->message);
         g_clear_error (&error);
@@ -247,7 +246,6 @@ connection_established (GObject      *source_object G_GNUC_UNUSED,
 
     if (server) {
         on_connection_established (user_data, server);
-        g_object_unref (server);
     } else {
         g_warning ("Unable to connect to server: %s", error->message);
         g_clear_error (&error);
@@ -276,8 +274,6 @@ maliit_settings_manager_init (MaliitSettingsManager *manager)
                                   "handle-plugin-settings-loaded",
                                   G_CALLBACK (on_plugins_loaded),
                                   manager);
-
-        g_object_unref (context);
     } else {
         g_warning ("Unable to connect to context: %s", error->message);
         g_clear_error (&error);
@@ -324,8 +320,6 @@ maliit_settings_manager_load_plugin_settings (MaliitSettingsManager *manager)
             g_warning ("Unable to load plugin settings: %s", error->message);
             g_clear_error (&error);
         }
-
-        g_object_unref (server);
     } else {
         g_warning ("Unable to connect to server: %s", error->message);
         g_clear_error (&error);

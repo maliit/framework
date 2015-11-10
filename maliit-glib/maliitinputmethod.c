@@ -70,7 +70,6 @@ maliit_input_method_dispose (GObject *object)
 
     if (context) {
         g_signal_handlers_disconnect_by_data (context, input_method);
-        g_object_unref (context);
     } else {
         g_warning ("Unable to connect to context: %s", error->message);
         g_clear_error (&error);
@@ -149,7 +148,9 @@ maliit_input_method_init (MaliitInputMethod *input_method)
 
     priv->maliit_proxy = maliit_get_server_sync (NULL, &error);
 
-    if (!priv->maliit_proxy) {
+    if (priv->maliit_proxy) {
+        g_object_ref (priv->maliit_proxy);
+    } else {
         g_warning ("Unable to connect to server: %s", error->message);
         g_clear_error (&error);
     }
@@ -163,7 +164,6 @@ maliit_input_method_init (MaliitInputMethod *input_method)
                                   "handle-update-input-method-area",
                                   G_CALLBACK (update_input_method_area),
                                   input_method);
-        g_object_unref (context);
     } else {
         g_warning ("Unable to connect to context: %s", error->message);
         g_clear_error (&error);

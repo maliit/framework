@@ -106,14 +106,9 @@ maliit_get_bus_finish (GAsyncResult  *res,
                        GError       **error)
 {
   if (!bus)
-    {
-      bus = g_dbus_connection_new_for_address_finish (res, error);
+    bus = g_dbus_connection_new_for_address_finish (res, error);
 
-      if (!bus)
-        return NULL;
-    }
-
-  return g_object_ref (bus);
+  return bus;
 }
 
 static GDBusConnection *
@@ -121,18 +116,13 @@ maliit_get_bus_sync (GCancellable  *cancellable,
                      GError       **error)
 {
   if (!bus)
-    {
-      bus = g_dbus_connection_new_for_address_sync (maliit_get_address_sync (TRUE),
-                                                    G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
-                                                    NULL,
-                                                    cancellable,
-                                                    error);
+    bus = g_dbus_connection_new_for_address_sync (maliit_get_address_sync (TRUE),
+                                                  G_DBUS_CONNECTION_FLAGS_AUTHENTICATION_CLIENT,
+                                                  NULL,
+                                                  cancellable,
+                                                  error);
 
-      if (!bus)
-        return NULL;
-    }
-
-  return g_object_ref (bus);
+  return bus;
 }
 
 void
@@ -156,7 +146,7 @@ maliit_is_running (void)
   gboolean running = FALSE;
   const gchar *address;
   GDBusConnection *bus;
-  MaliitServer *proxy;
+  MaliitServer *server;
 
   address = maliit_get_address_sync (FALSE);
 
@@ -166,21 +156,19 @@ maliit_is_running (void)
 
       if (bus)
         {
-          proxy = maliit_server_proxy_new_sync (bus,
-                                                G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
-                                                NULL,
-                                                SERVER_OBJECT_PATH,
-                                                NULL,
-                                                NULL);
+          server = maliit_server_proxy_new_sync (bus,
+                                                 G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
+                                                 NULL,
+                                                 SERVER_OBJECT_PATH,
+                                                 NULL,
+                                                 NULL);
 
-          if (proxy)
+          if (server)
             {
               running = TRUE;
 
-              g_object_unref (proxy);
+              g_object_unref (server);
             }
-
-          g_object_unref (bus);
         }
     }
 
@@ -192,27 +180,23 @@ maliit_get_server (GCancellable        *cancellable,
                    GAsyncReadyCallback  callback,
                    gpointer             user_data)
 {
-  GDBusConnection *connection;
+  GDBusConnection *bus;
   GError *error = NULL;
 
   g_return_if_fail (callback);
 
   if (!server)
     {
-      connection = maliit_get_bus_sync (cancellable, &error);
+      bus = maliit_get_bus_sync (cancellable, &error);
 
-      if (connection)
-        {
-          maliit_server_proxy_new (connection,
-                                   G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
-                                   NULL,
-                                   SERVER_OBJECT_PATH,
-                                   cancellable,
-                                   callback,
-                                   user_data);
-
-          g_object_unref (connection);
-        }
+      if (bus)
+        maliit_server_proxy_new (bus,
+                                 G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
+                                 NULL,
+                                 SERVER_OBJECT_PATH,
+                                 cancellable,
+                                 callback,
+                                 user_data);
       else
         {
           g_warning ("Unable to connect to bus: %s", error->message);
@@ -229,43 +213,31 @@ maliit_get_server_finish (GAsyncResult  *res,
                           GError       **error)
 {
   if (!server)
-    {
-      server = maliit_server_proxy_new_finish (res, error);
+    server = maliit_server_proxy_new_finish (res, error);
 
-      if (!server)
-        return NULL;
-    }
-
-  return g_object_ref (server);
+  return server;
 }
 
 MaliitServer *
 maliit_get_server_sync (GCancellable  *cancellable,
                         GError       **error)
 {
-  GDBusConnection *connection;
+  GDBusConnection *bus;
 
   if (!server)
     {
-      connection = maliit_get_bus_sync (cancellable, error);
+      bus = maliit_get_bus_sync (cancellable, error);
 
-      if (!connection)
-        return NULL;
-
-      server = maliit_server_proxy_new_sync (connection,
-                                             G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
-                                             NULL,
-                                             SERVER_OBJECT_PATH,
-                                             cancellable,
-                                             error);
-
-      g_object_unref (connection);
-
-      if (!server)
-        return NULL;
+      if (bus)
+        server = maliit_server_proxy_new_sync (bus,
+                                               G_DBUS_PROXY_FLAGS_GET_INVALIDATED_PROPERTIES,
+                                               NULL,
+                                               SERVER_OBJECT_PATH,
+                                               cancellable,
+                                               error);
     }
 
-  return g_object_ref (server);
+  return server;
 }
 
 static gboolean
@@ -307,7 +279,7 @@ MaliitContext *
 maliit_get_context_finish (GAsyncResult  *res,
                            GError       **error)
 {
-  g_object_unref (maliit_get_bus_finish (res, error));
+  maliit_get_bus_finish (res, error);
 
   return maliit_get_context_sync (NULL, error);
 }
@@ -316,41 +288,33 @@ MaliitContext *
 maliit_get_context_sync (GCancellable  *cancellable,
                          GError       **error)
 {
-  GDBusConnection *connection;
-  gboolean success;
+  GDBusConnection *bus;
 
   if (!context)
     {
-      connection = maliit_get_bus_sync (cancellable, error);
+      bus = maliit_get_bus_sync (cancellable, error);
 
-      if (!connection)
-        return NULL;
-
-      context = maliit_context_skeleton_new ();
-      success = g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (context),
-                                                  connection,
-                                                  CONTEXT_OBJECT_PATH,
-                                                  error);
-
-      g_object_unref (connection);
-
-      if (!success)
+      if (bus)
         {
-          g_clear_object (&context);
+          context = maliit_context_skeleton_new ();
 
-          return NULL;
+          g_signal_connect_after (context,
+                                  "handle-plugin-settings-loaded",
+                                  G_CALLBACK (maliit_context_handle_plugin_settings_loaded),
+                                  NULL);
+
+          g_signal_connect_after (context,
+                                  "handle-update-input-method-area",
+                                  G_CALLBACK (maliit_context_handle_update_input_method_area),
+                                  NULL);
+
+          if (!g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (context),
+                                                 bus,
+                                                 CONTEXT_OBJECT_PATH,
+                                                 error))
+            g_clear_object (&context);
         }
-
-      g_signal_connect_after (context,
-                              "handle-plugin-settings-loaded",
-                              G_CALLBACK (maliit_context_handle_plugin_settings_loaded),
-                              NULL);
-
-      g_signal_connect_after (context,
-                              "handle-update-input-method-area",
-                              G_CALLBACK (maliit_context_handle_update_input_method_area),
-                              NULL);
     }
 
-  return g_object_ref (context);
+  return context;
 }
