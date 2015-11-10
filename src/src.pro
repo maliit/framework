@@ -160,28 +160,6 @@ plugins_headers.files += $$PLUGIN_HEADERS_PUBLIC
 server_headers.path += $$INCLUDEDIR/$$MALIIT_SERVER_HEADER
 server_headers.files += $$SERVER_HEADERS_PUBLIC
 
-glib {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += glib-2.0 gio-2.0 gio-unix-2.0
-
-    GLIB_HEADERS += $$TOP_DIR/connection/maliitserver.h \
-                    $$TOP_DIR/connection/maliitcontext.h
-    GLIB_SOURCES += $$TOP_DIR/connection/maliitserver.c \
-                    $$TOP_DIR/connection/maliitcontext.c
-
-    glib_headers.path = $$INCLUDEDIR/$$MALIIT_GLIB_HEADER
-    glib_headers.files += $$GLIB_HEADERS
-
-    HEADERS += $$GLIB_HEADERS
-    SOURCES += $$GLIB_SOURCES
-    INSTALLS += glib_headers
-    OTHER_FILES += maliit-glib.pc.in
-
-    outputFiles(maliit-glib.pc)
-
-    install_pkgconfig.files += $$OUT_PWD/maliit-glib.pc
-}
-
 OTHER_FILES += \
     maliit-server.pc.in \
     maliit-plugins.pc.in \

@@ -47,7 +47,13 @@ wayland {
     SUBDIRS += weston-protocols
 }
 
-SUBDIRS += connection src passthroughserver examples
+SUBDIRS += connection
+
+glib {
+    SUBDIRS += maliit-glib
+}
+
+SUBDIRS += src passthroughserver examples
 
 qt5-inputcontext {
     SUBDIRS += input-context
