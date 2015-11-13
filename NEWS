@@ -1,13 +1,22 @@
-{NEXT]
+0.99.1
 ======
 
 CHANGES SINCE 0.99.0
 * Introduced Qt5 input context, replacing the one provided by Qt. Can
   be enabled by CONFIG+=qt5-inputcontext
+* Move maliit-glib from GTK+ input context package back into frameowrk
+* Use GDBus in maliit-glib
 * Allow plugin window reactive area and input method area reported to
   application differ
 * Fix window state to have transient hint and window type as with
   Maliit 0.8x
+* Made the dependency from xcb optional
+* Added a CONFIG option to disable the hardware keyboard
+
+BUG FIXES
+* Clear preedit state on input context reset
+* Reshow virtual keyboard when hardware keyboard disappears
+* Fix bugs with Qt 5.3, Qt 5.4 and Qt 5.5
 
 0.99.0
 ======
