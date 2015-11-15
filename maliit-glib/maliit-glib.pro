@@ -11,8 +11,6 @@ PKGCONFIG += glib-2.0 gobject-2.0 gio-2.0 gio-unix-2.0
 
 CONFIG -= qt
 
-include($$TOP_DIR/connection-glib/libmaliit-connection-glib.pri)
-
 QMAKE_CXXFLAGS_DEBUG+=-Wno-error=deprecated-declarations
 QMAKE_CFLAGS_DEBUG+=-Wno-error=deprecated-declarations
 
@@ -100,3 +98,21 @@ glib_genmarshal_source.variable_out = SOURCES
 glib_genmarshal_source.input = GLIB_GENMARSHAL_LIST
 
 QMAKE_EXTRA_COMPILERS += glib_genmarshal_header glib_genmarshal_source
+
+include($$TOP_DIR/dbus_interfaces/dbus_interfaces.pri)
+
+PRE_TARGETDEPS += glib_server glib_context
+QMAKE_EXTRA_TARGETS += glib_server glib_context
+
+glib_server.commands = gdbus-codegen --interface-prefix com.meego \
+                                     --generate-c-code $$TOP_DIR/maliit-glib/maliitserver \
+                                     --c-namespace Maliit \
+                                     --annotate com.meego.inputmethod.uiserver1 org.gtk.GDBus.C.Name Server \
+                                     $$DBUS_SERVER_XML
+
+glib_context.commands = gdbus-codegen --interface-prefix com.meego \
+                                      --generate-c-code $$TOP_DIR/maliit-glib/maliitcontext \
+                                      --c-namespace Maliit \
+                                      --annotate com.meego.inputmethod.inputcontext1 org.gtk.GDBus.C.Name Context \
+                                      $$DBUS_CONTEXT_XML
+
