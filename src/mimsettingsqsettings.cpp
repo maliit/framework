@@ -105,6 +105,7 @@ void MImSettingsQSettingsBackend::set(const QVariant &val)
         return;
 
     d->settingsInstance->setValue(d->key, val);
+    d->settingsInstance->sync();
     d->notify();
 }
 
@@ -116,6 +117,7 @@ void MImSettingsQSettingsBackend::unset()
         return;
 
     d->settingsInstance->remove(d->key);
+    d->settingsInstance->sync();
     d->notify();
 }
 
