@@ -1,7 +1,2 @@
-meegoimframework.prf
-MeegoImFramework.pc
-meego-im-framework.schemas
-maliit-framework.schemas
-maliit*-*.pc
-config.h
-*.prf
+maliit-*.pc
+maliit-*.prf

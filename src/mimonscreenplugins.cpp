@@ -13,7 +13,6 @@
  */
 
 #include "mimonscreenplugins.h"
-#include "config.h"
 
 #include <QLocale>
 #include <QString>

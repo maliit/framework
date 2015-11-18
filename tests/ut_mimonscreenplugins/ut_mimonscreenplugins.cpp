@@ -13,7 +13,6 @@
 
 #include "ut_mimonscreenplugins.h"
 
-#include "config.h"
 #include "mimonscreenplugins.h"
 #include "mimsettings.h"
 #include "mimsettingsqsettings.h"

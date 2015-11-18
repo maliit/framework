@@ -1,9 +1,9 @@
-prefix=@PREFIX@
-exec_prefix=@PREFIX@
-libdir=@LIBDIR@
-includedir=@INCLUDEDIR@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@LIB_INSTALL_DIR@
+includedir=@INCLUDE_INSTALL_DIR@
 
 Name: Maliit Framework
 Description: Maliit provides a flexible and cross platform input method framework. It is usable on all MeeGo user experiences, and in other GNU/Linux distributions as well.
-Version: @MALIIT_VERSION@
-Cflags: -I${includedir}/@MALIIT_FRAMEWORK_HEADER@
+Version: @PROJECT_VERSION@
+Cflags: -I${includedir}/maliit/framework

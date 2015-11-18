@@ -1,15 +1,16 @@
-prefix=@PREFIX@
-exec_prefix=@PREFIX@
-libdir=@LIBDIR@
-includedir=@INCLUDEDIR@
-pluginsdir=@MALIIT_PLUGINS_DIR@
-pluginsdatadir=@MALIIT_PLUGINS_DATA_DIR@
-factorypluginsdir=@MALIIT_FACTORY_PLUGINS_DIR@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=@CMAKE_INSTALL_PREFIX@
+libdir=@LIB_INSTALL_DIR@
+includedir=@INCLUDE_INSTALL_DIR@
+datarootdir=@SHARE_INSTALL_PREFIX@
+
+pluginsdir=${libdir}/maliit/plugins
+datadir=${datarootdir}
+pluginsdatadir=${datadir}/maliit/plugins
 
 Name: Maliit Plugins
 Description: Maliit provides a flexible and cross platform input method framework. It is usable on all MeeGo user experiences, and in other GNU/Linux distributions as well.
-Version: @MALIIT_VERSION@
+Version: @PROJECT_VERSION@
 Requires: maliit-framework
-Cflags: -I${includedir}/@MALIIT_PLUGINS_HEADER@
-Libs: -L${libdir} -l@MALIIT_PLUGINS_LIB@
-
+Cflags: -I${includedir}/maliit/plugins
+Libs: -L${libdir} -lmaliit-plugins
