@@ -156,7 +156,7 @@ public:
     InputMethodContext *context() const;
 
 protected:
-    void input_method_activate(struct ::wl_input_method *object, struct ::wl_input_method_context *id) Q_DECL_OVERRIDE;
+    void input_method_activate(struct ::wl_input_method_context *id) Q_DECL_OVERRIDE;
     void input_method_deactivate(struct ::wl_input_method_context *context) Q_DECL_OVERRIDE;
 
 private:
@@ -484,7 +484,7 @@ InputMethodContext *InputMethod::context() const
     return m_context.data();
 }
 
-void InputMethod::input_method_activate(struct ::wl_input_method *, struct ::wl_input_method_context *id)
+void InputMethod::input_method_activate(struct ::wl_input_method_context *id)
 {
     qDebug() << Q_FUNC_INFO;
 
