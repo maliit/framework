@@ -14,7 +14,7 @@
 
 #include "dbusinputcontextconnection.h"
 
-#include "minputmethodserver1interface_adaptor.h"
+#include "minputmethodserver1interfaceadaptor.h"
 #include "minputmethodcontext1interface_interface.h"
 #include "dbuscustomarguments.h"
 

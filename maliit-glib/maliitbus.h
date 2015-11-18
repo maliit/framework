@@ -25,8 +25,8 @@
 
 #include <gio/gio.h>
 
-#include "maliitserver.h"
-#include "maliitcontext.h"
+#include <maliit-glib/maliitserver.h>
+#include <maliit-glib/maliitcontext.h>
 
 G_BEGIN_DECLS
 

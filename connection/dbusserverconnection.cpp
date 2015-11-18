@@ -17,7 +17,7 @@
 #include <maliit/namespace.h>
 #include <maliit/settingdata.h>
 
-#include "minputmethodcontext1interface_adaptor.h"
+#include "minputmethodcontext1interfaceadaptor.h"
 #include "minputmethodserver1interface_interface.h"
 #include "dbuscustomarguments.h"
 

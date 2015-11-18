@@ -13,11 +13,6 @@
 
 #include "ut_mimpluginmanagerconfig.h"
 
-#include "dummyimplugin.h"
-#include "dummyimplugin3.h"
-#include "dummyinputmethod.h"
-#include "dummyinputmethod3.h"
-
 #include "minputcontextconnection.h"
 #include "mimsettingsqsettings.h"
 
