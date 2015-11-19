@@ -14,7 +14,6 @@
 
 #include "mimsettings.h"
 #include "mimsettingsqsettings.h"
-#include "config.h"
 
 #include <QString>
 #include <QStringList>

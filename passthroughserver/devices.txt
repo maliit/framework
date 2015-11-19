@@ -1,3 +1,0 @@
-touch /dev/input/event2 0 2774 0 1568 0 1
-touch /dev/input/event3 0 2774 0 1568 0 1
-

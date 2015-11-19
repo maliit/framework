@@ -1,4 +1,10 @@
-0.99.1
+0.99.2
+======
+
+CHANGES SINCE 0.99.1
+* Use cmake instad of qmake as the buildsystem.
+
+*0.99.1
 ======
 
 CHANGES SINCE 0.99.0
