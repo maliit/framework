@@ -56,7 +56,7 @@ find_package(Qt5Gui REQUIRED PRIVATE)
 find_package(Qt5Quick)
 find_package(Qt5Widgets)
 
-include_directories(common connection src)
+include_directories(src common)
 
 add_library(maliit-common STATIC
             common/maliit/namespace.h
@@ -64,6 +64,7 @@ add_library(maliit-common STATIC
             common/maliit/settingdata.cpp
             common/maliit/settingdata.h)
 target_link_libraries(maliit-common Qt5::Core)
+target_include_directories(maliit-common PUBLIC common)
 
 set(CONNECTION_SOURCES
     connection/connectionfactory.cpp
@@ -99,7 +100,8 @@ qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1in
 qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml minputmethodserver1interface_interface)
 
 add_library(maliit-connection STATIC ${CONNECTION_SOURCES})
-target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui)
+target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui maliit-common)
+target_include_directories(maliit-connection PUBLIC connection)
 
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
 
@@ -198,11 +200,13 @@ else()
 endif()
 
 add_library(maliit-plugins SHARED ${PLUGINS_SOURCES} ${PLUGINS_HEADER})
-target_link_libraries(maliit-plugins maliit-connection maliit-common Qt5::Core Qt5::Gui Qt5::Quick ${PLUGINS_LIBRARIES})
+target_link_libraries(maliit-plugins PRIVATE maliit-common maliit-connection ${PLUGINS_LIBRARIES})
+target_link_libraries(maliit-plugins PUBLIC Qt5::Core Qt5::Gui Qt5::Quick)
 target_include_directories(maliit-plugins PRIVATE ${PLUGINS_INCLUDE_DIRS})
 
 set_target_properties(maliit-plugins PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
-                                                  VERSION ${PROJECT_VERSION})
+        VERSION ${PROJECT_VERSION}
+        EXPORT_NAME Maliit::Plugins)
 
 if(enable-glib)
     find_package(GLib2)
@@ -252,9 +256,11 @@ if(enable-glib)
     gdbus_add_code(GLIB_SOURCES dbus_interfaces/minputmethodserver1interface.xml)
 
     add_library(maliit-glib SHARED ${GLIB_SOURCES} ${GLIB_HEADER})
-    target_link_libraries(maliit-glib GLib2::GLib GLib2::GIO)
+    target_include_directories(maliit-glib PUBLIC ${GIO_INCLUDE_DIRS})
+    target_link_libraries(maliit-glib ${GIO_LIBRARIES})
     set_target_properties(maliit-glib PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
-                                                   VERSION ${PROJECT_VERSION})
+            VERSION ${PROJECT_VERSION}
+            EXPORT_NAME Maliit::GLib)
 endif()
 
 add_definitions(-DMALIIT_FRAMEWORK_USE_INTERNAL_API
@@ -268,7 +274,7 @@ add_definitions(-DMALIIT_FRAMEWORK_USE_INTERNAL_API
                 -DMALIIT_DEFAULT_SUBVIEW="")
 
 add_executable(maliit-server passthroughserver/main.cpp)
-target_link_libraries(maliit-server maliit-plugins)
+target_link_libraries(maliit-server maliit-plugins maliit-connection)
 
 if(enable-qt5-inputcontext)
     set(INPUT_CONTEXT_SOURCES
@@ -316,7 +322,7 @@ if(enable-docs)
                       COMMENT "Generating API documentation with Doxygen" VERBATIM)
 endif()
 
-# Installation
+# Package files
 
 configure_file(common/maliit-framework.pc.in maliit-framework.pc @ONLY)
 configure_file(src/maliit-plugins.pc.in maliit-plugins.pc @ONLY)
@@ -326,9 +332,24 @@ configure_file(common/maliit-framework.prf.in maliit-framework.prf @ONLY)
 configure_file(src/maliit-plugins.prf.in maliit-plugins.prf @ONLY)
 configure_file(src/maliit-defines.prf.in maliit-defines.prf @ONLY)
 
-install(TARGETS maliit-server maliit-plugins maliit-exampleapp-plainqt
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR})
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(src/MaliitPluginsConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake
+        INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins
+        PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR SHARE_INSTALL_PREFIX)
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
+        VERSION ${PACKAGE_VERSION}
+        COMPATIBILITY AnyNewerVersion)
+
+# Installation
+
+install(TARGETS maliit-plugins
+        EXPORT MaliitPluginsTargets
+        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}/maliit/plugins ${INCLUDE_INSTALL_DIR}/maliit/framework)
+
+install(TARGETS maliit-server maliit-exampleapp-plainqt
+        RUNTIME DESTINATION bin)
 
 install(DIRECTORY common/ DESTINATION ${INCLUDE_INSTALL_DIR}/maliit/framework
         FILES_MATCHING PATTERN "*.h"
@@ -343,19 +364,36 @@ install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.pc ${CMAKE_BINARY_DIR}/maliit
 install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.prf ${CMAKE_BINARY_DIR}/maliit-plugins.prf ${CMAKE_BINARY_DIR}/maliit-defines.prf
         DESTINATION ${QT5_MKSPECS_INSTALL_DIR}/features)
 
+install(EXPORT MaliitPluginsTargets FILE MaliitPluginsTargets.cmake DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
+        DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins)
+
 install(FILES INSTALL.local LICENSE.LGPL NEWS README
         DESTINATION ${SHARE_INSTALL_PREFIX}/doc/maliit-framework)
 
 if(enable-glib)
+    configure_package_config_file(maliit-glib/MaliitGLibConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfig.cmake
+            INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitGLib
+            PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR SHARE_INSTALL_PREFIX)
+    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfigVersion.cmake
+            VERSION ${PACKAGE_VERSION}
+            COMPATIBILITY AnyNewerVersion)
+
     configure_file(maliit-glib/maliit-glib.pc.in maliit-glib.pc @ONLY)
 
-    install(TARGETS maliit-glib LIBRARY DESTINATION ${LIB_INSTALL_DIR})
+    install(TARGETS maliit-glib EXPORT MaliitGLibTargets
+            LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+            INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}/maliit)
 
     install(DIRECTORY maliit-glib DESTINATION ${INCLUDE_INSTALL_DIR}/maliit
             FILES_MATCHING PATTERN "*.h"
             PATTERN "*private.h" EXCLUDE)
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/maliit-glib DESTINATION ${INCLUDE_INSTALL_DIR}/maliit
             FILES_MATCHING PATTERN "*.h")
+
+    install(EXPORT MaliitGLibTargets FILE MaliitGLibTargets.cmake DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitGLib)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfigVersion.cmake
+            DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitGLib)
 
     install(FILES ${CMAKE_BINARY_DIR}/maliit-glib.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
 endif()
@@ -421,7 +459,7 @@ if(enable-tests)
             tests/utils/core-utils.h
             tests/utils/gui-utils.cpp
             tests/utils/gui-utils.h)
-    target_link_libraries(test-utils PUBLIC Qt5::Core Qt5::Gui Qt5::Test)
+    target_link_libraries(test-utils PUBLIC Qt5::Core Qt5::Gui Qt5::Test maliit-connection)
     target_include_directories(test-utils INTERFACE tests/utils)
     target_compile_definitions(test-utils PUBLIC
             -DMALIIT_TEST_PLUGINS_DIR="${CMAKE_INSTALL_PREFIX}/lib/maliit-framework-tests/plugins"
