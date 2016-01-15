@@ -180,6 +180,8 @@ if(enable-xcb)
     find_package(XCB REQUIRED xfixes)
     list(APPEND PLUGINS_INCLUDE_DIRS ${XCB_INCLUDE_DIRS})
     list(APPEND PLUGINS_LIBRARIES ${XCB_LIBRARIES})
+else()
+    add_definitions(-DNOXCB)
 endif()
 
 if(enable-wayland)
