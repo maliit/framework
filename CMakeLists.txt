@@ -16,6 +16,13 @@ option(enable-qt5-inputcontext "Compile with Qt5 input context" ON)
 option(enable-hwkeyboard "Enable support for the hardware keyboard" ON)
 option(enable-dbus-activation "Enable dbus activation support for maliit-server" OFF)
 
+# Windows compatibility
+
+if(MSVC)
+    #msvc doesn't have __PRETTY_FUNCTION__, uses __FUNCSIG__ instaed
+    add_definitions(-D__PRETTY_FUNCTION__=__FUNCSIG__)
+endif(MSVC)
+
 # Install paths
 
 if(NOT DEFINED INCLUDE_INSTALL_DIR)
