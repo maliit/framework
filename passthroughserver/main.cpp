@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     if (serverCommonOptions.showHelp) {
         printHelpMessage();
         return 1;
-    } else if (not allRecognized) {
+    } else if (!allRecognized) {
         printHelpMessage();
     }
 

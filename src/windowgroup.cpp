@@ -53,10 +53,10 @@ void WindowGroup::deactivate(HideMode mode)
 void WindowGroup::setupWindow(QWindow *window, Maliit::Position position)
 {
     if (window) {
-        if (not containsWindow(window)) {
+        if (!containsWindow(window)) {
             QWindow *parent = window->parent ();
 
-            if (parent and not containsWindow(parent)) {
+            if (parent&&!containsWindow(parent)) {
                 qWarning () << "Plugin is misbehaving - tried to register a window with yet-unregistered parent!";
                 return;
             }
@@ -113,7 +113,7 @@ void WindowGroup::setInputMethodArea(const QRegion &region, QWindow *window)
 void WindowGroup::setApplicationWindow(WId id)
 {
     Q_FOREACH (const WindowData &data, m_window_list) {
-        if (data.m_window and not data.m_window->parent()) {
+        if (data.m_window&&!data.m_window->parent()) {
             m_platform->setApplicationWindow(data.m_window, id);
         }
     }
@@ -138,9 +138,9 @@ void WindowGroup::updateInputMethodArea()
     QRegion new_area;
 
     Q_FOREACH (const WindowData &data, m_window_list) {
-        if (data.m_window and not data.m_window->parent() and
-            data.m_window->isVisible() and
-            not data.m_inputMethodArea.isEmpty()) {
+        if (data.m_window&&!data.m_window->parent() &&
+            data.m_window->isVisible() &&
+            !data.m_inputMethodArea.isEmpty()) {
             new_area |= data.m_inputMethodArea.translated(data.m_window->position());
         }
     }

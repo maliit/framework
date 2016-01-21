@@ -38,7 +38,7 @@ protected:
     {
         toPlainText();
         // On first text edit, clear pre-set TextPrompt:
-        if (not was_focused && toPlainText() == QString(TextPrompt)) {
+        if (!was_focused && toPlainText() == QString(TextPrompt)) {
             was_focused = true;
             setText("");
         }

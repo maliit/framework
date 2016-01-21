@@ -25,7 +25,7 @@ MImSubViewOverride::~MImSubViewOverride()
 {
     // This will undo the effects of any other active attribute extension that
     // currently enabled all subviews!
-    if (not mPlugins.isNull()) {
+    if (!mPlugins.isNull()) {
         mPlugins.data()->setAllSubViewsEnabled(false);
     }
 }

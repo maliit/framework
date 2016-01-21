@@ -681,7 +681,7 @@ MIMPluginManagerPrivate::findEnabledPlugin(Plugins::const_iterator current,
         }
 
         if (state == Maliit::OnScreen
-            && not onScreenPlugins.isEnabled(iterator->pluginId)) {
+            && !onScreenPlugins.isEnabled(iterator->pluginId)) {
             continue;
         }
 
@@ -1503,14 +1503,14 @@ void MIMPluginManager::handleWidgetStateChanged(unsigned int clientId,
 
     // general notification last
     Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        if (not changedProperties.isEmpty()) {
+        if (!changedProperties.isEmpty()) {
             (void) target->imExtensionEvent(&ev);
         }
         target->update();
     }
 
     // Make sure windows get hidden when no longer focus
-    if (not widgetFocusState) {
+    if (!widgetFocusState) {
         hideActivePlugins();
     }
 }

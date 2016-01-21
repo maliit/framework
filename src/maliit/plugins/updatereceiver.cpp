@@ -39,7 +39,7 @@ MImUpdateReceiver::~MImUpdateReceiver()
 
 void MImUpdateReceiver::process(MImUpdateEvent *ev)
 {
-    if (not ev) {
+    if (!ev) {
         return;
     }
 

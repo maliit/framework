@@ -260,7 +260,7 @@ void MAttributeExtensionManager::handleWidgetStateChanged(unsigned int clientId,
     }
 
     variant = newState[FocusStateAttribute];
-    if (not variant.isValid()) {
+    if (!variant.isValid()) {
         qCritical() << __PRETTY_FUNCTION__ << "Invalid focus state";
     }
     bool widgetFocusState = variant.toBool();

@@ -122,7 +122,7 @@ public:
     void handleInputMethodAreaUpdate(MAbstractInputMethodHost *host,
                                      const QRegion &region)
     {
-        if (not host) {
+        if (!host) {
             return;
         }
 

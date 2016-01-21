@@ -136,7 +136,7 @@ void KeyOverrideQuick::setDefaultLabel(const QString &label)
         d->defaultLabel = label;
         Q_EMIT defaultLabelChanged(label);
     }
-    if (not d->labelIsOverriden) {
+    if (!d->labelIsOverriden) {
         useDefaultLabel();
     }
 }
@@ -149,7 +149,7 @@ void KeyOverrideQuick::setDefaultIcon(const QString &icon)
         d->defaultIcon = icon;
         Q_EMIT defaultIconChanged(icon);
     }
-    if (not d->iconIsOverriden) {
+    if (!d->iconIsOverriden) {
         useDefaultIcon();
     }
 }
@@ -162,7 +162,7 @@ void KeyOverrideQuick::setDefaultHighlighted(bool highlighted)
         d->defaultHighlighted = highlighted;
         Q_EMIT defaultHighlightedChanged(highlighted);
     }
-    if (not d->highlightedIsOverriden) {
+    if (!d->highlightedIsOverriden) {
         useDefaultHighlighted();
     }
 }
@@ -175,7 +175,7 @@ void KeyOverrideQuick::setDefaultEnabled(bool enabled)
         d->defaultEnabled = enabled;
         Q_EMIT defaultEnabledChanged(enabled);
     }
-    if (not d->enabledIsOverriden) {
+    if (!d->enabledIsOverriden) {
         useDefaultEnabled();
     }
 }
@@ -272,13 +272,13 @@ void KeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOver
         // default value for either icon or label have to be set.
         // otherwise, it is a programming error.
 
-        if (not keyOverride->icon().isEmpty()) {
+        if (!keyOverride->icon().isEmpty()) {
             iconAction = UseOverride;
-        } else if (not keyOverride->label().isEmpty()) {
+        } else if (!keyOverride->label().isEmpty()) {
             labelAction = UseOverride;
-        } else if (not d->defaultIcon.isEmpty()) {
+        } else if (!d->defaultIcon.isEmpty()) {
             iconAction = UseDefault;
-        } else if (not d->defaultLabel.isEmpty()) {
+        } else if (!d->defaultLabel.isEmpty()) {
             labelAction = UseDefault;
         } else {
             qCritical() << __PRETTY_FUNCTION__ << "- Both label and icon have no default value.";
@@ -299,7 +299,7 @@ void KeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOver
         // default icon are empty then the key will be empty. but we allow this,
         // because such situation could happen at the beginning. obviously we
         // expect a plugin to actually set a default value before it is shown.
-        if (not d->defaultIcon.isEmpty()) {
+        if (!d->defaultIcon.isEmpty()) {
             iconAction = UseDefault;
         } else {
             labelAction = UseDefault;

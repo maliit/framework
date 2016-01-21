@@ -238,7 +238,7 @@ void MImOnScreenPlugins::setAllSubViewsEnabled(bool enable)
         if (mAllSubviewsEnabled) {
             mLastEnabledSubViews = mEnabledSubViews;
         } else {
-            if (not mLastEnabledSubViews.contains(mActiveSubView)) {
+            if (!mLastEnabledSubViews.contains(mActiveSubView)) {
                 mLastEnabledSubViews.append(mActiveSubView);
             }
         }
