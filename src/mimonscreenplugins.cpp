@@ -20,7 +20,11 @@
 #include <QDebug>
 
 #include <algorithm>
-#include <tr1/functional>
+#ifdef _MSC_VER
+    #include <functional>
+#else
+    #include <tr1/functional>
+#endif
 
 using namespace std::tr1::placeholders;
 
