@@ -19,3 +19,4 @@ gen_*
 *.tar.*
 *.md5
 .idea
+*.user
