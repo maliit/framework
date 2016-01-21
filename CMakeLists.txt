@@ -348,6 +348,7 @@ write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig
 install(TARGETS maliit-plugins
         EXPORT MaliitPluginsTargets
         LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+        ARCHIVE DESTINATION ${LIB_INSTALL_DIR}/static
         INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}/maliit/plugins ${INCLUDE_INSTALL_DIR}/maliit/framework)
 
 install(TARGETS maliit-server maliit-exampleapp-plainqt
