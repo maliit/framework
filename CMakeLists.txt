@@ -23,6 +23,10 @@ if(MSVC)
     add_definitions(-D__PRETTY_FUNCTION__=__FUNCSIG__)
 endif(MSVC)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
+
+include(GenerateExportHeader)
+
 # Install paths
 
 if(NOT DEFINED INCLUDE_INSTALL_DIR)
@@ -209,6 +213,7 @@ else()
 endif()
 
 add_library(maliit-plugins SHARED ${PLUGINS_SOURCES} ${PLUGINS_HEADER})
+generate_export_header(maliit-plugins)
 target_link_libraries(maliit-plugins PRIVATE maliit-common maliit-connection ${PLUGINS_LIBRARIES})
 target_link_libraries(maliit-plugins PUBLIC Qt5::Core Qt5::Gui Qt5::Quick)
 target_include_directories(maliit-plugins PRIVATE ${PLUGINS_INCLUDE_DIRS})
@@ -377,6 +382,7 @@ install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.prf ${CMAKE_BINARY_DIR}/malii
 install(EXPORT MaliitPluginsTargets FILE MaliitPluginsTargets.cmake DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
         DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins)
+install(FILES ${PROJECT_BINARY_DIR}/maliit-plugins_export.h DESTINATION ${INCLUDE_INSTALL_DIR}/maliit/plugins )
 
 install(FILES INSTALL.local LICENSE.LGPL NEWS README
         DESTINATION ${SHARE_INSTALL_PREFIX}/doc/maliit-framework)

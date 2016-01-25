@@ -22,6 +22,8 @@
 
 #include <maliit/namespace.h>
 
+#include <maliit-plugins_export.h>
+
 class QRegion;
 class QPoint;
 class QRect;
@@ -39,7 +41,7 @@ class MImExtensionEvent;
  * direction, from the input method plugin to the framework, is done using the
  * MAbstractInputMethodHost object returned from inputMethodHost().
  */
-class MAbstractInputMethod: public QObject
+class MALIIT_PLUGINS_EXPORT MAbstractInputMethod: public QObject
 {
     Q_OBJECT
 
