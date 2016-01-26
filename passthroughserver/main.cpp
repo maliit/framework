@@ -34,7 +34,11 @@ void disableMInputContextPlugin()
 {
     // none is a special value for QT_IM_MODULE, which disables loading of any
     // input method module in Qt 5.
-    setenv("QT_IM_MODULE", "none", true);
+    #ifdef _MSC_VER
+        _putenv_s("QT_IM_MODULE","none");
+    #else
+        setenv("QT_IM_MODULE", "none", true);
+    #endif
 }
 
 bool isDebugEnabled()
