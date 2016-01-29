@@ -62,9 +62,12 @@ DynamicAddress::DynamicAddress()
 
 QDBusServer* DynamicAddress::connect()
 {
+#ifdef _WIN32
+    QDBusServer *server = new QDBusServer();
+#else
     QLatin1String dbusAddress("unix:tmpdir=/tmp/maliit-server");
-
     QDBusServer *server = new QDBusServer(dbusAddress);
+#endif
 
     publisher.reset(new AddressPublisher(server->address()));
 
