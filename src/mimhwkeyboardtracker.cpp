@@ -18,7 +18,13 @@
 
 #include <QSocketNotifier>
 
+#ifdef __cplusplus
+extern "C" {
 #include <libudev.h>
+}
+#else
+#include <libudev.h>
+#endif
 #include <linux/input.h>
 
 #include "mimhwkeyboardtracker.h"
