@@ -17,8 +17,10 @@
 
 #include <QObject>
 
+QT_BEGIN_NAMESPACE
 class QDBusVariant;
 class QDBusError;
+QT_END_NAMESPACE
 
 namespace Maliit {
 namespace InputContext {

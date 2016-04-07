@@ -18,6 +18,7 @@
 #include <QDBusArgument>
 
 
+QT_BEGIN_NAMESPACE
 QDBusArgument &operator<<(QDBusArgument &argument, const MImPluginSettingsEntry &entry)
 {
     argument.beginStructure();
@@ -110,4 +111,5 @@ const QDBusArgument &operator>>(const QDBusArgument &arg, Maliit::PreeditTextFor
 
     return arg;
 }
+QT_END_NAMESPACE
 

@@ -28,7 +28,9 @@ class WindowGroup;
 
 } // namespace Maliit
 
+QT_BEGIN_NAMESPACE
 class QRegion;
+QT_END_NAMESPACE
 
 using Maliit::Plugins::AbstractPluginSetting;
 

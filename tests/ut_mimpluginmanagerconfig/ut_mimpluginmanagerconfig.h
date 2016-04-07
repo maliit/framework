@@ -24,7 +24,9 @@
 class MIMPluginManager;
 class MIMPluginManagerPrivate;
 class MInputContextConnection;
+QT_BEGIN_NAMESPACE
 class QDBusInterface;
+QT_END_NAMESPACE
 
 class Ut_MIMPluginManagerConfig : public QObject
 {

@@ -60,7 +60,9 @@ public:
 }
 }
 
+QT_BEGIN_NAMESPACE
 Q_DECLARE_INTERFACE(Maliit::Plugins::InputMethodPlugin,
                     "org.maliit.plugins.InputMethodPlugin/1.1")
+QT_END_NAMESPACE
 
 #endif

@@ -18,7 +18,9 @@
 
 #include <QWindow>
 
+QT_BEGIN_NAMESPACE
 class QRegion;
+QT_END_NAMESPACE
 
 
 namespace Maliit

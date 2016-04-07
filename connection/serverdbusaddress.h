@@ -18,7 +18,9 @@
 #include <QObject>
 #include <QString>
 
+QT_BEGIN_NAMESPACE
 class QDBusServer;
+QT_END_NAMESPACE
 
 namespace Maliit {
 namespace Server {

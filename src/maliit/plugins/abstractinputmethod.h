@@ -22,9 +22,11 @@
 
 #include <maliit/namespace.h>
 
+QT_BEGIN_NAMESPACE
 class QRegion;
 class QPoint;
 class QRect;
+QT_END_NAMESPACE
 class MAbstractInputMethodHost;
 class MAbstractInputMethodPrivate;
 class MKeyOverride;
