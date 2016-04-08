@@ -5,7 +5,9 @@
 #include <QObject>
 
 class MIMPluginManager;
+QT_BEGIN_NAMESPACE
 class QGraphicsScene;
+QT_END_NAMESPACE
 
 class Ft_MIMPluginManager : public QObject
 {

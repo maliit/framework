@@ -9,7 +9,9 @@
 class MIMPluginManager;
 class MIMPluginManagerPrivate;
 class MInputContextTestConnection;
+QT_BEGIN_NAMESPACE
 class QDBusInterface;
+QT_END_NAMESPACE
 
 class Ut_MIMPluginManager : public QObject
 {

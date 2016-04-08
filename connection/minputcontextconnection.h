@@ -20,7 +20,9 @@
 #include <QtCore>
 #include <QWindow>
 
+QT_BEGIN_NAMESPACE
 class QKeyEvent;
+QT_END_NAMESPACE
 
 class MInputContextConnectionPrivate;
 class MAbstractInputMethod;

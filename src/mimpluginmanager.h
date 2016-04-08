@@ -27,7 +27,9 @@
 #include "mattributeextensionid.h"
 #include "minputcontextconnection.h"
 
+QT_BEGIN_NAMESPACE
 class QRegion;
+QT_END_NAMESPACE
 class MIMPluginManagerPrivate;
 class MAttributeExtensionId;
 class MAbstractInputMethod;

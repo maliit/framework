@@ -23,9 +23,11 @@
 
 #include <maliit/namespace.h>
 
+QT_BEGIN_NAMESPACE
 class QString;
 class QRegion;
 class QKeyEvent;
+QT_END_NAMESPACE
 
 class MImPluginDescription;
 class MImSubViewDescription;
