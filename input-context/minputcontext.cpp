@@ -73,9 +73,17 @@ MInputContext::MInputContext()
         debug = true;
     }
 
-    QSharedPointer<Maliit::InputContext::DBus::Address> address(new Maliit::InputContext::DBus::DynamicAddress);
-    imServer = new DBusServerConnection(address);
+    QSharedPointer<Maliit::InputContext::DBus::Address> address;
 
+    QByteArray maliitServerAddress = qgetenv("MALIIT_SERVER_ADDRESS");
+    if (!maliitServerAddress.isEmpty()) {
+        address.reset(new Maliit::InputContext::DBus::FixedAddress(maliitServerAddress.constData()));
+    } else {
+        address.reset(new Maliit::InputContext::DBus::DynamicAddress);
+    }
+
+    imServer = new DBusServerConnection(address);
+    
     sipHideTimer.setSingleShot(true);
     sipHideTimer.setInterval(SoftwareInputPanelHideTimer);
     connect(&sipHideTimer, SIGNAL(timeout()), SLOT(sendHideInputMethod()));
