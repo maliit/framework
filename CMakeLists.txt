@@ -17,29 +17,15 @@ option(enable-hwkeyboard "Enable support for the hardware keyboard" ON)
 option(enable-dbus-activation "Enable dbus activation support for maliit-server" OFF)
 
 # Install paths
-
-if(NOT DEFINED INCLUDE_INSTALL_DIR)
-    set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH
-        "Installation directory for C/C++ header files [CMAKE_INSTALL_PREFIX/include]")
-endif()
-
-if(NOT DEFINED LIB_INSTALL_DIR)
-    set(LIB_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH
-        "Installation directory for object code libraries [CMAKE_INSTALL_PREFIX/lib]")
-endif()
-
-if(NOT DEFINED SHARE_INSTALL_PREFIX)
-    set(SHARE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/share" CACHE PATH
-        "Installation directory for read-only architecture-independent data [CMAKE_INSTALL_PREFIX/share]")
-endif()
+include(GNUInstallDirs)
 
 if(NOT DEFINED QT5_PLUGINS_INSTALL_DIR)
-    set(QT5_PLUGINS_INSTALL_DIR "${LIB_INSTALL_DIR}/qt5/plugins" CACHE PATH
+    set(QT5_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt5/plugins" CACHE PATH
             "Installation directory for Qt 5 plugins [LIB_INSTALL_DIR/qt5/plugins]")
 endif()
 
 if(NOT DEFINED QT5_MKSPECS_INSTALL_DIR)
-    set(QT5_MKSPECS_INSTALL_DIR "${LIB_INSTALL_DIR}/qt5/mkspecs" CACHE PATH
+    set(QT5_MKSPECS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt5/mkspecs" CACHE PATH
             "Installation directory for Qt 5 mkspecs files [LIB_INSTALL_DIR/qt5/mkspecs]")
 endif()
 
@@ -283,10 +269,10 @@ if(enable-glib)
 endif()
 
 add_definitions(-DMALIIT_FRAMEWORK_USE_INTERNAL_API
-                -DMALIIT_PLUGINS_DATA_DIR="${SHARE_INSTALL_PREFIX}/maliit/plugins"
-                -DMALIIT_EXTENSIONS_DIR="${SHARE_INSTALL_PREFIX}/maliit-framework/extensions"
+                -DMALIIT_PLUGINS_DATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit/plugins"
+                -DMALIIT_EXTENSIONS_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit-framework/extensions"
                 -DMALIIT_CONFIG_ROOT="/maliit/"
-                -DMALIIT_PLUGINS_DIR="${LIB_INSTALL_DIR}/maliit/plugins"
+                -DMALIIT_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/maliit/plugins"
                 -DMALIIT_DEFAULT_HW_PLUGIN="libmaliit-keyboard-plugin.so"
                 -DMALIIT_ENABLE_MULTITOUCH=true
                 -DMALIIT_DEFAULT_PLUGIN="libmaliit-keyboard-plugin.so"
@@ -355,7 +341,7 @@ include(CMakePackageConfigHelpers)
 
 configure_package_config_file(src/MaliitPluginsConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake
         INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins
-        PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR SHARE_INSTALL_PREFIX)
+        PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_DATADIR)
 write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
         VERSION ${PACKAGE_VERSION}
         COMPATIBILITY AnyNewerVersion)
@@ -364,36 +350,39 @@ write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig
 
 install(TARGETS maliit-plugins
         EXPORT MaliitPluginsTargets
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}/maliit/plugins ${INCLUDE_INSTALL_DIR}/maliit/framework)
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2)
 
 install(TARGETS maliit-server maliit-exampleapp-plainqt
-        RUNTIME DESTINATION bin)
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(DIRECTORY common/ DESTINATION ${INCLUDE_INSTALL_DIR}/maliit/framework
+install(DIRECTORY common/
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
         FILES_MATCHING PATTERN "*.h"
         PATTERN "*internal.h" EXCLUDE)
-install(DIRECTORY src/maliit DESTINATION ${INCLUDE_INSTALL_DIR}/maliit/plugins
+install(DIRECTORY src/maliit
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
         FILES_MATCHING PATTERN "*.h"
         PATTERN "*_p.h" EXCLUDE)
-install(FILES src/mimserver.h DESTINATION ${INCLUDE_INSTALL_DIR}/maliit/server)
+install(FILES src/mimserver.h
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2/maliit)
 
 install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.pc ${CMAKE_BINARY_DIR}/maliit-plugins.pc ${CMAKE_BINARY_DIR}/maliit-server.pc
-        DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.prf ${CMAKE_BINARY_DIR}/maliit-plugins.prf ${CMAKE_BINARY_DIR}/maliit-defines.prf
         DESTINATION ${QT5_MKSPECS_INSTALL_DIR}/features)
 
-install(EXPORT MaliitPluginsTargets FILE MaliitPluginsTargets.cmake DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins)
+install(EXPORT MaliitPluginsTargets FILE MaliitPluginsTargets.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitPlugins)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
-        DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins)
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitPlugins)
 
 install(FILES INSTALL.local LICENSE.LGPL NEWS README
-        DESTINATION ${SHARE_INSTALL_PREFIX}/doc/maliit-framework)
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/maliit-framework)
 
 if(enable-glib)
     configure_package_config_file(maliit-glib/MaliitGLibConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfig.cmake
             INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitGLib
-            PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR SHARE_INSTALL_PREFIX)
+            PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_DATADIR)
     write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfigVersion.cmake
             VERSION ${PACKAGE_VERSION}
             COMPATIBILITY AnyNewerVersion)
@@ -401,20 +390,20 @@ if(enable-glib)
     configure_file(maliit-glib/maliit-glib.pc.in maliit-glib.pc @ONLY)
 
     install(TARGETS maliit-glib EXPORT MaliitGLibTargets
-            LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-            INCLUDES DESTINATION ${INCLUDE_INSTALL_DIR}/maliit)
+            LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2)
 
-    install(DIRECTORY maliit-glib DESTINATION ${INCLUDE_INSTALL_DIR}/maliit
+    install(DIRECTORY maliit-glib DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
             FILES_MATCHING PATTERN "*.h"
             PATTERN "*private.h" EXCLUDE)
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/maliit-glib DESTINATION ${INCLUDE_INSTALL_DIR}/maliit
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/maliit-glib DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
             FILES_MATCHING PATTERN "*.h")
 
-    install(EXPORT MaliitGLibTargets FILE MaliitGLibTargets.cmake DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitGLib)
+    install(EXPORT MaliitGLibTargets FILE MaliitGLibTargets.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitGLib)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfigVersion.cmake
-            DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitGLib)
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitGLib)
 
-    install(FILES ${CMAKE_BINARY_DIR}/maliit-glib.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
+    install(FILES ${CMAKE_BINARY_DIR}/maliit-glib.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif()
 
 if(enable-qt5-inputcontext)
@@ -424,12 +413,12 @@ endif()
 if(enable-dbus-activation)
     configure_file(connection/org.maliit.server.service.in org.maliit.server.service @ONLY)
 
-    install(FILES ${CMAKE_BINARY_DIR}/org.maliit.server.service DESTINATION ${SHARE_INSTALL_PREFIX}/dbus-1/services)
+    install(FILES ${CMAKE_BINARY_DIR}/org.maliit.server.service DESTINATION ${CMAKE_INSTALL_DATADIR}/dbus-1/services)
 endif()
 
 if(enable-docs)
     install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/html/
-            DESTINATION ${SHARE_INSTALL_PREFIX}/doc/maliit-framework-doc)
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/maliit-framework-doc)
 endif()
 
 # Tests
