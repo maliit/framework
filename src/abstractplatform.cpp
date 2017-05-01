@@ -11,7 +11,16 @@
  * of this file.
  */
 
+#include <QtGui/QGuiApplication>
 #include "abstractplatform.h"
+
+#include "unknownplatform.h"
+#ifndef NOXCB
+#include "xcbplatform.h"
+#endif
+#ifdef HAVE_WAYLAND
+#include "waylandplatform.h"
+#endif
 
 namespace Maliit
 {
@@ -23,6 +32,21 @@ void AbstractPlatform::setApplicationWindow(QWindow *window, WId appWindowId)
 {
     Q_UNUSED(window)
     Q_UNUSED(appWindowId)
+}
+
+std::unique_ptr<AbstractPlatform> createPlatform()
+{
+#ifdef HAVE_WAYLAND
+    if (QGuiApplication::platformName().startsWith("wayland")) {
+        return std::unique_ptr<AbstractPlatform>(new Maliit::WaylandPlatform);
+    }
+#endif
+#ifndef NOXCB
+    if (QGuiApplication::platformName() == "xcb") {
+        return std::unique_ptr<AbstractPlatform>(new Maliit::XCBPlatform);
+    }
+#endif
+    return std::unique_ptr<AbstractPlatform>(new Maliit::UnknownPlatform);
 }
 
 } // namespace Maliit

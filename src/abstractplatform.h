@@ -18,10 +18,11 @@
 
 #include <QWindow>
 
+#include <memory>
+
 QT_BEGIN_NAMESPACE
 class QRegion;
 QT_END_NAMESPACE
-
 
 namespace Maliit
 {
@@ -36,6 +37,8 @@ public:
                                 const QRegion& region) = 0;
     virtual void setApplicationWindow(QWindow *window, WId appWindowId);
 };
+
+std::unique_ptr<AbstractPlatform> createPlatform();
 
 } // namespace Maliit
 

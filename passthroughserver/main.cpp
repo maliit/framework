@@ -99,24 +99,6 @@ QSharedPointer<MInputContextConnection> createConnection(const MImServerConnecti
     }
 }
 
-QSharedPointer<Maliit::AbstractPlatform> createPlatform()
-{
-#ifdef HAVE_WAYLAND
-    if (QGuiApplication::platformName().startsWith("wayland")) {
-        return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::WaylandPlatform);
-    } else
-#endif
-#ifndef NOXCB
-    if (QGuiApplication::platformName() == "xcb") {
-        return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::XCBPlatform);
-    } else {
-#else
-    {
-#endif
-        return QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform);
-    }
-}
-
 } // unnamed namespace
 
 int main(int argc, char **argv)
@@ -144,7 +126,7 @@ int main(int argc, char **argv)
     // Input Context Connection
     QSharedPointer<MInputContextConnection> icConnection(createConnection(connectionOptions));
 
-    QSharedPointer<Maliit::AbstractPlatform> platform(createPlatform());
+    QSharedPointer<Maliit::AbstractPlatform> platform(Maliit::createPlatform().release());
 
     // The actual server
     MImServer::configureSettings(MImServer::PersistentSettings);
