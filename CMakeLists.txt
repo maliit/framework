@@ -146,6 +146,10 @@ set(PLUGINS_SOURCES
     src/maliit/plugins/updateevent_p.h
     src/maliit/plugins/updatereceiver.cpp
     src/maliit/plugins/updatereceiver.h
+    src/maliit/standaloneinputmethod.cpp
+    src/maliit/standaloneinputmethod.h
+    src/maliit/standaloneinputmethodhost.cpp
+    src/maliit/standaloneinputmethodhost.h
     src/quick/inputmethodquick.cpp
     src/quick/inputmethodquick.h
     src/quick/inputmethodquickplugin.cpp
