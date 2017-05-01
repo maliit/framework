@@ -10,7 +10,7 @@ option(enable-tests "Build tests" ON)
 option(enable-glib "Build GLib support" ON)
 
 option(enable-xcb "Compile with xcb support" ON)
-option(enable-wayland "Compile with support for wayland" OFF)
+option(enable-wayland "Compile with support for wayland" ON)
 option(enable-qt5-inputcontext "Compile with Qt5 input context" ON)
 
 option(enable-hwkeyboard "Enable support for the hardware keyboard" ON)
@@ -56,6 +56,12 @@ find_package(Qt5Gui REQUIRED PRIVATE)
 find_package(Qt5Quick)
 find_package(Qt5Widgets)
 
+if(enable-wayland)
+    find_package(WaylandProtocols REQUIRED PRIVATE)
+    find_package(QtWaylandScanner REQUIRED)
+    find_package(Wayland REQUIRED)
+endif()
+
 include_directories(src common)
 
 add_library(maliit-common STATIC
@@ -85,9 +91,14 @@ set(CONNECTION_SOURCES
     connection/serverdbusaddress.h)
 
 if(enable-wayland)
-    list(CONNECTION_SOURCES APPEND
+    list(APPEND CONNECTION_SOURCES
          connection/waylandinputmethodconnection.cpp
          connection/waylandinputmethodconnection.h)
+
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL weston-protocols/input-method.xml BASENAME input-method)
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL weston-protocols/text.xml BASENAME text)
+
+    add_definitions(-DHAVE_WAYLAND)
 endif()
 
 set_source_files_properties(dbus_interfaces/minputmethodcontext1interface.xml dbus_interfaces/minputmethodserver1interface.xml
@@ -101,6 +112,9 @@ qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1int
 
 add_library(maliit-connection STATIC ${CONNECTION_SOURCES})
 target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui maliit-common)
+if(enable-wayland)
+    target_link_libraries(maliit-connection Wayland::Client)
+endif()
 target_include_directories(maliit-connection PUBLIC connection)
 
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
@@ -186,6 +200,7 @@ if(enable-wayland)
     list(APPEND PLUGINS_SOURCES
          src/waylandplatform.cpp
          src/waylandplatform.h)
+
 endif()
 
 if(enable-hwkeyboard)

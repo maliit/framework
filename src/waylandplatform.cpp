@@ -223,4 +223,9 @@ void WaylandPlatform::setInputRegion(QWindow* window,
     wl_region_destroy(wlregion);
 }
 
+WaylandPlatform::~WaylandPlatform()
+{
+
+}
+
 } // namespace Maliit
