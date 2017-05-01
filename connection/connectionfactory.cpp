@@ -14,6 +14,7 @@
 
 #include "connectionfactory.h"
 
+#include "minputcontextconnection.h"
 #include "dbusinputcontextconnection.h"
 
 #ifdef HAVE_WAYLAND

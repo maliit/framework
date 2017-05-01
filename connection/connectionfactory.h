@@ -15,7 +15,9 @@
 #ifndef MALIIT_DBUS_CONNECTIONFACTORY_H
 #define MALIIT_DBUS_CONNECTIONFACTORY_H
 
-#include "minputcontextconnection.h"
+#include <QString>
+
+class MInputContextConnection;
 
 namespace Maliit {
 namespace DBus {

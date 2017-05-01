@@ -16,7 +16,6 @@
 
 #include <maliit/namespace.h>
 #include "minputcontextconnection.h"
-#include <qwayland-input-method.h>
 
 #include <QtCore>
 
