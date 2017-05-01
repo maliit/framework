@@ -12,7 +12,7 @@
  */
 
 #include <wayland-client.h>
-#include "qwayland-input-method.h"
+#include "qwayland-input-method-unstable-v1.h"
 
 #include <QDebug>
 #include <QGuiApplication>
@@ -26,15 +26,15 @@
 
 namespace
 {
-QtWayland::wl_input_panel_surface::position maliitToWestonPosition(Maliit::Position position)
+QtWayland::zwp_input_panel_surface_v1::position maliitToWestonPosition(Maliit::Position position)
 {
     switch (position) {
     case Maliit::PositionCenterBottom:
-        return QtWayland::wl_input_panel_surface::position_center_bottom;
+        return QtWayland::zwp_input_panel_surface_v1::position_center_bottom;
     default:
         qWarning() << "Weston only supports center bottom position for top-level surfaces.";
 
-        return QtWayland::wl_input_panel_surface::position_center_bottom;
+        return QtWayland::zwp_input_panel_surface_v1::position_center_bottom;
     }
 }
 } // unnamed namespace
@@ -57,7 +57,7 @@ public:
                            bool avoid_crash = false);
 
     struct wl_registry *m_registry;
-    QScopedPointer<QtWayland::wl_input_panel> m_panel;
+    QScopedPointer<QtWayland::zwp_input_panel_v1> m_panel;
     uint32_t m_panel_name;
     QVector<WindowData> m_scheduled_windows;
 };
@@ -126,11 +126,7 @@ void WaylandPlatformPrivate::handleRegistryGlobal(uint32_t name,
 
     qDebug() << __PRETTY_FUNCTION__ << "Name:" << name << "Interface:" << interface;
     if (!strcmp(interface, "wl_input_panel")) {
-#if QT_VERSION >= QT_VERSION_CHECK(5, 4, 0)
-        m_panel.reset(new QtWayland::wl_input_panel(m_registry, name, 1));
-#else
-        m_panel.reset(new QtWayland::wl_input_panel(m_registry, name));
-#endif
+        m_panel.reset(new QtWayland::zwp_input_panel_v1(m_registry, name, 1));
         m_panel_name = name;
 
         Q_FOREACH (const WindowData& data, m_scheduled_windows) {
@@ -173,10 +169,10 @@ void WaylandPlatformPrivate::setupInputSurface(QWindow *window,
         return;
     }
 
-    struct wl_input_panel_surface *ip_surface = m_panel->get_input_panel_surface(surface);
-    QtWayland::wl_input_panel_surface::position weston_position = maliitToWestonPosition(position);
+    struct zwp_input_panel_surface_v1 *ip_surface = m_panel->get_input_panel_surface(surface);
+    QtWayland::zwp_input_panel_surface_v1::position weston_position = maliitToWestonPosition(position);
 
-    wl_input_panel_surface_set_toplevel(ip_surface, output, weston_position);
+    zwp_input_panel_surface_v1_set_toplevel(ip_surface, output, weston_position);
 }
 
 WaylandPlatform::WaylandPlatform()

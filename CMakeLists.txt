@@ -95,8 +95,8 @@ if(enable-wayland)
          connection/waylandinputmethodconnection.cpp
          connection/waylandinputmethodconnection.h)
 
-    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL weston-protocols/input-method.xml BASENAME input-method)
-    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL weston-protocols/text.xml BASENAME text)
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
 
     add_definitions(-DHAVE_WAYLAND)
 endif()
