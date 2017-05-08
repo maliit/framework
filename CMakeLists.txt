@@ -522,3 +522,8 @@ if(enable-tests)
         add_test(ut_maliit_glib_settings ut_maliit_glib_settings)
     endif()
 endif()
+
+add_custom_target(install_${PROJECT_NAME}
+        $(MAKE) install
+        DEPENDS maliit-server
+        COMMENT "Installing ${PROJECT_NAME}")
