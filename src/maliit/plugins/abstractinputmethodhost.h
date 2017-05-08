@@ -131,11 +131,6 @@ public:
     virtual void registerWindow (QWindow *window,
                                  Maliit::Position position) = 0;
 
-    /*!
-     * \brief returns a pixmap that needs to be drawn as the background of the
-     *        input method. Pixmap contains the application's window contents.
-     */
-    QPixmap background() const;
 
 Q_SIGNALS:
     //! This signal is emitted when input method plugins are loaded or unloaded

@@ -50,11 +50,6 @@ bool MAbstractInputMethodHost::hiddenText(bool &valid)
     return false;
 }
 
-QPixmap MAbstractInputMethodHost::background() const
-{
-    return QPixmap();
-}
-
 QList<MImSubViewDescription>
 MAbstractInputMethodHost::surroundingSubViewDescriptions(Maliit::HandlerState /*state*/) const
 {
