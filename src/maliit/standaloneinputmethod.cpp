@@ -20,6 +20,9 @@
 #include "maliit/plugins/abstractinputmethod.h"
 #include "maliit/plugins/inputmethodplugin.h"
 
+#include <maliit/plugins/updateevent.h>
+#include <common/maliit/namespaceinternal.h>
+
 namespace Maliit
 {
 
@@ -63,8 +66,8 @@ StandaloneInputMethod::StandaloneInputMethod(Maliit::Plugins::InputMethodPlugin 
     connect(mConnection.get(), &MInputContextConnection::receivedKeyEvent,
             mInputMethod.get(), &MAbstractInputMethod::processKeyEvent);
 
-//    connect(mConnection.get(), &MInputContextConnection::widgetStateChanged,
-//            this, &StandaloneInputMethod::handleWidgetStateChanged);
+    connect(mConnection.get(), &MInputContextConnection::widgetStateChanged,
+            this, &StandaloneInputMethod::handleWidgetStateChanged);
 
 //    connect(d->mICConnection.data(), SIGNAL(pluginSettingsRequested(int,QString)),
 //            this, SLOT(pluginSettingsRequested(int,QString)));
@@ -73,6 +76,54 @@ StandaloneInputMethod::StandaloneInputMethod(Maliit::Plugins::InputMethodPlugin 
 
 StandaloneInputMethod::~StandaloneInputMethod()
 {
+}
+
+void StandaloneInputMethod::handleWidgetStateChanged(unsigned int,
+                                                     const QMap<QString, QVariant> &newState,
+                                                     const QMap<QString, QVariant> &oldState,
+                                                     bool focusChanged)
+{
+    static const char * const VisualizationAttribute = "visualizationPriority";
+    static const char * const FocusStateAttribute = "focusState";
+
+    // check visualization change
+    bool oldVisualization = oldState.value(VisualizationAttribute).toBool();
+    bool newVisualization = newState.value(VisualizationAttribute).toBool();
+
+    // update state
+    QStringList changedProperties;
+    const auto newStateKeys = newState.keys();
+    for (auto key: newStateKeys) {
+        if (oldState.value(key) != newState.value(key)) {
+            changedProperties.append(key);
+        }
+    }
+
+    const bool widgetFocusState = newState.value(FocusStateAttribute).toBool();
+
+    if (focusChanged) {
+        mInputMethod->handleFocusChange(widgetFocusState);
+    }
+
+    // call notification methods if needed
+    if (oldVisualization != newVisualization) {
+        mInputMethod->handleVisualizationPriorityChange(newVisualization);
+    }
+
+    const Qt::InputMethodHints lastHints = newState.value(Maliit::Internal::inputMethodHints).value<Qt::InputMethodHints>();
+    MImUpdateEvent ev(newState, changedProperties, lastHints);
+
+    // general notification last
+    if (!changedProperties.isEmpty()) {
+        mInputMethod->imExtensionEvent(&ev);
+    }
+    mInputMethod->update();
+
+    // Make sure windows get hidden when no longer focus
+    if (!widgetFocusState) {
+        mInputMethod->hide();
+        mWindowGroup->deactivate(Maliit::WindowGroup::HideDelayed);
+    }
 }
 
 std::unique_ptr<MInputContextConnection> createConnection()

@@ -40,6 +40,11 @@ public:
     ~StandaloneInputMethod();
 
 private:
+    void handleWidgetStateChanged(unsigned int clientId,
+                                  const QMap<QString, QVariant> &newState,
+                                  const QMap<QString, QVariant> &oldState,
+                                  bool focusChanged);
+
     std::unique_ptr<MInputContextConnection> mConnection;
     QSharedPointer<AbstractPlatform> mPlatform; // TODO use std::unique_ptr instead
     std::unique_ptr<WindowGroup> mWindowGroup;
