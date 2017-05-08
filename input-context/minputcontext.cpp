@@ -725,18 +725,21 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
     }
 
     queryResult = query.value(Qt::ImHints);
-    Qt::InputMethodHints hints = static_cast<Qt::InputMethodHints>(queryResult.toUInt());
+    auto hints = queryResult.value<std::underlying_type<Qt::InputMethodHint>::type>();
 
     // content type value
     // Deprecated, replaced by just transmitting all hints (see below):
     // FIXME: Remove once MAbstractInputMethod API for this got deprecated/removed.
-    stateInformation["contentType"] = contentType(hints);
+    stateInformation["contentType"] = contentType(static_cast<Qt::InputMethodHint>(hints));
 
     stateInformation["autocapitalizationEnabled"] = !(hints & Qt::ImhNoAutoUppercase);
     stateInformation["hiddenText"] = static_cast<bool>(hints & Qt::ImhHiddenText);
     stateInformation["predictionEnabled"] = !(hints & Qt::ImhNoPredictiveText);
 
-    stateInformation["maliit-inputmethod-hints"] = QVariant(static_cast<qint64>(hints));
+    stateInformation["maliit-inputmethod-hints"] = hints;
+
+    queryResult = query.value(Qt::ImEnterKeyType);
+    stateInformation["enterKeyType"] = queryResult.value<std::underlying_type<Qt::EnterKeyType>::type>();
 
     // is text selected
     queryResult = query.value(Qt::ImCurrentSelection);
