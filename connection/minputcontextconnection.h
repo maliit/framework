@@ -217,6 +217,8 @@ public:
 
     virtual void sendActivationLostEvent();
 
+    QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const;
+
 public: // Inbound communication handlers
     //! ipc method provided to application, makes the application the active one
     void activateContext(unsigned int connectionId);

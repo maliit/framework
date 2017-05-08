@@ -64,6 +64,7 @@ public:
                                                                   const QVariantMap &attributes) override;
     bool hiddenText(bool &valid) override;
     void setLanguage(const QString &language) override;
+    QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const override;
 private:
     MInputContextConnection *mConnection;
 //    MAbstractInputMethod *inputMethod;

@@ -131,6 +131,7 @@ public:
     virtual void registerWindow (QWindow *window,
                                  Maliit::Position position) = 0;
 
+    virtual QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument = QVariant()) const = 0;
 
 Q_SIGNALS:
     //! This signal is emitted when input method plugins are loaded or unloaded

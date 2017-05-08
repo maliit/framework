@@ -104,6 +104,7 @@ public:
                                                          Maliit::SettingEntryType type,
                                                          const QVariantMap &attributes);
     // \reimp_end
+    QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const override;
 
 private:
     Q_DISABLE_COPY(MInputMethodHost)

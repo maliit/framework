@@ -190,4 +190,9 @@ Maliit::Plugins::AbstractPluginSetting *StandaloneInputMethodHost::registerPlugi
     return nullptr;
 }
 
+QVariant StandaloneInputMethodHost::inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const
+{
+    return mConnection->inputMethodQuery(query, argument);
+}
+
 }

@@ -248,3 +248,8 @@ AbstractPluginSetting *MInputMethodHost::registerPluginSetting(const QString &ke
 {
     return pluginManager->registerPluginSetting(pluginId, pluginDescription, key, description, type, attributes);
 }
+
+QVariant MInputMethodHost::inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const
+{
+    return connection->inputMethodQuery(query, argument);
+}

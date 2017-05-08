@@ -558,3 +558,37 @@ QVariantMap MInputContextConnection::widgetState() const
 {
     return mWidgetState;
 }
+
+QVariant MInputContextConnection::inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const
+{
+    switch (query) {
+        case Qt::ImEnabled:
+            return mWidgetState.value(QStringLiteral("focusState"));
+        case Qt::ImCursorRectangle:
+            return mWidgetState.value(QStringLiteral("cursorRectangle"));
+//        case Qt::ImFont:
+//            return QVariant();
+        case Qt::ImCursorPosition:
+            return mWidgetState.value(QStringLiteral("cursorPosition"));
+        case Qt::ImSurroundingText:
+            return mWidgetState.value(QStringLiteral("surroundingText"));
+        case Qt::ImCurrentSelection:
+            return QVariant(); // TODO implement
+//        case Qt::ImMaximumTextLength:
+        case Qt::ImAnchorPosition:
+            return mWidgetState.value(QStringLiteral("anchorPosition"));
+        case Qt::ImHints:
+            return mWidgetState.value(QStringLiteral("maliit-inputmethod-hints"));
+//        case Qt::ImPreferredLanguage:
+//        case Qt::ImAbsolutePosition:
+//        case Qt::ImTextBeforeCursor:
+//        case Qt::ImTextAfterCursor:
+        case Qt::ImEnterKeyType:
+            return mWidgetState.value(QStringLiteral("enterKeyType"));
+//        case Qt::ImAnchorRectangle:
+//        case Qt::ImInputItemClipRectangle:
+//            return QVariant();
+    }
+    return QVariant();
+
+}
