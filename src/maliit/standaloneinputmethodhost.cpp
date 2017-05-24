@@ -32,8 +32,7 @@ bool StandaloneInputMethodHost::hiddenText(bool &valid)
 
 void StandaloneInputMethodHost::setLanguage(const QString &language)
 {
-    if (enabled)
-        mConnection->setLanguage(language);
+    mConnection->setLanguage(language);
 }
 
 int StandaloneInputMethodHost::contentType(bool &valid)
@@ -102,51 +101,43 @@ void StandaloneInputMethodHost::sendPreeditString(const QString &string,
                                                   int replacementLength,
                                                   int cursorPos)
 {
-    if (enabled)
-        mConnection->sendPreeditString(string, preeditFormats, replacementStart, replacementLength, cursorPos);
+    mConnection->sendPreeditString(string, preeditFormats, replacementStart, replacementLength, cursorPos);
 }
 
 void
 StandaloneInputMethodHost::sendCommitString(const QString &string, int replaceStart, int replaceLength, int cursorPos)
 {
-    if (enabled)
-        mConnection->sendCommitString(string, replaceStart, replaceLength, cursorPos);
+    mConnection->sendCommitString(string, replaceStart, replaceLength, cursorPos);
 }
 
 void StandaloneInputMethodHost::sendKeyEvent(const QKeyEvent &keyEvent, Maliit::EventRequestType requestType)
 {
-    if (enabled)
-        mConnection->sendKeyEvent(keyEvent, requestType);
+    mConnection->sendKeyEvent(keyEvent, requestType);
 }
 
 void StandaloneInputMethodHost::notifyImInitiatedHiding()
 {
-    if (enabled)
-        mConnection->notifyImInitiatedHiding();
+    mConnection->notifyImInitiatedHiding();
 }
 
 void StandaloneInputMethodHost::invokeAction(const QString &action, const QKeySequence &sequence)
 {
-    if (enabled)
-        mConnection->invokeAction(action, sequence);
+    mConnection->invokeAction(action, sequence);
 }
 
 void StandaloneInputMethodHost::setRedirectKeys(bool enabled)
 {
-    if (enabled)
-        mConnection->setRedirectKeys(enabled);
+    mConnection->setRedirectKeys(enabled);
 }
 
 void StandaloneInputMethodHost::setDetectableAutoRepeat(bool enabled)
 {
-    if (enabled)
-        mConnection->setDetectableAutoRepeat(enabled);
+    mConnection->setDetectableAutoRepeat(enabled);
 }
 
 void StandaloneInputMethodHost::setGlobalCorrectionEnabled(bool enabled)
 {
-    if (enabled)
-        mConnection->setGlobalCorrectionEnabled(enabled);
+    mConnection->setGlobalCorrectionEnabled(enabled);
 }
 
 void StandaloneInputMethodHost::switchPlugin(Maliit::SwitchDirection direction)
@@ -169,8 +160,7 @@ void StandaloneInputMethodHost::setInputMethodArea(const QRegion &region, QWindo
 
 void StandaloneInputMethodHost::setSelection(int start, int length)
 {
-    if (enabled)
-        mConnection->setSelection(start, length);
+    mConnection->setSelection(start, length);
 }
 
 void StandaloneInputMethodHost::setOrientationAngleLocked(bool lock)

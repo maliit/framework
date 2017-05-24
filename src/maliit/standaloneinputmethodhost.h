@@ -67,8 +67,6 @@ public:
     QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const override;
 private:
     MInputContextConnection *mConnection;
-//    MAbstractInputMethod *inputMethod;
-    bool enabled;
     WindowGroup *mWindowGroup;
 };
 
