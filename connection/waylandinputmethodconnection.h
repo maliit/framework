@@ -19,6 +19,8 @@
 
 #include <QtCore>
 
+Q_DECLARE_LOGGING_CATEGORY(lcWaylandConnection)
+
 class WaylandInputMethodConnectionPrivate;
 
 /*! \internal

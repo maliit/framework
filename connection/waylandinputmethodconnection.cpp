@@ -25,6 +25,8 @@
 
 #include "waylandinputmethodconnection.h"
 
+Q_LOGGING_CATEGORY(lcWaylandConnection, "maliit.connection.wayland")
+
 namespace {
 
 // TODO: Deduplicate it. Those values are used in
@@ -219,7 +221,6 @@ void registryGlobal(void *data,
                     const char *interface,
                     uint32_t version)
 {
-    qDebug() << __PRETTY_FUNCTION__;
     WaylandInputMethodConnectionPrivate *d =
             static_cast<WaylandInputMethodConnectionPrivate *>(data);
 
@@ -231,7 +232,6 @@ void registryGlobalRemove(void *data,
                           wl_registry *registry,
                           uint32_t name)
 {
-    qDebug() << __PRETTY_FUNCTION__;
     WaylandInputMethodConnectionPrivate *d =
             static_cast<WaylandInputMethodConnectionPrivate *>(data);
 
@@ -284,7 +284,7 @@ void WaylandInputMethodConnectionPrivate::handleRegistryGlobal(uint32_t name,
 
 void WaylandInputMethodConnectionPrivate::handleRegistryGlobalRemove(uint32_t name)
 {
-    qDebug() << Q_FUNC_INFO << name;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << name;
 }
 
 Maliit::Wayland::InputMethodContext *WaylandInputMethodConnectionPrivate::context()
@@ -311,7 +311,7 @@ void WaylandInputMethodConnection::sendPreeditString(const QString &string,
 {
     Q_D(WaylandInputMethodConnection);
 
-    qDebug() << Q_FUNC_INFO << string << replace_start << replace_length << cursor_pos;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << string << replace_start << replace_length << cursor_pos;
 
     if (!d->context())
         return;
@@ -331,7 +331,7 @@ void WaylandInputMethodConnection::sendPreeditString(const QString &string,
         QtWayland::zwp_text_input_v1::preedit_style style = preeditStyleFromMaliit(format.preeditFace);
         uint32_t index = string.leftRef(format.start).toUtf8().size();
         uint32_t length = string.leftRef(format.start + format.length).toUtf8().size() - index;
-        qDebug() << Q_FUNC_INFO << "preedit_styling" << index << length;
+        qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_styling" << index << length;
         d->context()->preedit_styling(index, length, style);
     }
 
@@ -340,9 +340,9 @@ void WaylandInputMethodConnection::sendPreeditString(const QString &string,
         cursor_pos = string.size() + 1 - cursor_pos;
     }
 
-    qDebug() << Q_FUNC_INFO << "preedit_cursor" << string.leftRef(cursor_pos).toUtf8().size();
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_cursor" << string.leftRef(cursor_pos).toUtf8().size();
     d->context()->preedit_cursor(string.leftRef(cursor_pos).toUtf8().size());
-    qDebug() << Q_FUNC_INFO << "preedit_string" << string;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_string" << string;
     d->context()->preedit_string(d->context()->serial(), string, string);
 }
 
@@ -354,7 +354,7 @@ void WaylandInputMethodConnection::sendCommitString(const QString &string,
 {
     Q_D(WaylandInputMethodConnection);
 
-    qDebug() << Q_FUNC_INFO << string << replace_start << replace_length << cursor_pos;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << string << replace_start << replace_length << cursor_pos;
 
     if (!d->context())
         return;
@@ -362,7 +362,7 @@ void WaylandInputMethodConnection::sendCommitString(const QString &string,
     MInputContextConnection::sendCommitString(string, replace_start, replace_length, cursor_pos);
 
     if (cursor_pos != 0) {
-        qWarning() << Q_FUNC_INFO << "cursor_pos:" << cursor_pos << "!= 0 not supported yet";
+        qCWarning(lcWaylandConnection) << Q_FUNC_INFO << "cursor_pos:" << cursor_pos << "!= 0 not supported yet";
         cursor_pos = 0;
     }
 
@@ -383,7 +383,7 @@ void WaylandInputMethodConnection::sendKeyEvent(const QKeyEvent &keyEvent,
 {
     Q_D(WaylandInputMethodConnection);
 
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     if (!d->context())
         return;
@@ -391,7 +391,7 @@ void WaylandInputMethodConnection::sendKeyEvent(const QKeyEvent &keyEvent,
     xkb_keysym_t sym(keyFromQt(keyEvent.key()));
 
     if (sym == XKB_KEY_NoSymbol) {
-        qWarning() << "No conversion from Qt::Key:" << keyEvent.key() << "to XKB key. Update the keyFromQt() function.";
+        qCWarning(lcWaylandConnection) << "No conversion from Qt::Key:" << keyEvent.key() << "to XKB key. Update the keyFromQt() function.";
         return;
     }
 
@@ -407,7 +407,7 @@ void WaylandInputMethodConnection::sendKeyEvent(const QKeyEvent &keyEvent,
         break;
 
     default:
-        qWarning() << "Unknown QKeyEvent type:" << keyEvent.type();
+        qCWarning(lcWaylandConnection) << "Unknown QKeyEvent type:" << keyEvent.type();
         return;
     }
 
@@ -424,7 +424,7 @@ QString WaylandInputMethodConnection::selection(bool &valid)
 {
     Q_D(WaylandInputMethodConnection);
 
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     Maliit::Wayland::InputMethodContext *context = d->input_method->context();
 
@@ -436,7 +436,7 @@ void WaylandInputMethodConnection::setLanguage(const QString &language)
 {
     Q_D(WaylandInputMethodConnection);
 
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     if (!d->context())
         return;
@@ -448,7 +448,7 @@ void WaylandInputMethodConnection::setSelection(int start, int length)
 {
     Q_D (WaylandInputMethodConnection);
 
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     if (!d->context())
         return;
@@ -469,6 +469,7 @@ InputMethod::InputMethod(MInputContextConnection *connection, struct wl_registry
     , m_connection(connection)
     , m_context()
 {
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 }
 
 InputMethod::~InputMethod()
@@ -482,7 +483,7 @@ InputMethodContext *InputMethod::context() const
 
 void InputMethod::zwp_input_method_v1_activate(struct ::zwp_input_method_context_v1 *id)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_context.reset(new InputMethodContext(m_connection, id));
 
@@ -492,7 +493,7 @@ void InputMethod::zwp_input_method_v1_activate(struct ::zwp_input_method_context
 
 void InputMethod::zwp_input_method_v1_deactivate(struct zwp_input_method_context_v1 *)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_context.reset();
 
@@ -506,7 +507,7 @@ InputMethodContext::InputMethodContext(MInputContextConnection *connection, stru
     , m_serial(0)
     , m_selection()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_stateInfo[FocusStateAttribute] = true;
     m_connection->activateContext(wayland_connection_id);
@@ -515,7 +516,7 @@ InputMethodContext::InputMethodContext(MInputContextConnection *connection, stru
 
 InputMethodContext::~InputMethodContext()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_stateInfo.clear();
     m_stateInfo[FocusStateAttribute] = false;
@@ -535,7 +536,7 @@ uint32_t InputMethodContext::serial() const
 
 void InputMethodContext::zwp_input_method_context_v1_commit_state(uint32_t serial)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_serial = serial;
     m_connection->updateWidgetInformation(wayland_connection_id, m_stateInfo, false);
@@ -543,7 +544,7 @@ void InputMethodContext::zwp_input_method_context_v1_commit_state(uint32_t seria
 
 void InputMethodContext::zwp_input_method_context_v1_content_type(uint32_t hint, uint32_t purpose)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_stateInfo[ContentTypeAttribute] = contentTypeFromWayland(purpose);
     m_stateInfo[AutoCapitalizationAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_capitalization);
@@ -554,24 +555,24 @@ void InputMethodContext::zwp_input_method_context_v1_content_type(uint32_t hint,
 
 void InputMethodContext::zwp_input_method_context_v1_invoke_action(uint32_t button, uint32_t index)
 {
-    qDebug() << Q_FUNC_INFO << button << index;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << button << index;
 }
 
 void InputMethodContext::zwp_input_method_context_v1_preferred_language(const QString &language)
 {
-    qDebug() << Q_FUNC_INFO << language;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << language;
 }
 
 void InputMethodContext::zwp_input_method_context_v1_reset()
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_connection->reset(wayland_connection_id);
 }
 
 void InputMethodContext::zwp_input_method_context_v1_surrounding_text(const QString &text, uint32_t cursor, uint32_t anchor)
 {
-    qDebug() << Q_FUNC_INFO;
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     const QByteArray &utf8_text(text.toUtf8());
 
