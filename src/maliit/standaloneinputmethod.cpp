@@ -22,6 +22,7 @@
 
 #include <maliit/plugins/updateevent.h>
 #include <common/maliit/namespaceinternal.h>
+#include <QtGui/QGuiApplication>
 
 namespace Maliit
 {
@@ -128,7 +129,13 @@ void StandaloneInputMethod::handleWidgetStateChanged(unsigned int,
 
 std::unique_ptr<MInputContextConnection> createConnection()
 {
-    return std::unique_ptr<MInputContextConnection>(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
+#ifdef HAVE_WAYLAND
+    if (QGuiApplication::platformName().startsWith("wayland")) {
+        return std::unique_ptr<MInputContextConnection>(Maliit::createWestonIMProtocolConnection());
+    } else
+#endif
+        return std::unique_ptr<MInputContextConnection>(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
+
 }
 
 
