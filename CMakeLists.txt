@@ -46,6 +46,7 @@ if(enable-wayland)
     find_package(WaylandProtocols REQUIRED PRIVATE)
     find_package(QtWaylandScanner REQUIRED)
     find_package(Wayland REQUIRED)
+    find_package(Qt5WaylandClient REQUIRED PRIVATE)
 endif()
 
 include_directories(src common)
@@ -291,6 +292,19 @@ if(enable-qt5-inputcontext)
     target_link_libraries(maliitplatforminputcontextplugin maliit-connection Qt5::Quick)
 endif()
 
+if(enable-wayland)
+    set(INPUT_PANEL_SHELL_SOURCES
+            src/qt/plugins/shellintegration/inputpanelshellplugin.cpp
+            src/qt/plugins/shellintegration/qwaylandinputpanelshellintegration.cpp
+            src/qt/plugins/shellintegration/qwaylandinputpanelshellintegration.h src/qt/plugins/shellintegration/qwaylandinputpanelsurface.cpp src/qt/plugins/shellintegration/qwaylandinputpanelsurface.h)
+
+    ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
+
+    add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
+    target_link_libraries(inputpanel-shell Qt5::WaylandClient)
+    target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS})
+endif()
+
 add_executable(maliit-exampleapp-plainqt
         examples/apps/plainqt/mainwindow.cpp
         examples/apps/plainqt/mainwindow.h
@@ -408,6 +422,11 @@ endif()
 
 if(enable-qt5-inputcontext)
     install(TARGETS maliitplatforminputcontextplugin LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/platforminputcontext)
+endif()
+
+if(enable-wayland)
+    install(TARGETS inputpanel-shell
+            LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/wayland-shell-integration)
 endif()
 
 if(enable-dbus-activation)
