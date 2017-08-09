@@ -29,6 +29,11 @@ if(NOT DEFINED QT5_MKSPECS_INSTALL_DIR)
             "Installation directory for Qt 5 mkspecs files [LIB_INSTALL_DIR/qt5/mkspecs]")
 endif()
 
+if(NOT DEFINED GTK3_PLUGINS_INSTALL_DIR)
+    set(GTK3_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/gtk-3.0/3.0.0" CACHE PATH
+            "Installation directory for Gtk+ 3 plugins [LIB_INSTALL_DIR/gtk-3.0/3.0.0]")
+endif()
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -47,6 +52,8 @@ if(enable-wayland)
     find_package(QtWaylandScanner REQUIRED)
     find_package(Wayland REQUIRED)
     find_package(Qt5WaylandClient REQUIRED PRIVATE)
+
+    find_package(Gtk3)
 endif()
 
 include_directories(src common)
@@ -303,6 +310,16 @@ if(enable-wayland)
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
     target_link_libraries(inputpanel-shell Qt5::WaylandClient)
     target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS})
+
+    if(TARGET Gtk3::Gtk)
+        add_library(im-wayland MODULE
+                src/gtk/plugins/im-module/gtkimcontextwayland.c
+                src/gtk/plugins/im-module/gtkimcontextwayland.h
+                src/gtk/plugins/im-module/imwayland.c)
+        ecm_add_wayland_client_protocol(IM_WAYLAND_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
+        target_sources(im-wayland PRIVATE ${IM_WAYLAND_SOURCES})
+        target_link_libraries(im-wayland Gtk3::Gtk)
+    endif()
 endif()
 
 add_executable(maliit-exampleapp-plainqt
@@ -427,6 +444,10 @@ endif()
 if(enable-wayland)
     install(TARGETS inputpanel-shell
             LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/wayland-shell-integration)
+    if(TARGET Gtk3::Gtk)
+        install(TARGETS im-wayland
+                LIBRARY DESTINATION ${GTK3_PLUGINS_INSTALL_DIR}/immodules)
+    endif()
 endif()
 
 if(enable-dbus-activation)
