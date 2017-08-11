@@ -19,6 +19,7 @@
 
 #include "wayland-text-input-unstable-v1-client-protocol.h"
 
+#include <gdk/gdk.h>
 #include "gdk/gdkwayland.h"
 
 #include <xkbcommon/xkbcommon.h>
@@ -541,6 +542,48 @@ gtk_im_context_wayland_set_use_preedit (GtkIMContext *context,
 {
 }
 
+static gboolean
+gtk_im_context_wayland_filter_keypress (GtkIMContext *context,
+                                        GdkEventKey  *event)
+{
+  GtkIMContextWayland *self;
+  GtkIMContextWaylandPrivate *priv;
+  GdkDisplay *display;
+  GdkModifierType no_text_input_mask;
+
+  g_return_val_if_fail (GTK_IS_IM_CONTEXT_WAYLAND(context), FALSE);
+  g_return_val_if_fail (event, FALSE);
+
+  self = GTK_IM_CONTEXT_WAYLAND (context);
+  priv = self->priv;
+
+  display = gdk_window_get_display (event->window);
+
+  no_text_input_mask = gdk_keymap_get_modifier_mask (gdk_keymap_get_for_display (display),
+                                                     GDK_MODIFIER_INTENT_NO_TEXT_INPUT);
+
+  if (event->type == GDK_KEY_PRESS &&
+      (event->state & no_text_input_mask) == 0)
+  {
+    gunichar ch;
+
+    ch = gdk_keyval_to_unicode (event->keyval);
+    if (ch != 0 && !g_unichar_iscntrl (ch)) {
+      char utf8[10];
+      int len;
+
+      len = g_unichar_to_utf8(ch, utf8);
+      utf8[len] = '\0';
+
+      commit_and_reset_preedit(self);
+      g_signal_emit_by_name(self, "commit", utf8);
+      return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+
 static void
 gtk_im_context_wayland_init (GtkIMContextWayland *self)
 {
@@ -581,6 +624,7 @@ gtk_im_context_wayland_class_init (GtkIMContextWaylandClass *klass)
   im_context_class->reset = gtk_im_context_wayland_reset;
   im_context_class->set_cursor_location = gtk_im_context_wayland_set_cursor_location;
   im_context_class->set_use_preedit = gtk_im_context_wayland_set_use_preedit;
+  im_context_class->filter_keypress = gtk_im_context_wayland_filter_keypress;
 
   object_class->finalize = gtk_im_context_wayland_finalize;
 
