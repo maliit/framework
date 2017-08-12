@@ -344,7 +344,45 @@ text_input_keysym (void                     *data,
                    uint32_t                  state,
                    uint32_t                  modifiers)
 {
-  /* We call wl_keyboard.key directly for this in the compositor.  */
+  GtkIMContextWayland *self = GTK_IM_CONTEXT_WAYLAND (data);
+  GtkIMContextWaylandPrivate *priv = self->priv;
+  GdkDisplay *display;
+  GdkSeat *seat;
+  GdkEvent *event;
+  struct timespec ts;
+  GdkKeymapKey* keys;
+  gint n_keys;
+
+  display = gdk_display_get_default();
+  seat = gdk_display_get_default_seat (display);
+
+  reset_preedit(self);
+
+  if (sym == XKB_KEY_NoSymbol)
+    return;
+
+  event = gdk_event_new (state ? GDK_KEY_PRESS : GDK_KEY_RELEASE);
+  event->key.window = priv->window ? g_object_ref (priv->window) : NULL;
+  event->key.send_event = FALSE;
+
+  event->key.time = time;
+  event->key.state = 0; // TODO add support for modifiers
+  event->key.keyval = sym;
+
+  if (event->key.keyval != 0 &&
+      gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(),
+                                        event->key.keyval, &keys, &n_keys)) {
+    event->key.hardware_keycode = keys[0].keycode;
+    event->key.group = keys[0].group;
+    g_free(keys);
+  }
+
+  event->key.is_modifier = FALSE;
+  gdk_event_set_device(event, gdk_seat_get_keyboard(seat));
+  gdk_event_set_source_device(event, gdk_seat_get_keyboard(seat));
+
+  gdk_event_put(event);
+  gdk_event_free(event);
 }
 
 static void
