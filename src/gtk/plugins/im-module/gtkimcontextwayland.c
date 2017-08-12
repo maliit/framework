@@ -288,7 +288,6 @@ text_input_preedit_styling (void                     *data,
   switch (style)
     {
     case ZWP_TEXT_INPUT_V1_PREEDIT_STYLE_DEFAULT:
-      break;
     case ZWP_TEXT_INPUT_V1_PREEDIT_STYLE_UNDERLINE:
       attr = pango_attr_underline_new (PANGO_UNDERLINE_SINGLE);
       break;
