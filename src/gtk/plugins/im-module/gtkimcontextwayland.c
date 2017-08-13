@@ -135,12 +135,67 @@ check_serial (GtkIMContextWayland *self,
   return priv->serial - serial > priv->serial - priv->reset_serial;
 }
 
+static uint32_t
+to_wayland_hints(GtkInputHints hints, GtkInputPurpose purpose) {
+    uint32_t wl_hints = ZWP_TEXT_INPUT_V1_CONTENT_HINT_NONE;
+
+    if (hints & GTK_INPUT_HINT_SPELLCHECK)
+        wl_hints |= ZWP_TEXT_INPUT_V1_CONTENT_HINT_AUTO_CORRECTION;
+    if (hints & GTK_INPUT_HINT_NO_SPELLCHECK)
+        wl_hints &= ~ZWP_TEXT_INPUT_V1_CONTENT_HINT_AUTO_CORRECTION;
+    if (hints & GTK_INPUT_HINT_WORD_COMPLETION)
+        wl_hints |= ZWP_TEXT_INPUT_V1_CONTENT_HINT_AUTO_COMPLETION;
+    if (hints & GTK_INPUT_HINT_LOWERCASE)
+        wl_hints |= ZWP_TEXT_INPUT_V1_CONTENT_HINT_LOWERCASE;
+    if (hints & GTK_INPUT_HINT_UPPERCASE_CHARS)
+        wl_hints |= ZWP_TEXT_INPUT_V1_CONTENT_HINT_UPPERCASE;
+    if (hints & GTK_INPUT_HINT_UPPERCASE_WORDS)
+        wl_hints |= ZWP_TEXT_INPUT_V1_CONTENT_HINT_TITLECASE;
+    if (hints & GTK_INPUT_HINT_UPPERCASE_SENTENCES)
+        wl_hints |= ZWP_TEXT_INPUT_V1_CONTENT_HINT_AUTO_CAPITALIZATION;
+
+    if (purpose == GTK_INPUT_PURPOSE_PASSWORD ||
+        purpose == GTK_INPUT_PURPOSE_PIN) {
+        wl_hints |= ZWP_TEXT_INPUT_V1_CONTENT_HINT_PASSWORD;
+    }
+
+    return wl_hints;
+}
+
+static uint32_t
+to_wayland_purpose(GtkInputPurpose purpose) {
+    switch (purpose) {
+        case GTK_INPUT_PURPOSE_FREE_FORM:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_NORMAL;
+        case GTK_INPUT_PURPOSE_ALPHA:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_ALPHA;
+        case GTK_INPUT_PURPOSE_DIGITS:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_DIGITS;
+        case GTK_INPUT_PURPOSE_NUMBER:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_NUMBER;
+        case GTK_INPUT_PURPOSE_PHONE:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_PHONE;
+        case GTK_INPUT_PURPOSE_URL:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_URL;
+        case GTK_INPUT_PURPOSE_EMAIL:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_EMAIL;
+        case GTK_INPUT_PURPOSE_NAME:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_NAME;
+        case GTK_INPUT_PURPOSE_PASSWORD:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_PASSWORD;
+        case GTK_INPUT_PURPOSE_PIN:
+            return ZWP_TEXT_INPUT_V1_CONTENT_PURPOSE_DIGITS;
+    }
+}
+
 static void
 update_text_input_state (GtkIMContextWayland *self)
 {
   GtkIMContextWaylandPrivate *priv = self->priv;
   char *surrounding = NULL;
   int cursor;
+  GtkInputHints hints;
+  GtkInputPurpose purpose;
 
   zwp_text_input_v1_set_cursor_rectangle (priv->text_input,
                                           priv->cursor_rectangle.x,
@@ -159,6 +214,15 @@ update_text_input_state (GtkIMContextWayland *self)
 
       g_free (surrounding);
     }
+
+  g_object_get (self,
+                "input-hints", &hints,
+                "input-purpose", &purpose,
+                NULL);
+
+  zwp_text_input_v1_set_content_type(priv->text_input,
+                                     to_wayland_hints(hints, purpose),
+                                     to_wayland_purpose(purpose));
 
   priv->serial += 1;
   zwp_text_input_v1_commit_state (priv->text_input, priv->serial);
