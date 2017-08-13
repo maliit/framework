@@ -247,6 +247,7 @@ text_input_commit_string (void                     *data,
     }
 
   reset_preedit (self);
+  g_clear_pointer (&priv->preedit_commit, (GDestroyNotify) g_free);
 
   if (priv->pending_delete_length)
     {
@@ -420,6 +421,7 @@ text_input_keysym (void                     *data,
   seat = gdk_display_get_default_seat (display);
 
   reset_preedit(self);
+  g_clear_pointer (&priv->preedit_commit, (GDestroyNotify) g_free);
 
   if (sym == XKB_KEY_NoSymbol)
     return;
@@ -579,8 +581,7 @@ commit_and_reset_preedit (GtkIMContextWayland *self)
   if (priv->preedit_commit && priv->preedit_commit[0] != '\0')
     g_signal_emit_by_name (self, "commit", priv->preedit_commit);
 
-  g_free (priv->preedit_commit);
-  priv->preedit_commit = NULL;
+  g_clear_pointer (&priv->preedit_commit, (GDestroyNotify) g_free);
 }
 
 static void
