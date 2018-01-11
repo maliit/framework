@@ -188,6 +188,8 @@ to_wayland_purpose(GtkInputPurpose purpose) {
     }
 }
 
+
+
 static void
 update_text_input_state (GtkIMContextWayland *self)
 {
@@ -553,6 +555,7 @@ gtk_im_context_wayland_focus_in (GtkIMContext *context)
   GdkDisplay *display;
   GdkSeat *seat;
   struct wl_surface *surface;
+  GtkInputHints hints;
 
   g_return_if_fail (GDK_IS_WAYLAND_WINDOW (priv->window));
   g_return_if_fail (priv->text_input);
@@ -562,13 +565,20 @@ gtk_im_context_wayland_focus_in (GtkIMContext *context)
   if (!surface)
       return;
 
-  display = gdk_display_get_default ();
-  seat = gdk_display_get_default_seat (display);
 
-  zwp_text_input_v1_show_input_panel (priv->text_input);
-  zwp_text_input_v1_activate (priv->text_input,
-                              gdk_wayland_seat_get_wl_seat (seat),
-                              surface);
+  // pull hints to see if we should skip the OSK
+  g_object_get (self,
+                "input-hints", &hints,
+                NULL);
+  
+  if (! (hints & GTK_INPUT_HINT_INHIBIT_OSK)) {
+    display = gdk_display_get_default ();
+    seat = gdk_display_get_default_seat (display);
+    zwp_text_input_v1_show_input_panel (priv->text_input);
+    zwp_text_input_v1_activate (priv->text_input,
+                                gdk_wayland_seat_get_wl_seat (seat),
+                                surface);
+  }
 }
 
 static void
@@ -591,17 +601,25 @@ gtk_im_context_wayland_focus_out (GtkIMContext *context)
   GtkIMContextWaylandPrivate *priv = self->priv;
   GdkDisplay *display;
   GdkSeat *seat;
+  GtkInputHints hints;
 
   g_return_if_fail (GDK_IS_WAYLAND_WINDOW (priv->window));
   g_return_if_fail (self->priv->text_input);
 
-  display = gdk_display_get_default ();
-  seat = gdk_display_get_default_seat (display);
+  // pull hints to see if we skipped the OSK on the way up
+  g_object_get (self,
+                "input-hints", &hints,
+                NULL);
 
-  commit_and_reset_preedit (self);
+  if (! (hints & GTK_INPUT_HINT_INHIBIT_OSK)) {
+    display = gdk_display_get_default ();
+    seat = gdk_display_get_default_seat (display);
 
-  zwp_text_input_v1_deactivate (priv->text_input,
-                                gdk_wayland_seat_get_wl_seat (seat));
+    commit_and_reset_preedit (self);
+
+    zwp_text_input_v1_deactivate (priv->text_input,
+                                  gdk_wayland_seat_get_wl_seat (seat));
+  }
 }
 
 static void
