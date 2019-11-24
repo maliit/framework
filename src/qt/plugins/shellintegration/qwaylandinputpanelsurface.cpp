@@ -33,12 +33,9 @@ QWaylandInputPanelSurface::~QWaylandInputPanelSurface()
     qCDebug(qLcQpaShellIntegration) << Q_FUNC_INFO;
 }
 
-void QWaylandInputPanelSurface::setType(Qt::WindowType type, QWaylandWindow *transientParent)
+void QWaylandInputPanelSurface::applyConfigure()
 {
-    Q_UNUSED(type)
-    Q_UNUSED(transientParent)
-
-    set_toplevel(window()->screen()->output(), position_center_bottom);
+    set_toplevel(window()->waylandScreen()->output(), position_center_bottom);
 }
 
 }

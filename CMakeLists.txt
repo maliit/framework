@@ -11,6 +11,7 @@ option(enable-glib "Build GLib support" ON)
 
 option(enable-xcb "Compile with xcb support" ON)
 option(enable-wayland "Compile with support for wayland" ON)
+option(enable-wayland-gtk "Compile with support for wayland gtk+" OFF)
 option(enable-qt5-inputcontext "Compile with Qt5 input context" ON)
 
 option(enable-hwkeyboard "Enable support for the hardware keyboard" ON)
@@ -51,7 +52,8 @@ if(enable-wayland)
     find_package(WaylandProtocols REQUIRED PRIVATE)
     find_package(QtWaylandScanner REQUIRED)
     find_package(Wayland REQUIRED)
-    find_package(Qt5WaylandClient REQUIRED PRIVATE)
+    find_package(Qt5WaylandClient 5.14 REQUIRED PRIVATE)
+    find_package(Qt5XkbCommonSupport REQUIRED PRIVATE)
 
     find_package(Gtk3)
 endif()
@@ -309,9 +311,9 @@ if(enable-wayland)
 
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
     target_link_libraries(inputpanel-shell Qt5::WaylandClient)
-    target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS})
+    target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt5XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
 
-    if(TARGET Gtk3::Gtk)
+    if(enable-wayland-gtk AND TARGET Gtk3::Gtk)
         add_library(im-wayland MODULE
                 src/gtk/plugins/im-module/gtkimcontextwayland.c
                 src/gtk/plugins/im-module/gtkimcontextwayland.h
@@ -444,7 +446,7 @@ endif()
 if(enable-wayland)
     install(TARGETS inputpanel-shell
             LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/wayland-shell-integration)
-    if(TARGET Gtk3::Gtk)
+    if(enable-wayland-gtk AND TARGET Gtk3::Gtk)
         install(TARGETS im-wayland
                 LIBRARY DESTINATION ${GTK3_PLUGINS_INSTALL_DIR}/immodules)
     endif()
@@ -564,6 +566,6 @@ if(enable-tests)
 endif()
 
 add_custom_target(install_${PROJECT_NAME}
-        $(MAKE) install
+        ${CMAKE_MAKE_PROGRAM} install
         DEPENDS maliit-server
         COMMENT "Installing ${PROJECT_NAME}")

@@ -44,7 +44,7 @@ bool QWaylandInputPanelShellIntegration::initialize(QWaylandDisplay *display)
 QWaylandShellSurface *
 QWaylandInputPanelShellIntegration::createShellSurface(QWaylandWindow *window)
 {
-    struct zwp_input_panel_surface_v1 *ip_surface = m_panel->get_input_panel_surface(window->object());
+    struct zwp_input_panel_surface_v1 *ip_surface = m_panel->get_input_panel_surface(window->wlSurface());
 
     return new QWaylandInputPanelSurface(ip_surface, window);
 }

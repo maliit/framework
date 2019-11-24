@@ -29,7 +29,7 @@ public:
     QWaylandInputPanelSurface(struct ::zwp_input_panel_surface_v1 *object, QWaylandWindow *window);
     ~QWaylandInputPanelSurface() override;
 
-    void setType(Qt::WindowType type, QWaylandWindow *transientParent) override;
+    void applyConfigure() override;
 };
 
 }
