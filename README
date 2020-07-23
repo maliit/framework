@@ -14,7 +14,9 @@ Installing
 
 Qt5 must be installed to build the Maliit framework. At a terminal, run:
 
-qmake
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 make
 make install
 
