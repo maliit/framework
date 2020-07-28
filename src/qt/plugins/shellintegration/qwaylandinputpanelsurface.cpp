@@ -26,6 +26,7 @@ QWaylandInputPanelSurface::QWaylandInputPanelSurface(struct ::zwp_input_panel_su
     , QtWayland::zwp_input_panel_surface_v1(object)
 {
     qCDebug(qLcQpaShellIntegration) << Q_FUNC_INFO;
+    window->applyConfigureWhenPossible();
 }
 
 QWaylandInputPanelSurface::~QWaylandInputPanelSurface()
