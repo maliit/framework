@@ -59,30 +59,9 @@
 # Since 1.4.0.
 
 #=============================================================================
-# Copyright 2012-2014 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
+# SPDX-FileCopyrightText: 2012-2014 Pier Luigi Fiorini <pierluigi.fiorini@gmail.com>
 #
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-# 1. Redistributions of source code must retain the copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
-# 3. The name of the author may not be used to endorse or promote products
-#    derived from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-# IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# SPDX-License-Identifier: BSD-3-Clause
 #=============================================================================
 
 include(${CMAKE_CURRENT_LIST_DIR}/ECMFindModuleHelpers.cmake)
@@ -111,7 +90,7 @@ endif()
 
 include(FeatureSummary)
 set_package_properties(QtWaylandScanner PROPERTIES
-    URL "http://qt.io"
+    URL "https://qt.io/"
     DESCRIPTION "Executable that converts XML protocol files to C++ code"
 )
 
@@ -135,6 +114,7 @@ function(ecm_add_qtwayland_client_protocol out_var)
                                     BASENAME ${ARGS_BASENAME})
 
     get_filename_component(_infile ${ARGS_PROTOCOL} ABSOLUTE)
+    set(_ccode "${CMAKE_CURRENT_BINARY_DIR}/wayland-${ARGS_BASENAME}-client-protocol.c")
     set(_cheader "${CMAKE_CURRENT_BINARY_DIR}/wayland-${ARGS_BASENAME}-client-protocol.h")
     set(_header "${CMAKE_CURRENT_BINARY_DIR}/qwayland-${ARGS_BASENAME}.h")
     set(_code "${CMAKE_CURRENT_BINARY_DIR}/qwayland-${ARGS_BASENAME}.cpp")
@@ -148,6 +128,8 @@ function(ecm_add_qtwayland_client_protocol out_var)
     add_custom_command(OUTPUT "${_code}"
         COMMAND ${QtWaylandScanner_EXECUTABLE} client-code ${_infile} "" ${_prefix} > ${_code}
         DEPENDS ${_infile} ${_header} VERBATIM)
+
+    set_property(SOURCE ${_header} ${_code} ${_cheader} ${_ccode} PROPERTY SKIP_AUTOMOC ON)
 
     list(APPEND ${out_var} "${_code}")
     set(${out_var} ${${out_var}} PARENT_SCOPE)
@@ -183,6 +165,8 @@ function(ecm_add_qtwayland_server_protocol out_var)
     add_custom_command(OUTPUT "${_code}"
         COMMAND ${QtWaylandScanner_EXECUTABLE} server-code ${_infile} "" ${_prefix} > ${_code}
         DEPENDS ${_infile} ${_header} VERBATIM)
+
+    set_property(SOURCE ${_header} ${_code} PROPERTY SKIP_AUTOMOC ON)
 
     list(APPEND ${out_var} "${_code}")
     set(${out_var} ${${out_var}} PARENT_SCOPE)
