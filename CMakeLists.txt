@@ -207,9 +207,8 @@ if(enable-hwkeyboard)
     list(APPEND PLUGINS_SOURCES
          src/mimhwkeyboardtracker.cpp
          src/mimhwkeyboardtracker_p.h)
-    find_package(udev REQUIRED)
-    list(APPEND PLUGINS_INCLUDE_DIRS ${UDEV_INCLUDE_DIRS})
-    list(APPEND PLUGINS_LIBRARIES ${UDEV_LIBRARIES})
+    find_package(UDev REQUIRED)
+    list(APPEND PLUGINS_LIBRARIES UDev::UDev)
 else()
     list(APPEND PLUGINS_SOURCES src/mimhwkeyboardtracker_stub.cpp)
 endif()
