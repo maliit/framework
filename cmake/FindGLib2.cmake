@@ -51,6 +51,7 @@ function(GLIB2_ADD_MARSHAL _sources _marshallist)
             COMMAND ${GLIB2_GENMARHSAL_EXECUTABLE} --body ${_params} ${_infile} > ${_body}
             DEPENDS ${_infile} VERBATIM)
 
+    set_property(SOURCE ${_body} ${_header} PROPERTY SKIP_AUTOMOC ON)
     list(APPEND ${_sources} "${_body}" "${_header}")
     set(${_sources} ${${_sources}} PARENT_SCOPE)
 endfunction()
