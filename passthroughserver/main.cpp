@@ -87,7 +87,8 @@ void outputMessagesToStdErr(QtMsgType type,
 QSharedPointer<MInputContextConnection> createConnection(const MImServerConnectionOptions &options)
 {
 #ifdef HAVE_WAYLAND
-    if (QGuiApplication::platformName().startsWith("wayland")) {
+    auto forceDbus = qgetenv("MALIIT_FORCE_DBUS_CONNECTION");
+    if (QGuiApplication::platformName().startsWith("wayland") && (forceDbus.isEmpty() || forceDbus == "0")) {
         return QSharedPointer<MInputContextConnection>(Maliit::createWestonIMProtocolConnection());
     } else
 #endif
