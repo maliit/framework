@@ -60,6 +60,7 @@ function(GDBUS_ADD_CODE _sources _interface)
             COMMAND ${GDBUS_CODEGEN_EXECUTABLE} ${_params} --generate-c-code ${_output} ${_infile}
             DEPENDS ${_infile} VERBATIM)
 
+    set_property(SOURCE "${_output}.c" "${_output}.h" PROPERTY SKIP_AUTOMOC ON)
     list(APPEND ${_sources} "${_output}.c" "${_output}.h")
     set(${_sources} ${${_sources}} PARENT_SCOPE)
 endfunction()
