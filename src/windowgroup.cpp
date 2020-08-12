@@ -105,9 +105,10 @@ void WindowGroup::setInputMethodArea(const QRegion &region, QWindow *window)
         }
     }
 
-    if (m_active) {
-        updateInputMethodArea();
-    }
+    // We should update the input method area regardless of whether we're still
+    // active or not, as keyboard hiding animations could be changing this
+    // region after we've deactivated
+    updateInputMethodArea();
 }
 
 void WindowGroup::setApplicationWindow(WId id)
