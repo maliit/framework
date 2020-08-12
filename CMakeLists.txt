@@ -439,7 +439,7 @@ if(enable-glib)
 endif()
 
 if(enable-qt5-inputcontext)
-    install(TARGETS maliitplatforminputcontextplugin LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/platforminputcontext)
+    install(TARGETS maliitplatforminputcontextplugin LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/platforminputcontexts)
 endif()
 
 if(enable-wayland)
