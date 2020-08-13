@@ -4,7 +4,9 @@
 CHANGES SINCE 0.99.1
 * Use cmake instad of qmake as the buildsystem.
 
-*0.99.1
+* Some bugs fixed
+
+0.99.1
 ======
 
 CHANGES SINCE 0.99.0
