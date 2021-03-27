@@ -55,7 +55,6 @@ if(enable-wayland)
     find_package(Qt5WaylandClient 5.14 REQUIRED PRIVATE)
     find_package(Qt5XkbCommonSupport REQUIRED PRIVATE)
     pkg_check_modules(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
-    pkg_check_modules(WAYLANDCLIENT REQUIRED IMPORTED_TARGET wayland-client)
     find_package(Gtk3)
 endif()
 
@@ -310,7 +309,7 @@ if(enable-wayland)
     ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
 
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
-    target_link_libraries(inputpanel-shell Qt5::WaylandClient PkgConfig::XKBCOMMON PkgConfig::WAYLANDCLIENT)
+    target_link_libraries(inputpanel-shell Qt5::WaylandClient PkgConfig::XKBCOMMON Wayland::Client)
     target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt5XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
 
     if(enable-wayland-gtk AND TARGET Gtk3::Gtk)
