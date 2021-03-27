@@ -54,8 +54,8 @@ if(enable-wayland)
     find_package(Wayland REQUIRED)
     find_package(Qt5WaylandClient 5.14 REQUIRED PRIVATE)
     find_package(Qt5XkbCommonSupport REQUIRED PRIVATE)
-    pkg_check_modules(XKBCOMMON REQUIRED xkbcommon)
-    pkg_check_modules(WAYLANDCLIENT REQUIRED wayland-client)
+    pkg_check_modules(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
+    pkg_check_modules(WAYLANDCLIENT REQUIRED IMPORTED_TARGET wayland-client)
     find_package(Gtk3)
 endif()
 
@@ -110,9 +110,9 @@ qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1int
 add_library(maliit-connection STATIC ${CONNECTION_SOURCES})
 target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui maliit-common)
 if(enable-wayland)
-    target_link_libraries(maliit-connection Wayland::Client)
+    target_link_libraries(maliit-connection Wayland::Client PkgConfig::XKBCOMMON)
 endif()
-target_include_directories(maliit-connection PUBLIC connection ${XKBCOMMON_INCLUDEDIR})
+target_include_directories(maliit-connection PUBLIC connection)
 
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
 
@@ -310,9 +310,8 @@ if(enable-wayland)
     ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
 
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
-    target_link_libraries(inputpanel-shell Qt5::WaylandClient)
+    target_link_libraries(inputpanel-shell Qt5::WaylandClient PkgConfig::XKBCOMMON PkgConfig::WAYLANDCLIENT)
     target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt5XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
-    target_include_directories(inputpanel-shell PUBLIC ${WAYLANDCLIENT_INCLUDE_DIRS} ${XKBCOMMON_INCLUDEDIR})
 
     if(enable-wayland-gtk AND TARGET Gtk3::Gtk)
         add_library(im-wayland MODULE
