@@ -54,7 +54,8 @@ if(enable-wayland)
     find_package(Wayland REQUIRED)
     find_package(Qt5WaylandClient 5.14 REQUIRED PRIVATE)
     find_package(Qt5XkbCommonSupport REQUIRED PRIVATE)
-
+    pkg_check_modules(XKBCOMMON REQUIRED xkbcommon)
+    pkg_check_modules(WAYLANDCLIENT REQUIRED wayland-client)
     find_package(Gtk3)
 endif()
 
@@ -111,7 +112,7 @@ target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui maliit-comm
 if(enable-wayland)
     target_link_libraries(maliit-connection Wayland::Client)
 endif()
-target_include_directories(maliit-connection PUBLIC connection)
+target_include_directories(maliit-connection PUBLIC connection ${XKBCOMMON_INCLUDEDIR})
 
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
 
@@ -311,6 +312,7 @@ if(enable-wayland)
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
     target_link_libraries(inputpanel-shell Qt5::WaylandClient)
     target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt5XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
+    target_include_directories(inputpanel-shell PUBLIC ${WAYLANDCLIENT_INCLUDE_DIRS} ${XKBCOMMON_INCLUDEDIR})
 
     if(enable-wayland-gtk AND TARGET Gtk3::Gtk)
         add_library(im-wayland MODULE
