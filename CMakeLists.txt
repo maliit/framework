@@ -6,6 +6,7 @@ project(maliit-framework VERSION 2.0.0)
 
 option(enable-docs "Build documentation" ON)
 option(enable-tests "Build tests" ON)
+option(enable-examples "Build examples" ON)
 
 option(enable-glib "Build GLib support" ON)
 
@@ -46,7 +47,6 @@ find_package(Qt5Core)
 find_package(Qt5DBus)
 find_package(Qt5Gui REQUIRED PRIVATE)
 find_package(Qt5Quick)
-find_package(Qt5Widgets)
 
 if(enable-wayland)
     find_package(WaylandProtocols REQUIRED PRIVATE)
@@ -323,28 +323,31 @@ if(enable-wayland)
     endif()
 endif()
 
-add_executable(maliit-exampleapp-plainqt
-        examples/apps/plainqt/mainwindow.cpp
-        examples/apps/plainqt/mainwindow.h
-        examples/apps/plainqt/plainqt.cpp)
-target_link_libraries(maliit-exampleapp-plainqt Qt5::Gui Qt5::Widgets)
+if(enable-examples)
+    find_package(Qt5Widgets)
+    add_executable(maliit-exampleapp-plainqt
+            examples/apps/plainqt/mainwindow.cpp
+            examples/apps/plainqt/mainwindow.h
+            examples/apps/plainqt/plainqt.cpp)
+    target_link_libraries(maliit-exampleapp-plainqt Qt5::Gui Qt5::Widgets)
 
-add_library(cxxhelloworldplugin MODULE
-        examples/plugins/cxx/helloworld/helloworldinputmethod.cpp
-        examples/plugins/cxx/helloworld/helloworldinputmethod.h
-        examples/plugins/cxx/helloworld/helloworldplugin.cpp
-        examples/plugins/cxx/helloworld/helloworldplugin.h)
-target_link_libraries(cxxhelloworldplugin maliit-plugins Qt5::Widgets)
+    add_library(cxxhelloworldplugin MODULE
+            examples/plugins/cxx/helloworld/helloworldinputmethod.cpp
+            examples/plugins/cxx/helloworld/helloworldinputmethod.h
+            examples/plugins/cxx/helloworld/helloworldplugin.cpp
+            examples/plugins/cxx/helloworld/helloworldplugin.h)
+    target_link_libraries(cxxhelloworldplugin maliit-plugins Qt5::Widgets)
 
-add_library(cxxoverrideplugin MODULE
-            examples/plugins/cxx/override/overrideinputmethod.cpp
-            examples/plugins/cxx/override/overrideinputmethod.h
-            examples/plugins/cxx/override/overrideplugin.cpp
-            examples/plugins/cxx/override/overrideplugin.h)
-target_link_libraries(cxxoverrideplugin maliit-plugins Qt5::Widgets)
+    add_library(cxxoverrideplugin MODULE
+                examples/plugins/cxx/override/overrideinputmethod.cpp
+                examples/plugins/cxx/override/overrideinputmethod.h
+                examples/plugins/cxx/override/overrideplugin.cpp
+                examples/plugins/cxx/override/overrideplugin.h)
+    target_link_libraries(cxxoverrideplugin maliit-plugins Qt5::Widgets)
 
-file(COPY examples/plugins/qml/helloworld/helloworld.qml
-     DESTINATION ${CMAKE_BINARY_DIR}/examples/plugins/qml/helloworld)
+    file(COPY examples/plugins/qml/helloworld/helloworld.qml
+        DESTINATION ${CMAKE_BINARY_DIR}/examples/plugins/qml/helloworld)
+endif()
 
 # Documentation
 
@@ -385,8 +388,13 @@ install(TARGETS maliit-plugins
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2)
 
-install(TARGETS maliit-server maliit-exampleapp-plainqt
+install(TARGETS maliit-server
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+if(enable-examples)
+    install(TARGETS maliit-exampleapp-plainqt
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 
 install(DIRECTORY common/
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
