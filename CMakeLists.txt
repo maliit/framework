@@ -6,7 +6,7 @@ project(maliit-framework VERSION 2.0.0)
 
 option(enable-docs "Build documentation" ON)
 option(enable-tests "Build tests" ON)
-option(enable-examples "Build examples" ON)
+option(enable-examples "Build examples" OFF)
 
 option(enable-glib "Build GLib support" ON)
 
