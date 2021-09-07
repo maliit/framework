@@ -568,6 +568,7 @@ void InputMethodContext::zwp_input_method_context_v1_reset()
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_connection->reset(wayland_connection_id);
+    m_connection->showInputMethod(wayland_connection_id);
 }
 
 void InputMethodContext::zwp_input_method_context_v1_surrounding_text(const QString &text, uint32_t cursor, uint32_t anchor)
