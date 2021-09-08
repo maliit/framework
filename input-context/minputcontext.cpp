@@ -430,7 +430,7 @@ void MInputContext::imInitiatedHide()
 
     // remove focus on QtQuick2
     QQuickItem *inputItem = qobject_cast<QQuickItem*>(QGuiApplication::focusObject());
-    if (inputItem) {
+    if (inputItem && inputItem->flags().testFlag(QQuickItem::ItemAcceptsInputMethod)) {
         inputItem->setFocus(false);
     }
 
