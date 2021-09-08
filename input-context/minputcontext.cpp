@@ -301,6 +301,9 @@ void MInputContext::setFocusObject(QObject *focused)
     if (!active && currentFocusAcceptsInput) {
         imServer->activateContext();
         active = true;
+    }
+
+    if (currentFocusAcceptsInput) {
         updateServerOrientation(newFocusWindow->contentOrientation());
     }
 
