@@ -521,7 +521,7 @@ if(enable-tests)
     target_compile_definitions(test-utils PUBLIC
             -DMALIIT_TEST_PLUGINS_DIR="${CMAKE_INSTALL_PREFIX}/lib/maliit-framework-tests/plugins"
             -DMALIIT_TEST_DATA_PATH="${CMAKE_INSTALL_PREFIX}/lib/maliit-framework-tests"
-            -DIN_TREE_TEST_PLUGIN_DIR="${CMAKE_BINARY_DIR}/examples/plugins")
+            -DIN_TREE_TEST_PLUGIN_DIR="${CMAKE_SOURCE_DIR}/examples/plugins")
 
     add_library(test-stubs STATIC
             tests/stubs/mkeyboardstatetracker_stub.h
@@ -538,7 +538,6 @@ if(enable-tests)
         set(_libs ${ARGV})
         list(REMOVE_AT _libs 0)
         target_link_libraries(${name} test-utils maliit-plugins ${_libs})
-
         add_test(${name} ${name})
 
         set(test_targets ${test_targets} ${name} PARENT_SCOPE)
