@@ -92,7 +92,6 @@ if(enable-wayland)
          connection/waylandinputmethodconnection.h)
 
     ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
-    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
 
     add_definitions(-DHAVE_WAYLAND)
 endif()
@@ -110,6 +109,7 @@ add_library(maliit-connection STATIC ${CONNECTION_SOURCES})
 target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui maliit-common)
 if(enable-wayland)
     target_link_libraries(maliit-connection Wayland::Client PkgConfig::XKBCOMMON)
+    target_include_directories(maliit-connection PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS})
 endif()
 target_include_directories(maliit-connection PUBLIC connection)
 
