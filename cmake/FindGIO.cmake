@@ -40,8 +40,10 @@ function(GDBUS_ADD_CODE _sources _interface)
 
     get_source_file_property(_output_name ${_interface} OUTPUT_NAME)
     if(_output_name)
-        set(_output "${CMAKE_CURRENT_BINARY_DIR}/${_output_name}")
+        set(_output "${_output_name}")
     endif()
+    get_filename_component(_output_directory ${_output} DIRECTORY)
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_output_directory})
 
     get_source_file_property(_namespace ${_interface} NAMESPACE)
     if(_namespace)
@@ -53,14 +55,11 @@ function(GDBUS_ADD_CODE _sources _interface)
         set(_params ${_params} --annotate ${_annotate})
     endif()
 
-    get_filename_component(_output_directory ${_output} DIRECTORY)
-    file(MAKE_DIRECTORY ${_output_directory})
-
     add_custom_command(OUTPUT "${_output}.c" "${_output}.h"
             COMMAND ${GDBUS_CODEGEN_EXECUTABLE} ${_params} --generate-c-code ${_output} ${_infile}
             DEPENDS ${_infile} VERBATIM)
 
-    set_property(SOURCE "${_output}.c" "${_output}.h" PROPERTY SKIP_AUTOMOC ON)
-    list(APPEND ${_sources} "${_output}.c" "${_output}.h")
+    set_property(SOURCE "${CMAKE_CURRENT_BINARY_DIR}/${_output}.c" "${CMAKE_CURRENT_BINARY_DIR}/${_output}.h" PROPERTY SKIP_AUTOMOC ON)
+    list(APPEND ${_sources} "${CMAKE_CURRENT_BINARY_DIR}/${_output}.c" "${CMAKE_CURRENT_BINARY_DIR}/${_output}.h")
     set(${_sources} ${${_sources}} PARENT_SCOPE)
 endfunction()
