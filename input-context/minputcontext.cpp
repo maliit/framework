@@ -436,10 +436,14 @@ void MInputContext::sendHideInputMethod()
 
 void MInputContext::activationLostEvent()
 {
+    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+
     // This method is called when activation was gracefully lost.
     // There is similar cleaning up done in onDBusDisconnection.
     active = false;
     inputPanelState = InputPanelHidden;
+
+    updateInputMethodArea(QRect());
 }
 
 
