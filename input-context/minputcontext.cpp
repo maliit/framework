@@ -303,7 +303,7 @@ void MInputContext::setFocusObject(QObject *focused)
         active = true;
     }
 
-    if (currentFocusAcceptsInput) {
+    if (newFocusWindow && currentFocusAcceptsInput) {
         updateServerOrientation(newFocusWindow->contentOrientation());
     }
 
@@ -836,6 +836,9 @@ int MInputContext::cursorStartPosition(bool *valid)
 void MInputContext::updateInputMethodExtensions()
 {
     if (!inputMethodAccepted()) {
+        return;
+    }
+    if (!qGuiApp->focusObject()) {
         return;
     }
     if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__;
