@@ -30,6 +30,16 @@
 #include <QSharedDataPointer>
 #include <QQuickItem>
 
+// includes needed to load input context plugin
+#include <qpa/qplatforminputcontextfactory_p.h>
+#include <qpa/qplatforminputcontextplugin_p.h>
+#include <qpa/qplatforminputcontext.h>
+#include "private/qfactoryloader_p.h"
+
+Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
+  (QPlatformInputContextFactoryInterface_iid, QLatin1String("/platforminputcontexts"), 
+   Qt::CaseInsensitive))
+
 namespace
 {
     const int SoftwareInputPanelHideTimer = 100;
@@ -65,7 +75,9 @@ MInputContext::MInputContext()
       inputPanelState(InputPanelHidden),
       preeditCursorPos(-1),
       redirectKeys(false),
-      currentFocusAcceptsInput(false)
+      currentFocusAcceptsInput(false),
+      composeInputContext(qLoadPlugin1<QPlatformInputContext, QPlatformInputContextPlugin>
+                                      (loader(), "compose", QStringList()))
 {
     QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
     if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
@@ -94,6 +106,7 @@ MInputContext::MInputContext()
 MInputContext::~MInputContext()
 {
     delete imServer;
+    if (composeInputContext) delete composeInputContext;
 }
 
 void MInputContext::connectInputMethodServer()
@@ -165,6 +178,7 @@ void MInputContext::setLanguage(const QString &language)
 
 void MInputContext::reset()
 {
+    if (composeInputContext) composeInputContext->reset();
     if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
     const bool hadPreedit = !preedit.isEmpty();
@@ -240,6 +254,7 @@ void MInputContext::invokeAction(QInputMethod::Action action, int x)
 
 void MInputContext::update(Qt::InputMethodQueries queries)
 {
+    if (composeInputContext) composeInputContext->update(queries);
     if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
 
     Q_UNUSED(queries) // fetching everything
@@ -276,6 +291,7 @@ void MInputContext::updateServerOrientation(Qt::ScreenOrientation orientation)
 
 void MInputContext::setFocusObject(QObject *focused)
 {
+    if (composeInputContext) composeInputContext->setFocusObject(focused);
     if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__ << focused;
 
     updateInputMethodExtensions();
@@ -327,6 +343,11 @@ QString MInputContext::preeditString()
 bool MInputContext::filterEvent(const QEvent *event)
 {
     bool eaten = false;
+    bool eatenByCompose = false;
+
+    if (composeInputContext) { 
+        eatenByCompose = composeInputContext->filterEvent(event);
+    }
 
     switch (event->type()) {
 
@@ -350,7 +371,7 @@ bool MInputContext::filterEvent(const QEvent *event)
         break;
     }
 
-    return eaten;
+    return eaten || eatenByCompose;
 }
 
 QRectF MInputContext::keyboardRect() const
