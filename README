@@ -6,8 +6,8 @@ communicate with the Maliit server via input context plugins. The communication
 link currently uses D-Bus. Maliit is an open source framework (LGPL 2) with
 open source plugins (BSD).
 
-This is the Maliit framework. For plugins, such as virtual keyboards, see
-http://wiki.maliit.org/Plugins
+This is the Maliit framework. For a virtual keyboard, see
+https://github.com/maliit/keyboard .
 
 
 Installing
@@ -47,13 +47,6 @@ Double-tap on the input field, and an input method (usually a virtual keyboard)
 should be shown. Note that an input method plugin, such as the Maliit keyboard
 from the maliit-plugins package, must be installed for the example applications
 to work.
-
-Resources
-
-Wiki: http://wiki.maliit.org/
-IRC: #maliit on chat.freenode.net
-Announcement mailing list: maliit-announce@lists.maliit.org
-Discussion mailing list: maliit-discuss@lists.maliit.org
 
 
 NETWORK TRANSPARENCY
