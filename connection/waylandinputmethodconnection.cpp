@@ -121,6 +121,7 @@ Maliit::TextContentType contentTypeFromWayland(uint32_t purpose)
     switch (purpose) {
     case QtWayland::zwp_text_input_v1::content_purpose_normal:
         return Maliit::FreeTextContentType;
+    case QtWayland::zwp_text_input_v1::content_purpose_digits:
     case QtWayland::zwp_text_input_v1::content_purpose_number:
         return Maliit::NumberContentType;
     case QtWayland::zwp_text_input_v1::content_purpose_phone:
