@@ -9,7 +9,7 @@ CHANGES SINCE 2.0.0
 * Only allow focus removal from input items
 * Clean up FindGIO.cmake to allow working with older cmake
 * Stop client crashing when QGuiApplication::focusObject is null
-* Load compose inputcontext plugin for physical keyboarad handling 
+* Load compose inputcontext plugin for physical keyboard handling 
 * Update input method area when activation is lost
 * input_method_v1: Treat content_purpose_digits just like content_purpose_number
 * Update or remove outdated and broken links
