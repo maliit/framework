@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-project(maliit-framework VERSION 2.0.0)
+project(maliit-framework VERSION 2.1.0)
 
 # Build options
 
@@ -13,7 +13,7 @@ option(enable-glib "Build GLib support" ON)
 option(enable-xcb "Compile with xcb support" ON)
 option(enable-wayland "Compile with support for wayland" ON)
 option(enable-wayland-gtk "Compile with support for wayland gtk+" OFF)
-option(enable-qt5-inputcontext "Compile with Qt5 input context" ON)
+option(enable-qt5-inputcontext "Compile with Qt 5 input context" ON)
 
 option(enable-hwkeyboard "Enable support for the hardware keyboard" ON)
 option(enable-dbus-activation "Enable dbus activation support for maliit-server" OFF)
@@ -33,7 +33,7 @@ endif()
 
 if(NOT DEFINED GTK3_PLUGINS_INSTALL_DIR)
     set(GTK3_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/gtk-3.0/3.0.0" CACHE PATH
-            "Installation directory for Gtk+ 3 plugins [LIB_INSTALL_DIR/gtk-3.0/3.0.0]")
+            "Installation directory for Gtk 3 plugins [LIB_INSTALL_DIR/gtk-3.0/3.0.0]")
 endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
