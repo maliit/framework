@@ -5,11 +5,7 @@ Maliit provides a flexible and cross-platform input method framework. It has a
 plugin-based client-server architecture where applications act as clients and
 communicate with the Maliit server via input context plugins. The communication
 link currently uses D-Bus. Maliit is an open source framework (LGPL 2.1) with
-an production-quality keyboard plugin (LGPL 3.0).
-
-This is the Maliit framework. For a virtual keyboard, see
-https://github.com/maliit/keyboard.
-
+a production-quality [keyboard plugin](https://github.com/maliit/keyboard) (LGPL 3.0).
 
 Installing
 ----------
