@@ -1,9 +1,31 @@
+2.1.0
+=====
+
+CHANGES SINCE 2.0.0
+* Add cmake option to build examples and do not build them by default
+* Fix search for qtwaylandscanner on 32-bit architectures
+* Show the panel as the keyboard interface is reset
+* Ensure orientation updates are always sent when valid 
+* Only allow focus removal from input items
+* Clean up FindGIO.cmake to allow working with older cmake
+* Stop client crashing when QGuiApplication::focusObject is null
+* Load compose inputcontext plugin for physical keyboarad handling 
+* Update input method area when activation is lost
+* input_method_v1: Treat content_purpose_digits just like content_purpose_number
+* Update or remove outdated and broken links
+
+2.0.0
+=====
+
+CHANGES SINCE 0.99.2
+* Minor changes around pkgconfig
+* Align version number with Maliit Keyboard
+
 0.99.2
 ======
 
 CHANGES SINCE 0.99.1
 * Use cmake instad of qmake as the buildsystem.
-
 * Some bugs fixed
 
 0.99.1
