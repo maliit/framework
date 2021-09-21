@@ -416,7 +416,7 @@ install(EXPORT MaliitPluginsTargets FILE MaliitPluginsTargets.cmake DESTINATION 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitPlugins)
 
-install(FILES INSTALL.local LICENSE.LGPL NEWS README
+install(FILES INSTALL.local LICENSE.LGPL NEWS README.md
         DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/maliit-framework)
 
 if(enable-glib)
