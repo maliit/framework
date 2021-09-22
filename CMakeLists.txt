@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.6)
 
-project(maliit-framework VERSION 2.1.0)
+project(maliit-framework VERSION 2.1.1)
 
 # Build options
 
