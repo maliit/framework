@@ -80,10 +80,18 @@ xkb_mod_mask_t modifiersFromQt(const Qt::KeyboardModifiers qt_mods)
 xkb_keysym_t keyFromQt(int qt_key)
 {
     switch (qt_key) {
+    case Qt::Key_Escape:
+        return XKB_KEY_Escape;
+    case Qt::Key_Tab:
+        return XKB_KEY_Tab;
     case Qt::Key_Backspace:
         return XKB_KEY_BackSpace;
     case Qt::Key_Return:
         return XKB_KEY_Return;
+    case Qt::Key_Home:
+        return XKB_KEY_Home;
+    case Qt::Key_End:
+        return XKB_KEY_End;
     case Qt::Key_Left:
         return XKB_KEY_Left;
     case Qt::Key_Up:
@@ -92,7 +100,14 @@ xkb_keysym_t keyFromQt(int qt_key)
         return XKB_KEY_Right;
     case Qt::Key_Down:
         return XKB_KEY_Down;
+    case Qt::Key_PageUp:
+        return XKB_KEY_Prior;
+    case Qt::Key_PageDown:
+        return XKB_KEY_Next;
     default:
+        if (qt_key >= Qt::Key_Space && qt_key <= Qt::Key_ydiaeresis) {
+            return qt_key;
+        }
         return XKB_KEY_NoSymbol;
     }
 }
