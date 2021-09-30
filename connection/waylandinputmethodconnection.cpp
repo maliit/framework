@@ -56,6 +56,7 @@ QByteArray modifiersMap()
     QByteArray mod_map;
     for (unsigned int iter(0); iter < (sizeof(modifiers) / sizeof(modifiers[0])); ++iter) {
         mod_map.append(modifiers[iter].second);
+        mod_map.append('\0');
     }
     return mod_map;
 }
