@@ -29,7 +29,10 @@ struct _MaliitAttributeExtensionRegistryPrivate
 
 static MaliitAttributeExtensionRegistry *global_singleton;
 
-G_DEFINE_TYPE (MaliitAttributeExtensionRegistry, maliit_attribute_extension_registry, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (MaliitAttributeExtensionRegistry,
+                         maliit_attribute_extension_registry,
+                         G_TYPE_OBJECT,
+                         G_ADD_PRIVATE (MaliitAttributeExtensionRegistry))
 
 static void
 maliit_attribute_extension_registry_finalize (GObject *object)
@@ -105,8 +108,6 @@ maliit_attribute_extension_registry_class_init (MaliitAttributeExtensionRegistry
     g_object_class->finalize = maliit_attribute_extension_registry_finalize;
     g_object_class->dispose = maliit_attribute_extension_registry_dispose;
     g_object_class->constructor = maliit_attribute_extension_registry_constructor;
-
-    g_type_class_add_private (registry_class, sizeof (MaliitAttributeExtensionRegistryPrivate));
 }
 
 static void
@@ -181,9 +182,7 @@ connection_established (GObject      *source_object G_GNUC_UNUSED,
 static void
 maliit_attribute_extension_registry_init (MaliitAttributeExtensionRegistry *registry)
 {
-    MaliitAttributeExtensionRegistryPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (registry,
-                                                                                 MALIIT_TYPE_ATTRIBUTE_EXTENSION_REGISTRY,
-                                                                                 MaliitAttributeExtensionRegistryPrivate);
+    MaliitAttributeExtensionRegistryPrivate *priv = maliit_attribute_extension_registry_get_instance_private (registry);
 
     priv->extensions = g_hash_table_new_full (g_direct_hash,
                                               g_direct_equal,

@@ -51,7 +51,8 @@ struct _MaliitSettingsEntryPrivate
     guint extension_signal_id;
 };
 
-G_DEFINE_TYPE (MaliitSettingsEntry, maliit_settings_entry, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (MaliitSettingsEntry, maliit_settings_entry,
+                         G_TYPE_OBJECT, G_ADD_PRIVATE(MaliitSettingsEntry))
 
 enum
 {
@@ -371,16 +372,12 @@ maliit_settings_entry_class_init (MaliitSettingsEntryClass *entry_class)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE,
                       0);
-
-    g_type_class_add_private (entry_class, sizeof (MaliitSettingsEntryPrivate));
 }
 
 static void
 maliit_settings_entry_init (MaliitSettingsEntry *entry)
 {
-    MaliitSettingsEntryPrivate *priv = G_TYPE_INSTANCE_GET_PRIVATE (entry,
-                                                                    MALIIT_TYPE_SETTINGS_ENTRY,
-                                                                    MaliitSettingsEntryPrivate);
+    MaliitSettingsEntryPrivate *priv = maliit_settings_entry_get_instance_private (entry);
 
     priv->extension = NULL;
     priv->description = NULL;

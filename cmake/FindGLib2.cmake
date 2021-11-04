@@ -4,7 +4,7 @@ set_package_properties(GLib2 PROPERTIES
         DESCRIPTION "GLib provides the core application building blocks for libraries and applications written in C")
 
 find_package(PkgConfig)
-pkg_check_modules(PC_GLib2 glib-2.0 QUIET)
+pkg_check_modules(PC_GLib2 glib-2.0>=2.38 QUIET)
 
 set(GLib2_INCLUDE_DIRS ${PC_GLib2_INCLUDE_DIRS})
 
