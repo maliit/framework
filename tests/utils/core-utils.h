@@ -23,7 +23,6 @@ namespace MaliitTestUtils {
     QString getTestPluginPath();
     QString getTestDataPath();
     void waitForSignal(const QObject* object, const char* signal, int timeout);
-    void waitAndProcessEvents(int waitTime);
 }
 
 #endif // CORE_UTILS_H__

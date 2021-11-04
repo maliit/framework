@@ -125,13 +125,4 @@ void waitForSignal(const QObject* object, const char* signal, int timeout)
     eventLoop.exec();
 }
 
-void waitAndProcessEvents(int waitTime)
-{
-    QTest::qWait(waitTime);
-    while (QCoreApplication::instance()->hasPendingEvents()) {
-        QCoreApplication::instance()->processEvents();
-    }
 }
-
-}
-

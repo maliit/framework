@@ -34,7 +34,7 @@ MKeyOverrideData::~MKeyOverrideData()
 QList<QSharedPointer<MKeyOverride> > MKeyOverrideData::keyOverrides() const
 {
     QList<QSharedPointer<MKeyOverride> > results = mKeyOverrides.values();
-    qSort(results.begin(), results.end(), keyOverrideLessThan);
+    std::sort(results.begin(), results.end(), keyOverrideLessThan);
     return results;
 }
 
