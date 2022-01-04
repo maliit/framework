@@ -817,9 +817,7 @@ void Ut_MIMPluginManager::testEnableAllSubviews()
 void Ut_MIMPluginManager::handleMessages()
 {
     QTest::qWait(100);
-    while (QCoreApplication::hasPendingEvents()) {
-        QCoreApplication::processEvents();
-    }
+    QCoreApplication::processEvents();
 }
 
 void Ut_MIMPluginManager::testPluginSettingsList()

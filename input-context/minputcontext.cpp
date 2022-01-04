@@ -62,8 +62,8 @@ MInputContext::MInputContext()
       preeditCursorPos(-1),
       redirectKeys(false),
       currentFocusAcceptsInput(false),
-      composeInputContext(qLoadPlugin1<QPlatformInputContext, QPlatformInputContextPlugin>
-                                      (loader(), "compose", QStringList()))
+      composeInputContext(qLoadPlugin<QPlatformInputContext, QPlatformInputContextPlugin>
+                          (loader(), "compose", QStringList()))
 {
     QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
     if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
