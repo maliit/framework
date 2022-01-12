@@ -558,7 +558,8 @@ if(enable-tests)
     set_property(TEST ${test_targets} PROPERTY ENVIRONMENT
             TESTING_IN_SANDBOX=1
             TESTPLUGIN_PATH=${CMAKE_BINARY_DIR}/tests/plugins
-            TESTDATA_PATH=${CMAKE_SOURCE_DIR}/tests)
+            TESTDATA_PATH=${CMAKE_SOURCE_DIR}/tests
+            QT_QPA_PLATFORM=minimal)
 
     if(enable-glib)
         add_executable(ut_maliit_glib_settings

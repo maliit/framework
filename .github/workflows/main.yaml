@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: '*'
+  pull_request:
+    branches: '*'
+
+jobs:
+  # Ubuntu 20.04 only has Qt 5.12, so we don't build wayland support :(
+  build-focal:
+    name: Ubuntu 20.04
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install deps
+        run: |
+          sudo apt-get -y install cmake doxygen graphviz libdbus-1-dev libglib2.0-dev libmtdev-dev libudev-dev libxcb-composite0-dev libxcb-damage0-dev libxcb-xfixes0-dev libxext-dev pkg-config qml-module-qtquick2 qtbase5-dev qtbase5-private-dev qtdeclarative5-dev
+
+      - name: Build
+        run: |
+          cmake -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=/usr -Denable-wayland=off .
+          make -j8
+          make ARGS+="-j8 --output-on-failure" test
