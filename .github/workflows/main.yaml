@@ -18,6 +18,8 @@ jobs:
 
       - name: Install deps
         run: |
+          sudo apt-get update
+          sudo apt-get dist-upgrade --purge -y
           sudo apt-get -y install cmake doxygen graphviz libdbus-1-dev libglib2.0-dev libmtdev-dev libudev-dev libxcb-composite0-dev libxcb-damage0-dev libxcb-xfixes0-dev libxext-dev pkg-config qml-module-qtquick2 qtbase5-dev qtbase5-private-dev qtdeclarative5-dev
 
       - name: Build
