@@ -7,10 +7,10 @@ on:
     branches: '*'
 
 jobs:
-  # Ubuntu 20.04 only has Qt 5.12, so we don't build wayland support :(
-  build-focal:
-    name: Ubuntu 20.04
-    runs-on: ubuntu-20.04
+  build-debian-testing:
+    name: Debian Testing
+    runs-on: ubuntu-latest
+    container: debian:testing
 
     steps:
       - name: Checkout
@@ -18,12 +18,15 @@ jobs:
 
       - name: Install deps
         run: |
-          sudo apt-get update
-          sudo apt-get dist-upgrade --purge -y
-          sudo apt-get -y install cmake doxygen graphviz libdbus-1-dev libglib2.0-dev libmtdev-dev libudev-dev libxcb-composite0-dev libxcb-damage0-dev libxcb-xfixes0-dev libxext-dev pkg-config qml-module-qtquick2 qtbase5-dev qtbase5-private-dev qtdeclarative5-dev
+          apt-get update
+          apt-get dist-upgrade --purge -y
+          apt-get -y install build-essential cmake doxygen graphviz libdbus-1-dev libglib2.0-dev libgtk-3-dev libmtdev-dev libudev-dev libwayland-dev libxcb-composite0-dev libxcb-damage0-dev libxcb-xfixes0-dev libxext-dev libxkbcommon-dev pkg-config qml-module-qtquick2 qtbase5-dev qtbase5-private-dev qtdeclarative5-dev qtwayland5-dev-tools qtwayland5-private-dev
 
       - name: Build
         run: |
-          cmake -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=/usr -Denable-wayland=off .
+          cmake -DCMAKE_BUILD_TYPE=debug -DCMAKE_INSTALL_PREFIX=/usr .
           make -j8
+
+      - name: Test
+        run: |
           make ARGS+="-j8 --output-on-failure" test
