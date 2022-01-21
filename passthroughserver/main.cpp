@@ -16,7 +16,7 @@
 #include "connectionfactory.h"
 #include "mimserver.h"
 #include "mimserveroptions.h"
-#ifndef NOXCB
+#ifdef HAVE_XCB
 #include "xcbplatform.h"
 #endif
 #ifdef HAVE_WAYLAND
