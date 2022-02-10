@@ -1,3 +1,15 @@
+2.2.0
+=====
+
+CHANGES SINCE 2.1.1
+* Fix sending of modifiers and keysyms on Wayland
+* Fix Qt and glib deprecation warnings
+* Update the Doxyfile
+* Use text-input-unstable-v2 protocol
+* Enable GitHub Actions CI and fix tests
+* Fix build failure when XCB is disabled
+* Lower CMake requirement to 3.5
+
 2.1.1
 =====
 
