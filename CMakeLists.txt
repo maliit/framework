@@ -54,6 +54,7 @@ if(enable-wayland)
     find_package(Wayland REQUIRED)
     find_package(Qt5WaylandClient 5.14 REQUIRED PRIVATE)
     find_package(Qt5XkbCommonSupport REQUIRED PRIVATE)
+    find_package(LayerShellQt REQUIRED PRIVATE)
     pkg_check_modules(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
     find_package(Gtk3)
 endif()
@@ -108,7 +109,7 @@ qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1int
 add_library(maliit-connection STATIC ${CONNECTION_SOURCES})
 target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui maliit-common)
 if(enable-wayland)
-    target_link_libraries(maliit-connection Wayland::Client PkgConfig::XKBCOMMON)
+    target_link_libraries(maliit-connection Wayland::Client PkgConfig::XKBCOMMON LayerShellQt::Interface)
     target_include_directories(maliit-connection PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS})
 endif()
 target_include_directories(maliit-connection PUBLIC connection)
@@ -201,7 +202,6 @@ if(enable-wayland)
     list(APPEND PLUGINS_SOURCES
          src/waylandplatform.cpp
          src/waylandplatform.h)
-
 endif()
 
 if(enable-hwkeyboard)
