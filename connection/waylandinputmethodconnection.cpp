@@ -591,6 +591,9 @@ void InputMethodContext::zwp_input_method_context_v1_surrounding_text(const QStr
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
+    // Re-show the keyboard if it was hidden without changing focus.
+    m_connection->showInputMethod(wayland_connection_id);
+
     const QByteArray &utf8_text(text.toUtf8());
 
     m_stateInfo[SurroundingTextAttribute] = text;
