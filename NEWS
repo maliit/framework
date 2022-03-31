@@ -1,3 +1,9 @@
+2.2.1
+=====
+
+CHANGES SINCE 2.2.0
+* Re-show the keyboard on Wayland surrounding text changes
+
 2.2.0
 =====
 
