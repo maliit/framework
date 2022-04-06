@@ -6,6 +6,7 @@ project(maliit-framework VERSION 2.2.1)
 
 option(enable-docs "Build documentation" ON)
 option(enable-tests "Build tests" ON)
+option(install-tests "Install unit tests" OFF)
 option(enable-examples "Build examples" OFF)
 
 option(enable-glib "Build GLib support" ON)
@@ -520,8 +521,8 @@ if(enable-tests)
     target_link_libraries(test-utils PUBLIC Qt5::Core Qt5::Gui Qt5::Test maliit-connection)
     target_include_directories(test-utils INTERFACE tests/utils)
     target_compile_definitions(test-utils PUBLIC
-            -DMALIIT_TEST_PLUGINS_DIR="${CMAKE_INSTALL_PREFIX}/lib/maliit-framework-tests/plugins"
-            -DMALIIT_TEST_DATA_PATH="${CMAKE_INSTALL_PREFIX}/lib/maliit-framework-tests"
+            -DMALIIT_TEST_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/maliit-framework-tests/plugins"
+            -DMALIIT_TEST_DATA_PATH="${CMAKE_INSTALL_FULL_LIBDIR}/maliit-framework-tests"
             -DIN_TREE_TEST_PLUGIN_DIR="${CMAKE_SOURCE_DIR}/examples/plugins")
 
     add_library(test-stubs STATIC
@@ -542,6 +543,9 @@ if(enable-tests)
         add_test(${name} ${name})
 
         set(test_targets ${test_targets} ${name} PARENT_SCOPE)
+        if(install-tests)
+            install(TARGETS ${name} DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/${name})
+        endif()
     endfunction()
 
     create_test(sanitychecks)
@@ -570,6 +574,19 @@ if(enable-tests)
         target_link_libraries(ut_maliit_glib_settings GLib2::GLib GLib2::GIO maliit-glib)
 
         add_test(ut_maliit_glib_settings ut_maliit_glib_settings)
+        if(install-tests)
+            install(TARGETS ut_maliit_glib_settings DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_maliit_glib_settings)
+        endif()
+    endif()
+
+    if(install-tests)
+        install(TARGETS ${DUMMY_PLUGINS} DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/plugins)
+        install(DIRECTORY tests/ut_mattributeextensionmanager/
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_mattributeextensionmanager
+                FILES_MATCHING PATTERN "*.xml")
+        install(DIRECTORY tests/ut_mimpluginmanager/
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_mimpluginmanager
+                FILES_MATCHING PATTERN "*.xml")
     endif()
 endif()
 
