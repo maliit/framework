@@ -92,7 +92,7 @@ MInputContext::MInputContext()
 MInputContext::~MInputContext()
 {
     delete imServer;
-    if (composeInputContext) delete composeInputContext;
+    delete composeInputContext;
 }
 
 void MInputContext::connectInputMethodServer()
@@ -331,7 +331,7 @@ bool MInputContext::filterEvent(const QEvent *event)
     bool eaten = false;
     bool eatenByCompose = false;
 
-    if (composeInputContext) { 
+    if (!redirectKeys && composeInputContext) {
         eatenByCompose = composeInputContext->filterEvent(event);
     }
 
