@@ -346,9 +346,6 @@ if(enable-examples)
                 examples/plugins/cxx/override/overrideplugin.cpp
                 examples/plugins/cxx/override/overrideplugin.h)
     target_link_libraries(cxxoverrideplugin maliit-plugins Qt5::Widgets)
-
-    file(COPY examples/plugins/qml/helloworld/helloworld.qml
-        DESTINATION ${CMAKE_BINARY_DIR}/examples/plugins/qml/helloworld)
 endif()
 
 # Documentation
@@ -560,6 +557,9 @@ if(enable-tests)
     create_test(ft_exampleplugin)
     create_test(ft_mimpluginmanager test-stubs ${DUMMY_PLUGINS})
 
+    file(COPY tests/qmlplugin/helloworld.qml
+         DESTINATION ${CMAKE_BINARY_DIR}/examples/plugins/qml/helloworld)
+
     set_property(TEST ${test_targets} PROPERTY ENVIRONMENT
             TESTING_IN_SANDBOX=1
             TESTPLUGIN_PATH=${CMAKE_BINARY_DIR}/tests/plugins
@@ -580,6 +580,9 @@ if(enable-tests)
     endif()
 
     if(install-tests)
+        install(FILES tests/qmlplugin/helloworld.qml
+                DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/plugins/qml/helloworld)
+
         install(TARGETS ${DUMMY_PLUGINS} DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/plugins)
         install(DIRECTORY tests/ut_mattributeextensionmanager/
                 DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_mattributeextensionmanager
