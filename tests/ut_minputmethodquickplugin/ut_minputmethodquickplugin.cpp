@@ -43,13 +43,6 @@ void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
     QTest::addColumn<QString>("testPluginPath");
     QTest::newRow("Hello world")
         << "helloworld/helloworld.qml";
-// TODO Adapt plugins for Qt 5
-#if 0
-    QTest::newRow("Cycle keys")
-        << "cyclekeys/libqmlcyclekeysplugin.so";
-    QTest::newRow("Override")
-        << "override/libqmloverrideplugin.so";
-#endif
 }
 
 /* This test currently tests both the qml example found in examples/
