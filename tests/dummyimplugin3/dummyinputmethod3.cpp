@@ -41,7 +41,7 @@ DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *host)
 
 void DummyInputMethod3::setState(const QSet<Maliit::HandlerState> &state)
 {
-    qDebug() << __PRETTY_FUNCTION__ << state;
+    qDebug() << Q_FUNC_INFO << state;
     ++setStateCount;
     setStateParam = state;
 }
@@ -57,7 +57,7 @@ void DummyInputMethod3::switchContext(Maliit::SwitchDirection direction,
 QList<MAbstractInputMethod::MInputMethodSubView>
 DummyInputMethod3::subViews(Maliit::HandlerState state) const
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     QList<MAbstractInputMethod::MInputMethodSubView> svs;
     if (state == Maliit::OnScreen) {
         svs = sViews;
@@ -67,7 +67,7 @@ DummyInputMethod3::subViews(Maliit::HandlerState state) const
 
 void DummyInputMethod3::setActiveSubView(const QString &sVId, Maliit::HandlerState state)
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     if (state == Maliit::OnScreen) {
         Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &sv, sViews) {
             if (sv.subViewId == sVId) {
@@ -79,7 +79,7 @@ void DummyInputMethod3::setActiveSubView(const QString &sVId, Maliit::HandlerSta
 
 QString DummyInputMethod3::activeSubView(Maliit::HandlerState state) const
 {
-    qDebug() << __PRETTY_FUNCTION__;
+    qDebug() << Q_FUNC_INFO;
     if (state == Maliit::OnScreen)
         return activeSView;
     else
