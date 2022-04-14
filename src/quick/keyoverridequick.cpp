@@ -14,6 +14,7 @@
 #include <QDebug>
 #include <QtAlgorithms>
 
+#include "logging.h"
 #include "keyoverridequick.h"
 #include "keyoverridequick_p.h"
 
@@ -280,7 +281,7 @@ void KeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOver
         } else if (not d->defaultLabel.isEmpty()) {
             labelAction = UseDefault;
         } else {
-            qCritical() << __PRETTY_FUNCTION__ << "- Both label and icon have no default value.";
+            qCCritical(lcMaliitFw) << Q_FUNC_INFO << "- Both label and icon have no default value.";
         }
 
         if (changedAttributes & MKeyOverride::Highlighted) {
@@ -326,7 +327,7 @@ void KeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOver
     case UseActual:
         break;
     default:
-        qCritical() << __PRETTY_FUNCTION__ << "- unknown enum value for iconAction:" << static_cast<int> (iconAction);
+        qCCritical(lcMaliitFw) << Q_FUNC_INFO << "- unknown enum value for iconAction:" << static_cast<int> (iconAction);
     }
 
     switch (labelAction) {
@@ -342,7 +343,7 @@ void KeyOverrideQuick::applyOverride(const QSharedPointer<MKeyOverride>& keyOver
     case UseActual:
         break;
     default:
-        qCritical() << __PRETTY_FUNCTION__ << "- unknown enum value for labelAction:" << static_cast<int> (labelAction);
+        qCCritical(lcMaliitFw) << Q_FUNC_INFO << "- unknown enum value for labelAction:" << static_cast<int> (labelAction);
     }
 }
 

@@ -21,6 +21,7 @@
 #include <qpa/qplatformnativeinterface.h>
 
 #include "xcbplatform.h"
+#include "logging.h"
 
 namespace Maliit
 {
@@ -39,7 +40,7 @@ void XCBPlatform::setupInputPanel(QWindow* window,
     xcb_connection_t *xcbConnection
             = static_cast<xcb_connection_t *>(xcbiface->nativeResourceForWindow("connection", window));
     if (!xcbConnection) {
-        qWarning("Unable to get Xcb connection");
+        qCWarning(lcMaliitFw) << "Unable to get Xcb connection";
         return;
     }
 
@@ -59,7 +60,7 @@ void XCBPlatform::setupInputPanel(QWindow* window,
         windowTypeAtom = reply->atom;
         free(reply);
     } else {
-        qWarning("Unable to fetch window type atom");
+        qCWarning(lcMaliitFw) << "Unable to fetch window type atom";
         return;
     }
 
@@ -68,7 +69,7 @@ void XCBPlatform::setupInputPanel(QWindow* window,
         windowTypeInputAtom = reply->atom;
         free(reply);
     } else {
-        qWarning("Unable to fetch window type input atom");
+        qCWarning(lcMaliitFw) << "Unable to fetch window type input atom";
         return;
     }
 
@@ -113,8 +114,8 @@ void XCBPlatform::setInputRegion(QWindow* window,
 
 void XCBPlatform::setApplicationWindow(QWindow *window, WId appWindowId)
 {
-    qDebug() << "Xcb platform setting transient target" << QString("0x%1").arg(QString::number(appWindowId, 16))
-             << "for" << QString("0x%1").arg(QString::number(window->winId(), 16));
+    qCDebug(lcMaliitFw) << "Xcb platform setting transient target" << QString("0x%1").arg(QString::number(appWindowId, 16))
+                        << "for" << QString("0x%1").arg(QString::number(window->winId(), 16));
 
     QPlatformNativeInterface *xcbiface = QGuiApplication::platformNativeInterface();
     xcb_connection_t *xcbConnection

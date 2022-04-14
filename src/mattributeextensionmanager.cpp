@@ -13,6 +13,7 @@
 
 
 #include "mattributeextensionmanager.h"
+#include "logging.h"
 #include <maliit/plugins/keyoverridedata.h>
 #include <maliit/plugins/keyoverride.h>
 
@@ -160,7 +161,7 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
     QSharedPointer<MAttributeExtension> extension = attributeExtension(id);
 
     if (!extension) {
-        qWarning() << "Extended attribute change with invalid id";
+        qCWarning(lcMaliitFw) << "Extended attribute change with invalid id";
         return;
     }
 
@@ -188,7 +189,7 @@ void MAttributeExtensionManager::setExtendedAttribute(const MAttributeExtensionI
             Q_EMIT keyOverrideCreated();
         }
     } else {
-        qWarning() << "Invalid or incompatible attribute extension target:" << target;
+        qCWarning(lcMaliitFw) << "Invalid or incompatible attribute extension target:" << target;
     }
 }
 
@@ -260,7 +261,7 @@ void MAttributeExtensionManager::handleWidgetStateChanged(unsigned int clientId,
 
     variant = newState[FocusStateAttribute];
     if (not variant.isValid()) {
-        qCritical() << __PRETTY_FUNCTION__ << "Invalid focus state";
+        qCCritical(lcMaliitFw) << Q_FUNC_INFO << "Invalid focus state";
     }
     bool widgetFocusState = variant.toBool();
 
@@ -273,7 +274,7 @@ void MAttributeExtensionManager::handleWidgetStateChanged(unsigned int clientId,
             // if im-uiserver crashes.
             // XXX: should not happen, the input context is reponsible for registering
             // and resending the toolbar information on server reconnect
-            qWarning() << "Unregistered toolbar found in widget information";
+            qCWarning(lcMaliitFw) << "Unregistered toolbar found in widget information";
 
             variant = newState[ToolbarIdAttribute];
             if (variant.isValid()) {

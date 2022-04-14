@@ -13,6 +13,7 @@
 
 #include "mimsettings.h"
 #include "mimsettingsqsettings.h"
+#include "logging.h"
 
 #include <QString>
 #include <QStringList>
@@ -101,8 +102,7 @@ MImSettings::MImSettings(const QString &key, QObject *parent)
             break;
 
         default:
-            qCritical() << __PRETTY_FUNCTION__ <<
-                           "Invalid value for preferredSettingType." << preferredSettingsType;
+            qCCritical(lcMaliitFw) << Q_FUNC_INFO << "Invalid value for preferredSettingType." << preferredSettingsType;
         }
         MImSettings::setImplementationFactory(newFactory);
     }

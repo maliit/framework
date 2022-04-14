@@ -156,6 +156,8 @@ set(PLUGINS_SOURCES
     src/quick/maliitquick.h
     src/abstractplatform.cpp
     src/abstractplatform.h
+    src/logging.cpp
+    src/logging.h
     src/mattributeextensionid.cpp
     src/mattributeextensionid.h
     src/mattributeextensionmanager.cpp

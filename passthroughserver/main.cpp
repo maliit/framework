@@ -23,63 +23,26 @@
 #include "waylandplatform.h"
 #endif // HAVE_WAYLAND
 #include "unknownplatform.h"
+#include "logging.h"
 
 #include <QGuiApplication>
 #include <QtDebug>
 
 namespace {
+QLoggingCategory::CategoryFilter defaultLoggingFilter;
 
-void disableMInputContextPlugin()
+void loggingCategoryFilter(QLoggingCategory *category)
 {
-    // none is a special value for QT_IM_MODULE, which disables loading of any
-    // input method module in Qt 5.
-    setenv("QT_IM_MODULE", "none", true);
-}
-
-bool isDebugEnabled()
-{
-    static int debugEnabled = -1;
-
-    if (debugEnabled == -1) {
-        QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
-        if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
-            debugEnabled = 1;
-        } else {
-            debugEnabled = 0;
-        }
+    if (defaultLoggingFilter) {
+        defaultLoggingFilter(category);
     }
 
-    return debugEnabled == 1;
-}
+    if (qstrcmp(category->categoryName(), "org.maliit.framework") == 0) {
+        QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
 
-void outputMessagesToStdErr(QtMsgType type,
-                            const QMessageLogContext &context,
-                            const QString &msg)
-{
-    Q_UNUSED(context);
-    QByteArray utf_text(msg.toUtf8());
-    const char *raw(utf_text.constData());
-
-    switch (type) {
-    case QtDebugMsg:
-        if (isDebugEnabled()) {
-            fprintf(stderr, "DEBUG: %s\n", raw);
+        if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
+            category->setEnabled(QtDebugMsg, true);
         }
-        break;
-#if QT_VERSION >= QT_VERSION_CHECK(5, 5, 0)
-    case QtInfoMsg:
-        fprintf(stderr, "INFO: %s\n", raw);
-        break;
-#endif
-    case QtWarningMsg:
-        fprintf(stderr, "WARNING: %s\n", raw);
-        break;
-    case QtCriticalMsg:
-        fprintf(stderr, "CRITICAL: %s\n", raw);
-        break;
-    case QtFatalMsg:
-        fprintf(stderr, "FATAL: %s\n", raw);
-        abort();
     }
 }
 
@@ -103,12 +66,14 @@ QSharedPointer<MInputContextConnection> createConnection(const MImServerConnecti
 
 int main(int argc, char **argv)
 {
-    qInstallMessageHandler(outputMessagesToStdErr);
+    // compatibility with MALIIT_DEBUG
+    defaultLoggingFilter = QLoggingCategory::installFilter(loggingCategoryFilter);
 
-    // QT_IM_MODULE, MApplication and QtMaemo5Style all try to load
-    // MInputContext, which is fine for the application. For the passthrough
-    // server itself, we absolutely need to prevent that.
-    disableMInputContextPlugin();
+    // MInputContext is needed for the applications, but for the passthrough
+    // server itself, we absolutely need to prevent loading that.
+    // none is a special value for QT_IM_MODULE, which disables loading of any
+    // input method module in Qt 5.
+    setenv("QT_IM_MODULE", "none", true);
 
     MImServerCommonOptions serverCommonOptions;
     MImServerConnectionOptions connectionOptions;

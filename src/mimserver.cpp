@@ -15,6 +15,7 @@
 
 #include "mimpluginmanager.h"
 #include "mimsettings.h"
+#include "logging.h"
 
 class MImServerPrivate
 {
@@ -63,7 +64,6 @@ void MImServer::configureSettings(MImServer::SettingsType settingsType)
         break;
 
     default:
-        qCritical() << __PRETTY_FUNCTION__ <<
-                       "Invalid value for preferredSettingType." << settingsType;
+        qCCritical(lcMaliitFw) << Q_FUNC_INFO << "Invalid value for preferredSettingType." << settingsType;
     }
 }
