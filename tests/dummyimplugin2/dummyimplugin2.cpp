@@ -21,7 +21,3 @@ QSet<Maliit::HandlerState> DummyImPlugin2::supportedStates() const
     result << Maliit::OnScreen << Maliit::Hardware << Maliit::Accessory;
     return result;
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
-Q_EXPORT_PLUGIN2(dummyimplugin2, DummyImPlugin2)
-#endif
