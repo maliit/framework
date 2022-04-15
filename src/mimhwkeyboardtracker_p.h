@@ -18,15 +18,6 @@
 
 #include <QFile>
 
-#ifdef HAVE_CONTEXTSUBSCRIBER
-#include <QScopedPointer>
-#include <contextproperty.h>
-#else
-# ifdef Q_WS_MAEMO_5
-#  include "mimsettings.h"
-# endif
-#endif
-
 class MImHwKeyboardTracker;
 
 class MImHwKeyboardTrackerPrivate
@@ -40,12 +31,6 @@ public:
 
     void detectEvdev();
     void tryEvdevDevice(const char *device);
-
-#ifdef HAVE_CONTEXTSUBSCRIBER
-    QScopedPointer<ContextProperty> keyboardOpenProperty;
-#elif defined(Q_WS_MAEMO_5)
-    MImSettings keyboardOpenConf;
-#endif
 
     QFile *evdevFile;
     int evdevTabletModePending;
