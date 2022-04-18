@@ -640,4 +640,10 @@ bool InputMethodQuick::hiddenText()
     return d->m_hiddenText;
 }
 
+const QQuickView* InputMethodQuick::surface()
+{
+    Q_D(InputMethodQuick);
+    return d->surface.data();
+}
+
 } // namespace Maliit

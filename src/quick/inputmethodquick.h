@@ -24,6 +24,8 @@
 #include <QScopedPointer>
 #include <QString>
 
+#include <QQuickView>
+
 namespace Maliit
 {
 
@@ -211,6 +213,10 @@ public Q_SLOTS:
 
     //! Tells the framework to close keyboard. Called by QML components.
     void userHide();
+
+protected:
+    //! Returns the QQuickView of the plugin, so derivatives may access it.
+    const QQuickView* surface();
 
 private:
     Q_DISABLE_COPY(InputMethodQuick)
