@@ -64,7 +64,12 @@ void WindowGroup::setupWindow(QWindow *window, Maliit::Position position)
             window->setFlags(Qt::Window
                              | Qt::FramelessWindowHint
                              | Qt::WindowStaysOnTopHint
-                             | Qt::WindowDoesNotAcceptFocus);
+                             | Qt::WindowDoesNotAcceptFocus
+                             /* Mir uses a special window type for input method
+                              * panel, which is not handled by Qt::WindowType
+                              * natively, so add the magic value here
+                              */
+                             | static_cast<Qt::WindowType>(0x00000080));
 
             connect (window, SIGNAL (visibleChanged(bool)),
                      this, SLOT (onVisibleChanged(bool)));
