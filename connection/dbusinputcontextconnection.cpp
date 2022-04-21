@@ -254,7 +254,6 @@ DBusInputContextConnection::sendActivationLostEvent()
 void
 DBusInputContextConnection::updateInputMethodArea(const QRegion &region)
 {
-    qDebug() << "Updating input method area to" << region;
     ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(activeConnection);
     if (proxy) {
         QRect rect = region.boundingRect();

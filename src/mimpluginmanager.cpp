@@ -26,6 +26,7 @@
 #include "maliit/namespaceinternal.h"
 #include <maliit/settingdata.h>
 #include "windowgroup.h"
+#include "logging.h"
 
 #include <quick/inputmethodquickplugin.h>
 
@@ -108,7 +109,7 @@ void MIMPluginManagerPrivate::loadPlugins()
     } // end Q_FOREACH path in paths
 
     if (plugins.empty()) {
-        qWarning("No plugins were found. Stopping.");
+        qCWarning(lcMaliitFw) << "No plugins were found. Stopping.";
         std::exit(0);
     }
 
@@ -123,7 +124,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
     Q_Q(MIMPluginManager);
 
     if (blacklist.contains(fileName)) {
-        qWarning() << __PRETTY_FUNCTION__ << fileName << "is on the blacklist, skipped.";
+        qCWarning(lcMaliitFw) << Q_FUNC_INFO << fileName << "is on the blacklist, skipped.";
         return false;
     }
 
@@ -132,8 +133,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
     if (QFileInfo(fileName).suffix() == "qml") {
         plugin = new Maliit::InputMethodQuickPlugin(dir.filePath(fileName), m_platform);
         if (!plugin) {
-            qWarning() << __PRETTY_FUNCTION__
-                       << "Could not create a plugin for: " << fileName;
+            qCWarning(lcMaliitFw) << Q_FUNC_INFO << "Could not create a plugin for: " << fileName;
         }
     } else {
         // TODO: skip already loaded plugin ids (fileName)
@@ -141,22 +141,22 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
         QObject *pluginInstance = load.instance();
         if (!pluginInstance) {
-            qWarning() << __PRETTY_FUNCTION__
-                       << "Error loading plugin from" << dir.absoluteFilePath(fileName) << load.errorString();
+            qCWarning(lcMaliitFw) << Q_FUNC_INFO
+                                  << "Error loading plugin from" << dir.absoluteFilePath(fileName) << load.errorString();
             return false;
         }
 
         plugin = qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
         if (!plugin) {
-            qWarning() << __PRETTY_FUNCTION__
-                       << pluginInstance->metaObject()->className() << "is not a Maliit::Server::InputMethodPlugin.";
+            qCWarning(lcMaliitFw) << Q_FUNC_INFO << pluginInstance->metaObject()->className()
+                                  << "is not a Maliit::Server::InputMethodPlugin.";
             return false;
         }
     }
 
     if (plugin->supportedStates().isEmpty()) {
-        qWarning() << __PRETTY_FUNCTION__
-                   << "Plugin does not support any state." << plugin->name() << dir.absoluteFilePath(fileName);
+        qCWarning(lcMaliitFw) << Q_FUNC_INFO
+                              << "Plugin does not support any state." << plugin->name() << dir.absoluteFilePath(fileName);
         return false;
     }
 
@@ -170,8 +170,8 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
 
     // only add valid plugin descriptions
     if (!im) {
-        qWarning() << __PRETTY_FUNCTION__
-                   << "Creation of InputMethod failed:" << plugin->name() << dir.absoluteFilePath(fileName);
+        qCWarning(lcMaliitFw) << Q_FUNC_INFO
+                              << "Creation of InputMethod failed:" << plugin->name() << dir.absoluteFilePath(fileName);
         delete host;
         return false;
     }
@@ -180,8 +180,11 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
                                Maliit::SwitchUndefined, fileName, windowGroup };
 
     // Connect surface group signals
-    QObject::connect(windowGroup.data(), SIGNAL(inputMethodAreaChanged(QRegion)),
-                     mICConnection.data(), SLOT(updateInputMethodArea(QRegion)));
+    QObject::connect(windowGroup.data(), &Maliit::WindowGroup::inputMethodAreaChanged,
+                     q, [this](const QRegion &region) {
+        qCDebug(lcMaliitFw) << "Updating input method area to" << region;
+        mICConnection->updateInputMethodArea(region);
+    });
 
     plugins.insert(plugin, desc);
     host->setInputMethod(im);
@@ -226,7 +229,7 @@ void MIMPluginManagerPrivate::addHandlerMap(Maliit::HandlerState state,
             return;
         }
     }
-    qWarning() << __PRETTY_FUNCTION__ << "Could not find plugin:" << pluginId;
+    qCWarning(lcMaliitFw) << Q_FUNC_INFO << "Could not find plugin:" << pluginId;
 }
 
 
@@ -517,7 +520,7 @@ bool MIMPluginManagerPrivate::switchPlugin(const QString &pluginId,
     }
 
     if (iterator == plugins.end()) {
-        qWarning() << __PRETTY_FUNCTION__ << pluginId << "could not be found";
+        qCWarning(lcMaliitFw) << Q_FUNC_INFO << pluginId << "could not be found";
         return false;
     }
 
@@ -526,7 +529,7 @@ bool MIMPluginManagerPrivate::switchPlugin(const QString &pluginId,
     }
 
     if (source == plugins.end()) {
-        qDebug() << __PRETTY_FUNCTION__ << pluginId << "could not find initiator";
+        qCDebug(lcMaliitFw) << Q_FUNC_INFO << pluginId << "could not find initiator";
         return trySwitchPlugin(Maliit::SwitchUndefined, 0, iterator, subViewId);
     }
 
@@ -541,13 +544,12 @@ bool MIMPluginManagerPrivate::trySwitchPlugin(Maliit::SwitchDirection direction,
     Maliit::Plugins::InputMethodPlugin *newPlugin = replacement.key();
 
     if (activePlugins.contains(newPlugin)) {
-        qDebug() << __PRETTY_FUNCTION__ << plugins.value(newPlugin).pluginId
-                 << "is already active";
+        qCDebug(lcMaliitFw) << Q_FUNC_INFO << plugins.value(newPlugin).pluginId << "is already active";
         return false;
     }
 
     if (!newPlugin) {
-        qWarning() << __PRETTY_FUNCTION__ << "new plugin invalid";
+        qCWarning(lcMaliitFw) << Q_FUNC_INFO << "new plugin invalid";
         return false;
     }
 
@@ -561,15 +563,14 @@ bool MIMPluginManagerPrivate::trySwitchPlugin(Maliit::SwitchDirection direction,
 
     const PluginState &supportedStates = newPlugin->supportedStates();
     if (!supportedStates.contains(currentState)) {
-        qDebug() << __PRETTY_FUNCTION__ << plugins.value(newPlugin).pluginId
-                 << "does not contain state";
+        qCDebug(lcMaliitFw) << Q_FUNC_INFO << plugins.value(newPlugin).pluginId << "does not contain state";
         return false;
     }
 
     if (plugins.value(source).state.contains(Maliit::OnScreen)) {
         // if plugin which is to be switched needs to support OnScreen, the subviews should not be empty.
         if (!onScreenPlugins.isEnabled(plugins.value(newPlugin).pluginId)) {
-            qDebug() << __PRETTY_FUNCTION__ << plugins.value(newPlugin).pluginId << "not enabled";
+            qCDebug(lcMaliitFw) << Q_FUNC_INFO << plugins.value(newPlugin).pluginId << "not enabled";
             return false;
         }
     }
@@ -864,8 +865,7 @@ void MIMPluginManagerPrivate::_q_syncHandlerMap(int state)
         MAbstractInputMethod *inputMethod = plugins.value(currentPlugin).inputMethod;
         addHandlerMap(static_cast<Maliit::HandlerState>(state), pluginId);
         if (!switchPlugin(pluginId, inputMethod)) {
-            qWarning() << __PRETTY_FUNCTION__ << ", switching to plugin:"
-                       << pluginId << " failed";
+            qCWarning(lcMaliitFw) << Q_FUNC_INFO << ", switching to plugin:" << pluginId << " failed";
         }
     }
 }
@@ -877,7 +877,7 @@ void MIMPluginManagerPrivate::_q_onScreenSubViewChanged()
     Maliit::Plugins::InputMethodPlugin *currentPlugin = activePlugin(Maliit::OnScreen);
 
     if (currentPlugin && subView.plugin == plugins.value(currentPlugin).pluginId && activePlugins.contains(currentPlugin)) {
-        qDebug() << __PRETTY_FUNCTION__ << "just switch subview";
+        qCDebug(lcMaliitFw) << Q_FUNC_INFO << "just switch subview";
         _q_setActiveSubView(subView.id, Maliit::OnScreen);
         return;
     }
@@ -897,8 +897,7 @@ void MIMPluginManagerPrivate::_q_onScreenSubViewChanged()
             inputMethod = plugins.value(currentPlugin).inputMethod;
         addHandlerMap(Maliit::OnScreen, subView.plugin);
         if (!switchPlugin(subView.plugin, inputMethod, subView.id)) {
-            qWarning() << __PRETTY_FUNCTION__ << ", switching to plugin:"
-                       << subView.plugin << " failed";
+            qCWarning(lcMaliitFw) << Q_FUNC_INFO << ", switching to plugin:" << subView.plugin << " failed";
         }
     }
 }
@@ -918,7 +917,7 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
 {
     // now we only support active subview for OnScreen state.
     if (state != Maliit::OnScreen) {
-        qWarning() << "Unsupported state:" << state << " for active subview";
+        qCWarning(lcMaliitFw) << "Unsupported state:" << state << " for active subview";
         return;
     }
 
@@ -928,7 +927,7 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
 
     Maliit::Plugins::InputMethodPlugin *plugin = activePlugin(Maliit::OnScreen);
     if (!plugin) {
-        qDebug() << __PRETTY_FUNCTION__ << "No active plugin";
+        qCDebug(lcMaliitFw) << Q_FUNC_INFO << "No active plugin";
         return;
     }
 
@@ -936,13 +935,14 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
     const QString &activePluginId = plugins.value(plugin).pluginId;
     if (activePluginId != onScreenPlugins.activeSubView().plugin) {
         // TODO?
-        qWarning() << __PRETTY_FUNCTION__ << plugins.value(plugin).pluginId << "!=" << onScreenPlugins.activeSubView().plugin;
+        qCWarning(lcMaliitFw) << Q_FUNC_INFO << plugins.value(plugin).pluginId << "!="
+                              << onScreenPlugins.activeSubView().plugin;
         return;
     }
 
     // Check whether subView is enabled
     if (!onScreenPlugins.isSubViewEnabled(MImOnScreenPlugins::SubView(activePluginId, subViewId))) {
-        qWarning() << __PRETTY_FUNCTION__ << activePluginId << subViewId << "is not enabled";
+        qCWarning(lcMaliitFw) << Q_FUNC_INFO << activePluginId << subViewId << "is not enabled";
         return;
     }
 
@@ -950,7 +950,7 @@ void MIMPluginManagerPrivate::_q_setActiveSubView(const QString &subViewId,
     MAbstractInputMethod *inputMethod = plugins.value(plugin).inputMethod;
     Q_ASSERT(inputMethod);
     if (!inputMethod) {
-        qDebug() << __PRETTY_FUNCTION__ << "No input method";
+        qCDebug(lcMaliitFw) << Q_FUNC_INFO << "No input method";
         return;
     }
 
@@ -1058,7 +1058,7 @@ void MIMPluginManagerPrivate::setActivePlugin(const QString &pluginId,
     if (state == Maliit::OnScreen) {
         const QList<MImOnScreenPlugins::SubView> &subViews = onScreenPlugins.enabledSubViews(pluginId);
         if (subViews.empty()) {
-            qDebug() << __PRETTY_FUNCTION__ << pluginId << "has no enabled subviews";
+            qCDebug(lcMaliitFw) << Q_FUNC_INFO << pluginId << "has no enabled subviews";
             return;
         }
 
@@ -1313,8 +1313,7 @@ void MIMPluginManager::switchPlugin(const QString &name,
 
     if (initiator) {
         if (!d->switchPlugin(name, initiator)) {
-            qWarning() << __PRETTY_FUNCTION__ << ", switching to plugin:"
-                       << name << " failed";
+            qCWarning(lcMaliitFw) << Q_FUNC_INFO << ", switching to plugin:" << name << " failed";
         }
     }
 }
@@ -1338,9 +1337,8 @@ void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
     bool focusStateOk(false);
     const bool focusState(d->mICConnection->focusState(focusStateOk));
 
-    if (!focusStateOk)
-    {
-        qCritical() << __PRETTY_FUNCTION__ << ": focus state is invalid.";
+    if (!focusStateOk) {
+        qCCritical(lcMaliitFw) << Q_FUNC_INFO << ": focus state is invalid.";
     }
 
     const bool mapEmpty(keyOverrides.isEmpty());

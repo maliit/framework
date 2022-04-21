@@ -22,6 +22,7 @@
 #include <QKeyEvent>
 #include <QTextFormat>
 #include <QDebug>
+#include <QLoggingCategory>
 #include <QByteArray>
 #include <QRectF>
 #include <QScreen>
@@ -44,6 +45,7 @@ namespace
 {
     const int SoftwareInputPanelHideTimer = 100;
     const char * const InputContextName = "MInputContext";
+    QLoggingCategory lcMaliit("org.maliit.inputContext", QtWarningMsg);
 
     int orientationAngle(Qt::ScreenOrientation orientation)
     {
@@ -51,9 +53,6 @@ namespace
         return screen->angleBetween(screen->primaryOrientation(), orientation);
     }
 }
-
-bool MInputContext::debug = false;
-
 
 MInputContext::MInputContext()
     : imServer(0),
@@ -67,9 +66,10 @@ MInputContext::MInputContext()
 {
     QByteArray debugEnvVar = qgetenv("MALIIT_DEBUG");
     if (!debugEnvVar.isEmpty() && debugEnvVar != "0") {
-        qDebug() << "Creating Maliit input context";
-        debug = true;
+        lcMaliit.setEnabled(QtDebugMsg, true);
     }
+
+    qCDebug(lcMaliit) << "Creating Maliit input context";
 
     QSharedPointer<Maliit::InputContext::DBus::Address> address;
 
@@ -165,7 +165,7 @@ void MInputContext::setLanguage(const QString &language)
 void MInputContext::reset()
 {
     if (composeInputContext) composeInputContext->reset();
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO;
 
     const bool hadPreedit = !preedit.isEmpty();
     preedit.clear();
@@ -179,7 +179,7 @@ void MInputContext::reset()
 
 void MInputContext::commit()
 {
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO;
 
     const bool hadPreedit = !preedit.isEmpty();
 
@@ -210,7 +210,7 @@ void MInputContext::commit()
 
 void MInputContext::invokeAction(QInputMethod::Action action, int x)
 {
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO;
 
     if (!inputMethodAccepted())
         return;
@@ -241,7 +241,7 @@ void MInputContext::invokeAction(QInputMethod::Action action, int x)
 void MInputContext::update(Qt::InputMethodQueries queries)
 {
     if (composeInputContext) composeInputContext->update(queries);
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO;
 
     Q_UNUSED(queries) // fetching everything
 
@@ -278,7 +278,7 @@ void MInputContext::updateServerOrientation(Qt::ScreenOrientation orientation)
 void MInputContext::setFocusObject(QObject *focused)
 {
     if (composeInputContext) composeInputContext->setFocusObject(focused);
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__ << focused;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO << focused;
 
     updateInputMethodExtensions();
 
@@ -372,7 +372,7 @@ bool MInputContext::isAnimating() const
 
 void MInputContext::showInputPanel()
 {
-    if (debug) qDebug() << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << Q_FUNC_INFO;
 
     if (inputMethodAccepted()) {
         sipHideTimer.stop();
@@ -394,7 +394,7 @@ void MInputContext::showInputPanel()
 
 void MInputContext::hideInputPanel()
 {
-    if (debug) qDebug() << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << Q_FUNC_INFO;
     sipHideTimer.start();
 }
 
@@ -422,7 +422,7 @@ void MInputContext::sendHideInputMethod()
 
 void MInputContext::activationLostEvent()
 {
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO;
 
     // This method is called when activation was gracefully lost.
     // There is similar cleaning up done in onDBusDisconnection.
@@ -435,7 +435,7 @@ void MInputContext::activationLostEvent()
 
 void MInputContext::imInitiatedHide()
 {
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO;
 
     inputPanelState = InputPanelHidden;
 
@@ -450,7 +450,7 @@ void MInputContext::imInitiatedHide()
 void MInputContext::commitString(const QString &string, int replacementStart,
                                  int replacementLength, int cursorPos)
 {
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO;
 
     if (imServer->pendingResets()) {
         return;
@@ -496,12 +496,10 @@ void MInputContext::updatePreedit(const QString &string,
                                   const QList<Maliit::PreeditTextFormat> &preeditFormats,
                                   int replacementStart, int replacementLength, int cursorPos)
 {
-    if (debug) {
-        qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__ << "preedit:" << string
-                 << ", replacementStart:" << replacementStart
-                 << ", replacementLength:" << replacementLength
-                 << ", cursorPos:" << cursorPos;
-    }
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO << "preedit:" << string
+                      << ", replacementStart:" << replacementStart
+                      << ", replacementLength:" << replacementLength
+                      << ", cursorPos:" << cursorPos;
 
     if (imServer->pendingResets()) {
         return;
@@ -559,9 +557,9 @@ void MInputContext::updatePreeditInternally(const QString &string,
     if (qGuiApp->focusObject()) {
         QGuiApplication::sendEvent(qGuiApp->focusObject(), &event);
     } else {
-       if (debug) qDebug() << __PRETTY_FUNCTION__;
-       qWarning() << "No focused object, cannot update preedit."
-                  << "Wrong reset/preedit behaviour in active input method plugin?";
+       qCDebug(lcMaliit) << Q_FUNC_INFO;
+       qCWarning(lcMaliit) << "No focused object, cannot update preedit."
+                           << "Wrong reset/preedit behaviour in active input method plugin?";
     }
 
     Q_EMIT preeditChanged();
@@ -571,7 +569,7 @@ void MInputContext::keyEvent(int type, int key, int modifiers, const QString &te
                              bool autoRepeat, int count,
                              Maliit::EventRequestType requestType)
 {
-    if (debug) qDebug() << InputContextName << "in" << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO;
 
     if (qGuiApp->focusWindow() != 0 && requestType != Maliit::EventRequestSignalOnly) {
         QEvent::Type eventType = static_cast<QEvent::Type>(type);
@@ -615,7 +613,7 @@ void MInputContext::getPreeditRectangle(QRect &rectangle, bool &valid) const
 
 void MInputContext::onInvokeAction(const QString &action, const QKeySequence &sequence)
 {
-    if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__ << "action" << action;
+    qCDebug(lcMaliit) << InputContextName << Q_FUNC_INFO << "action" << action;
 
     // NOTE: currently not trying to trigger action directly
     static const Qt::KeyboardModifiers AllModifiers = Qt::ShiftModifier | Qt::ControlModifier | Qt::AltModifier
@@ -635,7 +633,7 @@ void MInputContext::onInvokeAction(const QString &action, const QKeySequence &se
 
 void MInputContext::onDBusDisconnection()
 {
-    if (debug) qDebug() << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << Q_FUNC_INFO;
 
     active = false;
     redirectKeys = false;
@@ -645,7 +643,7 @@ void MInputContext::onDBusDisconnection()
 
 void MInputContext::onDBusConnection()
 {
-    if (debug) qDebug() << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << Q_FUNC_INFO;
 
     // using one attribute extension for everything
     imServer->registerAttributeExtension(0, QString());
@@ -705,7 +703,7 @@ void MInputContext::setRedirectKeys(bool enabled)
 void MInputContext::setDetectableAutoRepeat(bool enabled)
 {
     Q_UNUSED(enabled);
-    if (debug) qWarning() << "Detectable autorepeat not supported.";
+    qCDebug(lcMaliit) << "Detectable autorepeat not supported.";
 }
 
 QMap<QString, QVariant> MInputContext::getStateInformation() const
@@ -852,7 +850,7 @@ void MInputContext::updateInputMethodExtensions()
     if (!qGuiApp->focusObject()) {
         return;
     }
-    if (debug) qDebug() << InputContextName << __PRETTY_FUNCTION__;
+    qCDebug(lcMaliit) << InputContextName << Q_FUNC_INFO;
 
     QVariantMap extensions = qGuiApp->focusObject()->property("__inputMethodExtensions").toMap();
     QVariant value;

@@ -129,8 +129,6 @@ private:
     // Parameter valid set to false on failure.
     int cursorStartPosition(bool *valid);
 
-    static bool debug;
-
     DBusServerConnection *imServer;
     bool active; // is connection active
     QPointer<QWindow> window;

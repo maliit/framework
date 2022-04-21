@@ -15,6 +15,7 @@
 
 #include "keyoverridequick.h"
 #include "maliitquick.h"
+#include "logging.h"
 
 #include <maliit/plugins/abstractinputmethodhost.h>
 #include <maliit/plugins/keyoverride.h>
@@ -457,7 +458,7 @@ void InputMethodQuick::sendPreedit(const QString &text,
             int length = 0;
 
             if (formatTuple.length() < 3) {
-                qWarning() << "MInputMethodQuick.sendPreedit() got formatting tuple with less than three parameters";
+                qCWarning(lcMaliitFw) << "MInputMethodQuick.sendPreedit() got formatting tuple with less than three parameters";
                 continue;
             }
 

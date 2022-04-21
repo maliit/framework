@@ -14,6 +14,7 @@
 
 #include "abstractplatform.h"
 #include "windowgroup.h"
+#include "logging.h"
 
 namespace Maliit
 {
@@ -56,7 +57,7 @@ void WindowGroup::setupWindow(QWindow *window, Maliit::Position position)
             QWindow *parent = window->parent ();
 
             if (parent and not containsWindow(parent)) {
-                qWarning () << "Plugin is misbehaving - tried to register a window with yet-unregistered parent!";
+                qCWarning(lcMaliitFw) << "Plugin is misbehaving - tried to register a window with yet-unregistered parent!";
                 return;
             }
             m_window_list.append (WindowData(window, position));
@@ -127,7 +128,7 @@ void WindowGroup::onVisibleChanged(bool visible)
         QWindow *window = qobject_cast<QWindow*>(sender());
 
         if (window) {
-            qWarning () << "An inactive plugin is misbehaving - tried to show a window!";
+            qCWarning(lcMaliitFw) << "An inactive plugin is misbehaving - tried to show a window!";
             window->setVisible (false);
         }
     }
