@@ -31,7 +31,6 @@ private Q_SLOTS:
     void init();
     void cleanup();
 
-    void testQmlSetup_data();
     void testQmlSetup();
 
 private:

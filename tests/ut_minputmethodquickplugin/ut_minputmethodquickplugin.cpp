@@ -38,48 +38,19 @@ void Ut_MInputMethodQuickPlugin::init()
 void Ut_MInputMethodQuickPlugin::cleanup()
 {}
 
-void Ut_MInputMethodQuickPlugin::testQmlSetup_data()
-{
-    QTest::addColumn<QString>("testPluginPath");
-    QTest::newRow("Hello world")
-        << "helloworld/helloworld.qml";
-// TODO Adapt plugins for Qt 5
-#if 0
-    QTest::newRow("Cycle keys")
-        << "cyclekeys/libqmlcyclekeysplugin.so";
-    QTest::newRow("Override")
-        << "override/libqmloverrideplugin.so";
-#endif
-}
-
-/* This test currently tests both the qml example found in examples/
- * and the minputmethodquick interface, since the test is so simple.
- * If more tests are added, it might make sense to make these two
- * things tested in separate tests. */
 void Ut_MInputMethodQuickPlugin::testQmlSetup()
 {
-    QFETCH(QString, testPluginPath);
-
-    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox() ?
-                QDir(IN_TREE_TEST_PLUGIN_DIR"/qml") : QDir(MALIIT_TEST_PLUGINS_DIR"/examples/qml");
-    const QString pluginPath = pluginDir.absoluteFilePath(testPluginPath);
-    const QString pluginId = QFileInfo(testPluginPath).baseName();
+    QString testPlugin("helloworld.qml");
+    const QDir pluginDir = MaliitTestUtils::isTestingInSandbox()
+            ? QDir(MaliitTestUtils::getTestDataPath() + "/qmlplugin")
+            : QDir(MALIIT_TEST_PLUGINS_DIR"/qml/helloworld");
+    const QString pluginPath = pluginDir.absoluteFilePath(testPlugin);
+    const QString pluginId = QFileInfo(testPlugin).baseName();
     QVERIFY(pluginDir.exists(pluginPath));
 
-    QObject *pluginInstance = 0;
-    Maliit::Plugins::InputMethodPlugin *plugin = 0;
-
-    if (pluginPath.endsWith(".qml")) {
-        plugin = new Maliit::InputMethodQuickPlugin(pluginPath,
-                                                    QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
-    } else {
-        QPluginLoader loader(pluginPath);
-        pluginInstance = loader.instance();
-        QVERIFY(pluginInstance != 0);
-        plugin = qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
-    }
-
-    QVERIFY(plugin != 0);
+    Maliit::Plugins::InputMethodPlugin *plugin
+            = new Maliit::InputMethodQuickPlugin(pluginPath,
+                                                 QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
 
     MaliitTestUtils::TestInputMethodHost host(pluginId, plugin->name());
     Maliit::InputMethodQuick *testee = static_cast<Maliit::InputMethodQuick *>(
