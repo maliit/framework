@@ -30,6 +30,14 @@ public:
     ~QWaylandInputPanelSurface() override;
 
     void applyConfigure() override;
+
+    bool isExposed() const override;
+
+private:
+    void zwp_input_panel_surface_v1_configure(uint32_t serial, uint32_t width, uint32_t height) override;
+
+    QSize m_pendingSize;
+    bool m_configured = false;
 };
 
 }
