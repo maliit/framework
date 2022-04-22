@@ -91,7 +91,7 @@ if(enable-wayland)
          connection/waylandinputmethodconnection.cpp
          connection/waylandinputmethodconnection.h)
 
-    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WaylandProtocols_DATADIR}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
 
     add_definitions(-DHAVE_WAYLAND)
 endif()
@@ -309,7 +309,7 @@ if(enable-wayland)
             src/qt/plugins/shellintegration/qwaylandinputpanelshellintegration.cpp
             src/qt/plugins/shellintegration/qwaylandinputpanelshellintegration.h src/qt/plugins/shellintegration/qwaylandinputpanelsurface.cpp src/qt/plugins/shellintegration/qwaylandinputpanelsurface.h)
 
-    ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
+    ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WaylandProtocols_DATADIR}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
 
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
     target_link_libraries(inputpanel-shell Qt5::WaylandClient PkgConfig::XKBCOMMON Wayland::Client)
@@ -320,7 +320,7 @@ if(enable-wayland)
                 src/gtk/plugins/im-module/gtkimcontextwayland.c
                 src/gtk/plugins/im-module/gtkimcontextwayland.h
                 src/gtk/plugins/im-module/imwayland.c)
-        ecm_add_wayland_client_protocol(IM_WAYLAND_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
+        ecm_add_wayland_client_protocol(IM_WAYLAND_SOURCES PROTOCOL ${WaylandProtocols_DATADIR}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
         target_sources(im-wayland PRIVATE ${IM_WAYLAND_SOURCES})
         target_link_libraries(im-wayland Gtk3::Gtk)
     endif()
