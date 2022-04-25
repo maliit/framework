@@ -50,7 +50,7 @@ namespace
     int orientationAngle(Qt::ScreenOrientation orientation)
     {
         QScreen *screen = qGuiApp->primaryScreen();
-        return screen->angleBetween(screen->primaryOrientation(), orientation);
+        return screen->angleBetween(orientation, screen->primaryOrientation());
     }
 }
 

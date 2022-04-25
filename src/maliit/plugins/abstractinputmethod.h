@@ -138,13 +138,13 @@ public:
      * Note that this method might not be called when the input method shown for the first time.
      * \sa handleAppOrientationChanged(int angle)
      *
-     * \param angle The angle in degrees. Possible values: 0, 90, 180, 270. 0 is the normal orientation of the display server.
+     * \param angle The angle in degrees, clockwise. Possible values: 0, 90, 180, 270. 0 is the normal orientation of the display server.
      */
     virtual void handleAppOrientationAboutToChange(int angle);
 
     /*! \brief Target application already finish changing orientation.
      *
-     * \param angle The angle in degrees. Possible values: 0, 90, 180, 270. 0 is the normal orientation of the display server.
+     * \param angle The angle in degrees, clockwise. Possible values: 0, 90, 180, 270. 0 is the normal orientation of the display server.
      */
     virtual void handleAppOrientationChanged(int angle);
 
