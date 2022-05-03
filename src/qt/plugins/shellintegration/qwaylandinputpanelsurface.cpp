@@ -26,7 +26,6 @@ QWaylandInputPanelSurface::QWaylandInputPanelSurface(struct ::zwp_input_panel_su
     , QtWayland::zwp_input_panel_surface_v1(object)
 {
     qCDebug(qLcQpaShellIntegration) << Q_FUNC_INFO;
-    window->applyConfigureWhenPossible();
 }
 
 QWaylandInputPanelSurface::~QWaylandInputPanelSurface()
@@ -37,6 +36,29 @@ QWaylandInputPanelSurface::~QWaylandInputPanelSurface()
 void QWaylandInputPanelSurface::applyConfigure()
 {
     set_toplevel(window()->waylandScreen()->output(), position_center_bottom);
+    window()->resizeFromApplyConfigure(m_pendingSize);
+}
+
+bool QWaylandInputPanelSurface::isExposed() const
+{
+    return m_configured;
+}
+
+void QWaylandInputPanelSurface::zwp_input_panel_surface_v1_configure(uint32_t serial, uint32_t width, uint32_t height)
+{
+    ack_configure(serial);
+
+    m_pendingSize = QSize(width, height);
+
+    if (!m_configured) {
+        m_configured = true;
+        window()->resizeFromApplyConfigure(m_pendingSize);
+        window()->handleExpose(QRect(QPoint(), m_pendingSize));
+    } else {
+        // Later configures are resizes, so we have to queue them up for a time when we
+        // are not painting to the window.
+        window()->applyConfigureWhenPossible();
+    }
 }
 
 }
