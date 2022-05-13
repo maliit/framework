@@ -38,11 +38,7 @@ namespace Maliit {
 
 class AbstractPlatform;
 
-namespace Plugins {
-    class AbstractPluginSetting;
 }
-}
-using Maliit::Plugins::AbstractPluginSetting;
 
 //! \internal
 /*! \ingroup maliitserver
@@ -106,14 +102,6 @@ public:
     //! Enables all installed subviews
     void setAllSubViewsEnabled(bool enable);
 
-    //! Register a setting entry for the specified plugin
-    AbstractPluginSetting *registerPluginSetting(const QString &pluginId,
-                                                 const QString &pluginDescription,
-                                                 const QString &key,
-                                                 const QString &description,
-                                                 Maliit::SettingEntryType type,
-                                                 const QVariantMap &attributes);
-
 Q_SIGNALS:
     //! This signal is emitted when input method plugins are loaded, unloaded,
     //! enabled or disabled
@@ -154,8 +142,6 @@ private Q_SLOTS:
     void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
-
-    void pluginSettingsRequested(int clientId, const QString &descriptionLanguage);
 
     /*!
      * \brief Handle global attribute change

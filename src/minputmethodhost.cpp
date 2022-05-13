@@ -240,14 +240,6 @@ int MInputMethodHost::anchorPosition(bool &valid)
     return connection->anchorPosition(valid);
 }
 
-AbstractPluginSetting *MInputMethodHost::registerPluginSetting(const QString &key,
-                                                               const QString &description,
-                                                               Maliit::SettingEntryType type,
-                                                               const QVariantMap &attributes)
-{
-    return pluginManager->registerPluginSetting(pluginId, pluginDescription, key, description, type, attributes);
-}
-
 QVariant MInputMethodHost::inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const
 {
     return connection->inputMethodQuery(query, argument);

@@ -99,43 +99,6 @@ test_preferred_description_locale_set_get_roundtrip(void)
     g_assert_cmpstr(actual, ==, expected);
 }
 
-void
-add_gobject_ref_gfunc(gpointer data, gpointer user_data G_GNUC_UNUSED)
-{
-    g_object_ref(data);
-}
-
-/**
- * Test that calling maliit_settings_manager_load_plugins will return
- * a list of settings through the MaliitSettingsManager::plugin-settings-received signal
- */
-void
-test_load_plugins_settings_returns_settings(void)
-{
-    MockMaliitServer *server;
-    MaliitSettingsManager *manager;
-
-    server = mock_maliit_server_new();
-    server->settings = g_variant_new_parsed("@a(sssia(ssibva{sv})) [('a', 'b', 'c', 42, [])]");
-    maliit_set_bus(mock_maliit_server_get_bus(server));
-
-    manager = maliit_settings_manager_new();
-    maliit_settings_manager_load_plugin_settings(manager);
-    g_assert(server->load_plugin_settings_called);
-
-    g_object_unref(manager);
-    maliit_set_bus(NULL);
-    mock_maliit_server_free(server);
-}
-
-
-void
-on_signal_received(gpointer instance G_GNUC_UNUSED, gpointer user_data)
-{
-    gboolean *received = (gboolean *)user_data;
-    *received = TRUE;
-}
-
 int
 main (int argc, char **argv) {
     g_test_init(&argc, &argv, NULL);
@@ -147,8 +110,6 @@ main (int argc, char **argv) {
                     test_preferred_description_locale_default);
     g_test_add_func("/ut_maliit_glib_settings/MaliitSettingsManager/preferred_description_locale/set-get-roundtrip",
                     test_preferred_description_locale_set_get_roundtrip);
-    g_test_add_func("/ut_maliit_glib_settings/MaliitSettingsManager/load_plugin_settings/returns-settings",
-                    test_load_plugins_settings_returns_settings);
 
     return g_test_run();
 }

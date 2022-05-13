@@ -22,7 +22,6 @@
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
 #include <maliit/settingdata.h>
-#include <maliit/plugins/abstractpluginsetting.h>
 #include "windowgroup.h"
 #include "abstractplatform.h"
 
@@ -41,26 +40,6 @@ class MSharedAttributeExtensionManager;
 class MImSettings;
 class MAbstractInputMethod;
 class MIMPluginManagerAdaptor;
-
-/* Internal class only! Interfaces here change, internal developers only*/
-class PluginSetting : public Maliit::Plugins::AbstractPluginSetting
-{
-    Q_OBJECT
-
-public:
-    PluginSetting(const QString &shortKey, const QString &fullKey, const QVariant &value);
-
-    virtual QString key() const;
-    virtual QVariant value() const;
-    virtual QVariant value(const QVariant &def) const;
-    virtual void set(const QVariant &val);
-    virtual void unset();
-
-private:
-    QString pluginKey;
-    MImSettings setting;
-    QVariant defaultValue;
-};
 
 /* Internal class only! Interfaces here change, internal developers only*/
 class MIMPluginManagerPrivate
@@ -98,9 +77,6 @@ public:
     void loadPlugins();
     bool loadPlugin(const QDir &dir, const QString &fileName);
     void addHandlerMap(Maliit::HandlerState state, const QString &pluginName);
-    void registerSettings();
-    void registerSettings(const MImPluginSettingsInfo &info);
-    MImPluginSettingsInfo globalSettings() const;
     void setActiveHandlers(const QSet<Maliit::HandlerState> &states);
     QSet<Maliit::HandlerState> activeHandlers() const;
     void deactivatePlugin(Maliit::Plugins::InputMethodPlugin *plugin);
@@ -174,7 +150,6 @@ public:
     Plugins plugins;
     ActivePlugins activePlugins;
     QSet<MAbstractInputMethod *> targets;
-    QList<MImPluginSettingsInfo> settings;
 
     QStringList paths;
     QStringList blacklist;

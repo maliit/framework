@@ -48,9 +48,6 @@ DBusInputContextConnection::DBusInputContextConnection(const QSharedPointer<Mali
 {
     connect(mServer.data(), SIGNAL(newConnection(QDBusConnection)), this, SLOT(newConnection(QDBusConnection)));
 
-    qDBusRegisterMetaType<MImPluginSettingsEntry>();
-    qDBusRegisterMetaType<MImPluginSettingsInfo>();
-    qDBusRegisterMetaType<QList<MImPluginSettingsInfo> >();
     qDBusRegisterMetaType<Maliit::PreeditTextFormat>();
     qDBusRegisterMetaType<QList<Maliit::PreeditTextFormat> >();
 
@@ -290,16 +287,6 @@ DBusInputContextConnection::notifyExtendedAttributeChanged(const QList<int> &cli
     }
 }
 
-void
-DBusInputContextConnection::pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info)
-{
-    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(clientId);
-    if (proxy) {
-        proxy->pluginSettingsLoaded(info);
-    }
-}
-
-
 unsigned int
 DBusInputContextConnection::connectionNumber()
 {
@@ -374,9 +361,4 @@ void DBusInputContextConnection::unregisterAttributeExtension(int id)
 void DBusInputContextConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value)
 {
     MInputContextConnection::setExtendedAttribute(connectionNumber(), id, target, targetItem, attribute, value.variant());
-}
-
-void DBusInputContextConnection::loadPluginSettings(const QString &descriptionLanguage)
-{
-    MInputContextConnection::loadPluginSettings(connectionNumber(), descriptionLanguage);
 }

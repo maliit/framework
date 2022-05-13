@@ -308,15 +308,7 @@ maliit_settings_manager_load_plugin_settings (MaliitSettingsManager *manager)
 
     server = maliit_get_server_sync (NULL, &error);
 
-    if (server) {
-        if (!maliit_server_call_load_plugin_settings_sync (server,
-                                                           maliit_settings_manager_get_preferred_description_locale (),
-                                                           NULL,
-                                                           &error)) {
-            g_warning ("Unable to load plugin settings: %s", error->message);
-            g_clear_error (&error);
-        }
-    } else {
+    if (!server) {
         g_warning ("Unable to connect to server: %s", error->message);
         g_clear_error (&error);
     }

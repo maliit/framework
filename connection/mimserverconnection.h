@@ -19,7 +19,6 @@
 #include <QtCore>
 
 class MImServerConnectionPrivate;
-class MImPluginSettingsInfo;
 
 class MImServerConnection : public QObject
 {
@@ -50,7 +49,6 @@ public:
     virtual void unregisterAttributeExtension(int id);
     virtual void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                                       const QString &attribute, const QVariant &value);
-    virtual void loadPluginSettings(const QString &descriptionLanguage);
 
 public:
     /*! \brief Notifies about connection to server being established.
@@ -182,15 +180,6 @@ public:
                                            const QString &targetItem,
                                            const QString &attribute,
                                            const QVariant &value);
-
-    /*!
-     * \brief Updates the list of server settings known to the application.
-     * \param info list of server and plugin settings
-     *
-     * Sent in response to \a loadPluginSettings().  Might be sent spontaneously by
-     * the server in response to external events (plugin loaded/unloaded, ...).
-     */
-    Q_SIGNAL void pluginSettingsReceived(const QList<MImPluginSettingsInfo> &info);
 
 private:
     Q_DISABLE_COPY(MImServerConnection)

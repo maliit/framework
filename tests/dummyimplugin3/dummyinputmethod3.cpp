@@ -31,12 +31,6 @@ DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *host)
     QVariantMap settingAttributes;
 
     settingAttributes[Maliit::SettingEntryAttributes::defaultValue] = "Test";
-
-    setting.reset(host->registerPluginSetting("setting", QT_TR_NOOP("Example setting"),
-                                              Maliit::StringType, settingAttributes));
-
-    connect(setting.data(), SIGNAL(valueChanged()),
-            this,           SLOT(handleSettingChanged()));
 }
 
 void DummyInputMethod3::setState(const QSet<Maliit::HandlerState> &state)
@@ -90,9 +84,4 @@ void DummyInputMethod3::show()
 {
     inputMethodHost()->setScreenRegion(QRegion(0, 0, 100, 100));
     Q_EMIT showCalled();
-}
-
-void DummyInputMethod3::handleSettingChanged()
-{
-    localSettingValue = setting->value();
 }

@@ -28,7 +28,6 @@
 typedef struct _MockMaliitServerPriv MockMaliitServerPriv;
 
 typedef struct {
-    gboolean load_plugin_settings_called;
     MockMaliitServerPriv *priv;
     GVariant *settings; /* To be set by tests */
 } MockMaliitServer;

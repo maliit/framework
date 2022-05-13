@@ -41,9 +41,6 @@ DBusServerConnection::DBusServerConnection(const QSharedPointer<Maliit::InputCon
   , mActive(true)
   , pendingResetCalls()
 {
-    qDBusRegisterMetaType<MImPluginSettingsEntry>();
-    qDBusRegisterMetaType<MImPluginSettingsInfo>();
-    qDBusRegisterMetaType<QList<MImPluginSettingsInfo> >();
     qDBusRegisterMetaType<Maliit::PreeditTextFormat>();
     qDBusRegisterMetaType<QList<Maliit::PreeditTextFormat> >();
 
@@ -246,20 +243,6 @@ void DBusServerConnection::setExtendedAttribute(int id, const QString &target, c
         return;
 
     mProxy->setExtendedAttribute(id, target, targetItem, attribute, QDBusVariant(value));
-}
-
-void DBusServerConnection::loadPluginSettings(const QString &descriptionLanguage)
-{
-    if (!mProxy)
-        return;
-
-    mProxy->loadPluginSettings(descriptionLanguage);
-}
-
-
-void DBusServerConnection::pluginSettingsLoaded(const QList<MImPluginSettingsInfo> &info)
-{
-    pluginSettingsReceived(info);
 }
 
 void DBusServerConnection::keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,

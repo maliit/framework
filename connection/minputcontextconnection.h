@@ -26,7 +26,6 @@ QT_END_NAMESPACE
 class MInputContextConnectionPrivate;
 class MAbstractInputMethod;
 class MAttributeExtensionId;
-class MImPluginSettingsInfo;
 
 /*! \internal
  * \ingroup maliitserver
@@ -288,11 +287,6 @@ public: // Inbound communication handlers
     void setExtendedAttribute(unsigned int clientId, int id, const QString &target,
                               const QString &targetItem, const QString &attribute, const QVariant &value);
 
-    /*!
-     * \brief Requests information about plugin/server settings.
-     */
-    void loadPluginSettings(int connectionId, const QString &descriptionLanguage);
-
 public Q_SLOTS:
     //! Update \a region covered by virtual keyboard
     virtual void updateInputMethodArea(const QRegion &region);
@@ -317,11 +311,6 @@ public Q_SLOTS:
                                                 const QString &targetItem,
                                                 const QString &attribute,
                                                 const QVariant &value);
-
-    /*!
-     * \brief Sends the list of plugin/server settings to the specified client.
-     */
-    virtual void pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info);
 
 Q_SIGNALS:
     /* Emitted first */
@@ -350,7 +339,6 @@ Q_SIGNALS:
     void extendedAttributeChanged(unsigned int connectionId, int id, const QString &target,
                               const QString &targetName,const QString &attribute, const QVariant &value);
 
-    void pluginSettingsRequested(int connectionId, const QString &descriptionLanguage);
 
     void clientActivated(unsigned int connectionId);
     void clientDisconnected(unsigned int connectionId);

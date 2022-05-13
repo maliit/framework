@@ -44,21 +44,6 @@ struct _MockMaliitServerPriv {
     GMutex thread_mutex;
 };
 
-/* Record the call, and respond with a list of settings */
-gboolean
-load_plugin_settings (MaliitServer *server,
-                      GDBusMethodInvocation *invocation,
-                      const gchar *locale_name G_GNUC_UNUSED,
-                      gpointer user_data)
-{
-    MockMaliitServer *self = user_data;
-
-    self->load_plugin_settings_called = TRUE;
-
-    maliit_server_complete_load_plugin_settings(server, invocation);
-    return TRUE;
-}
-
 static gboolean
 start_server(gpointer user_data)
 {
@@ -73,7 +58,6 @@ start_server(gpointer user_data)
                                                    self->priv->server_connection,
                                                    SERVER_OBJECT_PATH,
                                                    NULL));
-    g_signal_connect(self->priv->server, "handle-load-plugin-settings", G_CALLBACK(load_plugin_settings), self);
 
     g_cond_signal(&self->priv->thread_cond);
     g_mutex_unlock(&self->priv->thread_mutex);

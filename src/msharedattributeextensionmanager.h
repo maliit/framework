@@ -41,13 +41,6 @@ public:
     MSharedAttributeExtensionManager();
     virtual ~MSharedAttributeExtensionManager();
 
-    /*!
-     * \brief Add a new setting entry to the extension manager
-     *
-     * \sa Maliit::SettingsEntry, MImPluginSettingsEntry
-     */
-    void registerPluginSetting(const QString &fullName, Maliit::SettingEntryType type, QVariantMap attributes);
-
 public Q_SLOTS:
     void handleClientDisconnect(unsigned int clientId);
     void handleAttributeExtensionRegistered(unsigned int clientId, int id, const QString &attributeExtension);

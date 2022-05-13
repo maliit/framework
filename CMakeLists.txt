@@ -114,7 +114,6 @@ set(PLUGINS_SOURCES
     src/maliit/plugins/abstractinputmethod.h
     src/maliit/plugins/abstractinputmethodhost.cpp
     src/maliit/plugins/abstractinputmethodhost.h
-    src/maliit/plugins/abstractpluginsetting.h
     src/maliit/plugins/attributeextension.cpp
     src/maliit/plugins/attributeextension.h
     src/maliit/plugins/attributeextension_p.h
@@ -494,7 +493,6 @@ if(enable-tests)
     add_library(test-utils STATIC
             tests/utils/core-utils.cpp
             tests/utils/core-utils.h
-            tests/utils/gui-utils.cpp
             tests/utils/gui-utils.h)
     target_link_libraries(test-utils PUBLIC Qt5::Core Qt5::Gui Qt5::Test maliit-connection)
     target_include_directories(test-utils INTERFACE tests/utils)

@@ -111,8 +111,3 @@ void MImServerConnection::setExtendedAttribute(int id, const QString &target, co
     Q_UNUSED(attribute);
     Q_UNUSED(value);
 }
-
-void MImServerConnection::loadPluginSettings(const QString &descriptionLanguage)
-{
-    Q_UNUSED(descriptionLanguage);
-}

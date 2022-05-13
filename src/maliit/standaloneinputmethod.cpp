@@ -69,10 +69,6 @@ StandaloneInputMethod::StandaloneInputMethod(Maliit::Plugins::InputMethodPlugin 
 
     connect(mConnection.get(), &MInputContextConnection::widgetStateChanged,
             this, &StandaloneInputMethod::handleWidgetStateChanged);
-
-//    connect(d->mICConnection.data(), SIGNAL(pluginSettingsRequested(int,QString)),
-//            this, SLOT(pluginSettingsRequested(int,QString)));
-
 }
 
 StandaloneInputMethod::~StandaloneInputMethod()

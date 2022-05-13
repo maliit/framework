@@ -31,8 +31,6 @@ QT_BEGIN_NAMESPACE
 class QRegion;
 QT_END_NAMESPACE
 
-using Maliit::Plugins::AbstractPluginSetting;
-
 /*! \internal
  * \ingroup maliitserver
  * \brief Interface implementation for connecting input method instances to the environment.
@@ -98,10 +96,6 @@ public:
 
     //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);
-    virtual AbstractPluginSetting *registerPluginSetting(const QString &key,
-                                                         const QString &description,
-                                                         Maliit::SettingEntryType type,
-                                                         const QVariantMap &attributes);
     // \reimp_end
     QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const override;
 

@@ -15,7 +15,6 @@
 #define HELLO_WORLD_INPUT_METHOD_H
 
 #include <maliit/plugins/abstractinputmethod.h>
-#include <maliit/plugins/abstractpluginsetting.h>
 
 #include <QSet>
 #include <QWidget>
@@ -69,11 +68,9 @@ public:
 
 private Q_SLOTS:
     void handleButtonClicked();
-    void handleButtonTextChanged();
 
 private:
     QScopedPointer<QWidget> surface;
-    QScopedPointer<Maliit::Plugins::AbstractPluginSetting> buttonText;
     QPushButton *mainWidget;
     bool showIsInhibited;
     bool showRequested;

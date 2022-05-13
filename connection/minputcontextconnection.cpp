@@ -346,11 +346,6 @@ void MInputContextConnection::setExtendedAttribute(
 {
     Q_EMIT extendedAttributeChanged(connectionId, id, target, targetName, attribute, value);
 }
-
-void MInputContextConnection::loadPluginSettings(int connectionId, const QString &descriptionLanguage)
-{
-    Q_EMIT pluginSettingsRequested(connectionId, descriptionLanguage);
-}
 /* End handlers for inbound communication */
 
 bool MInputContextConnection::detectableAutoRepeat()
@@ -541,14 +536,6 @@ void MInputContextConnection::notifyExtendedAttributeChanged(const QList<int> &,
                                                              const QString &,
                                                              const QVariant &)
 {
-    // empty default implementation
-}
-
-void MInputContextConnection::pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info)
-{
-    Q_UNUSED(clientId);
-    Q_UNUSED(info);
-
     // empty default implementation
 }
 

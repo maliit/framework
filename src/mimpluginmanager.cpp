@@ -50,7 +50,6 @@ namespace
     const QString MImPluginDisabled    = ConfigRoot + "disabledpluginfiles";
 
     const QString PluginRoot           = MALIIT_CONFIG_ROOT"plugins";
-    const QString PluginSettings       = MALIIT_CONFIG_ROOT"pluginsettings";
     const QString MImAccesoryEnabled   = MALIIT_CONFIG_ROOT"accessoryenabled";
 
     const char * const InputMethodItem = "inputMethod";
@@ -149,7 +148,7 @@ bool MIMPluginManagerPrivate::loadPlugin(const QDir &dir, const QString &fileNam
         plugin = qobject_cast<Maliit::Plugins::InputMethodPlugin *>(pluginInstance);
         if (!plugin) {
             qCWarning(lcMaliitFw) << Q_FUNC_INFO << pluginInstance->metaObject()->className()
-                                  << "is not a Maliit::Server::InputMethodPlugin.";
+                                  << "is not a Maliit::Server::InputMethodPlugin." << fileName;
             return false;
         }
     }
@@ -230,86 +229,6 @@ void MIMPluginManagerPrivate::addHandlerMap(Maliit::HandlerState state,
         }
     }
     qCWarning(lcMaliitFw) << Q_FUNC_INFO << "Could not find plugin:" << pluginId;
-}
-
-
-MImPluginSettingsInfo MIMPluginManagerPrivate::globalSettings() const
-{
-    QStringList domain, descriptions;
-
-    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, plugins.keys()) {
-        const MIMPluginManagerPrivate::PluginDescription &descr = plugins[plugin];
-        QList<MAbstractInputMethod::MInputMethodSubView> subviews = descr.inputMethod->subViews();
-
-        Q_FOREACH (const MAbstractInputMethod::MInputMethodSubView &subview, subviews) {
-            domain.append(descr.pluginId + ":" + subview.subViewId);
-            descriptions.append(plugin->name() + " - " + subview.subViewTitle);
-        }
-    }
-
-    MImPluginSettingsEntry active_subviews;
-
-    active_subviews.extension_key = MALIIT_CONFIG_ROOT"onscreen/active";
-    active_subviews.description = QT_TRANSLATE_NOOP("maliit", "Active subview");
-    active_subviews.type = Maliit::StringType;
-    active_subviews.attributes[Maliit::SettingEntryAttributes::valueDomain] = domain;
-    active_subviews.attributes[Maliit::SettingEntryAttributes::valueDomainDescriptions] = descriptions;
-
-    MImPluginSettingsEntry enabled_subviews;
-
-    enabled_subviews.extension_key = MALIIT_CONFIG_ROOT"onscreen/enabled";
-    enabled_subviews.description = QT_TRANSLATE_NOOP("maliit", "Enabled subviews");
-    enabled_subviews.type = Maliit::StringListType;
-    enabled_subviews.attributes[Maliit::SettingEntryAttributes::valueDomain] = domain;
-    enabled_subviews.attributes[Maliit::SettingEntryAttributes::valueDomainDescriptions] = descriptions;
-
-    MImPluginSettingsInfo global;
-
-    global.plugin_description = QT_TRANSLATE_NOOP("maliit", "Global");
-    global.plugin_name = "server";
-    global.extension_id = MSharedAttributeExtensionManager::PluginSettings;
-    global.entries.append(active_subviews);
-    global.entries.append(enabled_subviews);
-
-    return global;
-}
-
-
-void MIMPluginManagerPrivate::registerSettings()
-{
-    // not exposed to final user, merely used to listen for settings list changes
-    MImPluginSettingsInfo settings_list;
-
-    settings_list.plugin_name = "@settings";
-    settings_list.extension_id = MSharedAttributeExtensionManager::PluginSettingsList;
-
-    registerSettings(settings_list);
-
-    // global settings
-    registerSettings(globalSettings());
-}
-
-
-void MIMPluginManagerPrivate::registerSettings(const MImPluginSettingsInfo &info)
-{
-    bool found = false;
-
-    for (int i = 0; i < settings.size(); ++i) {
-        if (settings[i].plugin_name == info.plugin_name) {
-            found = true;
-            settings[i].entries.append(info.entries);
-            break;
-        }
-    }
-
-    // No setting info for this plugin yet: add the whole entry
-    if (!found) {
-        settings.append(info);
-    }
-
-    Q_FOREACH (const MImPluginSettingsEntry &entry, info.entries) {
-        sharedAttributeExtensionManager->registerPluginSetting(entry.extension_key, entry.type, entry.attributes);
-    }
 }
 
 
@@ -1172,9 +1091,6 @@ MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>
     connect(d->mICConnection.data(), SIGNAL(clientDisconnected(uint)),
             d->sharedAttributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
 
-    connect(d->mICConnection.data(), SIGNAL(pluginSettingsRequested(int,QString)),
-            this, SLOT(pluginSettingsRequested(int,QString)));
-
     connect(d->mICConnection.data(), SIGNAL(focusChanged(WId)),
             this, SLOT(handleAppFocusChanged(WId)));
 
@@ -1194,8 +1110,6 @@ MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>
     d->loadPlugins();
 
     d->loadHandlerMap();
-
-    d->registerSettings();
 
     connect(&d->onScreenPlugins, SIGNAL(activeSubViewChanged()),
             this, SLOT(_q_onScreenSubViewChanged()));
@@ -1573,84 +1487,6 @@ void MIMPluginManager::onGlobalAttributeChanged(const MAttributeExtensionId &id,
 
         setAllSubViewsEnabled(value.toBool());
     }
-}
-
-void MIMPluginManager::pluginSettingsRequested(int clientId, const QString &descriptionLanguage)
-{
-    Q_D(MIMPluginManager);
-
-    QList<MImPluginSettingsInfo> settings = d->settings;
-
-    for (int i = 0; i < settings.count(); ++i) {
-        QList<MImPluginSettingsEntry> &entries = settings[i].entries;
-
-        // TODO translate descriptions using descriptionLanguage
-        settings[i].description_language = descriptionLanguage;
-
-        for (int j = 0; j < entries.count(); ++j) {
-            // TODO translate descriptions using descriptionLanguage
-            entries[j].value = MImSettings(entries[j].extension_key).value(entries[j].attributes.value(Maliit::SettingEntryAttributes::defaultValue));
-        }
-    }
-
-    d->mICConnection->pluginSettingsLoaded(clientId, settings);
-}
-
-AbstractPluginSetting *MIMPluginManager::registerPluginSetting(const QString &pluginId,
-                                                               const QString &pluginDescription,
-                                                               const QString &key,
-                                                               const QString &description,
-                                                               Maliit::SettingEntryType type,
-                                                               const QVariantMap &attributes)
-{
-    Q_D(MIMPluginManager);
-
-    MImPluginSettingsEntry entry;
-    entry.description = description;
-    entry.type = type;
-    entry.extension_key = PluginSettings + "/" + pluginId + "/" + key;
-    entry.attributes = attributes;
-
-    MImPluginSettingsInfo info;
-    info.plugin_name = pluginId;
-    info.plugin_description = pluginDescription;
-    info.extension_id = MSharedAttributeExtensionManager::PluginSettings;
-    info.entries.append(entry);
-
-    d->registerSettings(info);
-
-    return new PluginSetting(key, entry.extension_key, entry.attributes.value(Maliit::SettingEntryAttributes::defaultValue));
-}
-
-PluginSetting::PluginSetting(const QString &shortKey, const QString &fullKey, const QVariant &value) :
-    pluginKey(shortKey), setting(fullKey), defaultValue(value)
-{
-    connect(&setting, SIGNAL(valueChanged()), this, SIGNAL(valueChanged()));
-}
-
-QString PluginSetting::key() const
-{
-    return pluginKey;
-}
-
-QVariant PluginSetting::value() const
-{
-    return setting.value(defaultValue);
-}
-
-QVariant PluginSetting::value(const QVariant &def) const
-{
-    return setting.value(def.isValid() ? def : defaultValue);
-}
-
-void PluginSetting::set(const QVariant &val)
-{
-    setting.set(val);
-}
-
-void PluginSetting::unset()
-{
-    setting.unset();
 }
 
 #include "moc_mimpluginmanager.cpp"

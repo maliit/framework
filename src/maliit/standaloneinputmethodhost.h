@@ -58,10 +58,6 @@ public:
     void setSelection(int start, int length) override;
     void setOrientationAngleLocked(bool lock) override;
     QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState state) const override;
-    Maliit::Plugins::AbstractPluginSetting *registerPluginSetting(const QString &key,
-                                                                  const QString &description,
-                                                                  Maliit::SettingEntryType type,
-                                                                  const QVariantMap &attributes) override;
     bool hiddenText(bool &valid) override;
     void setLanguage(const QString &language) override;
     QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const override;

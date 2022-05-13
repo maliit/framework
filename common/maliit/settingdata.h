@@ -40,30 +40,10 @@ struct MImPluginSettingsEntry
 
 
 /*!
- * \brief Settings for a Maliit input method plugin
- */
-struct MImPluginSettingsInfo
-{
-    //! The language used for human-readable descriptions
-    QString description_language;
-    //! Internal plugin name; "server" for global configuration entries
-    QString plugin_name;
-    //! Human-readable plugin description
-    QString plugin_description;
-    //! Attribute extension id; multiple MImPluginSettingsInfo instances might share the same extension id
-    int extension_id;
-    //! List of configuration entries for this plugin
-    QList<MImPluginSettingsEntry> entries;
-};
-
-
-/*!
  * \brief Validate the value for a plugin setting entry
  */
 bool validateSettingValue(Maliit::SettingEntryType type, const QVariantMap attributes, const QVariant &value);
 
 Q_DECLARE_METATYPE(MImPluginSettingsEntry)
-Q_DECLARE_METATYPE(MImPluginSettingsInfo)
-Q_DECLARE_METATYPE(QList<MImPluginSettingsInfo>)
 
 #endif
