@@ -51,7 +51,6 @@ public:
                             const QKeySequence &sequence);
     virtual void setSelection(int start, int length);
     virtual QString selection(bool &valid);
-    virtual void setLanguage(const QString &language);
     virtual void sendActivationLostEvent();
     virtual void updateInputMethodArea(const QRegion &region);
     virtual void notifyExtendedAttributeChanged(int id,
@@ -94,8 +93,6 @@ private:
     QHash<QString, unsigned int> mConnectionNumbers;
     QHash<unsigned int, ComMeegoInputmethodInputcontext1Interface *> mProxys;
     QHash<unsigned int, QString> mConnections;
-
-    QString lastLanguage;
 };
 
 #endif // DBUSINPUTCONTEXTCONNECTION_H

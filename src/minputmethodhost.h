@@ -92,7 +92,6 @@ public:
     virtual QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState state) const;
     virtual int preeditClickPos(bool &valid) const;
     virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(Maliit::HandlerState state) const;
-    virtual void setLanguage(const QString &language);
 
     //! Only empty implementation provided.
     virtual void setOrientationAngleLocked(bool lock);

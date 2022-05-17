@@ -207,12 +207,6 @@ public:
      */
     virtual QString selection(bool &valid);
 
-    /*!
-     * \brief Sets current language of active input method.
-     * \param language ICU format locale ID string
-     */
-    virtual void setLanguage(const QString &language);
-
     virtual void sendActivationLostEvent();
 
     QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const;

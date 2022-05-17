@@ -507,11 +507,6 @@ QString MInputContextConnection::selection(bool &valid)
     return QString();
 }
 
-void MInputContextConnection::setLanguage(const QString &language)
-{
-    Q_UNUSED(language);
-}
-
 void MInputContextConnection::sendActivationLostEvent()
 {}
 

@@ -448,18 +448,6 @@ QString WaylandInputMethodConnection::selection(bool &valid)
     return context ? context->selection() : QString();
 }
 
-void WaylandInputMethodConnection::setLanguage(const QString &language)
-{
-    Q_D(WaylandInputMethodConnection);
-
-    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
-
-    if (!d->context())
-        return;
-
-    d->context()->language(d->context()->serial(), language);
-}
-
 void WaylandInputMethodConnection::setSelection(int start, int length)
 {
     Q_D (WaylandInputMethodConnection);

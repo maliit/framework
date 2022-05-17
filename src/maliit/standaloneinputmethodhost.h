@@ -59,7 +59,6 @@ public:
     void setOrientationAngleLocked(bool lock) override;
     QList<MImPluginDescription> pluginDescriptions(Maliit::HandlerState state) const override;
     bool hiddenText(bool &valid) override;
-    void setLanguage(const QString &language) override;
     QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const override;
 private:
     MInputContextConnection *mConnection;

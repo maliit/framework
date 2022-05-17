@@ -55,8 +55,6 @@ public:
     virtual void showInputPanel();
     virtual void hideInputPanel();
     virtual bool isInputPanelVisible() const;
-    virtual QLocale locale() const;
-    virtual Qt::LayoutDirection inputDirection() const;
     virtual void setFocusObject(QObject *object);
 
     QString preeditString();
@@ -83,7 +81,6 @@ public Q_SLOTS:
     void setDetectableAutoRepeat(bool enabled);
     void setSelection(int start, int length);
     void getSelection(QString &selection, bool &valid) const;
-    void setLanguage(const QString &language);
     // End input method server connection slots.
 
 private Q_SLOTS:
@@ -141,7 +138,6 @@ private:
     QString preedit;
     int preeditCursorPos;
     bool redirectKeys; // redirect all hw key events to the input method or not
-    QLocale inputLocale;
     bool currentFocusAcceptsInput;
     QPlatformInputContext *composeInputContext;
 };

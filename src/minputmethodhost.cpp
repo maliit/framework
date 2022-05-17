@@ -223,13 +223,6 @@ MInputMethodHost::surroundingSubViewDescriptions(Maliit::HandlerState state) con
     return pluginManager->surroundingSubViewDescriptions(state);
 }
 
-void MInputMethodHost::setLanguage(const QString &language)
-{
-    if (enabled) {
-        connection->setLanguage(language);
-    }
-}
-
 void MInputMethodHost::setOrientationAngleLocked(bool)
 {
     // NOT implemented.

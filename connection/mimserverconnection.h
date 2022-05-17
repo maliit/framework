@@ -165,13 +165,6 @@ public:
     Q_SIGNAL void getSelection(QString &selection, bool &valid) const;
 
     /*!
-     * \brief Updates current language of active input method in input context.
-     * \param language ICU format locale ID string
-     * \sa QInputContext::language()
-     */
-    Q_SIGNAL void setLanguage(const QString &language);
-
-    /*!
      *\brief Informs application that input method server has changed the \a attribute of the \a targetItem
      * in the attribute extension \a target which has unique \a id to \a value.
      */

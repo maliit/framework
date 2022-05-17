@@ -26,7 +26,6 @@
 #include <QByteArray>
 #include <QRectF>
 #include <QScreen>
-#include <QLocale>
 #include <QWindow>
 #include <QSharedDataPointer>
 #include <QQuickItem>
@@ -135,31 +134,12 @@ void MInputContext::connectInputMethodServer()
 
     connect(imServer, SIGNAL(getSelection(QString&,bool&)),
             this, SLOT(getSelection(QString&, bool&)));
-
-    connect(imServer, SIGNAL(setLanguage(QString)),
-            this, SLOT(setLanguage(QString)));
 }
 
 
 bool MInputContext::isValid() const
 {
     return true;
-}
-
-void MInputContext::setLanguage(const QString &language)
-{
-    QLocale newLocale(language);
-    Qt::LayoutDirection oldDirection = inputDirection();
-
-    if (newLocale != inputLocale) {
-        inputLocale = newLocale;
-        emitLocaleChanged();
-    }
-
-    Qt::LayoutDirection newDirection = inputDirection();
-    if (newDirection != oldDirection) {
-        emitInputDirectionChanged(newDirection);
-    }
 }
 
 void MInputContext::reset()
@@ -401,16 +381,6 @@ void MInputContext::hideInputPanel()
 bool MInputContext::isInputPanelVisible() const
 {
     return !keyboardRectangle.isEmpty();
-}
-
-QLocale MInputContext::locale() const
-{
-    return inputLocale;
-}
-
-Qt::LayoutDirection MInputContext::inputDirection() const
-{
-    return inputLocale.textDirection();
 }
 
 void MInputContext::sendHideInputMethod()

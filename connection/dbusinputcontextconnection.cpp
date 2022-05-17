@@ -44,7 +44,6 @@ DBusInputContextConnection::DBusInputContextConnection(const QSharedPointer<Mali
     , mServer(mAddress->connect())
     , mConnectionNumbers()
     , mProxys()
-    , lastLanguage()
 {
     connect(mServer.data(), SIGNAL(newConnection(QDBusConnection)), this, SLOT(newConnection(QDBusConnection)));
 
@@ -77,8 +76,6 @@ DBusInputContextConnection::newConnection(const QDBusConnection &connection)
               this, SLOT(onDisconnection()));
 
     c.registerObject(QString::fromLatin1(DBusPath), this);
-
-    proxy->setLanguage(lastLanguage);
 }
 
 void
@@ -227,16 +224,6 @@ DBusInputContextConnection::selection(bool &valid)
     }
     valid = false;
     return QString();
-}
-
-void
-DBusInputContextConnection::setLanguage(const QString &language)
-{
-    lastLanguage = language;
-    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(activeConnection);
-    if (proxy) {
-        proxy->setLanguage(language);
-    }
 }
 
 void

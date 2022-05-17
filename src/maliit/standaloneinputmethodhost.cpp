@@ -30,11 +30,6 @@ bool StandaloneInputMethodHost::hiddenText(bool &valid)
     return mConnection->hiddenText(valid);
 }
 
-void StandaloneInputMethodHost::setLanguage(const QString &language)
-{
-    mConnection->setLanguage(language);
-}
-
 int StandaloneInputMethodHost::contentType(bool &valid)
 {
     return mConnection->contentType(valid);

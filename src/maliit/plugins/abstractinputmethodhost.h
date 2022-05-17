@@ -281,14 +281,6 @@ public:
      */
     virtual QList<MImSubViewDescription> surroundingSubViewDescriptions(Maliit::HandlerState state) const;
 
-    /*!
-     * \brief Sets current input method language.
-     * \param language ICU format locale ID string
-     *
-     * This can be used as a hint to determine text direction in input fields, for example.
-     */
-    virtual void setLanguage(const QString &language);
-
 private:
     Q_DISABLE_COPY(MAbstractInputMethodHost)
     Q_DECLARE_PRIVATE(MAbstractInputMethodHost)
