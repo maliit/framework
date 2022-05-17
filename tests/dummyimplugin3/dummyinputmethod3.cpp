@@ -26,11 +26,6 @@ DummyInputMethod3::DummyInputMethod3(MAbstractInputMethodHost *host)
     addSubView("fr_fr", "fr_fr");
 
     activeSView = "dummyim3sv1";
-
-    // Register setting
-    QVariantMap settingAttributes;
-
-    settingAttributes[Maliit::SettingEntryAttributes::defaultValue] = "Test";
 }
 
 void DummyInputMethod3::setState(const QSet<Maliit::HandlerState> &state)

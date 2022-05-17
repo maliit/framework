@@ -13,8 +13,6 @@
 #ifndef MSHAREDATTRIBUTEEXTENSIONMANAGER_H
 #define MSHAREDATTRIBUTEEXTENSIONMANAGER_H
 
-#include <maliit/settingdata.h>
-
 #include <QObject>
 #include <QHash>
 #include <QSharedPointer>

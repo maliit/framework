@@ -9,9 +9,10 @@
  * of this file.
  */
 
-
 #include "msharedattributeextensionmanager.h"
 #include "mimsettings.h"
+
+#include <maliit/namespace.h>
 
 struct MSharedAttributeExtensionManagerPluginSetting
 {
@@ -75,9 +76,6 @@ void MSharedAttributeExtensionManager::handleExtendedAttributeUpdate(unsigned in
     SharedAttributeExtensionContainer::iterator it = sharedAttributeExtensions.find(key);
 
     if (it == sharedAttributeExtensions.end())
-        return;
-    // TODO error notification
-    if (!validateSettingValue(it->data()->type, it->data()->attributes, value))
         return;
 
     it->data()->setting.set(value);

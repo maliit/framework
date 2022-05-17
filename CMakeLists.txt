@@ -56,9 +56,7 @@ include_directories(src common)
 
 add_library(maliit-common STATIC
             common/maliit/namespace.h
-            common/maliit/namespaceinternal.h
-            common/maliit/settingdata.cpp
-            common/maliit/settingdata.h)
+            common/maliit/namespaceinternal.h)
 target_link_libraries(maliit-common Qt5::Core)
 target_include_directories(maliit-common PUBLIC common)
 
@@ -91,7 +89,7 @@ if(enable-wayland)
 endif()
 
 set_source_files_properties(dbus_interfaces/minputmethodcontext1interface.xml dbus_interfaces/minputmethodserver1interface.xml
-                            PROPERTIES INCLUDE maliit/settingdata.h)
+                            PROPERTIES INCLUDE maliit/namespace.h)
 
 qt5_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml dbusserverconnection.h DBusServerConnection)
 qt5_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml dbusinputcontextconnection.h DBusInputContextConnection)

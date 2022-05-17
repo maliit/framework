@@ -24,7 +24,6 @@
 #include <maliit/plugins/updateevent.h>
 #include "mimsubviewoverride.h"
 #include "maliit/namespaceinternal.h"
-#include <maliit/settingdata.h>
 #include "windowgroup.h"
 #include "logging.h"
 

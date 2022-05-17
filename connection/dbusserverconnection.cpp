@@ -14,7 +14,6 @@
 #include "dbusserverconnection.h"
 
 #include <maliit/namespace.h>
-#include <maliit/settingdata.h>
 
 #include "minputmethodcontext1interfaceadaptor.h"
 #include "minputmethodserver1interface_interface.h"

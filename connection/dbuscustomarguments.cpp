@@ -12,7 +12,7 @@
 
 #include "dbuscustomarguments.h"
 
-#include  <maliit/settingdata.h>
+#include  <maliit/namespace.h>
 
 #include <QDBusArgument>
 

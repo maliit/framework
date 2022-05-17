@@ -21,7 +21,6 @@
 #include "mimonscreenplugins.h"
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
-#include <maliit/settingdata.h>
 #include "windowgroup.h"
 #include "abstractplatform.h"
 
