@@ -16,15 +16,13 @@
 
 struct MSharedAttributeExtensionManagerPluginSetting
 {
-    MSharedAttributeExtensionManagerPluginSetting(const QString &key, Maliit::SettingEntryType type, QVariantMap attributes) :
+    MSharedAttributeExtensionManagerPluginSetting(const QString &key, QVariantMap attributes) :
         setting(key),
-        type(type),
         attributes(attributes)
     {
     }
 
     MImSettings setting;
-    Maliit::SettingEntryType type;
     QVariantMap attributes;
 };
 

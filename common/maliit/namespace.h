@@ -141,15 +141,6 @@ namespace Maliit {
         //! \sa Maliit::VisualizationPriorityQuery
         const char* const suppressInputMethod = "maliit-suppress-input-method";
     }
-
-    enum SettingEntryType
-    {
-        StringType     = 1,
-        IntType        = 2,
-        BoolType       = 3,
-        StringListType = 4,
-        IntListType    = 5
-    };
 }
 
 Q_DECLARE_METATYPE(Maliit::TextContentType)
