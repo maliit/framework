@@ -23,9 +23,6 @@ In normal mode input method sends the inputted text using a standard pre-edit an
 
 In direct mode input method crafts a fake QKeyEvent and sends it to the input context. There, if the input method does not want to compose the event, it is forwarded to the application.
 
-\subsection InputMethodToolbarQuery M::InputMethodToolbarQuery
-This query returns a QString of input method toolbar name to be shown. Input method loads the named toolbar and displays that in it's UI.
-
 \section IMState MInputMethodState
 This class provides additional information which QInputContext does not provide. The widget which needs these information can connect to the available signal and slots. The more accurate description will be maintained in the MInputMethodState class documentation. However here is a short version.
 

@@ -349,9 +349,6 @@ void MIMPluginManagerPrivate::replacePlugin(Maliit::SwitchDirection direction,
     if (source) {
         plugins[source].lastSwitchDirection = direction;
     }
-    QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        attributeExtensionManager->keyOverrides(toolbarId);
-    switchedTo->setKeyOverrides(keyOverrides);
 
     if (visible) {
         ensureActivePluginsVisible(DontShowInputMethod);
@@ -1093,13 +1090,6 @@ MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>
     connect(d->mICConnection.data(), SIGNAL(focusChanged(WId)),
             this, SLOT(handleAppFocusChanged(WId)));
 
-    // Connect from MAttributeExtensionManager to our handlers
-    connect(d->attributeExtensionManager.data(), SIGNAL(attributeExtensionIdChanged(const MAttributeExtensionId &)),
-            this, SLOT(setToolbar(const MAttributeExtensionId &)));
-
-    connect(d->attributeExtensionManager.data(), SIGNAL(keyOverrideCreated()),
-            this, SLOT(updateKeyOverrides()));
-
     connect(d->attributeExtensionManager.data(), SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
             this, SLOT(onGlobalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)));
 
@@ -1237,40 +1227,6 @@ void MIMPluginManager::setAllSubViewsEnabled(bool enable)
     d->onScreenPlugins.setAllSubViewsEnabled(enable);
 }
 
-void MIMPluginManager::setToolbar(const MAttributeExtensionId &id)
-{
-    Q_D(MIMPluginManager);
-
-    // Record MAttributeExtensionId for switch Plugin
-    d->toolbarId = id;
-
-    QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        d->attributeExtensionManager->keyOverrides(id);
-
-    bool focusStateOk(false);
-    const bool focusState(d->mICConnection->focusState(focusStateOk));
-
-    if (!focusStateOk) {
-        qCCritical(lcMaliitFw) << Q_FUNC_INFO << ": focus state is invalid.";
-    }
-
-    const bool mapEmpty(keyOverrides.isEmpty());
-    // setKeyOverrides are not called when keyOverrides map is empty
-    // and no widget is focused - we do not want to update keys because either
-    // vkb is not visible or another input widget is focused in, so its
-    // extension attribute will be used in a moment. without this, some vkbs
-    // may have some flickering - first it could show default label and a
-    // fraction of second later - an overriden label.
-    const bool callKeyOverrides(!(!focusState && mapEmpty));
-
-    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, d->activePlugins) {
-        if (callKeyOverrides)
-        {
-            d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
-        }
-    }
-}
-
 void MIMPluginManager::showActivePlugins()
 {
     Q_D(MIMPluginManager);
@@ -1308,17 +1264,6 @@ void MIMPluginManager::setActiveSubView(const QString &subViewId, Maliit::Handle
 {
     Q_D(MIMPluginManager);
     d->_q_setActiveSubView(subViewId, state);
-}
-
-void MIMPluginManager::updateKeyOverrides()
-{
-    Q_D(MIMPluginManager);
-    QMap<QString, QSharedPointer<MKeyOverride> > keyOverrides =
-        d->attributeExtensionManager->keyOverrides(d->toolbarId);
-
-    Q_FOREACH (Maliit::Plugins::InputMethodPlugin *plugin, d->activePlugins) {
-        d->plugins.value(plugin).inputMethod->setKeyOverrides(keyOverrides);
-    }
 }
 
 void MIMPluginManager::handleAppOrientationAboutToChange(int angle)

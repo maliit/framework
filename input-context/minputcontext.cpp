@@ -743,8 +743,6 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         }
     }
 
-    stateInformation["toolbarId"] = 0; // Global extension id. And bad state parameter name for it.
-
     return stateInformation;
 }
 

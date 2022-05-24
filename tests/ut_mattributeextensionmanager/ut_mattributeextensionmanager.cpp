@@ -25,19 +25,10 @@
 
 namespace {
     const QString testDirectory = "/ut_mattributeextensionmanager";
-    QString Toolbar1 = "/toolbar1.xml";
-    QString Toolbar2 = "/toolbar2.xml";
-    QString Toolbar3 = "/toolbar3.xml"; // this file does not exist
 }
 
 void Ut_MAttributeExtensionManager::initTestCase()
 {
-    Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
-    QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
-    Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
-    QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
-    Toolbar3 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar3;
-    QVERIFY2(!QFile(Toolbar3).exists(), "toolbar3.xml should not exist");
 }
 
 void Ut_MAttributeExtensionManager::cleanupTestCase()

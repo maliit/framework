@@ -47,8 +47,6 @@ namespace {
     const QString pluginId3 = "libdummyimplugin3.so";
 
     const QString testDirectory = "/ut_mimpluginmanager";
-    QString Toolbar1 = "/toolbar1.xml";
-    QString Toolbar2 = "/toolbar2.xml";
 
     const QStringList DefaultEnabledPlugins = QStringList()
                                               << pluginId + ":" + "dummyimsv1"
@@ -87,11 +85,6 @@ public:
 
 void Ut_MIMPluginManager::initTestCase()
 {
-    Toolbar1 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar1;
-    QVERIFY2(QFile(Toolbar1).exists(), "toolbar1.xml does not exist");
-    Toolbar2 = MaliitTestUtils::getTestDataPath() + testDirectory + Toolbar2;
-    QVERIFY2(QFile(Toolbar2).exists(), "toolbar2.xml does not exist");
-
     MImSettings::setPreferredSettingsType(MImSettings::TemporarySettings);
 }
 

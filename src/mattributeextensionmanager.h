@@ -32,8 +32,7 @@
 /*! \ingroup maliitserver
  \brief The MAttributeExtensionManager class manager the virtual keyboard attribute extensions.
 
-  AttributeExtensionManager loads and manages not only the toolbars which are registered
-  by applications, but also the copy/paste button and key overrides.
+  AttributeExtensionManager loads and manages key overrides.
 */
 class MAttributeExtensionManager : public QObject
 {
@@ -63,12 +62,6 @@ public:
      * AttributeExtensionManager will remove the cached widget according \a id.
      */
     void unregisterAttributeExtension(const MAttributeExtensionId &id);
-
-    /*!
-     * \brief Sets the \a attribute for the \a item in the custom toolbar which has the unique \a id to \a value.
-     */
-    void setToolbarItemAttribute(const MAttributeExtensionId &id, const QString &item,
-                                 const QString &attribute, const QVariant &value);
 
     /*!
      *\brief Returns widget data definition for gived \a id.

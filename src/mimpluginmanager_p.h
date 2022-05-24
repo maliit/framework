@@ -167,8 +167,6 @@ public:
     typedef QMap<Maliit::HandlerState, QString> InputSourceToNameMap;
     InputSourceToNameMap inputSourceToNameMap;
 
-    MAttributeExtensionId toolbarId;
-
     MImOnScreenPlugins onScreenPlugins;
     MImHwKeyboardTracker hwkbTracker;
 

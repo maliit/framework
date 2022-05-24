@@ -122,12 +122,6 @@ private Q_SLOTS:
     //! Update and activate input source.
     void updateInputSource();
 
-    //! Set toolbar to active plugin with given \a id
-    void setToolbar(const MAttributeExtensionId &id);
-
-    //! Update the key overrides for active plugin.
-    void updateKeyOverrides();
-
     void handleAppOrientationChanged(int angle);
     void handleAppOrientationAboutToChange(int angle);
     void handleAppFocusChanged(WId id);
