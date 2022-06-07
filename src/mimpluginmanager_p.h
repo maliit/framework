@@ -16,7 +16,6 @@
 
 #include <maliit/namespace.h>
 
-#include "mattributeextensionid.h"
 #include "minputmethodhost.h"
 #include "mimonscreenplugins.h"
 #include "mimsettings.h"
@@ -34,8 +33,6 @@ namespace Plugins {
 
 class MInputContextConnection;
 class MIMPluginManager;
-class MAttributeExtensionManager;
-class MSharedAttributeExtensionManager;
 class MImSettings;
 class MAbstractInputMethod;
 class MIMPluginManagerAdaptor;
@@ -171,9 +168,6 @@ public:
     MImHwKeyboardTracker hwkbTracker;
 
     int lastOrientation;
-
-    QScopedPointer<MAttributeExtensionManager> attributeExtensionManager;
-    QScopedPointer<MSharedAttributeExtensionManager> sharedAttributeExtensionManager;
 
     QSharedPointer<Maliit::AbstractPlatform> m_platform;
 };

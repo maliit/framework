@@ -48,13 +48,6 @@
       <arg type="u" name="nativeModifiers"/>
       <arg type="u" name="time"/>
     </method>
-    <method name="registerAttributeExtension">
-      <arg type="i" name="id"/>
-      <arg type="s" name="fileName"/>
-    </method>
-    <method name="unregisterAttributeExtension">
-      <arg type="i" name="id"/>
-    </method>
     <method name="setExtendedAttribute">
       <arg type="i" name="id"/>
       <arg type="s" name="target"/>

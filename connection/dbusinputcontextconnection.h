@@ -77,8 +77,6 @@ public:
     void appOrientationChanged(int angle);
     void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
     void processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text, bool autoRepeat, int count, uint nativeScanCode, uint nativeModifiers, uint time);
-    void registerAttributeExtension(int id, const QString &fileName);
-    void unregisterAttributeExtension(int id);
     void setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value);
 
 private Q_SLOTS:

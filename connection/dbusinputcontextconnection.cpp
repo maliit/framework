@@ -335,16 +335,6 @@ void DBusInputContextConnection::processKeyEvent(int keyType, int keyCode, int m
     MInputContextConnection::processKeyEvent(connectionNumber(), static_cast<QEvent::Type>(keyType), static_cast<Qt::Key>(keyCode), static_cast<Qt::KeyboardModifier>(modifiers), text, autoRepeat, count, nativeScanCode, nativeModifiers, time);
 }
 
-void DBusInputContextConnection::registerAttributeExtension(int id, const QString &fileName)
-{
-    MInputContextConnection::registerAttributeExtension(connectionNumber(), id, fileName);
-}
-
-void DBusInputContextConnection::unregisterAttributeExtension(int id)
-{
-    MInputContextConnection::unregisterAttributeExtension(connectionNumber(), id);
-}
-
 void DBusInputContextConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value)
 {
     MInputContextConnection::setExtendedAttribute(connectionNumber(), id, target, targetItem, attribute, value.variant());

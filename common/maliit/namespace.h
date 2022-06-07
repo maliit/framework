@@ -126,12 +126,6 @@ namespace Maliit {
         //! Name of property which tells whether correction is enabled.
         //! \sa Maliit::ImCorrectionEnabledQuery.
         const char* const correctionEnabledQuery = "maliit-correction-enabled";
-        //! Name of property which holds ID of attribute extension.
-        //! \sa Maliit::InputMethodAttributeExtensionIdQuery.
-        const char* const attributeExtensionId = "maliit-attribute-extension-id";
-        //! Name of property which holds attribute extension.
-        //! \sa Maliit::InputMethodAttributeExtensionQuery.
-        const char* const attributeExtension = "maliit-attribute-extension";
         //! Name of the property which overrides localized numeric input with western numeric input.
         //! \sa Maliit::WesternNumericInputEnforcedQuery.
         const char* const westernNumericInputEnforced = "maliit-western-numeric-input-enforced";

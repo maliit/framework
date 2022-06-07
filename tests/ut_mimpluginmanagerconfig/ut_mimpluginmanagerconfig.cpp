@@ -30,9 +30,6 @@
 #include <maliit/plugins/inputmethodplugin.h>
 #include <unknownplatform.h>
 
-#include "mattributeextensionmanager.h"
-#include "msharedattributeextensionmanager.h"
-
 using namespace std::tr1;
 
 typedef QSet<Maliit::HandlerState> HandlerStates;

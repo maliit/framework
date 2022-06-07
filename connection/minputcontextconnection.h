@@ -25,7 +25,6 @@ QT_END_NAMESPACE
 
 class MInputContextConnectionPrivate;
 class MAbstractInputMethod;
-class MAttributeExtensionId;
 
 /*! \internal
  * \ingroup maliitserver
@@ -262,20 +261,6 @@ public: // Inbound communication handlers
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
     /*!
-     * \brief Register an input method attribute extension which is defined in \a fileName with the
-     * unique identifier \a id.
-     *
-     *  The \a id should be unique, and the \a fileName is the absolute file name of the
-     *  attribute extension.
-     */
-    void registerAttributeExtension(unsigned int clientId, int id, const QString &fileName);
-
-    /*!
-     * \brief Unregister an input method attribute extension which unique identifier is \a id.
-     */
-    void unregisterAttributeExtension(unsigned int clientId, int id);
-
-    /*!
      * \brief Sets the \a attribute for the \a target in the extended attribute which has unique \a id to \a value.
      */
     void setExtendedAttribute(unsigned int clientId, int id, const QString &target,
@@ -328,8 +313,6 @@ Q_SIGNALS:
     void widgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState,
                             const QMap<QString, QVariant> &oldState, bool focusChanged);
 
-    void attributeExtensionRegistered(unsigned int connectionId, int id, const QString &attributeExtension);
-    void attributeExtensionUnregistered(unsigned int connectionId, int id);
     void extendedAttributeChanged(unsigned int connectionId, int id, const QString &target,
                               const QString &targetName,const QString &attribute, const QVariant &value);
 

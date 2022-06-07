@@ -22,9 +22,6 @@
 #include <maliit/plugins/inputmethodplugin.h>
 #include <unknownplatform.h>
 
-#include "mattributeextensionmanager.h"
-#include "msharedattributeextensionmanager.h"
-
 typedef QSet<Maliit::HandlerState> HandlerStates;
 Q_DECLARE_METATYPE(HandlerStates);
 Q_DECLARE_METATYPE(Maliit::HandlerState);

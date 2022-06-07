@@ -138,26 +138,6 @@ register_all_extensions (MaliitServer *server, gpointer user_data)
 
     for (iter = extensions; iter; iter = iter->next) {
         MaliitAttributeExtension *extension = MALIIT_ATTRIBUTE_EXTENSION (iter->data);
-
-        if (maliit_server_call_register_attribute_extension_sync (server,
-                                                                  maliit_attribute_extension_get_id (extension),
-                                                                  maliit_attribute_extension_get_filename (extension),
-                                                                  NULL,
-                                                                  &error)) {
-            GHashTable *attributes = maliit_attribute_extension_get_attributes (extension);
-            GHashTableIter attributes_iter;
-            gpointer key;
-            gpointer value;
-
-            g_hash_table_iter_init (&attributes_iter, attributes);
-
-            while (g_hash_table_iter_next (&attributes_iter, &key, &value)) {
-                maliit_attribute_extension_registry_extension_changed(registry, extension, key, value);
-            }
-        } else {
-            g_warning ("Could not register an extension in mass registerer: %s", error->message);
-            g_clear_error (&error);
-        }
     }
 
     g_list_free (extensions);
@@ -227,16 +207,7 @@ maliit_attribute_extension_registry_add_extension (MaliitAttributeExtensionRegis
 
         server = maliit_get_server_sync (NULL, &error);
 
-        if (server) {
-            if (!maliit_server_call_register_attribute_extension_sync (server,
-                                                                       id,
-                                                                       maliit_attribute_extension_get_filename (extension),
-                                                                       NULL,
-                                                                       &error)) {
-                g_warning ("Unable to register extension: %s", error->message);
-                g_clear_error (&error);
-            }
-        } else {
+        if (!server) {
             g_warning ("Unable to connect to server: %s", error->message);
             g_clear_error (&error);
         }
@@ -264,15 +235,7 @@ maliit_attribute_extension_registry_remove_extension (MaliitAttributeExtensionRe
 
         server = maliit_get_server_sync (NULL, &error);
 
-        if (server) {
-            if (!maliit_server_call_unregister_attribute_extension_sync (server,
-                                                                         id,
-                                                                         NULL,
-                                                                         &error)) {
-                g_warning ("Unable to unregister extension: %s", error->message);
-                g_clear_error (&error);
-            }
-        } else {
+        if (!server) {
             g_warning ("Unable to connect to server: %s", error->message);
             g_clear_error (&error);
         }

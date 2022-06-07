@@ -30,7 +30,7 @@ namespace {
 
 // TODO: Deduplicate it. Those values are used in
 // minputcontextconnection, mimpluginmanager,
-// mattributeextensionmanager and in input context implementations.
+// and in input context implementations.
 const char * const FocusStateAttribute = "focusState";
 const char * const ContentTypeAttribute = "contentType";
 const char * const CorrectionAttribute = "correctionEnabled";

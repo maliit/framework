@@ -11,7 +11,6 @@
 #include <minputcontextconnection.h>
 #include <mimpluginmanager.h>
 #include <mimpluginmanager_p.h>
-#include <msharedattributeextensionmanager.h>
 #include <unknownplatform.h>
 
 #include <QProcess>

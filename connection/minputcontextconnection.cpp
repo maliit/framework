@@ -329,17 +329,6 @@ void MInputContextConnection::processKeyEvent(
                             nativeScanCode, nativeModifiers, time);
 }
 
-void MInputContextConnection::registerAttributeExtension(unsigned int connectionId, int id,
-                                                         const QString &attributeExtension)
-{
-    Q_EMIT attributeExtensionRegistered(connectionId, id, attributeExtension);
-}
-
-void MInputContextConnection::unregisterAttributeExtension(unsigned int connectionId, int id)
-{
-    Q_EMIT attributeExtensionUnregistered(connectionId, id);
-}
-
 void MInputContextConnection::setExtendedAttribute(
     unsigned int connectionId, int id, const QString &target, const QString &targetName,
     const QString &attribute, const QVariant &value)

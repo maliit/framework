@@ -16,8 +16,6 @@
 #include "mimpluginmanager.h"
 #include "mimpluginmanager_p.h"
 #include <maliit/plugins/inputmethodplugin.h>
-#include "mattributeextensionmanager.h"
-#include "msharedattributeextensionmanager.h"
 #include <maliit/plugins/abstractinputmethod.h>
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
@@ -65,8 +63,6 @@ MIMPluginManagerPrivate::MIMPluginManagerPrivate(const QSharedPointer<MInputCont
       visible(false),
       onScreenPlugins(),
       lastOrientation(0),
-      attributeExtensionManager(new MAttributeExtensionManager),
-      sharedAttributeExtensionManager(new MSharedAttributeExtensionManager),
       m_platform(platform)
 {
     inputSourceToNameMap[Maliit::Hardware] = "hardware";
@@ -1050,48 +1046,10 @@ MIMPluginManager::MIMPluginManager(const QSharedPointer<MInputContextConnection>
     connect(d->mICConnection.data(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
             this, SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
 
-    // Connect connection and MAttributeExtensionManager
-    connect(d->mICConnection.data(), SIGNAL(copyPasteStateChanged(bool,bool)),
-            d->attributeExtensionManager.data(), SLOT(setCopyPasteState(bool, bool)));
-
-    connect(d->mICConnection.data(), SIGNAL(widgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)),
-            d->attributeExtensionManager.data(), SLOT(handleWidgetStateChanged(uint,QMap<QString,QVariant>,QMap<QString,QVariant>,bool)));
-
-    connect(d->mICConnection.data(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
-            d->attributeExtensionManager.data(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
-
-    connect(d->mICConnection.data(), SIGNAL(attributeExtensionUnregistered(uint, int)),
-            d->attributeExtensionManager.data(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
-
-    connect(d->mICConnection.data(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
-            d->attributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
-
-    connect(d->attributeExtensionManager.data(), SIGNAL(notifyExtensionAttributeChanged(int, QString, QString, QString, QVariant)),
-            d->mICConnection.data(), SLOT(notifyExtendedAttributeChanged(int, QString, QString, QString, QVariant)));
-
-    connect(d->mICConnection.data(), SIGNAL(clientDisconnected(uint)),
-            d->attributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
-
-    connect(d->mICConnection.data(), SIGNAL(attributeExtensionRegistered(uint, int, QString)),
-            d->sharedAttributeExtensionManager.data(), SLOT(handleAttributeExtensionRegistered(uint, int, QString)));
-
-    connect(d->mICConnection.data(), SIGNAL(attributeExtensionUnregistered(uint, int)),
-            d->sharedAttributeExtensionManager.data(), SLOT(handleAttributeExtensionUnregistered(uint, int)));
-
-    connect(d->mICConnection.data(), SIGNAL(extendedAttributeChanged(uint, int, QString, QString, QString, QVariant)),
-            d->sharedAttributeExtensionManager.data(), SLOT(handleExtendedAttributeUpdate(uint, int, QString, QString, QString, QVariant)));
-
-    connect(d->sharedAttributeExtensionManager.data(), SIGNAL(notifyExtensionAttributeChanged(QList<int>, int, QString, QString, QString, QVariant)),
-            d->mICConnection.data(), SLOT(notifyExtendedAttributeChanged(QList<int>, int, QString, QString, QString, QVariant)));
-
-    connect(d->mICConnection.data(), SIGNAL(clientDisconnected(uint)),
-            d->sharedAttributeExtensionManager.data(), SLOT(handleClientDisconnect(uint)));
 
     connect(d->mICConnection.data(), SIGNAL(focusChanged(WId)),
             this, SLOT(handleAppFocusChanged(WId)));
 
-    connect(d->attributeExtensionManager.data(), SIGNAL(globalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)),
-            this, SLOT(onGlobalAttributeChanged(MAttributeExtensionId,QString,QString,QVariant)));
 
     d->paths        = MImSettings(MImPluginPaths).value(QStringList(DefaultPluginLocation)).toStringList();
     d->blacklist    = MImSettings(MImPluginDisabled).value().toStringList();
@@ -1406,31 +1364,6 @@ QSet<MAbstractInputMethod *> MIMPluginManager::targets()
 {
     Q_D(MIMPluginManager);
     return d->targets;
-}
-
-void MIMPluginManager::onGlobalAttributeChanged(const MAttributeExtensionId &id,
-                                                const QString &targetItem,
-                                                const QString &attribute,
-                                                const QVariant &value)
-{
-    Q_D(MIMPluginManager);
-
-    if (targetItem == InputMethodItem
-        && attribute == LoadAll) {
-
-        if (value.toBool()) {
-            if (const QSharedPointer<MAttributeExtension> &extension =
-                    d->attributeExtensionManager->attributeExtension(id)) {
-                // Create an object that is bound to the life time of the
-                // attribute extension (through QObject ownership hierarchy).
-                // Upon destruction, it will reset the all-subviews-enabled
-                // override.
-               (void) new MImSubViewOverride(&d->onScreenPlugins, extension.data());
-            }
-        }
-
-        setAllSubViewsEnabled(value.toBool());
-    }
 }
 
 #include "moc_mimpluginmanager.cpp"

@@ -23,16 +23,13 @@
 #include <maliit/plugins/plugindescription.h>
 #include <maliit/plugins/subviewdescription.h>
 
-#include "mattributeextensionid.h"
 #include "minputcontextconnection.h"
 
 QT_BEGIN_NAMESPACE
 class QRegion;
 QT_END_NAMESPACE
 class MIMPluginManagerPrivate;
-class MAttributeExtensionId;
 class MAbstractInputMethod;
-class MAttributeExtensionManager;
 
 namespace Maliit {
 
@@ -137,17 +134,6 @@ private Q_SLOTS:
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
-    /*!
-     * \brief Handle global attribute change
-     * \param id id of the attribute extension that triggered this change
-     * \param targetItem Item name
-     * \param attribute Attribute name
-     * \param value New attribute value
-     */
-    void onGlobalAttributeChanged(const MAttributeExtensionId &id,
-                                  const QString &targetItem,
-                                  const QString &attribute,
-                                  const QVariant &value);
 private:
     QSet<MAbstractInputMethod *> targets();
 

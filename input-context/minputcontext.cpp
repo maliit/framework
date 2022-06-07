@@ -615,9 +615,6 @@ void MInputContext::onDBusConnection()
 {
     qCDebug(lcMaliit) << Q_FUNC_INFO;
 
-    // using one attribute extension for everything
-    imServer->registerAttributeExtension(0, QString());
-
     // Force activation, since setFocusObject may have been called after
     // onDBusDisconnection set active to false or before the dbus connection.
     active = false;

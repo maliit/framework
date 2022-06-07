@@ -112,9 +112,6 @@ set(PLUGINS_SOURCES
     src/maliit/plugins/abstractinputmethod.h
     src/maliit/plugins/abstractinputmethodhost.cpp
     src/maliit/plugins/abstractinputmethodhost.h
-    src/maliit/plugins/attributeextension.cpp
-    src/maliit/plugins/attributeextension.h
-    src/maliit/plugins/attributeextension_p.h
     src/maliit/plugins/extensionevent.cpp
     src/maliit/plugins/extensionevent.h
     src/maliit/plugins/extensionevent_p.h
@@ -149,10 +146,6 @@ set(PLUGINS_SOURCES
     src/abstractplatform.h
     src/logging.cpp
     src/logging.h
-    src/mattributeextensionid.cpp
-    src/mattributeextensionid.h
-    src/mattributeextensionmanager.cpp
-    src/mattributeextensionmanager.h
     src/mimhwkeyboardtracker.h
     src/mimonscreenplugins.cpp
     src/mimonscreenplugins.h
@@ -171,8 +164,6 @@ set(PLUGINS_SOURCES
     src/mimsubviewoverride.h
     src/minputmethodhost.cpp
     src/minputmethodhost.h
-    src/msharedattributeextensionmanager.cpp
-    src/msharedattributeextensionmanager.h
     src/unknownplatform.cpp
     src/unknownplatform.h
     src/windowdata.cpp
@@ -273,7 +264,6 @@ endif()
 
 add_definitions(-DMALIIT_FRAMEWORK_USE_INTERNAL_API
                 -DMALIIT_PLUGINS_DATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit/plugins"
-                -DMALIIT_EXTENSIONS_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit-framework/extensions"
                 -DMALIIT_CONFIG_ROOT="/maliit/"
                 -DMALIIT_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/maliit/plugins"
                 -DMALIIT_DEFAULT_HW_PLUGIN="libmaliit-keyboard-plugin.so"
@@ -523,7 +513,6 @@ if(enable-tests)
     endfunction()
 
     create_test(sanitychecks)
-    create_test(ut_mattributeextensionmanager)
     create_test(ut_mimonscreenplugins)
     create_test(ut_mimpluginmanager ${DUMMY_PLUGINS})
     create_test(ut_mimpluginmanagerconfig)
@@ -561,11 +550,5 @@ if(enable-tests)
                 DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/plugins/qml/helloworld)
 
         install(TARGETS ${DUMMY_PLUGINS} DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/plugins)
-        install(DIRECTORY tests/ut_mattributeextensionmanager/
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_mattributeextensionmanager
-                FILES_MATCHING PATTERN "*.xml")
-        install(DIRECTORY tests/ut_mimpluginmanager/
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_mimpluginmanager
-                FILES_MATCHING PATTERN "*.xml")
     endif()
 endif()

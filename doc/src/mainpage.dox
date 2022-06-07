@@ -61,7 +61,6 @@ The following base classes are needed to implement an input method UI plugin:
 
 @subsection libmaliitclasses Useful classes
 
-- @ref Maliit::AttributeExtension "AttributeExtension" : Register extensions such as key overrides.
 - @ref Maliit::InputMethod "InputMethod" : Listen to device orientation, language and raw key events.
 - @ref Maliit::PreeditInjectionEvent "PreeditInjectionEvent" : Extension for preedit text inside text edits.
 

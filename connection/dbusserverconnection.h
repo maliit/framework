@@ -48,8 +48,6 @@ public:
                                  Qt::KeyboardModifiers modifiers,
                                  const QString &text, bool autoRepeat, int count,
                                  quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
-    virtual void registerAttributeExtension(int id, const QString &fileName);
-    virtual void unregisterAttributeExtension(int id);
     virtual void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                                       const QString &attribute, const QVariant &value);
     //! reimpl end

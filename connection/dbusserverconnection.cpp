@@ -219,22 +219,6 @@ void DBusServerConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode
     mProxy->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count, nativeScanCode, nativeModifiers, time);
 }
 
-void DBusServerConnection::registerAttributeExtension(int id, const QString &fileName)
-{
-    if (!mProxy)
-        return;
-
-    mProxy->registerAttributeExtension(id, fileName);
-}
-
-void DBusServerConnection::unregisterAttributeExtension(int id)
-{
-    if (!mProxy)
-        return;
-
-    mProxy->unregisterAttributeExtension(id);
-}
-
 void DBusServerConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem,
                                                 const QString &attribute, const QVariant &value)
 {
