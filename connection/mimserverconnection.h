@@ -45,8 +45,6 @@ public:
                                  Qt::KeyboardModifiers modifiers,
                                  const QString &text, bool autoRepeat, int count,
                                  quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
-    virtual void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
-                                      const QString &attribute, const QVariant &value);
 
 public:
     /*! \brief Notifies about connection to server being established.
@@ -161,16 +159,6 @@ public:
      * called will be able to overwrite value set by previously called slots.
      */
     Q_SIGNAL void getSelection(QString &selection, bool &valid) const;
-
-    /*!
-     *\brief Informs application that input method server has changed the \a attribute of the \a targetItem
-     * in the attribute extension \a target which has unique \a id to \a value.
-     */
-    Q_SIGNAL void extendedAttributeChanged(int id,
-                                           const QString &target,
-                                           const QString &targetItem,
-                                           const QString &attribute,
-                                           const QVariant &value);
 
 private:
     Q_DISABLE_COPY(MImServerConnection)

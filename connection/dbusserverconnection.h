@@ -48,20 +48,12 @@ public:
                                  Qt::KeyboardModifiers modifiers,
                                  const QString &text, bool autoRepeat, int count,
                                  quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
-    virtual void setExtendedAttribute(int id, const QString &target, const QString &targetItem,
-                                      const QString &attribute, const QVariant &value);
     //! reimpl end
 
     //! forwarding methods for InputContextAdaptor
     using MImServerConnection::keyEvent;
     void keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
                   int count, uchar requestType);
-
-    void notifyExtendedAttributeChanged(int id,
-                                        const QString &target,
-                                        const QString &targetItem,
-                                        const QString &attribute,
-                                        const QDBusVariant &value);
 
     bool preeditRectangle(int &x, int &y, int &width, int &height) const;
     bool selection(QString &selection) const;

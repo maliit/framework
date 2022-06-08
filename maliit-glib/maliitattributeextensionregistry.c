@@ -272,19 +272,7 @@ maliit_attribute_extension_registry_extension_changed (MaliitAttributeExtensionR
 
         server = maliit_get_server_sync (NULL, &error);
 
-        if (server) {
-            if (!maliit_server_call_set_extended_attribute_sync (server,
-                                                                 maliit_attribute_extension_get_id (extension),
-                                                                 target,
-                                                                 parts[1],
-                                                                 parts[2],
-                                                                 value,
-                                                                 NULL,
-                                                                 &error)) {
-                g_warning ("Unable to set extended attribute: %s", error->message);
-                g_clear_error (&error);
-            }
-        } else {
+        if (!server) {
             g_warning ("Unable to connect to server: %s", error->message);
             g_clear_error (&error);
         }

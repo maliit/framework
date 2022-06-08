@@ -48,13 +48,6 @@
       <arg type="u" name="nativeModifiers"/>
       <arg type="u" name="time"/>
     </method>
-    <method name="setExtendedAttribute">
-      <arg type="i" name="id"/>
-      <arg type="s" name="target"/>
-      <arg type="s" name="targetItem"/>
-      <arg type="s" name="attribute"/>
-      <arg type="v" name="value"/>
-    </method>
     <signal name="invokeAction">
       <arg type="s" name="action"/>
       <arg type="s" name="sequence"/>

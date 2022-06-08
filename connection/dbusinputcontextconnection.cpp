@@ -245,35 +245,6 @@ DBusInputContextConnection::updateInputMethodArea(const QRegion &region)
     }
 }
 
-void
-DBusInputContextConnection::notifyExtendedAttributeChanged(int id,
-                                                           const QString &target,
-                                                           const QString &targetItem,
-                                                           const QString &attribute,
-                                                           const QVariant &value)
-{
-    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(activeConnection);
-    if (proxy) {
-        proxy->notifyExtendedAttributeChanged(id, target, targetItem, attribute, QDBusVariant(value));
-    }
-}
-
-void
-DBusInputContextConnection::notifyExtendedAttributeChanged(const QList<int> &clientIds,
-                                                           int id,
-                                                           const QString &target,
-                                                           const QString &targetItem,
-                                                           const QString &attribute,
-                                                           const QVariant &value)
-{
-    Q_FOREACH (int clientId, clientIds) {
-        ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(clientId);
-        if (proxy) {
-            proxy->notifyExtendedAttributeChanged(id, target, targetItem, attribute, QDBusVariant(value));
-        }
-    }
-}
-
 unsigned int
 DBusInputContextConnection::connectionNumber()
 {
@@ -333,9 +304,4 @@ void DBusInputContextConnection::setCopyPasteState(bool copyAvailable, bool past
 void DBusInputContextConnection::processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text, bool autoRepeat, int count, uint nativeScanCode, uint nativeModifiers, uint time)
 {
     MInputContextConnection::processKeyEvent(connectionNumber(), static_cast<QEvent::Type>(keyType), static_cast<Qt::Key>(keyCode), static_cast<Qt::KeyboardModifier>(modifiers), text, autoRepeat, count, nativeScanCode, nativeModifiers, time);
-}
-
-void DBusInputContextConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value)
-{
-    MInputContextConnection::setExtendedAttribute(connectionNumber(), id, target, targetItem, attribute, value.variant());
 }

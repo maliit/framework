@@ -59,12 +59,5 @@
       <arg type="b" direction="out"/>
       <arg type="s" direction="out"/>
     </method>
-    <method name="notifyExtendedAttributeChanged">
-      <arg type="i"/>
-      <arg type="s"/>
-      <arg type="s"/>
-      <arg type="s"/>
-      <arg type="v"/>
-    </method>
   </interface>
 </node>

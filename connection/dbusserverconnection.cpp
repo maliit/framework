@@ -219,25 +219,10 @@ void DBusServerConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode
     mProxy->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count, nativeScanCode, nativeModifiers, time);
 }
 
-void DBusServerConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem,
-                                                const QString &attribute, const QVariant &value)
-{
-    if (!mProxy)
-        return;
-
-    mProxy->setExtendedAttribute(id, target, targetItem, attribute, QDBusVariant(value));
-}
-
 void DBusServerConnection::keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
                                     int count, uchar requestType)
 {
     keyEvent(type, key, modifiers, text, autoRepeat, count, static_cast<Maliit::EventRequestType>(requestType));
-}
-
-void DBusServerConnection::notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem,
-                                                          const QString &attribute, const QDBusVariant &value)
-{
-    extendedAttributeChanged(id, target, targetItem, attribute, value.variant());
 }
 
 bool DBusServerConnection::preeditRectangle(int &x, int &y, int &width, int &height) const

@@ -225,10 +225,6 @@ void MInputContext::update(Qt::InputMethodQueries queries)
 
     Q_UNUSED(queries) // fetching everything
 
-    if (queries & Qt::ImPlatformData) {
-        updateInputMethodExtensions();
-    }
-
     bool effectiveFocusChange = false;
     if (queries & Qt::ImEnabled) {
         bool newAcceptance = inputMethodAccepted();
@@ -259,8 +255,6 @@ void MInputContext::setFocusObject(QObject *focused)
 {
     if (composeInputContext) composeInputContext->setFocusObject(focused);
     qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO << focused;
-
-    updateInputMethodExtensions();
 
     QWindow *newFocusWindow = qGuiApp->focusWindow();
     if (newFocusWindow != window.data()) {
@@ -805,29 +799,4 @@ int MInputContext::cursorStartPosition(bool *valid)
     }
 
     return start;
-}
-
-void MInputContext::updateInputMethodExtensions()
-{
-    if (!inputMethodAccepted()) {
-        return;
-    }
-    if (!qGuiApp->focusObject()) {
-        return;
-    }
-    qCDebug(lcMaliit) << InputContextName << Q_FUNC_INFO;
-
-    QVariantMap extensions = qGuiApp->focusObject()->property("__inputMethodExtensions").toMap();
-    QVariant value;
-    value = extensions.value("enterKeyIconSource");
-    imServer->setExtendedAttribute(0, "/keys", "actionKey", "icon", QVariant(value.toUrl().toString()));
-
-    value = extensions.value("enterKeyText");
-    imServer->setExtendedAttribute(0, "/keys", "actionKey", "label", QVariant(value.toString()));
-
-    value = extensions.value("enterKeyEnabled");
-    imServer->setExtendedAttribute(0, "/keys", "actionKey", "enabled", value.isValid() ? value.toBool() : true);
-
-    value = extensions.value("enterKeyHighlighted");
-    imServer->setExtendedAttribute(0, "/keys", "actionKey", "highlighted", value.isValid() ? value.toBool() : false);
 }

@@ -260,36 +260,9 @@ public: // Inbound communication handlers
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
-    /*!
-     * \brief Sets the \a attribute for the \a target in the extended attribute which has unique \a id to \a value.
-     */
-    void setExtendedAttribute(unsigned int clientId, int id, const QString &target,
-                              const QString &targetItem, const QString &attribute, const QVariant &value);
-
 public Q_SLOTS:
     //! Update \a region covered by virtual keyboard
     virtual void updateInputMethodArea(const QRegion &region);
-
-    /*!
-     * \brief Informs current application that input method servers has changed the \a attribute of the \a targetItem
-     * in the attribute extension \a target which has unique \a id to \a value.
-     */
-    virtual void notifyExtendedAttributeChanged(int id,
-                                                const QString &target,
-                                                const QString &targetItem,
-                                                const QString &attribute,
-                                                const QVariant &value);
-
-    /*!
-     * \brief Informs a list of clients that input method servers has changed the \a attribute of the \a targetItem
-     * in the attribute extension \a target which has unique \a id to \a value.
-     */
-    virtual void notifyExtendedAttributeChanged(const QList<int> &clientIds,
-                                                int id,
-                                                const QString &target,
-                                                const QString &targetItem,
-                                                const QString &attribute,
-                                                const QVariant &value);
 
 Q_SIGNALS:
     /* Emitted first */
@@ -312,10 +285,6 @@ Q_SIGNALS:
     void copyPasteStateChanged(bool copyAvailable, bool pasteAvailable);
     void widgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState,
                             const QMap<QString, QVariant> &oldState, bool focusChanged);
-
-    void extendedAttributeChanged(unsigned int connectionId, int id, const QString &target,
-                              const QString &targetName,const QString &attribute, const QVariant &value);
-
 
     void clientActivated(unsigned int connectionId);
     void clientDisconnected(unsigned int connectionId);

@@ -114,8 +114,6 @@ private:
 
     void connectInputMethodServer();
 
-    void updateInputMethodExtensions();
-
     // returns content type corresponding to specified hints
     Maliit::TextContentType contentType(Qt::InputMethodHints hints) const;
 

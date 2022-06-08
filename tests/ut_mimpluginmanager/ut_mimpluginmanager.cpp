@@ -58,25 +58,9 @@ namespace {
 class MInputContextTestConnection : public MInputContextConnection
 {
 public:
-    MInputContextTestConnection() :
-        notifyExtendedAttributeChanged_called(0)
+    MInputContextTestConnection()
     {
     }
-
-    void notifyExtendedAttributeChanged(const QList<int> &clientIds, int id, const QString &target, const QString &targetItem, const QString &attribute, const QVariant &value)
-    {
-        Q_UNUSED(id);
-
-        notifyExtendedAttributeChanged_called++;
-        notifyExtendedAttributeChanged_clientIds = clientIds;
-        notifyExtendedAttributeChanged_key = QString("%1/%2/%3").arg(target).arg(targetItem).arg(attribute);
-        notifyExtendedAttributeChanged_value = value;
-    }
-
-    int notifyExtendedAttributeChanged_called;
-    QList<int> notifyExtendedAttributeChanged_clientIds;
-    QString notifyExtendedAttributeChanged_key;
-    QVariant notifyExtendedAttributeChanged_value;
 };
 
 

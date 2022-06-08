@@ -329,12 +329,6 @@ void MInputContextConnection::processKeyEvent(
                             nativeScanCode, nativeModifiers, time);
 }
 
-void MInputContextConnection::setExtendedAttribute(
-    unsigned int connectionId, int id, const QString &target, const QString &targetName,
-    const QString &attribute, const QVariant &value)
-{
-    Q_EMIT extendedAttributeChanged(connectionId, id, target, targetName, attribute, value);
-}
 /* End handlers for inbound communication */
 
 bool MInputContextConnection::detectableAutoRepeat()
@@ -503,26 +497,6 @@ void MInputContextConnection::updateInputMethodArea(const QRegion &region)
 {
     Q_UNUSED(region);
 }
-
-void MInputContextConnection::notifyExtendedAttributeChanged(int ,
-                                                             const QString &,
-                                                             const QString &,
-                                                             const QString &,
-                                                             const QVariant &)
-{
-    // empty default implementation
-}
-
-void MInputContextConnection::notifyExtendedAttributeChanged(const QList<int> &,
-                                                             int ,
-                                                             const QString &,
-                                                             const QString &,
-                                                             const QString &,
-                                                             const QVariant &)
-{
-    // empty default implementation
-}
-
 
 QVariantMap MInputContextConnection::widgetState() const
 {

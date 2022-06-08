@@ -53,17 +53,6 @@ public:
     virtual QString selection(bool &valid);
     virtual void sendActivationLostEvent();
     virtual void updateInputMethodArea(const QRegion &region);
-    virtual void notifyExtendedAttributeChanged(int id,
-                                                const QString &target,
-                                                const QString &targetItem,
-                                                const QString &attribute,
-                                                const QVariant &value);
-    virtual void notifyExtendedAttributeChanged(const QList<int> &clientIds,
-                                                int id,
-                                                const QString &target,
-                                                const QString &targetItem,
-                                                const QString &attribute,
-                                                const QVariant &value);
     //! \reimp_end
 
     void activateContext();
@@ -77,7 +66,6 @@ public:
     void appOrientationChanged(int angle);
     void setCopyPasteState(bool copyAvailable, bool pasteAvailable);
     void processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text, bool autoRepeat, int count, uint nativeScanCode, uint nativeModifiers, uint time);
-    void setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value);
 
 private Q_SLOTS:
     void newConnection(const QDBusConnection &connection);
