@@ -573,8 +573,3 @@ if(enable-tests)
                 FILES_MATCHING PATTERN "*.xml")
     endif()
 endif()
-
-add_custom_target(install_${PROJECT_NAME}
-        ${CMAKE_MAKE_PROGRAM} install
-        DEPENDS maliit-server
-        COMMENT "Installing ${PROJECT_NAME}")
