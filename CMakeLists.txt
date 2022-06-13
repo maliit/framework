@@ -221,17 +221,7 @@ if(enable-glib)
         maliit-glib/maliitbus.h
         maliit-glib/maliitbusprivate.h
         maliit-glib/maliitinputmethod.c
-        maliit-glib/maliitinputmethod.h
-        maliit-glib/maliitpluginsettings.c
-        maliit-glib/maliitpluginsettings.h
-        maliit-glib/maliitpluginsettingsprivate.h
-        maliit-glib/maliitsettingdata.c
-        maliit-glib/maliitsettingdata.h
-        maliit-glib/maliitsettingsentry.c
-        maliit-glib/maliitsettingsentry.h
-        maliit-glib/maliitsettingsentryprivate.h
-        maliit-glib/maliitsettingsmanager.c
-        maliit-glib/maliitsettingsmanager.h)
+        maliit-glib/maliitinputmethod.h)
 
     set_source_files_properties(maliit-glib/maliitmarshallers.list
             PROPERTIES PREFIX maliit_marshal)
@@ -531,19 +521,6 @@ if(enable-tests)
             TESTPLUGIN_PATH=${CMAKE_BINARY_DIR}/tests/plugins
             TESTDATA_PATH=${CMAKE_SOURCE_DIR}/tests
             QT_QPA_PLATFORM=minimal)
-
-    if(enable-glib)
-        add_executable(ut_maliit_glib_settings
-                tests/ut_maliit_glib_settings/ut_maliit_glib_settings.c
-                tests/ut_maliit_glib_settings/mockmaliitserver.c
-                tests/ut_maliit_glib_settings/mockmaliitserver.h)
-        target_link_libraries(ut_maliit_glib_settings GLib2::GLib GLib2::GIO maliit-glib)
-
-        add_test(ut_maliit_glib_settings ut_maliit_glib_settings)
-        if(install-tests)
-            install(TARGETS ut_maliit_glib_settings DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_maliit_glib_settings)
-        endif()
-    endif()
 
     if(install-tests)
         install(FILES tests/qmlplugin/helloworld.qml

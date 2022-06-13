@@ -284,8 +284,7 @@ maliit_attribute_extension_new (void)
  * maliit_attribute_extension_new_with_id: (skip)
  * @id: An overriden id.
  *
- * Creates a new attribute extension with already existing id. Used
- * internally by #MaliitSettingsManager.
+ * Creates a new attribute extension with already existing id.
  *
  * Returns: (transfer full): The newly created
  * #MaliitAttributeExtension.
