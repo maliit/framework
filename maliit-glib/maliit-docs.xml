@@ -16,7 +16,6 @@
 
   <chapter>
     <title>Maliit</title>
-        <xi:include href="xml/maliitattributeextension.xml"/>
         <xi:include href="xml/maliitinputmethod.xml"/>
 
   </chapter>

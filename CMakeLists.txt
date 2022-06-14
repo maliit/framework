@@ -212,11 +212,6 @@ if(enable-glib)
     find_package(GIO)
 
     set(GLIB_SOURCES
-        maliit-glib/maliitattributeextension.c
-        maliit-glib/maliitattributeextension.h
-        maliit-glib/maliitattributeextensionprivate.h
-        maliit-glib/maliitattributeextensionregistry.c
-        maliit-glib/maliitattributeextensionregistry.h
         maliit-glib/maliitbus.c
         maliit-glib/maliitbus.h
         maliit-glib/maliitbusprivate.h
