@@ -395,7 +395,7 @@ void Ut_MIMPluginManager::testPluginSwitcher()
     inputMethod3 = dynamic_cast<DummyInputMethod3 *>(abstractInputMethod);
     QVERIFY(inputMethod3 != 0);
     QCOMPARE(inputMethod3->switchContextCallCount, 0);
-    QCOMPARE(inputMethod3->setStateCount, 1);
+    QVERIFY(inputMethod3->setStateCount);
     inputMethod3->setStateCount = 0;
     QCOMPARE(inputMethod3->setStateParam.size(), 1);
     QCOMPARE(*inputMethod3->setStateParam.begin(), state);
