@@ -137,8 +137,9 @@ Maliit::TextContentType contentTypeFromWayland(uint32_t purpose)
     case QtWayland::zwp_text_input_v2::content_purpose_normal:
         return Maliit::FreeTextContentType;
     case QtWayland::zwp_text_input_v2::content_purpose_digits:
-    case QtWayland::zwp_text_input_v2::content_purpose_number:
         return Maliit::NumberContentType;
+    case QtWayland::zwp_text_input_v2::content_purpose_number:
+        return Maliit::FormattedNumberContentType;
     case QtWayland::zwp_text_input_v2::content_purpose_phone:
         return Maliit::PhoneNumberContentType;
     case QtWayland::zwp_text_input_v2::content_purpose_url:

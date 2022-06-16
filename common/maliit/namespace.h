@@ -44,6 +44,9 @@ namespace Maliit {
         //! only integer numbers allowed
         NumberContentType,
 
+        //! only numbers and formatted characters
+        FormattedNumberContentType,
+
         //! allows numbers and certain other characters used in phone numbers
         PhoneNumberContentType,
 

@@ -643,8 +643,10 @@ Maliit::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) c
     Maliit::TextContentType type = Maliit::FreeTextContentType;
     hints &= Qt::ImhExclusiveInputMask;
 
-    if (hints == Qt::ImhFormattedNumbersOnly || hints == Qt::ImhDigitsOnly) {
+    if ( hints == Qt::ImhDigitsOnly) {
         type = Maliit::NumberContentType;
+    } else if (hints == Qt::ImhFormattedNumbersOnly) {
+        type = Maliit::FormattedNumberContentType;
     } else if (hints == Qt::ImhDialableCharactersOnly) {
         type = Maliit::PhoneNumberContentType;
     } else if (hints == Qt::ImhEmailCharactersOnly) {
