@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(maliit-framework VERSION 2.3.0)
+project(maliit-framework VERSION 2.99.0)
+set(LIBRARY_VERSION 3.0.0)
 
 # Build options
 
@@ -203,8 +204,8 @@ target_link_libraries(maliit-plugins PRIVATE maliit-common maliit-connection ${P
 target_link_libraries(maliit-plugins PUBLIC Qt5::Core Qt5::Gui Qt5::Quick)
 target_include_directories(maliit-plugins PRIVATE ${PLUGINS_INCLUDE_DIRS})
 
-set_target_properties(maliit-plugins PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
-        VERSION ${PROJECT_VERSION}
+set_target_properties(maliit-plugins PROPERTIES
+        VERSION ${LIBRARY_VERSION}
         EXPORT_NAME Maliit::Plugins)
 
 if(enable-glib)
@@ -242,8 +243,8 @@ if(enable-glib)
     add_library(maliit-glib SHARED ${GLIB_SOURCES} ${GLIB_HEADER})
     target_include_directories(maliit-glib PUBLIC ${GIO_INCLUDE_DIRS})
     target_link_libraries(maliit-glib ${GIO_LIBRARIES})
-    set_target_properties(maliit-glib PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
-            VERSION ${PROJECT_VERSION}
+    set_target_properties(maliit-glib PROPERTIES
+            VERSION ${LIBRARY_VERSION}
             EXPORT_NAME Maliit::GLib)
 endif()
 
