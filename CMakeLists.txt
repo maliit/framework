@@ -113,9 +113,6 @@ set(PLUGINS_SOURCES
     src/maliit/plugins/abstractinputmethod.h
     src/maliit/plugins/abstractinputmethodhost.cpp
     src/maliit/plugins/abstractinputmethodhost.h
-    src/maliit/plugins/extensionevent.cpp
-    src/maliit/plugins/extensionevent.h
-    src/maliit/plugins/extensionevent_p.h
     src/maliit/plugins/inputmethodplugin.h
     src/maliit/plugins/keyoverride.cpp
     src/maliit/plugins/keyoverride.h
@@ -126,11 +123,6 @@ set(PLUGINS_SOURCES
     src/maliit/plugins/plugindescription.h
     src/maliit/plugins/subviewdescription.cpp
     src/maliit/plugins/subviewdescription.h
-    src/maliit/plugins/updateevent.cpp
-    src/maliit/plugins/updateevent.h
-    src/maliit/plugins/updateevent_p.h
-    src/maliit/plugins/updatereceiver.cpp
-    src/maliit/plugins/updatereceiver.h
     src/maliit/standaloneinputmethod.cpp
     src/maliit/standaloneinputmethod.h
     src/maliit/standaloneinputmethodhost.cpp

@@ -19,7 +19,6 @@
 #include <maliit/plugins/abstractinputmethod.h>
 #include "mimsettings.h"
 #include "mimhwkeyboardtracker.h"
-#include <maliit/plugins/updateevent.h>
 #include "mimsubviewoverride.h"
 #include "maliit/namespaceinternal.h"
 #include "windowgroup.h"
@@ -1311,14 +1310,8 @@ void MIMPluginManager::handleWidgetStateChanged(unsigned int clientId,
         }
     }
 
-    const Qt::InputMethodHints lastHints = static_cast<Qt::InputMethodHints>(newState.value(Maliit::Internal::inputMethodHints).toInt());
-    MImUpdateEvent ev(newState, changedProperties, lastHints);
-
     // general notification last
     Q_FOREACH (MAbstractInputMethod *target, targets()) {
-        if (not changedProperties.isEmpty()) {
-            (void) target->imExtensionEvent(&ev);
-        }
         target->update();
     }
 
