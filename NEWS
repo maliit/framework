@@ -1,3 +1,20 @@
+2.3.0
+=====
+
+CHANGES SINCE 2.2.1
+
+* Fix paths in maliit-defines.prf
+* Use compose input plugin fallback only if key redirection is disabled
+* Remove leftover code from Qt 4 times
+* Enable installing unit tests again
+* Remove legacy unused Maemo-specific code
+* Use QLoggingCategory for logging
+* Fix application orientation angle back to clockwise
+* Add the Mir input panel window type flag
+* Use CMAKE_INSTALL_FULL_* paths in pkgconfig files
+* Remove the unused and unnecessary gtk3 wayland input context plugin
+* Remove unused and useless install target
+
 2.2.1
 =====
 
