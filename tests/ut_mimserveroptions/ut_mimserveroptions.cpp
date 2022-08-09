@@ -42,12 +42,12 @@ namespace {
                           "-testability", "TESTABILITY", "-qdevel", "-reverse",
                           "-stylesheet", "-widgetcount", "-qdebug",
                           "-software" } };
+}
 
-    bool operator==(const MImServerCommonOptions &x,
-                    const MImServerCommonOptions &y)
-    {
-        return (x.showHelp == y.showHelp);
-    }
+bool operator==(const MImServerCommonOptions &x,
+                const MImServerCommonOptions &y)
+{
+    return (x.showHelp == y.showHelp);
 }
 
 
