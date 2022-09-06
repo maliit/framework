@@ -120,7 +120,7 @@ void MImHwKeyboardTrackerPrivate::tryEvdevDevice(const char *device)
         return;
     }
 
-    if (ioctl(fd, EVIOCGBIT(0, EV_MAX), evbits) < 0) {
+    if (ioctl(fd, EVIOCGBIT(0, sizeof(evbits)), evbits) < 0) {
         delete qfile;
         return;
     }
@@ -131,14 +131,14 @@ void MImHwKeyboardTrackerPrivate::tryEvdevDevice(const char *device)
         return;
     }
 
-    unsigned char swbit[BITS2BYTES(EV_MAX)];
-    if (ioctl(fd, EVIOCGBIT(EV_SW, SW_CNT), swbit) < 0) {
+    unsigned char swCapabilities[BITS2BYTES(SW_MAX)];
+    if (ioctl(fd, EVIOCGBIT(EV_SW, sizeof(swCapabilities)), swCapabilities) < 0) {
         delete qfile;
         return;
     }
 
     // Check that there is a tablet mode switch here
-    if (!TEST_BIT(SW_TABLET_MODE, swbit)) {
+    if (!TEST_BIT(SW_TABLET_MODE, swCapabilities)) {
         delete qfile;
         return;
     }
@@ -152,11 +152,11 @@ void MImHwKeyboardTrackerPrivate::tryEvdevDevice(const char *device)
     present = true;
 
     // Initialise initial tablet mode state
-    unsigned long state[BITS2BYTES(SW_MAX)];
-    if (ioctl(fd, EVIOCGSW(SW_MAX), state) < 0)
+    unsigned char swState[BITS2BYTES(SW_MAX)];
+    if (ioctl(fd, EVIOCGSW(sizeof(swState)), swState) < 0)
         return;
 
-    evdevTabletMode = TEST_BIT(SW_TABLET_MODE, state);
+    evdevTabletMode = TEST_BIT(SW_TABLET_MODE, swState);
 }
 
 MImHwKeyboardTrackerPrivate::~MImHwKeyboardTrackerPrivate()
