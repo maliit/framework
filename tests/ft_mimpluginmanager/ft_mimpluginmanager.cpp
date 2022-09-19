@@ -202,16 +202,19 @@ void Ft_MIMPluginManager::testPluginDescriptions()
 
     MImSettings enabledPluginsSettings(EnabledPluginsKey);
     QStringList enabledPlugins;
+
+    QList<MImPluginDescription> pluginDescriptions;
     const MImPluginDescription *description = 0;
 
     enabledPlugins << pluginId + ":" + "dummyimsv1";
     enabledPluginsSettings.set(enabledPlugins);
     QCOMPARE(spy.count(), 1);
 
-    description = findPluginDescriptions(subject->pluginDescriptions(Maliit::OnScreen), pluginName);
+    pluginDescriptions = subject->pluginDescriptions(Maliit::OnScreen);
+    description = findPluginDescriptions(pluginDescriptions, pluginName);
     QVERIFY(description);
     QVERIFY(description->enabled());
-    description = findPluginDescriptions(subject->pluginDescriptions(Maliit::OnScreen), pluginName3);
+    description = findPluginDescriptions(pluginDescriptions, pluginName3);
     QVERIFY(description);
     QVERIFY(!description->enabled());
     description = 0;
@@ -220,10 +223,11 @@ void Ft_MIMPluginManager::testPluginDescriptions()
     enabledPluginsSettings.set(enabledPlugins);
     QCOMPARE(spy.count(), 2);
 
-    description = findPluginDescriptions(subject->pluginDescriptions(Maliit::OnScreen), pluginName);
+    pluginDescriptions = subject->pluginDescriptions(Maliit::OnScreen);
+    description = findPluginDescriptions(pluginDescriptions, pluginName);
     QVERIFY(description);
     QVERIFY(description->enabled());
-    description = findPluginDescriptions(subject->pluginDescriptions(Maliit::OnScreen), pluginName3);
+    description = findPluginDescriptions(pluginDescriptions, pluginName3);
     QVERIFY(description);
     QVERIFY(!description->enabled());
     description = 0;
@@ -232,10 +236,11 @@ void Ft_MIMPluginManager::testPluginDescriptions()
     enabledPluginsSettings.set(enabledPlugins);
     QCOMPARE(spy.count(), 3);
 
-    description = findPluginDescriptions(subject->pluginDescriptions(Maliit::OnScreen), pluginName);
+    pluginDescriptions = subject->pluginDescriptions(Maliit::OnScreen);
+    description = findPluginDescriptions(pluginDescriptions, pluginName);
     QVERIFY(description);
     QVERIFY(description->enabled());
-    description = findPluginDescriptions(subject->pluginDescriptions(Maliit::OnScreen), pluginName3);
+    description = findPluginDescriptions(pluginDescriptions, pluginName3);
     QVERIFY(description);
     QVERIFY(description->enabled());
     description = 0;
