@@ -30,9 +30,6 @@
 #include <maliit/plugins/inputmethodplugin.h>
 #include <unknownplatform.h>
 
-#include "mattributeextensionmanager.h"
-#include "msharedattributeextensionmanager.h"
-
 using namespace std::tr1;
 
 typedef QSet<Maliit::HandlerState> HandlerStates;
@@ -75,16 +72,12 @@ void Ut_MIMPluginManagerConfig::init()
     MImSettings pathConf(MImPluginPaths);
     pathConf.set(MaliitTestUtils::getTestPluginPath());
     connection = new MInputContextConnection;
-    enabledPluginSettings = new MImSettings(EnabledPluginsKey);
-    activePluginSettings = new MImSettings(ActivePluginKey);
 }
 
 void Ut_MIMPluginManagerConfig::cleanup()
 {
     delete manager;
     delete connection;
-    delete enabledPluginSettings;
-    delete activePluginSettings;
     manager = 0;
     subject = 0;
 }
@@ -94,8 +87,6 @@ void Ut_MIMPluginManagerConfig::cleanup()
 
 void Ut_MIMPluginManagerConfig::testNoActiveSubView()
 {
-    enabledPluginSettings->set(DefaultEnabledPlugins);
-    activePluginSettings->unset();
 
     QSharedPointer<MInputContextConnection> icConnection(connection);
     manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
@@ -109,8 +100,6 @@ void Ut_MIMPluginManagerConfig::testNoActiveSubView()
 
 void Ut_MIMPluginManagerConfig::testEmptyConfig()
 {
-    enabledPluginSettings->unset();
-    activePluginSettings->unset();
 
     QSharedPointer<MInputContextConnection> icConnection(connection);
     manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
@@ -127,10 +116,6 @@ void Ut_MIMPluginManagerConfig::testEmptyConfig()
 
 void Ut_MIMPluginManagerConfig::autoLanguageSubView()
 {
-    // Force autodetection of enabled plugins in DummyPlugin3
-    enabledPluginSettings->unset();
-    activePluginSettings->set(QStringList() << pluginId3 + ":");
-
     QSharedPointer<MInputContextConnection> icConnection(connection);
     manager = new MIMPluginManager(icConnection, QSharedPointer<Maliit::AbstractPlatform>(new Maliit::UnknownPlatform));
     subject = manager->d_ptr;

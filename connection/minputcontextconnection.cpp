@@ -329,28 +329,6 @@ void MInputContextConnection::processKeyEvent(
                             nativeScanCode, nativeModifiers, time);
 }
 
-void MInputContextConnection::registerAttributeExtension(unsigned int connectionId, int id,
-                                                         const QString &attributeExtension)
-{
-    Q_EMIT attributeExtensionRegistered(connectionId, id, attributeExtension);
-}
-
-void MInputContextConnection::unregisterAttributeExtension(unsigned int connectionId, int id)
-{
-    Q_EMIT attributeExtensionUnregistered(connectionId, id);
-}
-
-void MInputContextConnection::setExtendedAttribute(
-    unsigned int connectionId, int id, const QString &target, const QString &targetName,
-    const QString &attribute, const QVariant &value)
-{
-    Q_EMIT extendedAttributeChanged(connectionId, id, target, targetName, attribute, value);
-}
-
-void MInputContextConnection::loadPluginSettings(int connectionId, const QString &descriptionLanguage)
-{
-    Q_EMIT pluginSettingsRequested(connectionId, descriptionLanguage);
-}
 /* End handlers for inbound communication */
 
 bool MInputContextConnection::detectableAutoRepeat()
@@ -512,11 +490,6 @@ QString MInputContextConnection::selection(bool &valid)
     return QString();
 }
 
-void MInputContextConnection::setLanguage(const QString &language)
-{
-    Q_UNUSED(language);
-}
-
 void MInputContextConnection::sendActivationLostEvent()
 {}
 
@@ -524,34 +497,6 @@ void MInputContextConnection::updateInputMethodArea(const QRegion &region)
 {
     Q_UNUSED(region);
 }
-
-void MInputContextConnection::notifyExtendedAttributeChanged(int ,
-                                                             const QString &,
-                                                             const QString &,
-                                                             const QString &,
-                                                             const QVariant &)
-{
-    // empty default implementation
-}
-
-void MInputContextConnection::notifyExtendedAttributeChanged(const QList<int> &,
-                                                             int ,
-                                                             const QString &,
-                                                             const QString &,
-                                                             const QString &,
-                                                             const QVariant &)
-{
-    // empty default implementation
-}
-
-void MInputContextConnection::pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info)
-{
-    Q_UNUSED(clientId);
-    Q_UNUSED(info);
-
-    // empty default implementation
-}
-
 
 QVariantMap MInputContextConnection::widgetState() const
 {

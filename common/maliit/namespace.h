@@ -44,6 +44,9 @@ namespace Maliit {
         //! only integer numbers allowed
         NumberContentType,
 
+        //! only numbers and formatted characters
+        FormattedNumberContentType,
+
         //! allows numbers and certain other characters used in phone numbers
         PhoneNumberContentType,
 
@@ -126,12 +129,6 @@ namespace Maliit {
         //! Name of property which tells whether correction is enabled.
         //! \sa Maliit::ImCorrectionEnabledQuery.
         const char* const correctionEnabledQuery = "maliit-correction-enabled";
-        //! Name of property which holds ID of attribute extension.
-        //! \sa Maliit::InputMethodAttributeExtensionIdQuery.
-        const char* const attributeExtensionId = "maliit-attribute-extension-id";
-        //! Name of property which holds attribute extension.
-        //! \sa Maliit::InputMethodAttributeExtensionQuery.
-        const char* const attributeExtension = "maliit-attribute-extension";
         //! Name of the property which overrides localized numeric input with western numeric input.
         //! \sa Maliit::WesternNumericInputEnforcedQuery.
         const char* const westernNumericInputEnforced = "maliit-western-numeric-input-enforced";
@@ -140,34 +137,6 @@ namespace Maliit {
         //! Name of the property which can suppress VKB even if focused.
         //! \sa Maliit::VisualizationPriorityQuery
         const char* const suppressInputMethod = "maliit-suppress-input-method";
-    }
-
-    enum SettingEntryType
-    {
-        StringType     = 1,
-        IntType        = 2,
-        BoolType       = 3,
-        StringListType = 4,
-        IntListType    = 5
-    };
-
-    namespace SettingEntryAttributes
-    {
-        //! Name of setting entry attribute which holds the list of values that can be assigned to the entry.
-        //! \sa Maliit::SettingsEntry
-        const char* const valueDomain = "valueDomain";
-        //! Name of setting entry attribute which holds the descriptions for the values in valueDomain.
-        //! \sa Maliit::SettingsEntry
-        const char* const valueDomainDescriptions = "valueDomainDescriptions";
-        //! Name of setting entry attribute which holds the minimum valid value (inclusive) for an integer property.
-        //! \sa Maliit::SettingsEntry
-        const char* const valueRangeMin = "valueRangeMin";
-        //! Name of setting entry attribute which holds the maximum valid value (inclusive) for an integer property.
-        //! \sa Maliit::SettingsEntry
-        const char* const valueRangeMax = "valueRangeMax";
-        //! Name of setting entry attribute which holds the default value for a setting entry.
-        //! \sa Maliit::SettingsEntry
-        const char* const defaultValue = "defaultValue";
     }
 }
 

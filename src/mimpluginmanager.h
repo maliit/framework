@@ -23,26 +23,19 @@
 #include <maliit/plugins/plugindescription.h>
 #include <maliit/plugins/subviewdescription.h>
 
-#include "mattributeextensionid.h"
 #include "minputcontextconnection.h"
 
 QT_BEGIN_NAMESPACE
 class QRegion;
 QT_END_NAMESPACE
 class MIMPluginManagerPrivate;
-class MAttributeExtensionId;
 class MAbstractInputMethod;
-class MAttributeExtensionManager;
 
 namespace Maliit {
 
 class AbstractPlatform;
 
-namespace Plugins {
-    class AbstractPluginSetting;
 }
-}
-using Maliit::Plugins::AbstractPluginSetting;
 
 //! \internal
 /*! \ingroup maliitserver
@@ -106,14 +99,6 @@ public:
     //! Enables all installed subviews
     void setAllSubViewsEnabled(bool enable);
 
-    //! Register a setting entry for the specified plugin
-    AbstractPluginSetting *registerPluginSetting(const QString &pluginId,
-                                                 const QString &pluginDescription,
-                                                 const QString &key,
-                                                 const QString &description,
-                                                 Maliit::SettingEntryType type,
-                                                 const QVariantMap &attributes);
-
 Q_SIGNALS:
     //! This signal is emitted when input method plugins are loaded, unloaded,
     //! enabled or disabled
@@ -134,12 +119,6 @@ private Q_SLOTS:
     //! Update and activate input source.
     void updateInputSource();
 
-    //! Set toolbar to active plugin with given \a id
-    void setToolbar(const MAttributeExtensionId &id);
-
-    //! Update the key overrides for active plugin.
-    void updateKeyOverrides();
-
     void handleAppOrientationChanged(int angle);
     void handleAppOrientationAboutToChange(int angle);
     void handleAppFocusChanged(WId id);
@@ -155,19 +134,6 @@ private Q_SLOTS:
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
-    void pluginSettingsRequested(int clientId, const QString &descriptionLanguage);
-
-    /*!
-     * \brief Handle global attribute change
-     * \param id id of the attribute extension that triggered this change
-     * \param targetItem Item name
-     * \param attribute Attribute name
-     * \param value New attribute value
-     */
-    void onGlobalAttributeChanged(const MAttributeExtensionId &id,
-                                  const QString &targetItem,
-                                  const QString &attribute,
-                                  const QVariant &value);
 private:
     QSet<MAbstractInputMethod *> targets();
 

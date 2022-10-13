@@ -26,7 +26,6 @@
 #include <QByteArray>
 #include <QRectF>
 #include <QScreen>
-#include <QLocale>
 #include <QWindow>
 #include <QSharedDataPointer>
 #include <QQuickItem>
@@ -135,31 +134,12 @@ void MInputContext::connectInputMethodServer()
 
     connect(imServer, SIGNAL(getSelection(QString&,bool&)),
             this, SLOT(getSelection(QString&, bool&)));
-
-    connect(imServer, SIGNAL(setLanguage(QString)),
-            this, SLOT(setLanguage(QString)));
 }
 
 
 bool MInputContext::isValid() const
 {
     return true;
-}
-
-void MInputContext::setLanguage(const QString &language)
-{
-    QLocale newLocale(language);
-    Qt::LayoutDirection oldDirection = inputDirection();
-
-    if (newLocale != inputLocale) {
-        inputLocale = newLocale;
-        emitLocaleChanged();
-    }
-
-    Qt::LayoutDirection newDirection = inputDirection();
-    if (newDirection != oldDirection) {
-        emitInputDirectionChanged(newDirection);
-    }
 }
 
 void MInputContext::reset()
@@ -245,10 +225,6 @@ void MInputContext::update(Qt::InputMethodQueries queries)
 
     Q_UNUSED(queries) // fetching everything
 
-    if (queries & Qt::ImPlatformData) {
-        updateInputMethodExtensions();
-    }
-
     bool effectiveFocusChange = false;
     if (queries & Qt::ImEnabled) {
         bool newAcceptance = inputMethodAccepted();
@@ -279,8 +255,6 @@ void MInputContext::setFocusObject(QObject *focused)
 {
     if (composeInputContext) composeInputContext->setFocusObject(focused);
     qCDebug(lcMaliit) << InputContextName << "in" << Q_FUNC_INFO << focused;
-
-    updateInputMethodExtensions();
 
     QWindow *newFocusWindow = qGuiApp->focusWindow();
     if (newFocusWindow != window.data()) {
@@ -401,16 +375,6 @@ void MInputContext::hideInputPanel()
 bool MInputContext::isInputPanelVisible() const
 {
     return !keyboardRectangle.isEmpty();
-}
-
-QLocale MInputContext::locale() const
-{
-    return inputLocale;
-}
-
-Qt::LayoutDirection MInputContext::inputDirection() const
-{
-    return inputLocale.textDirection();
 }
 
 void MInputContext::sendHideInputMethod()
@@ -645,9 +609,6 @@ void MInputContext::onDBusConnection()
 {
     qCDebug(lcMaliit) << Q_FUNC_INFO;
 
-    // using one attribute extension for everything
-    imServer->registerAttributeExtension(0, QString());
-
     // Force activation, since setFocusObject may have been called after
     // onDBusDisconnection set active to false or before the dbus connection.
     active = false;
@@ -682,8 +643,10 @@ Maliit::TextContentType MInputContext::contentType(Qt::InputMethodHints hints) c
     Maliit::TextContentType type = Maliit::FreeTextContentType;
     hints &= Qt::ImhExclusiveInputMask;
 
-    if (hints == Qt::ImhFormattedNumbersOnly || hints == Qt::ImhDigitsOnly) {
+    if ( hints == Qt::ImhDigitsOnly) {
         type = Maliit::NumberContentType;
+    } else if (hints == Qt::ImhFormattedNumbersOnly) {
+        type = Maliit::FormattedNumberContentType;
     } else if (hints == Qt::ImhDialableCharactersOnly) {
         type = Maliit::PhoneNumberContentType;
     } else if (hints == Qt::ImhEmailCharactersOnly) {
@@ -773,8 +736,6 @@ QMap<QString, QVariant> MInputContext::getStateInformation() const
         }
     }
 
-    stateInformation["toolbarId"] = 0; // Global extension id. And bad state parameter name for it.
-
     return stateInformation;
 }
 
@@ -840,29 +801,4 @@ int MInputContext::cursorStartPosition(bool *valid)
     }
 
     return start;
-}
-
-void MInputContext::updateInputMethodExtensions()
-{
-    if (!inputMethodAccepted()) {
-        return;
-    }
-    if (!qGuiApp->focusObject()) {
-        return;
-    }
-    qCDebug(lcMaliit) << InputContextName << Q_FUNC_INFO;
-
-    QVariantMap extensions = qGuiApp->focusObject()->property("__inputMethodExtensions").toMap();
-    QVariant value;
-    value = extensions.value("enterKeyIconSource");
-    imServer->setExtendedAttribute(0, "/keys", "actionKey", "icon", QVariant(value.toUrl().toString()));
-
-    value = extensions.value("enterKeyText");
-    imServer->setExtendedAttribute(0, "/keys", "actionKey", "label", QVariant(value.toString()));
-
-    value = extensions.value("enterKeyEnabled");
-    imServer->setExtendedAttribute(0, "/keys", "actionKey", "enabled", value.isValid() ? value.toBool() : true);
-
-    value = extensions.value("enterKeyHighlighted");
-    imServer->setExtendedAttribute(0, "/keys", "actionKey", "highlighted", value.isValid() ? value.toBool() : false);
 }

@@ -20,7 +20,6 @@
 #include "maliit/plugins/abstractinputmethod.h"
 #include "maliit/plugins/inputmethodplugin.h"
 
-#include <maliit/plugins/updateevent.h>
 #include <common/maliit/namespaceinternal.h>
 #include <QtGui/QGuiApplication>
 
@@ -69,10 +68,6 @@ StandaloneInputMethod::StandaloneInputMethod(Maliit::Plugins::InputMethodPlugin 
 
     connect(mConnection.get(), &MInputContextConnection::widgetStateChanged,
             this, &StandaloneInputMethod::handleWidgetStateChanged);
-
-//    connect(d->mICConnection.data(), SIGNAL(pluginSettingsRequested(int,QString)),
-//            this, SLOT(pluginSettingsRequested(int,QString)));
-
 }
 
 StandaloneInputMethod::~StandaloneInputMethod()
@@ -111,13 +106,7 @@ void StandaloneInputMethod::handleWidgetStateChanged(unsigned int,
         mInputMethod->handleVisualizationPriorityChange(newVisualization);
     }
 
-    const Qt::InputMethodHints lastHints = newState.value(Maliit::Internal::inputMethodHints).value<Qt::InputMethodHints>();
-    MImUpdateEvent ev(newState, changedProperties, lastHints);
-
     // general notification last
-    if (!changedProperties.isEmpty()) {
-        mInputMethod->imExtensionEvent(&ev);
-    }
     mInputMethod->update();
 
     // Make sure windows get hidden when no longer focus

@@ -16,12 +16,7 @@
 
   <chapter>
     <title>Maliit</title>
-        <xi:include href="xml/maliitattributeextension.xml"/>
         <xi:include href="xml/maliitinputmethod.xml"/>
-        <xi:include href="xml/maliitsettingsmanager.xml"/>
-        <xi:include href="xml/maliitpluginsettings.xml"/>
-        <xi:include href="xml/maliitsettingsentry.xml"/>
-        <xi:include href="xml/maliitsettingdata.xml"/>
 
   </chapter>
   <chapter id="object-tree">

@@ -37,6 +37,7 @@ public:
     enum ContentType {
         FreeTextContentType = Maliit::FreeTextContentType,
         NumberContentType = Maliit::NumberContentType,
+        FormattedNumberContentType = Maliit::FormattedNumberContentType,
         PhoneNumberContentType = Maliit::PhoneNumberContentType,
         EmailContentType = Maliit::EmailContentType,
         UrlContentType = Maliit::UrlContentType,

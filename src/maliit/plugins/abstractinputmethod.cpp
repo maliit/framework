@@ -180,9 +180,3 @@ void MAbstractInputMethod::setKeyOverrides(const QMap<QString, QSharedPointer<MK
     // empty default implementation
     Q_UNUSED(overrides);
 }
-
-bool MAbstractInputMethod::imExtensionEvent(MImExtensionEvent *event)
-{
-    Q_UNUSED(event);
-    return false; // event not handled as default
-}

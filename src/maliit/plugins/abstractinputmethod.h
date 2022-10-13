@@ -29,7 +29,6 @@ QT_END_NAMESPACE
 class MAbstractInputMethodHost;
 class MAbstractInputMethodPrivate;
 class MKeyOverride;
-class MImExtensionEvent;
 
 
 /*! \ingroup pluginapi
@@ -236,18 +235,6 @@ public:
      * that no key override exists, and that the normal values should be used.
      */
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
-
-    /*!
-     * \brief handles extension event not covered by a dedicated method.
-     * 
-     * Must return true if event is handled, otherwise false.
-     * Extensions can be registered on the application side, and will be passed through to
-     * the input method, allowing to add integration points between application and input method.
-     * Reimplementing this method is optional.
-     *
-     * \param event event to handle
-     */
-    virtual bool imExtensionEvent(MImExtensionEvent *event);
 
 Q_SIGNALS:
     /*!

@@ -44,8 +44,6 @@ private Q_SLOTS:
 
 private:
     QString pluginPath;
-    MImSettings *enabledPluginSettings;
-    MImSettings *activePluginSettings;
     MIMPluginManager *manager;
     MIMPluginManagerPrivate *subject;
     MInputContextConnection *connection;

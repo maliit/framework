@@ -90,29 +90,3 @@ void MImServerConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
     Q_UNUSED(nativeModifiers);
     Q_UNUSED(time);
 }
-
-void MImServerConnection::registerAttributeExtension(int id, const QString &fileName)
-{
-    Q_UNUSED(id);
-    Q_UNUSED(fileName);
-}
-
-void MImServerConnection::unregisterAttributeExtension(int id)
-{
-    Q_UNUSED(id);
-}
-
-void MImServerConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem,
-                                               const QString &attribute, const QVariant &value)
-{
-    Q_UNUSED(id);
-    Q_UNUSED(target);
-    Q_UNUSED(targetItem);
-    Q_UNUSED(attribute);
-    Q_UNUSED(value);
-}
-
-void MImServerConnection::loadPluginSettings(const QString &descriptionLanguage)
-{
-    Q_UNUSED(descriptionLanguage);
-}

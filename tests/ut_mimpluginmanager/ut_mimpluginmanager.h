@@ -51,9 +51,6 @@ private Q_SLOTS:
 
     void testEnableAllSubviews();
 
-    void testPluginSettingsList();
-    void testPluginSettingsUpdate();
-
 private:
     void handleMessages();
 
