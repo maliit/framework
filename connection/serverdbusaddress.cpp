@@ -15,8 +15,8 @@
 
 #include <QDebug>
 #include <QDBusConnection>
-
 #include <QDBusServer>
+#include <QStandardPaths>
 
 #include <cstdlib>
 
@@ -61,7 +61,8 @@ DynamicAddress::DynamicAddress()
 
 QDBusServer* DynamicAddress::connect()
 {
-    QLatin1String dbusAddress("unix:tmpdir=/tmp/maliit-server");
+    auto runtimeDir = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation);
+    auto dbusAddress = QLatin1String("unix:path=%1/maliit-server").arg(runtimeDir);
 
     QDBusServer *server = new QDBusServer(dbusAddress);
 
