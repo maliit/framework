@@ -338,15 +338,15 @@ void WaylandInputMethodConnection::sendPreeditString(const QString &string,
 
     if (replace_length > 0) {
         int cursor = widgetState().value(CursorPositionAttribute).toInt();
-        uint32_t index = string.midRef(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
-        uint32_t length = string.midRef(cursor + replace_start, replace_length).toUtf8().size();
+        uint32_t index = string.mid(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
+        uint32_t length = string.mid(cursor + replace_start, replace_length).toUtf8().size();
         d->context()->delete_surrounding_text(index, length);
     }
 
     Q_FOREACH (const Maliit::PreeditTextFormat& format, preedit_formats) {
         QtWayland::zwp_text_input_v1::preedit_style style = preeditStyleFromMaliit(format.preeditFace);
-        uint32_t index = string.leftRef(format.start).toUtf8().size();
-        uint32_t length = string.leftRef(format.start + format.length).toUtf8().size() - index;
+        uint32_t index = string.left(format.start).toUtf8().size();
+        uint32_t length = string.left(format.start + format.length).toUtf8().size() - index;
         qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_styling" << index << length;
         d->context()->preedit_styling(index, length, style);
     }
@@ -356,8 +356,8 @@ void WaylandInputMethodConnection::sendPreeditString(const QString &string,
         cursor_pos = string.size() + 1 - cursor_pos;
     }
 
-    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_cursor" << string.leftRef(cursor_pos).toUtf8().size();
-    d->context()->preedit_cursor(string.leftRef(cursor_pos).toUtf8().size());
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_cursor" << string.left(cursor_pos).toUtf8().size();
+    d->context()->preedit_cursor(string.left(cursor_pos).toUtf8().size());
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_string" << string;
     d->context()->preedit_string(d->context()->serial(), string, string);
 }
@@ -384,12 +384,12 @@ void WaylandInputMethodConnection::sendCommitString(const QString &string,
 
     if (replace_length > 0) {
         int cursor = widgetState().value(CursorPositionAttribute).toInt();
-        uint32_t index = string.midRef(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
-        uint32_t length = string.midRef(cursor + replace_start, replace_length).toUtf8().size();
+        uint32_t index = string.mid(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
+        uint32_t length = string.mid(cursor + replace_start, replace_length).toUtf8().size();
         d->context()->delete_surrounding_text(index, length);
     }
 
-    cursor_pos = string.leftRef(cursor_pos).toUtf8().size();
+    cursor_pos = string.left(cursor_pos).toUtf8().size();
     d->context()->cursor_position(cursor_pos, cursor_pos);
     d->context()->commit_string(d->context()->serial(), string);
 }
@@ -470,8 +470,8 @@ void WaylandInputMethodConnection::setSelection(int start, int length)
         return;
 
     QString surrounding = widgetState().value(SurroundingTextAttribute).toString();
-    uint32_t index(surrounding.leftRef(start + length).toUtf8().size());
-    uint32_t anchor(surrounding.leftRef(start).toUtf8().size());
+    uint32_t index(surrounding.left(start + length).toUtf8().size());
+    uint32_t anchor(surrounding.left(start).toUtf8().size());
 
     d->context()->cursor_position(index, anchor);
     d->context()->commit_string(d->context()->serial(), QString());

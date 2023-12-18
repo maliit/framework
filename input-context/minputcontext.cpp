@@ -624,7 +624,7 @@ void MInputContext::onInvokeAction(const QString &action, const QKeySequence &se
         const int modifiers = sequence[i] & AllModifiers;
         QString text("");
         if (modifiers == Qt::NoModifier || modifiers == Qt::ShiftModifier) {
-            text = QString(key);
+            text = QString(QChar::fromLatin1(key));
         }
         keyEvent(QEvent::KeyPress, key, modifiers, text, false, 1);
         keyEvent(QEvent::KeyRelease, key, modifiers, text, false, 1);
