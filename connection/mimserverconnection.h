@@ -15,6 +15,7 @@
 #define MIMSERVERCONNECTION_H
 
 #include <maliit/namespace.h>
+#include <maliit/settingdata.h>
 
 #include <QtCore>
 

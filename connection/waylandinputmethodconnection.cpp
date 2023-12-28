@@ -18,7 +18,7 @@
 
 #include "wayland-client.h"
 #include <qwayland-input-method-unstable-v1.h>
-#include <QtWaylandClient/private/qwayland-text-input-unstable-v2.h>
+#include <qwayland-text-input-unstable-v1.h>
 
 #include <xkbcommon/xkbcommon.h>
 
@@ -113,37 +113,37 @@ xkb_keysym_t keyFromQt(int qt_key)
     }
 }
 
-QtWayland::zwp_text_input_v2::preedit_style preeditStyleFromMaliit(Maliit::PreeditFace face)
+QtWayland::zwp_text_input_v1::preedit_style preeditStyleFromMaliit(Maliit::PreeditFace face)
 {
     switch (face) {
     case Maliit::PreeditDefault:
-        return QtWayland::zwp_text_input_v2::preedit_style_default;
+        return QtWayland::zwp_text_input_v1::preedit_style_default;
     case Maliit::PreeditNoCandidates:
-        return QtWayland::zwp_text_input_v2::preedit_style_incorrect;
+        return QtWayland::zwp_text_input_v1::preedit_style_incorrect;
     case Maliit::PreeditKeyPress:
-        return QtWayland::zwp_text_input_v2::preedit_style_highlight;
+        return QtWayland::zwp_text_input_v1::preedit_style_highlight;
     case Maliit::PreeditUnconvertible:
-        return QtWayland::zwp_text_input_v2::preedit_style_inactive;
+        return QtWayland::zwp_text_input_v1::preedit_style_inactive;
     case Maliit::PreeditActive:
-        return QtWayland::zwp_text_input_v2::preedit_style_active;
+        return QtWayland::zwp_text_input_v1::preedit_style_active;
     default:
-        return QtWayland::zwp_text_input_v2::preedit_style_none;
+        return QtWayland::zwp_text_input_v1::preedit_style_none;
     }
 }
 
 Maliit::TextContentType contentTypeFromWayland(uint32_t purpose)
 {
     switch (purpose) {
-    case QtWayland::zwp_text_input_v2::content_purpose_normal:
+    case QtWayland::zwp_text_input_v1::content_purpose_normal:
         return Maliit::FreeTextContentType;
-    case QtWayland::zwp_text_input_v2::content_purpose_digits:
-    case QtWayland::zwp_text_input_v2::content_purpose_number:
+    case QtWayland::zwp_text_input_v1::content_purpose_digits:
+    case QtWayland::zwp_text_input_v1::content_purpose_number:
         return Maliit::NumberContentType;
-    case QtWayland::zwp_text_input_v2::content_purpose_phone:
+    case QtWayland::zwp_text_input_v1::content_purpose_phone:
         return Maliit::PhoneNumberContentType;
-    case QtWayland::zwp_text_input_v2::content_purpose_url:
+    case QtWayland::zwp_text_input_v1::content_purpose_url:
         return Maliit::UrlContentType;
-    case QtWayland::zwp_text_input_v2::content_purpose_email:
+    case QtWayland::zwp_text_input_v1::content_purpose_email:
         return Maliit::EmailContentType;
     default:
         return Maliit::CustomContentType;
@@ -338,15 +338,15 @@ void WaylandInputMethodConnection::sendPreeditString(const QString &string,
 
     if (replace_length > 0) {
         int cursor = widgetState().value(CursorPositionAttribute).toInt();
-        uint32_t index = string.midRef(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
-        uint32_t length = string.midRef(cursor + replace_start, replace_length).toUtf8().size();
+        uint32_t index = string.mid(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
+        uint32_t length = string.mid(cursor + replace_start, replace_length).toUtf8().size();
         d->context()->delete_surrounding_text(index, length);
     }
 
     Q_FOREACH (const Maliit::PreeditTextFormat& format, preedit_formats) {
-        QtWayland::zwp_text_input_v2::preedit_style style = preeditStyleFromMaliit(format.preeditFace);
-        uint32_t index = string.leftRef(format.start).toUtf8().size();
-        uint32_t length = string.leftRef(format.start + format.length).toUtf8().size() - index;
+        QtWayland::zwp_text_input_v1::preedit_style style = preeditStyleFromMaliit(format.preeditFace);
+        uint32_t index = string.left(format.start).toUtf8().size();
+        uint32_t length = string.left(format.start + format.length).toUtf8().size() - index;
         qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_styling" << index << length;
         d->context()->preedit_styling(index, length, style);
     }
@@ -356,8 +356,8 @@ void WaylandInputMethodConnection::sendPreeditString(const QString &string,
         cursor_pos = string.size() + 1 - cursor_pos;
     }
 
-    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_cursor" << string.leftRef(cursor_pos).toUtf8().size();
-    d->context()->preedit_cursor(string.leftRef(cursor_pos).toUtf8().size());
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_cursor" << string.left(cursor_pos).toUtf8().size();
+    d->context()->preedit_cursor(string.left(cursor_pos).toUtf8().size());
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_string" << string;
     d->context()->preedit_string(d->context()->serial(), string, string);
 }
@@ -384,12 +384,12 @@ void WaylandInputMethodConnection::sendCommitString(const QString &string,
 
     if (replace_length > 0) {
         int cursor = widgetState().value(CursorPositionAttribute).toInt();
-        uint32_t index = string.midRef(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
-        uint32_t length = string.midRef(cursor + replace_start, replace_length).toUtf8().size();
+        uint32_t index = string.mid(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
+        uint32_t length = string.mid(cursor + replace_start, replace_length).toUtf8().size();
         d->context()->delete_surrounding_text(index, length);
     }
 
-    cursor_pos = string.leftRef(cursor_pos).toUtf8().size();
+    cursor_pos = string.left(cursor_pos).toUtf8().size();
     d->context()->cursor_position(cursor_pos, cursor_pos);
     d->context()->commit_string(d->context()->serial(), string);
 }
@@ -470,8 +470,8 @@ void WaylandInputMethodConnection::setSelection(int start, int length)
         return;
 
     QString surrounding = widgetState().value(SurroundingTextAttribute).toString();
-    uint32_t index(surrounding.leftRef(start + length).toUtf8().size());
-    uint32_t anchor(surrounding.leftRef(start).toUtf8().size());
+    uint32_t index(surrounding.left(start + length).toUtf8().size());
+    uint32_t anchor(surrounding.left(start).toUtf8().size());
 
     d->context()->cursor_position(index, anchor);
     d->context()->commit_string(d->context()->serial(), QString());
@@ -563,10 +563,10 @@ void InputMethodContext::zwp_input_method_context_v1_content_type(uint32_t hint,
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_stateInfo[ContentTypeAttribute] = contentTypeFromWayland(purpose);
-    m_stateInfo[AutoCapitalizationAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v2::content_hint_auto_capitalization);
-    m_stateInfo[CorrectionAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v2::content_hint_auto_correction);
-    m_stateInfo[PredictionAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v2::content_hint_auto_completion);
-    m_stateInfo[HiddenTextAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v2::content_hint_hidden_text);
+    m_stateInfo[AutoCapitalizationAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_capitalization);
+    m_stateInfo[CorrectionAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_correction);
+    m_stateInfo[PredictionAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_completion);
+    m_stateInfo[HiddenTextAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_hidden_text);
 }
 
 void InputMethodContext::zwp_input_method_context_v1_invoke_action(uint32_t button, uint32_t index)

@@ -39,7 +39,7 @@ MSharedAttributeExtensionManager::~MSharedAttributeExtensionManager()
 void MSharedAttributeExtensionManager::registerPluginSetting(const QString &fullName, Maliit::SettingEntryType type,
                                                              QVariantMap attributes)
 {
-    QString key = fullName.section(1, -1);
+    QString key = fullName.section(QChar(), 0);
     QSharedPointer<MSharedAttributeExtensionManagerPluginSetting> value(new MSharedAttributeExtensionManagerPluginSetting(key, type, attributes));
 
     sharedAttributeExtensions[key] = value;

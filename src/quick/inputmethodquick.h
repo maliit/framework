@@ -16,6 +16,7 @@
 
 #include <maliit/plugins/abstractinputmethod.h>
 #include <maliit/plugins/keyoverride.h>
+#include "keyoverridequick.h"
 #include "maliitquick.h"
 
 #include <QEvent>

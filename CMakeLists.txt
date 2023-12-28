@@ -13,23 +13,14 @@ option(enable-glib "Build GLib support" ON)
 
 option(enable-xcb "Compile with xcb support" ON)
 option(enable-wayland "Compile with support for wayland" ON)
-option(enable-qt5-inputcontext "Compile with Qt 5 input context" ON)
+option(enable-qt-inputcontext "Compile with Qt input context" ON)
 
 option(enable-hwkeyboard "Enable support for the hardware keyboard" ON)
 option(enable-dbus-activation "Enable dbus activation support for maliit-server" OFF)
+option(with-qt6 "Built with Qt 6 instead of Qt 5" OFF)
 
 # Install paths
 include(GNUInstallDirs)
-
-if(NOT DEFINED QT5_PLUGINS_INSTALL_DIR)
-    set(QT5_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt5/plugins" CACHE PATH
-            "Installation directory for Qt 5 plugins [LIB_INSTALL_DIR/qt5/plugins]")
-endif()
-
-if(NOT DEFINED QT5_MKSPECS_INSTALL_DIR)
-    set(QT5_MKSPECS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt5/mkspecs" CACHE PATH
-            "Installation directory for Qt 5 mkspecs files [LIB_INSTALL_DIR/qt5/mkspecs]")
-endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
@@ -38,20 +29,44 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(PkgConfig REQUIRED)
 
-find_package(Qt5Core)
-find_package(Qt5DBus)
-find_package(Qt5Gui REQUIRED PRIVATE)
-find_package(Qt5Quick)
+if(with-qt6)
+  find_package(Qt6 6.0 REQUIRED COMPONENTS Core DBus Gui Quick)
+endif()
+
+if(Qt6_FOUND)
+  set(QT_VERSION_MAJOR 6)
+else()
+  find_package(Qt5 REQUIRED COMPONENTS Core DBus Gui Quick)
+  set(QT_VERSION_MAJOR 5)
+endif()
+
+if(NOT DEFINED QT_PLUGINS_INSTALL_DIR)
+    set(QT_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt${QT_VERSION_MAJOR}/plugins" CACHE PATH
+            "Installation directory for Qt ${QT_VERSION_MAJOR} plugins [LIB_INSTALL_DIR/qt${QT_VERSION_MAJOR}/plugins]")
+endif()
+
+if(NOT DEFINED QT_MKSPECS_INSTALL_DIR)
+    set(QT_MKSPECS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt${QT_VERSION_MAJOR}/mkspecs" CACHE PATH
+            "Installation directory for Qt 5 mkspecs files [LIB_INSTALL_DIR/qt${QT_VERSION_MAJOR}/mkspecs]")
+endif()
 
 if(enable-wayland)
+    if (Qt6_FOUND)
+      find_package(Qt6 REQUIRED COMPONENTS WaylandClient WaylandGlobalPrivate)
+    else()
+      find_package(Qt5 5.14 REQUIRED COMPONENTS WaylandClient XkbCommonSupport)
+    endif()
     find_package(WaylandProtocols REQUIRED PRIVATE)
     find_package(QtWaylandScanner REQUIRED)
     find_package(Wayland REQUIRED)
-    find_package(Qt5WaylandClient 5.14 REQUIRED PRIVATE)
-    find_package(Qt5XkbCommonSupport REQUIRED PRIVATE)
     pkg_check_modules(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
 endif()
 
+if (Qt6_FOUND)
+  include_directories(PRIVATE ${Qt6Gui_PRIVATE_INCLUDE_DIRS})
+else()
+  include_directories(PRIVATE ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+endif()
 include_directories(src common)
 
 add_library(maliit-common STATIC
@@ -59,7 +74,7 @@ add_library(maliit-common STATIC
             common/maliit/namespaceinternal.h
             common/maliit/settingdata.cpp
             common/maliit/settingdata.h)
-target_link_libraries(maliit-common Qt5::Core)
+target_link_libraries(maliit-common Qt::Core)
 target_include_directories(maliit-common PUBLIC common)
 
 set(CONNECTION_SOURCES
@@ -86,6 +101,7 @@ if(enable-wayland)
          connection/waylandinputmethodconnection.h)
 
     ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
 
     add_definitions(-DHAVE_WAYLAND)
 endif()
@@ -93,21 +109,27 @@ endif()
 set_source_files_properties(dbus_interfaces/minputmethodcontext1interface.xml dbus_interfaces/minputmethodserver1interface.xml
                             PROPERTIES INCLUDE maliit/settingdata.h)
 
+if (Qt6_FOUND)
+qt6_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml dbusserverconnection.h DBusServerConnection)
+qt6_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml dbusinputcontextconnection.h DBusInputContextConnection)
+
+qt6_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml minputmethodcontext1interface_interface)
+qt6_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml minputmethodserver1interface_interface)
+else()
 qt5_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml dbusserverconnection.h DBusServerConnection)
 qt5_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml dbusinputcontextconnection.h DBusInputContextConnection)
 
 qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml minputmethodcontext1interface_interface)
 qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml minputmethodserver1interface_interface)
+endif()
 
 add_library(maliit-connection STATIC ${CONNECTION_SOURCES})
-target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui maliit-common)
+target_link_libraries(maliit-connection Qt::Core Qt::DBus Qt::Gui maliit-common)
 if(enable-wayland)
     target_link_libraries(maliit-connection Wayland::Client PkgConfig::XKBCOMMON)
-    target_include_directories(maliit-connection PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS})
 endif()
-target_include_directories(maliit-connection PUBLIC connection)
 
-include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+target_include_directories(maliit-connection PUBLIC connection)
 
 set(PLUGINS_SOURCES
     src/maliit/plugins/abstractinputmethod.cpp
@@ -212,7 +234,7 @@ endif()
 
 add_library(maliit-plugins SHARED ${PLUGINS_SOURCES} ${PLUGINS_HEADER})
 target_link_libraries(maliit-plugins PRIVATE maliit-common maliit-connection ${PLUGINS_LIBRARIES})
-target_link_libraries(maliit-plugins PUBLIC Qt5::Core Qt5::Gui Qt5::Quick)
+target_link_libraries(maliit-plugins PUBLIC Qt::Core Qt::Gui Qt::Quick)
 target_include_directories(maliit-plugins PRIVATE ${PLUGINS_INCLUDE_DIRS})
 
 set_target_properties(maliit-plugins PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
@@ -287,14 +309,14 @@ add_definitions(-DMALIIT_FRAMEWORK_USE_INTERNAL_API
 add_executable(maliit-server passthroughserver/main.cpp)
 target_link_libraries(maliit-server maliit-plugins maliit-connection)
 
-if(enable-qt5-inputcontext)
+if(enable-qt-inputcontext)
     set(INPUT_CONTEXT_SOURCES
             input-context/main.cpp
             input-context/minputcontext.cpp
             input-context/minputcontext.h)
 
     add_library(maliitplatforminputcontextplugin MODULE ${INPUT_CONTEXT_SOURCES})
-    target_link_libraries(maliitplatforminputcontextplugin maliit-connection Qt5::Quick)
+    target_link_libraries(maliitplatforminputcontextplugin maliit-connection Qt::Quick)
 endif()
 
 if(enable-wayland)
@@ -306,31 +328,36 @@ if(enable-wayland)
     ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
 
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
-    target_link_libraries(inputpanel-shell Qt5::WaylandClient PkgConfig::XKBCOMMON Wayland::Client)
-    target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt5XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
+    target_link_libraries(inputpanel-shell Qt::WaylandClient PkgConfig::XKBCOMMON Wayland::Client)
+    if (Qt6_FOUND)
+      target_link_libraries(inputpanel-shell Qt::WaylandGlobalPrivate)
+      target_include_directories(inputpanel-shell PRIVATE ${Qt6WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt6WaylandGlobalPrivate_PRIVATE_INCLUDE_DIRS} ${Qt6XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
+    else()
+      target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt5XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
+    endif()
 endif()
 
 if(enable-examples)
-    find_package(Qt5Widgets)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
     add_executable(maliit-exampleapp-plainqt
             examples/apps/plainqt/mainwindow.cpp
             examples/apps/plainqt/mainwindow.h
             examples/apps/plainqt/plainqt.cpp)
-    target_link_libraries(maliit-exampleapp-plainqt Qt5::Gui Qt5::Widgets)
+    target_link_libraries(maliit-exampleapp-plainqt Qt::Gui Qt::Widgets)
 
     add_library(cxxhelloworldplugin MODULE
             examples/plugins/cxx/helloworld/helloworldinputmethod.cpp
             examples/plugins/cxx/helloworld/helloworldinputmethod.h
             examples/plugins/cxx/helloworld/helloworldplugin.cpp
             examples/plugins/cxx/helloworld/helloworldplugin.h)
-    target_link_libraries(cxxhelloworldplugin maliit-plugins Qt5::Widgets)
+    target_link_libraries(cxxhelloworldplugin maliit-plugins Qt::Widgets)
 
     add_library(cxxoverrideplugin MODULE
                 examples/plugins/cxx/override/overrideinputmethod.cpp
                 examples/plugins/cxx/override/overrideinputmethod.h
                 examples/plugins/cxx/override/overrideplugin.cpp
                 examples/plugins/cxx/override/overrideplugin.h)
-    target_link_libraries(cxxoverrideplugin maliit-plugins Qt5::Widgets)
+    target_link_libraries(cxxoverrideplugin maliit-plugins Qt::Widgets)
 endif()
 
 # Documentation
@@ -394,7 +421,7 @@ install(FILES src/mimserver.h
 install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.pc ${CMAKE_BINARY_DIR}/maliit-plugins.pc ${CMAKE_BINARY_DIR}/maliit-server.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.prf ${CMAKE_BINARY_DIR}/maliit-plugins.prf ${CMAKE_BINARY_DIR}/maliit-defines.prf
-        DESTINATION ${QT5_MKSPECS_INSTALL_DIR}/features)
+        DESTINATION ${QT_MKSPECS_INSTALL_DIR}/features)
 
 install(EXPORT MaliitPluginsTargets FILE MaliitPluginsTargets.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitPlugins)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
@@ -431,12 +458,12 @@ if(enable-glib)
 endif()
 
 if(enable-qt5-inputcontext)
-    install(TARGETS maliitplatforminputcontextplugin LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/platforminputcontexts)
+    install(TARGETS maliitplatforminputcontextplugin LIBRARY DESTINATION ${QT_PLUGINS_INSTALL_DIR}/platforminputcontexts)
 endif()
 
 if(enable-wayland)
     install(TARGETS inputpanel-shell
-            LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/wayland-shell-integration)
+            LIBRARY DESTINATION ${QT_PLUGINS_INSTALL_DIR}/wayland-shell-integration)
 endif()
 
 if(enable-dbus-activation)
@@ -455,7 +482,7 @@ endif()
 if(enable-tests)
     enable_testing()
 
-    find_package(Qt5Test)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Test)
 
     set(TEST_PLUGINS_DIR ${CMAKE_BINARY_DIR}/tests/plugins)
 
@@ -496,7 +523,7 @@ if(enable-tests)
             tests/utils/core-utils.h
             tests/utils/gui-utils.cpp
             tests/utils/gui-utils.h)
-    target_link_libraries(test-utils PUBLIC Qt5::Core Qt5::Gui Qt5::Test maliit-connection)
+    target_link_libraries(test-utils PUBLIC Qt::Core Qt::Gui Qt::Test maliit-connection)
     target_include_directories(test-utils INTERFACE tests/utils)
     target_compile_definitions(test-utils PUBLIC
             -DMALIIT_TEST_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/maliit-framework-tests/plugins"
@@ -507,7 +534,7 @@ if(enable-tests)
             tests/stubs/mkeyboardstatetracker_stub.h
             tests/stubs/fakeproperty.cpp
             tests/stubs/fakeproperty.h)
-    target_link_libraries(test-stubs PUBLIC Qt5::Core)
+    target_link_libraries(test-stubs PUBLIC Qt::Core)
     target_include_directories(test-stubs INTERFACE tests/stubs)
 
     function(create_test name)

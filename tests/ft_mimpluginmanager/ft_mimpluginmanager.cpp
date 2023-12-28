@@ -15,7 +15,6 @@
 #include <unknownplatform.h>
 
 #include <QProcess>
-#include <QRegExp>
 #include <QGuiApplication>
 #include <QPointer>
 
