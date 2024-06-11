@@ -16,6 +16,7 @@
 
 #include <QMetaType>
 #include <QSharedPointer>
+#include <QList>
 
 //! \ingroup common
 namespace Maliit {
