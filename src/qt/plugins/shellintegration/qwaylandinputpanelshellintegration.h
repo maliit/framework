@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2017 Jan Arne Petersen
  *
  * This library is free software; you can redistribute it and/or
@@ -11,17 +11,16 @@
 #ifndef QWAYLANDINPUTPANELSHELLINTEGRATION_H
 #define QWAYLANDINPUTPANELSHELLINTEGRATION_H
 
-#include <QtWaylandClient/private/qwaylandshellintegration_p.h>
-
 #include "qwayland-input-method-unstable-v1.h"
+#include <QtWaylandClient/private/qwayland-text-input-unstable-v1.h>
+#include <QtWaylandClient/private/qwaylandclientshellapi_p.h>
 
-QT_BEGIN_NAMESPACE
+using namespace QtWaylandClient;
 
-namespace QtWaylandClient
-{
-
-class QWaylandInputPanelShellIntegration: public QWaylandShellIntegration
-{
+class QWaylandInputPanelShellIntegration
+    : public QWaylandShellIntegrationTemplate<
+          QWaylandInputPanelShellIntegration>,
+      public QtWayland::zwp_text_input_manager_v1 {
 public:
     QWaylandInputPanelShellIntegration();
     ~QWaylandInputPanelShellIntegration() override;
@@ -32,9 +31,5 @@ public:
 private:
     QScopedPointer<QtWayland::zwp_input_panel_v1> m_panel;
 };
-
-}
-
-QT_END_NAMESPACE
 
 #endif //QWAYLANDINPUTPANELSHELLINTEGRATION_H
