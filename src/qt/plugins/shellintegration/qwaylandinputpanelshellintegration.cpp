@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (c) 2017 Jan Arne Petersen
  *
  * This library is free software; you can redistribute it and/or
@@ -14,15 +14,8 @@
 
 #include "qwaylandinputpanelsurface.h"
 
-QT_BEGIN_NAMESPACE
-
-namespace QtWaylandClient
-{
-
 QWaylandInputPanelShellIntegration::QWaylandInputPanelShellIntegration()
-    : QWaylandShellIntegration()
-{
-}
+    : QWaylandShellIntegrationTemplate(1) {}
 
 QWaylandInputPanelShellIntegration::~QWaylandInputPanelShellIntegration()
 {
@@ -30,7 +23,7 @@ QWaylandInputPanelShellIntegration::~QWaylandInputPanelShellIntegration()
 
 bool QWaylandInputPanelShellIntegration::initialize(QWaylandDisplay *display)
 {
-    auto result = QWaylandShellIntegration::initialize(display);
+    auto result = QWaylandShellIntegrationTemplate::initialize(display);
     const auto globals = display->globals();
     for (auto global: globals) {
         if (global.interface == QLatin1String("zwp_input_panel_v1")) {
@@ -48,7 +41,3 @@ QWaylandInputPanelShellIntegration::createShellSurface(QWaylandWindow *window)
 
     return new QWaylandInputPanelSurface(ip_surface, window);
 }
-
-}
-
-QT_END_NAMESPACE

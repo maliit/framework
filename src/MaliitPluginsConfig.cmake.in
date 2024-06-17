@@ -1,7 +1,7 @@
 include(CMakeFindDependencyMacro)
 
-find_dependency(Qt5Core @Qt5Core_VERSION@)
-find_dependency(Qt5Gui @Qt5Gui_VERSION@)
-find_dependency(Qt5Quick @Qt5Quick_VERSION@)
+find_dependency(Qt@QT_VERSION_MAJOR@Core @QT_MIN_VERSION@)
+find_dependency(Qt@QT_VERSION_MAJOR@Gui @QT_MIN_VERSION@)
+find_dependency(Qt@QT_VERSION_MAJOR@Quick @QT_MIN_VERSION@)
 
 include("${CMAKE_CURRENT_LIST_DIR}/MaliitPluginsTargets.cmake")
