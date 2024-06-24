@@ -15,6 +15,7 @@
 #define MALIIT_NAMESPACE_H
 
 #include <QMetaType>
+#include <QList>
 #include <QSharedPointer>
 
 //! \ingroup common
@@ -114,11 +115,11 @@ namespace Maliit {
 
         PreeditTextFormat()
             : start(0), length(0), preeditFace(PreeditDefault)
-        {};
+        {}
 
         PreeditTextFormat(int s, int l, const PreeditFace &face)
             : start(s), length(l), preeditFace(face)
-        {};
+        {}
     };
 
     namespace InputMethodQuery
