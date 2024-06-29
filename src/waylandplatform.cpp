@@ -12,11 +12,16 @@
 
 #include <wayland-client.h>
 
+#include <QDebug>
+#include <QGuiApplication>
 #include <QRegion>
 #include <QWindow>
+#include <LayerShellQt/Window>
 
 #include "waylandplatform.h"
 #include "windowdata.h"
+
+using namespace LayerShellQt;
 
 namespace Maliit
 {
@@ -35,8 +40,26 @@ WaylandPlatform::WaylandPlatform()
 void WaylandPlatform::setupInputPanel(QWindow* window,
                                       Maliit::Position position)
 {
-    Q_UNUSED(window)
-    Q_UNUSED(position)
+    if (qgetenv("QT_WAYLAND_SHELL_INTEGRATION") == QByteArray("layer-shell")) {
+        auto ls_window = Window::get(window);
+        ls_window->setDesiredOutput(QGuiApplication::primaryScreen());
+        ls_window->setLayer(Window::Layer::LayerOverlay);
+        Window::Anchors anchors = Window::Anchor::AnchorBottom;
+        switch (position) {
+            case PositionLeftBottom: {
+                anchors |= Window::Anchor::AnchorLeft;
+                break;
+            }
+            case PositionRightBottom: {
+                anchors |= Window::Anchor::AnchorRight;
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        ls_window->setAnchors(anchors);
+    }
 }
 
 void WaylandPlatform::setInputRegion(QWindow* window,
