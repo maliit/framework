@@ -22,6 +22,9 @@ option(with-qt6 "Built with Qt 6 instead of Qt 5" OFF)
 # Install paths
 include(GNUInstallDirs)
 
+# Extra find-modules
+find_package(ECM QUIET REQUIRED NO_MODULE)
+list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH})
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -100,8 +103,8 @@ if(enable-wayland)
          connection/waylandinputmethodconnection.cpp
          connection/waylandinputmethodconnection.h)
 
-    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
-    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WaylandProtocols_DATADIR}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WaylandProtocols_DATADIR}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
 
     add_definitions(-DHAVE_WAYLAND)
 endif()
@@ -325,7 +328,7 @@ if(enable-wayland)
             src/qt/plugins/shellintegration/qwaylandinputpanelshellintegration.cpp
             src/qt/plugins/shellintegration/qwaylandinputpanelshellintegration.h src/qt/plugins/shellintegration/qwaylandinputpanelsurface.cpp src/qt/plugins/shellintegration/qwaylandinputpanelsurface.h)
 
-    ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
+    ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WaylandProtocols_DATADIR}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
 
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
     target_link_libraries(inputpanel-shell Qt::WaylandClient PkgConfig::XKBCOMMON Wayland::Client)
