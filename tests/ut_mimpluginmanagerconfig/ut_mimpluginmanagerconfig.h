@@ -15,7 +15,7 @@
 
 #include "mimserveroptions.h"
 #include "mimsettingsqsettings.h"
-#include <tr1/memory>
+#include <memory>
 
 #include <QtTest/QtTest>
 #include <QObject>
