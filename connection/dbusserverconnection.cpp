@@ -14,7 +14,6 @@
 #include "dbusserverconnection.h"
 
 #include <maliit/namespace.h>
-#include <maliit/settingdata.h>
 
 #include "minputmethodcontext1interfaceadaptor.h"
 #include "minputmethodserver1interface_interface.h"
@@ -41,9 +40,6 @@ DBusServerConnection::DBusServerConnection(const QSharedPointer<Maliit::InputCon
   , mActive(true)
   , pendingResetCalls()
 {
-    qDBusRegisterMetaType<MImPluginSettingsEntry>();
-    qDBusRegisterMetaType<MImPluginSettingsInfo>();
-    qDBusRegisterMetaType<QList<MImPluginSettingsInfo> >();
     qDBusRegisterMetaType<Maliit::PreeditTextFormat>();
     qDBusRegisterMetaType<QList<Maliit::PreeditTextFormat> >();
 
@@ -223,55 +219,10 @@ void DBusServerConnection::processKeyEvent(QEvent::Type keyType, Qt::Key keyCode
     mProxy->processKeyEvent(keyType, keyCode, modifiers, text, autoRepeat, count, nativeScanCode, nativeModifiers, time);
 }
 
-void DBusServerConnection::registerAttributeExtension(int id, const QString &fileName)
-{
-    if (!mProxy)
-        return;
-
-    mProxy->registerAttributeExtension(id, fileName);
-}
-
-void DBusServerConnection::unregisterAttributeExtension(int id)
-{
-    if (!mProxy)
-        return;
-
-    mProxy->unregisterAttributeExtension(id);
-}
-
-void DBusServerConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem,
-                                                const QString &attribute, const QVariant &value)
-{
-    if (!mProxy)
-        return;
-
-    mProxy->setExtendedAttribute(id, target, targetItem, attribute, QDBusVariant(value));
-}
-
-void DBusServerConnection::loadPluginSettings(const QString &descriptionLanguage)
-{
-    if (!mProxy)
-        return;
-
-    mProxy->loadPluginSettings(descriptionLanguage);
-}
-
-
-void DBusServerConnection::pluginSettingsLoaded(const QList<MImPluginSettingsInfo> &info)
-{
-    pluginSettingsReceived(info);
-}
-
 void DBusServerConnection::keyEvent(int type, int key, int modifiers, const QString &text, bool autoRepeat,
                                     int count, uchar requestType)
 {
     keyEvent(type, key, modifiers, text, autoRepeat, count, static_cast<Maliit::EventRequestType>(requestType));
-}
-
-void DBusServerConnection::notifyExtendedAttributeChanged(int id, const QString &target, const QString &targetItem,
-                                                          const QString &attribute, const QDBusVariant &value)
-{
-    extendedAttributeChanged(id, target, targetItem, attribute, value.variant());
 }
 
 bool DBusServerConnection::preeditRectangle(int &x, int &y, int &width, int &height) const

@@ -2,7 +2,6 @@
 #define DUMMYINPUTMETHOD3_H
 
 #include <maliit/plugins/abstractinputmethod.h>
-#include <maliit/plugins/abstractpluginsetting.h>
 #include <QSet>
 
 class DummyInputMethod3 : public MAbstractInputMethod
@@ -32,15 +31,10 @@ public:
     Maliit::SwitchDirection directionParam;
     bool enableAnimationParam;
 
-    QVariant localSettingValue;
-    QScopedPointer<Maliit::Plugins::AbstractPluginSetting> setting;
-
 Q_SIGNALS:
     void showCalled();
 
 private:
-    Q_SLOT void handleSettingChanged();
-
     void addSubView(const QString &id, const QString &title);
 
     QList<MAbstractInputMethod::MInputMethodSubView> sViews;

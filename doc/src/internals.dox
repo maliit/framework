@@ -98,14 +98,6 @@ If current input method mode is M::InputMethodModeDirect, then the input method 
 \subsection Pre_edit_injection Pre-edit injection
 MTextEdit widget requires that if a word is clicked then it needs to be turned into a pre-edit, so it can be changed into another word with error correction feature. When this happens, the clicked word is removed and the widget constructs a MPreeditInjection event and sends it to input context. If the event is accepted, e.g. if the error correction is enabled, then the incoming word enclosed in the event is treated as pre-edit. In MInputContext side, upon receiving this event, a QInputMethodEvent will be constructed with the word as a new pre-edit string and sent to the widget. MInputContext will then call im::setPreedit() RPC function to inform the input method about the new pre-edit string. Upon receiving the new pre-edit string, the input method will decide appropriate styling for the pre-edit and call app::sendPreeditString() RPC function. Please note that pre-edit becomes truly active only after input method has called app::sendPreeditString() RPC function. This means that update() will be called only after app::sendPreeditString() RPC function has been called and therefore input method will not know the true state of the widget (e.g. cursor position and surrounding text) before.
 
-\subsection Copy_and_paste Copy and paste
-
-MInputContext connects itself to widget's signal which called "copyAvailable(bool)" if exists. Whenever this signal is emitted, MInputContext calls im::setCopyPasteButton RPC function [MInputContextDBusConnection::setCopyPasteState?] to update the visibility of Copy/Paste button in the input method's toolbar. If system clipboard has text content, the Paste button is shown instead of Copy button.
-
-When the Copy button is clicked, input method calls app::copy RPC function. Upon receiving this call, MInputContext calls widget's "copy" function if available, otherwise it just sends ctrl-c combination key event to the widget.
-
-When the Paste button is clicked, input method calls app::paste RPC function. Upon receiving this call, MInputContext calls widget's "paste" function if available, otherwise it just sends ctrl-v combination key event to the widget.
-
 \subsection Setting Setting
 \subsubsection Input_mode Input mode
 The framework supports two modes: M::InputMethodModeNormal and M::InputMethodModeDirect [MInputContextDBusConnection::inputMethodMode?]. If the widget wants direct key event instead of getting the text using pre-edit/commit string, it can set the mode to M::InputMethodModeDirect, otherwise, the M::InputMethodModeNormal which is the default value will be used at all times.
@@ -145,23 +137,5 @@ If error correction feature is enabled and mouse clicked is happening on a pre-e
 
 \subsection Text_entry_types Text entry types
 The widget can determine its content type. It returns the content type when asked with M::ContentTypeQuery in its inputMethodQuery method.
-
-\subsection Toolbar Toolbar 
-
-The text entry widget can ask the input method to put a custom widget into a toolbar (which will be part of the input method UI). This widget, called "toolbar widget", is essentially a declarative widget written in XML. It is compiled into into a widget by the plugin during the loading of the plugin. Details can be found in the <a href="toolbar.html">Input Method Toolbar</a>. Toolbar widgets will appear in the toolbar only when instructed by the text entry widget. One use case is rich text editing. The rich text entry could show Bold, Italic, Underline and other buttons to control the rich text editing in the toolbar.
-
-The input method shows/hides the toolbar widgets upon receiving events as defined in the toolbar widget's XML data.
-
-When an event takes place on a toolbar widget, the input method sends a sequence of actions defined as defined in the XML data. The list below describes the actions and how it is handled by input method:
-- <b>sendKeySequence</b>: input method constructs key events and process it as described <a href="#Key_event">above</a>
-- <b>sendString</b>: input method sends the word described as commit string
-- <b>copy</b>: input method asks the widget to copy selected text into clipboard
-- <b>paste</b>: input method asks the widget to paste from clipboard
-- <b>sendCommand</b>: input method passes the defined command to app::toolbarWidgetCommand RPC function
-
-The widget can change the attributes of an item in toolbar. Except the NAME attribute, all others attributes can be changed by the widget in runtime. To change an attribute, a widget call im::setToolbarItemAttribute() RPC function.
-
-The widget can also get the attribute on an item in toolbar by calling im::toolbarItemAttribute() RPC function.
-\sa toolbar
 
 */

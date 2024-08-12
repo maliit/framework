@@ -51,7 +51,6 @@ public:
     virtual void setSelection(int start,
                               int length);
     virtual QString selection(bool &valid);
-    virtual void setLanguage(const QString &language);
 
 private:
     const QScopedPointer<WaylandInputMethodConnectionPrivate> d_ptr;

@@ -30,11 +30,6 @@ bool StandaloneInputMethodHost::hiddenText(bool &valid)
     return mConnection->hiddenText(valid);
 }
 
-void StandaloneInputMethodHost::setLanguage(const QString &language)
-{
-    mConnection->setLanguage(language);
-}
-
 int StandaloneInputMethodHost::contentType(bool &valid)
 {
     return mConnection->contentType(valid);
@@ -170,14 +165,6 @@ void StandaloneInputMethodHost::setOrientationAngleLocked(bool lock)
 QList<MImPluginDescription> StandaloneInputMethodHost::pluginDescriptions(Maliit::HandlerState state) const
 {
     return QList<MImPluginDescription>();
-}
-
-Maliit::Plugins::AbstractPluginSetting *StandaloneInputMethodHost::registerPluginSetting(const QString &key,
-                                                                                         const QString &description,
-                                                                                         Maliit::SettingEntryType type,
-                                                                                         const QVariantMap &attributes)
-{
-    return nullptr;
 }
 
 QVariant StandaloneInputMethodHost::inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const

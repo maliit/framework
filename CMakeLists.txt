@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(maliit-framework VERSION 2.3.0)
+project(maliit-framework VERSION 2.99.0)
+set(LIBRARY_VERSION 3.0.0)
 
 # Build options
 
@@ -56,9 +57,7 @@ include_directories(src common)
 
 add_library(maliit-common STATIC
             common/maliit/namespace.h
-            common/maliit/namespaceinternal.h
-            common/maliit/settingdata.cpp
-            common/maliit/settingdata.h)
+            common/maliit/namespaceinternal.h)
 target_link_libraries(maliit-common Qt5::Core)
 target_include_directories(maliit-common PUBLIC common)
 
@@ -91,7 +90,7 @@ if(enable-wayland)
 endif()
 
 set_source_files_properties(dbus_interfaces/minputmethodcontext1interface.xml dbus_interfaces/minputmethodserver1interface.xml
-                            PROPERTIES INCLUDE maliit/settingdata.h)
+                            PROPERTIES INCLUDE maliit/namespace.h)
 
 qt5_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml dbusserverconnection.h DBusServerConnection)
 qt5_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml dbusinputcontextconnection.h DBusInputContextConnection)
@@ -114,13 +113,6 @@ set(PLUGINS_SOURCES
     src/maliit/plugins/abstractinputmethod.h
     src/maliit/plugins/abstractinputmethodhost.cpp
     src/maliit/plugins/abstractinputmethodhost.h
-    src/maliit/plugins/abstractpluginsetting.h
-    src/maliit/plugins/attributeextension.cpp
-    src/maliit/plugins/attributeextension.h
-    src/maliit/plugins/attributeextension_p.h
-    src/maliit/plugins/extensionevent.cpp
-    src/maliit/plugins/extensionevent.h
-    src/maliit/plugins/extensionevent_p.h
     src/maliit/plugins/inputmethodplugin.h
     src/maliit/plugins/keyoverride.cpp
     src/maliit/plugins/keyoverride.h
@@ -131,11 +123,6 @@ set(PLUGINS_SOURCES
     src/maliit/plugins/plugindescription.h
     src/maliit/plugins/subviewdescription.cpp
     src/maliit/plugins/subviewdescription.h
-    src/maliit/plugins/updateevent.cpp
-    src/maliit/plugins/updateevent.h
-    src/maliit/plugins/updateevent_p.h
-    src/maliit/plugins/updatereceiver.cpp
-    src/maliit/plugins/updatereceiver.h
     src/maliit/standaloneinputmethod.cpp
     src/maliit/standaloneinputmethod.h
     src/maliit/standaloneinputmethodhost.cpp
@@ -152,10 +139,6 @@ set(PLUGINS_SOURCES
     src/abstractplatform.h
     src/logging.cpp
     src/logging.h
-    src/mattributeextensionid.cpp
-    src/mattributeextensionid.h
-    src/mattributeextensionmanager.cpp
-    src/mattributeextensionmanager.h
     src/mimhwkeyboardtracker.h
     src/mimonscreenplugins.cpp
     src/mimonscreenplugins.h
@@ -174,8 +157,6 @@ set(PLUGINS_SOURCES
     src/mimsubviewoverride.h
     src/minputmethodhost.cpp
     src/minputmethodhost.h
-    src/msharedattributeextensionmanager.cpp
-    src/msharedattributeextensionmanager.h
     src/unknownplatform.cpp
     src/unknownplatform.h
     src/windowdata.cpp
@@ -215,8 +196,8 @@ target_link_libraries(maliit-plugins PRIVATE maliit-common maliit-connection ${P
 target_link_libraries(maliit-plugins PUBLIC Qt5::Core Qt5::Gui Qt5::Quick)
 target_include_directories(maliit-plugins PRIVATE ${PLUGINS_INCLUDE_DIRS})
 
-set_target_properties(maliit-plugins PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
-        VERSION ${PROJECT_VERSION}
+set_target_properties(maliit-plugins PROPERTIES
+        VERSION ${LIBRARY_VERSION}
         EXPORT_NAME Maliit::Plugins)
 
 if(enable-glib)
@@ -224,26 +205,11 @@ if(enable-glib)
     find_package(GIO)
 
     set(GLIB_SOURCES
-        maliit-glib/maliitattributeextension.c
-        maliit-glib/maliitattributeextension.h
-        maliit-glib/maliitattributeextensionprivate.h
-        maliit-glib/maliitattributeextensionregistry.c
-        maliit-glib/maliitattributeextensionregistry.h
         maliit-glib/maliitbus.c
         maliit-glib/maliitbus.h
         maliit-glib/maliitbusprivate.h
         maliit-glib/maliitinputmethod.c
-        maliit-glib/maliitinputmethod.h
-        maliit-glib/maliitpluginsettings.c
-        maliit-glib/maliitpluginsettings.h
-        maliit-glib/maliitpluginsettingsprivate.h
-        maliit-glib/maliitsettingdata.c
-        maliit-glib/maliitsettingdata.h
-        maliit-glib/maliitsettingsentry.c
-        maliit-glib/maliitsettingsentry.h
-        maliit-glib/maliitsettingsentryprivate.h
-        maliit-glib/maliitsettingsmanager.c
-        maliit-glib/maliitsettingsmanager.h)
+        maliit-glib/maliitinputmethod.h)
 
     set_source_files_properties(maliit-glib/maliitmarshallers.list
             PROPERTIES PREFIX maliit_marshal)
@@ -269,14 +235,13 @@ if(enable-glib)
     add_library(maliit-glib SHARED ${GLIB_SOURCES} ${GLIB_HEADER})
     target_include_directories(maliit-glib PUBLIC ${GIO_INCLUDE_DIRS})
     target_link_libraries(maliit-glib ${GIO_LIBRARIES})
-    set_target_properties(maliit-glib PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
-            VERSION ${PROJECT_VERSION}
+    set_target_properties(maliit-glib PROPERTIES
+            VERSION ${LIBRARY_VERSION}
             EXPORT_NAME Maliit::GLib)
 endif()
 
 add_definitions(-DMALIIT_FRAMEWORK_USE_INTERNAL_API
                 -DMALIIT_PLUGINS_DATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit/plugins"
-                -DMALIIT_EXTENSIONS_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit-framework/extensions"
                 -DMALIIT_CONFIG_ROOT="/maliit/"
                 -DMALIIT_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/maliit/plugins"
                 -DMALIIT_DEFAULT_HW_PLUGIN="libmaliit-keyboard-plugin.so"
@@ -494,7 +459,6 @@ if(enable-tests)
     add_library(test-utils STATIC
             tests/utils/core-utils.cpp
             tests/utils/core-utils.h
-            tests/utils/gui-utils.cpp
             tests/utils/gui-utils.h)
     target_link_libraries(test-utils PUBLIC Qt5::Core Qt5::Gui Qt5::Test maliit-connection)
     target_include_directories(test-utils INTERFACE tests/utils)
@@ -527,7 +491,6 @@ if(enable-tests)
     endfunction()
 
     create_test(sanitychecks)
-    create_test(ut_mattributeextensionmanager)
     create_test(ut_mimonscreenplugins)
     create_test(ut_mimpluginmanager ${DUMMY_PLUGINS})
     create_test(ut_mimpluginmanagerconfig)
@@ -547,29 +510,10 @@ if(enable-tests)
             TESTDATA_PATH=${CMAKE_SOURCE_DIR}/tests
             QT_QPA_PLATFORM=minimal)
 
-    if(enable-glib)
-        add_executable(ut_maliit_glib_settings
-                tests/ut_maliit_glib_settings/ut_maliit_glib_settings.c
-                tests/ut_maliit_glib_settings/mockmaliitserver.c
-                tests/ut_maliit_glib_settings/mockmaliitserver.h)
-        target_link_libraries(ut_maliit_glib_settings GLib2::GLib GLib2::GIO maliit-glib)
-
-        add_test(ut_maliit_glib_settings ut_maliit_glib_settings)
-        if(install-tests)
-            install(TARGETS ut_maliit_glib_settings DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_maliit_glib_settings)
-        endif()
-    endif()
-
     if(install-tests)
         install(FILES tests/qmlplugin/helloworld.qml
                 DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/plugins/qml/helloworld)
 
         install(TARGETS ${DUMMY_PLUGINS} DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/plugins)
-        install(DIRECTORY tests/ut_mattributeextensionmanager/
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_mattributeextensionmanager
-                FILES_MATCHING PATTERN "*.xml")
-        install(DIRECTORY tests/ut_mimpluginmanager/
-                DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_mimpluginmanager
-                FILES_MATCHING PATTERN "*.xml")
     endif()
 endif()

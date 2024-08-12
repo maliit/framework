@@ -240,17 +240,6 @@ maliit_get_server_sync (GCancellable  *cancellable,
 }
 
 static gboolean
-maliit_context_handle_plugin_settings_loaded (MaliitContext         *context,
-                                              GDBusMethodInvocation *invocation,
-                                              GVariant              *plugins     G_GNUC_UNUSED,
-                                              gpointer               user_data   G_GNUC_UNUSED)
-{
-  maliit_context_complete_plugin_settings_loaded (context, invocation);
-
-  return TRUE;
-}
-
-static gboolean
 maliit_context_handle_update_input_method_area (MaliitContext         *context,
                                                 GDBusMethodInvocation *invocation,
                                                 gint                   x          G_GNUC_UNUSED,
@@ -296,11 +285,6 @@ maliit_get_context_sync (GCancellable  *cancellable,
       if (bus)
         {
           context = maliit_context_skeleton_new ();
-
-          g_signal_connect_after (context,
-                                  "handle-plugin-settings-loaded",
-                                  G_CALLBACK (maliit_context_handle_plugin_settings_loaded),
-                                  NULL);
 
           g_signal_connect_after (context,
                                   "handle-update-input-method-area",

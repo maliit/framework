@@ -59,19 +59,5 @@
       <arg type="b" direction="out"/>
       <arg type="s" direction="out"/>
     </method>
-    <method name="setLanguage">
-      <arg type="s"/>
-    </method>
-    <method name="notifyExtendedAttributeChanged">
-      <arg type="i"/>
-      <arg type="s"/>
-      <arg type="s"/>
-      <arg type="s"/>
-      <arg type="v"/>
-    </method>
-    <method name="pluginSettingsLoaded">
-      <annotation name="org.qtproject.QtDBus.QtTypeName.In0" value="QList&lt;MImPluginSettingsInfo&gt;"/>
-      <arg type="a(sssia(ssibva{sv}))"/>
-    </method>
   </interface>
 </node>

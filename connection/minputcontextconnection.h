@@ -25,8 +25,6 @@ QT_END_NAMESPACE
 
 class MInputContextConnectionPrivate;
 class MAbstractInputMethod;
-class MAttributeExtensionId;
-class MImPluginSettingsInfo;
 
 /*! \internal
  * \ingroup maliitserver
@@ -208,12 +206,6 @@ public:
      */
     virtual QString selection(bool &valid);
 
-    /*!
-     * \brief Sets current language of active input method.
-     * \param language ICU format locale ID string
-     */
-    virtual void setLanguage(const QString &language);
-
     virtual void sendActivationLostEvent();
 
     QVariant inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const;
@@ -268,60 +260,9 @@ public: // Inbound communication handlers
                          Qt::KeyboardModifiers modifiers, const QString &text, bool autoRepeat,
                          int count, quint32 nativeScanCode, quint32 nativeModifiers, unsigned long time);
 
-    /*!
-     * \brief Register an input method attribute extension which is defined in \a fileName with the
-     * unique identifier \a id.
-     *
-     *  The \a id should be unique, and the \a fileName is the absolute file name of the
-     *  attribute extension.
-     */
-    void registerAttributeExtension(unsigned int clientId, int id, const QString &fileName);
-
-    /*!
-     * \brief Unregister an input method attribute extension which unique identifier is \a id.
-     */
-    void unregisterAttributeExtension(unsigned int clientId, int id);
-
-    /*!
-     * \brief Sets the \a attribute for the \a target in the extended attribute which has unique \a id to \a value.
-     */
-    void setExtendedAttribute(unsigned int clientId, int id, const QString &target,
-                              const QString &targetItem, const QString &attribute, const QVariant &value);
-
-    /*!
-     * \brief Requests information about plugin/server settings.
-     */
-    void loadPluginSettings(int connectionId, const QString &descriptionLanguage);
-
 public Q_SLOTS:
     //! Update \a region covered by virtual keyboard
     virtual void updateInputMethodArea(const QRegion &region);
-
-    /*!
-     * \brief Informs current application that input method servers has changed the \a attribute of the \a targetItem
-     * in the attribute extension \a target which has unique \a id to \a value.
-     */
-    virtual void notifyExtendedAttributeChanged(int id,
-                                                const QString &target,
-                                                const QString &targetItem,
-                                                const QString &attribute,
-                                                const QVariant &value);
-
-    /*!
-     * \brief Informs a list of clients that input method servers has changed the \a attribute of the \a targetItem
-     * in the attribute extension \a target which has unique \a id to \a value.
-     */
-    virtual void notifyExtendedAttributeChanged(const QList<int> &clientIds,
-                                                int id,
-                                                const QString &target,
-                                                const QString &targetItem,
-                                                const QString &attribute,
-                                                const QVariant &value);
-
-    /*!
-     * \brief Sends the list of plugin/server settings to the specified client.
-     */
-    virtual void pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info);
 
 Q_SIGNALS:
     /* Emitted first */
@@ -344,13 +285,6 @@ Q_SIGNALS:
     void copyPasteStateChanged(bool copyAvailable, bool pasteAvailable);
     void widgetStateChanged(unsigned int clientId, const QMap<QString, QVariant> &newState,
                             const QMap<QString, QVariant> &oldState, bool focusChanged);
-
-    void attributeExtensionRegistered(unsigned int connectionId, int id, const QString &attributeExtension);
-    void attributeExtensionUnregistered(unsigned int connectionId, int id);
-    void extendedAttributeChanged(unsigned int connectionId, int id, const QString &target,
-                              const QString &targetName,const QString &attribute, const QVariant &value);
-
-    void pluginSettingsRequested(int connectionId, const QString &descriptionLanguage);
 
     void clientActivated(unsigned int connectionId);
     void clientDisconnected(unsigned int connectionId);

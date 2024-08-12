@@ -21,26 +21,7 @@
 #include <minputcontextconnection.h>
 #include <unknownplatform.h>
 
-#include <maliit/plugins/abstractpluginsetting.h>
-
 namespace MaliitTestUtils {
-
-    class TestPluginSetting : public Maliit::Plugins::AbstractPluginSetting
-    {
-    public:
-        TestPluginSetting(const QString &key) : settingKey(key) {}
-
-        QString key() const { return settingKey; }
-
-        QVariant value() const { return QVariant(); }
-        QVariant value(const QVariant &def) const { return def; }
-
-        void set(const QVariant &val) { Q_UNUSED(val); }
-        void unset() {}
-
-    private:
-        QString settingKey;
-    };
 
     class TestInputMethodHost
         : public MInputMethodHost
@@ -78,20 +59,7 @@ namespace MaliitTestUtils {
             ++sendPreeditCount;
             MInputMethodHost::sendPreeditString(string, preeditFormats, start, length, cursorPos);
         }
-
-        AbstractPluginSetting *registerPluginSetting(const QString &key,
-                                                     const QString &description,
-                                                     Maliit::SettingEntryType type,
-                                                     const QVariantMap &attributes)
-        {
-            Q_UNUSED(description);
-            Q_UNUSED(type);
-            Q_UNUSED(attributes);
-
-            return new TestPluginSetting(key);
-        }
     };
-
 }
 
 // For cases where we need to run code _before_ QGuiApplication is created

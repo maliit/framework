@@ -54,7 +54,3 @@ MAbstractInputMethodHost::surroundingSubViewDescriptions(Maliit::HandlerState /*
 {
     return QList<MImSubViewDescription>();
 }
-
-void MAbstractInputMethodHost::setLanguage(const QString &/*language*/)
-{
-}

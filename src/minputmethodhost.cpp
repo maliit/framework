@@ -223,13 +223,6 @@ MInputMethodHost::surroundingSubViewDescriptions(Maliit::HandlerState state) con
     return pluginManager->surroundingSubViewDescriptions(state);
 }
 
-void MInputMethodHost::setLanguage(const QString &language)
-{
-    if (enabled) {
-        connection->setLanguage(language);
-    }
-}
-
 void MInputMethodHost::setOrientationAngleLocked(bool)
 {
     // NOT implemented.
@@ -238,14 +231,6 @@ void MInputMethodHost::setOrientationAngleLocked(bool)
 int MInputMethodHost::anchorPosition(bool &valid)
 {
     return connection->anchorPosition(valid);
-}
-
-AbstractPluginSetting *MInputMethodHost::registerPluginSetting(const QString &key,
-                                                               const QString &description,
-                                                               Maliit::SettingEntryType type,
-                                                               const QVariantMap &attributes)
-{
-    return pluginManager->registerPluginSetting(pluginId, pluginDescription, key, description, type, attributes);
 }
 
 QVariant MInputMethodHost::inputMethodQuery(Qt::InputMethodQuery query, const QVariant &argument) const

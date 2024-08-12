@@ -58,7 +58,6 @@ public:
 
     /* Optional, rarely used */
     /* Using default implementations
-    virtual bool imExtensionEvent(MImExtensionEvent *event);
     virtual void showLanguageNotification();
     virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
                                  Qt::KeyboardModifiers modifiers, const QString &text,

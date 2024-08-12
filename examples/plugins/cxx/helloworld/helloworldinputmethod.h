@@ -15,7 +15,6 @@
 #define HELLO_WORLD_INPUT_METHOD_H
 
 #include <maliit/plugins/abstractinputmethod.h>
-#include <maliit/plugins/abstractpluginsetting.h>
 
 #include <QSet>
 #include <QWidget>
@@ -55,7 +54,6 @@ public:
 
     /* Optional, rarely used */
     /* Using default implementations
-    virtual bool imExtensionEvent(MImExtensionEvent *event);
     virtual void showLanguageNotification();
     virtual void setKeyOverrides(const QMap<QString, QSharedPointer<MKeyOverride> > &overrides);
     virtual void processKeyEvent(QEvent::Type keyType, Qt::Key keyCode,
@@ -69,11 +67,9 @@ public:
 
 private Q_SLOTS:
     void handleButtonClicked();
-    void handleButtonTextChanged();
 
 private:
     QScopedPointer<QWidget> surface;
-    QScopedPointer<Maliit::Plugins::AbstractPluginSetting> buttonText;
     QPushButton *mainWidget;
     bool showIsInhibited;
     bool showRequested;

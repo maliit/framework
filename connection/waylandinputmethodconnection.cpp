@@ -30,7 +30,7 @@ namespace {
 
 // TODO: Deduplicate it. Those values are used in
 // minputcontextconnection, mimpluginmanager,
-// mattributeextensionmanager and in input context implementations.
+// and in input context implementations.
 const char * const FocusStateAttribute = "focusState";
 const char * const ContentTypeAttribute = "contentType";
 const char * const CorrectionAttribute = "correctionEnabled";
@@ -137,8 +137,9 @@ Maliit::TextContentType contentTypeFromWayland(uint32_t purpose)
     case QtWayland::zwp_text_input_v2::content_purpose_normal:
         return Maliit::FreeTextContentType;
     case QtWayland::zwp_text_input_v2::content_purpose_digits:
-    case QtWayland::zwp_text_input_v2::content_purpose_number:
         return Maliit::NumberContentType;
+    case QtWayland::zwp_text_input_v2::content_purpose_number:
+        return Maliit::FormattedNumberContentType;
     case QtWayland::zwp_text_input_v2::content_purpose_phone:
         return Maliit::PhoneNumberContentType;
     case QtWayland::zwp_text_input_v2::content_purpose_url:
@@ -446,18 +447,6 @@ QString WaylandInputMethodConnection::selection(bool &valid)
 
     valid = context && !context->selection().isEmpty();
     return context ? context->selection() : QString();
-}
-
-void WaylandInputMethodConnection::setLanguage(const QString &language)
-{
-    Q_D(WaylandInputMethodConnection);
-
-    qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
-
-    if (!d->context())
-        return;
-
-    d->context()->language(d->context()->serial(), language);
 }
 
 void WaylandInputMethodConnection::setSelection(int start, int length)

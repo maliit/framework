@@ -44,13 +44,9 @@ DBusInputContextConnection::DBusInputContextConnection(const QSharedPointer<Mali
     , mServer(mAddress->connect())
     , mConnectionNumbers()
     , mProxys()
-    , lastLanguage()
 {
     connect(mServer.data(), SIGNAL(newConnection(QDBusConnection)), this, SLOT(newConnection(QDBusConnection)));
 
-    qDBusRegisterMetaType<MImPluginSettingsEntry>();
-    qDBusRegisterMetaType<MImPluginSettingsInfo>();
-    qDBusRegisterMetaType<QList<MImPluginSettingsInfo> >();
     qDBusRegisterMetaType<Maliit::PreeditTextFormat>();
     qDBusRegisterMetaType<QList<Maliit::PreeditTextFormat> >();
 
@@ -80,8 +76,6 @@ DBusInputContextConnection::newConnection(const QDBusConnection &connection)
               this, SLOT(onDisconnection()));
 
     c.registerObject(QString::fromLatin1(DBusPath), this);
-
-    proxy->setLanguage(lastLanguage);
 }
 
 void
@@ -233,16 +227,6 @@ DBusInputContextConnection::selection(bool &valid)
 }
 
 void
-DBusInputContextConnection::setLanguage(const QString &language)
-{
-    lastLanguage = language;
-    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(activeConnection);
-    if (proxy) {
-        proxy->setLanguage(language);
-    }
-}
-
-void
 DBusInputContextConnection::sendActivationLostEvent()
 {
     ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(activeConnection);
@@ -260,45 +244,6 @@ DBusInputContextConnection::updateInputMethodArea(const QRegion &region)
         proxy->updateInputMethodArea(rect.x(), rect.y(), rect.width(), rect.height());
     }
 }
-
-void
-DBusInputContextConnection::notifyExtendedAttributeChanged(int id,
-                                                           const QString &target,
-                                                           const QString &targetItem,
-                                                           const QString &attribute,
-                                                           const QVariant &value)
-{
-    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(activeConnection);
-    if (proxy) {
-        proxy->notifyExtendedAttributeChanged(id, target, targetItem, attribute, QDBusVariant(value));
-    }
-}
-
-void
-DBusInputContextConnection::notifyExtendedAttributeChanged(const QList<int> &clientIds,
-                                                           int id,
-                                                           const QString &target,
-                                                           const QString &targetItem,
-                                                           const QString &attribute,
-                                                           const QVariant &value)
-{
-    Q_FOREACH (int clientId, clientIds) {
-        ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(clientId);
-        if (proxy) {
-            proxy->notifyExtendedAttributeChanged(id, target, targetItem, attribute, QDBusVariant(value));
-        }
-    }
-}
-
-void
-DBusInputContextConnection::pluginSettingsLoaded(int clientId, const QList<MImPluginSettingsInfo> &info)
-{
-    ComMeegoInputmethodInputcontext1Interface *proxy = mProxys.value(clientId);
-    if (proxy) {
-        proxy->pluginSettingsLoaded(info);
-    }
-}
-
 
 unsigned int
 DBusInputContextConnection::connectionNumber()
@@ -359,24 +304,4 @@ void DBusInputContextConnection::setCopyPasteState(bool copyAvailable, bool past
 void DBusInputContextConnection::processKeyEvent(int keyType, int keyCode, int modifiers, const QString &text, bool autoRepeat, int count, uint nativeScanCode, uint nativeModifiers, uint time)
 {
     MInputContextConnection::processKeyEvent(connectionNumber(), static_cast<QEvent::Type>(keyType), static_cast<Qt::Key>(keyCode), static_cast<Qt::KeyboardModifier>(modifiers), text, autoRepeat, count, nativeScanCode, nativeModifiers, time);
-}
-
-void DBusInputContextConnection::registerAttributeExtension(int id, const QString &fileName)
-{
-    MInputContextConnection::registerAttributeExtension(connectionNumber(), id, fileName);
-}
-
-void DBusInputContextConnection::unregisterAttributeExtension(int id)
-{
-    MInputContextConnection::unregisterAttributeExtension(connectionNumber(), id);
-}
-
-void DBusInputContextConnection::setExtendedAttribute(int id, const QString &target, const QString &targetItem, const QString &attribute, const QDBusVariant &value)
-{
-    MInputContextConnection::setExtendedAttribute(connectionNumber(), id, target, targetItem, attribute, value.variant());
-}
-
-void DBusInputContextConnection::loadPluginSettings(const QString &descriptionLanguage)
-{
-    MInputContextConnection::loadPluginSettings(connectionNumber(), descriptionLanguage);
 }
