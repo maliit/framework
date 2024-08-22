@@ -847,12 +847,26 @@ void MInputContext::updateInputMethodExtensions()
     if (!inputMethodAccepted()) {
         return;
     }
-    if (!qGuiApp->focusObject()) {
-        return;
-    }
     qCDebug(lcMaliit) << InputContextName << Q_FUNC_INFO;
 
-    QVariantMap extensions = qGuiApp->focusObject()->property("__inputMethodExtensions").toMap();
+    QVariantMap extensions;
+
+    QObject *obj = qGuiApp->focusObject();
+    while (obj) {
+        QVariant property = obj->property("__inputMethodExtensions");
+        if (property.isValid()) {
+            extensions = property.toMap();
+            break;
+        }
+
+        /* Prefer QQuickItem visual parent over QObject parent. */
+        if (auto item = qobject_cast<QQuickItem *>(obj)) {
+            obj = item->parentItem();
+        } else {
+            obj = obj->parent();
+        }
+    }
+
     QVariant value;
     value = extensions.value("enterKeyIconSource");
     imServer->setExtendedAttribute(0, "/keys", "actionKey", "icon", QVariant(value.toUrl().toString()));
