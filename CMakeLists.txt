@@ -212,7 +212,7 @@ if(enable-xcb)
     list(APPEND PLUGINS_SOURCES
          src/xcbplatform.cpp
          src/xcbplatform.h)
-    find_package(XCB REQUIRED xfixes)
+    find_package(XCB REQUIRED XFIXES)
     list(APPEND PLUGINS_INCLUDE_DIRS ${XCB_INCLUDE_DIRS})
     list(APPEND PLUGINS_LIBRARIES ${XCB_LIBRARIES})
     add_definitions(-DHAVE_XCB)
