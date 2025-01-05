@@ -16,6 +16,7 @@
 #include <QtDebug>
 #include <QtCore>
 #include <QtTest>
+#include <QRegularExpression>
 
 namespace {
     const QString TestingInSandboxEnvVariable("TESTING_IN_SANDBOX");
@@ -30,12 +31,12 @@ namespace {
     // Returns true on success, false on error
     bool setPathFromEnvironmentVariable(QString *path, QString envVar) {
         const QStringList env(QProcess::systemEnvironment());
-        int index = env.indexOf(QRegExp('^' + envVar + "=.*", Qt::CaseInsensitive));
+        int index = env.indexOf(QRegularExpression('^' + envVar + "=.*", QRegularExpression::CaseInsensitiveOption));
 
         if (index != -1) {
             QString pathCandidate = env.at(index);
             pathCandidate = pathCandidate.remove(
-                                QRegExp('^' + envVar + '=', Qt::CaseInsensitive));
+                                QRegularExpression('^' + envVar + '=', QRegularExpression::CaseInsensitiveOption));
             if (!pathCandidate.isEmpty()) {
                 *path = pathCandidate;
                 return true;
@@ -57,11 +58,11 @@ bool isTestingInSandbox()
 {
     bool testingInSandbox = false;
     const QStringList env(QProcess::systemEnvironment());
-    int index = env.indexOf(QRegExp('^' + TestingInSandboxEnvVariable + "=.*", Qt::CaseInsensitive));
+    int index = env.indexOf(QRegularExpression('^' + TestingInSandboxEnvVariable + "=.*", QRegularExpression::CaseInsensitiveOption));
     if (index != -1) {
         QString statusCandidate = env.at(index);
         statusCandidate = statusCandidate.remove(
-                              QRegExp('^' + TestingInSandboxEnvVariable + '=', Qt::CaseInsensitive));
+                              QRegularExpression('^' + TestingInSandboxEnvVariable + '=', QRegularExpression::CaseInsensitiveOption));
         bool statusOk = false;
         int status = statusCandidate.toInt(&statusOk);
         if (statusOk && (status == 0 || status == 1)) {

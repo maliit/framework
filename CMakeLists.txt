@@ -13,23 +13,16 @@ option(enable-glib "Build GLib support" ON)
 
 option(enable-xcb "Compile with xcb support" ON)
 option(enable-wayland "Compile with support for wayland" ON)
-option(enable-qt5-inputcontext "Compile with Qt 5 input context" ON)
+option(enable-qt-inputcontext "Compile with Qt input context" ON)
 
 option(enable-hwkeyboard "Enable support for the hardware keyboard" ON)
 option(enable-dbus-activation "Enable dbus activation support for maliit-server" OFF)
+option(BUILD_WITH_QT6 "Built with Qt 6 instead of Qt 5" OFF)
+
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Install paths
 include(GNUInstallDirs)
-
-if(NOT DEFINED QT5_PLUGINS_INSTALL_DIR)
-    set(QT5_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt5/plugins" CACHE PATH
-            "Installation directory for Qt 5 plugins [LIB_INSTALL_DIR/qt5/plugins]")
-endif()
-
-if(NOT DEFINED QT5_MKSPECS_INSTALL_DIR)
-    set(QT5_MKSPECS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt5/mkspecs" CACHE PATH
-            "Installation directory for Qt 5 mkspecs files [LIB_INSTALL_DIR/qt5/mkspecs]")
-endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
@@ -38,20 +31,53 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(PkgConfig REQUIRED)
 
-find_package(Qt5Core)
-find_package(Qt5DBus)
-find_package(Qt5Gui REQUIRED PRIVATE)
-find_package(Qt5Quick)
+if(BUILD_WITH_QT6)
+  find_package(Qt6 6.0 REQUIRED COMPONENTS Core DBus Gui Quick)
+endif()
+
+if(Qt6_FOUND)
+  set(QT_VERSION_MAJOR 6)
+  set(QT_VERSION ${Qt6_VERSION})
+else()
+  find_package(Qt5 REQUIRED COMPONENTS Core DBus Gui Quick)
+  set(QT_VERSION_MAJOR 5)
+  set(QT_VERSION ${Qt5_VERSION})
+endif()
+
+set(MALIIT_EXE_SUFFIX "")
+set(MALIIT_LIB_SUFFIX "")
+if (Qt6_FOUND)
+    set(MALIIT_EXE_SUFFIX "6")
+    set(MALIIT_LIB_SUFFIX "6")
+endif()
+
+if(NOT DEFINED QT_PLUGINS_INSTALL_DIR)
+    set(QT_PLUGINS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt${QT_VERSION_MAJOR}/plugins" CACHE PATH
+            "Installation directory for Qt ${QT_VERSION_MAJOR} plugins [LIB_INSTALL_DIR/qt${QT_VERSION_MAJOR}/plugins]")
+endif()
+
+if(NOT DEFINED QT_MKSPECS_INSTALL_DIR)
+    set(QT_MKSPECS_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/qt${QT_VERSION_MAJOR}/mkspecs" CACHE PATH
+            "Installation directory for Qt 5 mkspecs files [LIB_INSTALL_DIR/qt${QT_VERSION_MAJOR}/mkspecs]")
+endif()
 
 if(enable-wayland)
+    if (Qt6_FOUND)
+      find_package(Qt6 REQUIRED COMPONENTS WaylandClient WaylandGlobalPrivate)
+    else()
+      find_package(Qt5 5.14 REQUIRED COMPONENTS WaylandClient XkbCommonSupport)
+    endif()
     find_package(WaylandProtocols REQUIRED PRIVATE)
     find_package(QtWaylandScanner REQUIRED)
     find_package(Wayland REQUIRED)
-    find_package(Qt5WaylandClient 5.14 REQUIRED PRIVATE)
-    find_package(Qt5XkbCommonSupport REQUIRED PRIVATE)
     pkg_check_modules(XKBCOMMON REQUIRED IMPORTED_TARGET xkbcommon)
 endif()
 
+if (Qt6_FOUND)
+  include_directories(PRIVATE ${Qt6Gui_PRIVATE_INCLUDE_DIRS})
+else()
+  include_directories(PRIVATE ${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+endif()
 include_directories(src common)
 
 add_library(maliit-common STATIC
@@ -59,7 +85,7 @@ add_library(maliit-common STATIC
             common/maliit/namespaceinternal.h
             common/maliit/settingdata.cpp
             common/maliit/settingdata.h)
-target_link_libraries(maliit-common Qt5::Core)
+target_link_libraries(maliit-common Qt${QT_VERSION_MAJOR}::Core)
 target_include_directories(maliit-common PUBLIC common)
 
 set(CONNECTION_SOURCES
@@ -86,6 +112,7 @@ if(enable-wayland)
          connection/waylandinputmethodconnection.h)
 
     ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
+    ecm_add_qtwayland_client_protocol(CONNECTION_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/text-input/text-input-unstable-v1.xml BASENAME text-input-unstable-v1)
 
     add_definitions(-DHAVE_WAYLAND)
 endif()
@@ -93,21 +120,28 @@ endif()
 set_source_files_properties(dbus_interfaces/minputmethodcontext1interface.xml dbus_interfaces/minputmethodserver1interface.xml
                             PROPERTIES INCLUDE maliit/settingdata.h)
 
+if (Qt6_FOUND)
+qt6_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml dbusserverconnection.h DBusServerConnection)
+qt6_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml dbusinputcontextconnection.h DBusInputContextConnection)
+
+qt6_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml minputmethodcontext1interface_interface)
+qt6_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml minputmethodserver1interface_interface)
+else()
 qt5_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml dbusserverconnection.h DBusServerConnection)
 qt5_add_dbus_adaptor(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml dbusinputcontextconnection.h DBusInputContextConnection)
 
 qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodcontext1interface.xml minputmethodcontext1interface_interface)
 qt5_add_dbus_interface(CONNECTION_SOURCES dbus_interfaces/minputmethodserver1interface.xml minputmethodserver1interface_interface)
+endif()
 
 add_library(maliit-connection STATIC ${CONNECTION_SOURCES})
-target_link_libraries(maliit-connection Qt5::Core Qt5::DBus Qt5::Gui maliit-common)
+target_link_libraries(maliit-connection
+    Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::DBus Qt${QT_VERSION_MAJOR}::Gui maliit-common)
 if(enable-wayland)
     target_link_libraries(maliit-connection Wayland::Client PkgConfig::XKBCOMMON)
-    target_include_directories(maliit-connection PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS})
 endif()
-target_include_directories(maliit-connection PUBLIC connection)
 
-include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
+target_include_directories(maliit-connection PUBLIC connection)
 
 set(PLUGINS_SOURCES
     src/maliit/plugins/abstractinputmethod.cpp
@@ -211,8 +245,9 @@ else()
 endif()
 
 add_library(maliit-plugins SHARED ${PLUGINS_SOURCES} ${PLUGINS_HEADER})
+set_target_properties(maliit-plugins PROPERTIES OUTPUT_NAME "maliit${MALIIT_LIB_SUFFIX}-plugins")
 target_link_libraries(maliit-plugins PRIVATE maliit-common maliit-connection ${PLUGINS_LIBRARIES})
-target_link_libraries(maliit-plugins PUBLIC Qt5::Core Qt5::Gui Qt5::Quick)
+target_link_libraries(maliit-plugins PUBLIC Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Quick)
 target_include_directories(maliit-plugins PRIVATE ${PLUGINS_INCLUDE_DIRS})
 
 set_target_properties(maliit-plugins PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
@@ -267,6 +302,7 @@ if(enable-glib)
     gdbus_add_code(GLIB_SOURCES dbus_interfaces/minputmethodserver1interface.xml)
 
     add_library(maliit-glib SHARED ${GLIB_SOURCES} ${GLIB_HEADER})
+    set_target_properties(maliit-glib PROPERTIES OUTPUT_NAME "maliit${MALIIT_LIB_SUFFIX}-glib")
     target_include_directories(maliit-glib PUBLIC ${GIO_INCLUDE_DIRS})
     target_link_libraries(maliit-glib ${GIO_LIBRARIES})
     set_target_properties(maliit-glib PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
@@ -275,26 +311,27 @@ if(enable-glib)
 endif()
 
 add_definitions(-DMALIIT_FRAMEWORK_USE_INTERNAL_API
-                -DMALIIT_PLUGINS_DATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit/plugins"
-                -DMALIIT_EXTENSIONS_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit-framework/extensions"
+                -DMALIIT_PLUGINS_DATA_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit${MALIIT_LIB_SUFFIX}/plugins"
+                -DMALIIT_EXTENSIONS_DIR="${CMAKE_INSTALL_FULL_DATADIR}/maliit${MALIIT_LIB_SUFFIX}-framework/extensions"
                 -DMALIIT_CONFIG_ROOT="/maliit/"
-                -DMALIIT_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/maliit/plugins"
+                -DMALIIT_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/maliit${MALIIT_LIB_SUFFIX}/plugins"
                 -DMALIIT_DEFAULT_HW_PLUGIN="libmaliit-keyboard-plugin.so"
                 -DMALIIT_ENABLE_MULTITOUCH=true
                 -DMALIIT_DEFAULT_PLUGIN="libmaliit-keyboard-plugin.so"
                 -DMALIIT_DEFAULT_SUBVIEW="")
 
 add_executable(maliit-server passthroughserver/main.cpp)
+set_target_properties(maliit-server PROPERTIES OUTPUT_NAME "maliit${MALIIT_EXE_SUFFIX}-server")
 target_link_libraries(maliit-server maliit-plugins maliit-connection)
 
-if(enable-qt5-inputcontext)
+if(enable-qt-inputcontext)
     set(INPUT_CONTEXT_SOURCES
             input-context/main.cpp
             input-context/minputcontext.cpp
             input-context/minputcontext.h)
 
     add_library(maliitplatforminputcontextplugin MODULE ${INPUT_CONTEXT_SOURCES})
-    target_link_libraries(maliitplatforminputcontextplugin maliit-connection Qt5::Quick)
+    target_link_libraries(maliitplatforminputcontextplugin maliit-connection Qt${QT_VERSION_MAJOR}::Quick)
 endif()
 
 if(enable-wayland)
@@ -306,31 +343,37 @@ if(enable-wayland)
     ecm_add_qtwayland_client_protocol(INPUT_PANEL_SHELL_SOURCES PROTOCOL ${WAYLANDPROTOCOLS_PATH}/unstable/input-method/input-method-unstable-v1.xml BASENAME input-method-unstable-v1)
 
     add_library(inputpanel-shell MODULE ${INPUT_PANEL_SHELL_SOURCES})
-    target_link_libraries(inputpanel-shell Qt5::WaylandClient PkgConfig::XKBCOMMON Wayland::Client)
-    target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt5XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
+    target_link_libraries(inputpanel-shell Qt${QT_VERSION_MAJOR}::WaylandClient PkgConfig::XKBCOMMON Wayland::Client)
+    if (Qt6_FOUND)
+      target_link_libraries(inputpanel-shell Qt${QT_VERSION_MAJOR}::WaylandGlobalPrivate)
+      target_include_directories(inputpanel-shell PRIVATE ${Qt6WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt6WaylandGlobalPrivate_PRIVATE_INCLUDE_DIRS} ${Qt6XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
+    else()
+      target_include_directories(inputpanel-shell PRIVATE ${Qt5WaylandClient_PRIVATE_INCLUDE_DIRS} ${Qt5XkbCommonSupport_PRIVATE_INCLUDE_DIRS})
+    endif()
 endif()
 
 if(enable-examples)
-    find_package(Qt5Widgets)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
     add_executable(maliit-exampleapp-plainqt
             examples/apps/plainqt/mainwindow.cpp
             examples/apps/plainqt/mainwindow.h
             examples/apps/plainqt/plainqt.cpp)
-    target_link_libraries(maliit-exampleapp-plainqt Qt5::Gui Qt5::Widgets)
+    set_target_properties(maliit-exampleapp-plainqt PROPERTIES OUTPUT_NAME "maliit${MALIIT_EXE_SUFFIX}-exampleapp-plainqt")
+    target_link_libraries(maliit-exampleapp-plainqt Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets)
 
     add_library(cxxhelloworldplugin MODULE
             examples/plugins/cxx/helloworld/helloworldinputmethod.cpp
             examples/plugins/cxx/helloworld/helloworldinputmethod.h
             examples/plugins/cxx/helloworld/helloworldplugin.cpp
             examples/plugins/cxx/helloworld/helloworldplugin.h)
-    target_link_libraries(cxxhelloworldplugin maliit-plugins Qt5::Widgets)
+    target_link_libraries(cxxhelloworldplugin maliit-plugins Qt${QT_VERSION_MAJOR}::Widgets)
 
     add_library(cxxoverrideplugin MODULE
                 examples/plugins/cxx/override/overrideinputmethod.cpp
                 examples/plugins/cxx/override/overrideinputmethod.h
                 examples/plugins/cxx/override/overrideplugin.cpp
                 examples/plugins/cxx/override/overrideplugin.h)
-    target_link_libraries(cxxoverrideplugin maliit-plugins Qt5::Widgets)
+    target_link_libraries(cxxoverrideplugin maliit-plugins Qt${QT_VERSION_MAJOR}::Widgets)
 endif()
 
 # Documentation
@@ -348,9 +391,9 @@ endif()
 
 # Package files
 
-configure_file(common/maliit-framework.pc.in maliit-framework.pc @ONLY)
-configure_file(src/maliit-plugins.pc.in maliit-plugins.pc @ONLY)
-configure_file(src/maliit-server.pc.in maliit-server.pc @ONLY)
+configure_file(common/maliit-framework.pc.in maliit${MALIIT_LIB_SUFFIX}-framework.pc @ONLY)
+configure_file(src/maliit-plugins.pc.in maliit${MALIIT_LIB_SUFFIX}-plugins.pc @ONLY)
+configure_file(src/maliit-server.pc.in maliit${MALIIT_LIB_SUFFIX}-server.pc @ONLY)
 
 configure_file(common/maliit-framework.prf.in maliit-framework.prf @ONLY)
 configure_file(src/maliit-plugins.prf.in maliit-plugins.prf @ONLY)
@@ -358,10 +401,10 @@ configure_file(src/maliit-defines.prf.in maliit-defines.prf @ONLY)
 
 include(CMakePackageConfigHelpers)
 
-configure_package_config_file(src/MaliitPluginsConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake
-        INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitPlugins
+configure_package_config_file(src/MaliitPluginsConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/Maliit${MALIIT_LIB_SUFFIX}PluginsConfig.cmake
+        INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/Maliit${MALIIT_LIB_SUFFIX}Plugins
         PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_DATADIR)
-write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
+write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/Maliit${MALIIT_LIB_SUFFIX}PluginsConfigVersion.cmake
         VERSION ${PACKAGE_VERSION}
         COMPATIBILITY AnyNewerVersion)
 
@@ -370,7 +413,7 @@ write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig
 install(TARGETS maliit-plugins
         EXPORT MaliitPluginsTargets
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2)
+        INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit${MALIIT_LIB_SUFFIX}-2)
 
 install(TARGETS maliit-server
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -381,62 +424,65 @@ if(enable-examples)
 endif()
 
 install(DIRECTORY common/
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit${MALIIT_LIB_SUFFIX}-2
         FILES_MATCHING PATTERN "*.h"
         PATTERN "*internal.h" EXCLUDE)
 install(DIRECTORY src/maliit
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit${MALIIT_LIB_SUFFIX}-2
         FILES_MATCHING PATTERN "*.h"
         PATTERN "*_p.h" EXCLUDE)
 install(FILES src/mimserver.h
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2/maliit)
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit${MALIIT_LIB_SUFFIX}-2/maliit)
 
-install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.pc ${CMAKE_BINARY_DIR}/maliit-plugins.pc ${CMAKE_BINARY_DIR}/maliit-server.pc
+install(FILES
+        ${CMAKE_BINARY_DIR}/maliit${MALIIT_LIB_SUFFIX}-framework.pc
+        ${CMAKE_BINARY_DIR}/maliit${MALIIT_LIB_SUFFIX}-plugins.pc
+        ${CMAKE_BINARY_DIR}/maliit${MALIIT_LIB_SUFFIX}-server.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 install(FILES ${CMAKE_BINARY_DIR}/maliit-framework.prf ${CMAKE_BINARY_DIR}/maliit-plugins.prf ${CMAKE_BINARY_DIR}/maliit-defines.prf
-        DESTINATION ${QT5_MKSPECS_INSTALL_DIR}/features)
+        DESTINATION ${QT_MKSPECS_INSTALL_DIR}/features)
 
-install(EXPORT MaliitPluginsTargets FILE MaliitPluginsTargets.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitPlugins)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitPluginsConfigVersion.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitPlugins)
+install(EXPORT MaliitPluginsTargets FILE Maliit${MALIIT_LIB_SUFFIX}PluginsTargets.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Maliit${MALIIT_LIB_SUFFIX}Plugins)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Maliit${MALIIT_LIB_SUFFIX}PluginsConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/Maliit${MALIIT_LIB_SUFFIX}PluginsConfigVersion.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Maliit${MALIIT_LIB_SUFFIX}Plugins)
 
 install(FILES INSTALL.local LICENSE.LGPL NEWS README.md
         DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/maliit-framework)
 
 if(enable-glib)
-    configure_package_config_file(maliit-glib/MaliitGLibConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfig.cmake
-            INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/MaliitGLib
+    configure_package_config_file(maliit-glib/MaliitGLibConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/Maliit${MALIIT_LIB_SUFFIX}GLibConfig.cmake
+            INSTALL_DESTINATION ${LIB_INSTALL_DIR}/cmake/Maliit${MALIIT_LIB_SUFFIX}GLib
             PATH_VARS CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_LIBDIR CMAKE_INSTALL_DATADIR)
-    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfigVersion.cmake
+    write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/Maliit${MALIIT_LIB_SUFFIX}GLibConfigVersion.cmake
             VERSION ${PACKAGE_VERSION}
             COMPATIBILITY AnyNewerVersion)
 
-    configure_file(maliit-glib/maliit-glib.pc.in maliit-glib.pc @ONLY)
+    configure_file(maliit-glib/maliit-glib.pc.in maliit${MALIIT_LIB_SUFFIX}-glib.pc @ONLY)
 
     install(TARGETS maliit-glib EXPORT MaliitGLibTargets
             LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2)
+            INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit${MALIIT_LIB_SUFFIX}-2)
 
-    install(DIRECTORY maliit-glib DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
+    install(DIRECTORY maliit-glib DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit${MALIIT_LIB_SUFFIX}-2
             FILES_MATCHING PATTERN "*.h"
             PATTERN "*private.h" EXCLUDE)
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/maliit-glib DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/maliit${MALIIT_LIB_SUFFIX}-glib DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/maliit-2
             FILES_MATCHING PATTERN "*.h")
 
-    install(EXPORT MaliitGLibTargets FILE MaliitGLibTargets.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitGLib)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/MaliitGLibConfigVersion.cmake
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MaliitGLib)
+    install(EXPORT MaliitGLibTargets FILE Maliit${MALIIT_LIB_SUFFIX}GLibTargets.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Maliit${MALIIT_LIB_SUFFIX}GLib)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Maliit${MALIIT_LIB_SUFFIX}GLibConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/Maliit${MALIIT_LIB_SUFFIX}GLibConfigVersion.cmake
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Maliit${MALIIT_LIB_SUFFIX}GLib)
 
-    install(FILES ${CMAKE_BINARY_DIR}/maliit-glib.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+    install(FILES ${CMAKE_BINARY_DIR}/maliit${MALIIT_LIB_SUFFIX}-glib.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif()
 
 if(enable-qt5-inputcontext)
-    install(TARGETS maliitplatforminputcontextplugin LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/platforminputcontexts)
+    install(TARGETS maliitplatforminputcontextplugin LIBRARY DESTINATION ${QT_PLUGINS_INSTALL_DIR}/platforminputcontexts)
 endif()
 
 if(enable-wayland)
     install(TARGETS inputpanel-shell
-            LIBRARY DESTINATION ${QT5_PLUGINS_INSTALL_DIR}/wayland-shell-integration)
+            LIBRARY DESTINATION ${QT_PLUGINS_INSTALL_DIR}/wayland-shell-integration)
 endif()
 
 if(enable-dbus-activation)
@@ -447,7 +493,7 @@ endif()
 
 if(enable-docs)
     install(DIRECTORY ${CMAKE_BINARY_DIR}/doc/html/
-            DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/maliit-framework-doc)
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/doc/maliit${MALIIT_LIB_SUFFIX}-framework-doc)
 endif()
 
 # Tests
@@ -455,7 +501,7 @@ endif()
 if(enable-tests)
     enable_testing()
 
-    find_package(Qt5Test)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Test)
 
     set(TEST_PLUGINS_DIR ${CMAKE_BINARY_DIR}/tests/plugins)
 
@@ -496,7 +542,7 @@ if(enable-tests)
             tests/utils/core-utils.h
             tests/utils/gui-utils.cpp
             tests/utils/gui-utils.h)
-    target_link_libraries(test-utils PUBLIC Qt5::Core Qt5::Gui Qt5::Test maliit-connection)
+    target_link_libraries(test-utils PUBLIC Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Test maliit-connection)
     target_include_directories(test-utils INTERFACE tests/utils)
     target_compile_definitions(test-utils PUBLIC
             -DMALIIT_TEST_PLUGINS_DIR="${CMAKE_INSTALL_FULL_LIBDIR}/maliit-framework-tests/plugins"
@@ -507,7 +553,7 @@ if(enable-tests)
             tests/stubs/mkeyboardstatetracker_stub.h
             tests/stubs/fakeproperty.cpp
             tests/stubs/fakeproperty.h)
-    target_link_libraries(test-stubs PUBLIC Qt5::Core)
+    target_link_libraries(test-stubs PUBLIC Qt${QT_VERSION_MAJOR}::Core)
     target_include_directories(test-stubs INTERFACE tests/stubs)
 
     function(create_test name)
@@ -552,11 +598,12 @@ if(enable-tests)
                 tests/ut_maliit_glib_settings/ut_maliit_glib_settings.c
                 tests/ut_maliit_glib_settings/mockmaliitserver.c
                 tests/ut_maliit_glib_settings/mockmaliitserver.h)
+        set_target_properties(ut_maliit_glib_settings PROPERTIES OUTPUT_NAME "ut_maliit_glib_settings${MALIIT_EXE_SUFFIX}")
         target_link_libraries(ut_maliit_glib_settings GLib2::GLib GLib2::GIO maliit-glib)
 
-        add_test(ut_maliit_glib_settings ut_maliit_glib_settings)
+        add_test(ut_maliit_glib_settings ut_maliit_glib_settings${MALIIT_EXE_SUFFIX})
         if(install-tests)
-            install(TARGETS ut_maliit_glib_settings DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_maliit_glib_settings)
+            install(TARGETS ut_maliit_glib_settings DESTINATION ${CMAKE_INSTALL_LIBDIR}/maliit-framework-tests/ut_maliit_glib_settings${MALIIT_EXE_SUFFIX})
         endif()
     endif()
 

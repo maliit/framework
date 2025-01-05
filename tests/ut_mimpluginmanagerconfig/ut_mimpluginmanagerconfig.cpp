@@ -19,7 +19,6 @@
 
 #include <QTest>
 #include <QProcess>
-#include <QRegExp>
 #include <QCoreApplication>
 #include <QPointer>
 #include <QTimer>

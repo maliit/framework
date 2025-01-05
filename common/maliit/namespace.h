@@ -14,6 +14,7 @@
 #ifndef MALIIT_NAMESPACE_H
 #define MALIIT_NAMESPACE_H
 
+#include <QList>
 #include <QMetaType>
 #include <QList>
 #include <QSharedPointer>

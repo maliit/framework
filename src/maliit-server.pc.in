@@ -2,13 +2,13 @@ libdir=@CMAKE_INSTALL_FULL_LIBDIR@
 includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 datarootdir=@CMAKE_INSTALL_FULL_DATADIR@
 
-pluginsdir=${libdir}/maliit/plugins
+pluginsdir=${libdir}/maliit@MALIIT_LIB_SUFFIX@/plugins
 datadir=${datarootdir}
-pluginsdatadir=${datadir}/maliit/plugins
+pluginsdatadir=${datadir}/maliit@MALIIT_LIB_SUFFIX@/plugins
 
 Name: Maliit Server
 Description: Library for embedding the Maliit IM Server
 Version: @PROJECT_VERSION@
-Requires: maliit-framework maliit-plugins
-Cflags: -I${includedir}/maliit-2
+Requires: maliit@MALIIT_LIB_SUFFIX@-framework maliit@MALIIT_LIB_SUFFIX@-plugins
+Cflags: -I${includedir}/maliit@MALIIT_LIB_SUFFIX@-2
 Libs: -L${libdir}

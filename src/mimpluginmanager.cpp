@@ -836,7 +836,13 @@ void MIMPluginManagerPrivate::loadHandlerMap()
         QObject::connect(handlerItem, SIGNAL(valueChanged()), signalMapper, SLOT(map()));
         signalMapper->setMapping(handlerItem, i.key());
     }
+#if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
     QObject::connect(signalMapper, SIGNAL(mapped(int)), q, SLOT(_q_syncHandlerMap(int)));
+#else
+    QObject::connect(signalMapper, &QSignalMapper::mappedInt, q, [this](int state){
+        _q_syncHandlerMap(state);
+    });
+#endif
 }
 
 

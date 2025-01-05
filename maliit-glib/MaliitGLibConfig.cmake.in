@@ -1,1 +1,1 @@
-include("${CMAKE_CURRENT_LIST_DIR}/MaliitGLibTargets.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/Maliit@MALIIT_LIB_SUFFIX@GLibTargets.cmake")
