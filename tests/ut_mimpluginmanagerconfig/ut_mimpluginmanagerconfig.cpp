@@ -19,7 +19,6 @@
 
 #include <QTest>
 #include <QProcess>
-#include <QRegExp>
 #include <QCoreApplication>
 #include <QPointer>
 #include <QTimer>
@@ -32,8 +31,6 @@
 
 #include "mattributeextensionmanager.h"
 #include "msharedattributeextensionmanager.h"
-
-using namespace std::tr1;
 
 typedef QSet<Maliit::HandlerState> HandlerStates;
 Q_DECLARE_METATYPE(HandlerStates);

@@ -16,8 +16,8 @@
 #include <maliit/plugins/abstractinputmethodhost.h>
 
 #include <QDebug>
-#include <QApplication>
-#include <QDesktopWidget>
+#include <QGuiApplication>
+#include <QScreen>
 
 namespace {
 
@@ -89,7 +89,7 @@ void HelloWorldInputMethod::show()
     }
 
     // Set size of our container to screen size
-    const QSize screenSize = QApplication::desktop()->screenGeometry().size();
+    const QSize screenSize = QGuiApplication::primaryScreen()->size();
     mainWidget->parentWidget()->resize(screenSize);
 
     // Set size of the input method
