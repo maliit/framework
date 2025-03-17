@@ -267,8 +267,7 @@ if(enable-glib)
     gdbus_add_code(GLIB_SOURCES dbus_interfaces/minputmethodserver1interface.xml)
 
     add_library(maliit-glib SHARED ${GLIB_SOURCES} ${GLIB_HEADER})
-    target_include_directories(maliit-glib PUBLIC ${GIO_INCLUDE_DIRS})
-    target_link_libraries(maliit-glib ${GIO_LIBRARIES})
+    target_link_libraries(maliit-glib GLib2::GIO)
     set_target_properties(maliit-glib PROPERTIES SOVERSION ${PROJECT_VERSION_MAJOR}
             VERSION ${PROJECT_VERSION}
             EXPORT_NAME Maliit::GLib)
