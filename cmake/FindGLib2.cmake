@@ -45,10 +45,10 @@ function(GLib2_ADD_MARSHAL _sources _marshallist)
     endif()
 
     add_custom_command(OUTPUT "${_header}"
-            COMMAND ${GLib2_GENMARHSAL_EXECUTABLE} --header ${_params} ${_infile} > ${_header}
+            COMMAND ${GLib2_GENMARHSAL_EXECUTABLE} --skip-source --header ${_params} ${_infile} > ${_header}
             DEPENDS ${_infile} VERBATIM)
     add_custom_command(OUTPUT "${_body}"
-            COMMAND ${GLib2_GENMARHSAL_EXECUTABLE} --body ${_params} ${_infile} > ${_body}
+            COMMAND ${GLib2_GENMARHSAL_EXECUTABLE} --skip-source --body ${_params} ${_infile} > ${_body}
             DEPENDS ${_infile} VERBATIM)
 
     set_property(SOURCE ${_body} ${_header} PROPERTY SKIP_AUTOMOC ON)
