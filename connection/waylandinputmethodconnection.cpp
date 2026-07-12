@@ -596,6 +596,14 @@ void InputMethodContext::zwp_input_method_context_v1_surrounding_text(const QStr
 
     const QByteArray &utf8_text(text.toUtf8());
 
+    // cursor and anchor are byte offsets supplied by the compositor and cannot be
+    // trusted: a bogus value larger than the text (seen in the wild as e.g. 6881396)
+    // makes the QString::fromUtf8 calls below read past the end of utf8_text and
+    // crash. Clamp them to the actual length before using them as offsets/lengths.
+    const uint32_t utf8_len = static_cast<uint32_t>(utf8_text.size());
+    cursor = qMin(cursor, utf8_len);
+    anchor = qMin(anchor, utf8_len);
+
     m_stateInfo[SurroundingTextAttribute] = text;
     m_stateInfo[CursorPositionAttribute] = QString::fromUtf8(utf8_text.constData(), cursor).size();
     m_stateInfo[AnchorPositionAttribute] = QString::fromUtf8(utf8_text.constData(), anchor).size();
