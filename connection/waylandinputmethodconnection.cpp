@@ -23,6 +23,7 @@
 #include <xkbcommon/xkbcommon.h>
 
 #include "waylandinputmethodconnection.h"
+#include "waylandinputmethodtransport.h"
 
 Q_LOGGING_CATEGORY(lcWaylandConnection, "maliit.connection.wayland")
 
@@ -156,7 +157,7 @@ bool matchesFlag(int value,
     return ((value & flag) == flag);
 }
 
-const unsigned int wayland_connection_id(1);
+const unsigned int wayland_connection_id(Maliit::Wayland::ConnectionId);
 
 } // unnamed namespace
 
@@ -206,29 +207,6 @@ private:
     QString m_selection;
 };
 
-}
-}
-
-struct WaylandInputMethodConnectionPrivate
-{
-    Q_DECLARE_PUBLIC(WaylandInputMethodConnection)
-
-    WaylandInputMethodConnectionPrivate(WaylandInputMethodConnection *connection);
-    ~WaylandInputMethodConnectionPrivate();
-
-    void handleRegistryGlobal(uint32_t name,
-                              const char *interface,
-                              uint32_t version);
-    void handleRegistryGlobalRemove(uint32_t name);
-
-    Maliit::Wayland::InputMethodContext *context();
-
-    WaylandInputMethodConnection *q_ptr;
-    wl_display *display;
-    wl_registry *registry;
-    QScopedPointer<Maliit::Wayland::InputMethod> input_method;
-};
-
 namespace {
 
 void registryGlobal(void *data,
@@ -237,8 +215,8 @@ void registryGlobal(void *data,
                     const char *interface,
                     uint32_t version)
 {
-    WaylandInputMethodConnectionPrivate *d =
-            static_cast<WaylandInputMethodConnectionPrivate *>(data);
+    InputMethodTransport *d =
+            static_cast<InputMethodTransport *>(data);
 
     Q_UNUSED(registry);
     d->handleRegistryGlobal(name, interface, version);
@@ -248,8 +226,8 @@ void registryGlobalRemove(void *data,
                           wl_registry *registry,
                           uint32_t name)
 {
-    WaylandInputMethodConnectionPrivate *d =
-            static_cast<WaylandInputMethodConnectionPrivate *>(data);
+    InputMethodTransport *d =
+            static_cast<InputMethodTransport *>(data);
 
     Q_UNUSED(registry);
     d->handleRegistryGlobalRemove(name);
@@ -260,11 +238,10 @@ const wl_registry_listener maliit_registry_listener = {
     registryGlobalRemove
 };
 
-
 } // unnamed namespace
 
-WaylandInputMethodConnectionPrivate::WaylandInputMethodConnectionPrivate(WaylandInputMethodConnection *connection)
-    : q_ptr(connection),
+InputMethodTransport::InputMethodTransport(MInputContextConnection *owner)
+    : owner(owner),
       display(0),
       registry(0),
       input_method()
@@ -278,7 +255,7 @@ WaylandInputMethodConnectionPrivate::WaylandInputMethodConnectionPrivate(Wayland
     wl_registry_add_listener(registry, &maliit_registry_listener, this);
 }
 
-WaylandInputMethodConnectionPrivate::~WaylandInputMethodConnectionPrivate()
+InputMethodTransport::~InputMethodTransport()
 {
     input_method.reset();
     if (registry) {
@@ -286,32 +263,158 @@ WaylandInputMethodConnectionPrivate::~WaylandInputMethodConnectionPrivate()
     }
 }
 
-void WaylandInputMethodConnectionPrivate::handleRegistryGlobal(uint32_t name,
-                                                               const char *interface,
-                                                               uint32_t version)
+void InputMethodTransport::handleRegistryGlobal(uint32_t name,
+                                                const char *interface,
+                                                uint32_t version)
 {
     Q_UNUSED(version);
-    Q_Q(WaylandInputMethodConnection);
 
     if (!strcmp(interface, "zwp_input_method_v1")) {
-        input_method.reset(new Maliit::Wayland::InputMethod(q, registry, name));
+        input_method.reset(new InputMethod(owner, registry, name));
     }
 }
 
-void WaylandInputMethodConnectionPrivate::handleRegistryGlobalRemove(uint32_t name)
+void InputMethodTransport::handleRegistryGlobalRemove(uint32_t name)
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO << name;
 }
 
-Maliit::Wayland::InputMethodContext *WaylandInputMethodConnectionPrivate::context()
+InputMethodContext *InputMethodTransport::context()
 {
     return input_method ? input_method->context() : 0;
 }
 
+void InputMethodTransport::sendPreeditString(const QString &string,
+                                             const QList<Maliit::PreeditTextFormat> &preedit_formats,
+                                             int replace_start,
+                                             int replace_length,
+                                             int cursor_pos,
+                                             int widget_cursor)
+{
+    if (!context())
+        return;
+
+    if (replace_length > 0) {
+        uint32_t index = string.midRef(qMin(widget_cursor + replace_start, widget_cursor), qAbs(replace_start)).toUtf8().size();
+        uint32_t length = string.midRef(widget_cursor + replace_start, replace_length).toUtf8().size();
+        context()->delete_surrounding_text(index, length);
+    }
+
+    Q_FOREACH (const Maliit::PreeditTextFormat& format, preedit_formats) {
+        QtWayland::zwp_text_input_v2::preedit_style style = preeditStyleFromMaliit(format.preeditFace);
+        uint32_t index = string.leftRef(format.start).toUtf8().size();
+        uint32_t length = string.leftRef(format.start + format.length).toUtf8().size() - index;
+        qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_styling" << index << length;
+        context()->preedit_styling(index, length, style);
+    }
+
+    // TODO check if defined like that/required
+    if (cursor_pos < 0) {
+        cursor_pos = string.size() + 1 - cursor_pos;
+    }
+
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_cursor" << string.leftRef(cursor_pos).toUtf8().size();
+    context()->preedit_cursor(string.leftRef(cursor_pos).toUtf8().size());
+    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_string" << string;
+    context()->preedit_string(context()->serial(), string, string);
+}
+
+void InputMethodTransport::sendCommitString(const QString &string,
+                                            int replace_start,
+                                            int replace_length,
+                                            int cursor_pos,
+                                            int widget_cursor)
+{
+    if (!context())
+        return;
+
+    if (cursor_pos != 0) {
+        qCWarning(lcWaylandConnection) << Q_FUNC_INFO << "cursor_pos:" << cursor_pos << "!= 0 not supported yet";
+        cursor_pos = 0;
+    }
+
+    if (replace_length > 0) {
+        uint32_t index = string.midRef(qMin(widget_cursor + replace_start, widget_cursor), qAbs(replace_start)).toUtf8().size();
+        uint32_t length = string.midRef(widget_cursor + replace_start, replace_length).toUtf8().size();
+        context()->delete_surrounding_text(index, length);
+    }
+
+    cursor_pos = string.leftRef(cursor_pos).toUtf8().size();
+    context()->cursor_position(cursor_pos, cursor_pos);
+    context()->commit_string(context()->serial(), string);
+}
+
+bool InputMethodTransport::keyFromQKeyEvent(const QKeyEvent &keyEvent, Key *key)
+{
+    key->sym = keyFromQt(keyEvent.key());
+
+    if (key->sym == XKB_KEY_NoSymbol) {
+        qCWarning(lcWaylandConnection) << "No conversion from Qt::Key:" << keyEvent.key() << "to XKB key. Update the keyFromQt() function.";
+        return false;
+    }
+
+    switch (keyEvent.type()) {
+    case QEvent::KeyPress:
+        key->state = WL_KEYBOARD_KEY_STATE_PRESSED;
+        break;
+
+    case QEvent::KeyRelease:
+        key->state = WL_KEYBOARD_KEY_STATE_RELEASED;
+        break;
+
+    default:
+        qCWarning(lcWaylandConnection) << "Unknown QKeyEvent type:" << keyEvent.type();
+        return false;
+    }
+
+    key->modifiers = modifiersFromQt(keyEvent.modifiers());
+    return true;
+}
+
+void InputMethodTransport::sendKey(const Key &key, uint32_t timestamp)
+{
+    if (!context())
+        return;
+
+    context()->keysym(context()->serial(), timestamp,
+                      key.sym, key.state, key.modifiers);
+}
+
+QString InputMethodTransport::selection(bool &valid)
+{
+    InputMethodContext *ctx = context();
+
+    valid = ctx && !ctx->selection().isEmpty();
+    return ctx ? ctx->selection() : QString();
+}
+
+void InputMethodTransport::setLanguage(const QString &language)
+{
+    if (!context())
+        return;
+
+    context()->language(context()->serial(), language);
+}
+
+void InputMethodTransport::setSelection(int start, int length, const QString &surrounding)
+{
+    if (!context())
+        return;
+
+    uint32_t index(surrounding.leftRef(start + length).toUtf8().size());
+    uint32_t anchor(surrounding.leftRef(start).toUtf8().size());
+
+    context()->cursor_position(index, anchor);
+    context()->commit_string(context()->serial(), QString());
+}
+
+} // namespace Wayland
+} // namespace Maliit
+
 // MInputContextWestonIMProtocolConnection
 
 WaylandInputMethodConnection::WaylandInputMethodConnection()
-    : d_ptr(new WaylandInputMethodConnectionPrivate(this))
+    : m_transport(new Maliit::Wayland::InputMethodTransport(this))
 {
 }
 
@@ -325,41 +428,17 @@ void WaylandInputMethodConnection::sendPreeditString(const QString &string,
                                                      int replace_length,
                                                      int cursor_pos)
 {
-    Q_D(WaylandInputMethodConnection);
-
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO << string << replace_start << replace_length << cursor_pos;
 
-    if (!d->context())
+    if (!m_transport->context())
         return;
 
     MInputContextConnection::sendPreeditString(string, preedit_formats,
                                                replace_start, replace_length,
                                                cursor_pos);
 
-    if (replace_length > 0) {
-        int cursor = widgetState().value(CursorPositionAttribute).toInt();
-        uint32_t index = string.midRef(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
-        uint32_t length = string.midRef(cursor + replace_start, replace_length).toUtf8().size();
-        d->context()->delete_surrounding_text(index, length);
-    }
-
-    Q_FOREACH (const Maliit::PreeditTextFormat& format, preedit_formats) {
-        QtWayland::zwp_text_input_v2::preedit_style style = preeditStyleFromMaliit(format.preeditFace);
-        uint32_t index = string.leftRef(format.start).toUtf8().size();
-        uint32_t length = string.leftRef(format.start + format.length).toUtf8().size() - index;
-        qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_styling" << index << length;
-        d->context()->preedit_styling(index, length, style);
-    }
-
-    // TODO check if defined like that/required
-    if (cursor_pos < 0) {
-        cursor_pos = string.size() + 1 - cursor_pos;
-    }
-
-    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_cursor" << string.leftRef(cursor_pos).toUtf8().size();
-    d->context()->preedit_cursor(string.leftRef(cursor_pos).toUtf8().size());
-    qCDebug(lcWaylandConnection) << Q_FUNC_INFO << "preedit_string" << string;
-    d->context()->preedit_string(d->context()->serial(), string, string);
+    m_transport->sendPreeditString(string, preedit_formats, replace_start, replace_length, cursor_pos,
+                                   widgetState().value(CursorPositionAttribute).toInt());
 }
 
 
@@ -368,113 +447,54 @@ void WaylandInputMethodConnection::sendCommitString(const QString &string,
                                                     int replace_length,
                                                     int cursor_pos)
 {
-    Q_D(WaylandInputMethodConnection);
-
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO << string << replace_start << replace_length << cursor_pos;
 
-    if (!d->context())
+    if (!m_transport->context())
         return;
 
     MInputContextConnection::sendCommitString(string, replace_start, replace_length, cursor_pos);
 
-    if (cursor_pos != 0) {
-        qCWarning(lcWaylandConnection) << Q_FUNC_INFO << "cursor_pos:" << cursor_pos << "!= 0 not supported yet";
-        cursor_pos = 0;
-    }
-
-    if (replace_length > 0) {
-        int cursor = widgetState().value(CursorPositionAttribute).toInt();
-        uint32_t index = string.midRef(qMin(cursor + replace_start, cursor), qAbs(replace_start)).toUtf8().size();
-        uint32_t length = string.midRef(cursor + replace_start, replace_length).toUtf8().size();
-        d->context()->delete_surrounding_text(index, length);
-    }
-
-    cursor_pos = string.leftRef(cursor_pos).toUtf8().size();
-    d->context()->cursor_position(cursor_pos, cursor_pos);
-    d->context()->commit_string(d->context()->serial(), string);
+    m_transport->sendCommitString(string, replace_start, replace_length, cursor_pos,
+                                  widgetState().value(CursorPositionAttribute).toInt());
 }
 
 void WaylandInputMethodConnection::sendKeyEvent(const QKeyEvent &keyEvent,
                                                 Maliit::EventRequestType requestType)
 {
-    Q_D(WaylandInputMethodConnection);
-
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    if (!d->context())
+    if (!m_transport->context())
         return;
 
-    xkb_keysym_t sym(keyFromQt(keyEvent.key()));
-
-    if (sym == XKB_KEY_NoSymbol) {
-        qCWarning(lcWaylandConnection) << "No conversion from Qt::Key:" << keyEvent.key() << "to XKB key. Update the keyFromQt() function.";
+    Maliit::Wayland::InputMethodTransport::Key key;
+    if (!Maliit::Wayland::InputMethodTransport::keyFromQKeyEvent(keyEvent, &key))
         return;
-    }
-
-    wl_keyboard_key_state state;
-
-    switch (keyEvent.type()) {
-    case QEvent::KeyPress:
-        state = WL_KEYBOARD_KEY_STATE_PRESSED;
-        break;
-
-    case QEvent::KeyRelease:
-        state = WL_KEYBOARD_KEY_STATE_RELEASED;
-        break;
-
-    default:
-        qCWarning(lcWaylandConnection) << "Unknown QKeyEvent type:" << keyEvent.type();
-        return;
-    }
-
-    xkb_mod_mask_t modifiers(modifiersFromQt(keyEvent.modifiers()));
 
     MInputContextConnection::sendKeyEvent(keyEvent, requestType);
 
-    d->context()->keysym(d->context()->serial(),
-                         keyEvent.timestamp(),
-                         sym, state, modifiers);
+    m_transport->sendKey(key, keyEvent.timestamp());
 }
 
 QString WaylandInputMethodConnection::selection(bool &valid)
 {
-    Q_D(WaylandInputMethodConnection);
-
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    Maliit::Wayland::InputMethodContext *context = d->input_method->context();
-
-    valid = context && !context->selection().isEmpty();
-    return context ? context->selection() : QString();
+    return m_transport->selection(valid);
 }
 
 void WaylandInputMethodConnection::setLanguage(const QString &language)
 {
-    Q_D(WaylandInputMethodConnection);
-
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    if (!d->context())
-        return;
-
-    d->context()->language(d->context()->serial(), language);
+    m_transport->setLanguage(language);
 }
 
 void WaylandInputMethodConnection::setSelection(int start, int length)
 {
-    Q_D (WaylandInputMethodConnection);
-
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    if (!d->context())
-        return;
-
-    QString surrounding = widgetState().value(SurroundingTextAttribute).toString();
-    uint32_t index(surrounding.leftRef(start + length).toUtf8().size());
-    uint32_t anchor(surrounding.leftRef(start).toUtf8().size());
-
-    d->context()->cursor_position(index, anchor);
-    d->context()->commit_string(d->context()->serial(), QString());
+    m_transport->setSelection(start, length,
+                              widgetState().value(SurroundingTextAttribute).toString());
 }
 
 namespace Maliit {

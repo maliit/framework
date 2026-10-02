@@ -20,7 +20,11 @@
 
 Q_DECLARE_LOGGING_CATEGORY(lcWaylandConnection)
 
-class WaylandInputMethodConnectionPrivate;
+namespace Maliit {
+namespace Wayland {
+class InputMethodTransport;
+}
+}
 
 /*! \internal
  * \ingroup maliitserver
@@ -31,7 +35,6 @@ class WaylandInputMethodConnection : public MInputContextConnection
 {
     Q_OBJECT
     Q_DISABLE_COPY(WaylandInputMethodConnection)
-    Q_DECLARE_PRIVATE(WaylandInputMethodConnection)
 
 public:
     explicit WaylandInputMethodConnection();
@@ -54,7 +57,7 @@ public:
     virtual void setLanguage(const QString &language);
 
 private:
-    const QScopedPointer<WaylandInputMethodConnectionPrivate> d_ptr;
+    const QScopedPointer<Maliit::Wayland::InputMethodTransport> m_transport;
 };
 //! \internal_end
 
