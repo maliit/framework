@@ -28,7 +28,23 @@ MInputContextConnection *createInputContextConnectionWithFixedAddress(const QStr
 
 #ifdef HAVE_WAYLAND
 MInputContextConnection *createWestonIMProtocolConnection();
+MInputContextConnection *createDBusAndWaylandConnectionWithDynamicAddress();
+MInputContextConnection *createDBusAndWaylandConnectionWithFixedAddress(const QString &fixedAddress, bool allowAnonymous);
 #endif
+
+enum class ConnectionMode {
+    DBus,
+    Wayland,
+    DBusAndWayland
+};
+
+/*! Picks the input context connection from the environment.
+ *
+ * MALIIT_CONNECTION=dbus|wayland|both selects the connection explicitly.
+ * Without it, MALIIT_FORCE_DBUS_CONNECTION keeps its old meaning. Wayland
+ * connections are only used when running on a Wayland Qt platform.
+ */
+ConnectionMode connectionModeFromEnvironment();
 
 } // namespace Maliit
 

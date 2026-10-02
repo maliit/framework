@@ -48,12 +48,22 @@ void loggingCategoryFilter(QLoggingCategory *category)
 
 QSharedPointer<MInputContextConnection> createConnection(const MImServerConnectionOptions &options)
 {
+    const Maliit::ConnectionMode mode = Maliit::connectionModeFromEnvironment();
+
 #ifdef HAVE_WAYLAND
-    auto forceDbus = qgetenv("MALIIT_FORCE_DBUS_CONNECTION");
-    if (QGuiApplication::platformName().startsWith("wayland") && (forceDbus.isEmpty() || forceDbus == "0")) {
+    if (mode == Maliit::ConnectionMode::Wayland) {
         return QSharedPointer<MInputContextConnection>(Maliit::createWestonIMProtocolConnection());
-    } else
+    } else if (mode == Maliit::ConnectionMode::DBusAndWayland) {
+        if (options.overriddenAddress.isEmpty()) {
+            return QSharedPointer<MInputContextConnection>(Maliit::createDBusAndWaylandConnectionWithDynamicAddress());
+        }
+        return QSharedPointer<MInputContextConnection>(Maliit::createDBusAndWaylandConnectionWithFixedAddress(options.overriddenAddress,
+                                                                                                             options.allowAnonymous));
+    }
+#else
+    Q_UNUSED(mode);
 #endif
+
     if (options.overriddenAddress.isEmpty()) {
         return QSharedPointer<MInputContextConnection>(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
     } else {

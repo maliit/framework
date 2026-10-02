@@ -129,14 +129,16 @@ void StandaloneInputMethod::handleWidgetStateChanged(unsigned int,
 
 std::unique_ptr<MInputContextConnection> createConnection()
 {
+    switch (Maliit::connectionModeFromEnvironment()) {
 #ifdef HAVE_WAYLAND
-    auto forceDbus = qgetenv("MALIIT_FORCE_DBUS_CONNECTION");
-    if (QGuiApplication::platformName().startsWith("wayland") && (forceDbus.isEmpty() || forceDbus == "0")) {
+    case Maliit::ConnectionMode::Wayland:
         return std::unique_ptr<MInputContextConnection>(Maliit::createWestonIMProtocolConnection());
-    } else
+    case Maliit::ConnectionMode::DBusAndWayland:
+        return std::unique_ptr<MInputContextConnection>(Maliit::createDBusAndWaylandConnectionWithDynamicAddress());
 #endif
+    default:
         return std::unique_ptr<MInputContextConnection>(Maliit::DBus::createInputContextConnectionWithDynamicAddress());
-
+    }
 }
 
 }
