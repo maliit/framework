@@ -168,7 +168,7 @@ class InputMethodContext;
 class InputMethod : public QtWayland::zwp_input_method_v1
 {
 public:
-    InputMethod(MInputContextConnection *connection, struct wl_registry *registry, int id);
+    InputMethod(WaylandInputMethodConnectionPrivate *manager, struct wl_registry *registry, int id);
     ~InputMethod();
 
     InputMethodContext *context() const;
@@ -178,18 +178,19 @@ protected:
     void zwp_input_method_v1_deactivate(struct ::zwp_input_method_context_v1 *context) Q_DECL_OVERRIDE;
 
 private:
-    MInputContextConnection *m_connection;
+    WaylandInputMethodConnectionPrivate *m_manager;
     QScopedPointer<InputMethodContext> m_context;
 };
 
 class InputMethodContext : public QtWayland::zwp_input_method_context_v1
 {
 public:
-    InputMethodContext(MInputContextConnection *connection, struct ::zwp_input_method_context_v1 *object);
+    InputMethodContext(WaylandInputMethodConnectionPrivate *manager, struct ::zwp_input_method_context_v1 *object);
     ~InputMethodContext();
 
     QString selection() const;
     uint32_t serial() const;
+    const QVariantMap &state() const;
 
 protected:
     void zwp_input_method_context_v1_commit_state(uint32_t serial) Q_DECL_OVERRIDE;
@@ -200,8 +201,9 @@ protected:
     void zwp_input_method_context_v1_surrounding_text(const QString &text, uint32_t cursor, uint32_t anchor) Q_DECL_OVERRIDE;
 
 private:
-    MInputContextConnection *m_connection;
+    WaylandInputMethodConnectionPrivate *m_manager;
     QVariantMap m_stateInfo;
+    QVariantMap m_pendingState;
     uint32_t m_serial;
     QString m_selection;
 };
@@ -222,11 +224,15 @@ struct WaylandInputMethodConnectionPrivate
     void handleRegistryGlobalRemove(uint32_t name);
 
     Maliit::Wayland::InputMethodContext *context();
+    void activate(Maliit::Wayland::InputMethodContext *context);
+    void deactivate(Maliit::Wayland::InputMethodContext *context);
+    void update(Maliit::Wayland::InputMethodContext *context);
 
     WaylandInputMethodConnection *q_ptr;
     wl_display *display;
     wl_registry *registry;
-    QScopedPointer<Maliit::Wayland::InputMethod> input_method;
+    QMap<uint32_t, Maliit::Wayland::InputMethod *> input_methods;
+    QList<Maliit::Wayland::InputMethodContext *> contexts;
 };
 
 namespace {
@@ -267,7 +273,8 @@ WaylandInputMethodConnectionPrivate::WaylandInputMethodConnectionPrivate(Wayland
     : q_ptr(connection),
       display(0),
       registry(0),
-      input_method()
+      input_methods(),
+      contexts()
 {
     display = static_cast<wl_display *>(QGuiApplication::platformNativeInterface()->nativeResourceForIntegration("display"));
     if (!display) {
@@ -280,7 +287,7 @@ WaylandInputMethodConnectionPrivate::WaylandInputMethodConnectionPrivate(Wayland
 
 WaylandInputMethodConnectionPrivate::~WaylandInputMethodConnectionPrivate()
 {
-    input_method.reset();
+    qDeleteAll(input_methods);
     if (registry) {
         wl_registry_destroy(registry);
     }
@@ -291,21 +298,60 @@ void WaylandInputMethodConnectionPrivate::handleRegistryGlobal(uint32_t name,
                                                                uint32_t version)
 {
     Q_UNUSED(version);
-    Q_Q(WaylandInputMethodConnection);
-
-    if (!strcmp(interface, "zwp_input_method_v1")) {
-        input_method.reset(new Maliit::Wayland::InputMethod(q, registry, name));
+    if (!strcmp(interface, "zwp_input_method_v1") && !input_methods.contains(name)) {
+        input_methods.insert(name, new Maliit::Wayland::InputMethod(this, registry, name));
     }
 }
 
 void WaylandInputMethodConnectionPrivate::handleRegistryGlobalRemove(uint32_t name)
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO << name;
+    delete input_methods.take(name);
 }
 
 Maliit::Wayland::InputMethodContext *WaylandInputMethodConnectionPrivate::context()
 {
-    return input_method ? input_method->context() : 0;
+    return contexts.isEmpty() ? 0 : contexts.last();
+}
+
+void WaylandInputMethodConnectionPrivate::activate(Maliit::Wayland::InputMethodContext *target)
+{
+    Q_Q(WaylandInputMethodConnection);
+
+    contexts.removeAll(target);
+    contexts.append(target);
+    q->activateContext(wayland_connection_id);
+    q->updateWidgetInformation(wayland_connection_id, target->state(), true);
+    q->showInputMethod(wayland_connection_id);
+}
+
+void WaylandInputMethodConnectionPrivate::deactivate(Maliit::Wayland::InputMethodContext *target)
+{
+    Q_Q(WaylandInputMethodConnection);
+
+    const bool wasActive = context() == target;
+    contexts.removeAll(target);
+    if (!wasActive)
+        return;
+
+    if (context()) {
+        q->updateWidgetInformation(wayland_connection_id, context()->state(), true);
+        q->showInputMethod(wayland_connection_id);
+    } else {
+        QVariantMap state;
+        state[FocusStateAttribute] = false;
+        q->updateWidgetInformation(wayland_connection_id, state, true);
+        q->hideInputMethod(wayland_connection_id);
+        q->handleDisconnection(wayland_connection_id);
+    }
+}
+
+void WaylandInputMethodConnectionPrivate::update(Maliit::Wayland::InputMethodContext *target)
+{
+    Q_Q(WaylandInputMethodConnection);
+
+    if (context() == target)
+        q->updateWidgetInformation(wayland_connection_id, target->state(), false);
 }
 
 // MInputContextWestonIMProtocolConnection
@@ -442,7 +488,7 @@ QString WaylandInputMethodConnection::selection(bool &valid)
 
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    Maliit::Wayland::InputMethodContext *context = d->input_method->context();
+    Maliit::Wayland::InputMethodContext *context = d->context();
 
     valid = context && !context->selection().isEmpty();
     return context ? context->selection() : QString();
@@ -480,9 +526,9 @@ void WaylandInputMethodConnection::setSelection(int start, int length)
 namespace Maliit {
 namespace Wayland {
 
-InputMethod::InputMethod(MInputContextConnection *connection, struct wl_registry *registry, int id)
+InputMethod::InputMethod(WaylandInputMethodConnectionPrivate *manager, struct wl_registry *registry, int id)
     : QtWayland::zwp_input_method_v1(registry, id, 1)
-    , m_connection(connection)
+    , m_manager(manager)
     , m_context()
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
@@ -501,43 +547,40 @@ void InputMethod::zwp_input_method_v1_activate(struct ::zwp_input_method_context
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    m_context.reset(new InputMethodContext(m_connection, id));
-
+    m_context.reset();
+    m_context.reset(new InputMethodContext(m_manager, id));
     m_context->modifiers_map(modifiersMap());
-
+    m_manager->activate(m_context.data());
 }
 
-void InputMethod::zwp_input_method_v1_deactivate(struct zwp_input_method_context_v1 *)
+void InputMethod::zwp_input_method_v1_deactivate(struct zwp_input_method_context_v1 *context)
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    m_context.reset();
-
-    m_connection->handleDisconnection(wayland_connection_id);
+    if (m_context && m_context->object() == context)
+        m_context.reset();
 }
 
-InputMethodContext::InputMethodContext(MInputContextConnection *connection, struct ::zwp_input_method_context_v1 *object)
+InputMethodContext::InputMethodContext(WaylandInputMethodConnectionPrivate *manager, struct ::zwp_input_method_context_v1 *object)
     : QtWayland::zwp_input_method_context_v1(object)
-    , m_connection(connection)
+    , m_manager(manager)
     , m_stateInfo()
+    , m_pendingState()
     , m_serial(0)
     , m_selection()
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_stateInfo[FocusStateAttribute] = true;
-    m_connection->activateContext(wayland_connection_id);
-    m_connection->showInputMethod(wayland_connection_id);
+    m_pendingState = m_stateInfo;
 }
 
 InputMethodContext::~InputMethodContext()
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    m_stateInfo.clear();
-    m_stateInfo[FocusStateAttribute] = false;
-    m_connection->updateWidgetInformation(wayland_connection_id, m_stateInfo, true);
-    m_connection->hideInputMethod(wayland_connection_id);
+    m_manager->deactivate(this);
+    destroy();
 }
 
 QString InputMethodContext::selection() const
@@ -550,23 +593,29 @@ uint32_t InputMethodContext::serial() const
     return m_serial;
 }
 
+const QVariantMap &InputMethodContext::state() const
+{
+    return m_stateInfo;
+}
+
 void InputMethodContext::zwp_input_method_context_v1_commit_state(uint32_t serial)
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
     m_serial = serial;
-    m_connection->updateWidgetInformation(wayland_connection_id, m_stateInfo, false);
+    m_stateInfo = m_pendingState;
+    m_manager->update(this);
 }
 
 void InputMethodContext::zwp_input_method_context_v1_content_type(uint32_t hint, uint32_t purpose)
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    m_stateInfo[ContentTypeAttribute] = contentTypeFromWayland(purpose);
-    m_stateInfo[AutoCapitalizationAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_capitalization);
-    m_stateInfo[CorrectionAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_correction);
-    m_stateInfo[PredictionAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_completion);
-    m_stateInfo[HiddenTextAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_hidden_text);
+    m_pendingState[ContentTypeAttribute] = contentTypeFromWayland(purpose);
+    m_pendingState[AutoCapitalizationAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_capitalization);
+    m_pendingState[CorrectionAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_correction);
+    m_pendingState[PredictionAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_auto_completion);
+    m_pendingState[HiddenTextAttribute] = matchesFlag(hint, QtWayland::zwp_text_input_v1::content_hint_hidden_text);
 }
 
 void InputMethodContext::zwp_input_method_context_v1_invoke_action(uint32_t button, uint32_t index)
@@ -583,27 +632,29 @@ void InputMethodContext::zwp_input_method_context_v1_reset()
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    m_connection->reset(wayland_connection_id);
-    m_connection->showInputMethod(wayland_connection_id);
+    if (m_manager->context() == this) {
+        m_manager->q_ptr->reset(wayland_connection_id);
+        m_manager->q_ptr->showInputMethod(wayland_connection_id);
+    }
 }
 
 void InputMethodContext::zwp_input_method_context_v1_surrounding_text(const QString &text, uint32_t cursor, uint32_t anchor)
 {
     qCDebug(lcWaylandConnection) << Q_FUNC_INFO;
 
-    // Re-show the keyboard if it was hidden without changing focus.
-    m_connection->showInputMethod(wayland_connection_id);
+    if (m_manager->context() == this)
+        m_manager->q_ptr->showInputMethod(wayland_connection_id);
 
     const QByteArray &utf8_text(text.toUtf8());
 
-    m_stateInfo[SurroundingTextAttribute] = text;
-    m_stateInfo[CursorPositionAttribute] = QString::fromUtf8(utf8_text.constData(), cursor).size();
-    m_stateInfo[AnchorPositionAttribute] = QString::fromUtf8(utf8_text.constData(), anchor).size();
+    m_pendingState[SurroundingTextAttribute] = text;
+    m_pendingState[CursorPositionAttribute] = QString::fromUtf8(utf8_text.constData(), cursor).size();
+    m_pendingState[AnchorPositionAttribute] = QString::fromUtf8(utf8_text.constData(), anchor).size();
     if (cursor == anchor) {
-        m_stateInfo[HasSelectionAttribute] = false;
+        m_pendingState[HasSelectionAttribute] = false;
         m_selection.clear();
     } else {
-        m_stateInfo[HasSelectionAttribute] = true;
+        m_pendingState[HasSelectionAttribute] = true;
         uint32_t begin = qMin(anchor, cursor);
         uint32_t end = qMax(anchor, cursor);
         m_selection = QString::fromUtf8(utf8_text.constData() + begin, end - begin);
